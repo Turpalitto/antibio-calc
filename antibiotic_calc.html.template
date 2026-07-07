@@ -114,13 +114,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
             <div class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">кг</div>
           </div>
         </div>
-        <div>
-          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">СКФ</label>
-          <div class="relative">
-            <input type="number" id="egfr" step="1" placeholder=">60" class="input-field w-full rounded-2xl px-4 py-3 text-xl font-extrabold" oninput="calculate()">
-            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[10px]">мл/мин</div>
-          </div>
-        </div>
         <div class="col-span-2 md:col-span-1">
           <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Возрастная группа</label>
           <div id="age-group" class="grid grid-cols-3 gap-1">
@@ -131,7 +124,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
         </div>
       </div>
       <div id="weight-warn" class="hidden mt-3 text-[11px] font-bold text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"><i class="fas fa-exclamation-triangle mr-1"></i><span></span></div>
-      <div id="renal-warn" class="hidden mt-2 text-[11px] font-bold text-amber-700 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-400 rounded-lg px-3 py-2"><i class="fas fa-kidney mr-1"></i><span></span></div>
     </section>
 
     <section class="premium-card p-4 md:p-6 no-print">
@@ -690,7 +682,6 @@ function calculate(){
 
   $('res-note').textContent = activeDrug.indication_note || (activeLine && activeLine.line_label) || '';
   renderDrugMeta(mainRef, reg);
-  renderRenalWarning(mainRef);
 }
 function renderPO(reg, form, ref, w, singleMg, dailyMg, capped){
   const concMgPerMl = form.concentration_mg_per_ml || 0;
@@ -928,16 +919,6 @@ function renderDrugMeta(ref, reg){
 }
 function metaRow(k, v){
   return '<div class="flex justify-between gap-3"><span class="text-slate-400 dark:text-slate-500 font-black uppercase text-[10px] tracking-widest flex-shrink-0">'+k+'</span><span class="text-slate-700 dark:text-slate-300 font-semibold text-right">'+v+'</span></div>';
-}
-function renderRenalWarning(ref){
-  const egfr = parseFloat($('egfr').value);
-  const warn = $('renal-warn');
-  if(!egfr || egfr > 60 || !ref.renal_adjustment){
-    warn.classList.add('hidden');
-    return;
-  }
-  warn.querySelector('span').textContent = 'СКФ '+egfr+' мл/мин — требуется коррекция дозы: '+ref.renal_adjustment;
-  warn.classList.remove('hidden');
 }
 function copyPrescription(){
   if(!activeDrug || !activeDisease){
