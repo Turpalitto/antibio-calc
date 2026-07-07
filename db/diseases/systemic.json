@@ -1,0 +1,261 @@
+{
+  "category": "Тяжёлые / системные инфекции",
+  "recommendations": [
+    {
+      "id": "sepsis_adult",
+      "mkb10": ["A41.0", "A41.1", "A41.2", "A41.3", "A41.5", "A41.8", "A41.9", "A40", "R65.2", "R57.2"],
+      "name": "Сепсис и септический шок у взрослых",
+      "synonyms": ["сепсис", "септический шок"],
+      "cr_id": "16",
+      "cr_year": 2024,
+      "cr_updated": "2024-03-01",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/16",
+      "antibiotics_indicated": true,
+      "indications": ["Сепсис или септический шок — в/в АБ в течение 1 часа"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "sepsis_empirical",
+          "name": "Эмпирическая терапия (источник неизвестен)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "piperacillin_tazobactam",
+                  "route": ["iv"],
+                  "indication_note": "Широкий спектр, покрытие Pseudomonas",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 16000,
+                      "single_dose_mg": 4000,
+                      "max_daily_mg": 18000,
+                      "freq_per_day": 4,
+                      "duration_days": "5-7",
+                      "duration_note": "4 г 4 р/д или продлённая инфузия; продолжительность зависит от источника"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "meropenem",
+                  "route": ["iv"],
+                  "indication_note": "Карбапенем при высоком риске ESBL/AmpC",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "5-7",
+                      "duration_note": "1-2 г 3 р/д; при нозокомиальной инфекции 2 г 3 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pneumococcal_meningitis",
+      "mkb10": ["G00.1", "A40.2"],
+      "name": "Пневмококковый менингит",
+      "synonyms": ["менингит S.pneumoniae"],
+      "cr_id": "215",
+      "cr_year": 2024,
+      "cr_updated": "2024-02-25",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/215",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённый или подозреваемый пневмококковый гнойный менингит"],
+      "age_groups": ["adult", "child"],
+      "scenarios": [
+        {
+          "id": "pm_empirical",
+          "name": "Эмпирическая терапия (до идентификации)",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv"],
+                  "indication_note": "Покрытие пенициллин-резистентного S.pneumoniae",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 4000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 2,
+                      "duration_days": "10-14",
+                      "duration_note": "Цефтриаксон 4 г/сут 2 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 100,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 2,
+                      "duration_days": "10-14",
+                      "duration_note": "100 мг/кг/сут (макс 4 г)"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "vancomycin",
+                  "route": ["iv"],
+                  "indication_note": "Добавление ванкомицина при резистентности",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 60,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 4,
+                      "duration_days": "10-14",
+                      "duration_note": "15-20 мг/кг каждые 8-12 ч, ТЛМ 15-20 мг/л"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 60,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 4,
+                      "duration_days": "10-14",
+                      "duration_note": "15 мг/кг 4 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pm_targeted",
+          "name": "Целенаправленная терапия (чувствительный к пенициллину)",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "benzylpenicillin_na",
+                  "route": ["iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 24000000,
+                      "single_dose_mg": 4000000,
+                      "max_daily_mg": 24000000,
+                      "freq_per_day": 6,
+                      "duration_days": "10-14",
+                      "duration_note": "24 млн ЕД/сут"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "meningococcal_disease",
+      "mkb10": ["A39.0", "A39.1", "A39.2", "A39.3", "A39.4", "A39.8", "A39.9"],
+      "name": "Менингококковая инфекция",
+      "synonyms": ["менингококцемия", "менингококковый менингит", "Neisseria meningitidis"],
+      "cr_id": "215",
+      "cr_year": 2024,
+      "cr_updated": "2024-02-25",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/215",
+      "antibiotics_indicated": true,
+      "indications": ["Генерализованная форма менингококковой инфекции"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "md_empirical",
+          "name": "Эмпирическая / целенаправленная терапия",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv", "im"],
+                  "indication_note": "Препарат выбора",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 4000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 2,
+                      "duration_days": "5-7",
+                      "duration_note": "При менингите 5-7 дней"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 100,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 2,
+                      "duration_days": "5-7",
+                      "duration_note": "100 мг/кг/сут в 2 введения (макс 4 г)"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "benzylpenicillin_na",
+                  "route": ["iv"],
+                  "indication_note": "Альтернатива при подтверждённой чувствительности",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 24000000,
+                      "single_dose_mg": 4000000,
+                      "max_daily_mg": 24000000,
+                      "freq_per_day": 6,
+                      "duration_days": "5-7",
+                      "duration_note": null
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 300000,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 24000000,
+                      "freq_per_day": 6,
+                      "duration_days": "5-7",
+                      "duration_note": "250 000-300 000 ЕД/кг/сут"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

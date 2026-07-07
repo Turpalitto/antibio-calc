@@ -1,0 +1,229 @@
+{
+  "category": "Кожа / мягкие ткани / диабет",
+  "recommendations": [
+    {
+      "id": "erysipelas",
+      "mkb10": ["A46", "L03.0", "L03.1", "L03.2", "L03.3"],
+      "name": "Рожа у взрослых",
+      "synonyms": ["рожистое воспаление"],
+      "cr_id": "62",
+      "cr_year": 2023,
+      "cr_updated": "2023-08-25",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/62",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённая рожа (β-гемолитический стрептококк)"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "erysipelas_mild",
+          "name": "Лёгкое течение (амбулаторно)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "phenoxymethylpenicillin",
+                  "route": ["per_os"],
+                  "indication_note": "Препарат выбора — β-гемолитический стрептококк",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 3,
+                      "duration_days": "10-14",
+                      "duration_note": null
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "benzathine_benzylpenicillin",
+                  "route": ["im"],
+                  "indication_note": "Удлинённый курс",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1500000,
+                      "single_dose_mg": 1500000,
+                      "max_daily_mg": 1500000,
+                      "freq_per_day": 1,
+                      "duration_days": "1-4",
+                      "duration_note": "Бициллин-5 1.5 млн ЕД 1 р/нед × 3-4 нед"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии",
+              "drugs": [
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "3-5",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "erysipelas_severe",
+          "name": "Тяжёлое течение (стационар)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "benzylpenicillin_na",
+                  "route": ["iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 12000000,
+                      "single_dose_mg": 2000000,
+                      "max_daily_mg": 24000000,
+                      "freq_per_day": 6,
+                      "duration_days": "10-14",
+                      "duration_note": "4-12 млн ЕД/сут в/в"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "cefazolin",
+                  "route": ["iv", "im"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "10-14",
+                      "duration_note": "1-2 г 3 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "diabetic_foot",
+      "mkb10": ["E10.5", "E11.5", "L08.0", "L03.0", "L03.1", "L03.2", "L03.3", "L97"],
+      "name": "Синдром диабетической стопы (инфекция)",
+      "synonyms": ["СДС", "диабетическая язва"],
+      "cr_id": "276",
+      "cr_year": 2024,
+      "cr_updated": "2024-04-01",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/276",
+      "antibiotics_indicated": true,
+      "indications": ["Инфицированная язва диабетической стопы"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "dfs_mild",
+          "name": "Лёгкая инфекция (только мягкие ткани)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "amoxiclav",
+                  "route": ["per_os"],
+                  "indication_note": "Покрытие грам+, грам- и анаэробов",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1750,
+                      "single_dose_mg": 875,
+                      "max_daily_mg": 3500,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": "1-2 недели при мягкой ткани"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dfs_moderate_severe",
+          "name": "Среднетяжёлая / тяжёлая инфекция",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (в/в)",
+              "drugs": [
+                {
+                  "drug_ref": "piperacillin_tazobactam",
+                  "route": ["iv"],
+                  "indication_note": "Широкий спектр, покрытием Pseudomonas",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 16000,
+                      "single_dose_mg": 4000,
+                      "max_daily_mg": 18000,
+                      "freq_per_day": 4,
+                      "duration_days": "14-21",
+                      "duration_note": "При остеомиелите 6+ недель"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "meropenem",
+                  "route": ["iv"],
+                  "indication_note": "При риске ESBL/полирезистентности",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "14-21",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "category": "ЖКТ / гепатобилиарные",
+  "recommendations": [
+    {
+      "id": "h_pylori",
+      "mkb10": ["K25", "K26", "K27", "K28", "K29.5", "K29.6"],
+      "name": "Helicobacter pylori-инфекция (язвенная болезнь)",
+      "synonyms": ["хеликобактер", "эрадикация H.pylori"],
+      "cr_id": "118",
+      "cr_year": 2023,
+      "cr_updated": "2023-07-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/118",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённая H.pylori-инфекция"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "hp_first_line",
+          "name": "Первая линия эрадикации (квадротерапия)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Квадротерапия (висмут + ИПП + амоксициллин + метронидазол/фуразолидон)",
+              "drugs": [
+                {
+                  "drug_ref": "amoxicillin",
+                  "route": ["per_os"],
+                  "indication_note": "Компонент квадротерапии",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 2,
+                      "duration_days": "14",
+                      "duration_note": "1 г 2 р/д × 14 дней"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "metronidazole",
+                  "route": ["per_os"],
+                  "indication_note": "Компонент квадротерапии",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "14",
+                      "duration_note": "500 мг 2 р/д × 14 дней"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Тройная терапия (ИПП + амоксициллин + кларитромицин, при низкой резистентности к кларитромицину)",
+              "drugs": [
+                {
+                  "drug_ref": "clarithromycin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1000,
+                      "freq_per_day": 2,
+                      "duration_days": "14",
+                      "duration_note": "500 мг 2 р/д × 14 дней"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cholecystitis_cholangitis",
+      "mkb10": ["K81.0", "K81.1", "K83.0"],
+      "name": "Острый холецистит и холангит",
+      "synonyms": ["холецистит", "холангит"],
+      "cr_id": "78",
+      "cr_year": 2024,
+      "cr_updated": "2024-01-30",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/78",
+      "antibiotics_indicated": true,
+      "indications": ["Острый калькулёзный холецистит, острый холангит"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "cholec_mild_mod",
+          "name": "Лёгкое / среднетяжёлое течение",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "amoxiclav",
+                  "route": ["iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "4-7",
+                      "duration_note": "После адекватного контроля источника 4 дня"
+                    }
+                  ]
+                },
+                {
+                  "combo_ref": ["ceftriaxone", "metronidazole"],
+                  "route": ["iv"],
+                  "indication_note": "Комбинация для покрытия анаэробов",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "4-7",
+                      "duration_note": "Цефтриаксон 2 г 1 р/д + метронидазол 500 мг 3 р/д"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Тяжёлое / нозокомиальное течение",
+              "drugs": [
+                {
+                  "drug_ref": "piperacillin_tazobactam",
+                  "route": ["iv"],
+                  "indication_note": "Покрытие Pseudomonas и анаэробов",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 16000,
+                      "single_dose_mg": 4000,
+                      "max_daily_mg": 18000,
+                      "freq_per_day": 4,
+                      "duration_days": "4-7",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

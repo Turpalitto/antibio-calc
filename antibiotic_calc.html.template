@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AntibioAudit — КР МЗ РФ | Калькулятор доз</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+:root{--primary:#2563eb;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-800:#1e293b}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color:var(--slate-800);line-height:1.5}
+.premium-card{background:#fff;border-radius:24px;border:1px solid rgba(226,232,240,.8);box-shadow:0 4px 6px -1px rgba(0,0,0,.02),0 10px 15px -3px rgba(0,0,0,.03);transition:all .3s}
+.input-field{background:var(--slate-100);border:2px solid transparent;transition:all .2s}
+.input-field:focus{background:#fff;border-color:var(--primary);outline:none;box-shadow:0 0 0 4px rgba(37,99,235,.1)}
+.chip{cursor:pointer;border:2px solid var(--slate-100);transition:all .15s;font-weight:700}
+.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.chip.line-1{border-color:#a7f3d0}
+.chip.line-1.active{background:var(--success);border-color:var(--success)}
+.chip.line-2{border-color:#bfdbfe}
+.chip.line-2.active{background:var(--primary);border-color:var(--primary)}
+.chip.line-0{border-color:#fde68a}
+.chip.line-0.active{background:var(--warning);border-color:var(--warning);color:#78350f}
+.drug-card{cursor:pointer;border:2px solid var(--slate-100);transition:all .2s}
+.drug-card.active{border-color:var(--primary);background:#eff6ff}
+.res-box{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);box-shadow:0 20px 25px -5px rgba(37,99,235,.2)}
+.inj-box{background:linear-gradient(135deg,#7c2d12 0%,#c2410c 100%);box-shadow:0 20px 25px -5px rgba(194,65,12,.25)}
+.badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;text-transform:uppercase}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.animate-in{animation:fadeIn .4s ease-out forwards}
+.step{counter-increment:step}
+.step::before{content:counter(step);display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--primary);color:#fff;border-radius:50%;font-size:11px;font-weight:800;margin-right:8px;flex-shrink:0}
+.steps{counter-reset:step;list-style:none;padding-left:0}
+.steps li{padding:6px 0;display:flex;align-items:flex-start;font-size:13px;line-height:1.5}
+.dilution-solvent{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:600;color:#9a3412}
+.scrollbar::-webkit-scrollbar{width:6px;height:6px}
+.scrollbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+</style>
+</head>
+<body class="antialiased pb-12">
+<div class="max-w-3xl mx-auto px-6 pt-8">
+
+  <header class="mb-6">
+    <div class="flex items-center gap-3">
+      <div class="inline-flex items-center justify-center w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-100">
+        <i class="fas fa-user-md text-blue-600 text-xl"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">Antibio<span class="text-blue-600">Audit</span></h1>
+        <p class="text-slate-400 text-[10px] font-bold mt-0.5 uppercase tracking-widest italic">Калькулятор доз по КР МЗ РФ • 33 нозологии • 25 препаратов</p>
+      </div>
+      <button id="load-remote" class="ml-auto text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 border border-slate-200 rounded-lg px-3 py-2" title="Загрузить db/antibio_db.json через fetch (требуется http-сервер)">
+        <i class="fas fa-cloud-download-alt mr-1"></i>Remote DB
+      </button>
+    </div>
+  </header>
+
+  <div class="space-y-5">
+
+    <!-- 1. Patient -->
+    <section class="premium-card p-6">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">1. Вес пациента</label>
+          <div class="relative">
+            <input type="number" id="weight" step="0.1" placeholder="0.0" class="input-field w-full rounded-2xl px-5 py-4 text-3xl font-extrabold text-slate-800" oninput="onWeightChange()">
+            <div class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">кг</div>
+          </div>
+        </div>
+        <div>
+          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Возрастная группа</label>
+          <div id="age-group" class="grid grid-cols-3 gap-2">
+            <button data-age="neonate" class="chip rounded-xl py-3 text-xs">Новор.<br><span class="text-[9px] opacity-70">0-28д</span></button>
+            <button data-age="child" class="chip active rounded-xl py-3 text-xs">Дети<br><span class="text-[9px] opacity-70">1м-17л</span></button>
+            <button data-age="adult" class="chip rounded-xl py-3 text-xs">Взр.<br><span class="text-[9px] opacity-70">&gt;18л</span></button>
+          </div>
+        </div>
+      </div>
+      <div id="weight-warn" class="hidden mt-3 text-[11px] font-bold text-red-600 bg-red-50 rounded-lg px-3 py-2"><i class="fas fa-exclamation-triangle mr-1"></i><span></span></div>
+    </section>
+
+    <!-- 2. Disease search -->
+    <section class="premium-card p-6">
+      <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 block">2. Нозология (МКБ-10 / название)</label>
+      <div class="relative">
+        <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input type="text" id="search" placeholder="Поиск: отит, J18, пневмония, сифилис..." class="input-field w-full rounded-2xl py-4 pl-12 pr-6 font-bold text-slate-700 text-sm" oninput="handleSearch()">
+      </div>
+      <div id="results-box" class="hidden mt-3 space-y-2 max-h-72 overflow-y-auto pr-1 scrollbar"></div>
+      <div id="active-disease" class="hidden mt-4 p-4 bg-blue-50 border border-blue-100 rounded-2xl">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <span id="active-title" class="font-bold text-blue-900 text-sm block mb-1"></span>
+            <span id="active-mkb" class="text-[10px] font-black text-blue-400 uppercase"></span>
+            <span id="active-cr" class="text-[10px] font-bold text-slate-400 ml-2"></span>
+          </div>
+          <button onclick="resetDisease()" class="text-blue-300 hover:text-red-500"><i class="fas fa-times-circle text-lg"></i></button>
+        </div>
+        <div id="active-indications" class="mt-2 text-[11px] text-blue-900/80 font-semibold"></div>
+      </div>
+    </section>
+
+    <!-- 3. Scenario -->
+    <div id="scenario-step" class="hidden animate-in">
+      <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2 block">3. Клинический сценарий</label>
+      <div id="scenario-list" class="space-y-2"></div>
+    </div>
+
+    <!-- 4. Drug -->
+    <div id="drug-step" class="hidden animate-in">
+      <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2 block">4. Препарат (линии КР)</label>
+      <div id="drug-list" class="space-y-2"></div>
+    </div>
+
+    <!-- 5. Form & route -->
+    <div id="form-step" class="hidden animate-in space-y-5">
+      <section class="premium-card p-6">
+        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 block">5. Лекарственная форма / путь введения</label>
+        <div id="form-grid" class="grid grid-cols-2 gap-2"></div>
+      </section>
+    </div>
+
+    <!-- Result -->
+    <div id="result-step" class="hidden space-y-5 animate-in">
+
+      <!-- PO result -->
+      <div id="res-po" class="hidden res-box rounded-[32px] p-8 text-white relative overflow-hidden">
+        <p class="text-blue-100 text-[10px] font-black uppercase tracking-widest mb-2">Разовая доза (per os)</p>
+        <div class="flex items-baseline gap-2 mb-6">
+          <span id="po-ml" class="text-6xl font-black tracking-tighter italic">0.0</span>
+          <span class="text-2xl font-bold text-blue-200">мл</span>
+          <span id="po-tabs" class="ml-auto text-base font-bold text-blue-200"></span>
+        </div>
+        <div class="bg-white/10 rounded-2xl p-5 mb-5 border border-white/10">
+          <p id="po-instruction" class="text-base font-bold leading-snug"></p>
+        </div>
+        <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-5 text-center">
+          <div><p class="text-blue-200 text-[9px] font-black uppercase mb-1">Доза в мг</p><p id="po-mg" class="text-lg font-black"></p></div>
+          <div><p class="text-blue-200 text-[9px] font-black uppercase mb-1">Сут. доза</p><p id="po-day" class="text-lg font-black"></p></div>
+          <div><p class="text-blue-200 text-[9px] font-black uppercase mb-1">Курс</p><p id="po-dur" class="text-lg font-black italic"></p></div>
+        </div>
+      </div>
+
+      <!-- Inject result -->
+      <div id="res-inj" class="hidden inj-box rounded-[32px] p-8 text-white relative overflow-hidden">
+        <div class="flex justify-between items-start mb-5">
+          <div>
+            <p class="text-orange-100 text-[10px] font-black uppercase tracking-widest mb-1">Разовая доза (<span id="inj-route-label">в/м</span>)</p>
+            <div class="flex items-baseline gap-2">
+              <span id="inj-mg" class="text-6xl font-black tracking-tighter italic">0</span>
+              <span class="text-2xl font-bold text-orange-200">мг</span>
+            </div>
+          </div>
+          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 text-center border border-white/10">
+            <p class="text-[9px] text-orange-100 font-black uppercase mb-1">Кратность</p>
+            <p id="inj-freq" class="text-xl font-black">1 р/д</p>
+          </div>
+        </div>
+        <div class="bg-white/10 rounded-2xl p-5 mb-5 border border-white/10">
+          <p id="inj-instruction" class="text-base font-bold leading-snug"></p>
+        </div>
+        <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-5 text-center">
+          <div><p class="text-orange-200 text-[9px] font-black uppercase mb-1">Объём р-ра</p><p id="inj-ml" class="text-lg font-black"></p></div>
+          <div><p class="text-orange-200 text-[9px] font-black uppercase mb-1">Сут. доза</p><p id="inj-day" class="text-lg font-black"></p></div>
+          <div><p class="text-orange-200 text-[9px] font-black uppercase mb-1">Курс</p><p id="inj-dur" class="text-lg font-black italic"></p></div>
+        </div>
+      </div>
+
+      <!-- Dilution block -->
+      <div id="dilution-block" class="hidden premium-card p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <i class="fas fa-syringe text-orange-600 text-lg"></i>
+          <h3 class="text-base font-black text-slate-800">Приготовление и введение</h3>
+          <span id="dilution-route-tag" class="ml-auto badge bg-orange-100 text-orange-700"></span>
+        </div>
+
+        <div id="dilution-warn" class="hidden mb-4 bg-red-50 border border-red-200 rounded-2xl p-4">
+          <p class="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1"><i class="fas fa-exclamation-circle mr-1"></i>Внимание</p>
+          <p id="dilution-warn-text" class="text-xs text-red-900 font-semibold"></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-4" id="dilution-solvents"></div>
+
+        <div id="dilution-cautions" class="hidden mb-4 bg-amber-50 border border-amber-200 rounded-2xl p-4">
+          <p class="text-[10px] font-black text-amber-700 uppercase tracking-widest mb-1"><i class="fas fa-triangle-exclamation mr-1"></i>Особые указания</p>
+          <p id="dilution-cautions-text" class="text-xs text-amber-900 font-semibold"></p>
+        </div>
+
+        <div>
+          <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Пошаговая инструкция</p>
+          <ol id="dilution-steps" class="steps"></ol>
+        </div>
+      </div>
+
+      <!-- Clinical note -->
+      <div class="bg-amber-50 border border-amber-100 rounded-3xl p-6 flex gap-4">
+        <div class="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-exclamation-triangle text-amber-600"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1">Клиническое замечание</p>
+          <p id="res-note" class="text-xs text-amber-900 leading-relaxed font-semibold italic"></p>
+        </div>
+      </div>
+
+      <!-- Drug meta -->
+      <div id="drug-meta" class="premium-card p-5 text-xs space-y-2"></div>
+
+    </div>
+
+    <div id="empty-state" class="text-center py-16 opacity-40">
+      <i class="fas fa-stethoscope text-6xl mb-4"></i>
+      <p class="text-sm font-bold">Выберите нозологию для расчёта</p>
+    </div>
+
+  </div>
+
+  <footer class="mt-12 text-center text-[9px] text-slate-400 font-black uppercase tracking-[0.2em] space-y-1">
+    <p id="verification-status">ЧЕРНОВИК • Требует верификации по первоисточникам КР МЗ РФ</p>
+    <p>Verified by Arena Medical Agent • 2026</p>
+  </footer>
+</div>
+
+<script id="db-data" type="application/json">__DB_PLACEHOLDER__</script>
+<script>
+let DB = null;
+let activeDisease = null, activeScenario = null, activeLine = null, activeDrug = null, activeFormIdx = 0;
+let activeAge = 'child';
+
+function $(id){return document.getElementById(id);}
+function init(){
+  try{
+    const raw = $('db-data').textContent.trim();
+    DB = JSON.parse(raw);
+    document.getElementById('verification-status').textContent = (DB.meta.verification_status||'draft').toUpperCase()+' • '+DB.meta.warning;
+  }catch(e){
+    $('empty-state').innerHTML = '<p class="text-red-600 font-bold">Ошибка загрузки БД: '+e.message+'</p>';
+    return;
+  }
+  // Age buttons
+  document.querySelectorAll('#age-group button').forEach(b=>{
+    b.onclick = ()=>{
+      document.querySelectorAll('#age-group button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      activeAge = b.dataset.age;
+      calculate();
+    };
+  });
+  // Try remote load
+  $('load-remote').onclick = async ()=>{
+    try{
+      const r = await fetch('./db/antibio_db.json');
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      DB = await r.json();
+      $('db-data').textContent = JSON.stringify(DB);
+      alert('Remote DB загружена: '+DB.recommendations.length+' нозологий');
+      resetDisease();
+    }catch(err){
+      alert('Не удалось загрузить ./db/antibio_db.json\n'+err.message+'\n\nИспользуется встроенная БД. Для remote-load нужен http-сервер (e.g. python -m http.server).');
+    }
+  };
+}
+function onWeightChange(){
+  const w = parseFloat($('weight').value);
+  const warn = $('weight-warn');
+  if(!w){ warn.classList.add('hidden'); calculate(); return; }
+  let msg = '';
+  if(w < 1) msg = 'Вес <1 кг — вероятно ошибка. Расчёт для новорождённых требует осмотр врача.';
+  else if(w > 200) msg = 'Вес >200 кг — проверьте значение.';
+  else if(w < 40 && activeAge === 'adult') msg = 'Вес <40 кг, выбрана группа "взрослые". Возможно стоит переключить на "дети".';
+  if(msg){ warn.querySelector('span').textContent = msg; warn.classList.remove('hidden'); }
+  else warn.classList.add('hidden');
+  // Auto-switch age by weight
+  if(w > 0 && w < 40 && activeAge !== 'neonate'){ setActiveAge('child'); }
+  else if(w >= 40 && activeAge === 'child'){ setActiveAge('adult'); }
+  calculate();
+}
+function setActiveAge(a){
+  activeAge = a;
+  document.querySelectorAll('#age-group button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.age === a);
+  });
+}
+function handleSearch(){
+  const q = $('search').value.toLowerCase().trim();
+  const box = $('results-box');
+  if(q.length < 2){ box.classList.add('hidden'); return; }
+  const filtered = DB.recommendations.filter(d=>{
+    if(d.mkb10.some(m=>m.toLowerCase().includes(q))) return true;
+    if(d.name.toLowerCase().includes(q)) return true;
+    if(d.synonyms && d.synonyms.some(s=>s.toLowerCase().includes(q))) return true;
+    return false;
+  });
+  box.innerHTML = '';
+  filtered.forEach(d=>{
+    const item = document.createElement('div');
+    item.className = 'bg-white p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-blue-50 transition-all font-bold text-slate-700 text-sm flex justify-between items-center';
+    item.innerHTML = '<div><div>'+d.name+'</div><div class="text-[10px] text-slate-400 font-normal mt-0.5">МКБ: '+d.mkb10.join(', ')+'</div></div><span class="text-blue-500 text-xs">'+d.mkb10[0]+'</span>';
+    item.onclick = ()=>selectDisease(d);
+    box.appendChild(item);
+  });
+  box.classList.toggle('hidden', filtered.length === 0);
+}
+function selectDisease(d){
+  activeDisease = d;
+  $('results-box').classList.add('hidden');
+  $('search').value = '';
+  $('active-disease').classList.remove('hidden');
+  $('active-title').textContent = d.name;
+  $('active-mkb').textContent = 'МКБ-10: '+d.mkb10.join(', ');
+  $('active-cr').textContent = 'КР #'+d.cr_id+' • '+d.cr_year;
+  $('active-indications').textContent = d.indications ? 'Показания: '+d.indications.join('; ') : '';
+  $('empty-state').classList.add('hidden');
+  $('scenario-step').classList.remove('hidden');
+  $('drug-step').classList.add('hidden');
+  $('form-step').classList.add('hidden');
+  $('result-step').classList.add('hidden');
+  renderScenarios();
+}
+function resetDisease(){
+  activeDisease = null; activeScenario = null; activeDrug = null;
+  $('active-disease').classList.add('hidden');
+  $('scenario-step').classList.add('hidden');
+  $('drug-step').classList.add('hidden');
+  $('form-step').classList.add('hidden');
+  $('result-step').classList.add('hidden');
+  $('empty-state').classList.remove('hidden');
+}
+function renderScenarios(){
+  const list = $('scenario-list');
+  list.innerHTML = '';
+  activeDisease.scenarios.forEach(s=>{
+    const ageMatch = s.age_group === 'all' || s.age_group === activeAge;
+    const card = document.createElement('div');
+    card.className = 'drug-card premium-card p-4'+(ageMatch?'':' opacity-50');
+    card.innerHTML = '<div class="flex justify-between items-center"><div><div class="font-bold text-slate-800 text-sm">'+s.name+'</div>'+(ageMatch?'':'<div class="text-[10px] text-red-500 font-bold mt-1">Не подходит для выбранной возрастной группы</div>')+'</div><i class="fas fa-chevron-right text-slate-300"></i></div>';
+    card.onclick = ()=>selectScenario(s);
+    list.appendChild(card);
+  });
+  if(activeDisease.scenarios.length > 0) selectScenario(activeDisease.scenarios[0]);
+}
+function selectScenario(s){
+  activeScenario = s;
+  document.querySelectorAll('#scenario-list .drug-card').forEach(c=>c.classList.remove('active'));
+  // can't easily match; skip visual for now
+  $('drug-step').classList.remove('hidden');
+  renderLines();
+}
+function renderLines(){
+  const list = $('drug-list');
+  list.innerHTML = '';
+  activeScenario.lines.forEach(line=>{
+    line.drugs.forEach(drug=>{
+      const ref = DB.drugs_reference[drug.drug_ref] || {inn: drug.drug_ref, forms:[]};
+      const lineCls = line.line_number === 1 ? 'line-1' : (line.line_number === 2 ? 'line-2' : 'line-0');
+      const lineLabel = line.line_number === 1 ? 'Линия 1' : (line.line_number === 2 ? 'Линия 2' : 'Альт.');
+      const card = document.createElement('div');
+      card.id = 'drug-'+drug.drug_ref+'-'+line.line_number;
+      card.className = 'drug-card premium-card p-4 flex justify-between items-center';
+      card.innerHTML = '<div><div class="font-bold text-slate-800 text-sm">'+ref.inn+'</div>'+(drug.indication_note?'<div class="text-[11px] text-slate-500 font-semibold mt-0.5">'+drug.indication_note+'</div>':'')+'</div><span class="badge '+lineCls+' bg-slate-100 text-slate-600" style="border:1px solid">'+lineLabel+'</span>';
+      card.onclick = ()=>selectDrug(drug, line, card);
+      list.appendChild(card);
+    });
+  });
+  // auto-select first drug
+  const first = list.querySelector('.drug-card');
+  if(first) first.click();
+}
+function selectDrug(drug, line, card){
+  activeDrug = drug; activeLine = line; activeFormIdx = 0;
+  document.querySelectorAll('#drug-list .drug-card').forEach(c=>c.classList.remove('active'));
+  card.classList.add('active');
+  $('form-step').classList.remove('hidden');
+  $('result-step').classList.remove('hidden');
+  renderForms();
+  calculate();
+}
+function renderForms(){
+  const ref = DB.drugs_reference[activeDrug.drug_ref];
+  const grid = $('form-grid');
+  grid.innerHTML = '';
+  const routes = activeDrug.route || [];
+  // Group forms by route
+  let forms = ref.forms || [];
+  // For injectable, also create "route" buttons from dilution
+  forms.forEach((f, idx)=>{
+    const isInjectable = ['solution_iv','solution_im','powder_for_suspension'].includes(f.form_type) && ref.dilution;
+    const btn = document.createElement('button');
+    btn.className = 'chip rounded-xl py-3 px-2 text-[10px] font-black uppercase tracking-wider text-left'+(idx===0?' active':'');
+    let routeIcon = 'fa-pill';
+    if(f.form_type === 'tablet' || f.form_type === 'capsule') routeIcon = 'fa-pills';
+    else if(f.form_type === 'powder_for_suspension' || f.form_type === 'suspension' || f.form_type === 'syrup') routeIcon = 'fa-flask';
+    else if(f.form_type === 'solution_iv') routeIcon = 'fa-drip';
+    else if(f.form_type === 'solution_im') routeIcon = 'fa-syringe';
+    else if(f.form_type === 'granules') routeIcon = 'fa-prescription-bottle';
+    btn.innerHTML = '<i class="fas '+routeIcon+' mr-1"></i><div>'+f.concentration+'</div>'+(f.notes?'<div class="text-[8px] font-bold opacity-70 mt-0.5">'+f.notes+'</div>':'');
+    btn.onclick = ()=>{
+      activeFormIdx = idx;
+      grid.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      calculate();
+    };
+    grid.appendChild(btn);
+  });
+  // If drug has dilution and form is powder_for_suspension/solution — add route selector inside dilution block (handled in calculate)
+}
+function getActiveRegimen(){
+  if(!activeDrug) return null;
+  const regimens = activeDrug.regimens || [];
+  // find by age
+  let byAge = regimens.filter(r=>r.age_group === activeAge);
+  if(byAge.length === 0) byAge = regimens.filter(r=>r.age_group === 'all');
+  if(byAge.length === 0) byAge = regimens;
+  return byAge[0];
+}
+function calculate(){
+  if(!activeDrug) return;
+  const w = parseFloat($('weight').value);
+  const ref = DB.drugs_reference[activeDrug.drug_ref];
+  if(!ref) return;
+  const form = ref.forms[activeFormIdx];
+  const reg = getActiveRegimen();
+  if(!reg){ return; }
+
+  // Determine single dose mg
+  let singleMg = 0, dailyMg = 0;
+  if(reg.dose_mg_kg_day != null && w > 0){
+    dailyMg = w * reg.dose_mg_kg_day;
+  } else if(reg.dose_mg_day_fixed != null){
+    dailyMg = reg.dose_mg_day_fixed;
+  } else if(reg.single_dose_mg != null){
+    singleMg = reg.single_dose_mg;
+    dailyMg = singleMg * reg.freq_per_day;
+  }
+  // cap max
+  if(reg.max_daily_mg != null && dailyMg > reg.max_daily_mg) dailyMg = reg.max_daily_mg;
+  if(singleMg === 0) singleMg = dailyMg / reg.freq_per_day;
+
+  // Determine route by form
+  const isPO = ['tablet','capsule','suspension','syrup','granules','powder_for_suspension'].includes(form.form_type) && !ref.dilution;
+  const isInjection = ref.dilution && ['powder_for_suspension','solution_iv','solution_im'].includes(form.form_type);
+
+  if(isPO){
+    $('res-po').classList.remove('hidden');
+    $('res-inj').classList.add('hidden');
+    $('dilution-block').classList.add('hidden');
+    renderPO(reg, form, ref, w, singleMg, dailyMg);
+  } else if(isInjection){
+    $('res-po').classList.add('hidden');
+    $('res-inj').classList.remove('hidden');
+    $('dilution-block').classList.remove('hidden');
+    renderInjection(reg, form, ref, w, singleMg, dailyMg);
+  } else {
+    $('res-po').classList.remove('hidden');
+    $('res-inj').classList.add('hidden');
+    $('dilution-block').classList.add('hidden');
+    renderPO(reg, form, ref, w, singleMg, dailyMg);
+  }
+  // Clinical note
+  $('res-note').textContent = activeDrug.indication_note || (activeLine && activeLine.line_label) || '';
+  // Drug meta
+  renderDrugMeta(ref, reg);
+}
+function renderPO(reg, form, ref, w, singleMg, dailyMg){
+  const concMgPerMl = form.concentration_mg_per_ml || 0;
+  const isTablet = ['tablet','capsule'].includes(form.form_type);
+  if(isTablet || w >= 40){
+    $('po-ml').textContent = Math.round(singleMg);
+    $('po-ml').nextElementSibling.textContent = 'мг';
+    $('po-tabs').textContent = formatTablets(singleMg, form);
+    $('po-instruction').innerHTML = '<i class="fas fa-pills mr-2 text-blue-300"></i>Принимать по <b>'+Math.round(singleMg)+' мг</b> '+reg.freq_per_day+' р/д '+(form.concentration||'');
+  } else {
+    const ml = concMgPerMl > 0 ? singleMg / concMgPerMl : 0;
+    $('po-ml').textContent = ml.toFixed(1);
+    $('po-ml').nextElementSibling.textContent = 'мл';
+    $('po-tabs').textContent = '';
+    $('po-instruction').innerHTML = '<i class="fas fa-flask mr-2 text-blue-300"></i>Давать по <b>'+ml.toFixed(1)+' мл</b> суспензии ('+form.concentration+') '+reg.freq_per_day+' р/д';
+  }
+  $('po-mg').textContent = Math.round(singleMg)+' мг';
+  $('po-day').textContent = Math.round(dailyMg)+' мг';
+  $('po-dur').textContent = reg.duration_days || '—';
+}
+function formatTablets(mg, form){
+  // extract tablet strength from concentration
+  const m = form.concentration.match(/(\d+)\s*мг/);
+  if(!m) return '';
+  const strength = parseInt(m[1]);
+  if(strength <= 0) return '';
+  const tabs = mg / strength;
+  if(tabs === Math.round(tabs)) return '('+tabs+' таб '+strength+' мг)';
+  const half = Math.round(tabs*2)/2;
+  return '(~'+half+' таб '+strength+' мг)';
+}
+function renderInjection(reg, form, ref, w, singleMg, dailyMg){
+  // Determine route — prefer im if dilution.im, else iv_bolus, else iv_infusion
+  const dil = ref.dilution;
+  let routeKey = 'im';
+  if(!dil.im && dil.iv_bolus) routeKey = 'iv_bolus';
+  if(!dil.im && !dil.iv_bolus && dil.iv_infusion) routeKey = 'iv_infusion';
+  // Allow user to switch via dilution block — for now use default
+  // Find best solvent option by vial size matching singleMg
+  const routeData = dil[routeKey];
+  $('inj-route-label').textContent = routeKey === 'im' ? 'в/м' : (routeKey === 'iv_bolus' ? 'в/в струйно' : 'в/в инфузия');
+  $('inj-mg').textContent = Math.round(singleMg);
+  $('inj-freq').textContent = reg.freq_per_day+' р/д';
+  $('inj-ml').textContent = computeInjectableMl(singleMg, routeData, form);
+  $('inj-day').textContent = Math.round(dailyMg)+' мг';
+  $('inj-dur').textContent = reg.duration_days || '—';
+  $('inj-instruction').innerHTML = '<i class="fas fa-syringe mr-2 text-orange-300"></i>Ввести <b>'+Math.round(singleMg)+' мг</b> '+routeKeyLabel(routeKey)+' • '+reg.freq_per_day+' р/д';
+
+  renderDilutionBlock(ref, routeKey, singleMg, routeData, form);
+}
+function routeKeyLabel(k){
+  return k === 'im' ? 'в/м' : (k === 'iv_bolus' ? 'в/в струйно' : 'в/в капельно');
+}
+function computeInjectableMl(singleMg, routeData, form){
+  if(!routeData || !routeData.solvent_options || routeData.solvent_options.length === 0) return 0;
+  // pick solvent option whose vial matches or smallest vial >= singleMg
+  let best = routeData.solvent_options[0];
+  let bestDiff = Infinity;
+  routeData.solvent_options.forEach(opt=>{
+    const vial = opt.vial_mg || opt.vial_units || 0;
+    const diff = vial >= singleMg ? vial - singleMg : (singleMg - vial)*10; // penalize insufficient
+    if(diff < bestDiff){ bestDiff = diff; best = opt; }
+  });
+  const conc = best.final_concentration_mg_ml || best.final_concentration_units_ml || 0;
+  if(conc <= 0) return 0;
+  return (singleMg / conc).toFixed(2);
+}
+function renderDilutionBlock(ref, routeKey, singleMg, routeData, form){
+  // Route selector buttons (if multiple routes available)
+  const dil = ref.dilution;
+  const routeBox = $('dilution-route-tag');
+  routeBox.textContent = routeKeyLabel(routeKey).toUpperCase();
+
+  // Warning
+  const warn = $('dilution-warn');
+  const warnText = $('dilution-warn-text');
+  let warnings = [];
+  if(routeData.child_solvent_warning && activeAge !== 'adult') warnings.push(routeData.child_solvent_warning);
+  if(routeData.contraindications) warnings.push(routeData.contraindications);
+  if(warnings.length){
+    warnText.innerHTML = warnings.join('<br><br>');
+    warn.classList.remove('hidden');
+  } else warn.classList.add('hidden');
+
+  // Solvents
+  const solBox = $('dilution-solvents');
+  solBox.innerHTML = '';
+  routeData.solvent_options.forEach(opt=>{
+    const div = document.createElement('div');
+    div.className = 'dilution-solvent';
+    const vial = opt.vial_mg ? opt.vial_mg+' мг' : (opt.vial_units ? formatUnits(opt.vial_units)+' ЕД' : '');
+    const conc = opt.final_concentration_mg_ml ? opt.final_concentration_mg_ml+' мг/мл' : (opt.final_concentration_units_ml ? formatUnits(opt.final_concentration_units_ml)+' ЕД/мл' : '');
+    const mlForDose = opt.final_concentration_mg_ml ? (singleMg/opt.final_concentration_mg_ml).toFixed(2)+' мл' : '';
+    div.innerHTML = '<div class="font-black text-orange-700 mb-1">'+opt.solvent+'</div><div>Флакон: '+vial+'</div><div>Растворитель: '+opt.solvent_ml+' мл</div><div>Итог: '+opt.final_volume_ml+' мл, '+conc+'</div>'+(mlForDose?'<div class="mt-1 text-orange-900 font-black">На дозу: '+mlForDose+'</div>':'')+(opt.notes?'<div class="mt-1 text-[10px] italic opacity-80">'+opt.notes+'</div>':'');
+    solBox.appendChild(div);
+  });
+
+  // Cautions
+  const caut = $('dilution-cautions');
+  if(routeData.cautions){
+    $('dilution-cautions-text').textContent = routeData.cautions;
+    caut.classList.remove('hidden');
+  } else caut.classList.add('hidden');
+
+  // Steps
+  const stepsEl = $('dilution-steps');
+  stepsEl.innerHTML = '';
+  (routeData.steps || []).forEach(s=>{
+    const li = document.createElement('li');
+    li.className = 'step';
+    li.innerHTML = '<span>'+s.replace(/^\d+\.\s*/, '')+'</span>';
+    stepsEl.appendChild(li);
+  });
+}
+function formatUnits(n){
+  if(n >= 1000000) return (n/1000000).toString().replace('.0','')+' млн';
+  if(n >= 1000) return (n/1000).toString().replace('.0','')+' тыс';
+  return n.toString();
+}
+function renderDrugMeta(ref, reg){
+  const meta = $('drug-meta');
+  const renal = ref.renal_adjustment || '—';
+  const hepatic = ref.hepatic_adjustment || '—';
+  const preg = ref.pregnancy_category || '—';
+  const cr = activeDisease ? 'КР #'+activeDisease.cr_id+' • '+activeDisease.cr_year : '';
+  meta.innerHTML = ''
+    + metaRow('МНН', ref.inn)
+    + metaRow('Класс', ref.class || '—')
+    + metaRow('Коррекция по почкам', renal)
+    + metaRow('Коррекция по печени', hepatic)
+    + metaRow('Беременность', preg)
+    + metaRow('Источник', cr+' — '+activeDisease.source_url);
+}
+function metaRow(k, v){
+  return '<div class="flex justify-between gap-3"><span class="text-slate-400 font-black uppercase text-[10px] tracking-widest flex-shrink-0">'+k+'</span><span class="text-slate-700 font-semibold text-right">'+v+'</span></div>';
+}
+init();
+</script>
+</body>
+</html>

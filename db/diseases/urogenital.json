@@ -1,0 +1,836 @@
+{
+  "category": "Мочеполовые инфекции",
+  "recommendations": [
+    {
+      "id": "cystitis_female",
+      "mkb10": ["N30.0", "N30.9", "N39.0"],
+      "name": "Острый неосложнённый цистит у женщин",
+      "synonyms": ["цистит", "ИМП", "острый цистит"],
+      "cr_id": "10",
+      "cr_year": 2023,
+      "cr_updated": "2023-09-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/10",
+      "antibiotics_indicated": true,
+      "indications": ["Острый неосложнённый цистит у небеременных женщин репродуктивного возраста"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "cystitis_standard",
+          "name": "Стандартное лечение",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (эмпирическая)",
+              "drugs": [
+                {
+                  "drug_ref": "fosfomycin",
+                  "route": ["per_os"],
+                  "indication_note": "Однократный приём",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 3000,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "Однократно 3 г"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "nitrofurantoin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 200,
+                      "single_dose_mg": 100,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 2,
+                      "duration_days": "5",
+                      "duration_note": "5-дневный курс"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Альтернатива",
+              "drugs": [
+                {
+                  "drug_ref": "cefixime",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 400,
+                      "single_dose_mg": 400,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 1,
+                      "duration_days": "7",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pyelonephritis_adult",
+      "mkb10": ["N10", "N11", "N12", "N20.0"],
+      "name": "Острый пиелонефрит у взрослых (без обструкции)",
+      "synonyms": ["пиелонефрит", "ИМП осложнённая"],
+      "cr_id": "10",
+      "cr_year": 2023,
+      "cr_updated": "2023-09-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/10",
+      "antibiotics_indicated": true,
+      "indications": ["Острый необструктивный пиелонефрит лёгкого и среднетяжёлого течения"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "apn_mild",
+          "name": "Нетяжёлое течение (амбулаторно)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "cefixime",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 400,
+                      "single_dose_mg": 400,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": null
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "levofloxacin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "apn_severe",
+          "name": "Тяжёлое течение (стационар)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (в/в)",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv", "im"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "7-14",
+                      "duration_note": "Ступенчатая терапия с переходом на per_os при улучшении"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "ciprofloxacin",
+                  "route": ["iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ut_child",
+      "mkb10": ["N10", "N11", "N12", "N13", "N39.0"],
+      "name": "Инфекции мочевых путей у детей",
+      "synonyms": ["ИМП у детей", "пиелонефрит у детей", "цистит у детей"],
+      "cr_id": "262",
+      "cr_year": 2024,
+      "cr_updated": "2024-01-20",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/262",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённая ИМП у детей"],
+      "age_groups": ["child"],
+      "scenarios": [
+        {
+          "id": "ut_child_out",
+          "name": "Амбулаторное лечение (нетяжёлая ИМП)",
+          "age_group": "child",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "cefixime",
+                  "route": ["per_os"],
+                  "indication_note": "Препарат выбора per os",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 8,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 1,
+                      "duration_days": "7-14",
+                      "duration_note": "Пиелонефрит 10-14 дней, цистит 7 дней"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "amoxiclav",
+                  "route": ["per_os"],
+                  "indication_note": "При подтверждённой чувствительности",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 45,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": "По амоксициллину"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ut_child_in",
+          "name": "Стационарное лечение (тяжёлая ИМП, дети <3 мес, сепсис)",
+          "age_group": "child",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (в/в)",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv", "im"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 50,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 1,
+                      "duration_days": "7-14",
+                      "duration_note": "50-75 мг/кг/сут"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "cefotaxime",
+                  "route": ["iv", "im"],
+                  "indication_note": "Предпочтителен у новорождённых",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 150,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 3,
+                      "duration_days": "7-14",
+                      "duration_note": "У недоношенных и новорождённых режим зависит от гестационного и постнатального возраста"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "urolithiasis_infected",
+      "mkb10": ["N20.0", "N20.1", "N20.2", "N13.6"],
+      "name": "Мочекаменная болезнь с инфекцией / инфицированный камень",
+      "synonyms": ["МКБ", "уролитиаз"],
+      "cr_id": "189",
+      "cr_year": 2023,
+      "cr_updated": "2023-10-05",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/189",
+      "antibiotics_indicated": true,
+      "indications": ["Подозрение на инфицированный камень, предоперационная профилактика, послеоперационная терапия"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "urolithiasis_preop",
+          "name": "Предоперационная антибактериальная профилактика",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv", "im"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "2 г в/в за 30-60 мин до вмешательства"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "syphilis",
+      "mkb10": ["A51.0", "A51.1", "A51.2", "A51.3", "A51.4", "A51.5", "A52.0", "A52.1", "A52.7", "A53.0", "A53.9"],
+      "name": "Сифилис",
+      "synonyms": ["lues", "treponema pallidum"],
+      "cr_id": "298",
+      "cr_year": 2024,
+      "cr_updated": "2024-02-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "antibiotics_indicated": true,
+      "indications": ["Любая стадия сифилиса"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "syphilis_early",
+          "name": "Ранний сифилис (первичный, вторичный, ранний скрытый <1 года)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "benzathine_benzylpenicillin",
+                  "route": ["im"],
+                  "indication_note": "Препарат выбора",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2400000,
+                      "single_dose_mg": 2400000,
+                      "max_daily_mg": 2400000,
+                      "freq_per_day": 1,
+                      "duration_days": "1-3",
+                      "duration_note": "2.4 млн ЕД однократно; при вторичном свежем 2.4 млн ЕД × 2 с интервалом 7 дней"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии к пенициллину (небеременные)",
+              "drugs": [
+                {
+                  "drug_ref": "doxycycline",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 200,
+                      "single_dose_mg": 100,
+                      "max_daily_mg": 200,
+                      "freq_per_day": 2,
+                      "duration_days": "14",
+                      "duration_note": "100 мг 2 р/д 14 дней"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "syphilis_late",
+          "name": "Поздний скрытый сифилис (>1 года), третичный, неуточнённый",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "benzathine_benzylpenicillin",
+                  "route": ["im"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2400000,
+                      "single_dose_mg": 2400000,
+                      "max_daily_mg": 2400000,
+                      "freq_per_day": 1,
+                      "duration_days": "21",
+                      "duration_note": "2.4 млн ЕД 1 р/нед × 3 недели"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии (небеременные)",
+              "drugs": [
+                {
+                  "drug_ref": "doxycycline",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 200,
+                      "single_dose_mg": 100,
+                      "max_daily_mg": 200,
+                      "freq_per_day": 2,
+                      "duration_days": "28",
+                      "duration_note": "100 мг 2 р/д 28 дней"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "syphilis_neurosyphilis",
+          "name": "Нейросифилис",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "benzylpenicillin_na",
+                  "route": ["iv"],
+                  "indication_note": "Препарат выбора при нейросифилисе",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 24000000,
+                      "single_dose_mg": 4000000,
+                      "max_daily_mg": 24000000,
+                      "freq_per_day": 6,
+                      "duration_days": "10-14",
+                      "duration_note": "18-24 млн ЕД/сут в/в каждые 4 часа или непрерывно × 10-14 дней"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gonorrhea",
+      "mkb10": ["A54.0", "A54.1", "A54.2", "A54.3", "A54.4", "A54.5", "A54.6", "A54.8", "A54.9"],
+      "name": "Гонококковая инфекция",
+      "synonyms": ["гонорея", "Neisseria gonorrhoeae"],
+      "cr_id": "298",
+      "cr_year": 2024,
+      "cr_updated": "2024-02-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённая или клинически предполагаемая гонококковая инфекция"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "gonorrhea_urogenital",
+          "name": "Урогенитальная гонорея",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["im"],
+                  "indication_note": "Препарат выбора",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "500 мг в/м однократно"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Дополнительно (ко-инфекция с C.trachomatis)",
+              "drugs": [
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": "Ко-инфекция с хламидиями",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 1000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "1 г однократно"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chlamydia_urogenital",
+      "mkb10": ["A56.0", "A56.1", "A56.2", "A56.3", "A56.4", "A56.8"],
+      "name": "Урогенитальный хламидиоз",
+      "synonyms": ["Chlamydia trachomatis"],
+      "cr_id": "298",
+      "cr_year": 2024,
+      "cr_updated": "2024-02-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённая C.trachomatis-инфекция"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "chlamydia_uncomplicated",
+          "name": "Неосложнённый урогенитальный хламидиоз",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "doxycycline",
+                  "route": ["per_os"],
+                  "indication_note": "Препарат выбора",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 200,
+                      "single_dose_mg": 100,
+                      "max_daily_mg": 200,
+                      "freq_per_day": 2,
+                      "duration_days": "7",
+                      "duration_note": "100 мг 2 р/д 7 дней"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": "Альтернатива при беременности / непереносимости доксициклина",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 1000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "1 г однократно"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mycoplasma_genitalium",
+      "mkb10": ["A63.0", "N34.1", "N72"],
+      "name": "Mycoplasma genitalium-инфекция (уретрит, цервицит)",
+      "synonyms": ["M.genitalium", "микоплазма генитальная"],
+      "cr_id": "298",
+      "cr_year": 2024,
+      "cr_updated": "2024-02-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённая M.genitalium-инфекция"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "mg_first_line",
+          "name": "Первая линия (без известной резистентности к макролидам)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": "Расширенная схема для профилактики резистентности",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "5",
+                      "duration_note": "500 мг в 1-й день, затем 250 мг/сут × 4 дня (всего 1.5 г)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Вторая линия (неудача макролидов / резистентность)",
+              "drugs": [
+                {
+                  "drug_ref": "moxifloxacin",
+                  "route": ["per_os"],
+                  "indication_note": "При макролид-резистентной M.genitalium",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 400,
+                      "single_dose_mg": 400,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bacterial_vaginosis",
+      "mkb10": ["N76.0", "N89.0"],
+      "name": "Бактериальный вагиноз",
+      "synonyms": ["БВ", "гарднереллёз"],
+      "cr_id": "298",
+      "cr_year": 2024,
+      "cr_updated": "2024-02-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённый БВ (критерии Амселя)"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "bv_standard",
+          "name": "Стандартное лечение",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "metronidazole",
+                  "route": ["per_os", "topical"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "7",
+                      "duration_note": "500 мг 2 р/д 7 дней"
+                    },
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "2 г однократно (альтернативная схема)"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "clindamycin",
+                  "route": ["topical", "per_os"],
+                  "indication_note": "Вагинальный крем 2% на ночь",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 300,
+                      "single_dose_mg": 300,
+                      "max_daily_mg": 600,
+                      "freq_per_day": 2,
+                      "duration_days": "7",
+                      "duration_note": "300 мг per os 2 р/д 7 дней (или аппликационно 5 г 2% крема на ночь × 7 дней)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "postpartum_endometritis",
+      "mkb10": ["O85", "O86.0", "O86.2"],
+      "name": "Послеродовой эндометрит",
+      "synonyms": ["эндометрит после родов", "пуэрперальный сепсис"],
+      "cr_id": "195",
+      "cr_year": 2023,
+      "cr_updated": "2023-11-10",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/195",
+      "antibiotics_indicated": true,
+      "indications": ["Клинические признаки послеродового эндометрита"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "endometritis_pp",
+          "name": "Стандартная эмпирическая терапия",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "amoxiclav",
+                  "route": ["iv"],
+                  "indication_note": "Монотерапия или в комбинации",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-10",
+                      "duration_note": "До клинического улучшения + 24-48 часов"
+                    }
+                  ]
+                },
+                {
+                  "combo_ref": ["clindamycin", "gentamicin"],
+                  "route": ["iv"],
+                  "indication_note": "Комбинация для покрытия анаэробов и грамнегативной флоры",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1800,
+                      "single_dose_mg": 600,
+                      "max_daily_mg": 2700,
+                      "freq_per_day": 3,
+                      "duration_days": "7-10",
+                      "duration_note": "Клиндамицин 600-900 мг в/в 3 р/д + гентамицин 5 мг/кг 1 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

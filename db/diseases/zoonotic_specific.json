@@ -1,0 +1,774 @@
+{
+  "category": "Зоонозы / специфические",
+  "recommendations": [
+    {
+      "id": "lyme_disease",
+      "mkb10": ["A69.2", "A69.20", "A69.21", "A69.22", "A69.23", "A69.29"],
+      "name": "Болезнь Лайма (боррелиоз)",
+      "synonyms": ["боррелиоз", "Lyme", "Ixodes"],
+      "cr_id": "338",
+      "cr_year": 2023,
+      "cr_updated": "2023-05-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/338",
+      "antibiotics_indicated": true,
+      "indications": ["Мигрирующая эритема, ранний локализованный боррелиоз, диссеминированный, поздний"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "lyme_erythema_migrans",
+          "name": "Мигрирующая эритема (ранняя локализованная стадия)",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "doxycycline",
+                  "route": ["per_os"],
+                  "indication_note": "Препарат выбора у взрослых и детей ≥8 лет",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 200,
+                      "single_dose_mg": 100,
+                      "max_daily_mg": 200,
+                      "freq_per_day": 2,
+                      "duration_days": "14-21",
+                      "duration_note": "100 мг 2 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 4,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 200,
+                      "freq_per_day": 2,
+                      "duration_days": "14-21",
+                      "duration_note": "4 мг/кг/сут, макс 200 мг/сут"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "amoxicillin",
+                  "route": ["per_os"],
+                  "indication_note": "У детей <8 лет, беременных",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 3,
+                      "duration_days": "14-21",
+                      "duration_note": "500 мг 3 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 50,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 3,
+                      "duration_days": "14-21",
+                      "duration_note": "50 мг/кг/сут в 3 приёма"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv", "im"],
+                  "indication_note": "При диссеминированном/позднем боррелиозе, нейроборрелиозе",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "14-28",
+                      "duration_note": "2 г 1 р/д; при нейроборрелиозе 14-28 дней"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 75,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "14-28",
+                      "duration_note": "75-100 мг/кг/сут (макс 4 г)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "brucellosis",
+      "mkb10": ["A23.0", "A23.1", "A23.2", "A23.3", "A23.8", "A23.9"],
+      "name": "Бруцеллёз",
+      "synonyms": ["Brucella"],
+      "cr_id": "48",
+      "cr_year": 2023,
+      "cr_updated": "2023-06-01",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/48",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённый бруцеллёз"],
+      "age_groups": ["adult", "child"],
+      "scenarios": [
+        {
+          "id": "brucellosis_adult",
+          "name": "Взрослые",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "drugs": [
+                {
+                  "drug_ref": "doxycycline",
+                  "route": ["per_os"],
+                  "indication_note": "Доксициклин + рифампицин или доксициклин + стрептомицин/гентамицин",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 200,
+                      "single_dose_mg": 100,
+                      "max_daily_mg": 200,
+                      "freq_per_day": 2,
+                      "duration_days": "45",
+                      "duration_note": "100 мг 2 р/д × 6 недель"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "brucellosis_child",
+          "name": "Дети <8 лет",
+          "age_group": "child",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "drugs": [
+                {
+                  "drug_ref": "amoxicillin",
+                  "route": ["per_os"],
+                  "indication_note": "Комбинация с ко-тримоксазолом или аминогликозидом",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 50,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 3,
+                      "duration_days": "45",
+                      "duration_note": "Длительность зависит от формы"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "anthrax",
+      "mkb10": ["A22.0", "A22.1", "A22.2", "A22.3", "A22.7", "A22.8", "A22.9"],
+      "name": "Сибирская язва",
+      "synonyms": ["anthrax", "Bacillus anthracis"],
+      "cr_id": "20",
+      "cr_year": 2023,
+      "cr_updated": "2023-09-01",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/20",
+      "antibiotics_indicated": true,
+      "indications": ["Кожная, лёгочная, кишечная форма сибирской язвы"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "anthrax_cutaneous",
+          "name": "Кожная форма (естественное заражение)",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "amoxicillin",
+                  "route": ["per_os"],
+                  "indication_note": "После клинического ответа на ципрофлоксацин/доксициклин",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 3,
+                      "duration_days": "60",
+                      "duration_note": "Курс до 60 дней при риске аэрозольного заражения"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "ciprofloxacin",
+                  "route": ["per_os", "iv"],
+                  "indication_note": "Препарат выбора для начальной терапии",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "60",
+                      "duration_note": "500 мг 2 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "60",
+                      "duration_note": "10-15 мг/кг 2 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "anthrax_inhalational",
+          "name": "Лёгочная форма / системная",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "drugs": [
+                {
+                  "drug_ref": "ciprofloxacin",
+                  "route": ["iv"],
+                  "indication_note": "Комбинация: ципрофлоксацин + клиндамицин + рифампицин (или линезолид)",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1200,
+                      "single_dose_mg": 400,
+                      "max_daily_mg": 1600,
+                      "freq_per_day": 3,
+                      "duration_days": "60",
+                      "duration_note": "400 мг в/в 3 р/д"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "clindamycin",
+                  "route": ["iv"],
+                  "indication_note": "Компонент комбинации",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1800,
+                      "single_dose_mg": 600,
+                      "max_daily_mg": 2700,
+                      "freq_per_day": 3,
+                      "duration_days": "60",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "diphtheria",
+      "mkb10": ["A36.0", "A36.1", "A36.2", "A36.3", "A36.7", "A36.8", "A36.9"],
+      "name": "Дифтерия",
+      "synonyms": ["Corynebacterium diphtheriae"],
+      "cr_id": "97",
+      "cr_year": 2023,
+      "cr_updated": "2023-08-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/97",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённая или клинически предполагаемая дифтерия"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "diphtheria_treatment",
+          "name": "Лечение дифтерии (одновременно с противодифтерийной сывороткой)",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "benzylpenicillin_na",
+                  "route": ["iv", "im"],
+                  "indication_note": "Препарат выбора",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000000,
+                      "single_dose_mg": 1000000,
+                      "max_daily_mg": 12000000,
+                      "freq_per_day": 6,
+                      "duration_days": "5-10",
+                      "duration_note": "При переносе на per_os — феноксиметилпенициллин или эритромицин"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 150000,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 6,
+                      "duration_days": "5-10",
+                      "duration_note": "100 000-150 000 ЕД/кг/сут"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии",
+              "drugs": [
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": "Макролид при непереносимости пенициллинов",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "5",
+                      "duration_note": null
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 12,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "5",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "diphtheria_carrier",
+          "name": "Санация носителей",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "3-5",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pertussis",
+      "mkb10": ["A37.0", "A37.1", "A37.8", "A37.9"],
+      "name": "Коклюш",
+      "synonyms": ["Bordetella pertussis", "whooping cough"],
+      "cr_id": "243",
+      "cr_year": 2023,
+      "cr_updated": "2023-07-25",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/243",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённый коклюш (для эрадикации и ограничения передачи)"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "pertussis_treatment",
+          "name": "Лечение (катаральный период, до 21 дня от начала кашля)",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": "Макролид выбора",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "5",
+                      "duration_note": "500 мг в 1-й день, 250 мг/сут × 4 дня (всего 1.5 г)"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 10,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "5",
+                      "duration_note": "10 мг/кг/сут × 5 дней"
+                    },
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 10,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 1,
+                      "duration_days": "5",
+                      "duration_note": "У новорождённых предпочтителен азитромицин (риск ИПС при эритромицине)"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "clarithromycin",
+                  "route": ["per_os"],
+                  "indication_note": "Альтернатива",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1000,
+                      "freq_per_day": 2,
+                      "duration_days": "7",
+                      "duration_note": null
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 15,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1000,
+                      "freq_per_day": 2,
+                      "duration_days": "7",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "salmonellosis",
+      "mkb10": ["A02.0", "A02.1", "A02.2", "A02.8", "A02.9"],
+      "name": "Сальмонеллёз (нетифозный)",
+      "synonyms": ["Salmonella enteritidis", "сальмонеллёз"],
+      "cr_id": "47",
+      "cr_year": 2023,
+      "cr_updated": "2023-10-10",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/47",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Тяжёлая форма (инвазивная диарея, лихорадка, кровь в стуле)",
+        "Дети <3 мес",
+        "Иммунокомпрометированные пациенты",
+        "Бактериемия / внекишечные проявления"
+      ],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "salmonellosis_severe",
+          "name": "Тяжёлая / инвазивная форма",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv", "im"],
+                  "indication_note": "Препарат выбора при тяжёлой форме",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "5-7",
+                      "duration_note": "При бактериемии 10-14 дней"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 50,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 1,
+                      "duration_days": "5-7",
+                      "duration_note": "50-75 мг/кг/сут"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Альтернатива",
+              "drugs": [
+                {
+                  "drug_ref": "ciprofloxacin",
+                  "route": ["per_os", "iv"],
+                  "indication_note": "При подтверждённой чувствительности (взрослые)",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "5-7",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shigellosis",
+      "mkb10": ["A03.0", "A03.1", "A03.2", "A03.3", "A03.8", "A03.9"],
+      "name": "Шигеллёз (бактериальная дизентерия)",
+      "synonyms": ["дизентерия", "Shigella"],
+      "cr_id": "47",
+      "cr_year": 2023,
+      "cr_updated": "2023-10-10",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/47",
+      "antibiotics_indicated": true,
+      "indications": ["Тяжёлая форма, кровавая диарея, лихорадка, иммунокомпрометированные пациенты"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "shigellosis_treatment",
+          "name": "Эмпирическая терапия тяжёлой формы",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "cefixime",
+                  "route": ["per_os"],
+                  "indication_note": "У детей и при чувствительности",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 400,
+                      "single_dose_mg": 400,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 1,
+                      "duration_days": "5",
+                      "duration_note": null
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 8,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 1,
+                      "duration_days": "5",
+                      "duration_note": null
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "ciprofloxacin",
+                  "route": ["per_os", "iv"],
+                  "indication_note": "При подтверждённой чувствительности (взрослые)",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "3-5",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "typhoid_fever",
+      "mkb10": ["A01.0", "A01.1", "A01.2", "A01.3", "A01.4"],
+      "name": "Брюшной тиф и паратифы",
+      "synonyms": ["Salmonella Typhi", "паратиф"],
+      "cr_id": "47",
+      "cr_year": 2023,
+      "cr_updated": "2023-10-10",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/47",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённый брюшной тиф или паратиф"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "typhoid_treatment",
+          "name": "Лечение",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv", "im"],
+                  "indication_note": "Препарат выбора при множественной резистентности",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "7-14",
+                      "duration_note": null
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 75,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "7-14",
+                      "duration_note": "75-100 мг/кг/сут"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "cefixime",
+                  "route": ["per_os"],
+                  "indication_note": "Ступенчатая терапия или лёгкое течение",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 800,
+                      "single_dose_mg": 400,
+                      "max_daily_mg": 800,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Альтернатива",
+              "drugs": [
+                {
+                  "drug_ref": "ciprofloxacin",
+                  "route": ["per_os", "iv"],
+                  "indication_note": "При подтверждённой чувствительности",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

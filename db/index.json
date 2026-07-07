@@ -1,0 +1,614 @@
+{
+  "meta": {
+    "version": "0.1.0-draft",
+    "generated_at": "2026-07-07",
+    "sources_base": "Рубрикатор клинических рекомендаций МЗ РФ (cr.minzdrav.gov.ru)",
+    "verification_status": "draft",
+    "warning": "ЧЕРНОВИК. Требует верификации по первоисточникам КР МЗ РФ перед клиническим применением. null = данные не подтверждены.",
+    "schema_version": "1.0",
+    "load_order": "Загрузить все *.json из diseases/ и объединить в массив recommendations"
+  },
+  "drugs_reference": {
+    "_note": "Общий справочник препаратов: коррекция по почкам/печени, формы выпуска. Используется всеми нозологиями.",
+    "amoxicillin": {
+      "inn": "Амоксициллин",
+      "class": "Пенициллины широкого спектра",
+      "renal_adjustment": "СКФ<30: увеличить интервал или снизить дозу",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "forms": [
+        {"form_type": "tablet", "concentration": "125 мг", "notes": "Солютаб, диспергируемая"},
+        {"form_type": "tablet", "concentration": "250 мг", "notes": "Солютаб"},
+        {"form_type": "tablet", "concentration": "500 мг", "notes": null},
+        {"form_type": "tablet", "concentration": "1000 мг", "notes": "Солютаб"},
+        {"form_type": "powder_for_suspension", "concentration": "125 мг/5 мл", "concentration_mg_per_ml": 25, "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "250 мг/5 мл", "concentration_mg_per_ml": 50, "notes": null}
+      ]
+    },
+    "amoxiclav": {
+      "inn": "Амоксициллин + Клавулановая кислота",
+      "class": "Ингибиторозащищённые пенициллины",
+      "renal_adjustment": "СКФ<30: коррекция дозы",
+      "hepatic_adjustment": "С осторожностью при печёночной недостаточности (риск холестаза)",
+      "pregnancy_category": "Разрешён",
+      "forms": [
+        {"form_type": "tablet", "concentration": "875+125 мг", "notes": "Соотношение 7:1, prefer 2 р/д"},
+        {"form_type": "tablet", "concentration": "500+125 мг", "notes": "Соотношение 4:1, риск диареи выше"},
+        {"form_type": "powder_for_suspension", "concentration": "125+31.25 мг/5 мл (4:1)", "concentration_mg_per_ml": 25, "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "250+62.5 мг/5 мл (4:1)", "concentration_mg_per_ml": 50, "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "400+57 мг/5 мл (7:1)", "concentration_mg_per_ml": 80, "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "600+42.9 мг/5 мл (14:1 ES)", "concentration_mg_per_ml": 120, "notes": "Высокая доза амоксициллина, низкая клавуланата — для педиатрии"},
+        {"form_type": "powder_for_suspension", "concentration": "1000+200 мг флакон", "notes": "IV"}
+      ],
+      "dilution": {
+        "iv_bolus": {
+          "solvent_options": [
+            {"solvent": "Вода для инъекций", "vial_mg": 1000, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_mg_ml": 100, "notes": "По амоксициллину"},
+            {"solvent": "0.9% NaCl", "vial_mg": 1000, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_mg_ml": 100, "notes": null}
+          ],
+          "administration_time_min": 3,
+          "child_solvent_warning": "Детям — вода для инъекций или 0.9% NaCl. БЕЗ лидокаина.",
+          "steps": [
+            "1. Развести 1000+200 мг флакон в 10 мл воды для инъекций.",
+            "2. Ввести в/в медленно за 3-5 минут."
+          ]
+        },
+        "iv_infusion": {
+          "solvent_options": [
+            {"solvent": "0.9% NaCl", "vial_mg": 1000, "solvent_ml": 50.0, "final_volume_ml": 50.0, "final_concentration_mg_ml": 20, "notes": null},
+            {"solvent": "0.9% NaCl", "vial_mg": 1000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 10, "notes": "Детям — больший объём"}
+          ],
+          "infusion_time_min": 30,
+          "cautions": "Не смешивать с глюкозой (клавулановая кислота нестабильна в глюкозе), аминогликозидами (инактивация).",
+          "steps": [
+            "1. Развести в 0.9% NaCl (50-100 мл на 1000 мг).",
+            "2. Ввести в/в капельно за 30 минут.",
+            "3. Раствор стабилен 3 часа при комнатной температуре."
+          ]
+        }
+      }
+    },
+    "phenoxymethylpenicillin": {
+      "inn": "Феноксиметилпенициллин",
+      "class": "Пенициллины",
+      "renal_adjustment": null,
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "age_restriction_min": "3 мес",
+      "forms": [
+        {"form_type": "tablet", "concentration": "500 мг", "notes": null},
+        {"form_type": "suspension", "concentration": "250 мг/5 мл", "concentration_mg_per_ml": 50, "notes": null}
+      ]
+    },
+    "benzathine_benzylpenicillin": {
+      "inn": "Бензатин бензилпенициллин",
+      "class": "Пенициллины (депо)",
+      "renal_adjustment": null,
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "forms": [
+        {"form_type": "powder_for_suspension", "concentration": "1.2 млн ЕД флакон", "notes": "Бициллин-1"},
+        {"form_type": "powder_for_suspension", "concentration": "2.4 млн ЕД флакон", "notes": "Ретарпен/Экстенциллин"}
+      ]
+    },
+    "benzylpenicillin_na": {
+      "inn": "Бензилпенициллин натриевая соль",
+      "class": "Пенициллины (природные)",
+      "renal_adjustment": "СКФ<50: коррекция дозы",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "forms": [
+        {"form_type": "powder_for_suspension", "concentration": "1 млн ЕД флакон", "notes": null}
+      ],
+      "dilution": {
+        "iv_bolus": {
+          "solvent_options": [
+            {"solvent": "Вода для инъекций", "vial_units": 1000000, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_units_ml": 100000, "notes": null},
+            {"solvent": "0.9% NaCl", "vial_units": 1000000, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_units_ml": 100000, "notes": null}
+          ],
+          "administration_time_min": 3,
+          "child_solvent_warning": "Детям разводить в воде для инъекций или 0.9% NaCl. НЕ использовать лидокаин.",
+          "steps": [
+            "1. Развести 1 млн ЕД в 10 мл воды для инъекций или 0.9% NaCl.",
+            "2. Ввести в/в медленно за 3-5 минут.",
+            "3. При менингите — короткая инфузия (15-30 мин) или непрерывно."
+          ]
+        },
+        "iv_infusion": {
+          "solvent_options": [
+            {"solvent": "0.9% NaCl", "vial_units": 5000000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_units_ml": 50000, "notes": "Непрерывная или интермиттирующая инфузия"},
+            {"solvent": "5% глюкоза", "vial_units": 5000000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_units_ml": 50000, "notes": null}
+          ],
+          "infusion_time_min": 15,
+          "cautions": "Натриевая соль содержит ~2 ммоль Na+/1 млн ЕД — учитывать при натриевой диете. Не вводить в/м лидокаин.",
+          "steps": [
+            "1. Развести в 0.9% NaCl или 5% глюкозе.",
+            "2. Ввести в/в капельно за 15-30 минут или непрерывно.",
+            "3. Раствор стабилен 24 часа при комнатной температуре."
+          ]
+        },
+        "im": {
+          "solvent_options": [
+            {"solvent": "Вода для инъекций", "vial_units": 1000000, "solvent_ml": 5.0, "final_volume_ml": 5.0, "final_concentration_units_ml": 200000, "notes": "В/м болезненный, без лидокаина"}
+          ],
+          "child_solvent_warning": "В/м детям только при невозможности в/в. Без лидокаина.",
+          "steps": [
+            "1. Развести в воде для инъекций (5 мл на 1 млн ЕД).",
+            "2. Ввести глубоко в/м.",
+            "3. Инъекция болезненная."
+          ]
+        }
+      }
+    },
+    "cefixime": {
+      "inn": "Цефиксим",
+      "class": "Цефалоспорины III поколения (per os)",
+      "renal_adjustment": "СКФ<20: коррекция дозы",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "age_restriction_min": "6 мес",
+      "forms": [
+        {"form_type": "capsule", "concentration": "400 мг", "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "100 мг/5 мл", "concentration_mg_per_ml": 20, "notes": null}
+      ]
+    },
+    "ceftriaxone": {
+      "inn": "Цефтриаксон",
+      "class": "Цефалоспорины III поколения (парентеральные)",
+      "renal_adjustment": "СКФ<10: коррекция дозы",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "age_restriction_max_neonate_jaundice": "Противопоказан новорождённым с гипербилирубинемией; недоношенным ≤41 нед (гест.+постнат.) — противопоказан в/м с Ca-содержащими р-рами",
+      "forms": [
+        {"form_type": "powder_for_suspension", "concentration": "500 мг флакон", "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "1000 мг флакон", "notes": null}
+      ],
+      "dilution": {
+        "_note": "Правила разведения по КР МЗ РФ + Инструкции ГРЛС. В/м — ТОЛЬКО 1% лидокаин у детей; 2% лидокаин противопоказан детям.",
+        "im": {
+          "solvent_options": [
+            {"solvent": "1% лидокаин", "vial_mg": 500, "solvent_ml": 1.7, "final_volume_ml": 2.0, "final_concentration_mg_ml": 250, "notes": "Стандарт для детей и взрослых"},
+            {"solvent": "1% лидокаин", "vial_mg": 1000, "solvent_ml": 3.5, "final_volume_ml": 4.0, "final_concentration_mg_ml": 250, "notes": "Стандарт для детей и взрослых"},
+            {"solvent": "1% лидокаин", "vial_mg": 2000, "solvent_ml": 7.0, "final_volume_ml": 8.0, "final_concentration_mg_ml": 250, "notes": null},
+            {"solvent": "Вода для инъекций", "vial_mg": 1000, "solvent_ml": 3.5, "final_volume_ml": 4.0, "final_concentration_mg_ml": 250, "notes": "При аллергии на лидокаин (более болезненно)"}
+          ],
+          "concentration_standard_mg_ml": 250,
+          "max_per_injection_site_ml": 4.0,
+          "max_per_injection_site_ml_child": 2.0,
+          "child_solvent_warning": "У детей до 12 лет использовать ТОЛЬКО 1% лидокаин. 2% лидокаин противопоказан (риск сердечно-сосудистых осложнений).",
+          "contraindications": "В/м противопоказан новорождённым; недоношенным; при аллергии на лидокаин",
+          "injection_site": "В/м глубоко в ягодичную мышцу (квадрантно-наружный верхний). Не более 4 мл в одну точку (детям — не более 2 мл).",
+          "steps": [
+            "1. Вскрыть флакон с порошком цефтриаксона (500 мг / 1000 мг / 2000 мг).",
+            "2. Набрать в шприц 1% лидокаин: 3.5 мл на флакон 1000 мг (1.7 мл на 500 мг, 7.0 мл на 2000 мг).",
+            "3. Ввести растворитель во флакон, проколов резиновую пробку иглой.",
+            "4. Осторожно встряхнуть до полного растворения порошка (1-2 мин).",
+            "5. Набрать готовый раствор обратно в шприц.",
+            "6. Заменить иглу на свежую (для в/м инъекции).",
+            "7. Ввести глубоко в/м в верхний наружный квадрант ягодичной мышцы.",
+            "8. Готовый раствор стабилен 6 часов при комнатной температуре, 24 часа в холодильнике (2-8°C)."
+          ]
+        },
+        "iv_bolus": {
+          "solvent_options": [
+            {"solvent": "Вода для инъекций", "vial_mg": 1000, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_mg_ml": 100, "notes": null},
+            {"solvent": "0.9% NaCl", "vial_mg": 1000, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_mg_ml": 100, "notes": null},
+            {"solvent": "Вода для инъекций", "vial_mg": 2000, "solvent_ml": 20.0, "final_volume_ml": 20.0, "final_concentration_mg_ml": 100, "notes": null}
+          ],
+          "concentration_standard_mg_ml": 100,
+          "administration_time_min": 5,
+          "administration_time_min_child": 5,
+          "max_concentration_mg_ml": 100,
+          "steps": [
+            "1. Развести порошок водой для инъекций или 0.9% NaCl: 10 мл на 1000 мг.",
+            "2. Полностью растворить (1-2 мин).",
+            "3. Ввести в/в медленно за 5 минут (не более 100 мг/мл).",
+            "4. Готовый раствор стабилен 6 часов при комнатной температуре."
+          ]
+        },
+        "iv_infusion": {
+          "solvent_options": [
+            {"solvent": "0.9% NaCl", "vial_mg": 2000, "solvent_ml": 40.0, "final_volume_ml": 40.0, "final_concentration_mg_ml": 50, "notes": null},
+            {"solvent": "0.9% NaCl", "vial_mg": 2000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 20, "notes": "Детям — больший объём для безопасной инфузии"},
+            {"solvent": "5% глюкоза", "vial_mg": 2000, "solvent_ml": 40.0, "final_volume_ml": 40.0, "final_concentration_mg_ml": 50, "notes": null}
+          ],
+          "concentration_range_mg_ml": "20-50",
+          "max_concentration_mg_ml": 50,
+          "infusion_time_min": 30,
+          "infusion_time_min_child": 30,
+          "cautions": "НЕ смешивать с Ca-содержащими растворами (раствор Рингера, кальция глюконат) — опасные преципитаты. Противопоказано новорождённым одновременно с препаратами Ca.",
+          "steps": [
+            "1. Развести порошок 0.9% NaCl или 5% глюкозой до концентрации 20-50 мг/мл.",
+            "2. Для детей объём растворителя 40-100 мл (зависит от веса и возраста).",
+            "3. Ввести в/в капельно за 30 минут (не быстрее).",
+            "4. Готовый раствор стабилен 6 часов при комнатной температуре, 24 часа в холодильнике."
+          ]
+        }
+      }
+    },
+    "cefotaxime": {
+      "inn": "Цефотаксим",
+      "class": "Цефалоспорины III поколения (парентеральные)",
+      "renal_adjustment": "Коррекция при тяжёлой ХБП",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "forms": [
+        {"form_type": "powder_for_suspension", "concentration": "500 мг флакон", "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "1000 мг флакон", "notes": null}
+      ],
+      "dilution": {
+        "im": {
+          "solvent_options": [
+            {"solvent": "1% лидокаин", "vial_mg": 1000, "solvent_ml": 4.0, "final_volume_ml": 4.0, "final_concentration_mg_ml": 250, "notes": null},
+            {"solvent": "Вода для инъекций", "vial_mg": 1000, "solvent_ml": 4.0, "final_volume_ml": 4.0, "final_concentration_mg_ml": 250, "notes": "При аллергии на лидокаин"}
+          ],
+          "concentration_standard_mg_ml": 250,
+          "max_per_injection_site_ml": 4.0,
+          "child_solvent_warning": "Детям — 1% лидокаин (не 2%).",
+          "injection_site": "В/м глубоко в ягодичную мышцу.",
+          "steps": [
+            "1. Ввести 4 мл 1% лидокаина во флакон 1000 мг.",
+            "2. Встряхнуть до растворения.",
+            "3. Ввести глубоко в/м."
+          ]
+        },
+        "iv_bolus": {
+          "solvent_options": [
+            {"solvent": "Вода для инъекций", "vial_mg": 1000, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_mg_ml": 100, "notes": null},
+            {"solvent": "0.9% NaCl", "vial_mg": 1000, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_mg_ml": 100, "notes": null}
+          ],
+          "concentration_standard_mg_ml": 100,
+          "administration_time_min": 5,
+          "steps": [
+            "1. Развести 10 мл воды для инъекций / 0.9% NaCl на 1000 мг.",
+            "2. Ввести в/в медленно за 5 минут."
+          ]
+        },
+        "iv_infusion": {
+          "solvent_options": [
+            {"solvent": "0.9% NaCl", "vial_mg": 2000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 20, "notes": null},
+            {"solvent": "5% глюкоза", "vial_mg": 2000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 20, "notes": null}
+          ],
+          "concentration_range_mg_ml": "20-40",
+          "infusion_time_min": 30,
+          "steps": [
+            "1. Развести до концентрации 20-40 мг/мл в 0.9% NaCl или 5% глюкозе.",
+            "2. Ввести в/в капельно за 30 минут."
+          ]
+        }
+      }
+    },
+    "cefdinir": {
+      "inn": "Цефдинир",
+      "class": "Цефалоспорины III поколения (per os)",
+      "renal_adjustment": "СКФ<30: коррекция дозы",
+      "hepatic_adjustment": null,
+      "pregnancy_category": null,
+      "age_restriction_min": "6 мес",
+      "forms": [
+        {"form_type": "powder_for_suspension", "concentration": "125 мг/5 мл", "concentration_mg_per_ml": 25, "notes": null}
+      ]
+    },
+    "cefazolin": {
+      "inn": "Цефазолин",
+      "class": "Цефалоспорины I поколения",
+      "renal_adjustment": "СКФ<40: коррекция дозы",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "age_restriction_min": "1 мес",
+      "forms": [
+        {"form_type": "powder_for_suspension", "concentration": "1000 мг флакон", "notes": null}
+      ],
+      "dilution": {
+        "im": {
+          "solvent_options": [
+            {"solvent": "1% лидокаин", "vial_mg": 1000, "solvent_ml": 4.0, "final_volume_ml": 4.0, "final_concentration_mg_ml": 250, "notes": null}
+          ],
+          "concentration_standard_mg_ml": 250,
+          "child_solvent_warning": "Детям — 1% лидокаин.",
+          "steps": [
+            "1. 4 мл 1% лидокаина на флакон 1000 мг.",
+            "2. Встряхнуть до растворения.",
+            "3. Ввести глубоко в/м."
+          ]
+        },
+        "iv_bolus": {
+          "solvent_options": [
+            {"solvent": "Вода для инъекций", "vial_mg": 1000, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_mg_ml": 100, "notes": null}
+          ],
+          "concentration_standard_mg_ml": 100,
+          "administration_time_min": 5,
+          "steps": [
+            "1. 10 мл воды для инъекций на 1000 мг.",
+            "2. Ввести в/в медленно за 5 минут."
+          ]
+        },
+        "iv_infusion": {
+          "solvent_options": [
+            {"solvent": "0.9% NaCl", "vial_mg": 1000, "solvent_ml": 50.0, "final_volume_ml": 50.0, "final_concentration_mg_ml": 20, "notes": null},
+            {"solvent": "5% глюкоза", "vial_mg": 1000, "solvent_ml": 50.0, "final_volume_ml": 50.0, "final_concentration_mg_ml": 20, "notes": null}
+          ],
+          "infusion_time_min": 30,
+          "steps": [
+            "1. Развести до 20 мг/мл.",
+            "2. Ввести в/в капельно за 30 минут."
+          ]
+        }
+      }
+    },
+    "azithromycin": {
+      "inn": "Азитромицин",
+      "class": "Макролиды (азалиды)",
+      "renal_adjustment": "С осторожностью при СКФ<40",
+      "hepatic_adjustment": "Противопоказан при тяжёлой печёночной недостаточности",
+      "pregnancy_category": "С осторожностью",
+      "age_restriction_min": "6 мес",
+      "forms": [
+        {"form_type": "tablet", "concentration": "250 мг", "notes": null},
+        {"form_type": "tablet", "concentration": "500 мг", "notes": null},
+        {"form_type": "capsule", "concentration": "250 мг", "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "100 мг/5 мл", "concentration_mg_per_ml": 20, "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "200 мг/5 мл", "concentration_mg_per_ml": 40, "notes": "Форте"}
+      ]
+    },
+    "clarithromycin": {
+      "inn": "Кларитромицин",
+      "class": "Макролиды",
+      "renal_adjustment": "СКФ<30: коррекция дозы",
+      "hepatic_adjustment": "Противопоказан при тяжёлой печёночной недостаточности",
+      "pregnancy_category": "Противопоказан",
+      "age_restriction_min": "6 мес",
+      "forms": [
+        {"form_type": "tablet", "concentration": "250 мг", "notes": null},
+        {"form_type": "tablet", "concentration": "500 мг", "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "125 мг/5 мл", "concentration_mg_per_ml": 25, "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "250 мг/5 мл", "concentration_mg_per_ml": 50, "notes": null}
+      ]
+    },
+    "josamycin": {
+      "inn": "Джозамицин",
+      "class": "Макролиды (16-членные)",
+      "renal_adjustment": null,
+      "hepatic_adjustment": "Противопоказан при тяжёлой печёночной недостаточности",
+      "pregnancy_category": "Разрешён",
+      "forms": [
+        {"form_type": "tablet", "concentration": "250 мг", "notes": "Солютаб, диспергируемая"},
+        {"form_type": "tablet", "concentration": "500 мг", "notes": "Солютаб"},
+        {"form_type": "tablet", "concentration": "1000 мг", "notes": "Солютаб"}
+      ]
+    },
+    "doxycycline": {
+      "inn": "Доксициклин",
+      "class": "Тетрациклины",
+      "renal_adjustment": "Не требуется",
+      "hepatic_adjustment": "С осторожностью при печёночной недостаточности",
+      "pregnancy_category": "Противопоказан",
+      "age_restriction_min": "8 лет",
+      "forms": [
+        {"form_type": "tablet", "concentration": "100 мг", "notes": "Солютаб, диспергируемая"}
+      ]
+    },
+    "levofloxacin": {
+      "inn": "Левофлоксацин",
+      "class": "Дыхательные фторхинолоны",
+      "renal_adjustment": "СКФ<50: коррекция дозы",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Противопоказан",
+      "age_restriction_min": "18 лет",
+      "forms": [
+        {"form_type": "tablet", "concentration": "250 мг", "notes": null},
+        {"form_type": "tablet", "concentration": "500 мг", "notes": null},
+        {"form_type": "tablet", "concentration": "750 мг", "notes": null},
+        {"form_type": "solution_iv", "concentration": "500 мг/100 мл", "concentration_mg_per_ml": 5, "notes": null},
+        {"form_type": "solution_iv", "concentration": "750 мг/150 мл", "concentration_mg_per_ml": 5, "notes": null}
+      ]
+    },
+    "moxifloxacin": {
+      "inn": "Моксифлоксацин",
+      "class": "Дыхательные фторхинолоны",
+      "renal_adjustment": "Не требуется",
+      "hepatic_adjustment": "Противопоказан при тяжёлой печёночной недостаточности",
+      "pregnancy_category": "Противопоказан",
+      "age_restriction_min": "18 лет",
+      "forms": [
+        {"form_type": "tablet", "concentration": "400 мг", "notes": null},
+        {"form_type": "solution_iv", "concentration": "400 мг/250 мл", "concentration_mg_per_ml": 1.6, "notes": null}
+      ]
+    },
+    "ciprofloxacin": {
+      "inn": "Ципрофлоксацин",
+      "class": "Фторхинолоны",
+      "renal_adjustment": "СКФ<30: коррекция дозы",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Противопоказан",
+      "age_restriction_min": "18 лет",
+      "forms": [
+        {"form_type": "tablet", "concentration": "500 мг", "notes": null},
+        {"form_type": "solution_iv", "concentration": "200 мг/100 мл", "concentration_mg_per_ml": 2, "notes": null}
+      ]
+    },
+    "fosfomycin": {
+      "inn": "Фосфомицина трометамол",
+      "class": "Прочие",
+      "renal_adjustment": "СКФ<10: коррекция",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "age_restriction_min": "5 лет",
+      "forms": [
+        {"form_type": "granules", "concentration": "3000 мг пакет", "notes": null},
+        {"form_type": "granules", "concentration": "2000 мг пакет", "notes": "Педиатрическая"}
+      ]
+    },
+    "nitrofurantoin": {
+      "inn": "Нитрофурантоин",
+      "class": "Нитрофураны",
+      "renal_adjustment": "Противопоказан при СКФ<30",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Противопоказан в III триместре",
+      "age_restriction_min": "1 мес",
+      "forms": [
+        {"form_type": "tablet", "concentration": "100 мг", "notes": null}
+      ]
+    },
+    "metronidazole": {
+      "inn": "Метронидазол",
+      "class": "Нитроимидазолы",
+      "renal_adjustment": null,
+      "hepatic_adjustment": "С осторожностью при печёночной недостаточности",
+      "pregnancy_category": "Разрешён во II-III триместрах",
+      "forms": [
+        {"form_type": "tablet", "concentration": "250 мг", "notes": null},
+        {"form_type": "tablet", "concentration": "500 мг", "notes": null},
+        {"form_type": "solution_iv", "concentration": "500 мг/100 мл", "concentration_mg_per_ml": 5, "notes": null}
+      ]
+    },
+    "clindamycin": {
+      "inn": "Клиндамицин",
+      "class": "Линкозамиды",
+      "renal_adjustment": null,
+      "hepatic_adjustment": "С осторожностью при печёночной недостаточности",
+      "pregnancy_category": "С осторожностью",
+      "forms": [
+        {"form_type": "capsule", "concentration": "150 мг", "notes": null},
+        {"form_type": "capsule", "concentration": "300 мг", "notes": null},
+        {"form_type": "solution_iv", "concentration": "300 мг/2 мл", "concentration_mg_per_ml": 150, "notes": null},
+        {"form_type": "topical", "concentration": "2% крем", "concentration_mg_per_ml": 20, "notes": "Вагинальный"}
+      ]
+    },
+    "meropenem": {
+      "inn": "Меропенем",
+      "class": "Карбапенемы",
+      "renal_adjustment": "СКФ<50: коррекция дозы",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "age_restriction_min": "3 мес",
+      "forms": [
+        {"form_type": "powder_for_suspension", "concentration": "500 мг флакон", "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "1000 мг флакон", "notes": null}
+      ],
+      "dilution": {
+        "iv_bolus": {
+          "solvent_options": [
+            {"solvent": "Вода для инъекций", "vial_mg": 500, "solvent_ml": 10.0, "final_volume_ml": 10.0, "final_concentration_mg_ml": 50, "notes": null},
+            {"solvent": "0.9% NaCl", "vial_mg": 1000, "solvent_ml": 20.0, "final_volume_ml": 20.0, "final_concentration_mg_ml": 50, "notes": null}
+          ],
+          "administration_time_min": 5,
+          "max_concentration_mg_ml": 50,
+          "child_solvent_warning": "Детям — вода для инъекций или 0.9% NaCl.",
+          "steps": [
+            "1. Развести до концентрации 50 мг/мл.",
+            "2. Ввести в/в медленно за 5 минут."
+          ]
+        },
+        "iv_infusion": {
+          "solvent_options": [
+            {"solvent": "0.9% NaCl", "vial_mg": 1000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 10, "notes": null},
+            {"solvent": "5% глюкоза", "vial_mg": 1000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 10, "notes": null}
+          ],
+          "concentration_range_mg_ml": "1-20",
+          "infusion_time_min": 15,
+          "infusion_time_min_meningitis": 30,
+          "cautions": "При менингите — инфузия 30 мин для повышения ЦСЖ-проникновения.",
+          "steps": [
+            "1. Развести до концентрации 1-20 мг/мл.",
+            "2. Ввести в/в капельно за 15-30 минут.",
+            "3. Раствор стабилен 3 часа при комнатной температуре."
+          ]
+        }
+      }
+    },
+    "vancomycin": {
+      "inn": "Ванкомицин",
+      "class": "Гликопептиды",
+      "renal_adjustment": "Коррекция по СКФ, ТЛМ (15-20 мг/л)",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "С осторожностью",
+      "forms": [
+        {"form_type": "powder_for_suspension", "concentration": "500 мг флакон", "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "1000 мг флакон", "notes": null}
+      ],
+      "dilution": {
+        "iv_infusion": {
+          "solvent_options": [
+            {"solvent": "0.9% NaCl", "vial_mg": 500, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 5, "notes": null},
+            {"solvent": "5% глюкоза", "vial_mg": 500, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 5, "notes": null},
+            {"solvent": "0.9% NaCl", "vial_mg": 1000, "solvent_ml": 200.0, "final_volume_ml": 200.0, "final_concentration_mg_ml": 5, "notes": null}
+          ],
+          "concentration_max_mg_ml": 5,
+          "infusion_time_min_per_500mg": 60,
+          "infusion_time_min_per_1000mg": 120,
+          "cautions": "Обязательно медленная инфузия — при быстром введении «синдром красного человека» (гистамин-опосредованная реакция). Не вводить в/м (некрозы) и в/в струйно!",
+          "child_solvent_warning": "Детям концентрация ≤5 мг/мл, инфузия ≥60 минут на каждые 500 мг.",
+          "steps": [
+            "1. Развести 500 мг в 100 мл 0.9% NaCl или 5% глюкозы (концентрация 5 мг/мл).",
+            "2. Ввести в/в капельно НЕ МЕНЕЕ 60 минут на 500 мг (1000 мг — 120 минут).",
+            "3. Раствор стабилен 24 часа в холодильнике.",
+            "4. Контроль ТЛМ: 15-20 мг/л (тrough)."
+          ]
+        }
+      }
+    },
+    "piperacillin_tazobactam": {
+      "inn": "Пиперациллин + Тазобактам",
+      "class": "Ингибиторозащищённые уреидопенициллины",
+      "renal_adjustment": "СКФ<40: коррекция дозы",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "forms": [
+        {"form_type": "powder_for_suspension", "concentration": "4000+500 мг флакон", "notes": null}
+      ],
+      "dilution": {
+        "iv_infusion": {
+          "solvent_options": [
+            {"solvent": "0.9% NaCl", "vial_mg": 4000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 40, "notes": "По пиперациллину"},
+            {"solvent": "5% глюкоза", "vial_mg": 4000, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 40, "notes": null},
+            {"solvent": "0.9% NaCl", "vial_mg": 4000, "solvent_ml": 200.0, "final_volume_ml": 200.0, "final_concentration_mg_ml": 20, "notes": "Детям — больший объём"}
+          ],
+          "infusion_time_min": 30,
+          "cautions": "Не смешивать с аминогликозидами в одном флаконе (инактивация).",
+          "child_solvent_warning": "Детям — 0.9% NaCl, инфузия 30 мин.",
+          "steps": [
+            "1. Развести 4000+500 мг в 100 мл 0.9% NaCl.",
+            "2. Ввести в/в капельно за 30 минут (или продлённая инфузия 4 часа).",
+            "3. Раствор стабилен 24 часа в холодильнике."
+          ]
+        }
+      }
+    },
+    "gentamicin": {
+      "inn": "Гентамицин",
+      "class": "Аминогликозиды",
+      "renal_adjustment": "Коррекция по СКФ, ТЛМ",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "С осторожностью",
+      "forms": [
+        {"form_type": "solution_im", "concentration": "40 мг/мл", "concentration_mg_per_ml": 40, "notes": null}
+      ],
+      "dilution": {
+        "im": {
+          "solvent_options": [
+            {"solvent": "без разведения", "vial_mg": 40, "solvent_ml": 0, "final_volume_ml": 1.0, "final_concentration_mg_ml": 40, "notes": "Готовый раствор 40 мг/мл"}
+          ],
+          "steps": [
+            "1. Готовый раствор 40 мг/мл (ампулы 2 мл = 80 мг).",
+            "2. Ввести глубоко в/м без разведения."
+          ]
+        },
+        "iv_infusion": {
+          "solvent_options": [
+            {"solvent": "0.9% NaCl", "vial_mg": 80, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 0.8, "notes": null},
+            {"solvent": "5% глюкоза", "vial_mg": 80, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 0.8, "notes": null}
+          ],
+          "infusion_time_min": 30,
+          "cautions": "Не вводить в/в струйно (риск нейромышечной блокады). ТЛМ (trough) <1 мг/л, пик (peak) 5-10 мг/л.",
+          "child_solvent_warning": "Детям — 0.9% NaCl, инфузия 30 минут.",
+          "steps": [
+            "1. Развести дозу в 50-100 мл 0.9% NaCl.",
+            "2. Ввести в/в капельно за 30 минут.",
+            "3. У новорождённых — инфузия 1-2 часа."
+          ]
+        }
+      }
+    }
+  }
+}

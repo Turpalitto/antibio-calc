@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AntibioDB — КР МЗ РФ",
+  "description": "Схема базы данных антибактериальной терапии по клиническим рекомендациям Минздрава РФ. Только верифицированные данные. Отсутствие данных = null.",
+  "type": "object",
+  "required": ["meta", "recommendations"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["version", "generated_at", "sources_base", "verification_status"],
+      "properties": {
+        "version": {"type": "string"},
+        "generated_at": {"type": "string", "format": "date-time"},
+        "sources_base": {"type": "string"},
+        "verification_status": {"type": "string", "enum": ["draft", "verified", "deprecated"]}
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/recommendation"}
+    }
+  },
+  "definitions": {
+    "recommendation": {
+      "type": "object",
+      "required": ["id", "mkb10", "name", "cr_id", "cr_year", "cr_updated", "antibiotics_indicated", "source_url"],
+      "properties": {
+        "id": {"type": "string"},
+        "mkb10": {"type": "array", "items": {"type": "string"}},
+        "name": {"type": "string"},
+        "synonyms": {"type": "array", "items": {"type": "string"}},
+        "cr_id": {"type": "string", "description": "ID клинической рекомендации в рубрикаторе МЗ РФ"},
+        "cr_year": {"type": "integer"},
+        "cr_updated": {"type": "string", "format": "date"},
+        "source_url": {"type": "string"},
+        "antibiotics_indicated": {"type": "boolean"},
+        "indications": {"type": "array", "items": {"type": "string"}},
+        "age_groups": {
+          "type": "array",
+          "items": {"enum": ["neonate", "child", "adult", "all"]}
+        },
+        "scenarios": {"type": "array", "items": {"$ref": "#/definitions/scenario"}}
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "required": ["id", "name", "lines"],
+      "properties": {
+        "id": {"type": "string"},
+        "name": {"type": "string", "description": "Клиническая ситуация (эмпирическая, целенаправленная, аллергия и т.д.)"},
+        "age_group": {"enum": ["neonate", "child", "adult", "all"]},
+        "lines": {"type": "array", "items": {"$ref": "#/definitions/line"}}
+      }
+    },
+    "line": {
+      "type": "object",
+      "required": ["line_number", "drugs"],
+      "properties": {
+        "line_number": {"type": "integer", "description": "1 = первая линия, 2 = вторая, 0 = альтернатива при аллергии"},
+        "line_label": {"type": "string"},
+        "drugs": {"type": "array", "items": {"$ref": "#/definitions/drug"}}
+      }
+    },
+    "drug": {
+      "type": "object",
+      "required": ["inn", "route", "regimens"],
+      "properties": {
+        "inn": {"type": "string", "description": "Международное непатентованное наименование"},
+        "brand_examples": {"type": "array", "items": {"type": "string"}},
+        "route": {"type": "array", "items": {"enum": ["per_os", "iv", "im", "topical", "rectal", "inhalation"]}},
+        "indication_note": {"type": "string"},
+        "regimens": {"type": "array", "items": {"$ref": "#/definitions/regimen"}},
+        "age_restriction_min": {"type": ["string", "null"], "description": "Минимальный возраст (мес/лет)"},
+        "age_restriction_max": {"type": ["string", "null"]},
+        "renal_adjustment": {"type": ["string", "null"]},
+        "hepatic_adjustment": {"type": ["string", "null"]},
+        "pregnancy_category": {"type": ["string", "null"]},
+        "forms": {"type": "array", "items": {"$ref": "#/definitions/form"}}
+      }
+    },
+    "regimen": {
+      "type": "object",
+      "required": ["dose_mg_kg_day", "freq_per_day", "duration"],
+      "properties": {
+        "age_group": {"enum": ["neonate", "child", "adult", "all"]},
+        "weight_min_kg": {"type": ["number", "null"]},
+        "weight_max_kg": {"type": ["number", "null"]},
+        "dose_mg_kg_day": {"type": ["number", "null"], "description": "Суточная доза мг/кг. null если фиксированная взрослая."},
+        "dose_mg_day_fixed": {"type": ["number", "null"], "description": "Фиксированная суточная доза для взрослых"},
+        "single_dose_mg": {"type": ["number", "null"]},
+        "max_daily_mg": {"type": ["number", "null"]},
+        "freq_per_day": {"type": "integer"},
+        "duration_days": {"type": ["string", "null"], "description": "Строкой, т.к. диапазон или условие (напр. '7-10', '10!')"},
+        "duration_note": {"type": ["string", "null"]}
+      }
+    },
+    "form": {
+      "type": "object",
+      "required": ["form_type", "concentration"],
+      "properties": {
+        "form_type": {"enum": ["tablet", "capsule", "suspension", "syrup", "solution_iv", "solution_im", "powder_for_suspension", "topical", "suppository", "granules"]},
+        "concentration": {"type": "string", "description": "Напр. '250 мг/5 мл', '500 мг', '100 мг/мл'"},
+        "concentration_mg_per_ml": {"type": ["number", "null"]},
+        "notes": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
