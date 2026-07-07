@@ -59,10 +59,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
 @media print{
   .no-print{display:none!important}
   .print-only{display:block!important}
-  body{background:#fff;color:#000;padding:20px;font-size:11pt}
-  .premium-card{box-shadow:none;border:1px solid #ccc;background:#fff}
-  .res-box,.inj-box{background:#fff;color:#000;border:2px solid #2563eb}
+  body{background:#fff;color:#000;padding:0;font-size:11pt;font-family:'Times New Roman',serif}
+  .premium-card{box-shadow:none;border:none;background:#fff;padding:0!important;margin:0!important}
+  .res-box,.inj-box{background:#fff;color:#000;border:none;padding:0!important;margin:0!important;border-radius:0!important}
   .dilution-solvent{background:#fff;border:1px solid #999}
+  #prescription-form{display:block!important}
 }
 .print-only{display:none}
 .drawer{position:fixed;top:0;right:-360px;width:360px;max-width:90vw;height:100vh;background:#fff;box-shadow:-10px 0 30px rgba(0,0,0,.15);z-index:1000;transition:right .3s;overflow-y:auto}
@@ -320,6 +321,96 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
 
 <div id="toast" class="toast"></div>
 
+<!-- Medical prescription form (print only) -->
+<div id="prescription-form" class="print-only" style="display:none">
+  <style>
+    #prescription-form{font-family:'Times New Roman',serif;color:#000;background:#fff;padding:15mm 20mm;max-width:210mm;min-height:297mm;margin:0 auto;font-size:11pt}
+    .rx-header{display:flex;justify-content:space-between;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:10px}
+    .rx-header-left{font-size:9pt;line-height:1.3}
+    .rx-header-left .small{font-size:8pt;color:#444}
+    .rx-header-right{text-align:right;font-size:9pt}
+    .rx-doc{font-weight:bold;font-size:11pt;margin:6px 0 2px}
+    .rx-date{font-size:9pt}
+    .rx-patient{margin:10px 0;border-bottom:1px dashed #999;padding-bottom:8px;font-size:10pt}
+    .rx-patient-row{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:4px}
+    .rx-patient-row b{font-weight:bold}
+    .rx-rp{font-size:14pt;font-style:italic;font-weight:bold;margin:15px 0 5px;letter-spacing:1px}
+    .rx-drug{font-size:12pt;line-height:1.5;margin:5px 0;padding-left:20px}
+    .rx-drug-name{font-weight:bold}
+    .rx-form-line{font-style:italic;font-size:11pt}
+    .rx-signa{font-size:14pt;font-style:italic;font-weight:bold;margin:10px 0 5px;letter-spacing:1px}
+    .rx-signa-text{font-size:11pt;padding-left:20px;line-height:1.5}
+    .rx-course{margin:10px 0;padding:6px 10px;border:1px solid #000;font-size:10pt;font-weight:bold}
+    .rx-warning{margin:8px 0;font-size:9pt;font-style:italic;color:#444}
+    .rx-footer{margin-top:20px;display:flex;justify-content:space-between;gap:30px;padding-top:10px;border-top:1px solid #000;font-size:10pt}
+    .rx-sign{flex:1;text-align:center}
+    .rx-sign-line{border-top:1px solid #000;padding-top:3px;margin-top:30px;font-size:9pt}
+    .rx-stamp{flex:1;text-align:center;padding:15px;border:1px dashed #999;font-size:9pt;color:#666;min-height:60px}
+    .rx-bar{height:3px;background:#000;margin:5px 0}
+    .rx-stamp-top{border:2px solid #000;padding:4px 10px;display:inline-block;font-weight:bold;font-size:9pt;letter-spacing:2px;margin-bottom:10px}
+    .rx-legend{font-size:8pt;color:#666;margin-top:15px;border-top:1px dashed #999;padding-top:6px}
+    .rx-combo-title{font-weight:bold;font-size:10pt;margin:10px 0 4px;padding:4px 8px;background:#f0f0f0;border-left:3px solid #000}
+    .rx-inj-block{border:1px solid #000;padding:8px;margin:8px 0;font-size:10pt;background:#fafafa}
+    .rx-inj-block b{font-weight:bold}
+    .rx-no-data{text-align:center;padding:40px;font-size:14pt;color:#999;font-style:italic}
+    @media print{
+      @page{size:A4;margin:8mm}
+      html,body{background:#fff!important}
+    }
+  </style>
+
+  <div class="rx-header">
+    <div class="rx-header-left">
+      <div class="rx-stamp-top">РЕЦЕПТ</div>
+      <div>Министерство здравоохранения РФ</div>
+      <div>Форма № 107-1/у</div>
+      <div class="small">Утверждена приказом Минздрава России от 24.11.2021 № 1094н</div>
+    </div>
+    <div class="rx-header-right">
+      <div>Дата: <span id="rx-date">—</span></div>
+      <div style="margin-top:8px">Возраст: <span id="rx-age">—</span></div>
+      <div style="margin-top:8px">Вес: <span id="rx-weight">—</span> кг</div>
+    </div>
+  </div>
+
+  <div class="rx-doc">
+    Врач: <span id="rx-doctor">________________________</span>
+  </div>
+
+  <div class="rx-patient">
+    <div class="rx-patient-row"><b>Пациент:</b> <span id="rx-patient-name">________________________</span></div>
+    <div class="rx-patient-row"><b>Диагноз:</b> <span id="rx-diagnosis">—</span></div>
+    <div class="rx-patient-row"><b>МКБ-10:</b> <span id="rx-mkb">—</span></div>
+    <div class="rx-patient-row"><b>Источник:</b> <span id="rx-source">КР МЗ РФ</span></div>
+  </div>
+
+  <div class="rx-rp">Rp:</div>
+  <div id="rx-drugs"></div>
+
+  <div class="rx-signa">Signa:</div>
+  <div id="rx-signa-text" class="rx-signa-text"></div>
+
+  <div class="rx-course" id="rx-course"></div>
+
+  <div id="rx-injection-details"></div>
+
+  <div class="rx-warning" id="rx-warning"></div>
+
+  <div class="rx-footer">
+    <div class="rx-sign">
+      <div style="height:25px"></div>
+      <div class="rx-sign-line">Подпись врача / личная печать</div>
+    </div>
+    <div class="rx-stamp">М.П.</div>
+  </div>
+
+  <div class="rx-legend">
+    Настоящий рецепт выписан на основании клинических рекомендаций Минздрава РФ.
+    Перед применением препарата ознакомиться с инструкцией по медицинскому применению.
+    ЧЕРНОВИК — требует верификации по первоисточникам КР МЗ РФ.
+  </div>
+</div>
+
 <script id="db-data" type="application/json">__DB_PLACEHOLDER__</script>
 <script>
 let DB = null;
@@ -364,8 +455,8 @@ function init(){
   }
 }
 function setupButtons(){
-  $('btn-print').onclick = ()=>window.print();
-  $('btn-print2').onclick = ()=>window.print();
+  $('btn-print').onclick = ()=>{ if(!activeDrug){toast('Выберите препарат');return;} fillPrescriptionForm(); window.print(); };
+  $('btn-print2').onclick = ()=>{ if(!activeDrug){toast('Выберите препарат');return;} fillPrescriptionForm(); window.print(); };
   $('btn-copy').onclick = copyPrescription;
   $('btn-save-history').onclick = saveToHistory;
   $('btn-history').onclick = openHistory;
@@ -919,6 +1010,118 @@ function renderDrugMeta(ref, reg){
 }
 function metaRow(k, v){
   return '<div class="flex justify-between gap-3"><span class="text-slate-400 dark:text-slate-500 font-black uppercase text-[10px] tracking-widest flex-shrink-0">'+k+'</span><span class="text-slate-700 dark:text-slate-300 font-semibold text-right">'+v+'</span></div>';
+}
+function fillPrescriptionForm(){
+  if(!activeDrug || !activeDisease) return;
+  const w = parseFloat($('weight').value);
+  const reg = getActiveRegimen();
+  const {singleMg, dailyMg} = computeDose(reg, w);
+  const refs = getDrugRefs(activeDrug);
+  const mainRef = DB.drugs_reference[refs[0]];
+  const form = mainRef.forms[activeFormIdx];
+
+  // Header
+  const dateStr = $('patient-date').value || new Date().toLocaleDateString('ru-RU');
+  $('rx-date').textContent = dateStr;
+  $('rx-age').textContent = $('patient-age').value || '—';
+  $('rx-weight').textContent = w || '—';
+  $('rx-doctor').textContent = $('doctor-name').value || '________________________';
+  $('rx-patient-name').textContent = $('patient-name').value || '________________________';
+  $('rx-diagnosis').textContent = activeDisease.name;
+  $('rx-mkb').textContent = activeDisease.mkb10.join(', ');
+  $('rx-source').textContent = 'КР МЗ РФ #'+activeDisease.cr_id+', '+activeDisease.cr_year;
+
+  // Drugs block (Rp:)
+  const drugsEl = $('rx-drugs');
+  drugsEl.innerHTML = '';
+  if(refs.length > 1){
+    // combo — show all components
+    const comboTitle = document.createElement('div');
+    comboTitle.className = 'rx-combo-title';
+    comboTitle.textContent = 'Комбинированная терапия:';
+    drugsEl.appendChild(comboTitle);
+  }
+  refs.forEach((refKey, idx)=>{
+    const ref = DB.drugs_reference[refKey];
+    if(!ref) return;
+    const isMain = idx === 0;
+    const div = document.createElement('div');
+    div.className = 'rx-drug';
+    let html = '<div class="rx-drug-name">'+(idx+1)+'. '+ref.inn+'</div>';
+    html += '<div class="rx-form-line">'+formTypeRussian(form.form_type)+' '+form.concentration+'</div>';
+    if(isMain){
+      html += '<div>Разовая доза: <b>'+Math.round(singleMg)+' мг</b></div>';
+      html += '<div>Суточная доза: <b>'+Math.round(dailyMg)+' мг</b> ('+reg.freq_per_day+' раза в день)</div>';
+    }
+    div.innerHTML = html;
+    drugsEl.appendChild(div);
+  });
+
+  // Signa — способ применения
+  const signaEl = $('rx-signa-text');
+  const route = currentRouteGroup === 'po' ? 'внутрь' : (currentRouteGroup === 'im' ? 'внутримышечно' : 'внутривенно');
+  let signa = 'По '+Math.round(singleMg)+' мг ('+form.concentration+') '+route+' '+reg.freq_per_day+' раза в день';
+  if(currentRouteGroup === 'po' && form.concentration_mg_per_ml){
+    const ml = singleMg / form.concentration_mg_per_ml;
+    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+reg.freq_per_day+' раза в день';
+  }
+  if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_infusion'){
+    signa += ', капельно за 30 минут';
+  }
+  if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_bolus'){
+    signa += ', медленно за 5 минут';
+  }
+  signaEl.textContent = signa;
+
+  // Course
+  $('rx-course').textContent = 'Курс лечения: '+(reg.duration_days || '—')+(reg.duration_note?' — '+reg.duration_note:'');
+
+  // Injection details
+  const injEl = $('rx-injection-details');
+  injEl.innerHTML = '';
+  if(currentRouteGroup === 'im' || currentRouteGroup === 'iv'){
+    const dil = mainRef.dilution;
+    if(dil){
+      const routeData = dil[activeRouteKey];
+      if(routeData && routeData.solvent_options && routeData.solvent_options[activeVialIdx]){
+        const v = routeData.solvent_options[activeVialIdx];
+        let html = '<div class="rx-inj-block"><b>Приготовление раствора ('+routeKeyLabel(activeRouteKey)+'):</b><br>';
+        html += 'Растворитель: '+v.solvent+' — '+v.solvent_ml+' мл<br>';
+        html += 'Флакон: '+(v.vial_mg?v.vial_mg+' мг':(v.vial_units?formatUnits(v.vial_units)+' ЕД':''))+'<br>';
+        html += 'Концентрация готового раствора: '+(v.final_concentration_mg_ml?v.final_concentration_mg_ml+' мг/мл':(v.final_concentration_units_ml?formatUnits(v.final_concentration_units_ml)+' ЕД/мл':''))+'<br>';
+        const mlForDose = (v.final_concentration_mg_ml||v.final_concentration_units_ml) ? (singleMg/(v.final_concentration_mg_ml||v.final_concentration_units_ml)).toFixed(2)+' мл' : '—';
+        html += 'Объём на дозу: '+mlForDose;
+        html += '</div>';
+        if(routeData.steps && routeData.steps.length){
+          html += '<div style="margin-top:6px;font-size:9pt"><b>Способ приготовления:</b><ol style="margin:4px 0 0 18px;padding:0">';
+          routeData.steps.forEach(s=>{ html += '<li style="margin:2px 0">'+s.replace(/^\d+\.\s*/,'')+'</li>'; });
+          html += '</ol></div>';
+        }
+        if(routeData.cautions){
+          html += '<div style="margin-top:6px;font-size:9pt;font-style:italic"><b>Особые указания:</b> '+routeData.cautions+'</div>';
+        }
+        injEl.innerHTML = html;
+      }
+    }
+  }
+
+  // Warning
+  const warnEl = $('rx-warning');
+  let warns = [];
+  if(activeDrug.indication_note) warns.push(activeDrug.indication_note);
+  if(mainRef.monitoring) warns.push('Мониторинг: '+mainRef.monitoring);
+  if(mainRef.renal_adjustment) warns.push('Коррекция по почкам: '+mainRef.renal_adjustment);
+  if(mainRef.pregnancy_category && mainRef.pregnancy_category !== 'Разрешён') warns.push('Беременность: '+mainRef.pregnancy_category);
+  warns.push('ЧЕРНОВИК — требует верификации по первоисточникам КР МЗ РФ перед применением.');
+  warnEl.innerHTML = warns.join('<br>');
+}
+function formTypeRussian(t){
+  const map = {
+    'tablet':'Таблетки', 'capsule':'Капсулы', 'suspension':'Суспензия', 'syrup':'Сироп',
+    'powder_for_suspension':'Порошок для приготовления суспензии', 'solution_iv':'Раствор для в/в введения',
+    'solution_im':'Раствор для в/м введения', 'granules':'Гранулы', 'topical':'Крем/мазь наружно', 'suppository':'Суппозитории'
+  };
+  return map[t] || t;
 }
 function copyPrescription(){
   if(!activeDrug || !activeDisease){
