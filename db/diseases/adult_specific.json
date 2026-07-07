@@ -1,0 +1,559 @@
+{
+  "category": "Взрослые специфические инфекции",
+  "recommendations": [
+    {
+      "id": "mastitis_puerperal",
+      "mkb10": ["O91.0", "O91.1", "O91.2", "N61"],
+      "name": "Послеродовой мастит",
+      "synonyms": ["мастит пуэрперальный", "лактационный мастит"],
+      "cr_id": "195",
+      "cr_year": 2023,
+      "cr_updated": "2023-11-10",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/195",
+      "antibiotics_indicated": true,
+      "indications": ["Клинические признаки мастита с лихорадкой", "Абсцесс молочной железы"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "mastitis_cellulitis",
+          "name": "Мастит без абсцедирования",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "dicloxacillin",
+                  "route": ["per_os"],
+                  "indication_note": "Антистафилококковый пенициллин — препарат выбора",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 4,
+                      "duration_days": "10-14",
+                      "duration_note": "500 мг 4 р/д. Продолжать грудное вскармливание (кроме гнойного отделяемого).",
+                      "regimen_label": "500 мг 4 р/д"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии к пенициллинам",
+              "drugs": [
+                {
+                  "drug_ref": "clindamycin",
+                  "route": ["per_os"],
+                  "indication_note": "Линкозамид — покрытие S.aureus, анаэробов",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1200,
+                      "single_dose_mg": 300,
+                      "max_daily_mg": 1800,
+                      "freq_per_day": 4,
+                      "duration_days": "10-14",
+                      "duration_note": "300 мг 4 р/д",
+                      "regimen_label": "300 мг 4 р/д"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "5",
+                      "duration_note": null,
+                      "regimen_label": "500 мг 1 р/д 5 дней"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mastitis_abscess",
+          "name": "Абсцесс молочной железы (в комбинации с хирургическим дренированием)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "clindamycin",
+                  "route": ["iv"],
+                  "indication_note": "В/в при тяжёлом течении, после дренирования",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2400,
+                      "single_dose_mg": 600,
+                      "max_daily_mg": 2700,
+                      "freq_per_day": 4,
+                      "duration_days": "10-14",
+                      "duration_note": "600 мг 4 р/д в/в. Анаэробное покрытие обязательно.",
+                      "regimen_label": "600 мг 4 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pid",
+      "mkb10": ["N70.0", "N70.1", "N71", "N72", "N73.0", "N73.1", "N73.2", "A18.2"],
+      "name": "Воспалительные заболевания органов таза (ВЗОТ)",
+      "synonyms": ["ВЗОТ", "сальпингоофорит", "эндометрит", "пельвиоперитонит"],
+      "cr_id": "192",
+      "cr_year": 2023,
+      "cr_updated": "2023-12-01",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/192",
+      "antibiotics_indicated": true,
+      "indications": ["Клинические признаки ВЗОТ", "Подтверждённое при лапароскопии"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "pid_outpatient",
+          "name": "Амбулаторное лечение (нетяжёлая ВЗОТ)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "combo_therapy": true,
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "component_role": "main",
+                  "route": ["im"],
+                  "indication_note": "Цефтриаксон + доксициклин ± метронидазол",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "500 мг в/м однократно",
+                      "regimen_label": "500 мг в/м однократно"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "doxycycline",
+                  "component_role": "atypical_coverage",
+                  "route": ["per_os"],
+                  "indication_note": "Покрытие хламидий, микоплазм",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 200,
+                      "single_dose_mg": 100,
+                      "max_daily_mg": 200,
+                      "freq_per_day": 2,
+                      "duration_days": "14",
+                      "duration_note": "100 мг 2 р/д 14 дней",
+                      "regimen_label": "100 мг 2 р/д 14 дней"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "metronidazole",
+                  "component_role": "anaerobe_coverage",
+                  "route": ["per_os"],
+                  "indication_note": "Анаэробное покрытие (при подозрении на БВ)",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "14",
+                      "duration_note": "500 мг 2 р/д 14 дней",
+                      "regimen_label": "500 мг 2 р/д 14 дней"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pid_inpatient",
+          "name": "Стационарное лечение (тяжёлая ВЗОТ)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (в/в комбинация)",
+              "combo_therapy": true,
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "component_role": "main",
+                  "route": ["iv"],
+                  "indication_note": "Цефтриаксон + доксициклин (или азитро) + метронидазол",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "14",
+                      "duration_note": "Ступенчатая терапия",
+                      "regimen_label": "1000-2000 мг 1 р/д"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "doxycycline",
+                  "component_role": "atypical_coverage",
+                  "route": ["per_os", "iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 200,
+                      "single_dose_mg": 100,
+                      "max_daily_mg": 200,
+                      "freq_per_day": 2,
+                      "duration_days": "14",
+                      "duration_note": null,
+                      "regimen_label": "100 мг 2 р/д 14 дней"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "metronidazole",
+                  "component_role": "anaerobe_coverage",
+                  "route": ["iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 3,
+                      "duration_days": "14",
+                      "duration_note": "500 мг 3 р/д в/в",
+                      "regimen_label": "500 мг 3 р/д"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Альтернатива",
+              "drugs": [
+                {
+                  "drug_ref": "amoxiclav",
+                  "route": ["iv"],
+                  "indication_note": "Монотерапия ингибиторозащищённым пенициллином (покрытие анаэробов)",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "14",
+                      "duration_note": "Ступенчатая терапия",
+                      "regimen_label": "1000 мг 3 р/д в/в"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prostatitis",
+      "mkb10": ["N41.0", "N41.1", "N41.2", "N41.3", "N41.8", "N41.9"],
+      "name": "Простатит (острый и хронический бактериальный)",
+      "synonyms": ["острый простатит", "хронический простатит"],
+      "cr_id": "328",
+      "cr_year": 2023,
+      "cr_updated": "2023-10-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/328",
+      "antibiotics_indicated": true,
+      "indications": ["Острый бактериальный простатит", "Хронический бактериальный простатит с подтверждённым возбудителем"],
+      "age_groups": ["adult"],
+      "scenarios": [
+        {
+          "id": "prostatitis_acute_mild",
+          "name": "Острый простатит лёгкого течения (амбулаторно)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "ciprofloxacin",
+                  "route": ["per_os"],
+                  "indication_note": "Фторхинолон — проникает в ткань простаты",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "28",
+                      "duration_note": "500 мг 2 р/д 4 недели",
+                      "regimen_label": "500 мг 2 р/д 28 дней"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "levofloxacin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "28",
+                      "duration_note": "500 мг 1 р/д 4 недели",
+                      "regimen_label": "500 мг 1 р/д 28 дней"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "prostatitis_acute_severe",
+          "name": "Острый простатит тяжёлого течения (стационар)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (в/в)",
+              "drugs": [
+                {
+                  "drug_ref": "ciprofloxacin",
+                  "route": ["iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 800,
+                      "single_dose_mg": 400,
+                      "max_daily_mg": 1200,
+                      "freq_per_day": 2,
+                      "duration_days": "14-28",
+                      "duration_note": "Ступенчатая терапия с переходом на per os",
+                      "regimen_label": "400 мг 2 р/д в/в"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv", "im"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "14-28",
+                      "duration_note": null,
+                      "regimen_label": "1000-2000 мг 1 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "prostatitis_chronic",
+          "name": "Хронический бактериальный простатит",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "ciprofloxacin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "28-42",
+                      "duration_note": "Курс 4-6 недель",
+                      "regimen_label": "500 мг 2 р/д 4-6 недель"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "levofloxacin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "28-42",
+                      "duration_note": null,
+                      "regimen_label": "500 мг 1 р/д 4-6 недель"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "peritonsillar_abscess",
+      "mkb10": ["J36", "J39.0", "J39.1"],
+      "name": "Перитонзиллярный абсцесс (паратонзиллит)",
+      "synonyms": ["паратонзиллярный абсцесс", "флегмона паратонзиллярной клетчатки"],
+      "cr_id": "82",
+      "cr_year": 2023,
+      "cr_updated": "2023-06-30",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/82",
+      "antibiotics_indicated": true,
+      "indications": ["Подтверждённый перитонзиллярный абсцесс", "Паратонзиллит (в комбинации с дренированием)"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "pta_drainage",
+          "name": "В комбинации с хирургическим дренированием",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "amoxiclav",
+                  "route": ["per_os", "iv"],
+                  "indication_note": "Покрытие стрептококков, анаэробов, бета-лактамазопродуцентов",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1750,
+                      "single_dose_mg": 875,
+                      "max_daily_mg": 3500,
+                      "freq_per_day": 2,
+                      "duration_days": "10-14",
+                      "duration_note": "875+125 мг 2 р/д",
+                      "regimen_label": "875 мг 2 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 90,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 2,
+                      "duration_days": "10-14",
+                      "duration_note": "По амоксициллину",
+                      "regimen_label": "90 мг/кг 2 р/д"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии",
+              "drugs": [
+                {
+                  "drug_ref": "clindamycin",
+                  "route": ["per_os", "iv"],
+                  "indication_note": "Покрытие стрептококков + анаэробов",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1200,
+                      "single_dose_mg": 300,
+                      "max_daily_mg": 1800,
+                      "freq_per_day": 4,
+                      "duration_days": "10-14",
+                      "duration_note": null,
+                      "regimen_label": "300 мг 4 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1800,
+                      "freq_per_day": 3,
+                      "duration_days": "10-14",
+                      "duration_note": "8-25 мг/кг/сут 3-4 р/д",
+                      "regimen_label": "10 мг/кг 3 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

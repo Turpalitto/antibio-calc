@@ -10,10 +10,16 @@
       "required": ["version", "generated_at", "sources_base", "verification_status"],
       "properties": {
         "version": {"type": "string"},
-        "generated_at": {"type": "string", "format": "date-time"},
+        "generated_at": {"type": "string"},
         "sources_base": {"type": "string"},
-        "verification_status": {"type": "string", "enum": ["draft", "verified", "deprecated"]}
+        "verification_status": {"type": "string", "enum": ["draft", "verified", "deprecated"]},
+        "warning": {"type": "string"}
       }
+    },
+    "drugs_reference": {
+      "type": "object",
+      "description": "Справочник препаратов: коррекция по почкам/печени, формы, dilution, monitoring",
+      "additionalProperties": {"$ref": "#/definitions/drug_reference"}
     },
     "recommendations": {
       "type": "array",
@@ -23,22 +29,19 @@
   "definitions": {
     "recommendation": {
       "type": "object",
-      "required": ["id", "mkb10", "name", "cr_id", "cr_year", "cr_updated", "antibiotics_indicated", "source_url"],
+      "required": ["id", "mkb10", "name", "cr_id", "cr_year", "antibiotics_indicated"],
       "properties": {
         "id": {"type": "string"},
         "mkb10": {"type": "array", "items": {"type": "string"}},
         "name": {"type": "string"},
         "synonyms": {"type": "array", "items": {"type": "string"}},
-        "cr_id": {"type": "string", "description": "ID клинической рекомендации в рубрикаторе МЗ РФ"},
+        "cr_id": {"type": "string"},
         "cr_year": {"type": "integer"},
-        "cr_updated": {"type": "string", "format": "date"},
+        "cr_updated": {"type": "string"},
         "source_url": {"type": "string"},
         "antibiotics_indicated": {"type": "boolean"},
         "indications": {"type": "array", "items": {"type": "string"}},
-        "age_groups": {
-          "type": "array",
-          "items": {"enum": ["neonate", "child", "adult", "all"]}
-        },
+        "age_groups": {"type": "array", "items": {"enum": ["neonate", "child", "adult", "all"]}},
         "scenarios": {"type": "array", "items": {"$ref": "#/definitions/scenario"}}
       }
     },
@@ -47,7 +50,7 @@
       "required": ["id", "name", "lines"],
       "properties": {
         "id": {"type": "string"},
-        "name": {"type": "string", "description": "Клиническая ситуация (эмпирическая, целенаправленная, аллергия и т.д.)"},
+        "name": {"type": "string"},
         "age_group": {"enum": ["neonate", "child", "adult", "all"]},
         "lines": {"type": "array", "items": {"$ref": "#/definitions/line"}}
       }
@@ -58,40 +61,56 @@
       "properties": {
         "line_number": {"type": "integer", "description": "1 = первая линия, 2 = вторая, 0 = альтернатива при аллергии"},
         "line_label": {"type": "string"},
-        "drugs": {"type": "array", "items": {"$ref": "#/definitions/drug"}}
+        "combo_therapy": {"type": "boolean", "description": "true = препараты применяются одновременно (комбинированная терапия)"},
+        "drugs": {"type": "array", "items": {"$ref": "#/definitions/drug_in_scenario"}}
       }
     },
-    "drug": {
+    "drug_in_scenario": {
       "type": "object",
-      "required": ["inn", "route", "regimens"],
+      "required": ["route", "regimens"],
       "properties": {
-        "inn": {"type": "string", "description": "Международное непатентованное наименование"},
-        "brand_examples": {"type": "array", "items": {"type": "string"}},
+        "drug_ref": {"type": "string", "description": "Ссылка на drugs_reference"},
+        "combo_ref": {"type": "array", "items": {"type": "string"}, "description": "Массив ссылок для комбинированной терапии (например ['clindamycin','gentamicin'])"},
+        "component_role": {"type": "string", "description": "Роль компонента в комбинации: 'main', 'anaerobe_coverage', 'atypical_coverage', 'pseudomonas_coverage'"},
         "route": {"type": "array", "items": {"enum": ["per_os", "iv", "im", "topical", "rectal", "inhalation"]}},
         "indication_note": {"type": "string"},
-        "regimens": {"type": "array", "items": {"$ref": "#/definitions/regimen"}},
-        "age_restriction_min": {"type": ["string", "null"], "description": "Минимальный возраст (мес/лет)"},
-        "age_restriction_max": {"type": ["string", "null"]},
-        "renal_adjustment": {"type": ["string", "null"]},
-        "hepatic_adjustment": {"type": ["string", "null"]},
-        "pregnancy_category": {"type": ["string", "null"]},
-        "forms": {"type": "array", "items": {"$ref": "#/definitions/form"}}
+        "regimens": {"type": "array", "items": {"$ref": "#/definitions/regimen"}}
       }
     },
     "regimen": {
       "type": "object",
-      "required": ["dose_mg_kg_day", "freq_per_day", "duration"],
+      "required": ["freq_per_day", "duration"],
       "properties": {
         "age_group": {"enum": ["neonate", "child", "adult", "all"]},
         "weight_min_kg": {"type": ["number", "null"]},
         "weight_max_kg": {"type": ["number", "null"]},
-        "dose_mg_kg_day": {"type": ["number", "null"], "description": "Суточная доза мг/кг. null если фиксированная взрослая."},
+        "dose_mg_kg_day": {"type": ["number", "null"], "description": "Суточная доза мг/кг"},
+        "dose_range_mg_kg_day": {"type": "array", "items": {"type": "number"}, "description": "Диапазон [min, max] мг/кг/сут по КР"},
         "dose_mg_day_fixed": {"type": ["number", "null"], "description": "Фиксированная суточная доза для взрослых"},
         "single_dose_mg": {"type": ["number", "null"]},
         "max_daily_mg": {"type": ["number", "null"]},
         "freq_per_day": {"type": "integer"},
-        "duration_days": {"type": ["string", "null"], "description": "Строкой, т.к. диапазон или условие (напр. '7-10', '10!')"},
-        "duration_note": {"type": ["string", "null"]}
+        "duration_days": {"type": ["string", "null"]},
+        "duration_note": {"type": ["string", "null"]},
+        "regimen_label": {"type": "string", "description": "Подпись режима для выбора юзером (например '90 мг/кг 2 р/д')"}
+      }
+    },
+    "drug_reference": {
+      "type": "object",
+      "required": ["inn", "forms"],
+      "properties": {
+        "inn": {"type": "string"},
+        "class": {"type": "string"},
+        "renal_adjustment": {"type": ["string", "null"]},
+        "hepatic_adjustment": {"type": ["string", "null"]},
+        "pregnancy_category": {"type": ["string", "null"]},
+        "age_restriction_min": {"type": ["string", "null"]},
+        "age_restriction_max": {"type": ["string", "null"]},
+        "monitoring": {"type": ["string", "null"], "description": "ТЛМ, контроль уровня"},
+        "interactions": {"type": ["string", "null"]},
+        "storage_reconstituted": {"type": ["string", "null"], "description": "Стабильность после растворения"},
+        "forms": {"type": "array", "items": {"$ref": "#/definitions/form"}},
+        "dilution": {"$ref": "#/definitions/dilution"}
       }
     },
     "form": {
@@ -99,9 +118,48 @@
       "required": ["form_type", "concentration"],
       "properties": {
         "form_type": {"enum": ["tablet", "capsule", "suspension", "syrup", "solution_iv", "solution_im", "powder_for_suspension", "topical", "suppository", "granules"]},
-        "concentration": {"type": "string", "description": "Напр. '250 мг/5 мл', '500 мг', '100 мг/мл'"},
+        "concentration": {"type": "string"},
         "concentration_mg_per_ml": {"type": ["number", "null"]},
-        "notes": {"type": ["string", "null"]}
+        "notes": {"type": ["string", "null"]},
+        "reconstitution": {"$ref": "#/definitions/reconstitution"}
+      }
+    },
+    "reconstitution": {
+      "type": "object",
+      "description": "Приготовление суспензии из порошка",
+      "properties": {
+        "solvent": {"type": "string", "description": "Вода очищенная / кипячёная"},
+        "solvent_ml": {"type": "number"},
+        "final_volume_ml": {"type": "number"},
+        "steps": {"type": "array", "items": {"type": "string"}},
+        "storage": {"type": "string", "description": "Срок хранения готовой суспензии"}
+      }
+    },
+    "dilution": {
+      "type": "object",
+      "description": "Правила разведения для инъекционных форм",
+      "properties": {
+        "im": {"$ref": "#/definitions/dilution_route"},
+        "iv_bolus": {"$ref": "#/definitions/dilution_route"},
+        "iv_infusion": {"$ref": "#/definitions/dilution_route"}
+      }
+    },
+    "dilution_route": {
+      "type": "object",
+      "properties": {
+        "solvent_options": {"type": "array", "items": {"type": "object"}},
+        "concentration_standard_mg_ml": {"type": "number"},
+        "concentration_max_mg_ml": {"type": "number"},
+        "concentration_range_mg_ml": {"type": "string"},
+        "administration_time_min": {"type": "number"},
+        "infusion_time_min": {"type": "number"},
+        "max_per_injection_site_ml": {"type": "number"},
+        "max_per_injection_site_ml_child": {"type": "number"},
+        "child_solvent_warning": {"type": "string"},
+        "contraindications": {"type": "string"},
+        "injection_site": {"type": "string"},
+        "cautions": {"type": "string"},
+        "steps": {"type": "array", "items": {"type": "string"}}
       }
     }
   }

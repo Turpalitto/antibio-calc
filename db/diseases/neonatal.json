@@ -1,0 +1,423 @@
+{
+  "category": "Неонатальные инфекции",
+  "recommendations": [
+    {
+      "id": "neonatal_sepsis",
+      "mkb10": ["P36.0", "P36.1", "P36.2", "P36.3", "P36.4", "P36.5", "P36.8", "P36.9", "P39.2", "P39.3"],
+      "name": "Неонатальный сепсис (ранний и поздний)",
+      "synonyms": ["сепсис новорождённых", "неонатальный сепсис"],
+      "cr_id": "16",
+      "cr_year": 2024,
+      "cr_updated": "2024-03-01",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/16",
+      "antibiotics_indicated": true,
+      "indications": ["Клинические признаки сепсиса у новорождённого + лабораторные маркеры"],
+      "age_groups": ["neonate"],
+      "scenarios": [
+        {
+          "id": "eos_early",
+          "name": "Ранний неонатальный сепсис (<72 часов жизни)",
+          "age_group": "neonate",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (эмпирическая)",
+              "combo_therapy": true,
+              "drugs": [
+                {
+                  "drug_ref": "benzylpenicillin_na",
+                  "component_role": "main",
+                  "route": ["iv"],
+                  "indication_note": "Ампициллин/пенициллин + аминогликозид — стандарт эмпирической терапии раннего сепсиса",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "≤7 дней: 100 000 ЕД/кг/сут 2 р/д; 8-28 дней: 200 000 ЕД/кг/сут 2 р/д. При менингите — удвоить дозу.",
+                      "regimen_label": "100 000-200 000 ЕД/кг/сут 2 р/д"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "gentamicin",
+                  "component_role": "gram_negative_coverage",
+                  "route": ["iv", "im"],
+                  "indication_note": "Аминогликозид для грамотрицательной флоры",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 5,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": "5 мг/кг 1 р/д. Терапевтический мониторинг (trough <1, peak 5-10).",
+                      "regimen_label": "5 мг/кг 1 р/д"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Альтернатива",
+              "drugs": [
+                {
+                  "drug_ref": "cefotaxime",
+                  "route": ["iv", "im"],
+                  "indication_note": "Цефалоспорин III поколения, особенно при подозрении на грамотрицательную этиологию",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 150,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 3,
+                      "duration_days": "7-10",
+                      "duration_note": "<7 дней: 100 мг/кг/сут 2 р/д; >7 дней: 150-200 мг/кг/сут 3 р/д. Не применять для профилактики (риск инфицирования резистентной флорой).",
+                      "regimen_label": "100-200 мг/кг/сут 2-3 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "los_late",
+          "name": "Поздний неонатальный сепсис (>72 часов жизни)",
+          "age_group": "neonate",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (эмпирическая, стационар)",
+              "drugs": [
+                {
+                  "drug_ref": "vancomycin",
+                  "route": ["iv"],
+                  "indication_note": "Покрытие коагулазонегативных стафилококков (основной возбудитель позднего сепсиса, особенно катетер-ассоциированного)",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "10-15 мг/кг каждые 12 ч (новорождённые) или 8 ч (дети). ТЛМ 15-20 мг/л.",
+                      "regimen_label": "10-15 мг/кг 2 р/д"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "gentamicin",
+                  "route": ["iv", "im"],
+                  "indication_note": "Добавить для грамотрицательного покрытия",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 5,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "5 мг/кг 1 р/д"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Альтернатива при грамотрицательной / мультирезистентной флоре",
+              "drugs": [
+                {
+                  "drug_ref": "meropenem",
+                  "route": ["iv"],
+                  "indication_note": "Карбапенем при ESBL-продуцентах, нозокомиальной флоре",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 60,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 120,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": "<7 дней: 20 мг/кг 2 р/д; >7 дней: 20-30 мг/кг 2-3 р/д. При менингите — 40 мг/кг.",
+                      "regimen_label": "20-30 мг/кг 2-3 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nec",
+      "mkb10": ["P77.0", "P77.1", "P77.2", "P77.3", "P77.8", "P77.9"],
+      "name": "Некротизирующий энтероколит (НЭК)",
+      "synonyms": ["НЭК", "некротизирующий энтероколит новорождённых"],
+      "cr_id": "264",
+      "cr_year": 2023,
+      "cr_updated": "2023-11-20",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/264",
+      "antibiotics_indicated": true,
+      "indications": ["Стадии II-III НЭК по Bell-модификации"],
+      "age_groups": ["neonate"],
+      "scenarios": [
+        {
+          "id": "nec_medical",
+          "name": "Консервативное лечение (Стадии II-III)",
+          "age_group": "neonate",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (тройная терапия)",
+              "combo_therapy": true,
+              "drugs": [
+                {
+                  "drug_ref": "benzylpenicillin_na",
+                  "component_role": "main",
+                  "route": ["iv"],
+                  "indication_note": "Покрытие грамположительной флоры",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "100 000-200 000 ЕД/кг/сут",
+                      "regimen_label": "100 000-200 000 ЕД/кг/сут"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "gentamicin",
+                  "component_role": "gram_negative_coverage",
+                  "route": ["iv", "im"],
+                  "indication_note": "Грамотрицательное покрытие",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 5,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "5 мг/кг 1 р/д"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "metronidazole",
+                  "component_role": "anaerobe_coverage",
+                  "route": ["iv"],
+                  "indication_note": "Анаэробное покрытие",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 15,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 30,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "7.5 мг/кг 2 р/д",
+                      "regimen_label": "15 мг/кг/сут 2 р/д"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Альтернатива (тяжёлое течение, нозокомиальная флора)",
+              "drugs": [
+                {
+                  "drug_ref": "meropenem",
+                  "route": ["iv"],
+                  "indication_note": "Монотерапия карбапенемом при тяжёлом НЭК",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 60,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 120,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "20-30 мг/кг 2-3 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neonatal_conjunctivitis",
+      "mkb10": ["P39.1", "A54.3", "A74.0", "P39.8"],
+      "name": "Конъюнктивит новорождённых",
+      "synonyms": ["неонатальный конъюнктивит", "офтальмия новорождённых"],
+      "cr_id": "319",
+      "cr_year": 2023,
+      "cr_updated": "2023-09-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/319",
+      "antibiotics_indicated": true,
+      "indications": ["Гнойный конъюнктивит новорождённых", "Подтверждённая гонококковая/хламидийная этиология"],
+      "age_groups": ["neonate"],
+      "scenarios": [
+        {
+          "id": "conj_gonococcal",
+          "name": "Гонококковый конъюнктивит",
+          "age_group": "neonate",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "ceftriaxone",
+                  "route": ["iv", "im"],
+                  "indication_note": "Препарат выбора",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 50,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 125,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "25-50 мг/кг (макс 125 мг) однократно в/м или в/в. НЕ использовать лидокаин у новорождённых — только вода для инъекций.",
+                      "regimen_label": "25-50 мг/кг однократно"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "conj_chlamydial",
+          "name": "Хламидийный конъюнктивит",
+          "age_group": "neonate",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "erythromycin",
+                  "route": ["per_os"],
+                  "indication_note": "Системная терапия (местно недостаточно). Риск пилоростеноза.",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 40,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 50,
+                      "freq_per_day": 4,
+                      "duration_days": "14",
+                      "duration_note": "10 мг/кг 4 р/д 14 дней. Мониторинг на пилоростеноз.",
+                      "regimen_label": "10 мг/кг 4 р/д 14 дней"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omphalitis",
+      "mkb10": ["P38.0", "P38.8", "P38.9"],
+      "name": "Омфалит новорождённых",
+      "synonyms": ["инфекция пупочной ранки"],
+      "cr_id": "16",
+      "cr_year": 2024,
+      "cr_updated": "2024-03-01",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/16",
+      "antibiotics_indicated": true,
+      "indications": ["Гнойное отделяемое из пупочной ранки", "Гиперемия/отёк кожи вокруг пупка"],
+      "age_groups": ["neonate"],
+      "scenarios": [
+        {
+          "id": "omphalitis_localized",
+          "name": "Локализованный омфалит (без системных проявлений)",
+          "age_group": "neonate",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (эмпирическая)",
+              "combo_therapy": true,
+              "drugs": [
+                {
+                  "drug_ref": "benzylpenicillin_na",
+                  "component_role": "main",
+                  "route": ["iv"],
+                  "indication_note": "Покрытие S.aureus, стрептококков",
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "100 000 ЕД/кг/сут 2 р/д"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "gentamicin",
+                  "component_role": "gram_negative_coverage",
+                  "route": ["iv", "im"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "neonate",
+                      "dose_mg_kg_day": 5,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "5 мг/кг 1 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

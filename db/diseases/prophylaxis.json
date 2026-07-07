@@ -1,0 +1,623 @@
+{
+  "category": "Профилактики и укусы",
+  "recommendations": [
+    {
+      "id": "animal_bite",
+      "mkb10": ["W53.0", "W54.0", "W55.0", "T14.1", "L02.0", "L02.1", "L02.2", "L02.3"],
+      "name": "Укусы животных (профилактика и лечение раневой инфекции)",
+      "synonyms": ["укус собаки", "укус кошки", "пастереллёз"],
+      "cr_id": "62",
+      "cr_year": 2023,
+      "cr_updated": "2023-08-25",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/62",
+      "antibiotics_indicated": true,
+      "indications": ["Все укусы кошек (высокий риск инфекции)", "Глубокие/колотые укусы собак", "Укусы с признаками инфекции", "Раны на руках/лице/гениталиях", "Иммунокомпрометированные пациенты"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "bite_prophylaxis",
+          "name": "Профилактика (свежий укус, <24 ч)",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "amoxiclav",
+                  "route": ["per_os"],
+                  "indication_note": "Покрытие Pasteurella multocida, Capnocytophaga, анаэробов",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1750,
+                      "single_dose_mg": 875,
+                      "max_daily_mg": 3500,
+                      "freq_per_day": 2,
+                      "duration_days": "5-7",
+                      "duration_note": "Профилактика 5-7 дней",
+                      "regimen_label": "875 мг 2 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 45,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "5-7",
+                      "duration_note": "По амоксициллину",
+                      "regimen_label": "45 мг/кг 2 р/д"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии к бета-лактамам",
+              "drugs": [
+                {
+                  "drug_ref": "doxycycline",
+                  "route": ["per_os"],
+                  "indication_note": "Покрытие Pasteurella у взрослых",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 200,
+                      "single_dose_mg": 100,
+                      "max_daily_mg": 200,
+                      "freq_per_day": 2,
+                      "duration_days": "5-7",
+                      "duration_note": null,
+                      "regimen_label": "100 мг 2 р/д"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": "У детей <8 лет при аллергии",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 10,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "3-5",
+                      "duration_note": null,
+                      "regimen_label": "10 мг/кг 1 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bite_infected",
+          "name": "Уже инфицированный укус",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "amoxiclav",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1750,
+                      "single_dose_mg": 875,
+                      "max_daily_mg": 3500,
+                      "freq_per_day": 2,
+                      "duration_days": "10-14",
+                      "duration_note": "Лечение 10-14 дней",
+                      "regimen_label": "875 мг 2 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 45,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "10-14",
+                      "duration_note": null,
+                      "regimen_label": "45 мг/кг 2 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "postop_prophylaxis",
+      "mkb10": ["Z48.0", "T81.4", "Y83.0", "Y83.1"],
+      "name": "Послеоперационная антибиотикопрофилактика",
+      "synonyms": ["профилактика ИЛО", "антибиотикопрофилактика хирургии"],
+      "cr_id": "75",
+      "cr_year": 2024,
+      "cr_updated": "2024-04-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/75",
+      "antibiotics_indicated": true,
+      "indications": ["Чистые и условно-чистые хирургические вмешательства"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "clean_surgery",
+          "name": "Чистые / условно-чистые вмешательства",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "cefazolin",
+                  "route": ["iv"],
+                  "indication_note": "Препарат выбора для большинства вмешательств",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "2 г в/в за 30-60 мин до разреза. Повтор 1 г через 4 ч при длительной операции или кровопотере >1500 мл.",
+                      "regimen_label": "2 г в/в за 30-60 мин"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 50,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "50-100 мг/кг (макс 2 г) за 60 мин до разреза",
+                      "regimen_label": "50 мг/кг (макс 2 г)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии к бета-лактамам",
+              "drugs": [
+                {
+                  "drug_ref": "clindamycin",
+                  "route": ["iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 600,
+                      "single_dose_mg": 600,
+                      "max_daily_mg": 1800,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "600 мг в/в за 30 мин до разреза",
+                      "regimen_label": "600 мг в/в"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 15,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 900,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": null,
+                      "regimen_label": "15 мг/кг в/в"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "colorectal_surgery",
+          "name": "Колоректальная хирургия (покрытие анаэробов)",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "combo_therapy": true,
+              "drugs": [
+                {
+                  "drug_ref": "cefazolin",
+                  "component_role": "main",
+                  "route": ["iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": null,
+                      "regimen_label": "2 г в/в"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "metronidazole",
+                  "component_role": "anaerobe_coverage",
+                  "route": ["iv"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "500 мг в/в за 30-60 мин до разреза",
+                      "regimen_label": "500 мг в/в"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "endocarditis_prophylaxis",
+      "mkb10": ["Z23.0", "I33.0", "I33.1"],
+      "name": "Профилактика инфекционного эндокардита",
+      "synonyms": ["ИЭ-профилактика", "профилактика эндокардита"],
+      "cr_id": "11",
+      "cr_year": 2023,
+      "cr_updated": "2023-11-01",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/11",
+      "antibiotics_indicated": true,
+      "indications": ["Стоматологические процедуры у пациентов высокого риска (протезы клапанов, ИЭ в анамнезе, врождённые пороки)", "Процедуры на дыхательных путях с рассечением слизистой"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "ie_dental",
+          "name": "Стоматологические процедуры",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "amoxicillin",
+                  "route": ["per_os"],
+                  "indication_note": "Разовая доза за 30-60 мин до процедуры",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "2 г per os за 30-60 мин до процедуры",
+                      "regimen_label": "2 г per os 1 раз"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 50,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "50 мг/кг (макс 2 г) per os за 30-60 мин до процедуры",
+                      "regimen_label": "50 мг/кг (макс 2 г)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии",
+              "drugs": [
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "500 мг per os за 30-60 мин",
+                      "regimen_label": "500 мг per os 1 раз"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 15,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "15 мг/кг (макс 500 мг)",
+                      "regimen_label": "15 мг/кг (макс 500 мг)"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "clindamycin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 600,
+                      "single_dose_mg": 600,
+                      "max_daily_mg": 600,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "600 мг per os",
+                      "regimen_label": "600 мг per os 1 раз"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 20,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 600,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "20 мг/кг (макс 600 мг)",
+                      "regimen_label": "20 мг/кг (макс 600 мг)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "asplenia_prophylaxis",
+      "mkb10": ["Z90.0", "D73.0", "D73.1"],
+      "name": "Аспления — антибиотикопрофилактика (пенициллиновая)",
+      "synonyms": ["профилактика при удалённой селезёнке", "asplenia"],
+      "cr_id": "326",
+      "cr_year": 2023,
+      "cr_updated": "2023-07-01",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/326",
+      "antibiotics_indicated": true,
+      "indications": ["Аспления (после спленэктомии или функциональная)", "Профилактика пневмококковой/менингококковой инфекции"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "asplenia_long_term",
+          "name": "Длительная профилактика",
+          "age_group": "all",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (взрослые и дети >5 лет)",
+              "drugs": [
+                {
+                  "drug_ref": "amoxicillin",
+                  "route": ["per_os"],
+                  "indication_note": "Длительная ежедневная профилактика",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "хроническая",
+                      "duration_note": "500 мг 1 р/д длительно (минимум 2 года, часто пожизненно)",
+                      "regimen_label": "500 мг 1 р/д хронически"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 10,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "хроническая",
+                      "duration_note": "10 мг/кг/сут (дети <5 лет — 25 мг/кг/сут)",
+                      "regimen_label": "10-25 мг/кг 1 р/д"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии",
+              "drugs": [
+                {
+                  "drug_ref": "azithromycin",
+                  "route": ["per_os"],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 250,
+                      "single_dose_mg": 250,
+                      "max_daily_mg": 250,
+                      "freq_per_day": 1,
+                      "duration_days": "хроническая",
+                      "duration_note": "250 мг 1 р/д",
+                      "regimen_label": "250 мг 1 р/д"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "uti_prophylaxis",
+      "mkb10": ["N39.0", "N30.0", "N32.0"],
+      "name": "Профилактика рецидивирующих ИМП",
+      "synonyms": ["профилактика ИМП", "рецидивирующий цистит"],
+      "cr_id": "10",
+      "cr_year": 2023,
+      "cr_updated": "2023-09-15",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/10",
+      "antibiotics_indicated": true,
+      "indications": ["≥2 эпизода ИМП в 6 месяцев или ≥3 в год"],
+      "age_groups": ["all"],
+      "scenarios": [
+        {
+          "id": "uti_prophylaxis_female",
+          "name": "Профилактика у небеременных женщин (посткоитальная или непрерывная)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "nitrofurantoin",
+                  "route": ["per_os"],
+                  "indication_note": "Низкодозовая профилактика на 6-12 месяцев",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 50,
+                      "single_dose_mg": 50,
+                      "max_daily_mg": 100,
+                      "freq_per_day": 1,
+                      "duration_days": "180-365",
+                      "duration_note": "50 мг 1 р/д на ночь, или 100 мг посткоитально",
+                      "regimen_label": "50 мг 1 р/д на ночь"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "cotrimoxazole",
+                  "route": ["per_os"],
+                  "indication_note": "Альтернатива",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 480,
+                      "single_dose_mg": 480,
+                      "max_daily_mg": 480,
+                      "freq_per_day": 1,
+                      "duration_days": "180-365",
+                      "duration_note": "480 мг (1 таб) 1 р/д на ночь, или посткоитально",
+                      "regimen_label": "480 мг 1 р/д на ночь"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "fosfomycin",
+                  "route": ["per_os"],
+                  "indication_note": "Посткоитальная профилактика (однократно после полового акта)",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 3000,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 1,
+                      "duration_days": "по ситуации",
+                      "duration_note": "3 г однократно после ПА (не чаще 1 раза в 10 дней)",
+                      "regimen_label": "3 г посткоитально"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uti_prophylaxis_child",
+          "name": "Профилактика у детей (после первого эпизода ИМП с рефлюксом/аномалиями)",
+          "age_group": "child",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "drug_ref": "cotrimoxazole",
+                  "route": ["per_os"],
+                  "indication_note": "Низкодозовая профилактика",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 10,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 480,
+                      "freq_per_day": 1,
+                      "duration_days": "180-365",
+                      "duration_note": "10 мг/кг (по триметоприму) на ночь",
+                      "regimen_label": "10 мг/кг (по TMP) на ночь"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "nitrofurantoin",
+                  "route": ["per_os"],
+                  "indication_note": "Альтернатива (дети >1 мес)",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 1.5,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 100,
+                      "freq_per_day": 1,
+                      "duration_days": "180-365",
+                      "duration_note": "1-2 мг/кг на ночь",
+                      "regimen_label": "1.5 мг/кг на ночь"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
