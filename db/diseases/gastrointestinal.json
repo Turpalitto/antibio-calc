@@ -3,16 +3,30 @@
   "recommendations": [
     {
       "id": "h_pylori",
-      "mkb10": ["K25", "K26", "K27", "K28", "K29.5", "K29.6"],
+      "mkb10": [
+        "K25",
+        "K26",
+        "K27",
+        "K28",
+        "K29.5",
+        "K29.6"
+      ],
       "name": "Helicobacter pylori-инфекция (язвенная болезнь)",
-      "synonyms": ["хеликобактер", "эрадикация H.pylori"],
-      "cr_id": "118",
-      "cr_year": 2023,
-      "cr_updated": "2023-07-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/118",
+      "synonyms": [
+        "хеликобактер",
+        "эрадикация H.pylori"
+      ],
+      "cr_id": "388",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/388",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённая H.pylori-инфекция"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Подтверждённая H.pylori-инфекция"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "hp_first_line",
@@ -25,7 +39,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Компонент квадротерапии",
                   "regimens": [
                     {
@@ -42,7 +58,9 @@
                 },
                 {
                   "drug_ref": "metronidazole",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Компонент квадротерапии",
                   "regimens": [
                     {
@@ -65,7 +83,9 @@
               "drugs": [
                 {
                   "drug_ref": "clarithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -84,20 +104,32 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "Эрадикация H.pylori входит в состав КР 'Язвенная болезнь желудка и/или ДПК' (2024)."
     },
     {
       "id": "cholecystitis_cholangitis",
-      "mkb10": ["K81.0", "K81.1", "K83.0"],
+      "mkb10": [
+        "K81.0",
+        "K81.1",
+        "K83.0"
+      ],
       "name": "Острый холецистит и холангит",
-      "synonyms": ["холецистит", "холангит"],
-      "cr_id": "78",
+      "synonyms": [
+        "холецистит",
+        "холангит"
+      ],
+      "cr_id": "819",
       "cr_year": 2024,
-      "cr_updated": "2024-01-30",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/78",
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/819",
       "antibiotics_indicated": true,
-      "indications": ["Острый калькулёзный холецистит, острый холангит"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Острый калькулёзный холецистит, острый холангит"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "cholec_mild_mod",
@@ -110,7 +142,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -126,8 +160,13 @@
                   ]
                 },
                 {
-                  "combo_ref": ["ceftriaxone", "metronidazole"],
-                  "route": ["iv"],
+                  "combo_ref": [
+                    "ceftriaxone",
+                    "metronidazole"
+                  ],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Комбинация для покрытия анаэробов",
                   "regimens": [
                     {
@@ -138,7 +177,16 @@
                       "max_daily_mg": 4000,
                       "freq_per_day": 1,
                       "duration_days": "4-7",
-                      "duration_note": "Цефтриаксон 2 г 1 р/д + метронидазол 500 мг 3 р/д"
+                      "duration_note": "Цефтриаксон 2 г 1 р/д + метронидазол 500 мг 3 р/д",
+                      "component_regimens": {
+                        "metronidazole": {
+                          "single_dose_mg": 500,
+                          "dose_mg_day_fixed": 1500,
+                          "freq_per_day": 3,
+                          "duration_days": "4-7",
+                          "component_note": "Покрытие анаэробов"
+                        }
+                      }
                     }
                   ]
                 }
@@ -150,7 +198,9 @@
               "drugs": [
                 {
                   "drug_ref": "piperacillin_tazobactam",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Покрытие Pseudomonas и анаэробов",
                   "regimens": [
                     {
@@ -170,6 +220,543 @@
           ]
         }
       ]
+    },
+    {
+      "id": "intraabdominal_infection",
+      "mkb10": [
+        "K35.8",
+        "K65.0",
+        "K65.9",
+        "K63.1"
+      ],
+      "name": "Интраабдоминальная инфекция (осложнённый аппендицит, перитонит)",
+      "synonyms": [
+        "перитонит",
+        "аппендицит",
+        "интраабдоминальная инфекция",
+        "абсцесс брюшной полости"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Контроль источника (хирургия/дренирование) + системная АБ-терапия"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "iai_mild",
+          "name": "Внебольничная, лёгкое/среднетяжёлое течение",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3600,
+                      "single_dose_mg": 1200,
+                      "max_daily_mg": 4800,
+                      "freq_per_day": 3,
+                      "duration_days": "4-7",
+                      "duration_note": null,
+                      "regimen_label": "1.2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "amoxiclav"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "4-7",
+                      "duration_note": "Цефтриаксон 2 г 1 р/д + метронидазол 500 мг 3 р/д.",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "metronidazole": {
+                          "single_dose_mg": 500,
+                          "dose_mg_day_fixed": 1500,
+                          "freq_per_day": 3,
+                          "duration_days": "4-7",
+                          "component_note": "Покрытие анаэробов"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "ceftriaxone",
+                    "metronidazole"
+                  ]
+                }
+              ],
+              "combo_therapy": true
+            }
+          ]
+        },
+        {
+          "id": "iai_severe",
+          "name": "Тяжёлое / нозокомиальное течение",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 16000,
+                      "single_dose_mg": 4000,
+                      "max_daily_mg": 18000,
+                      "freq_per_day": 4,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "4.5 г 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "piperacillin_tazobactam"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "1 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "meropenem"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР по позиции. Основа: РАСХИ/СКАТ (интраабдоминальные инфекции)."
+    },
+    {
+      "id": "cdi",
+      "mkb10": [
+        "A04.7"
+      ],
+      "name": "Clostridioides difficile-ассоциированная инфекция (псевдомембранозный колит)",
+      "synonyms": [
+        "C.difficile",
+        "псевдомембранозный колит",
+        "антибиотик-ассоциированная диарея",
+        "CDI"
+      ],
+      "cr_id": "878",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/878",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Отменить причинный антибиотик по возможности. Препараты — ВНУТРЬ (per os)"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "cdi_nonsevere",
+          "name": "Нетяжёлое течение / первый эпизод",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 125,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 4,
+                      "duration_days": "10",
+                      "duration_note": "125 мг ВНУТРЬ 4 р/д, 10 дней. Не всасывается — действует местно.",
+                      "regimen_label": "125 мг внутрь 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива (лёгкое течение, нет ванкомицина)",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 3,
+                      "duration_days": "10",
+                      "duration_note": "500 мг внутрь 3 р/д, 10 дней. Только при лёгком течении.",
+                      "regimen_label": "500 мг внутрь 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "metronidazole"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cdi_severe",
+          "name": "Тяжёлое / фульминантное течение",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 4,
+                      "duration_days": "10",
+                      "duration_note": "500 мг внутрь/через зонд 4 р/д ± метронидазол в/в при илеусе.",
+                      "regimen_label": "500 мг внутрь 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "diverticulitis",
+      "mkb10": [
+        "K57.2",
+        "K57.3",
+        "K57.9"
+      ],
+      "name": "Острый дивертикулит толстой кишки",
+      "synonyms": [
+        "дивертикулит",
+        "diverticulitis"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Неосложнённый — амбулаторно per os; осложнённый — стационар в/в + возможное дренирование"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "divert_uncompl",
+          "name": "Неосложнённый (амбулаторно)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1750,
+                      "single_dose_mg": 875,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "875/125 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "amoxiclav"
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "Ципрофлоксацин 500 мг 2 р/д + метронидазол 500 мг 3 р/д.",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "metronidazole": {
+                          "single_dose_mg": 500,
+                          "dose_mg_day_fixed": 1500,
+                          "freq_per_day": 3,
+                          "duration_days": "7-10",
+                          "component_note": "Покрытие анаэробов"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "ciprofloxacin",
+                    "metronidazole"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "divert_compl",
+          "name": "Осложнённый (стационар, в/в)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": "Цефтриаксон 2 г 1 р/д + метронидазол 500 мг 3 р/д.",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "metronidazole": {
+                          "single_dose_mg": 500,
+                          "dose_mg_day_fixed": 1500,
+                          "freq_per_day": 3,
+                          "duration_days": "7-10",
+                          "component_note": "Покрытие анаэробов"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "ceftriaxone",
+                    "metronidazole"
+                  ]
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 16000,
+                      "single_dose_mg": 4000,
+                      "max_daily_mg": 18000,
+                      "freq_per_day": 4,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "4.5 г 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "piperacillin_tazobactam"
+                }
+              ],
+              "combo_therapy": true
+            }
+          ]
+        }
+      ],
+      "cr_note": "Основа: КР 'Дивертикулярная болезнь' + программа СКАТ (антибактериальный компонент)."
+    },
+    {
+      "id": "sbp",
+      "mkb10": [
+        "K65.2"
+      ],
+      "name": "Спонтанный бактериальный перитонит (СБП)",
+      "synonyms": [
+        "СБП",
+        "спонтанный бактериальный перитонит",
+        "асцит-перитонит",
+        "SBP"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "У пациентов с циррозом/асцитом. Диагноз: нейтрофилы асцита ≥250/мм³. Начинать эмпирически немедленно."
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "sbp_std",
+          "name": "Эмпирическая терапия",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 1,
+                      "duration_days": "5-7",
+                      "duration_note": null,
+                      "regimen_label": "2 г 1 р/д"
+                    }
+                  ],
+                  "drug_ref": "ceftriaxone"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 8000,
+                      "freq_per_day": 3,
+                      "duration_days": "5-7",
+                      "duration_note": null,
+                      "regimen_label": "2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefotaxime"
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3600,
+                      "single_dose_mg": 1200,
+                      "max_daily_mg": 4800,
+                      "freq_per_day": 3,
+                      "duration_days": "5-7",
+                      "duration_note": null,
+                      "regimen_label": "1.2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "amoxiclav"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР по позиции. Основа: КР по циррозу печени; EASL (СБП)."
     }
   ]
 }

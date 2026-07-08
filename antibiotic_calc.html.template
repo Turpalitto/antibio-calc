@@ -208,7 +208,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
             <p class="text-orange-100 text-[10px] font-black uppercase tracking-widest mb-1">Разовая доза (<span id="inj-route-label">в/м</span>)</p>
             <div class="flex items-baseline gap-2">
               <span id="inj-mg" class="text-5xl md:text-6xl font-black tracking-tighter italic">0</span>
-              <span class="text-xl md:text-2xl font-bold text-orange-200">мг</span>
+              <span id="inj-unit" class="text-xl md:text-2xl font-bold text-orange-200">мг</span>
             </div>
           </div>
           <div class="bg-white/10 backdrop-blur-md rounded-2xl p-3 md:p-4 text-center border border-white/10">
@@ -441,19 +441,26 @@ function toggleTheme(){
 }
 function onWeightChange(){
   const w = parseFloat($('weight').value);
-  const warn = $('weight-warn');
-  if(!w){ warn.classList.add('hidden'); calculate(); return; }
-  let msg = '';
-  if(w < 1) msg = 'Вес <1 кг — вероятно ошибка. Расчёт для новорождённых требует осмотр врача.';
-  else if(w > 250) msg = 'Вес >250 кг — проверьте значение.';
-  else if(w < 40 && activeAge === 'adult') msg = 'Вес <40 кг, выбрана группа "взрослые". Возможно стоит переключить на "дети".';
-  if(msg){ warn.querySelector('span').textContent = msg; warn.classList.remove('hidden'); }
-  else warn.classList.add('hidden');
-  if(!userPickedAge){
+  if(w && !userPickedAge){
     if(w > 0 && w < 40 && activeAge !== 'neonate') setActiveAge('child');
     else if(w >= 40 && activeAge === 'child') setActiveAge('adult');
   }
   calculate();
+}
+// Единая логика предупреждения по весу (валидация значения + требование веса для мг/кг режимов)
+function updateWeightWarn(needWeight){
+  const warn = $('weight-warn');
+  const w = parseFloat($('weight').value);
+  let msg = '';
+  if(!w){
+    if(needWeight) msg = 'Для этого режима нужен вес пациента — доза рассчитывается по мг/кг.';
+  } else {
+    if(w < 1) msg = 'Вес <1 кг — вероятно ошибка. Расчёт для новорождённых требует осмотр врача.';
+    else if(w > 250) msg = 'Вес >250 кг — проверьте значение.';
+    else if(w < 40 && activeAge === 'adult') msg = 'Вес <40 кг, выбрана группа "взрослые". Возможно стоит переключить на "дети".';
+  }
+  if(msg){ warn.querySelector('span').textContent = msg; warn.classList.remove('hidden'); }
+  else warn.classList.add('hidden');
 }
 function setActiveAge(a){
   activeAge = a;
@@ -674,22 +681,35 @@ function getActiveRegimen(){
   }
   return regimens[activeRegimenIdx] || regimens[0];
 }
-function computeDose(reg, w){
-  let singleMg = 0, dailyMg = 0, capped = false;
-  if(reg.dose_mg_kg_day != null && w > 0){
-    dailyMg = w * reg.dose_mg_kg_day;
-  } else if(reg.dose_mg_day_fixed != null){
-    dailyMg = reg.dose_mg_day_fixed;
-  } else if(reg.single_dose_mg != null){
-    singleMg = reg.single_dose_mg;
-    dailyMg = singleMg * reg.freq_per_day;
+function computeDose(reg, w, unit){
+  let singleMg = 0, dailyMg = 0, capped = false, needWeight = false;
+  const perKg = reg.dose_mg_kg_day;
+  const fixed = reg.dose_mg_day_fixed;
+  const single = reg.single_dose_mg;
+  const maxDaily = reg.max_daily_mg;
+  if(perKg != null){
+    if(w > 0){ dailyMg = w * perKg; }
+    else { needWeight = true; }
+  } else if(fixed != null){
+    dailyMg = fixed;
+  } else if(single != null){
+    singleMg = single;
+    dailyMg = single * reg.freq_per_day;
   }
-  if(reg.max_daily_mg != null && dailyMg > reg.max_daily_mg){
-    dailyMg = reg.max_daily_mg;
+  if(maxDaily != null && dailyMg > maxDaily){
+    dailyMg = maxDaily;
     capped = true;
   }
-  if(singleMg === 0) singleMg = dailyMg / reg.freq_per_day;
-  return {singleMg, dailyMg, capped};
+  if(singleMg === 0 && reg.freq_per_day) singleMg = dailyMg / reg.freq_per_day;
+  return {singleMg, dailyMg, capped, needWeight, unit: unit || 'мг'};
+}
+// Форматирование дозы с учётом единиц (мг или ЕД)
+function fmtDose(val, unit){
+  if(unit === 'ЕД') return formatUnits(Math.round(val)) + ' ЕД';
+  return Math.round(val) + ' мг';
+}
+function doseUnitOf(ref){
+  return (ref && ref.dose_unit) ? ref.dose_unit : 'мг';
 }
 function calculate(){
   if(!activeDrug) return;
@@ -700,7 +720,9 @@ function calculate(){
   const form = mainRef.forms[activeFormIdx];
   const reg = getActiveRegimen();
   if(!reg) return;
-  const {singleMg, dailyMg, capped} = computeDose(reg, w);
+  const unit = doseUnitOf(mainRef);
+  const {singleMg, dailyMg, capped, needWeight} = computeDose(reg, w, unit);
+  updateWeightWarn(needWeight);
 
   $('combo-block').classList.add('hidden');
   $('combo-block').innerHTML = '';
@@ -730,13 +752,14 @@ function calculate(){
   renderDrugMeta(mainRef, reg);
 }
 function renderPO(reg, form, ref, w, singleMg, dailyMg, capped){
+  const unit = doseUnitOf(ref);
   const concMgPerMl = form.concentration_mg_per_ml || 0;
   const isSolid = ['tablet','capsule'].includes(form.form_type);
   if(isSolid || (w >= 40 && concMgPerMl === 0)){
-    $('po-ml').textContent = Math.round(singleMg);
-    $('po-unit').textContent = 'мг';
-    $('po-tabs').textContent = formatTablets(singleMg, form);
-    $('po-instruction').innerHTML = '<i class="fas fa-pills mr-2 text-blue-300"></i>Принимать по <b>'+Math.round(singleMg)+' мг</b> '+reg.freq_per_day+' р/д '+(form.concentration||'');
+    $('po-ml').textContent = unit === 'ЕД' ? formatUnits(Math.round(singleMg)) : Math.round(singleMg);
+    $('po-unit').textContent = unit;
+    $('po-tabs').textContent = unit === 'ЕД' ? '' : formatTablets(singleMg, form);
+    $('po-instruction').innerHTML = '<i class="fas fa-pills mr-2 text-blue-300"></i>Принимать по <b>'+fmtDose(singleMg, unit)+'</b> '+reg.freq_per_day+' р/д '+(form.concentration||'');
   } else {
     const ml = concMgPerMl > 0 ? singleMg / concMgPerMl : 0;
     $('po-ml').textContent = ml.toFixed(1);
@@ -744,22 +767,23 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped){
     $('po-tabs').textContent = '';
     $('po-instruction').innerHTML = '<i class="fas fa-flask mr-2 text-blue-300"></i>Давать по <b>'+ml.toFixed(1)+' мл</b> суспензии ('+form.concentration+') '+reg.freq_per_day+' р/д';
   }
-  $('po-mg').textContent = Math.round(singleMg)+' мг';
-  $('po-day').textContent = Math.round(dailyMg)+' мг';
+  $('po-mg').textContent = fmtDose(singleMg, unit);
+  $('po-day').textContent = fmtDose(dailyMg, unit);
   $('po-dur').textContent = reg.duration_days || '—';
 
   const rangeEl = $('po-range');
+  const uk = unit + '/кг/сут';
   if(reg.dose_range_mg_kg_day && reg.dose_range_mg_kg_day.length === 2){
     rangeEl.classList.remove('hidden');
-    rangeEl.textContent = 'Диапазон по КР: '+reg.dose_range_mg_kg_day[0]+'-'+reg.dose_range_mg_kg_day[1]+' мг/кг/сут';
+    rangeEl.textContent = 'Диапазон по КР: '+reg.dose_range_mg_kg_day[0]+'-'+reg.dose_range_mg_kg_day[1]+' '+uk;
   } else if(reg.dose_mg_kg_day){
     rangeEl.classList.remove('hidden');
-    rangeEl.textContent = 'Доза по КР: '+reg.dose_mg_kg_day+' мг/кг/сут';
+    rangeEl.textContent = 'Доза по КР: '+reg.dose_mg_kg_day+' '+uk;
   } else rangeEl.classList.add('hidden');
 
   const warnEl = $('po-max-warn');
   if(capped){
-    warnEl.querySelector('span').textContent = 'Превышена max суточная доза — снижено до '+reg.max_daily_mg+' мг/сут';
+    warnEl.querySelector('span').textContent = 'Превышена max суточная доза — снижено до '+fmtDose(reg.max_daily_mg, unit)+'/сут';
     warnEl.classList.remove('hidden');
   } else warnEl.classList.add('hidden');
 }
@@ -821,9 +845,11 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped){
     routeSel.appendChild(btn);
   });
 
+  const unit = doseUnitOf(ref);
   const routeData = dil[activeRouteKey];
   $('inj-route-label').textContent = routeKeyLabel(activeRouteKey);
-  $('inj-mg').textContent = Math.round(singleMg);
+  $('inj-mg').textContent = unit === 'ЕД' ? formatUnits(Math.round(singleMg)) : Math.round(singleMg);
+  $('inj-unit').textContent = unit;
   $('inj-freq').textContent = reg.freq_per_day+' р/д';
 
   let selectedVial = null;
@@ -853,19 +879,22 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped){
   }
 
   $('inj-ml').textContent = computeInjectableMl(singleMg, selectedVial);
-  $('inj-day').textContent = Math.round(dailyMg)+' мг';
+  $('inj-day').textContent = fmtDose(dailyMg, unit);
   $('inj-dur').textContent = reg.duration_days || '—';
-  $('inj-instruction').innerHTML = '<i class="fas fa-syringe mr-2 text-orange-300"></i>Ввести <b>'+Math.round(singleMg)+' мг</b> '+routeKeyLabel(activeRouteKey)+' • '+reg.freq_per_day+' р/д';
+  $('inj-instruction').innerHTML = '<i class="fas fa-syringe mr-2 text-orange-300"></i>Ввести <b>'+fmtDose(singleMg, unit)+'</b> '+routeKeyLabel(activeRouteKey)+' • '+reg.freq_per_day+' р/д';
 
   const rangeEl = $('inj-range');
-  if(reg.dose_mg_kg_day){
+  if(reg.dose_range_mg_kg_day && reg.dose_range_mg_kg_day.length === 2){
     rangeEl.classList.remove('hidden');
-    rangeEl.textContent = 'Доза по КР: '+reg.dose_mg_kg_day+' мг/кг/сут';
+    rangeEl.textContent = 'Диапазон по КР: '+reg.dose_range_mg_kg_day[0]+'-'+reg.dose_range_mg_kg_day[1]+' '+unit+'/кг/сут';
+  } else if(reg.dose_mg_kg_day){
+    rangeEl.classList.remove('hidden');
+    rangeEl.textContent = 'Доза по КР: '+reg.dose_mg_kg_day+' '+unit+'/кг/сут';
   } else rangeEl.classList.add('hidden');
 
   const warnEl = $('inj-max-warn');
   if(capped){
-    warnEl.querySelector('span').textContent = 'Превышена max суточная доза — снижено до '+reg.max_daily_mg+' мг/сут';
+    warnEl.querySelector('span').textContent = 'Превышена max суточная доза — снижено до '+fmtDose(reg.max_daily_mg, unit)+'/сут';
     warnEl.classList.remove('hidden');
   } else warnEl.classList.add('hidden');
 
@@ -925,15 +954,27 @@ function renderComboComponents(refs, reg, w){
   if(refs.length === 0) return;
   const block = $('combo-block');
   block.classList.remove('hidden');
-  block.innerHTML = '<div class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-2">Компоненты комбинации</div>';
+  block.innerHTML = '<div class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-2">Компоненты комбинации (применяются одновременно)</div>';
   refs.forEach(refKey=>{
     const ref = DB.drugs_reference[refKey];
     if(!ref) return;
-    const comboReg = reg;
-    const {singleMg, dailyMg} = computeDose(comboReg, w);
+    // У каждого компонента может быть собственный режим (component_regimens), иначе — режим основной линии
+    const compReg = (reg.component_regimens && reg.component_regimens[refKey]) || reg;
+    const unit = doseUnitOf(ref);
+    const {singleMg, dailyMg, needWeight} = computeDose(compReg, w, unit);
+    let doseTxt;
+    if(needWeight){
+      doseTxt = 'Введите вес пациента — доза по '+unit+'/кг';
+    } else {
+      doseTxt = 'По <b>'+fmtDose(singleMg, unit)+'</b> '+compReg.freq_per_day+' р/д'
+        + (compReg.duration_days ? ' • '+compReg.duration_days+' дн' : '')
+        + ' <span class="opacity-70">(сут. '+fmtDose(dailyMg, unit)+')</span>';
+    }
+    const roleTxt = compReg.component_note ? '<div class="text-[11px] text-slate-500 dark:text-slate-500 mt-1">'+compReg.component_note+'</div>' : '';
     const card = document.createElement('div');
     card.className = 'premium-card p-4 text-sm';
-    card.innerHTML = '<div class="font-bold text-slate-800 dark:text-slate-200 mb-1">'+ref.inn+'</div><div class="text-xs text-slate-600 dark:text-slate-400">Доза применяется согласно основному режиму линии.</div>';
+    card.innerHTML = '<div class="font-bold text-slate-800 dark:text-slate-200 mb-1">'+ref.inn+'</div>'
+      + '<div class="text-xs text-slate-600 dark:text-slate-400">'+doseTxt+'</div>'+roleTxt;
     block.appendChild(card);
   });
 }
@@ -950,8 +991,10 @@ function renderDrugMeta(ref, reg){
   const mon = ref.monitoring || '—';
   const inter = ref.interactions || '—';
   const stor = ref.storage_reconstituted || '—';
-  const cr = activeDisease ? 'КР #'+activeDisease.cr_id+' • '+activeDisease.cr_year : '';
+  const hasCr = activeDisease && activeDisease.cr_id && activeDisease.cr_id !== '—';
+  const cr = hasCr ? 'КР №'+activeDisease.cr_id+' • '+activeDisease.cr_year : (activeDisease ? 'Схема антимикробной терапии' : '');
   const url = activeDisease ? activeDisease.source_url : '';
+  const crNote = (activeDisease && !hasCr && activeDisease.cr_note) ? activeDisease.cr_note : '';
   meta.innerHTML = ''
     + metaRow('МНН', ref.inn)
     + metaRow('Класс', ref.class || '—')
@@ -961,7 +1004,8 @@ function renderDrugMeta(ref, reg){
     + metaRow('Мониторинг', mon)
     + metaRow('Взаимодействия', inter)
     + metaRow('Хранение', stor)
-    + metaRow('Источник', cr+(url?' — '+url:''));
+    + metaRow('Источник', cr+(url?' — '+url:''))
+    + (crNote ? metaRow('Основание', crNote) : '');
 }
 function metaRow(k, v){
   return '<div class="flex justify-between gap-3"><span class="text-slate-400 dark:text-slate-500 font-black uppercase text-[10px] tracking-widest flex-shrink-0">'+k+'</span><span class="text-slate-700 dark:text-slate-300 font-semibold text-right">'+v+'</span></div>';

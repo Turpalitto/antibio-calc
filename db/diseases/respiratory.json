@@ -3,16 +3,31 @@
   "recommendations": [
     {
       "id": "cap_adult",
-      "mkb10": ["J13", "J14", "J15", "J16", "J17", "J18"],
+      "mkb10": [
+        "J13",
+        "J14",
+        "J15",
+        "J16",
+        "J17",
+        "J18"
+      ],
       "name": "Внебольничная пневмония у взрослых",
-      "synonyms": ["пневмония", "ВП", "community-acquired pneumonia"],
-      "cr_id": "3",
-      "cr_year": 2023,
-      "cr_updated": "2023-12-20",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/3",
+      "synonyms": [
+        "пневмония",
+        "ВП",
+        "community-acquired pneumonia"
+      ],
+      "cr_id": "654",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/654",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённая или клинически вероятная ВП"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Подтверждённая или клинически вероятная ВП"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "cap_adult_out_no_risk",
@@ -25,7 +40,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора при нетяжёлой ВП без факторов риска",
                   "regimens": [
                     {
@@ -48,7 +65,9 @@
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Макролид при подозрении на атипичную флору",
                   "regimens": [
                     {
@@ -65,7 +84,9 @@
                 },
                 {
                   "drug_ref": "clarithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -95,7 +116,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Покрытие H.influenzae, M.catarrhalis, бета-лактамазопродуцентов",
                   "regimens": [
                     {
@@ -118,7 +141,10 @@
               "drugs": [
                 {
                   "drug_ref": "levofloxacin",
-                  "route": ["per_os", "iv"],
+                  "route": [
+                    "per_os",
+                    "iv"
+                  ],
                   "indication_note": "Дыхательный фторхинолон, при непереносимости бета-лактамов",
                   "regimens": [
                     {
@@ -135,7 +161,10 @@
                 },
                 {
                   "drug_ref": "moxifloxacin",
-                  "route": ["per_os", "iv"],
+                  "route": [
+                    "per_os",
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -165,7 +194,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -182,14 +213,17 @@
                 },
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
                       "age_group": "adult",
                       "dose_mg_kg_day": null,
                       "dose_mg_day_fixed": 2000,
-                      "single_dose_mg": 1000,
+                      "single_dose_mg": 2000,
                       "max_daily_mg": 4000,
                       "freq_per_day": 1,
                       "duration_days": "7-10",
@@ -212,14 +246,16 @@
               "drugs": [
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Бета-лактам + макролид для покрытия атипичной флоры",
                   "regimens": [
                     {
                       "age_group": "adult",
                       "dose_mg_kg_day": null,
                       "dose_mg_day_fixed": 2000,
-                      "single_dose_mg": 1000,
+                      "single_dose_mg": 2000,
                       "max_daily_mg": 4000,
                       "freq_per_day": 1,
                       "duration_days": "7-10",
@@ -229,7 +265,10 @@
                 },
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["iv", "per_os"],
+                  "route": [
+                    "iv",
+                    "per_os"
+                  ],
                   "indication_note": "Макролидный компонент комбинации",
                   "regimens": [
                     {
@@ -252,7 +291,9 @@
               "drugs": [
                 {
                   "drug_ref": "levofloxacin",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Монотерапия дыхательным фторхинолоном",
                   "regimens": [
                     {
@@ -275,16 +316,29 @@
     },
     {
       "id": "cap_child",
-      "mkb10": ["J13", "J14", "J15", "J16", "J17", "J18"],
+      "mkb10": [
+        "J13",
+        "J14",
+        "J15",
+        "J16",
+        "J17",
+        "J18"
+      ],
       "name": "Внебольничная пневмония у детей",
-      "synonyms": ["пневмония детская"],
-      "cr_id": "3",
-      "cr_year": 2023,
-      "cr_updated": "2023-12-20",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/3",
+      "synonyms": [
+        "пневмония детская"
+      ],
+      "cr_id": "714",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/714",
       "antibiotics_indicated": true,
-      "indications": ["ВП с подтверждённой бактериальной этиологией или тяжёлым течением"],
-      "age_groups": ["child"],
+      "indications": [
+        "ВП с подтверждённой бактериальной этиологией или тяжёлым течением"
+      ],
+      "age_groups": [
+        "child"
+      ],
       "scenarios": [
         {
           "id": "cap_child_out",
@@ -297,7 +351,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора",
                   "regimens": [
                     {
@@ -330,7 +386,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "При недавнем приёме АБ или подозрении на H.influenzae",
                   "regimens": [
                     {
@@ -347,7 +405,9 @@
                 },
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "При подозрении на атипичную этиологию (Mycoplasma pneumoniae)",
                   "regimens": [
                     {
@@ -377,7 +437,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -394,7 +456,10 @@
                 },
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -417,16 +482,28 @@
     },
     {
       "id": "copd_exacerbation",
-      "mkb10": ["J44", "J44.0", "J44.1", "J45.0"],
+      "mkb10": [
+        "J44",
+        "J44.0",
+        "J44.1",
+        "J45.0"
+      ],
       "name": "Острое бактериальное обострение ХОБЛ",
-      "synonyms": ["ОБОХОБЛ", "обострение ХОБЛ"],
-      "cr_id": "249",
+      "synonyms": [
+        "ОБОХОБЛ",
+        "обострение ХОБЛ"
+      ],
+      "cr_id": "603",
       "cr_year": 2024,
-      "cr_updated": "2024-01-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/249",
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/603",
       "antibiotics_indicated": true,
-      "indications": ["Обострение с увеличением гнойности мокроты и/или одышки"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Обострение с увеличением гнойности мокроты и/или одышки"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "copd_simple",
@@ -439,7 +516,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -456,7 +535,9 @@
                 },
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -486,7 +567,9 @@
               "drugs": [
                 {
                   "drug_ref": "levofloxacin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -503,7 +586,9 @@
                 },
                 {
                   "drug_ref": "moxifloxacin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -526,20 +611,36 @@
     },
     {
       "id": "sinusitis_adult",
-      "mkb10": ["J01.0", "J01.1", "J01.2", "J01.3", "J01.4", "J32.0", "J32.1", "J32.2", "J32.3"],
+      "mkb10": [
+        "J01.0",
+        "J01.1",
+        "J01.2",
+        "J01.3",
+        "J01.4",
+        "J32.0",
+        "J32.1",
+        "J32.2",
+        "J32.3"
+      ],
       "name": "Острый и рецидивирующий риносинусит у взрослых",
-      "synonyms": ["синусит", "ОРС", "риносинусит"],
-      "cr_id": "150",
-      "cr_year": 2023,
-      "cr_updated": "2023-04-20",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/150",
+      "synonyms": [
+        "синусит",
+        "ОРС",
+        "риносинусит"
+      ],
+      "cr_id": "313",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/313",
       "antibiotics_indicated": true,
       "indications": [
         "Сохранение симптомов >10 дней",
         "Ухудшение после первоначального улучшения (double sickening)",
         "Тяжёлая форма: лихорадка ≥39°C и гнойное отделяемое ≥3 дней"
       ],
-      "age_groups": ["adult"],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "sin_adult_standard",
@@ -552,7 +653,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора",
                   "regimens": [
                     {
@@ -569,7 +672,9 @@
                 },
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "При тяжёлом течении или недавнем АБ",
                   "regimens": [
                     {
@@ -592,7 +697,9 @@
               "drugs": [
                 {
                   "drug_ref": "doxycycline",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -615,16 +722,35 @@
     },
     {
       "id": "sinusitis_child",
-      "mkb10": ["J01.0", "J01.1", "J01.2", "J01.3", "J01.4", "J32.0", "J32.1", "J32.2", "J32.3"],
+      "mkb10": [
+        "J01.0",
+        "J01.1",
+        "J01.2",
+        "J01.3",
+        "J01.4",
+        "J32.0",
+        "J32.1",
+        "J32.2",
+        "J32.3"
+      ],
       "name": "Острый и рецидивирующий риносинусит у детей",
-      "synonyms": ["синусит у детей", "ОРС у детей"],
-      "cr_id": "150",
-      "cr_year": 2023,
-      "cr_updated": "2023-04-20",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/150",
+      "synonyms": [
+        "синусит у детей",
+        "ОРС у детей"
+      ],
+      "cr_id": "313",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/313",
       "antibiotics_indicated": true,
-      "indications": ["Сохранение симптомов >10 дней", "Ухудшение после улучшения", "Тяжёлая форма"],
-      "age_groups": ["child"],
+      "indications": [
+        "Сохранение симптомов >10 дней",
+        "Ухудшение после улучшения",
+        "Тяжёлая форма"
+      ],
+      "age_groups": [
+        "child"
+      ],
       "scenarios": [
         {
           "id": "sin_child_standard",
@@ -637,7 +763,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора",
                   "regimens": [
                     {
@@ -654,7 +782,9 @@
                 },
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "При недавнем АБ, тяжёлом течении, подозрении на H.influenzae",
                   "regimens": [
                     {
@@ -677,16 +807,31 @@
     },
     {
       "id": "pharyngitis_adult",
-      "mkb10": ["J02.0", "J02.8", "J02.9", "J03.0", "J03.8", "J03.9"],
+      "mkb10": [
+        "J02.0",
+        "J02.8",
+        "J02.9",
+        "J03.0",
+        "J03.8",
+        "J03.9"
+      ],
       "name": "Острый тонзиллит / фарингит (БГСА) у взрослых",
-      "synonyms": ["ангина", "БГСА", "стрептококковый тонзиллит"],
-      "cr_id": "82",
-      "cr_year": 2023,
-      "cr_updated": "2023-06-30",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/82",
+      "synonyms": [
+        "ангина",
+        "БГСА",
+        "стрептококковый тонзиллит"
+      ],
+      "cr_id": "306",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/306",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённый экспресс-тестом или посевом БГСА-тонзиллит"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Подтверждённый экспресс-тестом или посевом БГСА-тонзиллит"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "phar_adult_standard",
@@ -699,7 +844,9 @@
               "drugs": [
                 {
                   "drug_ref": "phenoxymethylpenicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора при БГСА",
                   "regimens": [
                     {
@@ -716,7 +863,9 @@
                 },
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Альтернатива феноксиметилпенициллину",
                   "regimens": [
                     {
@@ -739,7 +888,9 @@
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -756,7 +907,9 @@
                 },
                 {
                   "drug_ref": "josamycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Макролид выбора при аллергии",
                   "regimens": [
                     {
@@ -779,16 +932,30 @@
     },
     {
       "id": "pharyngitis_child",
-      "mkb10": ["J02.0", "J02.8", "J02.9", "J03.0", "J03.8", "J03.9"],
+      "mkb10": [
+        "J02.0",
+        "J02.8",
+        "J02.9",
+        "J03.0",
+        "J03.8",
+        "J03.9"
+      ],
       "name": "Острый тонзиллит / фарингит (БГСА) у детей",
-      "synonyms": ["ангина у детей", "БГСА у детей"],
-      "cr_id": "82",
-      "cr_year": 2023,
-      "cr_updated": "2023-06-30",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/82",
+      "synonyms": [
+        "ангина у детей",
+        "БГСА у детей"
+      ],
+      "cr_id": "306",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/306",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённый БГСА-тонзиллит у детей старше 3 лет"],
-      "age_groups": ["child"],
+      "indications": [
+        "Подтверждённый БГСА-тонзиллит у детей старше 3 лет"
+      ],
+      "age_groups": [
+        "child"
+      ],
       "scenarios": [
         {
           "id": "phar_child_standard",
@@ -801,7 +968,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора у детей",
                   "regimens": [
                     {
@@ -818,7 +987,9 @@
                 },
                 {
                   "drug_ref": "phenoxymethylpenicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -841,7 +1012,9 @@
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -858,7 +1031,9 @@
                 },
                 {
                   "drug_ref": "josamycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -881,20 +1056,31 @@
     },
     {
       "id": "aom_child",
-      "mkb10": ["H66.0", "H66.1", "H66.4", "H66.9"],
+      "mkb10": [
+        "H66.0",
+        "H66.1",
+        "H66.4",
+        "H66.9"
+      ],
       "name": "Острый средний отит у детей",
-      "synonyms": ["ОСО", "отит", "средний отит"],
-      "cr_id": "247",
+      "synonyms": [
+        "ОСО",
+        "отит",
+        "средний отит"
+      ],
+      "cr_id": "314",
       "cr_year": 2024,
-      "cr_updated": "2024-02-01",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/247",
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/314",
       "antibiotics_indicated": true,
       "indications": [
         "Дети <2 лет с двусторонним ОСО",
         "Дети <2 лет с односторонним ОСО и лихорадкой ≥39°C или выраженным болевым синдромом",
         "Дети ≥2 лет при тяжёлом течении или отсутствии улучшения в течение 48-72 часов"
       ],
-      "age_groups": ["child"],
+      "age_groups": [
+        "child"
+      ],
       "scenarios": [
         {
           "id": "aom_child_standard",
@@ -907,7 +1093,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора",
                   "regimens": [
                     {
@@ -940,7 +1128,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Покрытие бета-лактамазопродуцирующих H.influenzae, M.catarrhalis",
                   "regimens": [
                     {
@@ -963,7 +1153,9 @@
               "drugs": [
                 {
                   "drug_ref": "cefdinir",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Цефалоспорин III поколения",
                   "regimens": [
                     {
@@ -980,7 +1172,9 @@
                 },
                 {
                   "drug_ref": "cefixime",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -1003,7 +1197,9 @@
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -1023,6 +1219,747 @@
           ]
         }
       ]
+    },
+    {
+      "id": "otitis_media_adult",
+      "mkb10": [
+        "H65.0",
+        "H65.1",
+        "H66.0"
+      ],
+      "name": "Острый средний отит у взрослых",
+      "synonyms": [
+        "отит",
+        "средний отит",
+        "otitis media"
+      ],
+      "cr_id": "314_2",
+      "cr_year": 2024,
+      "cr_updated": "2024-10-29",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/314_2",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Антибактериальная терапия по КР"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "om_adult_std",
+          "name": "Стандартное лечение",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": "Препарат выбора при отсутствии факторов риска резистентности",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "500 мг 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "amoxicillin"
+                },
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": "Цефалоспорин II поколения — при недавнем приёме аминопенициллинов",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1000,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "Аксетил, во время еды",
+                      "regimen_label": "500 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefuroxime"
+                },
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": "При недавнем приёме АБ, тяжёлом течении, рецидиве",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1750,
+                      "single_dose_mg": 875,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "875/125 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "amoxiclav"
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии на пенициллины",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "3",
+                      "duration_note": null,
+                      "regimen_label": "500 мг 1 р/д 3 дня"
+                    }
+                  ],
+                  "drug_ref": "azithromycin"
+                },
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1000,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "500 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "clarithromycin"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hap",
+      "mkb10": [
+        "J15.0",
+        "J15.1",
+        "J15.5",
+        "J18.9"
+      ],
+      "name": "Нозокомиальная (внутрибольничная) пневмония",
+      "synonyms": [
+        "ВБП",
+        "HAP",
+        "госпитальная пневмония",
+        "ИВЛ-ассоциированная пневмония",
+        "VAP"
+      ],
+      "cr_id": "—",
+      "cr_year": 2022,
+      "cr_updated": "2022",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Пневмония, развившаяся ≥48 ч после госпитализации"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "hap_empiric",
+          "name": "Эмпирическая терапия (без риска МЛУ)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (антисинегнойная)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 16000,
+                      "single_dose_mg": 4000,
+                      "max_daily_mg": 18000,
+                      "freq_per_day": 4,
+                      "duration_days": "7-14",
+                      "duration_note": "4.5 г каждые 6 ч в/в (инфузия 3-4 ч).",
+                      "regimen_label": "4.5 г 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "piperacillin_tazobactam"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-14",
+                      "duration_note": "1 г каждые 8 ч; при тяжёлой/синегнойной инфекции — 2 г.",
+                      "regimen_label": "1-2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "meropenem"
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Добавить при риске MRSA",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": "К бета-лактаму при подозрении на MRSA",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": "15-20 мг/кг каждые 12 ч; ТЛМ (trough 15-20 мг/л).",
+                      "regimen_label": "15-20 мг/кг 2 р/д",
+                      "dose_range_mg_kg_day": [
+                        30,
+                        45
+                      ]
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: РАСХИ/МАКМАХ, программа СКАТ (нозокомиальная пневмония)."
+    },
+    {
+      "id": "epiglottitis_acute",
+      "mkb10": [
+        "J05.1"
+      ],
+      "name": "Острый эпиглоттит",
+      "synonyms": [
+        "эпиглоттит",
+        "воспаление надгортанника",
+        "epiglottitis"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Неотложное состояние — приоритет обеспечения проходимости дыхательных путей"
+      ],
+      "age_groups": [
+        "adult",
+        "child"
+      ],
+      "scenarios": [
+        {
+          "id": "epiglottitis_adult",
+          "name": "Взрослые",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": "2 г в/в 1 р/д. Одновременно — контроль дыхательных путей.",
+                      "regimen_label": "2 г 1 р/д"
+                    }
+                  ],
+                  "drug_ref": "ceftriaxone"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 8000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefotaxime"
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Добавить при подозрении на MRSA",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "15-20 мг/кг 2 р/д",
+                      "dose_range_mg_kg_day": [
+                        30,
+                        45
+                      ]
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "epiglottitis_child",
+          "name": "Дети (H.influenzae тип b)",
+          "age_group": "child",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 80,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "7-10",
+                      "duration_note": "50-80 мг/кг/сут 1 р/д.",
+                      "regimen_label": "50-80 мг/кг 1 р/д",
+                      "dose_range_mg_kg_day": [
+                        50,
+                        80
+                      ]
+                    }
+                  ],
+                  "drug_ref": "ceftriaxone"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: международные рекомендации (IDSA)."
+    },
+    {
+      "id": "tuberculosis",
+      "mkb10": [
+        "A15.0",
+        "A15.3",
+        "A16.2",
+        "A19.9"
+      ],
+      "name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "synonyms": [
+        "туберкулёз",
+        "ТБ",
+        "чахотка",
+        "tuberculosis"
+      ],
+      "cr_id": "16_4",
+      "cr_year": 2024,
+      "cr_updated": "2024-05-14",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/16_4",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Впервые выявленный лекарственно-чувствительный ТБ. Лечение — ТОЛЬКО под контролем фтизиатра (DOT). Интенсивная фаза 2 мес: H+R+Z+E."
+      ],
+      "age_groups": [
+        "adult",
+        "child"
+      ],
+      "scenarios": [
+        {
+          "id": "tb_intensive",
+          "name": "Интенсивная фаза (2 месяца) — HRZE",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Четырёхкомпонентная схема (принимать одновременно, 1 р/д натощак)",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 5,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 300,
+                      "freq_per_day": 1,
+                      "duration_days": "60",
+                      "duration_note": "Изониазид 5 мг/кг (макс 300 мг) + рифампицин 10 мг/кг (макс 600) + пиразинамид 25 мг/кг + этамбутол 15 мг/кг, 1 р/д. + пиридоксин (B6) 25 мг/сут.",
+                      "regimen_label": "H 5 мг/кг 1 р/д",
+                      "component_regimens": {
+                        "rifampicin": {
+                          "dose_mg_kg_day": 10,
+                          "max_daily_mg": 600,
+                          "freq_per_day": 1,
+                          "duration_days": "60",
+                          "component_note": "Рифампицин 10 мг/кг (макс 600 мг) натощак; окрашивает мочу"
+                        },
+                        "pyrazinamide": {
+                          "dose_mg_kg_day": 25,
+                          "max_daily_mg": 2000,
+                          "freq_per_day": 1,
+                          "duration_days": "60",
+                          "component_note": "Пиразинамид 25 мг/кг (макс 2000 мг)"
+                        },
+                        "ethambutol": {
+                          "dose_mg_kg_day": 15,
+                          "max_daily_mg": 1600,
+                          "freq_per_day": 1,
+                          "duration_days": "60",
+                          "component_note": "Этамбутол 15 мг/кг; контроль зрения"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "isoniazid",
+                    "rifampicin",
+                    "pyrazinamide",
+                    "ethambutol"
+                  ]
+                }
+              ],
+              "combo_therapy": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aspiration_pneumonia",
+      "mkb10": [
+        "J69.0"
+      ],
+      "name": "Аспирационная пневмония",
+      "synonyms": [
+        "аспирационная пневмония",
+        "аспирация",
+        "aspiration pneumonia"
+      ],
+      "cr_id": "—",
+      "cr_year": 2022,
+      "cr_updated": "2022",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Покрытие анаэробов ротоглотки"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "asp_std",
+          "name": "Стандартная терапия",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3600,
+                      "single_dose_mg": 1200,
+                      "max_daily_mg": 4800,
+                      "freq_per_day": 3,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "1.2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "amoxiclav"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "7-14",
+                      "duration_note": "Цефтриаксон 2 г 1 р/д + метронидазол 500 мг 3 р/д.",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "metronidazole": {
+                          "single_dose_mg": 500,
+                          "dose_mg_day_fixed": 1500,
+                          "freq_per_day": 3,
+                          "duration_days": "7-14",
+                          "component_note": "Покрытие анаэробов"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "ceftriaxone",
+                    "metronidazole"
+                  ]
+                }
+              ],
+              "combo_therapy": true
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии",
+              "drugs": [
+                {
+                  "route": [
+                    "iv",
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1800,
+                      "single_dose_mg": 600,
+                      "max_daily_mg": 2700,
+                      "freq_per_day": 3,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "600 мг 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "clindamycin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Ведётся в рамках КР по пневмонии; отдельной позиции в рубрикаторе нет."
+    },
+    {
+      "id": "lung_abscess_empyema",
+      "mkb10": [
+        "J85.1",
+        "J85.2",
+        "J86.9"
+      ],
+      "name": "Абсцесс лёгкого / эмпиема плевры",
+      "synonyms": [
+        "абсцесс лёгкого",
+        "эмпиема плевры",
+        "lung abscess",
+        "empyema"
+      ],
+      "cr_id": "—",
+      "cr_year": 2022,
+      "cr_updated": "2022",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Длительная терапия + дренирование эмпиемы"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "abscess_lung",
+          "name": "Стандартная терапия",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3600,
+                      "single_dose_mg": 1200,
+                      "max_daily_mg": 4800,
+                      "freq_per_day": 3,
+                      "duration_days": "21-42",
+                      "duration_note": "До 4-6 недель, до рентгенологического разрешения.",
+                      "regimen_label": "1.2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "amoxiclav"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 1,
+                      "duration_days": "21-42",
+                      "duration_note": "Цефтриаксон 2 г 1 р/д + метронидазол 500 мг 3 р/д.",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "metronidazole": {
+                          "single_dose_mg": 500,
+                          "dose_mg_day_fixed": 1500,
+                          "freq_per_day": 3,
+                          "duration_days": "21-42",
+                          "component_note": "Покрытие анаэробов"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "ceftriaxone",
+                    "metronidazole"
+                  ]
+                }
+              ],
+              "combo_therapy": true
+            },
+            {
+              "line_number": 2,
+              "line_label": "Тяжёлое / нозокомиальное течение",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 16000,
+                      "single_dose_mg": 4000,
+                      "max_daily_mg": 18000,
+                      "freq_per_day": 4,
+                      "duration_days": "21-42",
+                      "duration_note": null,
+                      "regimen_label": "4.5 г 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "piperacillin_tazobactam"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Ведётся в рамках КР по пневмонии/РАСХИ; отдельной позиции в рубрикаторе нет."
     }
   ]
 }

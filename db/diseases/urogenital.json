@@ -3,16 +3,28 @@
   "recommendations": [
     {
       "id": "cystitis_female",
-      "mkb10": ["N30.0", "N30.9", "N39.0"],
+      "mkb10": [
+        "N30.0",
+        "N30.9",
+        "N39.0"
+      ],
       "name": "Острый неосложнённый цистит у женщин",
-      "synonyms": ["цистит", "ИМП", "острый цистит"],
-      "cr_id": "10",
-      "cr_year": 2023,
-      "cr_updated": "2023-09-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/10",
+      "synonyms": [
+        "цистит",
+        "ИМП",
+        "острый цистит"
+      ],
+      "cr_id": "14",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/14",
       "antibiotics_indicated": true,
-      "indications": ["Острый неосложнённый цистит у небеременных женщин репродуктивного возраста"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Острый неосложнённый цистит у небеременных женщин репродуктивного возраста"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "cystitis_standard",
@@ -25,7 +37,9 @@
               "drugs": [
                 {
                   "drug_ref": "fosfomycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Однократный приём",
                   "regimens": [
                     {
@@ -42,7 +56,9 @@
                 },
                 {
                   "drug_ref": "nitrofurantoin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -65,7 +81,9 @@
               "drugs": [
                 {
                   "drug_ref": "cefixime",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -88,16 +106,28 @@
     },
     {
       "id": "pyelonephritis_adult",
-      "mkb10": ["N10", "N11", "N12", "N20.0"],
+      "mkb10": [
+        "N10",
+        "N13.6",
+        "N15.1",
+        "N39.0"
+      ],
       "name": "Острый пиелонефрит у взрослых (без обструкции)",
-      "synonyms": ["пиелонефрит", "ИМП осложнённая"],
-      "cr_id": "10",
-      "cr_year": 2023,
-      "cr_updated": "2023-09-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/10",
+      "synonyms": [
+        "пиелонефрит",
+        "ИМП осложнённая"
+      ],
+      "cr_id": "9",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/9",
       "antibiotics_indicated": true,
-      "indications": ["Острый необструктивный пиелонефрит лёгкого и среднетяжёлого течения"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Острый необструктивный пиелонефрит лёгкого и среднетяжёлого течения"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "apn_mild",
@@ -110,7 +140,9 @@
               "drugs": [
                 {
                   "drug_ref": "cefixime",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -127,7 +159,9 @@
                 },
                 {
                   "drug_ref": "levofloxacin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -157,14 +191,17 @@
               "drugs": [
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
                       "age_group": "adult",
                       "dose_mg_kg_day": null,
                       "dose_mg_day_fixed": 2000,
-                      "single_dose_mg": 1000,
+                      "single_dose_mg": 2000,
                       "max_daily_mg": 4000,
                       "freq_per_day": 1,
                       "duration_days": "7-14",
@@ -174,7 +211,9 @@
                 },
                 {
                   "drug_ref": "ciprofloxacin",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -197,16 +236,30 @@
     },
     {
       "id": "ut_child",
-      "mkb10": ["N10", "N11", "N12", "N13", "N39.0"],
+      "mkb10": [
+        "N10",
+        "N11",
+        "N12",
+        "N13",
+        "N39.0"
+      ],
       "name": "Инфекции мочевых путей у детей",
-      "synonyms": ["ИМП у детей", "пиелонефрит у детей", "цистит у детей"],
+      "synonyms": [
+        "ИМП у детей",
+        "пиелонефрит у детей",
+        "цистит у детей"
+      ],
       "cr_id": "262",
       "cr_year": 2024,
       "cr_updated": "2024-01-20",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/262",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённая ИМП у детей"],
-      "age_groups": ["child"],
+      "indications": [
+        "Подтверждённая ИМП у детей"
+      ],
+      "age_groups": [
+        "child"
+      ],
       "scenarios": [
         {
           "id": "ut_child_out",
@@ -219,7 +272,9 @@
               "drugs": [
                 {
                   "drug_ref": "cefixime",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора per os",
                   "regimens": [
                     {
@@ -236,7 +291,9 @@
                 },
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "При подтверждённой чувствительности",
                   "regimens": [
                     {
@@ -266,7 +323,10 @@
               "drugs": [
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -283,7 +343,10 @@
                 },
                 {
                   "drug_ref": "cefotaxime",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": "Предпочтителен у новорождённых",
                   "regimens": [
                     {
@@ -306,16 +369,28 @@
     },
     {
       "id": "urolithiasis_infected",
-      "mkb10": ["N20.0", "N20.1", "N20.2", "N13.6"],
+      "mkb10": [
+        "N20.0",
+        "N20.1",
+        "N20.2",
+        "N13.6"
+      ],
       "name": "Мочекаменная болезнь с инфекцией / инфицированный камень",
-      "synonyms": ["МКБ", "уролитиаз"],
-      "cr_id": "189",
-      "cr_year": 2023,
-      "cr_updated": "2023-10-05",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/189",
+      "synonyms": [
+        "МКБ",
+        "уролитиаз"
+      ],
+      "cr_id": "7",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/7",
       "antibiotics_indicated": true,
-      "indications": ["Подозрение на инфицированный камень, предоперационная профилактика, послеоперационная терапия"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Подозрение на инфицированный камень, предоперационная профилактика, послеоперационная терапия"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "urolithiasis_preop",
@@ -328,7 +403,10 @@
               "drugs": [
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -351,16 +429,28 @@
     },
     {
       "id": "syphilis",
-      "mkb10": ["A51.0", "A51.1", "A51.2", "A51.3", "A51.4", "A51.5", "A52.0", "A52.1", "A52.7", "A53.0", "A53.9"],
+      "mkb10": [
+        "A50",
+        "A51",
+        "A52",
+        "A53"
+      ],
       "name": "Сифилис",
-      "synonyms": ["lues", "treponema pallidum"],
-      "cr_id": "298",
+      "synonyms": [
+        "lues",
+        "treponema pallidum"
+      ],
+      "cr_id": "197",
       "cr_year": 2024,
-      "cr_updated": "2024-02-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/197",
       "antibiotics_indicated": true,
-      "indications": ["Любая стадия сифилиса"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Любая стадия сифилиса"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "syphilis_early",
@@ -373,7 +463,9 @@
               "drugs": [
                 {
                   "drug_ref": "benzathine_benzylpenicillin",
-                  "route": ["im"],
+                  "route": [
+                    "im"
+                  ],
                   "indication_note": "Препарат выбора",
                   "regimens": [
                     {
@@ -396,7 +488,9 @@
               "drugs": [
                 {
                   "drug_ref": "doxycycline",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -426,7 +520,9 @@
               "drugs": [
                 {
                   "drug_ref": "benzathine_benzylpenicillin",
-                  "route": ["im"],
+                  "route": [
+                    "im"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -449,7 +545,9 @@
               "drugs": [
                 {
                   "drug_ref": "doxycycline",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -479,7 +577,9 @@
               "drugs": [
                 {
                   "drug_ref": "benzylpenicillin_na",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Препарат выбора при нейросифилисе",
                   "regimens": [
                     {
@@ -502,16 +602,33 @@
     },
     {
       "id": "gonorrhea",
-      "mkb10": ["A54.0", "A54.1", "A54.2", "A54.3", "A54.4", "A54.5", "A54.6", "A54.8", "A54.9"],
+      "mkb10": [
+        "A54.0",
+        "A54.1",
+        "A54.2",
+        "A54.3",
+        "A54.4",
+        "A54.5",
+        "A54.6",
+        "A54.8",
+        "A54.9"
+      ],
       "name": "Гонококковая инфекция",
-      "synonyms": ["гонорея", "Neisseria gonorrhoeae"],
-      "cr_id": "298",
+      "synonyms": [
+        "гонорея",
+        "Neisseria gonorrhoeae"
+      ],
+      "cr_id": "218",
       "cr_year": 2024,
-      "cr_updated": "2024-02-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/218",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённая или клинически предполагаемая гонококковая инфекция"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Подтверждённая или клинически предполагаемая гонококковая инфекция"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "gonorrhea_urogenital",
@@ -524,7 +641,9 @@
               "drugs": [
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["im"],
+                  "route": [
+                    "im"
+                  ],
                   "indication_note": "Препарат выбора",
                   "regimens": [
                     {
@@ -547,7 +666,9 @@
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Ко-инфекция с хламидиями",
                   "regimens": [
                     {
@@ -570,16 +691,29 @@
     },
     {
       "id": "chlamydia_urogenital",
-      "mkb10": ["A56.0", "A56.1", "A56.2", "A56.3", "A56.4", "A56.8"],
+      "mkb10": [
+        "A56.0",
+        "A56.1",
+        "A56.2",
+        "A56.3",
+        "A56.4",
+        "A56.8"
+      ],
       "name": "Урогенитальный хламидиоз",
-      "synonyms": ["Chlamydia trachomatis"],
-      "cr_id": "298",
+      "synonyms": [
+        "Chlamydia trachomatis"
+      ],
+      "cr_id": "194",
       "cr_year": 2024,
-      "cr_updated": "2024-02-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/194",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённая C.trachomatis-инфекция"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Подтверждённая C.trachomatis-инфекция"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "chlamydia_uncomplicated",
@@ -592,7 +726,9 @@
               "drugs": [
                 {
                   "drug_ref": "doxycycline",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора",
                   "regimens": [
                     {
@@ -609,7 +745,9 @@
                 },
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Альтернатива при беременности / непереносимости доксициклина",
                   "regimens": [
                     {
@@ -632,16 +770,27 @@
     },
     {
       "id": "mycoplasma_genitalium",
-      "mkb10": ["A63.0", "N34.1", "N72"],
+      "mkb10": [
+        "A63.0",
+        "N34.1",
+        "N72"
+      ],
       "name": "Mycoplasma genitalium-инфекция (уретрит, цервицит)",
-      "synonyms": ["M.genitalium", "микоплазма генитальная"],
-      "cr_id": "298",
+      "synonyms": [
+        "M.genitalium",
+        "микоплазма генитальная"
+      ],
+      "cr_id": "216",
       "cr_year": 2024,
-      "cr_updated": "2024-02-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/216",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённая M.genitalium-инфекция"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Подтверждённая M.genitalium-инфекция"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "mg_first_line",
@@ -654,13 +803,15 @@
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Расширенная схема для профилактики резистентности",
                   "regimens": [
                     {
                       "age_group": "adult",
                       "dose_mg_kg_day": null,
-                      "dose_mg_day_fixed": 1500,
+                      "dose_mg_day_fixed": 500,
                       "single_dose_mg": 500,
                       "max_daily_mg": 500,
                       "freq_per_day": 1,
@@ -677,7 +828,9 @@
               "drugs": [
                 {
                   "drug_ref": "moxifloxacin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "При макролид-резистентной M.genitalium",
                   "regimens": [
                     {
@@ -696,20 +849,31 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "По первоисточнику схема эрадикации: доксициклин 100 мг 2 р/д 7 дней, затем азитромицин 1 г однократно + 500 мг 1 р/д 3 дня (курсовая 2.5 г) — сверить схему при обновлении."
     },
     {
       "id": "bacterial_vaginosis",
-      "mkb10": ["N76.0", "N89.0"],
+      "mkb10": [
+        "N76.0",
+        "N89.0"
+      ],
       "name": "Бактериальный вагиноз",
-      "synonyms": ["БВ", "гарднереллёз"],
-      "cr_id": "298",
+      "synonyms": [
+        "БВ",
+        "гарднереллёз"
+      ],
+      "cr_id": "206",
       "cr_year": 2024,
-      "cr_updated": "2024-02-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/298",
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/206",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённый БВ (критерии Амселя)"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Подтверждённый БВ (критерии Амселя)"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "bv_standard",
@@ -722,7 +886,10 @@
               "drugs": [
                 {
                   "drug_ref": "metronidazole",
-                  "route": ["per_os", "topical"],
+                  "route": [
+                    "per_os",
+                    "topical"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -749,13 +916,16 @@
                 },
                 {
                   "drug_ref": "clindamycin",
-                  "route": ["topical", "per_os"],
+                  "route": [
+                    "topical",
+                    "per_os"
+                  ],
                   "indication_note": "Вагинальный крем 2% на ночь",
                   "regimens": [
                     {
                       "age_group": "adult",
                       "dose_mg_kg_day": null,
-                      "dose_mg_day_fixed": 300,
+                      "dose_mg_day_fixed": 600,
                       "single_dose_mg": 300,
                       "max_daily_mg": 600,
                       "freq_per_day": 2,
@@ -772,16 +942,27 @@
     },
     {
       "id": "postpartum_endometritis",
-      "mkb10": ["O85", "O86.0", "O86.2"],
+      "mkb10": [
+        "O85",
+        "O86.0",
+        "O86.2"
+      ],
       "name": "Послеродовой эндометрит",
-      "synonyms": ["эндометрит после родов", "пуэрперальный сепсис"],
-      "cr_id": "195",
-      "cr_year": 2023,
-      "cr_updated": "2023-11-10",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/195",
+      "synonyms": [
+        "эндометрит после родов",
+        "пуэрперальный сепсис"
+      ],
+      "cr_id": "791",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/791",
       "antibiotics_indicated": true,
-      "indications": ["Клинические признаки послеродового эндометрита"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Клинические признаки послеродового эндометрита"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "endometritis_pp",
@@ -794,7 +975,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Монотерапия или в комбинации",
                   "regimens": [
                     {
@@ -810,8 +993,13 @@
                   ]
                 },
                 {
-                  "combo_ref": ["clindamycin", "gentamicin"],
-                  "route": ["iv"],
+                  "combo_ref": [
+                    "clindamycin",
+                    "gentamicin"
+                  ],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Комбинация для покрытия анаэробов и грамнегативной флоры",
                   "regimens": [
                     {
@@ -822,7 +1010,15 @@
                       "max_daily_mg": 2700,
                       "freq_per_day": 3,
                       "duration_days": "7-10",
-                      "duration_note": "Клиндамицин 600-900 мг в/в 3 р/д + гентамицин 5 мг/кг 1 р/д"
+                      "duration_note": "Клиндамицин 600-900 мг в/в 3 р/д + гентамицин 5 мг/кг 1 р/д",
+                      "component_regimens": {
+                        "gentamicin": {
+                          "dose_mg_kg_day": 5,
+                          "freq_per_day": 1,
+                          "duration_days": "7-10",
+                          "component_note": "5 мг/кг 1 р/д; терапевтический мониторинг (trough <1 мг/л)"
+                        }
+                      }
                     }
                   ]
                 }
@@ -830,7 +1026,293 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "Входит в состав КР 'Послеродовые инфекционные осложнения' (2024), не отдельная КР."
+    },
+    {
+      "id": "pyelonephritis_pregnancy",
+      "mkb10": [
+        "O23.0",
+        "O23.4",
+        "O23.9"
+      ],
+      "name": "Инфекции мочевых путей у беременных (бактериурия, цистит, пиелонефрит)",
+      "synonyms": [
+        "бессимптомная бактериурия беременных",
+        "цистит беременных",
+        "пиелонефрит беременных"
+      ],
+      "cr_id": "—",
+      "cr_year": 2022,
+      "cr_updated": "2022",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Бессимптомная бактериурия у беременных ПОДЛЕЖИТ лечению. Фторхинолоны и тетрациклины противопоказаны"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "uti_preg_lower",
+          "name": "Бессимптомная бактериурия / острый цистит",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 3000,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "3 г однократно (бактериурия/цистит).",
+                      "regimen_label": "3 г однократно"
+                    }
+                  ],
+                  "drug_ref": "fosfomycin"
+                },
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 400,
+                      "single_dose_mg": 400,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 1,
+                      "duration_days": "5-7",
+                      "duration_note": null,
+                      "regimen_label": "400 мг 1 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefixime"
+                },
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1750,
+                      "single_dose_mg": 875,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 2,
+                      "duration_days": "5-7",
+                      "duration_note": null,
+                      "regimen_label": "875/125 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "amoxiclav"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "uti_preg_pyelo",
+          "name": "Острый пиелонефрит беременных (стационар)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (парентерально)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 1,
+                      "duration_days": "10-14",
+                      "duration_note": null,
+                      "regimen_label": "1-2 г 1 р/д"
+                    }
+                  ],
+                  "drug_ref": "ceftriaxone"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "10-14",
+                      "duration_note": null,
+                      "regimen_label": "1 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefotaxime"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Основа: КР по ИМП (№10) + акушерские КР; бессимптомная бактериурия беременных лечится."
+    },
+    {
+      "id": "epididymitis",
+      "mkb10": [
+        "N45.1",
+        "N45.9"
+      ],
+      "name": "Острый эпидидимит / эпидидимоорхит",
+      "synonyms": [
+        "эпидидимит",
+        "орхит",
+        "эпидидимоорхит",
+        "epididymitis"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Антибактериальная терапия по КР"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "epidi_sti",
+          "name": "Вероятная ИППП (возраст <35 лет)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "drugs": [
+                {
+                  "route": [
+                    "im",
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 1,
+                      "duration_days": "1",
+                      "duration_note": "Цефтриаксон 500 мг в/м однократно + доксициклин 100 мг 2 р/д 10-14 дней.",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "doxycycline": {
+                          "single_dose_mg": 100,
+                          "dose_mg_day_fixed": 200,
+                          "freq_per_day": 2,
+                          "duration_days": "10-14",
+                          "component_note": "Покрытие C.trachomatis"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "ceftriaxone",
+                    "doxycycline"
+                  ]
+                }
+              ],
+              "combo_therapy": true
+            }
+          ]
+        },
+        {
+          "id": "epidi_enteric",
+          "name": "Вероятная кишечная флора (возраст >35 лет)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os",
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 750,
+                      "freq_per_day": 1,
+                      "duration_days": "10",
+                      "duration_note": null,
+                      "regimen_label": "500 мг 1 р/д"
+                    }
+                  ],
+                  "drug_ref": "levofloxacin"
+                },
+                {
+                  "route": [
+                    "per_os",
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 2,
+                      "duration_days": "10-14",
+                      "duration_note": null,
+                      "regimen_label": "500 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "ciprofloxacin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: рекомендации по урологии/ИППП."
     }
   ]
 }

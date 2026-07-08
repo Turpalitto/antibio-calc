@@ -3,16 +3,34 @@
   "recommendations": [
     {
       "id": "sepsis_adult",
-      "mkb10": ["A41.0", "A41.1", "A41.2", "A41.3", "A41.5", "A41.8", "A41.9", "A40", "R65.2", "R57.2"],
+      "mkb10": [
+        "A41.0",
+        "A41.1",
+        "A41.2",
+        "A41.3",
+        "A41.5",
+        "A41.8",
+        "A41.9",
+        "A40",
+        "R65.2",
+        "R57.2"
+      ],
       "name": "Сепсис и септический шок у взрослых",
-      "synonyms": ["сепсис", "септический шок"],
-      "cr_id": "16",
+      "synonyms": [
+        "сепсис",
+        "септический шок"
+      ],
+      "cr_id": "898",
       "cr_year": 2024,
-      "cr_updated": "2024-03-01",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/16",
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/898",
       "antibiotics_indicated": true,
-      "indications": ["Сепсис или септический шок — в/в АБ в течение 1 часа"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Сепсис или септический шок — в/в АБ в течение 1 часа"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "sepsis_empirical",
@@ -25,7 +43,9 @@
               "drugs": [
                 {
                   "drug_ref": "piperacillin_tazobactam",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Широкий спектр, покрытие Pseudomonas",
                   "regimens": [
                     {
@@ -42,14 +62,16 @@
                 },
                 {
                   "drug_ref": "meropenem",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Карбапенем при высоком риске ESBL/AmpC",
                   "regimens": [
                     {
                       "age_group": "adult",
                       "dose_mg_kg_day": null,
                       "dose_mg_day_fixed": 6000,
-                      "single_dose_mg": 1000,
+                      "single_dose_mg": 2000,
                       "max_daily_mg": 6000,
                       "freq_per_day": 3,
                       "duration_days": "5-7",
@@ -65,16 +87,26 @@
     },
     {
       "id": "pneumococcal_meningitis",
-      "mkb10": ["G00.1", "A40.2"],
+      "mkb10": [
+        "G00.1",
+        "A40.2"
+      ],
       "name": "Пневмококковый менингит",
-      "synonyms": ["менингит S.pneumoniae"],
+      "synonyms": [
+        "менингит S.pneumoniae"
+      ],
       "cr_id": "215",
       "cr_year": 2024,
       "cr_updated": "2024-02-25",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/215",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённый или подозреваемый пневмококковый гнойный менингит"],
-      "age_groups": ["adult", "child"],
+      "indications": [
+        "Подтверждённый или подозреваемый пневмококковый гнойный менингит"
+      ],
+      "age_groups": [
+        "adult",
+        "child"
+      ],
       "scenarios": [
         {
           "id": "pm_empirical",
@@ -87,7 +119,9 @@
               "drugs": [
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Покрытие пенициллин-резистентного S.pneumoniae",
                   "regimens": [
                     {
@@ -114,7 +148,9 @@
                 },
                 {
                   "drug_ref": "vancomycin",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Добавление ванкомицина при резистентности",
                   "regimens": [
                     {
@@ -154,7 +190,9 @@
               "drugs": [
                 {
                   "drug_ref": "benzylpenicillin_na",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -177,16 +215,32 @@
     },
     {
       "id": "meningococcal_disease",
-      "mkb10": ["A39.0", "A39.1", "A39.2", "A39.3", "A39.4", "A39.8", "A39.9"],
+      "mkb10": [
+        "A39.0",
+        "A39.1",
+        "A39.2",
+        "A39.3",
+        "A39.4",
+        "A39.8",
+        "A39.9"
+      ],
       "name": "Менингококковая инфекция",
-      "synonyms": ["менингококцемия", "менингококковый менингит", "Neisseria meningitidis"],
-      "cr_id": "215",
-      "cr_year": 2024,
-      "cr_updated": "2024-02-25",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/215",
+      "synonyms": [
+        "менингококцемия",
+        "менингококковый менингит",
+        "Neisseria meningitidis"
+      ],
+      "cr_id": "1020",
+      "cr_year": 2026,
+      "cr_updated": "2026",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/1020",
       "antibiotics_indicated": true,
-      "indications": ["Генерализованная форма менингококковой инфекции"],
-      "age_groups": ["all"],
+      "indications": [
+        "Генерализованная форма менингококковой инфекции"
+      ],
+      "age_groups": [
+        "all"
+      ],
       "scenarios": [
         {
           "id": "md_empirical",
@@ -199,7 +253,10 @@
               "drugs": [
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": "Препарат выбора",
                   "regimens": [
                     {
@@ -226,7 +283,9 @@
                 },
                 {
                   "drug_ref": "benzylpenicillin_na",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Альтернатива при подтверждённой чувствительности",
                   "regimens": [
                     {
@@ -255,7 +314,636 @@
             }
           ]
         }
+      ],
+      "cr_note": "Внимание: в рубрикаторе взрослые и дети — РАЗНЫЕ КР (взрослые КР1020, 2026; дети КР58, 2023). В этой базе объединены под одной записью — при уточнении разделить."
+    },
+    {
+      "id": "infective_endocarditis",
+      "mkb10": [
+        "I33.0",
+        "I33.9",
+        "I38",
+        "T85.7"
+      ],
+      "name": "Инфекционный эндокардит (лечение)",
+      "synonyms": [
+        "эндокардит",
+        "ИЭ",
+        "infective endocarditis"
+      ],
+      "cr_id": "54_3",
+      "cr_year": 2026,
+      "cr_updated": "2026",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/54_3",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Длительная в/в терапия 4-6 недель; коррекция по результатам гемокультуры"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "ie_strep",
+          "name": "Зеленящие стрептококки, нативный клапан",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация 2 недели)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 18000000,
+                      "single_dose_mg": 3000000,
+                      "max_daily_mg": 24000000,
+                      "freq_per_day": 6,
+                      "duration_days": "28",
+                      "duration_note": "Бензилпенициллин 12-18 млн ЕД/сут в 6 введений (4 нед) + гентамицин 3 мг/кг/сут (2 нед).",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "gentamicin": {
+                          "dose_mg_kg_day": 3,
+                          "freq_per_day": 1,
+                          "duration_days": "14",
+                          "component_note": "3 мг/кг 1 р/д, 2 недели; ТЛМ гентамицина"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "benzylpenicillin_na",
+                    "gentamicin"
+                  ]
+                }
+              ],
+              "combo_therapy": true
+            }
+          ]
+        },
+        {
+          "id": "ie_mssa",
+          "name": "Стафилококк (MSSA), нативный клапан",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "42",
+                      "duration_note": "2 г каждые 8 ч, 6 недель.",
+                      "regimen_label": "2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefazolin"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ie_mrsa",
+          "name": "MRSA / аллергия на бета-лактамы",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "42",
+                      "duration_note": "15-20 мг/кг каждые 12 ч; ТЛМ (trough 15-20 мг/л), 6 недель.",
+                      "regimen_label": "15-20 мг/кг 2 р/д",
+                      "dose_range_mg_kg_day": [
+                        30,
+                        60
+                      ]
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                }
+              ]
+            }
+          ]
+        }
       ]
+    },
+    {
+      "id": "bacterial_meningitis_empiric",
+      "mkb10": [
+        "G00.9",
+        "G00.8"
+      ],
+      "name": "Бактериальный менингит — эмпирическая терапия",
+      "synonyms": [
+        "менингит",
+        "гнойный менингит",
+        "bacterial meningitis"
+      ],
+      "cr_id": "—",
+      "cr_year": 2022,
+      "cr_updated": "2022",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Неотложно! Начать АБ в течение 1 ч. Дексаметазон до/с первой дозой АБ. При подозрении на Listeria (>50 лет, иммуносупрессия) — добавить ампициллин."
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "mening_empiric_adult",
+          "name": "Взрослые (эмпирически до идентификации)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 4000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 4000,
+                      "freq_per_day": 2,
+                      "duration_days": "10-14",
+                      "duration_note": "Цефтриаксон 2 г каждые 12 ч + ванкомицин 15-20 мг/кг каждые 8-12 ч (ТЛМ 15-20 мг/л).",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "vancomycin": {
+                          "dose_mg_kg_day": 60,
+                          "dose_range_mg_kg_day": [
+                            45,
+                            60
+                          ],
+                          "max_daily_mg": 4000,
+                          "freq_per_day": 4,
+                          "duration_days": "10-14",
+                          "component_note": "15 мг/кг каждые 6 ч; ТЛМ (trough 15-20 мг/л) — покрытие резистентного пневмококка"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "ceftriaxone",
+                    "vancomycin"
+                  ]
+                }
+              ],
+              "combo_therapy": true
+            },
+            {
+              "line_number": 2,
+              "line_label": "Добавить при риске листериоза (>50 лет, иммуносупрессия, беременность)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 12000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 12000,
+                      "freq_per_day": 6,
+                      "duration_days": "21",
+                      "duration_note": "2 г каждые 4 ч. Покрытие Listeria monocytogenes.",
+                      "regimen_label": "2 г 6 р/д"
+                    }
+                  ],
+                  "drug_ref": "ampicillin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Эмпирическая схема (IDSA/ESCMID). См. также КР 'Менингококковая инфекция'."
+    },
+    {
+      "id": "listeriosis",
+      "mkb10": [
+        "A32.1",
+        "A32.9"
+      ],
+      "name": "Листериоз (менингит, бактериемия)",
+      "synonyms": [
+        "листериоз",
+        "Listeria",
+        "листериозный менингит"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Цефалоспорины НЕ действуют на Listeria. Препарат выбора — ампициллин ± гентамицин (синергизм)"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "listeria_std",
+          "name": "Инвазивный листериоз",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 12000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 12000,
+                      "freq_per_day": 6,
+                      "duration_days": "21",
+                      "duration_note": "Ампициллин 2 г каждые 4 ч + гентамициn 5 мг/кг/сут (первые 1-2 нед). Курс 3 нед (менингит) / 6 нед (эндокардит).",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "gentamicin": {
+                          "dose_mg_kg_day": 5,
+                          "freq_per_day": 1,
+                          "duration_days": "14",
+                          "component_note": "5 мг/кг 1 р/д, синергизм; ТЛМ"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "ampicillin",
+                    "gentamicin"
+                  ]
+                }
+              ],
+              "combo_therapy": true
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии на пенициллины",
+              "drugs": [
+                {
+                  "route": [
+                    "iv",
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 20,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 3840,
+                      "freq_per_day": 4,
+                      "duration_days": "21",
+                      "duration_note": "По триметоприму 15-20 мг/кг/сут в 3-4 введения.",
+                      "regimen_label": "15-20 мг/кг/сут (по ТМП)",
+                      "dose_range_mg_kg_day": [
+                        15,
+                        20
+                      ]
+                    }
+                  ],
+                  "drug_ref": "cotrimoxazole"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: международные рекомендации (листериоз)."
+    },
+    {
+      "id": "febrile_neutropenia",
+      "mkb10": [
+        "D70"
+      ],
+      "name": "Фебрильная нейтропения (эмпирическая терапия)",
+      "synonyms": [
+        "фебрильная нейтропения",
+        "нейтропеническая лихорадка",
+        "febrile neutropenia"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Неотложно (в течение 1 ч). Монотерапия антисинегнойным бета-лактамом. Ванкомицин — только по показаниям (катетер-инфекция, кожа/мягкие ткани, MRSA, гемодинамика)."
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "fn_empiric",
+          "name": "Эмпирическая монотерапия",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (антисинегнойный бета-лактам)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefepime"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": "Антисинегнойный цефалоспорин (альтернатива цефепиму)",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "ceftazidime"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 16000,
+                      "single_dose_mg": 4000,
+                      "max_daily_mg": 18000,
+                      "freq_per_day": 4,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "4.5 г 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "piperacillin_tazobactam"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "1 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "meropenem"
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "Добавить при показаниях (MRSA/катетер)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "15-20 мг/кг 2 р/д",
+                      "dose_range_mg_kg_day": [
+                        30,
+                        45
+                      ]
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                },
+                {
+                  "route": [
+                    "iv",
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1200,
+                      "single_dose_mg": 600,
+                      "max_daily_mg": 1200,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "600 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "linezolid"
+                },
+                {
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
+                  "indication_note": "Аминогликозид — добавить при нестабильной гемодинамике / риске резистентной грам(–) флоры",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 15,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1500,
+                      "freq_per_day": 1,
+                      "duration_days": "5-7",
+                      "duration_note": "15 мг/кг 1 р/д; ТЛМ (peak 20-30, trough <5).",
+                      "regimen_label": "15 мг/кг 1 р/д"
+                    }
+                  ],
+                  "drug_ref": "amikacin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: рекомендации RUSSCO / NCCN (фебрильная нейтропения)."
+    },
+    {
+      "id": "tetanus",
+      "mkb10": [
+        "A33",
+        "A34",
+        "A35"
+      ],
+      "name": "Столбняк",
+      "synonyms": [
+        "столбняк",
+        "tetanus"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Основа — противостолбнячный иммуноглобулин, хирургическая обработка раны, контроль спазмов. АБ — вспомогательно."
+      ],
+      "age_groups": [
+        "adult",
+        "child"
+      ],
+      "scenarios": [
+        {
+          "id": "tetanus_std",
+          "name": "Антибактериальный компонент",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv",
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 4,
+                      "duration_days": "7-10",
+                      "duration_note": "500 мг каждые 6-8 ч, 7-10 дней. Препарат выбора.",
+                      "regimen_label": "500 мг 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "metronidazole"
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 12000000,
+                      "single_dose_mg": 2000000,
+                      "max_daily_mg": 24000000,
+                      "freq_per_day": 6,
+                      "duration_days": "7-10",
+                      "duration_note": "2-4 млн ЕД каждые 4-6 ч (может усиливать спазмы — предпочтительнее метронидазол).",
+                      "regimen_label": "2-4 млн ЕД 6 р/д"
+                    }
+                  ],
+                  "drug_ref": "benzylpenicillin_na"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет федеральной КР (действует МУ 3.1.2436-09 по профилактике). Основа терапии: иммуноглобулин + метронидазол."
     }
   ]
 }

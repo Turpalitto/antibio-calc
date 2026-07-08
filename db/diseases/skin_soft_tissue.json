@@ -3,16 +3,28 @@
   "recommendations": [
     {
       "id": "erysipelas",
-      "mkb10": ["A46", "L03.0", "L03.1", "L03.2", "L03.3"],
+      "mkb10": [
+        "A46",
+        "L03.0",
+        "L03.1",
+        "L03.2",
+        "L03.3"
+      ],
       "name": "Рожа у взрослых",
-      "synonyms": ["рожистое воспаление"],
+      "synonyms": [
+        "рожистое воспаление"
+      ],
       "cr_id": "62",
       "cr_year": 2023,
       "cr_updated": "2023-08-25",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/62",
       "antibiotics_indicated": true,
-      "indications": ["Подтверждённая рожа (β-гемолитический стрептококк)"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Подтверждённая рожа (β-гемолитический стрептококк)"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "erysipelas_mild",
@@ -25,7 +37,9 @@
               "drugs": [
                 {
                   "drug_ref": "phenoxymethylpenicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Препарат выбора — β-гемолитический стрептококк",
                   "regimens": [
                     {
@@ -42,7 +56,9 @@
                 },
                 {
                   "drug_ref": "benzathine_benzylpenicillin",
-                  "route": ["im"],
+                  "route": [
+                    "im"
+                  ],
                   "indication_note": "Удлинённый курс",
                   "regimens": [
                     {
@@ -65,7 +81,9 @@
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -95,7 +113,9 @@
               "drugs": [
                 {
                   "drug_ref": "benzylpenicillin_na",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -112,14 +132,17 @@
                 },
                 {
                   "drug_ref": "cefazolin",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
                       "age_group": "adult",
                       "dose_mg_kg_day": null,
                       "dose_mg_day_fixed": 6000,
-                      "single_dose_mg": 1000,
+                      "single_dose_mg": 2000,
                       "max_daily_mg": 6000,
                       "freq_per_day": 3,
                       "duration_days": "10-14",
@@ -135,16 +158,32 @@
     },
     {
       "id": "diabetic_foot",
-      "mkb10": ["E10.5", "E11.5", "L08.0", "L03.0", "L03.1", "L03.2", "L03.3", "L97"],
+      "mkb10": [
+        "E10.5",
+        "E11.5",
+        "L08.0",
+        "L03.0",
+        "L03.1",
+        "L03.2",
+        "L03.3",
+        "L97"
+      ],
       "name": "Синдром диабетической стопы (инфекция)",
-      "synonyms": ["СДС", "диабетическая язва"],
-      "cr_id": "276",
-      "cr_year": 2024,
-      "cr_updated": "2024-04-01",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/276",
+      "synonyms": [
+        "СДС",
+        "диабетическая язва"
+      ],
+      "cr_id": "525",
+      "cr_year": 2015,
+      "cr_updated": "2015",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/525",
       "antibiotics_indicated": true,
-      "indications": ["Инфицированная язва диабетической стопы"],
-      "age_groups": ["adult"],
+      "indications": [
+        "Инфицированная язва диабетической стопы"
+      ],
+      "age_groups": [
+        "adult"
+      ],
       "scenarios": [
         {
           "id": "dfs_mild",
@@ -157,7 +196,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Покрытие грам+, грам- и анаэробов",
                   "regimens": [
                     {
@@ -187,7 +228,9 @@
               "drugs": [
                 {
                   "drug_ref": "piperacillin_tazobactam",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Широкий спектр, покрытием Pseudomonas",
                   "regimens": [
                     {
@@ -204,7 +247,9 @@
                 },
                 {
                   "drug_ref": "meropenem",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "При риске ESBL/полирезистентности",
                   "regimens": [
                     {
@@ -223,7 +268,803 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "КР 2015 г. (пересмотр каждые 3 года) — проверить наличие более новой редакции в рубрикаторе."
+    },
+    {
+      "id": "cellulitis",
+      "mkb10": [
+        "L03.0",
+        "L03.1",
+        "L03.9"
+      ],
+      "name": "Целлюлит / флегмона",
+      "synonyms": [
+        "целлюлит",
+        "флегмона",
+        "cellulitis"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Антибактериальная терапия по КР"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "cellulitis_mild",
+          "name": "Лёгкое / среднетяжёлое течение (амбулаторно)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1750,
+                      "single_dose_mg": 875,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "875/125 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "amoxiclav"
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии / подозрении MRSA",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1200,
+                      "single_dose_mg": 300,
+                      "max_daily_mg": 1800,
+                      "freq_per_day": 4,
+                      "duration_days": "7-10",
+                      "duration_note": null,
+                      "regimen_label": "300 мг 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "clindamycin"
+                },
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1600,
+                      "single_dose_mg": 800,
+                      "max_daily_mg": 1920,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "Покрытие MRSA (внебольничный).",
+                      "regimen_label": "800/160 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "cotrimoxazole"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cellulitis_severe",
+          "name": "Тяжёлое течение (стационар)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "1-2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefazolin"
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "При подозрении на MRSA",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "7-14",
+                      "duration_note": null,
+                      "regimen_label": "15-20 мг/кг 2 р/д",
+                      "dose_range_mg_kg_day": [
+                        30,
+                        45
+                      ]
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: программа СКАТ / IDSA (инфекции кожи и мягких тканей)."
+    },
+    {
+      "id": "skin_abscess",
+      "mkb10": [
+        "L02.0",
+        "L02.1",
+        "L02.9"
+      ],
+      "name": "Абсцесс кожи / фурункул / карбункул",
+      "synonyms": [
+        "абсцесс",
+        "фурункул",
+        "карбункул",
+        "abscess"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Основа лечения — вскрытие и дренирование; АБ — при системных проявлениях, целлюлите вокруг, иммуносупрессии"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "abscess_std",
+          "name": "В комбинации с хирургическим дренированием",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (покрытие MRSA)",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1600,
+                      "single_dose_mg": 800,
+                      "max_daily_mg": 1920,
+                      "freq_per_day": 2,
+                      "duration_days": "5-7",
+                      "duration_note": null,
+                      "regimen_label": "800/160 мг 2 р/д"
+                    }
+                  ],
+                  "drug_ref": "cotrimoxazole"
+                },
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1200,
+                      "single_dose_mg": 300,
+                      "max_daily_mg": 1800,
+                      "freq_per_day": 4,
+                      "duration_days": "5-7",
+                      "duration_note": null,
+                      "regimen_label": "300 мг 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "clindamycin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: программа СКАТ / IDSA (ИКМТ); ключевое — дренирование."
+    },
+    {
+      "id": "necrotizing_fasciitis",
+      "mkb10": [
+        "M72.6"
+      ],
+      "name": "Некротизирующий фасциит",
+      "synonyms": [
+        "некротизирующий фасциит",
+        "газовая гангрена",
+        "necrotizing fasciitis"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Хирургическая обработка — неотложно! АБ широкого спектра + антитоксическая терапия"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "nf_empiric",
+          "name": "Эмпирическая терапия (+ неотложная хирургия)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (комбинация)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 16000,
+                      "single_dose_mg": 4000,
+                      "max_daily_mg": 18000,
+                      "freq_per_day": 4,
+                      "duration_days": "10-14",
+                      "duration_note": "Пиперациллин/тазобактам 4.5 г 4 р/д + клиндамицин 900 мг 3 р/д.",
+                      "regimen_label": null,
+                      "component_regimens": {
+                        "clindamycin": {
+                          "single_dose_mg": 900,
+                          "dose_mg_day_fixed": 2700,
+                          "freq_per_day": 3,
+                          "duration_days": "10-14",
+                          "component_note": "Антитоксический эффект (подавление экзотоксинов)"
+                        }
+                      }
+                    }
+                  ],
+                  "combo_ref": [
+                    "piperacillin_tazobactam",
+                    "clindamycin"
+                  ]
+                }
+              ],
+              "combo_therapy": true
+            },
+            {
+              "line_number": 2,
+              "line_label": "Альтернатива / при аллергии",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 3000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "10-14",
+                      "duration_note": null,
+                      "regimen_label": "1 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "meropenem"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "10-14",
+                      "duration_note": "Добавить при подозрении на MRSA.",
+                      "regimen_label": "15-20 мг/кг 2 р/д",
+                      "dose_range_mg_kg_day": [
+                        30,
+                        45
+                      ]
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: программа СКАТ / IDSA; неотложная хирургическая обработка."
+    },
+    {
+      "id": "osteomyelitis",
+      "mkb10": [
+        "M86.0",
+        "M86.1",
+        "M86.9"
+      ],
+      "name": "Остеомиелит",
+      "synonyms": [
+        "остеомиелит",
+        "инфекция кости",
+        "osteomyelitis"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Длительная терапия 4-6 недель; при возможности — по результатам посева/биопсии кости"
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "osteo_mssa",
+          "name": "Метициллин-чувствительный S.aureus (MSSA)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "28-42",
+                      "duration_note": "2 г каждые 8 ч, 4-6 недель.",
+                      "regimen_label": "2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefazolin"
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии",
+              "drugs": [
+                {
+                  "route": [
+                    "iv",
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1800,
+                      "single_dose_mg": 600,
+                      "max_daily_mg": 2700,
+                      "freq_per_day": 3,
+                      "duration_days": "28-42",
+                      "duration_note": null,
+                      "regimen_label": "600 мг 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "clindamycin"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "osteo_mrsa",
+          "name": "Метициллин-резистентный S.aureus (MRSA)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "28-42",
+                      "duration_note": "15-20 мг/кг каждые 12 ч; ТЛМ (trough 15-20 мг/л), 4-6 недель.",
+                      "regimen_label": "15-20 мг/кг 2 р/д",
+                      "dose_range_mg_kg_day": [
+                        30,
+                        45
+                      ]
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: программа СКАТ / IDSA (остеомиелит)."
+    },
+    {
+      "id": "impetigo",
+      "mkb10": [
+        "L01.0",
+        "L01.1"
+      ],
+      "name": "Импетиго",
+      "synonyms": [
+        "импетиго",
+        "стрептодермия",
+        "impetigo"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Локализованное — местная терапия (мупироцин). Распространённое/буллёзное — системная АБ."
+      ],
+      "age_groups": [
+        "child",
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "impetigo_systemic",
+          "name": "Распространённое / буллёзное (системная терапия)",
+          "age_group": "child",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 40,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 3,
+                      "duration_days": "7",
+                      "duration_note": null,
+                      "regimen_label": "25-50 мг/кг/сут 3 р/д",
+                      "dose_range_mg_kg_day": [
+                        25,
+                        50
+                      ]
+                    },
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 2000,
+                      "single_dose_mg": 500,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 4,
+                      "duration_days": "7",
+                      "duration_note": null,
+                      "regimen_label": "500 мг 4 р/д"
+                    }
+                  ],
+                  "drug_ref": "cephalexin"
+                },
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1750,
+                      "single_dose_mg": 875,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 2,
+                      "duration_days": "7",
+                      "duration_note": null,
+                      "regimen_label": "875/125 мг 2 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 45,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1750,
+                      "freq_per_day": 2,
+                      "duration_days": "7",
+                      "duration_note": null,
+                      "regimen_label": "40-50 мг/кг/сут 2 р/д",
+                      "dose_range_mg_kg_day": [
+                        40,
+                        50
+                      ]
+                    }
+                  ],
+                  "drug_ref": "amoxiclav"
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Альтернатива при аллергии / MRSA",
+              "drugs": [
+                {
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1200,
+                      "single_dose_mg": 300,
+                      "max_daily_mg": 1800,
+                      "freq_per_day": 4,
+                      "duration_days": "7",
+                      "duration_note": null,
+                      "regimen_label": "300 мг 4 р/д"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 20,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1800,
+                      "freq_per_day": 3,
+                      "duration_days": "7",
+                      "duration_note": null,
+                      "regimen_label": "10-20 мг/кг/сут 3 р/д",
+                      "dose_range_mg_kg_day": [
+                        10,
+                        20
+                      ]
+                    }
+                  ],
+                  "drug_ref": "clindamycin"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: программа СКАТ / IDSA (импетиго)."
+    },
+    {
+      "id": "septic_arthritis",
+      "mkb10": [
+        "M00.0",
+        "M00.9"
+      ],
+      "name": "Септический (гнойный) артрит",
+      "synonyms": [
+        "септический артрит",
+        "гнойный артрит",
+        "septic arthritis"
+      ],
+      "cr_id": "—",
+      "cr_year": 2021,
+      "cr_updated": "2021",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "antibiotics_indicated": true,
+      "indications": [
+        "Неотложно: дренирование сустава + системная АБ. Эмпирически — покрытие S.aureus."
+      ],
+      "age_groups": [
+        "adult"
+      ],
+      "scenarios": [
+        {
+          "id": "sa_staph",
+          "name": "Стафилококковый (эмпирически)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия (MSSA)",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 6000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 6000,
+                      "freq_per_day": 3,
+                      "duration_days": "14-28",
+                      "duration_note": null,
+                      "regimen_label": "2 г 3 р/д"
+                    }
+                  ],
+                  "drug_ref": "cefazolin"
+                },
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 12000,
+                      "single_dose_mg": 2000,
+                      "max_daily_mg": 12000,
+                      "freq_per_day": 6,
+                      "duration_days": "14-28",
+                      "duration_note": null,
+                      "regimen_label": "2 г 4-6 р/д"
+                    }
+                  ],
+                  "drug_ref": "oxacillin"
+                }
+              ]
+            },
+            {
+              "line_number": 2,
+              "line_label": "При подозрении на MRSA",
+              "drugs": [
+                {
+                  "route": [
+                    "iv"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": 30,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": null,
+                      "freq_per_day": 2,
+                      "duration_days": "14-28",
+                      "duration_note": null,
+                      "regimen_label": "15-20 мг/кг 2 р/д",
+                      "dose_range_mg_kg_day": [
+                        30,
+                        45
+                      ]
+                    }
+                  ],
+                  "drug_ref": "vancomycin"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sa_gono",
+          "name": "Гонококковый (молодые сексуально активные)",
+          "age_group": "adult",
+          "lines": [
+            {
+              "line_number": 1,
+              "line_label": "Первая линия",
+              "drugs": [
+                {
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
+                  "indication_note": null,
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 1000,
+                      "single_dose_mg": 1000,
+                      "max_daily_mg": 2000,
+                      "freq_per_day": 1,
+                      "duration_days": "7-14",
+                      "duration_note": "1 г 1 р/д + лечение хламидийной коинфекции.",
+                      "regimen_label": "1 г 1 р/д"
+                    }
+                  ],
+                  "drug_ref": "ceftriaxone"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "cr_note": "Нет отдельной федеральной КР. Основа: программа СКАТ / IDSA (септический артрит)."
     }
   ]
 }

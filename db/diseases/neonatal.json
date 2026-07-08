@@ -3,16 +3,34 @@
   "recommendations": [
     {
       "id": "neonatal_sepsis",
-      "mkb10": ["P36.0", "P36.1", "P36.2", "P36.3", "P36.4", "P36.5", "P36.8", "P36.9", "P39.2", "P39.3"],
+      "mkb10": [
+        "P36.0",
+        "P36.1",
+        "P36.2",
+        "P36.3",
+        "P36.4",
+        "P36.5",
+        "P36.8",
+        "P36.9",
+        "P39.2",
+        "P39.3"
+      ],
       "name": "Неонатальный сепсис (ранний и поздний)",
-      "synonyms": ["сепсис новорождённых", "неонатальный сепсис"],
-      "cr_id": "16",
-      "cr_year": 2024,
-      "cr_updated": "2024-03-01",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/16",
+      "synonyms": [
+        "сепсис новорождённых",
+        "неонатальный сепсис"
+      ],
+      "cr_id": "912",
+      "cr_year": 2025,
+      "cr_updated": "2025",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/912",
       "antibiotics_indicated": true,
-      "indications": ["Клинические признаки сепсиса у новорождённого + лабораторные маркеры"],
-      "age_groups": ["neonate"],
+      "indications": [
+        "Клинические признаки сепсиса у новорождённого + лабораторные маркеры"
+      ],
+      "age_groups": [
+        "neonate"
+      ],
       "scenarios": [
         {
           "id": "eos_early",
@@ -27,12 +45,18 @@
                 {
                   "drug_ref": "benzylpenicillin_na",
                   "component_role": "main",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Ампициллин/пенициллин + аминогликозид — стандарт эмпирической терапии раннего сепсиса",
                   "regimens": [
                     {
                       "age_group": "neonate",
-                      "dose_mg_kg_day": null,
+                      "dose_mg_kg_day": 100000,
+                      "dose_range_mg_kg_day": [
+                        100000,
+                        200000
+                      ],
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
                       "max_daily_mg": null,
@@ -46,7 +70,10 @@
                 {
                   "drug_ref": "gentamicin",
                   "component_role": "gram_negative_coverage",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": "Аминогликозид для грамотрицательной флоры",
                   "regimens": [
                     {
@@ -70,7 +97,10 @@
               "drugs": [
                 {
                   "drug_ref": "cefotaxime",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": "Цефалоспорин III поколения, особенно при подозрении на грамотрицательную этиологию",
                   "regimens": [
                     {
@@ -101,7 +131,9 @@
               "drugs": [
                 {
                   "drug_ref": "vancomycin",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Покрытие коагулазонегативных стафилококков (основной возбудитель позднего сепсиса, особенно катетер-ассоциированного)",
                   "regimens": [
                     {
@@ -119,7 +151,10 @@
                 },
                 {
                   "drug_ref": "gentamicin",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": "Добавить для грамотрицательного покрытия",
                   "regimens": [
                     {
@@ -143,7 +178,9 @@
               "drugs": [
                 {
                   "drug_ref": "meropenem",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Карбапенем при ESBL-продуцентах, нозокомиальной флоре",
                   "regimens": [
                     {
@@ -167,16 +204,30 @@
     },
     {
       "id": "nec",
-      "mkb10": ["P77.0", "P77.1", "P77.2", "P77.3", "P77.8", "P77.9"],
+      "mkb10": [
+        "P77.0",
+        "P77.1",
+        "P77.2",
+        "P77.3",
+        "P77.8",
+        "P77.9"
+      ],
       "name": "Некротизирующий энтероколит (НЭК)",
-      "synonyms": ["НЭК", "некротизирующий энтероколит новорождённых"],
+      "synonyms": [
+        "НЭК",
+        "некротизирующий энтероколит новорождённых"
+      ],
       "cr_id": "264",
       "cr_year": 2023,
       "cr_updated": "2023-11-20",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/264",
       "antibiotics_indicated": true,
-      "indications": ["Стадии II-III НЭК по Bell-модификации"],
-      "age_groups": ["neonate"],
+      "indications": [
+        "Стадии II-III НЭК по Bell-модификации"
+      ],
+      "age_groups": [
+        "neonate"
+      ],
       "scenarios": [
         {
           "id": "nec_medical",
@@ -191,12 +242,18 @@
                 {
                   "drug_ref": "benzylpenicillin_na",
                   "component_role": "main",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Покрытие грамположительной флоры",
                   "regimens": [
                     {
                       "age_group": "neonate",
-                      "dose_mg_kg_day": null,
+                      "dose_mg_kg_day": 100000,
+                      "dose_range_mg_kg_day": [
+                        100000,
+                        200000
+                      ],
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
                       "max_daily_mg": null,
@@ -210,7 +267,10 @@
                 {
                   "drug_ref": "gentamicin",
                   "component_role": "gram_negative_coverage",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": "Грамотрицательное покрытие",
                   "regimens": [
                     {
@@ -229,7 +289,9 @@
                 {
                   "drug_ref": "metronidazole",
                   "component_role": "anaerobe_coverage",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Анаэробное покрытие",
                   "regimens": [
                     {
@@ -253,7 +315,9 @@
               "drugs": [
                 {
                   "drug_ref": "meropenem",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Монотерапия карбапенемом при тяжёлом НЭК",
                   "regimens": [
                     {
@@ -277,16 +341,29 @@
     },
     {
       "id": "neonatal_conjunctivitis",
-      "mkb10": ["P39.1", "A54.3", "A74.0", "P39.8"],
+      "mkb10": [
+        "P39.1",
+        "A54.3",
+        "A74.0",
+        "P39.8"
+      ],
       "name": "Конъюнктивит новорождённых",
-      "synonyms": ["неонатальный конъюнктивит", "офтальмия новорождённых"],
+      "synonyms": [
+        "неонатальный конъюнктивит",
+        "офтальмия новорождённых"
+      ],
       "cr_id": "319",
       "cr_year": 2023,
       "cr_updated": "2023-09-15",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/319",
       "antibiotics_indicated": true,
-      "indications": ["Гнойный конъюнктивит новорождённых", "Подтверждённая гонококковая/хламидийная этиология"],
-      "age_groups": ["neonate"],
+      "indications": [
+        "Гнойный конъюнктивит новорождённых",
+        "Подтверждённая гонококковая/хламидийная этиология"
+      ],
+      "age_groups": [
+        "neonate"
+      ],
       "scenarios": [
         {
           "id": "conj_gonococcal",
@@ -299,7 +376,10 @@
               "drugs": [
                 {
                   "drug_ref": "ceftriaxone",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": "Препарат выбора",
                   "regimens": [
                     {
@@ -330,7 +410,9 @@
               "drugs": [
                 {
                   "drug_ref": "erythromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Системная терапия (местно недостаточно). Риск пилоростеноза.",
                   "regimens": [
                     {
@@ -354,16 +436,27 @@
     },
     {
       "id": "omphalitis",
-      "mkb10": ["P38.0", "P38.8", "P38.9"],
+      "mkb10": [
+        "P38.0",
+        "P38.8",
+        "P38.9"
+      ],
       "name": "Омфалит новорождённых",
-      "synonyms": ["инфекция пупочной ранки"],
+      "synonyms": [
+        "инфекция пупочной ранки"
+      ],
       "cr_id": "16",
       "cr_year": 2024,
       "cr_updated": "2024-03-01",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/16",
       "antibiotics_indicated": true,
-      "indications": ["Гнойное отделяемое из пупочной ранки", "Гиперемия/отёк кожи вокруг пупка"],
-      "age_groups": ["neonate"],
+      "indications": [
+        "Гнойное отделяемое из пупочной ранки",
+        "Гиперемия/отёк кожи вокруг пупка"
+      ],
+      "age_groups": [
+        "neonate"
+      ],
       "scenarios": [
         {
           "id": "omphalitis_localized",
@@ -378,18 +471,24 @@
                 {
                   "drug_ref": "benzylpenicillin_na",
                   "component_role": "main",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Покрытие S.aureus, стрептококков",
                   "regimens": [
                     {
                       "age_group": "neonate",
-                      "dose_mg_kg_day": null,
+                      "dose_mg_kg_day": 100000,
+                      "dose_range_mg_kg_day": [
+                        100000,
+                        150000
+                      ],
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
                       "max_daily_mg": null,
                       "freq_per_day": 2,
                       "duration_days": "7-10",
-                      "duration_note": null,
+                      "duration_note": "100 000-150 000 ЕД/кг/сут в 2 введения",
                       "regimen_label": "100 000 ЕД/кг/сут 2 р/д"
                     }
                   ]
@@ -397,7 +496,10 @@
                 {
                   "drug_ref": "gentamicin",
                   "component_role": "gram_negative_coverage",
-                  "route": ["iv", "im"],
+                  "route": [
+                    "iv",
+                    "im"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
