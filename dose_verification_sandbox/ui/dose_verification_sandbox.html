@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Dose Verification Sandbox — QA / RESEARCH ONLY</title>
+<style>
+  :root { color-scheme: dark; }
+  body { background:#14171c; color:#e6e8eb; font-family: system-ui, sans-serif; margin:0; padding:0 0 60px; }
+  .banner { background:#7a1414; color:#fff; text-align:center; font-weight:700; padding:10px; letter-spacing:.5px; position:sticky; top:0; z-index:10; }
+  .wrap { max-width:1100px; margin:0 auto; padding:16px; }
+  h1 { font-size:1.3rem; margin-top:0; }
+  section { background:#1c2027; border:1px solid #2a2f38; border-radius:8px; padding:14px; margin-bottom:14px; }
+  section h2 { font-size:1rem; margin:0 0 10px; color:#9fb4ff; }
+  label { display:block; font-size:.8rem; color:#aab1bd; margin:8px 0 3px; }
+  select, input, button, textarea { background:#0f1216; color:#e6e8eb; border:1px solid #333a45; border-radius:5px; padding:6px 8px; font-size:.9rem; }
+  button { cursor:pointer; background:#2a3550; border-color:#3d4b73; }
+  button:hover { background:#334066; }
+  table { width:100%; border-collapse:collapse; font-size:.82rem; }
+  th, td { text-align:left; padding:5px 7px; border-bottom:1px solid #2a2f38; vertical-align:top; }
+  th { color:#8b93a1; font-weight:600; }
+  .badge { display:inline-block; padding:1px 7px; border-radius:10px; font-size:.72rem; font-weight:600; }
+  .b-pass { background:#173a25; color:#5fd88a; }
+  .b-fail { background:#3a1717; color:#ff8080; }
+  .b-blocked { background:#3a2c17; color:#ffb85c; }
+  .b-na { background:#232733; color:#9aa3b2; }
+  .b-review { background:#2c1c3a; color:#c98cff; }
+  .regrow { cursor:pointer; }
+  .regrow:hover { background:#232833; }
+  .regrow.sel { background:#233150; }
+  .trace-step { border-left:3px solid #3d4b73; padding:4px 10px; margin:4px 0; font-family: ui-monospace, monospace; font-size:.82rem; }
+  .warn { color:#ffb85c; font-size:.82rem; }
+  .muted { color:#8b93a1; font-size:.78rem; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .approval-banner { background:#3a1717; color:#ff8080; padding:8px; border-radius:5px; font-weight:600; text-align:center; margin-bottom:10px; }
+  .footer-banner { position:fixed; bottom:0; left:0; right:0; background:#7a1414; color:#fff; text-align:center; padding:6px; font-size:.78rem; font-weight:700; }
+</style>
+</head>
+<body>
+<div class="banner">QA / RESEARCH ONLY — NOT CLINICALLY APPROVED — DO NOT USE FOR PATIENT CARE — NOT PRODUCTION CDS</div>
+<div class="wrap">
+  <h1>Dose Calculation Verification Sandbox</h1>
+  <p class="muted">Local, read-only, offline. Loads a snapshot JSON exported from <code>assembled_regimens.sqlite</code> by <code>dose_verification_sandbox/snapshot.py</code>. This page never writes to any source database. Defect reports are downloaded as local JSON files, not saved anywhere automatically.</p>
+
+  <section>
+    <h2>1. Load snapshot</h2>
+    <label for="fileInput">Snapshot JSON (dose_verification_sandbox/data/snapshot_latest.json)</label>
+    <input type="file" id="fileInput" accept="application/json">
+    <div id="snapshotMeta" class="muted" style="margin-top:8px"></div>
+  </section>
+
+  <section>
+    <h2>2. Select diagnosis (MKB/ICD)</h2>
+    <label for="diagSelect">Diagnosis</label>
+    <select id="diagSelect"><option value="">— load a snapshot first —</option></select>
+  </section>
+
+  <section>
+    <h2>3. Select antibiotic</h2>
+    <select id="abxSelect"><option value="">— select a diagnosis first —</option></select>
+  </section>
+
+  <section>
+    <h2>4. Regimen variants (all candidates shown — never merged)</h2>
+    <table id="regTable">
+      <thead><tr><th>id/ver</th><th>status</th><th>review</th><th>dose</th><th>unit</th><th>freq/day</th><th>route</th><th>age scope</th><th>verdict</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <h2>5. Patient parameters</h2>
+      <label for="ageVal">Age value</label><input type="number" id="ageVal" step="any">
+      <label for="ageUnit">Age unit</label>
+      <select id="ageUnit"><option>years</option><option>months</option><option>days</option></select>
+      <label for="weightKg">Weight (kg)</label><input type="number" id="weightKg" step="any">
+      <label for="renalFn">Renal function (free text, not used in arithmetic)</label><input type="text" id="renalFn">
+      <button id="calcBtn" style="margin-top:12px">Calculate</button>
+    </section>
+
+    <section>
+      <h2>Source regimen</h2>
+      <div id="sourcePanel" class="muted">— select a regimen —</div>
+    </section>
+  </div>
+
+  <section>
+    <h2>Calculation trace</h2>
+    <div id="tracePanel" class="muted">— run a calculation —</div>
+  </section>
+
+  <section>
+    <h2>Provenance</h2>
+    <div id="provPanel" class="muted"></div>
+  </section>
+
+  <section>
+    <h2>Verification verdicts</h2>
+    <div id="verdictPanel" class="muted"></div>
+  </section>
+
+  <section>
+    <h2>Owner comparison</h2>
+    <label for="expDaily">Expected daily dose</label><input type="number" id="expDaily" step="any">
+    <label for="expSingle">Expected single dose</label><input type="number" id="expSingle" step="any">
+    <label for="expFreq">Expected frequency</label><input type="number" id="expFreq" step="any">
+    <label for="expUnit">Expected unit</label><input type="text" id="expUnit">
+    <label for="ownerNote">Owner note</label><textarea id="ownerNote" rows="2" style="width:100%"></textarea>
+    <label for="classSelect">Classification</label>
+    <select id="classSelect">
+      <option value="">—</option>
+      <option>CALCULATION_MATCH</option><option>CALCULATION_MISMATCH</option>
+      <option>SOURCE_DATA_MISMATCH</option><option>DOSE_PARSE_FAILURE</option>
+      <option>UNIT_ERROR</option><option>FREQUENCY_ERROR</option>
+      <option>MAX_DOSE_ERROR</option><option>ROUNDING_ERROR</option><option>NEEDS_INFO</option>
+    </select>
+    <div id="comparePanel" class="muted" style="margin-top:8px"></div>
+    <button id="reportBtn" style="margin-top:12px">Download defect report (JSON)</button>
+  </section>
+</div>
+<div class="footer-banner">CLINICAL_APPROVAL STATUS: NOT_APPROVED — 0 approved clinical objects exist in this repository</div>
+
+<script>
+let SNAPSHOT = null, SELECTED = null, LAST_TRACE = null;
+
+// --- ported from dose_verification_sandbox/parser.py — keep in sync manually ---
+function parseDoseExpression(dose, unit, frequency) {
+  const rawUnit = (unit || '').trim();
+  const sourceExpr = `${dose != null ? dose : ''} ${rawUnit}`.trim() || '(empty)';
+  const unparsed = (numeratorUnit=null, denomWeight=false, denomTime=null) => ({
+    numericMin: dose, numericMax: dose, numeratorUnit, denominatorWeight: denomWeight,
+    denominatorTime: denomTime, frequency, sourceExpression: sourceExpr, parserStatus: 'UNPARSED'
+  });
+  if (dose == null || rawUnit === '') return unparsed();
+  const unitLower = rawUnit.toLowerCase();
+  if (rawUnit.includes(';')) return unparsed();
+  const unparseableTokens = new Set(['', '%', 'капли', 'капель', 'капля']);
+  if (unparseableTokens.has(unitLower)) return unparsed();
+
+  const denominatorWeight = unitLower.includes('kg') || unitLower.includes('/кг');
+  let denominatorTime = null;
+  if (unitLower.includes('day') || unitLower.includes('сут')) denominatorTime = 'day';
+  else if (unitLower.includes('dose') || unitLower.includes('/доз') || unitLower.includes('прием')) denominatorTime = 'dose';
+
+  const baseToken = unitLower.split('/')[0].trim();
+  let numeratorUnit = null;
+  let numericMin = dose, numericMax = dose;
+  if (baseToken === 'mg' || baseToken === 'мг') numeratorUnit = 'mg';
+  else if (baseToken === 'g' || baseToken === 'г') { numeratorUnit = 'mg'; numericMin = dose*1000; numericMax = numericMin; }
+  else if (baseToken === 'iu') numeratorUnit = 'IU';
+  else if (baseToken === 'ml' || baseToken === 'мл') numeratorUnit = 'mL';
+
+  if (numeratorUnit === null) return unparsed(null, denominatorWeight, denominatorTime);
+
+  return {
+    numericMin, numericMax, numeratorUnit, denominatorWeight, denominatorTime,
+    frequency, sourceExpression: sourceExpr, parserStatus: 'PARSED'
+  };
+}
+
+// --- ported from dose_verification_sandbox/calculator.py — keep in sync manually ---
+function calculate(expr, weightKg) {
+  const trace = { calculationStatus: 'OK', steps: [], warnings: [], maxDoseReason: null,
+                   roundingStatus: 'NOT_APPLIED', exactResultPreserved: true,
+                   finalMinSingle: null, finalMaxSingle: null, finalMinDaily: null, finalMaxDaily: null,
+                   finalFrequency: expr.frequency, finalUnit: expr.numeratorUnit };
+  if (expr.parserStatus === 'UNPARSED') {
+    trace.calculationStatus = 'BLOCKED';
+    trace.warnings.push(`DOSE_UNPARSED: source expression '${expr.sourceExpression}' could not be interpreted`);
+    return trace;
+  }
+  if (expr.denominatorTime === null) {
+    trace.calculationStatus = 'BLOCKED';
+    trace.warnings.push(`AMBIGUOUS_PERIOD: source unit '${expr.sourceExpression}' does not specify per-administration vs per-day; refusing to guess`);
+    return trace;
+  }
+  const weightBased = expr.denominatorWeight;
+  trace.steps.push({label:'source', text: expr.sourceExpression});
+  if (weightBased) trace.steps.push({label:'weight', text: `${weightKg} kg`});
+  const scale = v => v == null ? null : (weightBased ? v*weightKg : v);
+  let minScaled = scale(expr.numericMin), maxScaled = scale(expr.numericMax);
+  let singleMin, singleMax, dailyMin, dailyMax;
+  if (expr.denominatorTime === 'day') {
+    trace.steps.push({label:'daily calculation', text: `${weightBased ? expr.numericMin+' × '+weightKg : expr.numericMin} = ${minScaled} ${expr.numeratorUnit}/day`});
+    dailyMin = minScaled; dailyMax = maxScaled;
+    if (expr.frequency) {
+      singleMin = dailyMin / expr.frequency; singleMax = dailyMax != null ? dailyMax/expr.frequency : null;
+      trace.steps.push({label:'single dose', text:`${dailyMin} ÷ ${expr.frequency} = ${singleMin} ${expr.numeratorUnit}`});
+    } else {
+      trace.warnings.push('FREQUENCY_NOT_AVAILABLE: cannot derive single dose without frequency');
+    }
+  } else {
+    singleMin = minScaled; singleMax = maxScaled;
+    trace.steps.push({label:'single dose', text:`${weightBased ? expr.numericMin+' × '+weightKg : expr.numericMin} = ${singleMin} ${expr.numeratorUnit}`});
+    if (expr.frequency) {
+      dailyMin = singleMin*expr.frequency; dailyMax = singleMax != null ? singleMax*expr.frequency : null;
+      trace.steps.push({label:'daily calculation', text:`${singleMin} × ${expr.frequency} = ${dailyMin} ${expr.numeratorUnit}/day`});
+    } else {
+      trace.warnings.push('FREQUENCY_NOT_AVAILABLE: cannot derive daily dose without frequency');
+    }
+  }
+  trace.maxDoseReason = 'MAX_DOSE_NOT_AVAILABLE';
+  trace.warnings.push('MAX_DOSE_NOT_AVAILABLE: source data has no maximum-dose field for this regimen');
+  trace.roundingStatus = 'NOT_APPLIED'; trace.exactResultPreserved = true;
+  trace.finalMinSingle = singleMin ?? null; trace.finalMaxSingle = singleMax ?? null;
+  trace.finalMinDaily = dailyMin ?? null; trace.finalMaxDaily = dailyMax ?? null;
+  return trace;
+}
+
+function badge(status) {
+  const cls = {PASS:'b-pass', FAIL:'b-fail', BLOCKED:'b-blocked', NOT_AVAILABLE:'b-na', NEEDS_REVIEW:'b-review'}[status] || 'b-na';
+  return `<span class="badge ${cls}">${status}</span>`;
+}
+
+function buildVerdict(regimen, expr, trace) {
+  const sourceFidelity = (regimen.dose != null && (regimen.unit||'') !== '') ?
+    (regimen.needs_review_reasons && regimen.needs_review_reasons.length ? 'NEEDS_REVIEW' : 'PASS') : 'NOT_AVAILABLE';
+  const parsing = expr.parserStatus === 'PARSED' ? 'PASS' : 'FAIL';
+  let arithmetic;
+  if (trace.calculationStatus === 'BLOCKED') arithmetic = 'BLOCKED';
+  else if (trace.finalMinDaily != null || trace.finalMinSingle != null) arithmetic = 'PASS';
+  else arithmetic = 'NOT_AVAILABLE';
+  const unitConsistency = expr.parserStatus === 'UNPARSED' ? 'FAIL' : (expr.numeratorUnit ? 'PASS' : 'NOT_AVAILABLE');
+  const maxDose = trace.calculationStatus === 'BLOCKED' ? 'NOT_AVAILABLE' :
+    (trace.maxDoseReason === 'MAX_DOSE_NOT_AVAILABLE' ? 'NOT_AVAILABLE' : 'PASS');
+  const rounding = trace.calculationStatus === 'BLOCKED' ? 'NOT_AVAILABLE' :
+    (trace.roundingStatus === 'NOT_APPLIED' ? 'NOT_AVAILABLE' : 'PASS');
+  const formulationConversion = 'NOT_AVAILABLE';
+  return { source_fidelity: sourceFidelity, parsing, arithmetic, unit_consistency: unitConsistency,
+           max_dose: maxDose, rounding, formulation_conversion: formulationConversion, clinical_approval: 'NOT_APPROVED' };
+}
+
+document.getElementById('fileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    SNAPSHOT = JSON.parse(reader.result);
+    document.getElementById('snapshotMeta').textContent =
+      `${SNAPSHOT.meta.label} | exported_at=${SNAPSHOT.meta.exported_at} | rows=${SNAPSHOT.meta.row_count} | ${SNAPSHOT.meta.note}`;
+    const sel = document.getElementById('diagSelect');
+    sel.innerHTML = '<option value="">— select —</option>';
+    SNAPSHOT.diagnoses.forEach((d, i) => {
+      const o = document.createElement('option');
+      o.value = i; o.textContent = `${d.diagnosis_code} — ${(d.diagnosis_display||'').slice(0,80)}`;
+      sel.appendChild(o);
+    });
+  };
+  reader.readAsText(file, 'utf-8');
+});
+
+document.getElementById('diagSelect').addEventListener('change', e => {
+  const abxSel = document.getElementById('abxSelect');
+  abxSel.innerHTML = '<option value="">— select —</option>';
+  document.querySelector('#regTable tbody').innerHTML = '';
+  if (e.target.value === '') return;
+  const diag = SNAPSHOT.diagnoses[e.target.value];
+  Object.keys(diag.antibiotics).forEach(name => {
+    const o = document.createElement('option'); o.value = name; o.textContent = name;
+    abxSel.appendChild(o);
+  });
+});
+
+document.getElementById('abxSelect').addEventListener('change', e => {
+  const tbody = document.querySelector('#regTable tbody');
+  tbody.innerHTML = '';
+  if (e.target.value === '') return;
+  const diagIdx = document.getElementById('diagSelect').value;
+  const diag = SNAPSHOT.diagnoses[diagIdx];
+  const abx = diag.antibiotics[e.target.value];
+  abx.regimens.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'regrow';
+    tr.innerHTML = `<td>${r.regimen_id}/v${r.version}</td><td>${badge(r.status==='REJECTED'?'FAIL':'NEEDS_REVIEW')} ${r.status}</td>
+      <td>${r.review_status||''}</td><td>${r.dose ?? '—'}</td><td>${r.unit||'—'}</td><td>${r.frequency ?? '—'}</td>
+      <td>${r.route||'—'}</td><td>${r.age_group||'—'}</td><td>${r.validation_verdict||'—'}</td>`;
+    tr.addEventListener('click', () => selectRegimen(r, tr));
+    tbody.appendChild(tr);
+  });
+});
+
+function selectRegimen(r, tr) {
+  document.querySelectorAll('.regrow').forEach(x => x.classList.remove('sel'));
+  tr.classList.add('sel');
+  SELECTED = r;
+  document.getElementById('sourcePanel').innerHTML = `
+    <b>${r.antibiotic}</b> — ${r.dose ?? '—'} ${r.unit||''} × ${r.frequency ?? '—'}/day, ${r.duration_recommended ?? '—'} days, route=${r.route||'—'}<br>
+    status=${r.status} review_status=${r.review_status} approved_by=${r.approved_by||'(none)'}<br>
+    guideline_id=${r.guideline_id} evidence_level=${r.evidence_level} confidence=${r.confidence}<br>
+    needs_review_reasons=${JSON.stringify(r.needs_review_reasons)}`;
+  document.getElementById('provPanel').innerHTML = `
+    <b>source_pdf:</b> ${r.source_pdf||'—'}<br><b>page:</b> ${r.source_page||'—'}<br>
+    <b>quote:</b> "${r.source_quote||''}"<br><b>snapshot_version:</b> ${r.snapshot_version}`;
+}
+
+document.getElementById('calcBtn').addEventListener('click', () => {
+  if (!SELECTED) { alert('UNSUPPORTED_INPUT: select a regimen first'); return; }
+  const weight = parseFloat(document.getElementById('weightKg').value);
+  const age = parseFloat(document.getElementById('ageVal').value);
+  if (!(weight > 0)) { alert('UNSUPPORTED_INPUT: weight_kg must be positive'); return; }
+  if (!(age >= 0)) { alert('UNSUPPORTED_INPUT: age_value must be non-negative'); return; }
+
+  const expr = parseDoseExpression(SELECTED.dose, SELECTED.unit, SELECTED.frequency);
+  const trace = calculate(expr, weight);
+  LAST_TRACE = { expr, trace, weight, age };
+
+  const stepsHtml = trace.steps.map(s => `<div class="trace-step"><b>${s.label}:</b> ${s.text}</div>`).join('');
+  const warnHtml = trace.warnings.map(w => `<div class="warn">⚠ ${w}</div>`).join('');
+  document.getElementById('tracePanel').innerHTML = `
+    calculation_status: ${badge(trace.calculationStatus === 'OK' ? 'PASS' : 'BLOCKED')}<br>
+    ${stepsHtml}${warnHtml}
+    <div style="margin-top:8px"><b>final:</b> single dose [${trace.finalMinSingle}, ${trace.finalMaxSingle}] ${trace.finalUnit||''},
+    daily dose [${trace.finalMinDaily}, ${trace.finalMaxDaily}] ${trace.finalUnit||''}, frequency=${trace.finalFrequency}<br>
+    rounding_status=${trace.roundingStatus} (exact result shown, no clinical rounding rule governed yet)</div>`;
+
+  const v = buildVerdict(SELECTED, expr, trace);
+  document.getElementById('verdictPanel').innerHTML = Object.entries(v).map(
+    ([k, val]) => `<div>${k}: ${badge(val)}</div>`
+  ).join('');
+});
+
+document.getElementById('reportBtn').addEventListener('click', () => {
+  if (!LAST_TRACE || !SELECTED) { alert('Run a calculation first'); return; }
+  const issue = {
+    issue_id: 'dvi_' + Math.random().toString(16).slice(2, 18),
+    diagnosis_code: SNAPSHOT.diagnoses[document.getElementById('diagSelect').value].diagnosis_code,
+    regimen_id: SELECTED.regimen_id, regimen_version: SELECTED.version, antibiotic: SELECTED.antibiotic,
+    patient_input: { weight_kg: LAST_TRACE.weight, age_value: LAST_TRACE.age },
+    source_expression: LAST_TRACE.expr.sourceExpression,
+    system_calculation_trace: LAST_TRACE.trace,
+    expected_value: {
+      daily: parseFloat(document.getElementById('expDaily').value) || null,
+      single: parseFloat(document.getElementById('expSingle').value) || null,
+      frequency: parseFloat(document.getElementById('expFreq').value) || null,
+      unit: document.getElementById('expUnit').value || null,
+    },
+    issue_category: document.getElementById('classSelect').value || 'NEEDS_INFO',
+    owner_note: document.getElementById('ownerNote').value,
+    source_pdf: SELECTED.source_pdf, source_page: SELECTED.source_page,
+    created_at: new Date().toISOString(),
+    status: 'OPEN',
+  };
+  const blob = new Blob([JSON.stringify(issue, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${issue.issue_id}.json`;
+  a.click();
+});
+</script>
+</body>
+</html>

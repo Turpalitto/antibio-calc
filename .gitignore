@@ -88,3 +88,10 @@ weights/
 # benchmark_review_workbench.py, build_review_workbench.py, generate_review_workbench_report.py)
 /p56_queue_report.json
 /p56_review_benchmark.json
+
+# P5.6 Dose Verification Sandbox — all generated/regenerable artifacts (snapshot export,
+# pilot report, QA issue log, golden dataset dump, semantic store). Regenerate via
+# `python -m dose_verification_sandbox.snapshot` / `.pilot` / `.golden` / `.semantics_store`.
+/dose_verification_sandbox/data/*.json
+/dose_verification_sandbox/data/*.md
+/dose_verification_sandbox/data/*.sqlite
