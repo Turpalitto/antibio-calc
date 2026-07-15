@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "status": "PARTIALLY_CURATED",
+    "generated_at": "2026-07-11T15:33:49Z",
+    "source_ledger": "regimen_review_ledger.json",
+    "corpus_root": "C:\\clinrec_downloader",
+    "note": "GENERATED — do not hand-edit. Physician-approved regimens only, each with provenance to the read-only upstream corpus. Clinical regimen content stays upstream; this view stores only references + integrity hashes + attribution.",
+    "total_decisions": 11,
+    "approved": 0,
+    "rejected": 0,
+    "unresolved": 11,
+    "invalid": 0
+  },
+  "approved_regimens": []
+}

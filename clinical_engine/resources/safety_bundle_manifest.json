@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "version": "1.0.1",
+  "requires_kernel": "1.0",
+  "bundle_format": "v1",
+  "content_hash": "sha256:737d39e422986093e42a3445baef689e4a23f64e5edb53b1db9902cf6ee8757c",
+  "bundle_id": "safety-main-1.0.1",
+  "bundle_type": "safety",
+  "curation_status": "curated",
+  "generated_by": "pipeline-v0.4",
+  "source_refs": ["cr-1638", "clinical_constants"],
+  "jurisdiction": "RU",
+  "specialty": "infectious_diseases",
+  "signatures": [
+    {
+      "algorithm": "ed25519",
+      "value": "anothersignature...",
+      "key_id": "prod-2026-07"
+    }
+  ],
+  "depends_on": [],
+  "supersedes": [],
+  "expiry": null,
+  "freshness_policy": {
+    "max_age_days": 180
+  },
+  "stats": {
+    "allergy_class_count": 17,
+    "ci_count": 40
+  },
+  "notes": "SafetyBundle with allergy/renal/pregnancy rules. Wrapped P0-4 (clinical_constants)."
+}

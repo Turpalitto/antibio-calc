@@ -1,0 +1,70 @@
+# Confirmed-excluded individual files (owner decisions applied 2026-07-15), with reason:
+CORPUS_MANIFEST.json  # generated report/artifact | Owner decision 4 (2026-07-15): generated raw inventory reproducible from external corpus contract; contains machine-specific absolute path. Exclude, not deleted from disk.
+RECOVERY_TRACKED_FILES.txt  # superseded generated list | Owner decision 4 (2026-07-15): superseded generated list from an earlier session; superseded by P56_PROPOSED_TRACKED_FILES.txt. Exclude, not deleted from disk.
+REPOSITORY_UNTRACKED_INVENTORY.json  # generated report/artifact | Owner decision 4 (2026-07-15): superseded raw generated inventory from an earlier session; superseded by this program's manifests. Exclude, not deleted from disk.
+SESSION_HISTORY.md  # report/RFC/analysis doc | Owner decision 4 (2026-07-15): transient console/chat transcript dump, no independent governance value. Exclude, not deleted from disk.
+SESSION_SUMMARY.md  # report/RFC/analysis doc | Owner decision 4 (2026-07-15): duplicate of PROJECT_STATE.md current-state content. Exclude, not deleted from disk.
+medical_dictionary/unknown_drugs.csv  # production source code | Owner decision 2 (2026-07-15): legacy/runtime artifact excluded from recovery commit; not consumed by any code; missing producer registered as non-blocking follow-up.
+pilot_review_batch/crt_005ae9d67932bcdf64cc26f4.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_008a65b2cfb45e7de1227f6c.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_00b537b51698902c07e7e991.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_0540ae369a1cf75e79513577.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_077d527c659090758744d88b.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_0d13d449b12e83fe72cfe6e1.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_0e99fdd82d7ef107ba142e84.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_11a2a6f114e87c4355252aec.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_139b5e0feab8b2b6e8dc99cd.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_1483f41f9ec3d84bce900e1f.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_1564c8019866f25fadf0c8f4.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_15c1518b780b7f90f02e1dd2.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_1606e9bf2b5cb59137696587.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_1bed7b22d00e7863a0533bdc.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_1fff11c2ff6045f6b4a3ddf0.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_237ea36112390a00e7dde218.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_264ff608f3707714a0886edd.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_3b7d7883ae7bdcf41fb7f480.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_460745deec2218a20eedd308.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_49e042e24dcca7f74de3a449.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_522e1fdb3569b55c3c2274f2.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_5e663736c4f0d5e6aa79f510.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_65df0e302604b985910e48b8.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_75b19d44caf4ba8fdce15a1b.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_81b53334fd5bb79e645589e3.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_8f2c9e263f373ca7f0f427dc.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_a47c2b8e5d85cb2e5143bcc2.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_c334df4eff72baca13ef1390.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_c3a413fd36c8a76c271abfae.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch/crt_f1eb08c3482dc7624a5ebf2a.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_005ae9d67932bcdf64cc26f4.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_008a65b2cfb45e7de1227f6c.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_00b537b51698902c07e7e991.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_04a55eea7b750e2fbc9c7da0.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_0540ae369a1cf75e79513577.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_077d527c659090758744d88b.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_0d13d449b12e83fe72cfe6e1.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_0e99fdd82d7ef107ba142e84.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_11a2a6f114e87c4355252aec.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_139b5e0feab8b2b6e8dc99cd.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_1564c8019866f25fadf0c8f4.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_1bed7b22d00e7863a0533bdc.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_1fff11c2ff6045f6b4a3ddf0.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_237ea36112390a00e7dde218.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_264ff608f3707714a0886edd.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_3b7d7883ae7bdcf41fb7f480.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_408719ffbfc0152ae4d9bbe7.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_460745deec2218a20eedd308.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_49e042e24dcca7f74de3a449.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_522e1fdb3569b55c3c2274f2.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_54036fd6ea1d6fdfc3655141.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_65df0e302604b985910e48b8.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_81b53334fd5bb79e645589e3.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_8f2c9e263f373ca7f0f427dc.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_925d66320f0ca5fed8d74e51.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_a47c2b8e5d85cb2e5143bcc2.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_b1ec53a7d7650868932aab5f.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_c334df4eff72baca13ef1390.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_c3a413fd36c8a76c271abfae.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+pilot_review_batch_v2/crt_e7295fed2c6e1ed44a42f649.json  # generated pilot review packet export | Owner decision 3 (2026-07-15): generated packet export, exclude.
+
+# Already-gitignored bulk categories (not re-listed file by file):
+# *.db, *.sqlite, *.sqlite3, *.pdf, backups/, .venv/, __pycache__/, .mypy_cache/, .env, credentials*.json, secrets*.json, models/, weights/, /unknown_drugs.csv, /p56_queue_report.json, /p56_review_benchmark.json

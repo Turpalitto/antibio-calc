@@ -10,6 +10,15 @@ $out   = Join-Path $root 'antibiotic_calc.html'
 if(-not (Test-Path -LiteralPath $tpl)) { throw "Template not found: $tpl" }
 if(-not (Test-Path -LiteralPath $db))  { throw "DB not found: $db" }
 
+# Validate DB integrity first
+$validateJs = Join-Path $root 'db\validate_db.js'
+if (Test-Path -LiteralPath $validateJs) {
+    $result = & node $validateJs 2>&1
+    $exitCode = $LASTEXITCODE
+    Write-Host $result
+    if ($exitCode -ne 0) { throw "DB validation failed!" }
+}
+
 # Validate JSON first
 $null = Get-Content -LiteralPath $db -Raw -Encoding UTF8 | ConvertFrom-Json
 

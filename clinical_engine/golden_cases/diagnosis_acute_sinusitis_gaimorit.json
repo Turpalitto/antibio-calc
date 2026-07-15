@@ -1,0 +1,33 @@
+{
+  "id": "diagnosis_acute_sinusitis_gaimorit",
+  "description": "P1-B positive: 'острый гайморит' or 'острый синусит ВЧП' (J01.0) must normalize via synonym+ICD to correct 'Острый бактериальный синусит у взрослых' guideline and produce regimens. Legacy exact would NO_MATCH.",
+  "query": {
+    "diagnosis": "острый гайморит",
+    "icd10": "J01.0",
+    "patient": {
+      "age": 35,
+      "weight_kg": 70,
+      "pregnant": false,
+      "renal_function": null,
+      "hepatic_impairment": false,
+      "allergies": [],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": "adult"
+    }
+  },
+  "expect": {
+    "min_accepted": 1,
+    "guideline_id": "g_sinusitis",
+    "first_candidate_confidence_range": [0.0, 1.0],
+    "trace_code": "DIAGNOSIS_RESOLVED"
+  },
+  "provenance": {
+    "author": "P1-B RFC validation",
+    "verified_at": "2026-07-11T00:00:00Z",
+    "source": "diagnosis_index: guideline 1220/1632 'Острый синусит' (J01). Positive routing improvement via terminology."
+  }
+}

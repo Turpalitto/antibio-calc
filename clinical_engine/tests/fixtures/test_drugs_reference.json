@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "version": "test-fixture-1.0.0",
+    "note": "Synthetic subset for clinical_engine tests. Shape mirrors db/index.json drugs_reference, values are invented."
+  },
+  "drugs_reference": {
+    "_note": "Same '_note' key convention as production db/index.json — readers must skip underscore-prefixed keys.",
+    "amoxicillin": {
+      "inn": "Амоксициллин",
+      "class": "Полусинтетические пенициллины широкого спектра",
+      "renal_adjustment": "КК<30: удлинить интервал",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "monitoring": null,
+      "interactions": "Снижает эффект контрацептивов. Осторожно с аллопуринолом (сыпь).",
+      "age_restriction_min": null,
+      "forms": [
+        {"form_type": "tablet", "concentration": "500 мг", "notes": null},
+        {"form_type": "powder_for_suspension", "concentration": "250 мг/5 мл", "concentration_mg_per_ml": 50, "notes": null}
+      ],
+      "dilution": {}
+    },
+    "doxycycline": {
+      "inn": "Доксициклин",
+      "class": "Тетрациклины",
+      "renal_adjustment": null,
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Противопоказан",
+      "monitoring": null,
+      "interactions": "Снижает эффект контрацептивов. Хелатируется антацидами (Ca/Mg/Al).",
+      "age_restriction_min": "8 лет",
+      "forms": [
+        {"form_type": "capsule", "concentration": "100 мг", "notes": null}
+      ],
+      "dilution": {}
+    },
+    "levofloxacin": {
+      "inn": "Левофлоксацин",
+      "class": "Фторхинолоны",
+      "renal_adjustment": "КК<50: снизить дозу",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Противопоказан в I и III триместрах",
+      "monitoring": "ЭКГ (удлинение QT)",
+      "interactions": "Удлинение QT с антиаритмиками. Хелатируется антацидами.",
+      "age_restriction_min": "18 лет",
+      "forms": [
+        {"form_type": "tablet", "concentration": "500 мг", "notes": null}
+      ],
+      "dilution": {
+        "iv_infusion": {
+          "solvent_options": [{"solvent": "0.9% NaCl", "vial_mg": 500, "solvent_ml": 100.0, "final_volume_ml": 100.0, "final_concentration_mg_ml": 5, "notes": null}],
+          "infusion_time_min": 60,
+          "cautions": "Не смешивать с гепарином.",
+          "child_solvent_warning": "Не применяется у детей.",
+          "steps": ["Развести в 100 мл 0.9% NaCl.", "Ввести в/в капельно за 60 минут."]
+        }
+      }
+    },
+    "gentamicin": {
+      "inn": "Гентамицин",
+      "class": "Аминогликозиды",
+      "renal_adjustment": "КК<60: удлинить интервал, мониторинг уровня",
+      "hepatic_adjustment": null,
+      "pregnancy_category": "С осторожностью (риск ототоксичности у плода)",
+      "monitoring": "Уровень в крови, слух, функция почек",
+      "interactions": null,
+      "age_restriction_min": null,
+      "forms": [
+        {"form_type": "solution_for_injection", "concentration": "40 мг/мл", "notes": null}
+      ],
+      "dilution": {}
+    },
+    "unmapped_drug": {
+      "inn": "Неизвестный Препарат",
+      "class": "Тестовый класс",
+      "renal_adjustment": null,
+      "hepatic_adjustment": null,
+      "pregnancy_category": null,
+      "monitoring": null,
+      "interactions": null,
+      "age_restriction_min": null,
+      "forms": [],
+      "dilution": {}
+    },
+    "ci_test_drug": {
+      "inn": "Препарат С Противопоказаниями",
+      "class": "Тестовый класс",
+      "renal_adjustment": null,
+      "hepatic_adjustment": null,
+      "pregnancy_category": null,
+      "monitoring": null,
+      "interactions": null,
+      "age_restriction_min": null,
+      "contraindications": "Тестовое противопоказание — не структурировано, только для проверки CI_UNPARSED",
+      "forms": [],
+      "dilution": {}
+    },
+    "peds_test_drug": {
+      "inn": "Педиатрический Тестовый Препарат",
+      "class": "Тестовый класс",
+      "renal_adjustment": "СКФ<30: снизить дозу",
+      "hepatic_adjustment": "С осторожностью при печёночной недостаточности",
+      "pregnancy_category": null,
+      "monitoring": null,
+      "interactions": null,
+      "age_restriction_min": null,
+      "forms": [],
+      "dilution": {},
+      "pediatric_dosing": {
+        "mg_per_kg_day": 40.0,
+        "max_daily_mg": 1500.0,
+        "weight_min_kg": 3.0,
+        "weight_max_kg": 40.0,
+        "freq_per_day": 3
+      }
+    },
+    "unmapped_pen": {
+      "inn": "Неотображенный пенициллин",
+      "class": "Полусинтетические пенициллины широкого спектра",
+      "renal_adjustment": null,
+      "hepatic_adjustment": null,
+      "pregnancy_category": "Разрешён",
+      "monitoring": null,
+      "interactions": null,
+      "age_restriction_min": null,
+      "forms": [{"form_type": "tablet", "concentration": "500 мг", "notes": null}],
+      "dilution": {},
+      "pediatric_dosing": null
+    }
+  }
+}

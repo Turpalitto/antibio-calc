@@ -1,0 +1,9 @@
+{
+  "corpus_dir": "C:\\clinrec_downloader",
+  "note": "Default location of the external, read-only Clinical Guideline corpus (PDFs, metadata.sqlite, normalized_regimens.sqlite). Large research asset stored OUTSIDE git. Override at runtime with env ANTIBIO_CORPUS_DIR. This file records only a PATH — never medical knowledge.",
+  "expected_artifacts": {
+    "normalized_regimens_sqlite": "normalized_regimens.sqlite",
+    "metadata_sqlite": "metadata.sqlite",
+    "pdf_dirs": ["downloads_active", "archive_review", "archive_no_antibiotics"]
+  }
+}

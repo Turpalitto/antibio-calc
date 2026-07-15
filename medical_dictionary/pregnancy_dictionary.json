@@ -1,0 +1,14 @@
+{
+  "schema": "keyword_patterns",
+  "description": "Reference terminology for PregnancyParser. Regex patterns detect pregnancy/lactation in age_group + source_quote. Parsers do NOT load this file (no logic change).",
+  "patterns": {
+    "pregnancy_re": "беремен|pregnan|гестаци",
+    "lactation_re": "лактаци|грудн\\w* вскарм|breastfeed|lactat"
+  },
+  "logic_notes": [
+    "If extraction field 'pregnancy' is bool, use it directly.",
+    "Else search age_group + source_quote (lowercased) for pregnancy_re.",
+    "If 'не рекоменд' and 'беремен' both present → pregnancy=False (contraindicated).",
+    "Else → None (not applicable / unknown)."
+  ]
+}

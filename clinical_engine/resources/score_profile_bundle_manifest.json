@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "version": "1.0.0",
+  "requires_kernel": "1.0",
+  "bundle_format": "v1",
+  "content_hash": "sha256:b5ea9676a362511501799c687f539261679b5261856037293b1d00207760efc0",
+  "bundle_id": "score-profile-default-1.0.0",
+  "bundle_type": "score_profile",
+  "curation_status": "curated",
+  "generated_by": "engine-config",
+  "source_refs": ["score_profiles/default.json"],
+  "jurisdiction": "RU",
+  "specialty": "infectious_diseases",
+  "signatures": [],
+  "depends_on": [],
+  "supersedes": [],
+  "expiry": null,
+  "freshness_policy": null,
+  "stats": {
+    "profile_count": 1
+  },
+  "notes": "Default ScoreProfileBundle. Wrapped in P0-4."
+}

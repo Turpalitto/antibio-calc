@@ -1,0 +1,127 @@
+{
+  "schema": "pattern_descriptors",
+  "description": "Reference terminology for DurationParser. Each entry is a regex pattern + tag. Parsers do NOT load this file (no logic change). Tags: range, single, skip, static_dose, max_hours, hours_single, min_weeks, max_weeks, range_years, single_years.",
+  "count": 30,
+  "entries": [
+    {
+      "pattern": "(\\d+)\\s*[-–—]\\s*(\\d+)\\s*(?:дн|сут|день|дня|дней)",
+      "tag": "range"
+    },
+    {
+      "pattern": "(\\d+)\\s*[-–—]\\s*(\\d+)\\s*(?:day|days)",
+      "tag": "range"
+    },
+    {
+      "pattern": "(\\d+)\\s*[-–—]\\s*(\\d+)\\s*$",
+      "tag": "range"
+    },
+    {
+      "pattern": "(\\d+)\\s*[-–—]\\s*(\\d+)\\s*лет",
+      "tag": "range_years"
+    },
+    {
+      "pattern": "однократн",
+      "tag": "static_dose"
+    },
+    {
+      "pattern": "разов",
+      "tag": "static_dose"
+    },
+    {
+      "pattern": "одн[аа]\\s+доз",
+      "tag": "static_dose"
+    },
+    {
+      "pattern": "одн[аа]\\s+предоперационн",
+      "tag": "static_dose"
+    },
+    {
+      "pattern": "не\\s*более\\s*(\\d+)\\s*час",
+      "tag": "max_hours"
+    },
+    {
+      "pattern": "в\\s+течение\\s+(\\d+)\\s*час",
+      "tag": "hours_single"
+    },
+    {
+      "pattern": "(\\d+)\\s*час",
+      "tag": "hours_single"
+    },
+    {
+      "pattern": "не\\s*менее\\s*(\\d+)\\s*[-\\u2013]?\\s*х?\\s*нед",
+      "tag": "min_weeks"
+    },
+    {
+      "pattern": "до\\s+(\\d+)\\s*[-\\u2013]?\\s*х?\\s*нед",
+      "tag": "max_weeks"
+    },
+    {
+      "pattern": "(\\d+)\\s*лет",
+      "tag": "single_years"
+    },
+    {
+      "pattern": "(\\d+)\\s*(?:дн|сут|день|дня|дней|д)",
+      "tag": "single"
+    },
+    {
+      "pattern": "(\\d+)\\s*(?:суток|сут)",
+      "tag": "single"
+    },
+    {
+      "pattern": "(\\d+)\\s*(?:day|days)",
+      "tag": "single"
+    },
+    {
+      "pattern": "(\\d+)\\s*(?:недел|нед)",
+      "tag": "single"
+    },
+    {
+      "pattern": "(\\d+)\\s*(?:месяц|мес)",
+      "tag": "single"
+    },
+    {
+      "pattern": "длительн|длит",
+      "tag": "skip"
+    },
+    {
+      "pattern": "не\\s*указан",
+      "tag": "skip"
+    },
+    {
+      "pattern": "на\\s+весь\\s+период",
+      "tag": "skip"
+    },
+    {
+      "pattern": "до\\s+окончани",
+      "tag": "skip"
+    },
+    {
+      "pattern": "до\\s+получени",
+      "tag": "skip"
+    },
+    {
+      "pattern": "до\\s+выявлени",
+      "tag": "skip"
+    },
+    {
+      "pattern": "во\\s+время\\s+вс[ее]й",
+      "tag": "skip"
+    },
+    {
+      "pattern": "на\\s+вс[ее]х\\s+этапах",
+      "tag": "skip"
+    },
+    {
+      "pattern": "на\\s+фон[еи]\\s+провод",
+      "tag": "skip"
+    },
+    {
+      "pattern": "при\\s+связи\\s+рецидив",
+      "tag": "skip"
+    },
+    {
+      "pattern": "до\\s+оператив",
+      "tag": "skip"
+    }
+  ]
+}

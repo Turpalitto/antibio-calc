@@ -1,0 +1,6 @@
+{
+  "schema": "group_name_to_atc_prefix",
+  "description": "Maps drug class group names (фторхинолоны, карбапенемы) to ATC group prefix. Single-drug regimens with a group name use the prefix for categorization.",
+  "count": 0,
+  "entries": {}
+}

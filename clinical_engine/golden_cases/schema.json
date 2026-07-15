@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Golden Clinical Case",
+  "description": "Doctor-verified input/output pair for the Clinical Decision Engine. Infrastructure file — not a clinical case.",
+  "type": "object",
+  "required": ["id", "query", "expect"],
+  "properties": {
+    "id": {"type": "string", "description": "Уникальный идентификатор кейса (snake_case)."},
+    "description": {"type": "string", "description": "Короткое клиническое описание."},
+    "query": {
+      "type": "object",
+      "description": "Вход: то, что получает Engine.recommend().",
+      "properties": {
+        "diagnosis": {"type": ["string", "null"]},
+        "icd10": {"type": ["string", "null"]},
+        "patient": {
+          "type": "object",
+          "properties": {
+            "age": {"type": ["number", "null"], "description": "Возраст в ГОДАХ (неонатальный — доли года)."},
+            "weight_kg": {"type": ["number", "null"]},
+            "pregnant": {"type": "boolean"},
+            "renal_function": {"type": ["number", "null"], "description": "СКФ, мл/мин."},
+            "hepatic_impairment": {"type": "boolean"},
+            "allergies": {"type": "array", "items": {"type": "string"}, "description": "Классы аллергии (канонические, напр. 'Пенициллины')."},
+            "current_meds": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "preferences": {
+          "type": "object",
+          "properties": {
+            "therapy_line": {"type": ["string", "null"]},
+            "route_preference": {"type": ["string", "null"]},
+            "population": {"type": ["string", "null"], "enum": ["adult", "child", "neonate", null]}
+          }
+        }
+      }
+    },
+    "expect": {
+      "type": "object",
+      "description": "Ожидания. Проверяются ТОЛЬКО присутствующие поля. Все опциональны, но должно быть хотя бы одно.",
+      "properties": {
+        "first_drug_normalized": {"type": "string", "description": "drug_normalized у accepted[0] (rank 1)."},
+        "first_drug_ref": {"type": "string"},
+        "first_therapy_line": {"type": "string"},
+        "first_route": {"type": "string", "description": "Нормализованный route (oral/iv/im/...)."},
+        "min_accepted": {"type": "integer"},
+        "max_accepted": {"type": "integer"},
+        "accepted_empty": {"type": "boolean"},
+        "excluded_drug_refs": {"type": "array", "items": {"type": "string"}, "description": "Каждый должен быть в excluded."},
+        "not_accepted_drug_refs": {"type": "array", "items": {"type": "string"}, "description": "Ни одного не должно быть в accepted."},
+        "excluded_reason_contains": {"type": "string"},
+        "engine_note_code": {"type": "string", "description": "Напр. NO_DIAGNOSIS_MATCH, ALL_CANDIDATES_EXCLUDED."},
+        "guideline_id": {"type": "string"},
+        "not_guideline_id": {"type": "string", "description": "Ни один из selected guidelines не должен содержать этот id (для negative exclusion proof)."},
+        "trace_code": {"type": "string", "description": "Decision code present in traces (e.g. DIAGNOSIS_RESOLVED for successful normalized routing)."},
+        "safety_flag_codes": {"type": "array", "items": {"type": "string"}, "description": "Напр. ALLERGY, PREGNANCY_CI."},
+        "first_candidate_confidence_range": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Аудит: кто и когда верифицировал кейс (обязательно для реального кейса).",
+      "properties": {
+        "author": {"type": ["string", "null"]},
+        "verified_at": {"type": ["string", "null"]},
+        "source": {"type": ["string", "null"], "description": "КР / источник клинического ожидания."}
+      }
+    }
+  }
+}

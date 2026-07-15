@@ -884,14 +884,58 @@
             },
             {
               "line_number": 0,
-              "line_label": "Альтернатива при аллергии к бета-лактамам",
+              "line_label": "Нетяжёлая аллергия на пенициллины (не анафилаксия) — цефалоспорины",
+              "drugs": [
+                {
+                  "drug_ref": "cefuroxime",
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": "Цефалоспорин II поколения — препарат выбора при нетяжёлой аллергии на бета-лактамы (КР306)",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 500,
+                      "single_dose_mg": 250,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 2,
+                      "duration_days": "10",
+                      "duration_note": "250 мг 2 р/д, 10 дней (КР306)"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "cefixime",
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": "Цефалоспорин III поколения — альтернатива при нетяжёлой аллергии на бета-лактамы (КР306)",
+                  "regimens": [
+                    {
+                      "age_group": "adult",
+                      "dose_mg_kg_day": null,
+                      "dose_mg_day_fixed": 400,
+                      "single_dose_mg": 400,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 1,
+                      "duration_days": "10",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Тяжёлая/анафилактическая аллергия на бета-лактамы — макролиды",
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
                   "route": [
                     "per_os"
                   ],
-                  "indication_note": null,
+                  "indication_note": "Цефалоспорины противопоказаны при тяжёлой аллергии (перекрёстная реактивность)",
                   "regimens": [
                     {
                       "age_group": "adult",
@@ -901,7 +945,7 @@
                       "max_daily_mg": 500,
                       "freq_per_day": 1,
                       "duration_days": "5",
-                      "duration_note": "5-дневный курс для эрадикации БГСА"
+                      "duration_note": "500 мг в 1-й день, затем 250 мг/сут в 2-5-й день (курсовая доза 1.5 г) — стандартная эрадикационная схема, не 500 мг ежедневно все 5 дней."
                     }
                   ]
                 },
@@ -1008,14 +1052,58 @@
             },
             {
               "line_number": 0,
-              "line_label": "Альтернатива при аллергии",
+              "line_label": "Нетяжёлая аллергия на пенициллины (не анафилаксия) — цефалоспорины",
+              "drugs": [
+                {
+                  "drug_ref": "cefuroxime",
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": "Цефалоспорин II поколения — препарат выбора при нетяжёлой аллергии на бета-лактамы (КР306)",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 20,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 500,
+                      "freq_per_day": 2,
+                      "duration_days": "10",
+                      "duration_note": "20 мг/кг/сут (макс 500 мг/сут) в 2 приёма, 10 дней (КР306)"
+                    }
+                  ]
+                },
+                {
+                  "drug_ref": "cefixime",
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": "Цефалоспорин III поколения — альтернатива при нетяжёлой аллергии на бета-лактамы (КР306)",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 8,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 400,
+                      "freq_per_day": 1,
+                      "duration_days": "10",
+                      "duration_note": null
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 0,
+              "line_label": "Тяжёлая/анафилактическая аллергия на бета-лактамы — макролиды",
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
                   "route": [
                     "per_os"
                   ],
-                  "indication_note": null,
+                  "indication_note": "Цефалоспорины противопоказаны при тяжёлой аллергии (перекрёстная реактивность)",
                   "regimens": [
                     {
                       "age_group": "child",

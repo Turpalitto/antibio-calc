@@ -1,0 +1,20 @@
+title = "ANTIBIO secret scanning policy"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Documentation placeholders"
+paths = [
+  '''\.env\.example$''',
+]
+regexes = [
+  '''<set-in-local-secret-store>''',
+  '''<optional>''',
+]
+
+[[rules]]
+id = "antibio-provider-key"
+description = "Provider API key assigned as literal"
+regex = '''(?i)(api[_-]?key|token|secret)\s*[=:]\s*["'][A-Za-z0-9_\-]{20,}["']'''
+keywords = ["api_key", "token", "secret"]

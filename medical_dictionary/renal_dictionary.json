@@ -1,0 +1,14 @@
+{
+  "schema": "keyword_patterns",
+  "description": "Reference terminology for GFRParser (renal adjustment detection). Regex patterns detect renal/dialysis in source_quote + age_group. Parsers do NOT load this file (no logic change).",
+  "patterns": {
+    "renal_re": "почечн|ренальн|crcl|кк|клиренс|gfr|скорость клубочков|creatinine",
+    "hemodialysis_re": "гемодиализ|hemodialysis|гд\\b",
+    "peritoneal_re": "перитонеальн.*диализ|peritoneal.*dialysis|пд\\b"
+  },
+  "logic_notes": [
+    "If extraction field 'renal_adjustment' is bool, use it directly.",
+    "Else search age_group + source_quote (lowercased) for renal/hemodialysis/peritoneal patterns.",
+    "renal_adjustment = has_hemo OR has_peritoneal OR has_renal."
+  ]
+}

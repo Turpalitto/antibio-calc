@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "note": "General clinical use. Weights match ScoreWeights defaults (spec §7.1). Other profiles (ent/urology/icu/pediatrics) require clinical review before curation -- not invented here."
+  },
+  "therapy_line_match": 3.0,
+  "confidence": 2.0,
+  "evidence_recency": 1.5,
+  "safety_fit": 2.5,
+  "route_preference": 1.0,
+  "population_match": 1.5,
+  "interaction_penalty": 0.5
+}

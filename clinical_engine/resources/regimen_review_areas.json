@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "description": "Regimen Review Workbench target-area matching config. Queue prioritization only, not medical approval.",
+    "version": "2026-07-11"
+  },
+  "areas": [
+    {
+      "area_id": "acute_rhinosinusitis",
+      "label": "Острый бактериальный риносинусит",
+      "icd_prefixes": ["J01"],
+      "diagnosis_names": ["Острый бактериальный синусит у взрослых", "Острый синусит"],
+      "keywords": ["синусит", "риносинусит", "гайморит"],
+      "exclude": [],
+      "guideline_ids": []
+    },
+    {
+      "area_id": "acute_otitis_media",
+      "label": "Острый средний отит",
+      "icd_prefixes": ["H65", "H66"],
+      "diagnosis_names": [],
+      "keywords": ["средний отит", "острый отит", "отит"],
+      "exclude": ["наружн"],
+      "guideline_ids": []
+    },
+    {
+      "area_id": "strep_tonsillitis",
+      "label": "Стрептококковый тонзиллит",
+      "icd_prefixes": ["J02", "J03"],
+      "diagnosis_names": ["Острый стрептококковый тонзиллит / острый стрептококковый тонзиллофарингит"],
+      "keywords": ["тонзиллит", "тонзиллофарингит", "ангина"],
+      "exclude": [],
+      "guideline_ids": []
+    },
+    {
+      "area_id": "community_acquired_pneumonia",
+      "label": "Внебольничная пневмония",
+      "icd_prefixes": ["J13", "J14", "J15", "J16", "J17", "J18"],
+      "diagnosis_names": ["Внебольничная пневмония у взрослых"],
+      "keywords": ["внебольничная пневмония", "пневмон"],
+      "exclude": ["нозокомиальн", "госпитальн", "внутрибольничн", "аспирационн", "пневмоцистн", "интерстициальн", "вентилятор", "врожденн", "конгенит", "неонатал", "новорожд", "врожденная пневмония"],
+      "guideline_ids": []
+    },
+    {
+      "area_id": "acute_cystitis",
+      "label": "Острый цистит",
+      "icd_prefixes": ["N30"],
+      "diagnosis_names": ["острый неосложненный цистит"],
+      "keywords": ["цистит"],
+      "exclude": ["дакриоцистит", "холецистит", "цистицеркоз", "цистаденом"],
+      "guideline_ids": []
+    },
+    {
+      "area_id": "acute_pyelonephritis",
+      "label": "Острый пиелонефрит",
+      "icd_prefixes": ["N10", "N11", "N12"],
+      "diagnosis_names": [],
+      "keywords": ["пиелонефрит"],
+      "exclude": [],
+      "guideline_ids": []
+    },
+    {
+      "area_id": "cellulitis_erysipelas",
+      "label": "Рожа / флегмона",
+      "icd_prefixes": ["A46", "L03"],
+      "diagnosis_names": [],
+      "keywords": ["рожа", "рожист", "флегмон", "целлюлит"],
+      "exclude": [],
+      "guideline_ids": []
+    },
+    {
+      "area_id": "copd_exacerbation",
+      "label": "Обострение ХОБЛ",
+      "icd_prefixes": ["J44"],
+      "diagnosis_names": [],
+      "keywords": ["хобл", "хроническая обструктивная"],
+      "exclude": [],
+      "guideline_ids": []
+    }
+  ]
+}

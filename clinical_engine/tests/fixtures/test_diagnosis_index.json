@@ -1,0 +1,65 @@
+[
+  {
+    "guideline_id": "g_cap_adult",
+    "diagnosis_name": "vnebolnichnaya pnevmoniya",
+    "icd10_codes": ["J18", "J18.9"],
+    "guideline_title": "Community-acquired pneumonia in adults",
+    "guideline_year": 2024,
+    "guideline_revision_date": "2024-03-15",
+    "source_url": "https://cr.minzdrav.gov.ru/recomend/654"
+  },
+  {
+    "guideline_id": "g_cystitis",
+    "diagnosis_name": "ostryi tsistit",
+    "icd10_codes": ["N30", "N30.0"],
+    "guideline_title": "Acute cystitis",
+    "guideline_year": 2021,
+    "guideline_revision_date": "2021-06-01",
+    "source_url": "https://cr.minzdrav.gov.ru/recomend/100"
+  },
+  {
+    "guideline_id": "g_sinusitis",
+    "diagnosis_name": "ostryi sinusit",
+    "icd10_codes": ["J01"],
+    "guideline_title": "Acute sinusitis",
+    "guideline_year": 2019,
+    "guideline_revision_date": null,
+    "source_url": "https://cr.minzdrav.gov.ru/recomend/200"
+  },
+  {
+    "guideline_id": "g_sinusitis",
+    "diagnosis_name": "Острый бактериальный синусит у взрослых",
+    "icd10_codes": ["J01"],
+    "guideline_title": "Острый синусит",
+    "guideline_year": 2021,
+    "guideline_revision_date": "2021-09-01T15:08:10",
+    "source_url": ""
+  },
+  {
+    "guideline_id": "g_cap_adult",
+    "diagnosis_name": "Внебольничная пневмония у взрослых",
+    "icd10_codes": ["J18"],
+    "guideline_title": "Внебольничная пневмония у взрослых",
+    "guideline_year": 2024,
+    "guideline_revision_date": "2024-12-23T13:14:34",
+    "source_url": ""
+  },
+  {
+    "guideline_id": "g_cap_adult",
+    "diagnosis_name": "Острый стрептококковый тонзиллит / острый стрептококковый тонзиллофарингит",
+    "icd10_codes": ["J03"],
+    "guideline_title": "Острый тонзиллит и фарингит",
+    "guideline_year": 2021,
+    "guideline_revision_date": null,
+    "source_url": ""
+  },
+  {
+    "guideline_id": "g_cystitis",
+    "diagnosis_name": "острый неосложненный цистит",
+    "icd10_codes": ["N30", "N30.0"],
+    "guideline_title": "Acute cystitis",
+    "guideline_year": 2021,
+    "guideline_revision_date": "2021-06-01",
+    "source_url": "https://cr.minzdrav.gov.ru/recomend/100"
+  }
+]

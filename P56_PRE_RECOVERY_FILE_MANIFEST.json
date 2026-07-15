@@ -1,0 +1,2270 @@
+{
+  "generated": "2026-07-15",
+  "commit": "b806c21",
+  "branch": "main",
+  "file_count": 323,
+  "total_size_bytes": 6410909,
+  "files": [
+    {
+      "path": ".env.example",
+      "tracked": false,
+      "category": "D",
+      "size": 455,
+      "sha256": "c453ad9e5e511b2c2fd4472ac754b1f74fa3f3866baed888202c2a6ca6e0e7c5"
+    },
+    {
+      "path": ".gitignore",
+      "tracked": true,
+      "category": "D",
+      "size": 1238,
+      "sha256": "f6cb7ccac93787556615b95a99c175c44394dcc98e23d48e5d378d2403581eb9"
+    },
+    {
+      "path": ".gitignore",
+      "tracked": false,
+      "category": "D",
+      "size": 1238,
+      "sha256": "f6cb7ccac93787556615b95a99c175c44394dcc98e23d48e5d378d2403581eb9"
+    },
+    {
+      "path": ".gitleaks.toml",
+      "tracked": false,
+      "category": "D",
+      "size": 452,
+      "sha256": "7c86469fd8db57bf69186a399c8faeb6fa336ebbe11e699557b0fa29e921997a"
+    },
+    {
+      "path": "AGENTS.md",
+      "tracked": false,
+      "category": "G",
+      "size": 30359,
+      "sha256": "92326dcd78f914d9a1211f78c1dd32d065b8695caf513c39901cf25c669ee576"
+    },
+    {
+      "path": "AI_LOG.md",
+      "tracked": false,
+      "category": "G",
+      "size": 192339,
+      "sha256": "dcf7584ab33ab881bf9e32229214c948d5cb7e2def4013ed915746716d65b69c"
+    },
+    {
+      "path": "DECISIONS.md",
+      "tracked": false,
+      "category": "G",
+      "size": 104256,
+      "sha256": "aee178bb12620adaeeeddad739218ae1ec9030ee45f31a1b219c7de677b57ce0"
+    },
+    {
+      "path": "GOVERNANCE_CONSISTENCY_REPORT.md",
+      "tracked": false,
+      "category": "G",
+      "size": 869,
+      "sha256": "5c7fffc7df6673e8c70ff1984c27ac8361d0d38f09ea187d6d5511d1253f1a16"
+    },
+    {
+      "path": "GOVERNANCE_SOURCE_OF_TRUTH.md",
+      "tracked": false,
+      "category": "G",
+      "size": 845,
+      "sha256": "50fc1241d2937ebe45fbc2bb6c70d6063f3f88c5879b2fdfd167b2bd329bd938"
+    },
+    {
+      "path": "NEXT_TASK.md",
+      "tracked": false,
+      "category": "G",
+      "size": 28308,
+      "sha256": "594852e783080dc80fc679011bdbfad34313c32f5b8c897173a37864e9aaee3e"
+    },
+    {
+      "path": "PROJECT_STATE.md",
+      "tracked": false,
+      "category": "G",
+      "size": 37457,
+      "sha256": "ce66afbd74710e39404b19e25bd6f94e111bc1657490e2249b2a1a3c78d8255c"
+    },
+    {
+      "path": "README.md",
+      "tracked": false,
+      "category": "F",
+      "size": 6219,
+      "sha256": "32323630158adacc62c60c04697d3a75e1b03c88ade3dfa27d2776f8592f53bf"
+    },
+    {
+      "path": "ROADMAP.md",
+      "tracked": false,
+      "category": "G",
+      "size": 10494,
+      "sha256": "d8fc0b649733f01ef2fef73ff543b852c3f8c020d4df3e921a801aceaeda4ac1"
+    },
+    {
+      "path": "ROADMAP_STATUS.md",
+      "tracked": false,
+      "category": "G",
+      "size": 1641,
+      "sha256": "6ec2fc2768ede78c3d2355c0bd301f1aba604f11e3bb26fecd332f75e1c40c5c"
+    },
+    {
+      "path": "VERSIONING_GOVERNANCE.md",
+      "tracked": false,
+      "category": "G",
+      "size": 5064,
+      "sha256": "e1ca4992205b7d6ce88d857730d0250ff48b6a071e262caf0c78c18349321d11"
+    },
+    {
+      "path": "antibiotic_calc.html",
+      "tracked": true,
+      "category": "A",
+      "size": 326864,
+      "sha256": "04291d1770d94a787f8b1ca1b554e70b0a53471667d564264ee1675a46f4dbf2"
+    },
+    {
+      "path": "antibiotic_calc.html",
+      "tracked": false,
+      "category": "A",
+      "size": 326864,
+      "sha256": "04291d1770d94a787f8b1ca1b554e70b0a53471667d564264ee1675a46f4dbf2"
+    },
+    {
+      "path": "antibiotic_calc.html.template",
+      "tracked": true,
+      "category": "A",
+      "size": 74438,
+      "sha256": "d3400efb620ae85ac8c53ece7cd0efa26aaaeded44d000a50004c9d2fae1bed7"
+    },
+    {
+      "path": "antibiotic_calc.html.template",
+      "tracked": false,
+      "category": "A",
+      "size": 74438,
+      "sha256": "d3400efb620ae85ac8c53ece7cd0efa26aaaeded44d000a50004c9d2fae1bed7"
+    },
+    {
+      "path": "benchmark_review_workbench.py",
+      "tracked": false,
+      "category": "H",
+      "size": 1906,
+      "sha256": "289f2fceda1235dbdfb7eb0f2fcab69048b19820a73c45c24d87c9fa00f75af0"
+    },
+    {
+      "path": "build_html.ps1",
+      "tracked": true,
+      "category": "H",
+      "size": 1596,
+      "sha256": "bd6d823d94b3e4c14f5abfe6c6f4d496ac701d1ba399ff1bcf6f73aa3aee1ef2"
+    },
+    {
+      "path": "build_html.ps1",
+      "tracked": false,
+      "category": "H",
+      "size": 1596,
+      "sha256": "bd6d823d94b3e4c14f5abfe6c6f4d496ac701d1ba399ff1bcf6f73aa3aee1ef2"
+    },
+    {
+      "path": "build_p44_kb.py",
+      "tracked": false,
+      "category": "H",
+      "size": 7974,
+      "sha256": "6c249e25e32d0dda256cc2573e9c997c45705f086ff9faa450659fd22a565a0a"
+    },
+    {
+      "path": "build_review_workbench.py",
+      "tracked": false,
+      "category": "H",
+      "size": 1425,
+      "sha256": "b71c26f5c7c5231f716b3029b879ba3911a6223022534656c2a907815854ff18"
+    },
+    {
+      "path": "clinical_engine/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2264,
+      "sha256": "14ad39543e4354991ae2af848c6ae06a6c31d35067e1e0676a712880474f5f9f"
+    },
+    {
+      "path": "clinical_engine/_population.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1745,
+      "sha256": "c6e2d941ceb149d914789d93f6a762eb743a95c172f0ddb1e50a3e64fe46c179"
+    },
+    {
+      "path": "clinical_engine/api/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 377,
+      "sha256": "c11f36129eb4774a770d45c9a358aa4e0c1443a204cc279079e38784e7cc45b9"
+    },
+    {
+      "path": "clinical_engine/api/app.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1800,
+      "sha256": "120a0f942f696f73c60566367144f45572c6a0b7123ce56ba15c185a0f10a9de"
+    },
+    {
+      "path": "clinical_engine/api/contract.py",
+      "tracked": false,
+      "category": "A",
+      "size": 5661,
+      "sha256": "aa133bc730a7749afa54c59109ecddfb49868faae29a64fa76ccddffc0288d8b"
+    },
+    {
+      "path": "clinical_engine/api/service.py",
+      "tracked": false,
+      "category": "A",
+      "size": 7755,
+      "sha256": "3c2895a0be3988659821a67acfd0c50fd9594565a2b9c943ce4034593e61ab01"
+    },
+    {
+      "path": "clinical_engine/bundles/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 639,
+      "sha256": "bd9b3f1870e8003c00128db9dba2be9a8d6bd5f033290837ef324f6ca70941f8"
+    },
+    {
+      "path": "clinical_engine/bundles/loader.py",
+      "tracked": false,
+      "category": "A",
+      "size": 9257,
+      "sha256": "3d58d093798c82fd7ad0577d8b5e130da211afdcc98a80f5f20a08abbc54b274"
+    },
+    {
+      "path": "clinical_engine/config.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3651,
+      "sha256": "991e3d57d535a06acc65bf4a5206ab07726cc19d2e89fef8884a15422f9ce8b4"
+    },
+    {
+      "path": "clinical_engine/conformance.py",
+      "tracked": false,
+      "category": "A",
+      "size": 5790,
+      "sha256": "7ce21b09f93c23d16940061aaa57f0e698232c645f49226866f5aeccc138fcf4"
+    },
+    {
+      "path": "clinical_engine/corpus/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 896,
+      "sha256": "0f5a1ad25c88aaedd991ac5295f01a4033b6343d1ea1bd63d152b8074bdfc982"
+    },
+    {
+      "path": "clinical_engine/corpus/build_manifest.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4947,
+      "sha256": "cf24aea029f87db0328eee942a9d86a9c1df93c64ddea6bff08263583b8ec8cf"
+    },
+    {
+      "path": "clinical_engine/corpus/corpus_config.json",
+      "tracked": false,
+      "category": "A",
+      "size": 548,
+      "sha256": "8ec267c5cdaca57e1db660c96dabf72930a63f7c2dfc7c433fa6ad3a80fbd62c"
+    },
+    {
+      "path": "clinical_engine/corpus/locator.py",
+      "tracked": false,
+      "category": "A",
+      "size": 6005,
+      "sha256": "2abad7261f8ed97ef4e9afc74b3197526a6a67f684fbbd7ee3867b2b09d777ad"
+    },
+    {
+      "path": "clinical_engine/corpus/provenance.py",
+      "tracked": false,
+      "category": "A",
+      "size": 8643,
+      "sha256": "956e3c0fdc1fb88c8a2295986d6bc3b985da2f7534b35f2968d2352f628825ff"
+    },
+    {
+      "path": "clinical_engine/curated/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 579,
+      "sha256": "e8670473fa2a80efabf77851280ceffd12e5be4a05d0d624614896fd772aefe5"
+    },
+    {
+      "path": "clinical_engine/curated/knowledge.py",
+      "tracked": false,
+      "category": "A",
+      "size": 7004,
+      "sha256": "332cb423895c773e6be6cdf257d97e61d590738949ecc4d3ac63c6a98f7e8c41"
+    },
+    {
+      "path": "clinical_engine/engine.py",
+      "tracked": false,
+      "category": "A",
+      "size": 13287,
+      "sha256": "af0aaeef006bc2a70a687a17c5a8a3bef6da2bd0239e2d9b1f3da1b65cbaec05"
+    },
+    {
+      "path": "clinical_engine/golden_cases/README.md",
+      "tracked": false,
+      "category": "A",
+      "size": 4482,
+      "sha256": "bf9b79877fb4421445b45f6d2eaba0e9de9b472ff1d2721fde895a840fea8005"
+    },
+    {
+      "path": "clinical_engine/golden_cases/_TEMPLATE.json",
+      "tracked": false,
+      "category": "A",
+      "size": 1334,
+      "sha256": "6384eeb2c59ca511fd1d09d8b4e737f13844d86ae98d2506d3dc2577d9959ba5"
+    },
+    {
+      "path": "clinical_engine/golden_cases/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 437,
+      "sha256": "528dd71a54ed5c2468195444047bc7a241670e490602ff74f868e1dd39574d5d"
+    },
+    {
+      "path": "clinical_engine/golden_cases/cap_penicillin_allergy.json",
+      "tracked": false,
+      "category": "A",
+      "size": 1369,
+      "sha256": "dc2324bae859cc02ca8458674003839cecab6ac1dfe9ef42bad651dea4a000fc"
+    },
+    {
+      "path": "clinical_engine/golden_cases/diagnosis_acute_sinusitis_gaimorit.json",
+      "tracked": false,
+      "category": "A",
+      "size": 1157,
+      "sha256": "0aba1e2fda88ec81ead2acea5b3c1b3feb7025e8666b8e41858489252f186257"
+    },
+    {
+      "path": "clinical_engine/golden_cases/diagnosis_cap_pneumonia.json",
+      "tracked": false,
+      "category": "A",
+      "size": 1149,
+      "sha256": "202de52aac57ab3f3e3a78ed86257648f5bea394fd6eacfb10e4507a13d4c97b"
+    },
+    {
+      "path": "clinical_engine/golden_cases/diagnosis_cystitis_uncomplicated.json",
+      "tracked": false,
+      "category": "A",
+      "size": 1049,
+      "sha256": "89df87ad26b4cf58e803786eb11c48f9fd2e7bf076055cda767ca2021c24f981"
+    },
+    {
+      "path": "clinical_engine/golden_cases/diagnosis_negative_gaimorit_not_chronic.json",
+      "tracked": false,
+      "category": "A",
+      "size": 1062,
+      "sha256": "89d456c7fdfdb797f3b01966acc89178ef69f371919d6a384122cbf3817a1993"
+    },
+    {
+      "path": "clinical_engine/golden_cases/diagnosis_negative_tonsillitis_not_combined.json",
+      "tracked": false,
+      "category": "A",
+      "size": 925,
+      "sha256": "dc9f5554c3dcd11e604fcb10ebccb36a99259c674836e59b38643ffd37a2f6ae"
+    },
+    {
+      "path": "clinical_engine/golden_cases/diagnosis_negative_tonsillitis_not_pharyngitis.json",
+      "tracked": false,
+      "category": "A",
+      "size": 941,
+      "sha256": "580c2ad9274cd1f3bb5ca9019311b254541be7dee88c11a0d64fc6849a67db5d"
+    },
+    {
+      "path": "clinical_engine/golden_cases/runner.py",
+      "tracked": false,
+      "category": "A",
+      "size": 13289,
+      "sha256": "2ac30e32a689c36036a3c107b15362c12b26a6f68e73b1adc4981cf26c49f16d"
+    },
+    {
+      "path": "clinical_engine/golden_cases/schema.json",
+      "tracked": false,
+      "category": "A",
+      "size": 4204,
+      "sha256": "3cc283d368d9f6f56e99678ffb782b5bb433f494773bdf1b8a7984208d4d35c1"
+    },
+    {
+      "path": "clinical_engine/manifest.py",
+      "tracked": false,
+      "category": "A",
+      "size": 7488,
+      "sha256": "b7c8a5d8f71d9df2f50a257f95b5c9e6e9d9ee617568695abfcf60c957707f75"
+    },
+    {
+      "path": "clinical_engine/models.py",
+      "tracked": false,
+      "category": "A",
+      "size": 12727,
+      "sha256": "85e1b68e9f8ed577d1a9845b08db4ff262e59df658739c39b4cbddd09431c2b1"
+    },
+    {
+      "path": "clinical_engine/pipeline.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3509,
+      "sha256": "056ae72f1452250fd8386a3af4abd68b114b1fa0e0fe2022382370bb7a0e7325"
+    },
+    {
+      "path": "clinical_engine/readers/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 155,
+      "sha256": "88a62576697f7427e97fee2d21e9e02288d7a43c5ea8811be4673768ecfdb021"
+    },
+    {
+      "path": "clinical_engine/readers/canonical_regimen_provider.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3978,
+      "sha256": "da115a61aa0ec85a85a509f9d59f384f00c89d8b6660f9b911945778f33faa5f"
+    },
+    {
+      "path": "clinical_engine/readers/diagnosis_reader.py",
+      "tracked": false,
+      "category": "A",
+      "size": 5215,
+      "sha256": "e8cd812a24afd9903e9d12ba62b1d35e679ddfd3a8fff1a558761922222c8f0c"
+    },
+    {
+      "path": "clinical_engine/readers/drug_reference_reader.py",
+      "tracked": false,
+      "category": "A",
+      "size": 8831,
+      "sha256": "4b860fa65677a641cb837f384be6bc162433be79b78e6e1cba20b5c693bc7df9"
+    },
+    {
+      "path": "clinical_engine/readers/sqlite_reader.py",
+      "tracked": false,
+      "category": "A",
+      "size": 6091,
+      "sha256": "b602935c1c149b2cc4bc453731fa7af46b14fd1035a962b8b6d2a2c99637560c"
+    },
+    {
+      "path": "clinical_engine/regimen/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "clinical_engine/regimen/approval_workflow.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2779,
+      "sha256": "00876ac96d76e456c5c67ff9b4e41f24f59710beb8b1eaf8d75e4e92d935b0be"
+    },
+    {
+      "path": "clinical_engine/regimen/assembly_engine.py",
+      "tracked": false,
+      "category": "A",
+      "size": 9491,
+      "sha256": "020c160e7a0e11a4878cc938039f497eeb76a728fff77a027e8dff45cafd2dc8"
+    },
+    {
+      "path": "clinical_engine/regimen/class_level_migration.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4662,
+      "sha256": "44ba62d4aebce5ed431106a77a8ab7862855d3516524b01127a074bb8f171bfe"
+    },
+    {
+      "path": "clinical_engine/regimen/clinical_regimen.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4731,
+      "sha256": "b674337a5b402f85aa15129c83c83c9b1ca618429afb2c1e44b68201a8fa0425"
+    },
+    {
+      "path": "clinical_engine/regimen/conflict_detector.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4084,
+      "sha256": "5ba2d48a103e0a62a708e351fbbca0fd062ba5c0d8423cced33076ac13f585b0"
+    },
+    {
+      "path": "clinical_engine/regimen/field_normalization.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4688,
+      "sha256": "492c83faed6a4cc17bc447bb1b4f0f95d9008c82d7c3c908646d1e82a1bb8da9"
+    },
+    {
+      "path": "clinical_engine/regimen/quality_improvement.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3310,
+      "sha256": "289734ffa3d9b4a99d0b9cadeb28788667e1e07c8b29935763b075b72535389f"
+    },
+    {
+      "path": "clinical_engine/regimen/reject_classifier.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3114,
+      "sha256": "fd815008a7e81cacd80fc08e31ee51940e4c4287c185becf0ad94f3fe1382b99"
+    },
+    {
+      "path": "clinical_engine/regimen/store.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4751,
+      "sha256": "bee71d31c09cc68e2f2f07ac83fb22e84478f17d0fa0afc038ef204935c722b3"
+    },
+    {
+      "path": "clinical_engine/regimen/tests/__init__.py",
+      "tracked": false,
+      "category": "B",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "clinical_engine/regimen/tests/test_p53_assembly.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5765,
+      "sha256": "f6e8c01cc09071bfd39c2ef05b271ddcebc9ab3e22891751e0533b60418a674b"
+    },
+    {
+      "path": "clinical_engine/regimen/tests/test_p54_quality_improvement.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5320,
+      "sha256": "2f4ee1be7ade2a0ba68491f80c10167bbb5941e8899a4741a3a0cd1d412d7512"
+    },
+    {
+      "path": "clinical_engine/regimen/tests/test_p55_class_level_separation.py",
+      "tracked": false,
+      "category": "B",
+      "size": 6423,
+      "sha256": "22740915ce5dabf05b6f0d250691769fdc2410398b69555ad6264fa0f3066c73"
+    },
+    {
+      "path": "clinical_engine/regimen/therapeutic_option.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3095,
+      "sha256": "84c33e829e3d101d493f18ec60645609b955f4bb8156e53318ce26e8fa358c50"
+    },
+    {
+      "path": "clinical_engine/regimen/validator.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3466,
+      "sha256": "a5c08d15f1a5a1a1f9b858b2d5dbc561912dafbbbd85fc38450b8b52c065eedb"
+    },
+    {
+      "path": "clinical_engine/resources/bundle_manifest.schema.json",
+      "tracked": false,
+      "category": "A",
+      "size": 4235,
+      "sha256": "2fd57406a6ba9b9d0e866bc1655e3eab28d1f0e83e054279ac1c2de193f675f2"
+    },
+    {
+      "path": "clinical_engine/resources/clinical_constants.json",
+      "tracked": false,
+      "category": "A",
+      "size": 4597,
+      "sha256": "737d39e422986093e42a3445baef689e4a23f64e5edb53b1db9902cf6ee8757c"
+    },
+    {
+      "path": "clinical_engine/resources/curated_knowledge.json",
+      "tracked": false,
+      "category": "A",
+      "size": 693,
+      "sha256": "b5f2d6124873eb0d0f08896097a3aee40337d019fcb6fc1cbbd82c445e63d9dd"
+    },
+    {
+      "path": "clinical_engine/resources/curated_regimens.json",
+      "tracked": false,
+      "category": "A",
+      "size": 585,
+      "sha256": "2430aae2ef55c94fe49a4a89917d2bc3526ca52338319710970201e437e046b8"
+    },
+    {
+      "path": "clinical_engine/resources/diagnosis_index.curated.json",
+      "tracked": false,
+      "category": "A",
+      "size": 480972,
+      "sha256": "449a783877647a1ebb84c0bee41a6588bdcad81bf4297e2598db6a388702e675"
+    },
+    {
+      "path": "clinical_engine/resources/diagnosis_index.json",
+      "tracked": false,
+      "category": "A",
+      "size": 482755,
+      "sha256": "ed5419493e486e1d30fb08a6a75b76005fa67c7e65217f33dd90f43d8c39e961"
+    },
+    {
+      "path": "clinical_engine/resources/regimen_bundle_manifest.json",
+      "tracked": false,
+      "category": "A",
+      "size": 1083,
+      "sha256": "7bb695fa1bcc748a3a243ab1c97da5049dd61c2101365d42e18256e171e0cb1f"
+    },
+    {
+      "path": "clinical_engine/resources/regimen_review_areas.json",
+      "tracked": false,
+      "category": "A",
+      "size": 3403,
+      "sha256": "7dcab8363b812b9a0d49b1fb5e0c1b5a682fa9f1f398f733e16c269cd50253f7"
+    },
+    {
+      "path": "clinical_engine/resources/safety_bundle_manifest.json",
+      "tracked": false,
+      "category": "A",
+      "size": 854,
+      "sha256": "cae450f02ced002cc87d5ef83b0517277afc09f4cff51f6d3374624024f223aa"
+    },
+    {
+      "path": "clinical_engine/resources/score_profile_bundle_manifest.json",
+      "tracked": false,
+      "category": "A",
+      "size": 664,
+      "sha256": "d56b36e455e915680e98316c482a5800d810e0cd25ae5a95f019de631510bee7"
+    },
+    {
+      "path": "clinical_engine/resources/score_profiles/default.json",
+      "tracked": false,
+      "category": "A",
+      "size": 418,
+      "sha256": "b5ea9676a362511501799c687f539261679b5261856037293b1d00207760efc0"
+    },
+    {
+      "path": "clinical_engine/resources/terminology_bundle_manifest.json",
+      "tracked": false,
+      "category": "A",
+      "size": 712,
+      "sha256": "abcdebae507b8b5518caac1372eaf87e536a66c0a2a98772b3232906a488679f"
+    },
+    {
+      "path": "clinical_engine/review_workbench/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "clinical_engine/review_workbench/api.py",
+      "tracked": false,
+      "category": "A",
+      "size": 12269,
+      "sha256": "125394a07aaa894d8dee77e67c5759b65d68f6463d751269d717c62ebe36c926"
+    },
+    {
+      "path": "clinical_engine/review_workbench/dose_unit_audit.py",
+      "tracked": false,
+      "category": "A",
+      "size": 5532,
+      "sha256": "f0e0837a043e06e4ed5410717b47ebbd0348c60d93161d24158073b9f37614e4"
+    },
+    {
+      "path": "clinical_engine/review_workbench/issue_registry.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1436,
+      "sha256": "6463f1758dddbdebb1281d359a9f42bf3429a0ac7534d1c9cce2d1628f4d298b"
+    },
+    {
+      "path": "clinical_engine/review_workbench/models.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3429,
+      "sha256": "cf6664bcabf6ef2d7ded6b4a87d3ad2691ced4c8db0d73e832d175b6f706832e"
+    },
+    {
+      "path": "clinical_engine/review_workbench/permissions.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1185,
+      "sha256": "f87bd035188124c066c4b3c46339f5e24b68cb968178a34cdeae523ea32fb89e"
+    },
+    {
+      "path": "clinical_engine/review_workbench/pilot_policy.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4942,
+      "sha256": "d9889f236d39b35202857fa0ccfeca1b26d0a7cdf649fba9dc76a9a037874683"
+    },
+    {
+      "path": "clinical_engine/review_workbench/priority.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1968,
+      "sha256": "db67fb554ff4c024a5a19ad560ecd4672a0dfbc32c41f25c4767bd2ca34246d9"
+    },
+    {
+      "path": "clinical_engine/review_workbench/queue_builder.py",
+      "tracked": false,
+      "category": "A",
+      "size": 11980,
+      "sha256": "2934e2878e160150d07dda9df89cf48e8a8ea63622c3e1ed564c669844c8e854"
+    },
+    {
+      "path": "clinical_engine/review_workbench/reporting.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2048,
+      "sha256": "7ccd03f6c65200b22b12d020ccafd5cb760d3ed88f524fb1be95f403c29264fc"
+    },
+    {
+      "path": "clinical_engine/review_workbench/service.py",
+      "tracked": false,
+      "category": "A",
+      "size": 16322,
+      "sha256": "7b490890eea3058b9a7d669ed483ded30564070618d43430822e2c082353d505"
+    },
+    {
+      "path": "clinical_engine/review_workbench/storage.py",
+      "tracked": false,
+      "category": "A",
+      "size": 17559,
+      "sha256": "e58a2ec1c3fc8c8a98b5e8f8e80c9458aa459ee2be1ba299ab5f395763e8c3be"
+    },
+    {
+      "path": "clinical_engine/review_workbench/tests/__init__.py",
+      "tracked": false,
+      "category": "B",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "clinical_engine/review_workbench/tests/test_rc027_packet_provenance.py",
+      "tracked": false,
+      "category": "B",
+      "size": 7125,
+      "sha256": "d9b02b2902e26286b0ddab388326c087c9df1bcc34a0df742700e003c0668582"
+    },
+    {
+      "path": "clinical_engine/review_workbench/tests/test_real_review_artifact.py",
+      "tracked": false,
+      "category": "B",
+      "size": 2326,
+      "sha256": "f6bf9d14c04a0e1299cc971dc52344c6d3c0ead2c131cfe1b68cd45d30b13374"
+    },
+    {
+      "path": "clinical_engine/review_workbench/tests/test_review_api.py",
+      "tracked": false,
+      "category": "B",
+      "size": 3031,
+      "sha256": "133da2846cf121b9e0304e1162b0d986ea16f6e0489837dcb4df8b6738cedf24"
+    },
+    {
+      "path": "clinical_engine/review_workbench/tests/test_review_workbench.py",
+      "tracked": false,
+      "category": "B",
+      "size": 15611,
+      "sha256": "f2fd1f1ec9b6585eada0f7e489b240aed3142714d5361c9079c4caa2ac0e4538"
+    },
+    {
+      "path": "clinical_engine/stages/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 91,
+      "sha256": "2b28a2b3dbaaae06f5f8b044eee2eb73b3f7e094a5e0784e19cdb86a575e23f9"
+    },
+    {
+      "path": "clinical_engine/stages/diagnosis_match.py",
+      "tracked": false,
+      "category": "A",
+      "size": 5151,
+      "sha256": "0c1a7c07303dce773f34bb14ee7641bd2fcf6e569e6f8e104774fdf373a0c2c1"
+    },
+    {
+      "path": "clinical_engine/stages/dose_adjustment.py",
+      "tracked": false,
+      "category": "A",
+      "size": 6886,
+      "sha256": "7ef49900d1a86edf42d651b654a18f07964d39b694f4596a0652ec24562bcfd4"
+    },
+    {
+      "path": "clinical_engine/stages/dose_calculation.py",
+      "tracked": false,
+      "category": "A",
+      "size": 10599,
+      "sha256": "e9b784553e1dbf7d4356f0769b7ded74e65ae01d7334ebcf69959990623938d3"
+    },
+    {
+      "path": "clinical_engine/stages/hard_safety_filter.py",
+      "tracked": false,
+      "category": "A",
+      "size": 14622,
+      "sha256": "a62e7e5459f59385edee9919e1392a661359f0daeb654b3e787f3ca1ea8083ca"
+    },
+    {
+      "path": "clinical_engine/stages/interaction_check.py",
+      "tracked": false,
+      "category": "A",
+      "size": 6953,
+      "sha256": "a9901c2a30ae5c03a4e266b62623332ef9841863f7489db7d83b4048b51cda02"
+    },
+    {
+      "path": "clinical_engine/stages/population_filter.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3102,
+      "sha256": "17cb2d6f64b30312b792b0772941221d8348215ed5165010d6c8897e632e06c0"
+    },
+    {
+      "path": "clinical_engine/stages/rank_recommendations.py",
+      "tracked": false,
+      "category": "A",
+      "size": 5361,
+      "sha256": "c50b6a33d54b9550a8a11df30befce87972113c58ee7928fc6e3199ed7d6779a"
+    },
+    {
+      "path": "clinical_engine/stages/regimen_load.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3586,
+      "sha256": "bbd2ff2b208e869ddccfa57be4106add4c7710931f65a27aa05da15be8c0d743"
+    },
+    {
+      "path": "clinical_engine/stages/therapy_line_select.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1972,
+      "sha256": "0f82fe2136fe392089034772c01f040d6fa45895fd6d6d704fcdc7e2402ef4fc"
+    },
+    {
+      "path": "clinical_engine/stages/trace.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2178,
+      "sha256": "22ede2d8a33067c36feb54c4f0243d353de91cf8df1b9cab9d46d548162bd2b7"
+    },
+    {
+      "path": "clinical_engine/terminology.py",
+      "tracked": false,
+      "category": "A",
+      "size": 6585,
+      "sha256": "9631129ccae83e23a28ef075391d4d477eb67f8fc42531b61697f9bf5fbbb7fb"
+    },
+    {
+      "path": "clinical_engine/tests/__init__.py",
+      "tracked": false,
+      "category": "B",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "clinical_engine/tests/conftest.py",
+      "tracked": false,
+      "category": "B",
+      "size": 9681,
+      "sha256": "335f560a12df3358b0f0eac32918c64785b9219b6231876f4cdb8bb520e7d0c0"
+    },
+    {
+      "path": "clinical_engine/tests/fixtures/__init__.py",
+      "tracked": false,
+      "category": "B",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "clinical_engine/tests/fixtures/test_clinical_constants.json",
+      "tracked": false,
+      "category": "B",
+      "size": 803,
+      "sha256": "0c28c13535b4aa81e53b538f05725d1aaae9c3ef24ddf2abeb20721bbd2b19df"
+    },
+    {
+      "path": "clinical_engine/tests/fixtures/test_diagnosis_index.json",
+      "tracked": false,
+      "category": "B",
+      "size": 2328,
+      "sha256": "ea29e6382b0be4d939e4eebe9354c8a90e6fcc89e200acb155ecfa78498b441a"
+    },
+    {
+      "path": "clinical_engine/tests/fixtures/test_drugs_reference.json",
+      "tracked": false,
+      "category": "B",
+      "size": 5659,
+      "sha256": "16607e651cee2db5140301a2ce978e0ad7daa3ac96fb8dae252fc08ca99b2d93"
+    },
+    {
+      "path": "clinical_engine/tests/test_api_recommend_behaviour.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5660,
+      "sha256": "77990b0551d92ac0e46f8b1697ce85214585081e62ca87e363028419ff766fe6"
+    },
+    {
+      "path": "clinical_engine/tests/test_api_skeleton.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5795,
+      "sha256": "b8e641d67e96cf504fa0331c77d7c2a9903306a95513055eaa13bd1c517f0856"
+    },
+    {
+      "path": "clinical_engine/tests/test_bundle_loader.py",
+      "tracked": false,
+      "category": "B",
+      "size": 8850,
+      "sha256": "55112424f6f68e27d21b39b33ad46356f984bdeb9a22b42c8ded11401588891f"
+    },
+    {
+      "path": "clinical_engine/tests/test_config.py",
+      "tracked": false,
+      "category": "B",
+      "size": 2727,
+      "sha256": "05f4814098b1174787384c3a376f4f45e99c5935b419ff8ad04856687246f96a"
+    },
+    {
+      "path": "clinical_engine/tests/test_corpus_locator.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5674,
+      "sha256": "7f0fba18ec5ca8d9cfda95abfb55ab02fd27f910a72d28d2af9caf87fcd3d586"
+    },
+    {
+      "path": "clinical_engine/tests/test_corpus_provenance.py",
+      "tracked": false,
+      "category": "B",
+      "size": 6745,
+      "sha256": "1de41f7203e924f2b5295a8bc3f3af9566af6625bdf14c7138de87ac957e11ba"
+    },
+    {
+      "path": "clinical_engine/tests/test_curated_knowledge.py",
+      "tracked": false,
+      "category": "B",
+      "size": 9163,
+      "sha256": "8acc6e1472c5d054557b9c8b91e800123ba9ff09849e6b25e7fc717204144be0"
+    },
+    {
+      "path": "clinical_engine/tests/test_curation.py",
+      "tracked": false,
+      "category": "B",
+      "size": 12147,
+      "sha256": "2c37a67120d204a6c1363e20e355036c9d4dec5fd77dd23564fb74d5282e94f0"
+    },
+    {
+      "path": "clinical_engine/tests/test_curation_tooling.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5534,
+      "sha256": "01192a50d9ee3e8148ecbc300dd61073c210551d5e6b1e1650e3f493cabd2336"
+    },
+    {
+      "path": "clinical_engine/tests/test_diagnosis_reader.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5356,
+      "sha256": "1ced851cd1b8d143191ae02f5e6d2c072d2992819c0fd31bd18049ed1780c168"
+    },
+    {
+      "path": "clinical_engine/tests/test_drug_reference_reader.py",
+      "tracked": false,
+      "category": "B",
+      "size": 6261,
+      "sha256": "db286db48e21e657185db3b5625d739d5dbcf5127b5fbf22e7558ac6c3483fef"
+    },
+    {
+      "path": "clinical_engine/tests/test_engine.py",
+      "tracked": false,
+      "category": "B",
+      "size": 13732,
+      "sha256": "607951c8963df64df1e056899eda4a8fac9c51edeeb5d6033e41f2893343dc23"
+    },
+    {
+      "path": "clinical_engine/tests/test_golden_runner.py",
+      "tracked": false,
+      "category": "B",
+      "size": 9340,
+      "sha256": "0b00d743b1560a32917331fecf9bd9b2050d971cd671a6e0cad10a25cdd722c3"
+    },
+    {
+      "path": "clinical_engine/tests/test_guideline_verifier.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5168,
+      "sha256": "37a78107e1b961e801b8b2266c116ec413f5b15d0e660e95ad2fbce2b4ed3dbd"
+    },
+    {
+      "path": "clinical_engine/tests/test_invariants.py",
+      "tracked": false,
+      "category": "B",
+      "size": 11334,
+      "sha256": "05b369ca58a422fd78e15838dae42e96f5bb994a34bc3d5435c390e592510e92"
+    },
+    {
+      "path": "clinical_engine/tests/test_manifest.py",
+      "tracked": false,
+      "category": "B",
+      "size": 8838,
+      "sha256": "35821121773560f449d0aad8323767afef44e8990c66f74a211eb90164040fc0"
+    },
+    {
+      "path": "clinical_engine/tests/test_models.py",
+      "tracked": false,
+      "category": "B",
+      "size": 11678,
+      "sha256": "4c89a3f665f8898401e4eced77bd5f99f934d5534bf0676439056ef61b79f4d8"
+    },
+    {
+      "path": "clinical_engine/tests/test_pipeline.py",
+      "tracked": false,
+      "category": "B",
+      "size": 3835,
+      "sha256": "a1af17df536f46c47b1e96736941bfabddfbd249eb5421a452a9dc907c504edd"
+    },
+    {
+      "path": "clinical_engine/tests/test_regimen_curation.py",
+      "tracked": false,
+      "category": "B",
+      "size": 9680,
+      "sha256": "9fe6f6a934bdabf767be8e3488963fc34459c6d0c77c767565b0259db74e446a"
+    },
+    {
+      "path": "clinical_engine/tests/test_regimen_workbench.py",
+      "tracked": false,
+      "category": "B",
+      "size": 8742,
+      "sha256": "81c554a68995a9e31c1ea032820b3d4f25a1287839fc9d196d771d683c71a405"
+    },
+    {
+      "path": "clinical_engine/tests/test_sqlite_reader.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5122,
+      "sha256": "c8098fa5359db1ba7a64b315669a548cc0455c457113f85199dd762ed0c2b518"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_diagnosis_match.py",
+      "tracked": false,
+      "category": "B",
+      "size": 2541,
+      "sha256": "e041a09a4501895c04d5221873318b30271547481f58b544f6c1a428dcbb98ab"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_dose_adjustment.py",
+      "tracked": false,
+      "category": "B",
+      "size": 6134,
+      "sha256": "53b55a026d1cde43fe0f6b72fd42fb2dd7a03ea4452c27067b0a2857d1928fb8"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_dose_calculation.py",
+      "tracked": false,
+      "category": "B",
+      "size": 8507,
+      "sha256": "8a55cc93afd159bdd2601d056720c46697521b748b0907e79d81f35c052d4d9b"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_hard_safety_filter.py",
+      "tracked": false,
+      "category": "B",
+      "size": 10785,
+      "sha256": "4bdaf1791ce416d81050638adf0f8dd7d27cc01739f040a9af2d6430371b3c2a"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_interaction_check.py",
+      "tracked": false,
+      "category": "B",
+      "size": 8646,
+      "sha256": "43ea6e989f12352d19a606d2430c8f5ad55bb80e9ac0fcbccc73edc49aa48163"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_population_filter.py",
+      "tracked": false,
+      "category": "B",
+      "size": 4419,
+      "sha256": "71443d4142c1aab7f1524ca7e5b88284b61c18711d67685b6fc62eefb304d3d3"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_rank_recommendations.py",
+      "tracked": false,
+      "category": "B",
+      "size": 10574,
+      "sha256": "37f60f5f84b72a624c24118e6bde405c2ace8a0f1f75c80bea00e81b59d9cf49"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_regimen_load.py",
+      "tracked": false,
+      "category": "B",
+      "size": 3829,
+      "sha256": "efd239994db25929727c59b1f64f3ce90a4d50649d0f0ce34effb8dd21b79dd8"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_therapy_line_select.py",
+      "tracked": false,
+      "category": "B",
+      "size": 2648,
+      "sha256": "1d4ab72b0870aa5ad6d33fda9af32bf3ab690bd71e95137d7942cedcc032c1bf"
+    },
+    {
+      "path": "clinical_engine/tests/test_stage_trace.py",
+      "tracked": false,
+      "category": "B",
+      "size": 3222,
+      "sha256": "389fe37036b0390f8f14f66c29d8432dbc81d7e33c755a6918980c1e702e216f"
+    },
+    {
+      "path": "clinical_engine/tools/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 191,
+      "sha256": "d46da258153b8c81dca8e5abb4cb309b6f5495ac2b4ba8d48be781b394226f34"
+    },
+    {
+      "path": "clinical_engine/tools/analyze_diagnosis_conflicts.py",
+      "tracked": false,
+      "category": "A",
+      "size": 14320,
+      "sha256": "517f9078a4191b2598b35187a3034505e5a0343cd28fe41e42f3139004f76102"
+    },
+    {
+      "path": "clinical_engine/tools/build_conflict_worklist.py",
+      "tracked": false,
+      "category": "A",
+      "size": 8878,
+      "sha256": "3d4a0de80c8337500d037375b116c1c6a74a6f99afbf5d56a1d670c428ac3d3d"
+    },
+    {
+      "path": "clinical_engine/tools/build_curated_index.py",
+      "tracked": false,
+      "category": "A",
+      "size": 9825,
+      "sha256": "d23755b1ec0f125cdf6dd6884daebe79626610cc6a2f899a562a35473c357c68"
+    },
+    {
+      "path": "clinical_engine/tools/build_curated_knowledge.py",
+      "tracked": false,
+      "category": "A",
+      "size": 6941,
+      "sha256": "029a8de66017ce550a9fc60837879c10fc7114020b0d985878167e2226cdbd1c"
+    },
+    {
+      "path": "clinical_engine/tools/build_curated_regimens.py",
+      "tracked": false,
+      "category": "A",
+      "size": 9051,
+      "sha256": "4a4072f6cc00289658c3502f992d0f7a3481fb9e21b8a3ca55694df041785d11"
+    },
+    {
+      "path": "clinical_engine/tools/build_decision_ledger.py",
+      "tracked": false,
+      "category": "A",
+      "size": 6041,
+      "sha256": "341e28d623c7d8a4da3677c7171b2cd11a6ed80fafdb5ad1cacb10bc14012748"
+    },
+    {
+      "path": "clinical_engine/tools/build_diagnosis_index_draft.py",
+      "tracked": false,
+      "category": "A",
+      "size": 6848,
+      "sha256": "adc766a2471ec4fccf597e5580d10cd4ed21782c946f5985d60e9bfe6c0958cb"
+    },
+    {
+      "path": "clinical_engine/tools/build_golden_template.py",
+      "tracked": false,
+      "category": "A",
+      "size": 5080,
+      "sha256": "5ef167b9f3e5e9f695141ec14444ad3d7977be041b4133e6281ed4dc84d96c9e"
+    },
+    {
+      "path": "clinical_engine/tools/build_normalized_sqlite.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3072,
+      "sha256": "e8d3ec04fd02eac6592556e4a19816c4cf08573e028959675e2eaeff846079ad"
+    },
+    {
+      "path": "clinical_engine/tools/build_regimen_ledger.py",
+      "tracked": false,
+      "category": "A",
+      "size": 6321,
+      "sha256": "048b3e5b46abff7872b00b148e83b231b5c6e8c7d59e88b6317546b38950749a"
+    },
+    {
+      "path": "clinical_engine/tools/clinical_data_audit.py",
+      "tracked": false,
+      "category": "A",
+      "size": 18576,
+      "sha256": "f542252986f3c55d66daeabd2852cbf63bcd57abce154476fe64e63d4ff5e0e4"
+    },
+    {
+      "path": "clinical_engine/tools/performance_audit.py",
+      "tracked": false,
+      "category": "A",
+      "size": 11240,
+      "sha256": "adfe7cacb5df1dc191790976f216776728026acf8fcce51c4ec711e763e5af49"
+    },
+    {
+      "path": "clinical_engine/tools/regimen_review_workbench.py",
+      "tracked": false,
+      "category": "A",
+      "size": 23312,
+      "sha256": "cbecd19f63e2ee4ff23bf1cbc8d0e8d116ea57746197f938e80cf6802bfe654c"
+    },
+    {
+      "path": "clinical_engine/tools/validate_curated_knowledge.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4107,
+      "sha256": "dd9c9f65c8f0021b75526bbdf779962bdfabb2e99dc0583f03f03bddb6848486"
+    },
+    {
+      "path": "clinical_engine/tools/validate_curation.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4622,
+      "sha256": "172e02dc879649ec3d4e2bd74da2df8587df4ddb5595c4f99f9532bd6dedad22"
+    },
+    {
+      "path": "clinical_engine/tools/validate_regimen_curation.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4265,
+      "sha256": "079266cc4b8c9e26c539a56aa86720ab96103f51e8b4b4050f1eb36b7b6607d6"
+    },
+    {
+      "path": "clinical_engine/tools/verify_regimen_against_guideline.py",
+      "tracked": false,
+      "category": "A",
+      "size": 10210,
+      "sha256": "a91f7375647579ef8336f83360a72e97236298e367b01b2b5c480eeb33fed6d9"
+    },
+    {
+      "path": "config/document_processing.yaml",
+      "tracked": false,
+      "category": "D",
+      "size": 486,
+      "sha256": "3c7c1c5c7017488979edecac18ecde4a67bf8ee8676e1f23937b086956156eb2"
+    },
+    {
+      "path": "db/antibio_db.json",
+      "tracked": true,
+      "category": "A",
+      "size": 252447,
+      "sha256": "6124b5c62b95e26b182576978fae2c96253260bdc576487924a18c59a7c42996"
+    },
+    {
+      "path": "db/antibio_db.json",
+      "tracked": false,
+      "category": "A",
+      "size": 252447,
+      "sha256": "6124b5c62b95e26b182576978fae2c96253260bdc576487924a18c59a7c42996"
+    },
+    {
+      "path": "db/build_db.ps1",
+      "tracked": true,
+      "category": "A",
+      "size": 2325,
+      "sha256": "c095e544fe6cd5c2b11a859533cf7a374fe86a07360cff80948f2b7e792317a9"
+    },
+    {
+      "path": "db/build_db.ps1",
+      "tracked": false,
+      "category": "A",
+      "size": 2325,
+      "sha256": "c095e544fe6cd5c2b11a859533cf7a374fe86a07360cff80948f2b7e792317a9"
+    },
+    {
+      "path": "db/diseases/adult_specific.json",
+      "tracked": true,
+      "category": "A",
+      "size": 32096,
+      "sha256": "95cdf529453196b4eaaaf9ae635f7179fcec55c1c8dbe25ad3a7620d3e60b6f8"
+    },
+    {
+      "path": "db/diseases/adult_specific.json",
+      "tracked": false,
+      "category": "A",
+      "size": 32096,
+      "sha256": "95cdf529453196b4eaaaf9ae635f7179fcec55c1c8dbe25ad3a7620d3e60b6f8"
+    },
+    {
+      "path": "db/diseases/gastrointestinal.json",
+      "tracked": true,
+      "category": "A",
+      "size": 27564,
+      "sha256": "c4597ee23405c555e45749b6ffc6f0d301d582136c5726cd84dd7cfb965f8139"
+    },
+    {
+      "path": "db/diseases/neonatal.json",
+      "tracked": true,
+      "category": "A",
+      "size": 20973,
+      "sha256": "3bc057448679e87080b7f661287b5d225e95daff6eab202028f3b15ed3a3c01d"
+    },
+    {
+      "path": "db/diseases/neonatal.json",
+      "tracked": false,
+      "category": "A",
+      "size": 20973,
+      "sha256": "3bc057448679e87080b7f661287b5d225e95daff6eab202028f3b15ed3a3c01d"
+    },
+    {
+      "path": "db/diseases/prophylaxis.json",
+      "tracked": true,
+      "category": "A",
+      "size": 29709,
+      "sha256": "937241aee9608698d43f936ea6eedd8383c29e2b11653431c300e815e8b7bcf6"
+    },
+    {
+      "path": "db/diseases/prophylaxis.json",
+      "tracked": false,
+      "category": "A",
+      "size": 29709,
+      "sha256": "937241aee9608698d43f936ea6eedd8383c29e2b11653431c300e815e8b7bcf6"
+    },
+    {
+      "path": "db/diseases/respiratory.json",
+      "tracked": true,
+      "category": "A",
+      "size": 74887,
+      "sha256": "c0a0154847a24dbbf23c1b5658bc07dc129e348309ad5889e113392c5b159baf"
+    },
+    {
+      "path": "db/diseases/respiratory.json",
+      "tracked": false,
+      "category": "A",
+      "size": 74887,
+      "sha256": "c0a0154847a24dbbf23c1b5658bc07dc129e348309ad5889e113392c5b159baf"
+    },
+    {
+      "path": "db/diseases/skin_soft_tissue.json",
+      "tracked": true,
+      "category": "A",
+      "size": 37975,
+      "sha256": "e1d0411c3481daca05e314e3b1ab4fd0e98f7bbf3f0e6265ed8c6abc363d5feb"
+    },
+    {
+      "path": "db/diseases/skin_soft_tissue.json",
+      "tracked": false,
+      "category": "A",
+      "size": 37975,
+      "sha256": "e1d0411c3481daca05e314e3b1ab4fd0e98f7bbf3f0e6265ed8c6abc363d5feb"
+    },
+    {
+      "path": "db/diseases/systemic.json",
+      "tracked": true,
+      "category": "A",
+      "size": 35485,
+      "sha256": "6f776f661e99c900658b8468ed3bb2f3cfdc655cd43accd2137f942d2dbc43b1"
+    },
+    {
+      "path": "db/diseases/urogenital.json",
+      "tracked": true,
+      "category": "A",
+      "size": 45917,
+      "sha256": "a11ef8c71c110e310939b8c0280005d2e8bb972825953644e2e3fead605324f2"
+    },
+    {
+      "path": "db/diseases/urogenital.json",
+      "tracked": false,
+      "category": "A",
+      "size": 45917,
+      "sha256": "a11ef8c71c110e310939b8c0280005d2e8bb972825953644e2e3fead605324f2"
+    },
+    {
+      "path": "db/diseases/zoonotic_specific.json",
+      "tracked": true,
+      "category": "A",
+      "size": 44739,
+      "sha256": "b31fb9a03868d36632bc28a9d09d290369b0be5da9835a038d217e56ec30b1c9"
+    },
+    {
+      "path": "db/diseases/zoonotic_specific.json",
+      "tracked": false,
+      "category": "A",
+      "size": 44739,
+      "sha256": "b31fb9a03868d36632bc28a9d09d290369b0be5da9835a038d217e56ec30b1c9"
+    },
+    {
+      "path": "db/index.json",
+      "tracked": true,
+      "category": "A",
+      "size": 104134,
+      "sha256": "2c95d240cc7e7047e23fd9f2ed691b5fdffb6b255fa4bc49acacf65bc21bde36"
+    },
+    {
+      "path": "db/index.json",
+      "tracked": false,
+      "category": "A",
+      "size": 104134,
+      "sha256": "2c95d240cc7e7047e23fd9f2ed691b5fdffb6b255fa4bc49acacf65bc21bde36"
+    },
+    {
+      "path": "db/schema.json",
+      "tracked": true,
+      "category": "A",
+      "size": 8438,
+      "sha256": "450cab04be2ec8b03c645deee1ea378183b39038e429a1031faf5557d389b7c0"
+    },
+    {
+      "path": "db/validate_db.js",
+      "tracked": false,
+      "category": "A",
+      "size": 3228,
+      "sha256": "6829bbc9d0e5ca57d6c77b22e99113f3dc1abf1c87da885ff520f717c719980c"
+    },
+    {
+      "path": "docs/governance/AI_OPERATING_SYSTEM.md",
+      "tracked": false,
+      "category": "G",
+      "size": 9224,
+      "sha256": "5d4b0a1907f05b9d79c139830aca81414cab8e4dfa014cf4b28b898424f6702b"
+    },
+    {
+      "path": "docs/governance/ANTIBIO_CONSTITUTION.md",
+      "tracked": false,
+      "category": "G",
+      "size": 5709,
+      "sha256": "fa0ea6e7a4b20ba542d37cd9489c263d3dbf8d660dbab8e27c4a6171c07fe821"
+    },
+    {
+      "path": "docs/governance/AUTONOMOUS_ENGINEERING_KERNEL.md",
+      "tracked": false,
+      "category": "G",
+      "size": 6718,
+      "sha256": "802960746ee46e1e8c23effa00a6448fb602060f4c7c0a9d446363a82fd5bb8b"
+    },
+    {
+      "path": "docs/governance/CLINICAL_GOVERNANCE.md",
+      "tracked": false,
+      "category": "G",
+      "size": 8039,
+      "sha256": "96d933fcab9bf5db9365f3fc3bd1943825b12f917c1fcb43c6e95cab98125adc"
+    },
+    {
+      "path": "docs/governance/CURRENT_PROJECT_STATE.md",
+      "tracked": false,
+      "category": "G",
+      "size": 9020,
+      "sha256": "c46b331a2ebe2953ecde1fcd8ac67b23726734e3904b6964f5b6cebd28e74039"
+    },
+    {
+      "path": "docs/governance/ENGINEERING_PLAYBOOK.md",
+      "tracked": false,
+      "category": "G",
+      "size": 4770,
+      "sha256": "27f6253448f1d228070da9203cf601c86ef9cf13b4ce38457490af7f3ad85446"
+    },
+    {
+      "path": "docs/governance/README.md",
+      "tracked": false,
+      "category": "G",
+      "size": 1770,
+      "sha256": "66411149e3ff20fca7de353d3daa89f382ff4f0f22d67468dc4efb002201434c"
+    },
+    {
+      "path": "docs/governance/REPOSITORY_INTELLIGENCE.md",
+      "tracked": false,
+      "category": "G",
+      "size": 8012,
+      "sha256": "c1a9eb4a63e1e818a1926db8af42d38e4411ebb09dbef0cdd59ab6bd861f1369"
+    },
+    {
+      "path": "generate_pilot_review_batch.py",
+      "tracked": false,
+      "category": "H",
+      "size": 7831,
+      "sha256": "b79e8d51700db832089b85c656b0dafc22f5f9693aff6940e702ef2cd2f2d261"
+    },
+    {
+      "path": "generate_pilot_review_batch_v2.py",
+      "tracked": false,
+      "category": "H",
+      "size": 3814,
+      "sha256": "00605603f74d3929ff8995c7c0f3bfe4b71595d3f04165b260ecf6c633bac502"
+    },
+    {
+      "path": "generate_review_workbench_report.py",
+      "tracked": false,
+      "category": "H",
+      "size": 926,
+      "sha256": "42e3b06838402461050e44b425c23acff7aad25c496c436ac617612a3ae394e0"
+    },
+    {
+      "path": "main.py",
+      "tracked": false,
+      "category": "H",
+      "size": 28737,
+      "sha256": "f0516ada5ba02313a8f26f7ca40a479088c41a8cad72d24ef4b945296158968f"
+    },
+    {
+      "path": "medical_dictionary/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 497,
+      "sha256": "90e1a1ac20ca420c4865413176a0f30ef3d8eb66c1f0868b4c8f9a422cff5d65"
+    },
+    {
+      "path": "medical_dictionary/diagnosis_synonyms.json",
+      "tracked": false,
+      "category": "A",
+      "size": 2000,
+      "sha256": "e882aac1b780882c6a08d554493bb6e9b83ec328fceb08206480be244a3ba071"
+    },
+    {
+      "path": "medical_dictionary/dictionary_candidates.json",
+      "tracked": false,
+      "category": "A",
+      "size": 834153,
+      "sha256": "4435f455337a9316e0554170d04f447e69469aac3c85077ff5521831a23bdf8d"
+    },
+    {
+      "path": "medical_dictionary/drug_atc.json",
+      "tracked": false,
+      "category": "A",
+      "size": 233,
+      "sha256": "631e499df539b0734d062d0a67d8a8dd6c0b69eb6b0f04895b887e377c883ae6"
+    },
+    {
+      "path": "medical_dictionary/drug_groups.json",
+      "tracked": false,
+      "category": "A",
+      "size": 272,
+      "sha256": "894f2a812159c19eb3ff815168842a14f35c914316c23903e304c81e22ffecad"
+    },
+    {
+      "path": "medical_dictionary/drug_synonyms.json",
+      "tracked": false,
+      "category": "A",
+      "size": 6934,
+      "sha256": "2082395b0bd52f88a483e18a1a27c9c3aed5566a3d9c8e2fd7d3ceb3dc025324"
+    },
+    {
+      "path": "medical_dictionary/duration_dictionary.json",
+      "tracked": false,
+      "category": "A",
+      "size": 3152,
+      "sha256": "f0e8c6d3925c21d2abc9d896fe2d13d66d6567729a6f03e2ecce3f46b6417f08"
+    },
+    {
+      "path": "medical_dictionary/frequency_dictionary.json",
+      "tracked": false,
+      "category": "A",
+      "size": 7708,
+      "sha256": "51af6c3d2133d7a0946a53b31fe4e205f369bd73a9e185b05283f98eab607f9e"
+    },
+    {
+      "path": "medical_dictionary/loader.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2099,
+      "sha256": "b124d6ba5d2614dc7c989c9d9f6122835ea49ec900f03f782fbb909f6535d9d5"
+    },
+    {
+      "path": "medical_dictionary/metadata.json",
+      "tracked": false,
+      "category": "A",
+      "size": 2664,
+      "sha256": "55dcf162c893276f2de04ee640fc8745184bcf36d8b45bf01d39b41f21db161e"
+    },
+    {
+      "path": "medical_dictionary/pregnancy_dictionary.json",
+      "tracked": false,
+      "category": "A",
+      "size": 714,
+      "sha256": "ce767735a2a9384d849a0b522d587d136301e3b2ee708abb1ff5e018494cbffa"
+    },
+    {
+      "path": "medical_dictionary/renal_dictionary.json",
+      "tracked": false,
+      "category": "A",
+      "size": 814,
+      "sha256": "6dd377a18867df26b1829aac7ea1b4b8b78584a4ac8d703386cf3d6cb6a48326"
+    },
+    {
+      "path": "medical_dictionary/route_dictionary.json",
+      "tracked": false,
+      "category": "A",
+      "size": 1668,
+      "sha256": "8b7187802467ccf537f387414d45fd8cd11a9b049a3e2c5b75d08d82ce62444a"
+    },
+    {
+      "path": "medical_dictionary/unit_dictionary.json",
+      "tracked": false,
+      "category": "A",
+      "size": 1078,
+      "sha256": "ce1b050f4243def92807d733704202850d6282c1942fe012f375bb50ef92258c"
+    },
+    {
+      "path": "medical_dictionary/unknown_drugs.csv",
+      "tracked": false,
+      "category": "A",
+      "size": 83035,
+      "sha256": "7282f50f8f4da64c5ae712e7313bdd9e1878a8674503a554092cbd3d387fb56f"
+    },
+    {
+      "path": "medical_normalizer/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 94,
+      "sha256": "e229f2ef878152a05d07d56e52cd501f5c68cfbf27d651b77a326ed624a4e4fc"
+    },
+    {
+      "path": "medical_normalizer/confidence.py",
+      "tracked": false,
+      "category": "A",
+      "size": 12078,
+      "sha256": "3c2dbc48c1c81de741e6fc699f7408d9bbf245998a4c84c7fe4d6dae5e746674"
+    },
+    {
+      "path": "medical_normalizer/db.py",
+      "tracked": false,
+      "category": "A",
+      "size": 25500,
+      "sha256": "07845e89b0a673ec4c840a1ac1e53eb264666415055cd2438746e461a09b3c3b"
+    },
+    {
+      "path": "medical_normalizer/dictionary.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4575,
+      "sha256": "9d1449b9bd3a664652e4c5a0d667084af39e3503c04f33662c5e5d77e2e0ff3e"
+    },
+    {
+      "path": "medical_normalizer/drug_parser.py",
+      "tracked": false,
+      "category": "A",
+      "size": 5620,
+      "sha256": "3c13312e461931232c57aa278e57d39179e16328875fe584370824937e3fa04f"
+    },
+    {
+      "path": "medical_normalizer/duration_parser.py",
+      "tracked": false,
+      "category": "A",
+      "size": 8092,
+      "sha256": "c7c50c18e359ddb62f82183cf4711f2b7db068488e65c40617c951503238c491"
+    },
+    {
+      "path": "medical_normalizer/frequency_parser.py",
+      "tracked": false,
+      "category": "A",
+      "size": 10026,
+      "sha256": "efb813cf29e4c105c9fed24454d1b251f3c12d5abb0ccc0121e736da7215ff42"
+    },
+    {
+      "path": "medical_normalizer/models.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4444,
+      "sha256": "d7edefef25b9b7c114d1faa1cf9ee71f35c14f615c37fdfddfb46e015d9594e8"
+    },
+    {
+      "path": "medical_normalizer/normalizer.py",
+      "tracked": false,
+      "category": "A",
+      "size": 14779,
+      "sha256": "6a75b5f9e235f7d3f3d0fbf164f6fb163462124da84debe676e76ed318a93d0d"
+    },
+    {
+      "path": "medical_normalizer/population_parser.py",
+      "tracked": false,
+      "category": "A",
+      "size": 5248,
+      "sha256": "9342366f3a150a591187787c4e1b35214df7bfb2b03e00fed701e838f4f04006"
+    },
+    {
+      "path": "medical_normalizer/route_parser.py",
+      "tracked": false,
+      "category": "A",
+      "size": 488,
+      "sha256": "31d475c1c86229aac05d80e00996732e99fc64cda79d03d0d53ca3f04b23f9b0"
+    },
+    {
+      "path": "medical_normalizer/tests/__init__.py",
+      "tracked": false,
+      "category": "B",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "medical_normalizer/tests/test_confidence.py",
+      "tracked": false,
+      "category": "B",
+      "size": 28837,
+      "sha256": "b8143c22b6583ef56296ff52d184ce0498408c5e21ec501add8ce5aa3fdb3365"
+    },
+    {
+      "path": "medical_normalizer/tests/test_db.py",
+      "tracked": false,
+      "category": "B",
+      "size": 37969,
+      "sha256": "ddc8583460cf92771c8c2f05d8842d37b6d1940e37208f4fcd728cbec318ed97"
+    },
+    {
+      "path": "medical_normalizer/tests/test_dictionary.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5286,
+      "sha256": "4285fe53dd30fd9c06867ba4374450eaa4d4a7002558e2c30716db05554e9c16"
+    },
+    {
+      "path": "medical_normalizer/tests/test_drug_parser.py",
+      "tracked": false,
+      "category": "B",
+      "size": 8630,
+      "sha256": "a5c699e66873669dfa6f911e8461b73386f370a456f07f95ffb2f8b9f63b0331"
+    },
+    {
+      "path": "medical_normalizer/tests/test_duration_parser.py",
+      "tracked": false,
+      "category": "B",
+      "size": 7794,
+      "sha256": "13999fdacb5635ea75ba7a4306dbb396580f3f8671314a95aec0c961c3e92c5f"
+    },
+    {
+      "path": "medical_normalizer/tests/test_frequency_parser.py",
+      "tracked": false,
+      "category": "B",
+      "size": 13297,
+      "sha256": "fb7e16f50967a0bc2144adaf1b5878f84e82e274c7ba3e70ec518297a68bb698"
+    },
+    {
+      "path": "medical_normalizer/tests/test_medical_dictionary_loader.py",
+      "tracked": false,
+      "category": "B",
+      "size": 2784,
+      "sha256": "5122552c084bffc7867d576bda721293efcb41ae4d10b03a145f1b18dfd9c910"
+    },
+    {
+      "path": "medical_normalizer/tests/test_normalizer.py",
+      "tracked": false,
+      "category": "B",
+      "size": 40496,
+      "sha256": "351d0238a03fb05f99657696e7d0c3e7e48b35df947acc539d49d9e3f53cfb36"
+    },
+    {
+      "path": "medical_normalizer/tests/test_population_parser.py",
+      "tracked": false,
+      "category": "B",
+      "size": 7036,
+      "sha256": "769f236110a58cc49b10dab0944b34ec9d15ffbc66d3df5dc5fa5a152864be33"
+    },
+    {
+      "path": "medical_normalizer/tests/test_route_parser.py",
+      "tracked": false,
+      "category": "B",
+      "size": 2309,
+      "sha256": "e3902668d110d970b570977c477529e6afcb9a2b4cfe76cd3b81881c84f435d7"
+    },
+    {
+      "path": "medical_normalizer/tests/test_therapy_line_parser.py",
+      "tracked": false,
+      "category": "B",
+      "size": 4524,
+      "sha256": "4cb3233faf90285cbc2b8f74cfc6a284efb61a4fda6bf15838d5368b97ee1273"
+    },
+    {
+      "path": "medical_normalizer/tests/test_validator.py",
+      "tracked": false,
+      "category": "B",
+      "size": 39310,
+      "sha256": "78b196fd2c49a30fa95e1a9c9c9aca57024467f74ae0f17d9144badf4dfab8a5"
+    },
+    {
+      "path": "medical_normalizer/therapy_line_parser.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2307,
+      "sha256": "ec0549bfec7b44d14cb7082c017d2d45c2ab6978cd014fae581b4346b5dc435c"
+    },
+    {
+      "path": "medical_normalizer/validator.py",
+      "tracked": false,
+      "category": "A",
+      "size": 20069,
+      "sha256": "2b3d37df9b50e6382a8c1b6a34ead33f83059fe2d78972133ac70ebf8a016e7c"
+    },
+    {
+      "path": "prefilter_rules.json",
+      "tracked": false,
+      "category": "A",
+      "size": 12526,
+      "sha256": "0d0eb569f3200276b5c5385094f9728d8fea9a82caabea318409c1ac046de137"
+    },
+    {
+      "path": "production_reprocessor.py",
+      "tracked": false,
+      "category": "H",
+      "size": 8140,
+      "sha256": "5c258b7c44cee60ce3e6967a1c70e3bd2de4e476a46c67870bac6c68124587e0"
+    },
+    {
+      "path": "pyproject.toml",
+      "tracked": false,
+      "category": "E",
+      "size": 2335,
+      "sha256": "caaeef849eaa7e5770ce05e13187a905211b1ea3cb9af1e750eb7cbe1b0793ff"
+    },
+    {
+      "path": "repository_inventory.py",
+      "tracked": false,
+      "category": "H",
+      "size": 2699,
+      "sha256": "b2646bb20cda65c1d229bb13de10e177f0aa560d5c453d1a0861004c3dd70cb8"
+    },
+    {
+      "path": "reprocess_p45_layout.py",
+      "tracked": false,
+      "category": "H",
+      "size": 4537,
+      "sha256": "a5f9f12e36c67d18f4678d8d4769b5b8f87361e114dab7d91d15e617597f21f6"
+    },
+    {
+      "path": "restore_archived_pdfs.py",
+      "tracked": false,
+      "category": "H",
+      "size": 4528,
+      "sha256": "78dfbc736e9a1deb8d36b9eb68bff963162f2b99adf34d1c430027b7e2c0ee8e"
+    },
+    {
+      "path": "server.js",
+      "tracked": true,
+      "category": "A",
+      "size": 988,
+      "sha256": "f699212f4cc9a38a2baff36ce43e70da9a8435296d01d71b55542c1e2db59728"
+    },
+    {
+      "path": "src/llm/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 65,
+      "sha256": "c0696946677ca103cfb4f21cba8a3c1e6a1f11fafc492cc5a710e319ec700f30"
+    },
+    {
+      "path": "src/llm/cache.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1190,
+      "sha256": "bd2e8670d2e3e64a3531b7a51df2b82bc8e048cc3b57c446c4dacd3c98dc2ac7"
+    },
+    {
+      "path": "src/llm/llm_provider.py",
+      "tracked": false,
+      "category": "A",
+      "size": 9516,
+      "sha256": "c6a470316b1bfc145ba578b949e9b351741ab8ec5a46e3b3a0de26e6d8323e43"
+    },
+    {
+      "path": "src/llm/providers/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 826,
+      "sha256": "6a07b88f74d15bb6d71764778bd7aa12dd6949c1a4788be7becebcc36e4bc13d"
+    },
+    {
+      "path": "src/llm/providers/anthropic.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4044,
+      "sha256": "7fad4d43000c0c89b4704ae037121844208b151b76d6304aa565bb9054406d89"
+    },
+    {
+      "path": "src/llm/providers/base.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1091,
+      "sha256": "1aeed418268b5edb0dae8765574e0b52647c8242255792189a2b8a766473fff2"
+    },
+    {
+      "path": "src/llm/providers/deepseek.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3221,
+      "sha256": "c9c50b8249e4ff7c7a739e53642a6caa3bc50c57856c427533c51c52ae134d3f"
+    },
+    {
+      "path": "src/llm/providers/gemini_provider.py",
+      "tracked": false,
+      "category": "A",
+      "size": 828,
+      "sha256": "9d8596aba1c7b2811ecdf80962e9dbd1c5e7cb10fa451d4cd0868190e12fa760"
+    },
+    {
+      "path": "src/llm/providers/local_provider.py",
+      "tracked": false,
+      "category": "A",
+      "size": 826,
+      "sha256": "0833180265abf494aa17ccda98f4e6c1bef9ad94aee28eb2977ace9188780fb0"
+    },
+    {
+      "path": "src/llm/providers/ollama_provider.py",
+      "tracked": false,
+      "category": "A",
+      "size": 730,
+      "sha256": "3c7093fd1f509692a468a195cb9395eb9e9c5c71fafcd2e99d5c9fc2ef374f78"
+    },
+    {
+      "path": "src/llm/providers/openai_provider.py",
+      "tracked": false,
+      "category": "A",
+      "size": 781,
+      "sha256": "0104e4d8b3219a51f1f588c02d45f1c130d1f231c194273bc472452652848cc0"
+    },
+    {
+      "path": "src/llm/providers/openrouter.py",
+      "tracked": false,
+      "category": "A",
+      "size": 803,
+      "sha256": "b03d052ac17b48dbba48edea6bd0ca6f96816d61dcafaade132b15d04ff65d49"
+    },
+    {
+      "path": "src/llm/providers/vllm_provider.py",
+      "tracked": false,
+      "category": "A",
+      "size": 724,
+      "sha256": "497340d83273efc8ad4c6d541614608513559814020ad3341544de22c7ee549f"
+    },
+    {
+      "path": "src/pipeline/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/pipeline/_explore_data.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1101,
+      "sha256": "91f662aaf875ab48ef888bdaa812c3a31f66b3b6c8911df0f8c65d514df2c973"
+    },
+    {
+      "path": "src/pipeline/analyzer.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2296,
+      "sha256": "cdad883b2cf86d7bd7312c84984eb04a375ec2945c8a81950f6a210e06f78640"
+    },
+    {
+      "path": "src/pipeline/antibiotic_gate.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4579,
+      "sha256": "1894aea11bd4c80aad4f052febc7ce2a9af9d5a8b83bb35a4ececfbb63cdd97e"
+    },
+    {
+      "path": "src/pipeline/api_client.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4854,
+      "sha256": "67424e1a7108e8711f2a7a330450c69405e2d07bdc409ad32019c2a6f054dd2c"
+    },
+    {
+      "path": "src/pipeline/classifier.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3555,
+      "sha256": "85cdea212dde39fe1eee8cb4dc5f9de1dfd7d8096ca6dbec6cf064dcfcf1986f"
+    },
+    {
+      "path": "src/pipeline/config.py",
+      "tracked": false,
+      "category": "A",
+      "size": 10321,
+      "sha256": "70611de23562c38580f338a68d04f10655e6bee3b27a6841c96cfde85f434764"
+    },
+    {
+      "path": "src/pipeline/database.py",
+      "tracked": false,
+      "category": "A",
+      "size": 12643,
+      "sha256": "6088df57795907e814484b38e0417cbd851176635c458f258a962c65a8e95b4f"
+    },
+    {
+      "path": "src/pipeline/downloader.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3915,
+      "sha256": "cee6b1b039cc2099d8da32c1f5865a6f87dafcf319b88927fb56bd9e920feb97"
+    },
+    {
+      "path": "src/pipeline/extraction/__init__.py",
+      "tracked": false,
+      "category": "A",
+      "size": 313,
+      "sha256": "c48e8023f5c3fe4f148770288f5d93bb8437afa2edbbaa9fcc8288b466c6e802"
+    },
+    {
+      "path": "src/pipeline/extraction/base.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3715,
+      "sha256": "38f2ec9ee2bae74a5485395a7e85e92ca3ee11cec0ca0f367abe26e7bc1a796a"
+    },
+    {
+      "path": "src/pipeline/extraction/cache.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2722,
+      "sha256": "08de866f4bc531642f28c40788dc9014bd4848e8413eb54c15c4a32ee03d0125"
+    },
+    {
+      "path": "src/pipeline/extraction/config.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1572,
+      "sha256": "ba637b346a07e41f18b03292eaa7f0100913db4b6c49488ee692c07687cbcd90"
+    },
+    {
+      "path": "src/pipeline/extraction/diagnose_pipeline.py",
+      "tracked": false,
+      "category": "A",
+      "size": 7008,
+      "sha256": "0f4a48b73ae2e7f585590a8164c098a0db6651b4039b0b349869615249785ce7"
+    },
+    {
+      "path": "src/pipeline/extraction/docling.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3303,
+      "sha256": "d75b42cddea716fd0158465f5e3087583be6184a79dc8cf9043dc06a7fbb152f"
+    },
+    {
+      "path": "src/pipeline/extraction/layout.py",
+      "tracked": false,
+      "category": "A",
+      "size": 18925,
+      "sha256": "565cdbbabf8dfb56ea8b5327c094f47579f57ceaac0e6b38e91c0a00672304c4"
+    },
+    {
+      "path": "src/pipeline/extraction/metrics.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2832,
+      "sha256": "8ee65597c9db48c44778f5be2bdc78a7dfd980827ac6df12a345e6c3e4a28a8a"
+    },
+    {
+      "path": "src/pipeline/extraction/mineru.py",
+      "tracked": false,
+      "category": "A",
+      "size": 2255,
+      "sha256": "59429d6d3fd57ba7da2f3b1aff6a8c5fb4e0d9a6b77728e8fa21c15bc1940054"
+    },
+    {
+      "path": "src/pipeline/extraction/pymupdf.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1253,
+      "sha256": "eabc4b57c599941dd3490dc14f20b54cdd6e8fba3cc51e7ff727e69627fec20a"
+    },
+    {
+      "path": "src/pipeline/extraction/quality.py",
+      "tracked": false,
+      "category": "A",
+      "size": 1433,
+      "sha256": "51ceed53b684e93b059ac65b54648ac7bbef4c988971eb2a6cfdc527d9d9fd19"
+    },
+    {
+      "path": "src/pipeline/extraction/router.py",
+      "tracked": false,
+      "category": "A",
+      "size": 11566,
+      "sha256": "ec9472b30805a805fe0618fa739e484ffa5bfcc401b56a0c447da01dbfca21f4"
+    },
+    {
+      "path": "src/pipeline/extraction/semantic.py",
+      "tracked": false,
+      "category": "A",
+      "size": 22084,
+      "sha256": "113a3d8aa53ba69db72ae98afa0a81c8d6bf380798209028eac9b02f03f628d0"
+    },
+    {
+      "path": "src/pipeline/extraction/semantic_yield_audit.py",
+      "tracked": false,
+      "category": "A",
+      "size": 14010,
+      "sha256": "3171f76fb3aba9e91b047559dd8cd97314269dc07b2ced2b634eed965a3410a5"
+    },
+    {
+      "path": "src/pipeline/extractor.py",
+      "tracked": false,
+      "category": "A",
+      "size": 991,
+      "sha256": "f25a4d288797d5c2371c3f7d17352dd417ebdfeb9c8affbe19249e9bc4d5eeee"
+    },
+    {
+      "path": "src/pipeline/extractor_llm.py",
+      "tracked": false,
+      "category": "A",
+      "size": 7984,
+      "sha256": "3b24e478fec0116aeb24a0bd3d631c37c5317f86faa1da4a97aeef1e9c9fca74"
+    },
+    {
+      "path": "src/pipeline/knowledge_base.py",
+      "tracked": false,
+      "category": "A",
+      "size": 24672,
+      "sha256": "1c627d14f26daac442d1d14eb201c03e2ee3d995aab4496360c07e89da5a4661"
+    },
+    {
+      "path": "src/pipeline/knowledge_coverage.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3943,
+      "sha256": "c4b6476df0a876916a67078a6e039079082a789964c41d716862e1b8628e2506"
+    },
+    {
+      "path": "src/pipeline/knowledge_identity.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3013,
+      "sha256": "6794392a420523fe4d65c8bdc71f7cddca3b1b85c9bf5e3d1df29bd639082308"
+    },
+    {
+      "path": "src/pipeline/knowledge_invariants.py",
+      "tracked": false,
+      "category": "A",
+      "size": 4931,
+      "sha256": "f2cfc969d802d9e37b89123415d61cd69718ad32f13778d0b383bb448ed5ed45"
+    },
+    {
+      "path": "src/pipeline/main.py",
+      "tracked": false,
+      "category": "A",
+      "size": 27044,
+      "sha256": "3d9ff905ae13169dc05552c8a3935756f3edc58b175ef6ab98c00ca6a9f48aa0"
+    },
+    {
+      "path": "src/pipeline/normalizer.py",
+      "tracked": false,
+      "category": "A",
+      "size": 377,
+      "sha256": "f992fd4eb4f5bb1b9d8a5acdfa0e28fd1ea933bbea6f7ef11945966d5ea87aa4"
+    },
+    {
+      "path": "src/pipeline/prefilter.py",
+      "tracked": false,
+      "category": "A",
+      "size": 24306,
+      "sha256": "c416fc9d1d3f2a4da92e612592cdde6c99942a04e132527bdd0548dedd12808e"
+    },
+    {
+      "path": "src/pipeline/progress.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3530,
+      "sha256": "159855ce1dada21b3eb9a9c15ea58fbe74b40bbad9043258f8748e504a09de2a"
+    },
+    {
+      "path": "src/pipeline/reporter.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3362,
+      "sha256": "ffd9b0f1f6da8fd7f465bbd168bf793afd74aa1cfcde0ade134b7f8d960a0982"
+    },
+    {
+      "path": "src/pipeline/section_detector.py",
+      "tracked": false,
+      "category": "A",
+      "size": 3820,
+      "sha256": "9f5b334cca0be5da966974bbf3e6245a6b8a0bca8b40be5f551c09f7e6bd20a6"
+    },
+    {
+      "path": "src/tests/__init__.py",
+      "tracked": false,
+      "category": "B",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/tests/conftest.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5568,
+      "sha256": "5bf0cd7a806ae0caff2239dd4d34f3adcbd295b13a339c62950637291d7c45be"
+    },
+    {
+      "path": "src/tests/test_antibiotic_gate.py",
+      "tracked": false,
+      "category": "B",
+      "size": 3735,
+      "sha256": "d2cc48c8cb9d91b29df8cc5d7c52f29124f7518d507bc4e5e34c2666b3a739c5"
+    },
+    {
+      "path": "src/tests/test_classifier.py",
+      "tracked": false,
+      "category": "B",
+      "size": 4105,
+      "sha256": "fa2dcc91e488aadc1a69a6a9fd42ef85a88d03da2d666a6d507835af6beac6be"
+    },
+    {
+      "path": "src/tests/test_database.py",
+      "tracked": false,
+      "category": "B",
+      "size": 2801,
+      "sha256": "7774672902952a53628c6ef9c2044bc74c78faf06b07ba0698caaaee5aae5934"
+    },
+    {
+      "path": "src/tests/test_document_extraction.py",
+      "tracked": false,
+      "category": "B",
+      "size": 4958,
+      "sha256": "3020e64c44d19c27c37a59d853de121f8d1027b5dc6f5f30c8672db5962bcdc5"
+    },
+    {
+      "path": "src/tests/test_extractor_llm.py",
+      "tracked": false,
+      "category": "B",
+      "size": 3732,
+      "sha256": "90bcdd731499451cc12edeec2a16453f839b962950fb18dcde26060726601c6f"
+    },
+    {
+      "path": "src/tests/test_knowledge_base.py",
+      "tracked": false,
+      "category": "B",
+      "size": 3374,
+      "sha256": "f528728288147ba4b96c628b0e9bb7cca32cd0dd6871f3b2287a0be2697fb95f"
+    },
+    {
+      "path": "src/tests/test_knowledge_identity.py",
+      "tracked": false,
+      "category": "B",
+      "size": 3867,
+      "sha256": "1f2d0473a3960365a87f5b520c958dff48b8754e053569ffb59a9e212e678e04"
+    },
+    {
+      "path": "src/tests/test_layout_table_provenance.py",
+      "tracked": false,
+      "category": "B",
+      "size": 5153,
+      "sha256": "10e94c6e12bee1a780e7b6c6ca9827d3d66d50635fdd0e8d1e5ffd21028e3e53"
+    },
+    {
+      "path": "src/tests/test_normalizer.py",
+      "tracked": false,
+      "category": "B",
+      "size": 1115,
+      "sha256": "a9c32b7530a7d2c3c4bf27e44ae9b903b125b3f7f03192136d797cab26993d89"
+    },
+    {
+      "path": "src/tests/test_prefilter.py",
+      "tracked": false,
+      "category": "B",
+      "size": 6215,
+      "sha256": "b6323daab0b281ff0cb7320f366f56674e57d015c6e7de99df8ee03eeb2a9a3f"
+    },
+    {
+      "path": "src/tests/test_progress.py",
+      "tracked": false,
+      "category": "B",
+      "size": 2752,
+      "sha256": "96bf264ca5efd3bc94314fbfa6670fd2c2811d33c6d0ff9468ce3dfd255b1357"
+    },
+    {
+      "path": "src/tests/test_section_detector.py",
+      "tracked": false,
+      "category": "B",
+      "size": 2651,
+      "sha256": "7c3fd231e3b83411698afec7a445435110109ab51bb7ab52696d5b32a81b904b"
+    },
+    {
+      "path": "uv.lock",
+      "tracked": false,
+      "category": "E",
+      "size": 321548,
+      "sha256": "40512b98d7a3a7548171d0eff319553045df77927e6c01e0705da7dee212500d"
+    },
+    {
+      "path": "validate_full_corpus.py",
+      "tracked": false,
+      "category": "H",
+      "size": 2790,
+      "sha256": "c80c259df1c9e5fca54fd1ac5a999a03787d33253845eabbb680d1a35a9388f0"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "version": "1.0.0",
+  "requires_kernel": "1.0",
+  "bundle_format": "v1",
+  "content_hash": "sha256:2c95d240cc7e7047e23fd9f2ed691b5fdffb6b255fa4bc49acacf65bc21bde36",
+  "bundle_id": "terminology-atc-1.0.0",
+  "bundle_type": "terminology",
+  "curation_status": "curated",
+  "generated_by": "medical_dictionary-v1",
+  "source_refs": ["ATC", "SNOMED", "ICD-10"],
+  "jurisdiction": "RU",
+  "specialty": "general",
+  "signatures": [],
+  "depends_on": [],
+  "supersedes": [],
+  "expiry": null,
+  "freshness_policy": null,
+  "stats": {
+    "drug_count": 85,
+    "atc_coverage": 0.8
+  },
+  "notes": "TerminologyBundle for ATC + synonyms. (P0-4: using drug_reference payload for smoke)."
+}

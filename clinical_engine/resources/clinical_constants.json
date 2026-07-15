@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "version": "0.1.0-draft",
+    "note": "Curated resource, NOT auto-generated verbatim from db/index.json 'class' field. allergy_class_map/allergy_class_hierarchy merge generation/route subgroups within the same drug family (penicillins, cephalosporins, macrolides, fluoroquinolones) -- see DECISIONS.md 2026-07-10 'allergy_class_map curation'. DRAFT, pending doctor review, same status as db/index.json (0.5.0-draft)."
+  },
+  "age_bands": {
+    "neonate": [
+      0.0,
+      0.076712
+    ],
+    "child": [
+      0.0,
+      18.0
+    ]
+  },
+  "renal_thresholds": {},
+  "allergy_class_map": {
+    "amoxicillin": "Пенициллины",
+    "amoxiclav": "Пенициллины",
+    "phenoxymethylpenicillin": "Пенициллины",
+    "benzathine_benzylpenicillin": "Пенициллины",
+    "benzylpenicillin_na": "Пенициллины",
+    "cefixime": "Цефалоспорины",
+    "ceftriaxone": "Цефалоспорины",
+    "cefotaxime": "Цефалоспорины",
+    "cefdinir": "Цефалоспорины",
+    "cefazolin": "Цефалоспорины",
+    "azithromycin": "Макролиды",
+    "clarithromycin": "Макролиды",
+    "josamycin": "Макролиды",
+    "doxycycline": "Тетрациклины",
+    "levofloxacin": "Фторхинолоны",
+    "moxifloxacin": "Фторхинолоны",
+    "ciprofloxacin": "Фторхинолоны",
+    "fosfomycin": "Прочие",
+    "nitrofurantoin": "Нитрофураны",
+    "metronidazole": "Нитроимидазолы",
+    "clindamycin": "Линкозамиды",
+    "gentamicin": "Аминогликозиды",
+    "vancomycin": "Гликопептиды",
+    "piperacillin_tazobactam": "Пенициллины",
+    "meropenem": "Карбапенемы",
+    "erythromycin": "Макролиды",
+    "dicloxacillin": "Пенициллины",
+    "cotrimoxazole": "Сульфаниламиды + триметоприм",
+    "ampicillin": "Пенициллины",
+    "oxacillin": "Пенициллины",
+    "cefepime": "Цефалоспорины",
+    "ceftazidime": "Цефалоспорины",
+    "linezolid": "Оксазолидиноны",
+    "cephalexin": "Цефалоспорины",
+    "cefuroxime": "Цефалоспорины",
+    "rifampicin": "Ансамицины (противотуберкулёзные, рифамицины)",
+    "isoniazid": "Гидразиды (противотуберкулёзные)",
+    "pyrazinamide": "Противотуберкулёзные (синтетические)",
+    "ethambutol": "Противотуберкулёзные (синтетические)",
+    "amikacin": "Аминогликозиды"
+  },
+  "allergy_class_hierarchy": {
+    "Пенициллины": [
+      "amoxicillin",
+      "amoxiclav",
+      "ampicillin",
+      "benzathine_benzylpenicillin",
+      "benzylpenicillin_na",
+      "dicloxacillin",
+      "oxacillin",
+      "phenoxymethylpenicillin",
+      "piperacillin_tazobactam"
+    ],
+    "Цефалоспорины": [
+      "cefazolin",
+      "cefdinir",
+      "cefepime",
+      "cefixime",
+      "cefotaxime",
+      "ceftazidime",
+      "ceftriaxone",
+      "cefuroxime",
+      "cephalexin"
+    ],
+    "Макролиды": [
+      "azithromycin",
+      "clarithromycin",
+      "erythromycin",
+      "josamycin"
+    ],
+    "Тетрациклины": [
+      "doxycycline"
+    ],
+    "Фторхинолоны": [
+      "ciprofloxacin",
+      "levofloxacin",
+      "moxifloxacin"
+    ],
+    "Прочие": [
+      "fosfomycin"
+    ],
+    "Нитрофураны": [
+      "nitrofurantoin"
+    ],
+    "Нитроимидазолы": [
+      "metronidazole"
+    ],
+    "Линкозамиды": [
+      "clindamycin"
+    ],
+    "Аминогликозиды": [
+      "amikacin",
+      "gentamicin"
+    ],
+    "Гликопептиды": [
+      "vancomycin"
+    ],
+    "Карбапенемы": [
+      "meropenem"
+    ],
+    "Сульфаниламиды + триметоприм": [
+      "cotrimoxazole"
+    ],
+    "Оксазолидиноны": [
+      "linezolid"
+    ],
+    "Ансамицины (противотуберкулёзные, рифамицины)": [
+      "rifampicin"
+    ],
+    "Гидразиды (противотуберкулёзные)": [
+      "isoniazid"
+    ],
+    "Противотуберкулёзные (синтетические)": [
+      "ethambutol",
+      "pyrazinamide"
+    ]
+  }
+}

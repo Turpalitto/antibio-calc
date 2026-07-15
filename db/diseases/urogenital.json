@@ -1042,10 +1042,10 @@
         "цистит беременных",
         "пиелонефрит беременных"
       ],
-      "cr_id": "—",
-      "cr_year": 2022,
-      "cr_updated": "2022",
-      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
+      "cr_id": "719",
+      "cr_year": 2025,
+      "cr_updated": "2025",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/719",
       "antibiotics_indicated": true,
       "indications": [
         "Бессимптомная бактериурия у беременных ПОДЛЕЖИТ лечению. Фторхинолоны и тетрациклины противопоказаны"
@@ -1181,8 +1181,7 @@
             }
           ]
         }
-      ],
-      "cr_note": "Основа: КР по ИМП (№10) + акушерские КР; бессимптомная бактериурия беременных лечится."
+      ]
     },
     {
       "id": "epididymitis",

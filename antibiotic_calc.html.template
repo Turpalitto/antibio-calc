@@ -161,6 +161,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
           <div id="route-tabs" class="flex gap-1"></div>
         </div>
         <div id="form-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+        <div id="availability-note" class="hidden mt-3 text-[11px] font-semibold bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 rounded-xl px-3 py-2"><i class="fas fa-circle-info mr-1"></i><span></span></div>
 
         <div id="regimen-selector" class="hidden mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
           <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Режим дозирования</label>
@@ -285,7 +286,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
     <div id="empty-state" class="text-center py-12 opacity-40 no-print">
       <i class="fas fa-stethoscope text-5xl mb-3"></i>
       <p class="text-sm font-bold">Выберите нозологию для расчёта</p>
-      <p class="text-[10px] mt-2">46 нозологий • 28 препаратов • КР МЗ РФ</p>
+      <p class="text-[10px] mt-2" id="empty-state-stats"></p>
     </div>
 
   </div>
@@ -382,12 +383,53 @@ function toast(msg){
   clearTimeout(t._timer);
   t._timer = setTimeout(()=>t.classList.remove('show'), 2500);
 }
+function validateDB(){
+  const errs = [], warns = [];
+  if(!DB || !DB.recommendations || !DB.drugs_reference){ errs.push('Нет БД'); return {errs,warns}; }
+  const drugKeys = Object.keys(DB.drugs_reference).filter(k=>k!=='_note');
+  DB.recommendations.forEach((r,i)=>{
+    if(!r.id) errs.push('rec['+i+']: нет id');
+    if(!r.mkb10||!r.mkb10.length) errs.push('rec['+i+'] '+r.id+': нет mkb10');
+    if(!r.name) errs.push('rec['+i+']: нет name');
+    if(!r.cr_id) warns.push('rec['+i+'] '+r.id+': нет cr_id');
+    if(!r.cr_year) warns.push('rec['+i+'] '+r.id+': нет cr_year');
+    (r.scenarios||[]).forEach((s,si)=>{
+      if(!s.id) errs.push('rec['+i+'] '+r.id+'>scenario['+si+']: нет id');
+      if(!s.name) errs.push('rec['+i+'] '+r.id+'>scenario['+si+']: нет name');
+      (s.lines||[]).forEach((l,li)=>{
+        if(l.line_number==null) errs.push('rec['+i+'] '+r.id+'>scenario['+si+']>line['+li+']: нет line_number');
+        (l.drugs||[]).forEach((d,di)=>{
+          if(d.drug_ref&&!drugKeys.includes(d.drug_ref)) errs.push('drug_ref "'+d.drug_ref+'" не найден в drugs_reference');
+          if(d.combo_ref) d.combo_ref.forEach((cr,cdi)=>{ if(!drugKeys.includes(cr)) errs.push('combo_ref "'+cr+'" не найден'); });
+          if(!d.route||!d.route.length) warns.push('rec['+i+'] '+r.id+'>drug '+d.drug_ref+': нет route');
+          (d.regimens||[]).forEach((rg,ri)=>{
+            if(!rg.freq_per_day) errs.push('rec['+i+'] '+r.id+'>drug '+d.drug_ref+' regimen['+ri+']: нет freq_per_day');
+            if(!rg.duration_days) warns.push('rec['+i+'] '+r.id+'>drug '+d.drug_ref+' regimen['+ri+']: нет duration_days');
+          });
+        });
+      });
+    });
+  });
+  return {errs,warns};
+}
 function init(){
   try{
     const raw = $('db-data').textContent.trim();
     DB = JSON.parse(raw);
     document.getElementById('verification-status').textContent = (DB.meta.verification_status||'draft').toUpperCase()+' • '+DB.meta.warning;
     document.getElementById('header-stats').textContent = 'КР МЗ РФ • '+DB.recommendations.length+' нозологий • '+Object.keys(DB.drugs_reference).filter(k=>k!=='_note').length+' препаратов';
+    document.getElementById('empty-state-stats').textContent = DB.recommendations.length+' нозологий • '+Object.keys(DB.drugs_reference).filter(k=>k!=='_note').length+' препаратов • КР МЗ РФ';
+    const v = validateDB();
+    const statusEl = document.getElementById('header-stats');
+    if(v.errs.length){
+      statusEl.textContent += ' • ❌ '+v.errs.length+' ош';
+      statusEl.className = 'text-red-500 text-[10px] font-bold mt-0.5 uppercase tracking-widest italic';
+    } else if(v.warns.length){
+      statusEl.textContent += ' • ⚠️ '+v.warns.length+' пред';
+      statusEl.className = 'text-amber-500 text-[10px] font-bold mt-0.5 uppercase tracking-widest italic';
+    } else {
+      statusEl.textContent += ' • ✓ БД';
+    }
   }catch(e){
     $('empty-state').innerHTML = '<p class="text-red-600 font-bold">Ошибка загрузки БД: '+e.message+'</p>';
     return;
@@ -586,15 +628,36 @@ function renderForms(){
   const routeTabs = $('route-tabs');
   routeTabs.innerHTML = '';
 
+  const availNote = $('availability-note');
+  if(mainRef.availability_note){
+    availNote.querySelector('span').textContent = mainRef.availability_note;
+    availNote.classList.remove('hidden');
+  } else {
+    availNote.classList.add('hidden');
+  }
+
   const groups = {po:[], im:[], iv:[]};
   forms.forEach((f, idx)=>{
-    if(['tablet','capsule','suspension','syrup','granules'].includes(f.form_type)){
+    // powder_for_suspension используется и для пероральной суспензии (есть concentration_mg_per_ml),
+    // и для инъекционного флакона (готовится через dilution) — различаем по этому полю,
+    // иначе пероральная детская суспензия попадает в группу "в/в".
+    if(['tablet','capsule','suspension','syrup','granules'].includes(f.form_type)
+       || (f.form_type === 'powder_for_suspension' && f.concentration_mg_per_ml != null)){
       groups.po.push({f, idx});
-    } else if(mainRef.dilution && mainRef.dilution.im && ['powder_for_suspension','solution_im'].includes(f.form_type)){
+      return;
+    }
+    // Один и тот же инъекционный флакон часто годится и для в/м, и для в/в (просто разное разведение) —
+    // проверяем оба пути НЕЗАВИСИМО (не else-if), иначе "в/в" никогда не заполнится, если есть "в/м".
+    let matched = false;
+    if(mainRef.dilution && mainRef.dilution.im && ['powder_for_suspension','solution_im'].includes(f.form_type)){
       groups.im.push({f, idx});
-    } else if(mainRef.dilution && (mainRef.dilution.iv_bolus || mainRef.dilution.iv_infusion) && ['powder_for_suspension','solution_iv'].includes(f.form_type)){
+      matched = true;
+    }
+    if(mainRef.dilution && (mainRef.dilution.iv_bolus || mainRef.dilution.iv_infusion) && ['powder_for_suspension','solution_iv'].includes(f.form_type)){
       groups.iv.push({f, idx});
-    } else {
+      matched = true;
+    }
+    if(!matched){
       groups.po.push({f, idx});
     }
   });
@@ -602,8 +665,16 @@ function renderForms(){
   const groupKeys = Object.keys(groups).filter(k=>groups[k].length>0);
   if(groupKeys.length === 0) return;
 
-  currentRouteGroup = groupKeys[0];
-  groupKeys.forEach(k=>{
+  // Показываем только пути введения, указанные в самом сценарии (activeDrug.route) —
+  // иначе можно случайно предложить, например, пероральную форму для препарата,
+  // который в этом сценарии клинически эффективен только в/в (напр. ванкомицин при сепсисе).
+  const routeMap = {per_os:'po', iv:'iv', im:'im'};
+  const intendedKeys = (activeDrug.route || []).map(r=>routeMap[r]).filter(Boolean);
+  const restrictedKeys = groupKeys.filter(k=>intendedKeys.includes(k));
+  const finalKeys = restrictedKeys.length > 0 ? restrictedKeys : groupKeys;
+
+  currentRouteGroup = finalKeys[0];
+  finalKeys.forEach(k=>{
     const tab = document.createElement('button');
     tab.className = 'route-tab chip text-[10px] font-black uppercase rounded-lg px-2 py-1'+(k===currentRouteGroup?' active':'');
     const label = k==='po'?'per os':(k==='im'?'в/м':'в/в');
@@ -623,11 +694,17 @@ function renderFormChips(group){
   const grid = $('form-grid');
   grid.innerHTML = '';
   if(group.length === 0){ grid.innerHTML = '<p class="text-xs text-slate-400">Нет форм для этого пути</p>'; return; }
+  // Детям/новорождённым по умолчанию предпочитаем жидкую форму (суспензия/сироп) — не все могут проглотить таблетку
+  let defaultIdx = 0;
+  if(activeAge === 'child' || activeAge === 'neonate'){
+    const liquidPos = group.findIndex(g=>['suspension','syrup','powder_for_suspension'].includes(g.f.form_type));
+    if(liquidPos !== -1) defaultIdx = liquidPos;
+  }
   group.forEach((entry, i)=>{
     const f = entry.f;
     const idx = entry.idx;
     const btn = document.createElement('button');
-    btn.className = 'chip rounded-xl py-2 md:py-3 px-2 text-[10px] font-black uppercase tracking-wider text-left'+(i===0?' active':'');
+    btn.className = 'chip rounded-xl py-2 md:py-3 px-2 text-[10px] font-black uppercase tracking-wider text-left'+(i===defaultIdx?' active':'');
     let routeIcon = 'fa-pill';
     if(f.form_type === 'tablet' || f.form_type === 'capsule') routeIcon = 'fa-pills';
     else if(['powder_for_suspension','suspension','syrup'].includes(f.form_type)) routeIcon = 'fa-flask';
@@ -643,7 +720,7 @@ function renderFormChips(group){
     };
     grid.appendChild(btn);
   });
-  activeFormIdx = group[0].idx;
+  activeFormIdx = group[defaultIdx].idx;
 }
 function renderRegimens(){
   const refs = getDrugRefs(activeDrug);
@@ -1043,10 +1120,7 @@ function fillPrescriptionForm(){
   // Header (Russian — as on real forms)
   const dateStr = $('patient-date').value || new Date().toLocaleDateString('ru-RU');
   $('rx-date').textContent = dateStr;
-  $('rx-age').textContent = $('patient-age').value || '—';
-  $('rx-weight').textContent = w || '—';
   $('rx-doctor').textContent = $('doctor-name').value || '________________________';
-  $('rx-patient-name').textContent = $('patient-name').value || '________________________';
 
   // Rp: block — Latin drug names
   const drugsEl = $('rx-drugs');

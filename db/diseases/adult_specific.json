@@ -97,7 +97,7 @@
                       "max_daily_mg": 500,
                       "freq_per_day": 1,
                       "duration_days": "5",
-                      "duration_note": null,
+                      "duration_note": "500 мг в 1-й день, затем 250 мг/сут в 2-5-й день (курсовая доза 1.5 г) — стандартная эрадикационная схема, не 500 мг ежедневно все 5 дней.",
                       "regimen_label": "500 мг 1 р/д 5 дней"
                     }
                   ]
@@ -559,10 +559,10 @@
         "паратонзиллярный абсцесс",
         "флегмона паратонзиллярной клетчатки"
       ],
-      "cr_id": "82",
-      "cr_year": 2023,
-      "cr_updated": "2023-06-30",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/82",
+      "cr_id": "664",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/664",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённый перитонзиллярный абсцесс",
@@ -780,7 +780,7 @@
                       "max_daily_mg": 500,
                       "freq_per_day": 1,
                       "duration_days": "5",
-                      "duration_note": null,
+                      "duration_note": "500 мг в 1-й день, затем 250 мг/сут в 2-5-й день (курсовая доза 1.5 г) — стандартная эрадикационная схема, не 500 мг ежедневно все 5 дней.",
                       "regimen_label": "500 мг 1 р/д 5 дней"
                     },
                     {

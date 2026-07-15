@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "version": "1.2.3",
+  "requires_kernel": "1.0",
+  "bundle_format": "v1",
+  "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "bundle_id": "regimens-main-1.2.3",
+  "bundle_type": "regimen",
+  "curation_status": "curated",
+  "generated_by": "pipeline-v0.4+curator-review",
+  "source_refs": ["cr-1638", "cr-1220", "guideline-343"],
+  "jurisdiction": "RU",
+  "specialty": "infectious_diseases",
+  "signatures": [
+    {
+      "algorithm": "ed25519",
+      "value": "base64signaturevalue...",
+      "key_id": "prod-2026-07",
+      "created_at": "2026-07-10T12:00:00Z"
+    }
+  ],
+  "depends_on": ["terminology-atc-1.0.0"],
+  "supersedes": ["regimens-main-1.1.0"],
+  "expiry": "2027-12-31",
+  "freshness_policy": {
+    "max_age_days": 365,
+    "must_refresh_before": "2027-01-01"
+  },
+  "stats": {
+    "regimen_count": 2675,
+    "guideline_count": 294,
+    "diagnosis_count": 72
+  },
+  "notes": "Core RegimenBundle for calculator. Includes all Level A regimens post-pruning. (P0-4 note: sqlite payload external)."
+}

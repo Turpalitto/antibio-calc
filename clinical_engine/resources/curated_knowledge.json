@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "status": "PARTIALLY_CURATED",
+    "generated_at": "2026-07-11T15:42:35Z",
+    "sources": {
+      "diagnosis_ledger": "diagnosis_index_decisions.json",
+      "curated_regimens": "clinical_engine/resources/curated_regimens.json"
+    },
+    "note": "GENERATED — do not hand-edit. The only editable sources are the physician diagnosis and regimen review ledgers. Stores identifiers, approvals, and provenance only — never medical content.",
+    "counts": {
+      "approved_diagnoses": 0,
+      "approved_regimens": 0,
+      "guideline_links": 0,
+      "complete_links": 0
+    }
+  },
+  "approved_diagnoses": [],
+  "approved_regimens": [],
+  "links": []
+}

@@ -1,0 +1,283 @@
+{
+  "schema": "pattern_descriptors",
+  "description": "Reference terminology for FrequencyParser. Each entry is a regex pattern + tag + optional static value. Loaded from frequency_parser.py at migration time. Parsers do NOT load this file (no logic change) — this is the canonical documentation of recognized frequency expressions.",
+  "tags": {
+    "every_n_hours": "24/N hours",
+    "static": "fixed value",
+    "times_per": "N times per period",
+    "every_n_days": "1/N per day",
+    "word_times_per": "word number times per period ( divisor: дн=1, сут=1, нед=7, мес=30 )",
+    "word_adv": "word adverbial (дважды/трижды) times per period",
+    "word_doses": "word-number doses (в три приема)",
+    "times_per_week": "N/7 per day",
+    "times_per_month": "N/30 per day",
+    "every_n_weeks": "1/(N*7) per day"
+  },
+  "word_to_num": {
+    "один": 1.0,
+    "одну": 1.0,
+    "два": 2.0,
+    "две": 2.0,
+    "три": 3.0,
+    "четыре": 4.0,
+    "пять": 5.0,
+    "дважды": 2.0,
+    "трижды": 3.0,
+    "четырежды": 4.0
+  },
+  "period_divisor": {
+    "дн": 1.0,
+    "ден": 1.0,
+    "сут": 1.0,
+    "нед": 7.0,
+    "мес": 30.0
+  },
+  "count": 49,
+  "entries": [
+    {
+      "pattern": "кажд(?:ые|ый|ую)\\s+(\\d+)\\s*[-\\u2013]\\s*\\d+\\s*ч",
+      "static_value": 0.0,
+      "tag": "every_n_hours"
+    },
+    {
+      "pattern": "кажд(?:ые|ый|ую)\\s+(\\d+)\\s*[-\\u2013]\\s*\\d+\\s*часа",
+      "static_value": 0.0,
+      "tag": "every_n_hours"
+    },
+    {
+      "pattern": "кажд(?:ые|ый|ую)\\s+(\\d+)\\s*ч",
+      "static_value": 0.0,
+      "tag": "every_n_hours"
+    },
+    {
+      "pattern": "кажд(?:ые|ый|ую)\\s+(\\d+)\\s*часа",
+      "static_value": 0.0,
+      "tag": "every_n_hours"
+    },
+    {
+      "pattern": "раз\\s+в\\s+(\\d+)\\s*[-\\u2013]?\\s*(?:\\d+)?\\s*ч",
+      "static_value": 0.0,
+      "tag": "every_n_hours"
+    },
+    {
+      "pattern": "раз\\s+в\\s+(\\d+)\\s*[-\\u2013]?\\s*(?:\\d+)?\\s*часа",
+      "static_value": 0.0,
+      "tag": "every_n_hours"
+    },
+    {
+      "pattern": "q\\s*(\\d+)\\s*h",
+      "static_value": 0.0,
+      "tag": "every_n_hours"
+    },
+    {
+      "pattern": "q\\s*(\\d+)\\s*hrs?",
+      "static_value": 0.0,
+      "tag": "every_n_hours"
+    },
+    {
+      "pattern": "(\\d+)\\s*раз(?:а)?\\s+(?:в|за)\\s+(?:1\\s+)?ден",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(\\d+)\\s*раз(?:а)?\\s+(?:в|за)\\s+сут",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(\\d+)[-\\u2013]\\d+\\s*р\\s*/\\s*сут",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(\\d+)\\s*раз(?:а)?\\s*/\\s*сут",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(\\d+)\\s*р\\s*/\\s*сут(?:ки)?",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(\\d+)\\s*р\\s+в\\s+сут",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(\\d+)\\s*раз(?:а)?\\s+в\\s+нед",
+      "static_value": 0.0,
+      "tag": "times_per_week"
+    },
+    {
+      "pattern": "(\\d+)\\s*раз(?:а)?\\s+в\\s+мес",
+      "static_value": 0.0,
+      "tag": "times_per_month"
+    },
+    {
+      "pattern": "1\\s*раз(?:а)?\\s+в\\s+(\\d+)\\s*дн",
+      "static_value": 0.0,
+      "tag": "every_n_days"
+    },
+    {
+      "pattern": "1\\s*раз(?:а)?\\s+через\\s+(\\d+)\\s*дн",
+      "static_value": 0.0,
+      "tag": "every_n_days"
+    },
+    {
+      "pattern": "кажд(?:ые|ый|ую)\\s+(\\d+)\\s*нед",
+      "static_value": 0.0,
+      "tag": "every_n_weeks"
+    },
+    {
+      "pattern": "интервал\\w*\\s+(?:в\\s+)?(\\d+)\\s*нед",
+      "static_value": 0.0,
+      "tag": "every_n_weeks"
+    },
+    {
+      "pattern": "(один|одну|два|две|три|четыре|пять)\\s+раз(?:а)?\\s+(?:в|за)\\s+(ден|сут|нед|мес)",
+      "static_value": 0.0,
+      "tag": "word_times_per"
+    },
+    {
+      "pattern": "(дважды|трижды|четырежды)\\s+(?:в|за)\\s+(ден|сут|нед)",
+      "static_value": 0.0,
+      "tag": "word_adv"
+    },
+    {
+      "pattern": "(\\d+)\\s*(?:times?|x)\\s*(?:per|a|/)\\s*day",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(?:bid|bd|b\\.i\\.d\\.)",
+      "static_value": 2.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "(?:tid|tds|t\\.i\\.d\\.)",
+      "static_value": 3.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "(?:qid|q\\.i\\.d\\.)",
+      "static_value": 4.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "(?:qd|od|s\\.i\\.d\\.)",
+      "static_value": 1.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "(?:qh|q\\.1?h)",
+      "static_value": 24.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "q\\s*[0o][d]",
+      "static_value": 0.5,
+      "tag": "static"
+    },
+    {
+      "pattern": "(?:в|на|за)\\s+(\\d+)\\s*[-\\u2013]\\s*\\d+\\s*(?:прием|введен)",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(?:в|на|за)\\s+(\\d+)\\s*(?:прием|введен)",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(?:в|на)\\s+(один|одну|два|две|три|четыре|пять)\\s*(?:прием|введен)",
+      "static_value": 0.0,
+      "tag": "word_doses"
+    },
+    {
+      "pattern": "в\\s+сутки\\s+в\\s+(\\d+)\\s*прием",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "за\\s+(\\d+)\\s*введен\\w*\\s+в\\s+сут",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "разделенн\\w*\\s+на\\s+(\\d+)\\s*прием",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(\\d+)\\s*прием(?:а|ов)?\\s*$",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "(\\d+)\\s*раза?\\s*$",
+      "static_value": 0.0,
+      "tag": "times_per"
+    },
+    {
+      "pattern": "через\\s+день",
+      "static_value": 0.5,
+      "tag": "static"
+    },
+    {
+      "pattern": "ежедн",
+      "static_value": 1.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "непрерывн|постоян",
+      "static_value": 24.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "однократн",
+      "static_value": 1.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "двукратн",
+      "static_value": 2.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "тр[её]хкратн",
+      "static_value": 3.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "капельно",
+      "static_value": 1.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "как\\s+можно\\s+скоре",
+      "static_value": 1.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "разов",
+      "static_value": 1.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "в\\s+сутки",
+      "static_value": 1.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "в\\s+день",
+      "static_value": 1.0,
+      "tag": "static"
+    },
+    {
+      "pattern": "суточн",
+      "static_value": 1.0,
+      "tag": "static"
+    }
+  ]
+}

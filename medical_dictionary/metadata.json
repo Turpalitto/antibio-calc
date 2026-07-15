@@ -1,0 +1,72 @@
+{
+  "subsystem": "medical_dictionary",
+  "version": "1.0.0",
+  "description": "Production-grade medical terminology database. Independent subsystem. JSON dictionaries loaded by medical_normalizer/dictionary.py (drug_synonyms, route, unit). frequency/duration/pregnancy/renal are reference terminology (not yet wired into parsers). drug_atc/drug_groups empty pending manual review of dictionary_candidates.json.",
+  "source_of_truth": "This directory. Python hardcoded dicts removed from medical_normalizer/dictionary.py.",
+  "last_updated": "2026-07-09",
+  "migrated_from": "medical_normalizer/dictionary.py (hardcoded dicts) + frequency_parser.py + duration_parser.py + population_parser.py (reference)",
+  "files": {
+    "drug_synonyms.json": {
+      "schema": "synonym_to_canonical",
+      "loaded_by": "dictionary.py"
+    },
+    "drug_atc.json": {
+      "schema": "canonical_name_to_atc",
+      "loaded_by": "dictionary.py",
+      "status": "empty_pending_review"
+    },
+    "drug_groups.json": {
+      "schema": "group_name_to_atc_prefix",
+      "loaded_by": "dictionary.py",
+      "status": "empty_pending_review"
+    },
+    "route_dictionary.json": {
+      "schema": "synonym_to_canonical",
+      "loaded_by": "dictionary.py"
+    },
+    "unit_dictionary.json": {
+      "schema": "synonym_to_canonical",
+      "loaded_by": "dictionary.py"
+    },
+    "frequency_dictionary.json": {
+      "schema": "pattern_descriptors",
+      "loaded_by": "none (reference)",
+      "status": "reference_only"
+    },
+    "duration_dictionary.json": {
+      "schema": "pattern_descriptors",
+      "loaded_by": "none (reference)",
+      "status": "reference_only"
+    },
+    "pregnancy_dictionary.json": {
+      "schema": "keyword_patterns",
+      "loaded_by": "none (reference)",
+      "status": "reference_only"
+    },
+    "renal_dictionary.json": {
+      "schema": "keyword_patterns",
+      "loaded_by": "none (reference)",
+      "status": "reference_only"
+    },
+    "dictionary_candidates.json": {
+      "schema": "review_candidates",
+      "loaded_by": "none",
+      "status": "pending_manual_review"
+    }
+  },
+  "rules": [
+    "Never auto-accept candidates. Every entry requires manual review.",
+    "No parser logic changes — only data loading in dictionary.py.",
+    "Additions only to JSON files (no destructive edits without review).",
+    "metadata.json version bumped on every change."
+  ],
+  "counts": {
+    "drug_synonyms": 116,
+    "route_synonyms": 44,
+    "unit_normalization": 33,
+    "drug_atc": 0,
+    "drug_groups": 0,
+    "frequency_patterns": 49,
+    "duration_patterns": 30
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "diagnosis_negative_tonsillitis_not_pharyngitis",
+  "description": "P1-B NEGATIVE: 'тонзиллит' must select the specific tonsillitis guideline, not the combined tonsillitis/pharyngitis one. Proves precise matching.",
+  "query": {
+    "diagnosis": "тонзиллит",
+    "icd10": null,
+    "patient": {
+      "age": 30,
+      "weight_kg": 70,
+      "pregnant": false,
+      "renal_function": null,
+      "hepatic_impairment": false,
+      "allergies": [],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": "adult"
+    }
+  },
+  "expect": {
+    "min_accepted": 1,
+    "guideline_id": "g_cap_adult",
+    "not_guideline_id": "g_cystitis"
+  },
+  "provenance": {
+    "author": "P1-B RFC validation",
+    "verified_at": "2026-07-11T00:00:00Z",
+    "source": "Second negative Golden case. 'тонзиллит' must pick specific guideline."
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "version": "test-fixture-1.0.0",
+    "note": "Synthetic subset matching test_drugs_reference.json's drug_ref keys."
+  },
+  "age_bands": {
+    "neonate": [0.0, 0.076712],
+    "child": [0.0, 18.0]
+  },
+  "renal_thresholds": {},
+  "allergy_class_map": {
+    "amoxicillin": "Пенициллины",
+    "doxycycline": "Тетрациклины",
+    "levofloxacin": "Фторхинолоны",
+    "gentamicin": "Аминогликозиды",
+    "unmapped_drug": "Тестовый класс"
+  },
+  "allergy_class_hierarchy": {
+    "Пенициллины": ["amoxicillin"],
+    "Тетрациклины": ["doxycycline"],
+    "Фторхинолоны": ["levofloxacin"],
+    "Аминогликозиды": ["gentamicin"],
+    "Тестовый класс": ["unmapped_drug"]
+  }
+}

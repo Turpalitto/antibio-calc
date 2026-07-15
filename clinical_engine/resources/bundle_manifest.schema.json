@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BundleManifest",
+  "description": "Manifest for ANTIBIO knowledge bundles (RegimenBundle, SafetyBundle, etc.). Follows P0-1 RFC exactly. Frozen spec.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "version",
+    "requires_kernel",
+    "bundle_format",
+    "content_hash",
+    "bundle_id",
+    "bundle_type"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Manifest structure version (e.g. '1.0.0'). Bumped only for breaking structural changes.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "version": {
+      "type": "string",
+      "description": "Bundle content version (semver). Incremented for content changes.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "requires_kernel": {
+      "type": "string",
+      "description": "Minimum compatible Execution Kernel version (e.g. '1.0'). Replaces any bundle_api_version concept.",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "bundle_format": {
+      "type": "string",
+      "description": "Storage format identifier (e.g. 'v1', 'jsonl').",
+      "minLength": 1
+    },
+    "content_hash": {
+      "type": "string",
+      "description": "Hash of bundle content (algorithm:hex, e.g. 'sha256:abc...'). Algorithm must be specified for forward compatibility.",
+      "pattern": "^[a-z0-9]+:[a-f0-9]+$"
+    },
+    "bundle_id": {
+      "type": "string",
+      "description": "Unique bundle identifier (e.g. 'regimens-v1.2.3').",
+      "minLength": 1
+    },
+    "bundle_type": {
+      "type": "string",
+      "description": "Type of bundle (e.g. 'regimen', 'safety', 'routing', 'interaction', 'constants', 'score_profile', 'logic', 'terminology').",
+      "enum": ["regimen", "safety", "routing", "interaction", "constants", "score_profile", "logic", "terminology"]
+    },
+    "curation_status": {
+      "type": "string",
+      "description": "Curation level (e.g. 'curated', 'draft', 'pending_review', 'auto_generated').",
+      "minLength": 1
+    },
+    "generated_by": {
+      "type": "string",
+      "description": "Who/what generated this bundle (e.g. 'pipeline-v0.4', 'curator@minzdrav').",
+      "minLength": 1
+    },
+    "source_refs": {
+      "type": "array",
+      "description": "References to source clinical guidelines or documents (e.g. guideline IDs, URLs).",
+      "items": {"type": "string"}
+    },
+    "jurisdiction": {
+      "type": "string",
+      "description": "Jurisdiction (e.g. 'RU' for Russian Federation).",
+      "minLength": 1
+    },
+    "specialty": {
+      "type": "string",
+      "description": "Medical specialty (e.g. 'infectious_diseases', 'pediatrics').",
+      "minLength": 1
+    },
+    "signatures": {
+      "type": "array",
+      "description": "Digital signatures over the manifest. Each entry must include algorithm for forward compatibility.",
+      "items": {
+        "type": "object",
+        "required": ["algorithm", "value"],
+        "properties": {
+          "algorithm": {"type": "string", "description": "e.g. 'ed25519', 'rsa-sha256'"},
+          "value": {"type": "string"},
+          "key_id": {"type": "string"},
+          "created_at": {"type": "string"}
+        }
+      }
+    },
+    "depends_on": {
+      "type": "array",
+      "description": "Other bundles this one depends on (bundle_ids).",
+      "items": {"type": "string"}
+    },
+    "supersedes": {
+      "type": "array",
+      "description": "Previous bundle_ids superseded by this one.",
+      "items": {"type": "string"}
+    },
+    "expiry": {
+      "type": ["string", "null"],
+      "description": "ISO date when this bundle expires (e.g. '2027-01-01').",
+      "format": "date"
+    },
+    "freshness_policy": {
+      "type": ["object", "null"],
+      "description": "Policy for freshness checks (e.g. max_age_days, must_refresh_before).",
+      "additionalProperties": true
+    },
+    "stats": {
+      "type": ["object", "null"],
+      "description": "Summary statistics (e.g. {'regimen_count': 1234, 'diagnosis_count': 56}).",
+      "additionalProperties": true
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Human-readable notes or comments."
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,32 @@
+{
+  "id": "diagnosis_negative_tonsillitis_not_combined",
+  "description": "P1-B NEGATIVE: 'тонзиллит' must map to the specific tonsillitis guideline, not the combined one. Second negative to prove precise normalization.",
+  "query": {
+    "diagnosis": "тонзиллит",
+    "icd10": null,
+    "patient": {
+      "age": 25,
+      "weight_kg": 65,
+      "pregnant": false,
+      "renal_function": null,
+      "hepatic_impairment": false,
+      "allergies": [],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": "adult"
+    }
+  },
+  "expect": {
+    "min_accepted": 1,
+    "guideline_id": "g_cap_adult",
+    "not_guideline_id": "g_sinusitis"
+  },
+  "provenance": {
+    "author": "P1-B RFC validation",
+    "verified_at": "2026-07-11T00:00:00Z",
+    "source": "Second negative Golden case to prove exclusion of wrong guideline."
+  }
+}

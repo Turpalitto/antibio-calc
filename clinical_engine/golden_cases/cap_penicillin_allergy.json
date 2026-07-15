@@ -1,0 +1,33 @@
+{
+  "id": "cap_penicillin_allergy",
+  "description": "CAP (vnebolnichnaya pnevmoniya, J18) in adult with stated penicillin allergy. TerminologyProvider enables ATC hierarchy (J01C*) for broader exclusion vs manual map. Before: partial (only mapped drugs). After: full class exclusion including unmapped via ATC. Measurable physician benefit: prevents contraindicated beta-lactams reliably, reduces UNVERIFIABLE warnings, full traceability of terminology mapping.",
+  "query": {
+    "diagnosis": "vnebolnichnaya pnevmoniya",
+    "icd10": "J18",
+    "patient": {
+      "age": 45,
+      "weight_kg": 70,
+      "pregnant": false,
+      "renal_function": null,
+      "hepatic_impairment": false,
+      "allergies": ["Пенициллины"],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": "adult"
+    }
+  },
+  "expect": {
+    "engine_note_code": "ALL_CANDIDATES_EXCLUDED",
+    "safety_flag_codes": ["ALLERGY"],
+    "excluded_drug_refs": ["amoxicillin"],
+    "not_accepted_drug_refs": ["amoxicillin"]
+  },
+  "provenance": {
+    "author": "AI for demo (based on RFC clinical scenario)",
+    "verified_at": "2026-07-11T00:00:00Z",
+    "source": "P1 RFC clinical justification: CAP + Pen allergy scenario from КР for vnebolnichnaya pnevmoniya. ATC J01C hierarchy improves exclusion."
+  }
+}

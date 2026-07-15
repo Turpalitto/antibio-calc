@@ -1,0 +1,32 @@
+{
+  "id": "diagnosis_negative_gaimorit_not_chronic",
+  "description": "P1-B NEGATIVE: 'гайморит' (acute) must NOT resolve to any chronic sinusitis guideline. Must stay on acute 'Острый бактериальный синусит'. Proves no over-matching / false positive routing to wrong КР.",
+  "query": {
+    "diagnosis": "гайморит",
+    "icd10": null,
+    "patient": {
+      "age": 35,
+      "weight_kg": 70,
+      "pregnant": false,
+      "renal_function": null,
+      "hepatic_impairment": false,
+      "allergies": [],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": "adult"
+    }
+  },
+  "expect": {
+    "min_accepted": 1,
+    "guideline_id": "g_sinusitis",
+    "not_guideline_id": "g_cap_adult"
+  },
+  "provenance": {
+    "author": "P1-B RFC validation",
+    "verified_at": "2026-07-11T00:00:00Z",
+    "source": "Negative Golden required by review. 'гайморит' must select acute only (no chronic marker in synonym map or norm logic)."
+  }
+}

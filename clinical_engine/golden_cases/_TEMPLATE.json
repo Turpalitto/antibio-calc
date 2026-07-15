@@ -1,0 +1,40 @@
+{
+  "id": "<уникальный_id_кейса>",
+  "description": "<короткое клиническое описание>",
+  "query": {
+    "diagnosis": "<название диагноза как в diagnosis_index>",
+    "icd10": null,
+    "patient": {
+      "age": null,
+      "weight_kg": null,
+      "pregnant": false,
+      "renal_function": null,
+      "hepatic_impairment": false,
+      "allergies": [],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": null
+    }
+  },
+  "expect": {
+    "__comment__": "Оставить только те ожидания, которые проверяет врач. Удалить неиспользуемые. Хотя бы одно обязательно.",
+    "first_drug_normalized": null,
+    "first_therapy_line": null,
+    "first_route": null,
+    "min_accepted": null,
+    "excluded_drug_refs": [],
+    "not_accepted_drug_refs": [],
+    "excluded_reason_contains": null,
+    "engine_note_code": null,
+    "safety_flag_codes": [],
+    "first_candidate_confidence_range": null
+  },
+  "provenance": {
+    "author": "<ФИО, специальность>",
+    "verified_at": "<ISO 8601, напр. 2026-07-15T10:00:00Z>",
+    "source": "<КР / клиническое обоснование>"
+  }
+}

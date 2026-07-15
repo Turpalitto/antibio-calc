@@ -1,0 +1,370 @@
+{
+  "clinical_regimen_batch": [
+    {
+      "task_id": "crt_15c1518b780b7f90f02e1dd2",
+      "target_id": "7508",
+      "owner_priority_rank": 1,
+      "owner_priority_reason": "pediatric",
+      "system_priority_score": 100,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "pediatric",
+        "renal"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_15c1518b780b7f90f02e1dd2.json"
+    },
+    {
+      "task_id": "crt_1606e9bf2b5cb59137696587",
+      "target_id": "5978",
+      "owner_priority_rank": 1,
+      "owner_priority_reason": "pediatric",
+      "system_priority_score": 100,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "missing_unit",
+        "pediatric"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_1606e9bf2b5cb59137696587.json"
+    },
+    {
+      "task_id": "crt_5e663736c4f0d5e6aa79f510",
+      "target_id": "6331",
+      "owner_priority_rank": 1,
+      "owner_priority_reason": "pediatric",
+      "system_priority_score": 100,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "missing_unit",
+        "pediatric"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_5e663736c4f0d5e6aa79f510.json"
+    },
+    {
+      "task_id": "crt_75b19d44caf4ba8fdce15a1b",
+      "target_id": "5975",
+      "owner_priority_rank": 1,
+      "owner_priority_reason": "pediatric",
+      "system_priority_score": 100,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "missing_unit",
+        "pediatric"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_75b19d44caf4ba8fdce15a1b.json"
+    },
+    {
+      "task_id": "crt_0e99fdd82d7ef107ba142e84",
+      "target_id": "5601",
+      "owner_priority_rank": 2,
+      "owner_priority_reason": "pregnancy",
+      "system_priority_score": 75,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "pregnancy"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_0e99fdd82d7ef107ba142e84.json"
+    },
+    {
+      "task_id": "crt_81b53334fd5bb79e645589e3",
+      "target_id": "5600",
+      "owner_priority_rank": 2,
+      "owner_priority_reason": "pregnancy",
+      "system_priority_score": 75,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "pregnancy"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_81b53334fd5bb79e645589e3.json"
+    },
+    {
+      "task_id": "crt_f1eb08c3482dc7624a5ebf2a",
+      "target_id": "5599",
+      "owner_priority_rank": 2,
+      "owner_priority_reason": "pregnancy",
+      "system_priority_score": 75,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "pregnancy"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_f1eb08c3482dc7624a5ebf2a.json"
+    },
+    {
+      "task_id": "crt_1483f41f9ec3d84bce900e1f",
+      "target_id": "5437",
+      "owner_priority_rank": 2,
+      "owner_priority_reason": "pregnancy",
+      "system_priority_score": 75,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "pregnancy"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_1483f41f9ec3d84bce900e1f.json"
+    },
+    {
+      "task_id": "crt_65df0e302604b985910e48b8",
+      "target_id": "6666",
+      "owner_priority_rank": 3,
+      "owner_priority_reason": "renal",
+      "system_priority_score": 75,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "renal"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_65df0e302604b985910e48b8.json"
+    },
+    {
+      "task_id": "crt_c334df4eff72baca13ef1390",
+      "target_id": "6724",
+      "owner_priority_rank": 3,
+      "owner_priority_reason": "renal",
+      "system_priority_score": 75,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "renal"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_c334df4eff72baca13ef1390.json"
+    },
+    {
+      "task_id": "crt_c3a413fd36c8a76c271abfae",
+      "target_id": "6712",
+      "owner_priority_rank": 3,
+      "owner_priority_reason": "renal",
+      "system_priority_score": 75,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "renal"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_c3a413fd36c8a76c271abfae.json"
+    },
+    {
+      "task_id": "crt_0540ae369a1cf75e79513577",
+      "target_id": "7811",
+      "owner_priority_rank": 4,
+      "owner_priority_reason": "severe_allergy",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_0540ae369a1cf75e79513577.json"
+    },
+    {
+      "task_id": "crt_11a2a6f114e87c4355252aec",
+      "target_id": "6491",
+      "owner_priority_rank": 4,
+      "owner_priority_reason": "severe_allergy",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_11a2a6f114e87c4355252aec.json"
+    },
+    {
+      "task_id": "crt_139b5e0feab8b2b6e8dc99cd",
+      "target_id": "6330",
+      "owner_priority_rank": 4,
+      "owner_priority_reason": "severe_allergy",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_139b5e0feab8b2b6e8dc99cd.json"
+    },
+    {
+      "task_id": "crt_1564c8019866f25fadf0c8f4",
+      "target_id": "7579",
+      "owner_priority_rank": 4,
+      "owner_priority_reason": "severe_allergy",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_1564c8019866f25fadf0c8f4.json"
+    },
+    {
+      "task_id": "crt_077d527c659090758744d88b",
+      "target_id": "5644",
+      "owner_priority_rank": 5,
+      "owner_priority_reason": "missing_dose_or_unit",
+      "system_priority_score": 80,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "missing_unit"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_077d527c659090758744d88b.json"
+    },
+    {
+      "task_id": "crt_1bed7b22d00e7863a0533bdc",
+      "target_id": "7315",
+      "owner_priority_rank": 5,
+      "owner_priority_reason": "missing_dose_or_unit",
+      "system_priority_score": 80,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "missing_unit"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_1bed7b22d00e7863a0533bdc.json"
+    },
+    {
+      "task_id": "crt_237ea36112390a00e7dde218",
+      "target_id": "7589",
+      "owner_priority_rank": 5,
+      "owner_priority_reason": "missing_dose_or_unit",
+      "system_priority_score": 80,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "missing_unit"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_237ea36112390a00e7dde218.json"
+    },
+    {
+      "task_id": "crt_3b7d7883ae7bdcf41fb7f480",
+      "target_id": "7447",
+      "owner_priority_rank": 5,
+      "owner_priority_reason": "missing_dose_or_unit",
+      "system_priority_score": 80,
+      "system_priority_band": "HIGH",
+      "safety_axes": [
+        "missing_unit"
+      ],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_3b7d7883ae7bdcf41fb7f480.json"
+    },
+    {
+      "task_id": "crt_00b537b51698902c07e7e991",
+      "target_id": "5621",
+      "owner_priority_rank": 99,
+      "owner_priority_reason": "no_owner_tier_match",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_00b537b51698902c07e7e991.json"
+    }
+  ],
+  "therapeutic_option_batch": [
+    {
+      "task_id": "crt_0d13d449b12e83fe72cfe6e1",
+      "target_id": "opt_6274",
+      "owner_priority_rank": 1,
+      "owner_priority_reason": "pediatric",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_0d13d449b12e83fe72cfe6e1.json"
+    },
+    {
+      "task_id": "crt_264ff608f3707714a0886edd",
+      "target_id": "opt_5770",
+      "owner_priority_rank": 1,
+      "owner_priority_reason": "pediatric",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_264ff608f3707714a0886edd.json"
+    },
+    {
+      "task_id": "crt_49e042e24dcca7f74de3a449",
+      "target_id": "opt_5945",
+      "owner_priority_rank": 2,
+      "owner_priority_reason": "pregnancy",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_49e042e24dcca7f74de3a449.json"
+    },
+    {
+      "task_id": "crt_522e1fdb3569b55c3c2274f2",
+      "target_id": "opt_7474",
+      "owner_priority_rank": 2,
+      "owner_priority_reason": "pregnancy",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_522e1fdb3569b55c3c2274f2.json"
+    },
+    {
+      "task_id": "crt_1fff11c2ff6045f6b4a3ddf0",
+      "target_id": "opt_5848",
+      "owner_priority_rank": 3,
+      "owner_priority_reason": "renal",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_1fff11c2ff6045f6b4a3ddf0.json"
+    },
+    {
+      "task_id": "crt_8f2c9e263f373ca7f0f427dc",
+      "target_id": "opt_5398",
+      "owner_priority_rank": 4,
+      "owner_priority_reason": "severe_allergy",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_8f2c9e263f373ca7f0f427dc.json"
+    },
+    {
+      "task_id": "crt_a47c2b8e5d85cb2e5143bcc2",
+      "target_id": "opt_5399",
+      "owner_priority_rank": 4,
+      "owner_priority_reason": "severe_allergy",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_a47c2b8e5d85cb2e5143bcc2.json"
+    },
+    {
+      "task_id": "crt_005ae9d67932bcdf64cc26f4",
+      "target_id": "opt_6515",
+      "owner_priority_rank": 99,
+      "owner_priority_reason": "no_owner_tier_match",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_005ae9d67932bcdf64cc26f4.json"
+    },
+    {
+      "task_id": "crt_008a65b2cfb45e7de1227f6c",
+      "target_id": "opt_5873",
+      "owner_priority_rank": 99,
+      "owner_priority_reason": "no_owner_tier_match",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_008a65b2cfb45e7de1227f6c.json"
+    },
+    {
+      "task_id": "crt_460745deec2218a20eedd308",
+      "target_id": "opt_7369",
+      "owner_priority_rank": 1,
+      "owner_priority_reason": "pediatric",
+      "system_priority_score": 40,
+      "system_priority_band": "MEDIUM",
+      "safety_axes": [],
+      "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+      "packet_file": "pilot_review_batch\\crt_460745deec2218a20eedd308.json"
+    }
+  ]
+}

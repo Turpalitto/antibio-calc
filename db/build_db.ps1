@@ -42,6 +42,15 @@ Set-Content -LiteralPath $outFile -Value $json -Encoding UTF8 -NoNewline
 # 5. Валидация
 $null = Get-Content -LiteralPath $outFile -Raw -Encoding UTF8 | ConvertFrom-Json
 
+# 6. Проверка целостности через Node.js
+$validateJs = Join-Path $PSScriptRoot 'validate_db.js'
+if (Test-Path -LiteralPath $validateJs) {
+    $result = & node $validateJs 2>&1
+    $exitCode = $LASTEXITCODE
+    Write-Host $result
+    if ($exitCode -ne 0) { throw "Validation failed!" }
+}
+
 Write-Host "Build OK: $outFile"
 Write-Host "Recommendations: $($allRecs.Count)"
 Write-Host "Drugs in reference: $(($index.drugs_reference.PSObject.Properties | Where-Object {$_.Name -ne '_note'}).Count)"

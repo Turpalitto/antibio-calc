@@ -13,3 +13,78 @@ Desktop.ini
 # Build artifacts (keep generated html for portability, ignore temp)
 *.tmp
 *.log
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+secrets*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage*.json
+htmlcov/
+.venv/
+venv/
+
+# Production and generated data
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.checkpoint.json
+backups/
+cache/
+temp_*/
+*.pdf
+
+# ML model/cache artifacts
+models/
+weights/
+*.pt
+*.pth
+*.onnx
+*.safetensors
+
+# Historical one-off diagnostics; replace repeated work with maintained tooling
+/_*.py
+/_*.txt
+/temp_*
+/report.txt
+
+# Generated milestone metrics and local review exports
+/*_FINAL.json
+/p44_*.json
+/p45_*.json
+/kb_p44.checkpoint_*.json
+/p44_kb_checkpoint_*.json
+/quality_audit_data.json
+/clinical_data_issues.json
+/diagnosis_index_*.json
+/diagnosis_index_*.csv
+/diagnosis_index_*progress.md
+/diagnosis_index_*worklist.md
+/regimen_curation_*.json
+/regimen_curation_*progress.md
+/regimen_review_ledger.json
+/regimen_review_workbench.*
+/after_cap_workbench.*
+/temp_cap_workbench.*
+/field_statistics.csv
+/unknown_drugs.csv
+/inv_report_*.json
+/pr008_yield_*.json
+
+# P5.6 Phase 5/8: review-workbench benchmark/queue dumps (output-only defaults in
+# benchmark_review_workbench.py, build_review_workbench.py, generate_review_workbench_report.py)
+/p56_queue_report.json
+/p56_review_benchmark.json

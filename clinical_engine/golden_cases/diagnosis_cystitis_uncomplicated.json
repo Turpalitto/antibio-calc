@@ -1,0 +1,32 @@
+{
+  "id": "diagnosis_cystitis_uncomplicated",
+  "description": "P1-B positive: 'неосложненный цистит' or 'острый цистит' normalizes to 'острый неосложненный цистит' (1127). Prevents routing to secondary/conflict entries.",
+  "query": {
+    "diagnosis": "неосложненный цистит",
+    "icd10": null,
+    "patient": {
+      "age": 30,
+      "weight_kg": 60,
+      "pregnant": false,
+      "renal_function": null,
+      "hepatic_impairment": false,
+      "allergies": [],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": "adult"
+    }
+  },
+  "expect": {
+    "min_accepted": 1,
+    "guideline_id": "g_cystitis",
+    "first_candidate_confidence_range": [0.0, 1.0]
+  },
+  "provenance": {
+    "author": "P1-B RFC validation",
+    "verified_at": "2026-07-11T00:00:00Z",
+    "source": "diagnosis_index: guideline 1127 'острый неосложненный цистит'. Wording variant case."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "canonical_name_to_atc",
+  "description": "Maps canonical normalized drug name to WHO ATC code. Populated from dictionary_candidates.json after manual review. Empty until reviewed.",
+  "count": 0,
+  "entries": {}
+}

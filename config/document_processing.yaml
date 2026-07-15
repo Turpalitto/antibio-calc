@@ -1,0 +1,22 @@
+﻿primary: pymupdf
+fallbacks:
+  - mineru
+  # docling available as additional engine (P4.1) - can be added to fallbacks
+  # - docling
+min_quality: 0.65
+min_cyrillic_ratio: 0.1
+max_empty_pages_ratio: 0.3
+
+# Post-page fallback
+per_page_fallback: true
+
+# Cache for OCR results
+cache_enabled: true
+cache_path: cache/extraction
+
+# Metrics collection
+metrics_enabled: true
+
+# Quality
+quality_threshold: 0.65
+bad_page_text_threshold: 50  # chars per page to consider low

@@ -1,0 +1,33 @@
+{
+  "id": "diagnosis_cap_pneumonia",
+  "description": "P1-B positive: 'внебольничная пневмония' / 'пневмония внебольничная' (J18) normalizes to 'Внебольничная пневмония у взрослых' (1770). Demonstrates wording + ICD tolerance.",
+  "query": {
+    "diagnosis": "внебольничная пневмония",
+    "icd10": "J18",
+    "patient": {
+      "age": 45,
+      "weight_kg": 70,
+      "pregnant": false,
+      "renal_function": null,
+      "hepatic_impairment": false,
+      "allergies": [],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": "adult"
+    }
+  },
+  "expect": {
+    "min_accepted": 1,
+    "guideline_id": "g_cap_adult",
+    "first_candidate_confidence_range": [0.0, 1.0],
+    "trace_code": "DIAGNOSIS_RESOLVED"
+  },
+  "provenance": {
+    "author": "P1-B RFC validation",
+    "verified_at": "2026-07-11T00:00:00Z",
+    "source": "diagnosis_index: guideline 1770 'Внебольничная пневмония у взрослых'. Positive case for synonym/ICD norm."
+  }
+}

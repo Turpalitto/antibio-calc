@@ -3,16 +3,37 @@
   "recommendations": [
     {
       "id": "animal_bite",
-      "mkb10": ["W53.0", "W54.0", "W55.0", "T14.1", "L02.0", "L02.1", "L02.2", "L02.3"],
+      "mkb10": [
+        "W53.0",
+        "W54.0",
+        "W55.0",
+        "T14.1",
+        "L02.0",
+        "L02.1",
+        "L02.2",
+        "L02.3"
+      ],
       "name": "Укусы животных (профилактика и лечение раневой инфекции)",
-      "synonyms": ["укус собаки", "укус кошки", "пастереллёз"],
+      "synonyms": [
+        "укус собаки",
+        "укус кошки",
+        "пастереллёз"
+      ],
       "cr_id": "62",
       "cr_year": 2023,
       "cr_updated": "2023-08-25",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/62",
       "antibiotics_indicated": true,
-      "indications": ["Все укусы кошек (высокий риск инфекции)", "Глубокие/колотые укусы собак", "Укусы с признаками инфекции", "Раны на руках/лице/гениталиях", "Иммунокомпрометированные пациенты"],
-      "age_groups": ["all"],
+      "indications": [
+        "Все укусы кошек (высокий риск инфекции)",
+        "Глубокие/колотые укусы собак",
+        "Укусы с признаками инфекции",
+        "Раны на руках/лице/гениталиях",
+        "Иммунокомпрометированные пациенты"
+      ],
+      "age_groups": [
+        "all"
+      ],
       "scenarios": [
         {
           "id": "bite_prophylaxis",
@@ -25,7 +46,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Покрытие Pasteurella multocida, Capnocytophaga, анаэробов",
                   "regimens": [
                     {
@@ -60,7 +83,9 @@
               "drugs": [
                 {
                   "drug_ref": "doxycycline",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Покрытие Pasteurella у взрослых",
                   "regimens": [
                     {
@@ -78,7 +103,9 @@
                 },
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "У детей <8 лет при аллергии",
                   "regimens": [
                     {
@@ -109,7 +136,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -140,20 +169,33 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "КР 'Бешенство' (979, 2025) покрывает только вакцинопрофилактику вируса; отдельной КР по антибиотикопрофилактике/лечению раневой инфекции при укусах не найдено. Схема (амоксиклав) — основа СКАТ/IDSA."
     },
     {
       "id": "postop_prophylaxis",
-      "mkb10": ["Z48.0", "T81.4", "Y83.0", "Y83.1"],
+      "mkb10": [
+        "Z48.0",
+        "T81.4",
+        "Y83.0",
+        "Y83.1"
+      ],
       "name": "Послеоперационная антибиотикопрофилактика",
-      "synonyms": ["профилактика ИЛО", "антибиотикопрофилактика хирургии"],
+      "synonyms": [
+        "профилактика ИЛО",
+        "антибиотикопрофилактика хирургии"
+      ],
       "cr_id": "75",
       "cr_year": 2024,
       "cr_updated": "2024-04-15",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/75",
       "antibiotics_indicated": true,
-      "indications": ["Чистые и условно-чистые хирургические вмешательства"],
-      "age_groups": ["all"],
+      "indications": [
+        "Чистые и условно-чистые хирургические вмешательства"
+      ],
+      "age_groups": [
+        "all"
+      ],
       "scenarios": [
         {
           "id": "clean_surgery",
@@ -166,7 +208,9 @@
               "drugs": [
                 {
                   "drug_ref": "cefazolin",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": "Препарат выбора для большинства вмешательств",
                   "regimens": [
                     {
@@ -201,7 +245,9 @@
               "drugs": [
                 {
                   "drug_ref": "clindamycin",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -245,7 +291,9 @@
                 {
                   "drug_ref": "cefazolin",
                   "component_role": "main",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -264,7 +312,9 @@
                 {
                   "drug_ref": "metronidazole",
                   "component_role": "anaerobe_coverage",
-                  "route": ["iv"],
+                  "route": [
+                    "iv"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -284,20 +334,33 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "Отдельной единой федеральной КР по хирургической антибиотикопрофилактике не найдено — рекомендации по профилактике даны в профильных хирургических КР (напр. для открытых ран: цефазолин 3-5 дней при факторах риска). Общего номера нет."
     },
     {
       "id": "endocarditis_prophylaxis",
-      "mkb10": ["Z23.0", "I33.0", "I33.1"],
+      "mkb10": [
+        "Z23.0",
+        "I33.0",
+        "I33.1"
+      ],
       "name": "Профилактика инфекционного эндокардита",
-      "synonyms": ["ИЭ-профилактика", "профилактика эндокардита"],
-      "cr_id": "11",
-      "cr_year": 2023,
-      "cr_updated": "2023-11-01",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/11",
+      "synonyms": [
+        "ИЭ-профилактика",
+        "профилактика эндокардита"
+      ],
+      "cr_id": "54_3",
+      "cr_year": 2026,
+      "cr_updated": "2026",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/54_3",
       "antibiotics_indicated": true,
-      "indications": ["Стоматологические процедуры у пациентов высокого риска (протезы клапанов, ИЭ в анамнезе, врождённые пороки)", "Процедуры на дыхательных путях с рассечением слизистой"],
-      "age_groups": ["all"],
+      "indications": [
+        "Стоматологические процедуры у пациентов высокого риска (протезы клапанов, ИЭ в анамнезе, врождённые пороки)",
+        "Процедуры на дыхательных путях с рассечением слизистой"
+      ],
+      "age_groups": [
+        "all"
+      ],
       "scenarios": [
         {
           "id": "ie_dental",
@@ -310,7 +373,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Разовая доза за 30-60 мин до процедуры",
                   "regimens": [
                     {
@@ -345,7 +410,9 @@
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -374,7 +441,9 @@
                 },
                 {
                   "drug_ref": "clindamycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -405,20 +474,33 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "Профилактика ИЭ входит в состав единой КР 'Инфекционный эндокардит и инфекция внутрисердечных устройств' (не отдельная КР11)."
     },
     {
       "id": "asplenia_prophylaxis",
-      "mkb10": ["Z90.0", "D73.0", "D73.1"],
+      "mkb10": [
+        "Z90.0",
+        "D73.0",
+        "D73.1"
+      ],
       "name": "Аспления — антибиотикопрофилактика (пенициллиновая)",
-      "synonyms": ["профилактика при удалённой селезёнке", "asplenia"],
+      "synonyms": [
+        "профилактика при удалённой селезёнке",
+        "asplenia"
+      ],
       "cr_id": "326",
       "cr_year": 2023,
       "cr_updated": "2023-07-01",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/326",
       "antibiotics_indicated": true,
-      "indications": ["Аспления (после спленэктомии или функциональная)", "Профилактика пневмококковой/менингококковой инфекции"],
-      "age_groups": ["all"],
+      "indications": [
+        "Аспления (после спленэктомии или функциональная)",
+        "Профилактика пневмококковой/менингококковой инфекции"
+      ],
+      "age_groups": [
+        "all"
+      ],
       "scenarios": [
         {
           "id": "asplenia_long_term",
@@ -431,7 +513,9 @@
               "drugs": [
                 {
                   "drug_ref": "amoxicillin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Длительная ежедневная профилактика",
                   "regimens": [
                     {
@@ -466,7 +550,9 @@
               "drugs": [
                 {
                   "drug_ref": "azithromycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": null,
                   "regimens": [
                     {
@@ -486,20 +572,32 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "Отдельной федеральной КР по профилактике инфекций при аспении/после спленэктомии не найдено. Упоминается в КР 'Травма селезёнки у детей' (938, 2025) как рекомендация по вакцинации+антибиотикопрофилактике перед выпиской, но не как отдельная КР для этой нозологии."
     },
     {
       "id": "uti_prophylaxis",
-      "mkb10": ["N39.0", "N30.0", "N32.0"],
+      "mkb10": [
+        "N39.0",
+        "N30.0",
+        "N32.0"
+      ],
       "name": "Профилактика рецидивирующих ИМП",
-      "synonyms": ["профилактика ИМП", "рецидивирующий цистит"],
+      "synonyms": [
+        "профилактика ИМП",
+        "рецидивирующий цистит"
+      ],
       "cr_id": "10",
       "cr_year": 2023,
       "cr_updated": "2023-09-15",
       "source_url": "https://cr.minzdrav.gov.ru/recomend/10",
       "antibiotics_indicated": true,
-      "indications": ["≥2 эпизода ИМП в 6 месяцев или ≥3 в год"],
-      "age_groups": ["all"],
+      "indications": [
+        "≥2 эпизода ИМП в 6 месяцев или ≥3 в год"
+      ],
+      "age_groups": [
+        "all"
+      ],
       "scenarios": [
         {
           "id": "uti_prophylaxis_female",
@@ -512,7 +610,9 @@
               "drugs": [
                 {
                   "drug_ref": "nitrofurantoin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Низкодозовая профилактика на 6-12 месяцев",
                   "regimens": [
                     {
@@ -530,7 +630,9 @@
                 },
                 {
                   "drug_ref": "cotrimoxazole",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Альтернатива",
                   "regimens": [
                     {
@@ -548,7 +650,9 @@
                 },
                 {
                   "drug_ref": "fosfomycin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Посткоитальная профилактика (однократно после полового акта)",
                   "regimens": [
                     {
@@ -579,7 +683,9 @@
               "drugs": [
                 {
                   "drug_ref": "cotrimoxazole",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Низкодозовая профилактика",
                   "regimens": [
                     {
@@ -597,7 +703,9 @@
                 },
                 {
                   "drug_ref": "nitrofurantoin",
-                  "route": ["per_os"],
+                  "route": [
+                    "per_os"
+                  ],
                   "indication_note": "Альтернатива (дети >1 мес)",
                   "regimens": [
                     {
@@ -617,7 +725,8 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "Отдельной федеральной КР по профилактике рецидивирующих ИМП не подтверждена — по всей видимости часть общей КР 'Инфекция мочевых путей' (281) либо цистита (14). Требует уточнения."
     }
   ]
 }

@@ -188,7 +188,7 @@
                       "dose_mg_kg_day": 60,
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
-                      "max_daily_mg": 120,
+                      "max_daily_mg": null,
                       "freq_per_day": 2,
                       "duration_days": "7-14",
                       "duration_note": "<7 дней: 20 мг/кг 2 р/д; >7 дней: 20-30 мг/кг 2-3 р/д. При менингите — 40 мг/кг.",
@@ -299,7 +299,7 @@
                       "dose_mg_kg_day": 15,
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
-                      "max_daily_mg": 30,
+                      "max_daily_mg": null,
                       "freq_per_day": 2,
                       "duration_days": "7-10",
                       "duration_note": "7.5 мг/кг 2 р/д",
@@ -325,7 +325,7 @@
                       "dose_mg_kg_day": 60,
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
-                      "max_daily_mg": 120,
+                      "max_daily_mg": null,
                       "freq_per_day": 2,
                       "duration_days": "7-14",
                       "duration_note": null,
@@ -337,7 +337,8 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "Точный номер не подтверждён повторной сверкой в этом заходе (ранее указан КР264) — требует проверки."
     },
     {
       "id": "neonatal_conjunctivitis",
@@ -352,10 +353,10 @@
         "неонатальный конъюнктивит",
         "офтальмия новорождённых"
       ],
-      "cr_id": "319",
-      "cr_year": 2023,
-      "cr_updated": "2023-09-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/319",
+      "cr_id": "629",
+      "cr_year": 2024,
+      "cr_updated": "2024",
+      "source_url": "https://cr.minzdrav.gov.ru/recomend/629",
       "antibiotics_indicated": true,
       "indications": [
         "Гнойный конъюнктивит новорождённых",
@@ -420,7 +421,7 @@
                       "dose_mg_kg_day": 40,
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
-                      "max_daily_mg": 50,
+                      "max_daily_mg": null,
                       "freq_per_day": 4,
                       "duration_days": "14",
                       "duration_note": "10 мг/кг 4 р/д 14 дней. Мониторинг на пилоростеноз.",
@@ -432,7 +433,8 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "Входит в состав общей КР 'Конъюнктивиты' (P39.1 — неонатальный конъюнктивит — один из кодов этой КР)."
     },
     {
       "id": "omphalitis",
@@ -519,7 +521,8 @@
             }
           ]
         }
-      ]
+      ],
+      "cr_note": "Отдельной федеральной КР не найдено — есть протокол РАСПМ (Российская ассоциация специалистов перинатальной медицины), не входит в рубрикатор Минздрава как отдельная позиция."
     }
   ]
 }
