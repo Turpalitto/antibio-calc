@@ -1,5 +1,25 @@
 # AI LOG
 
+## 2026-07-15: P5.6 Review Governance Hardening (GOV-001/002/003)
+
+Repository recovery completed and fresh-clone-verified (commit `32096af`). Physician pilot activation
+(30 tasks: 20 ClinicalRegimen + 10 TherapeuticOption) found three governance defects before any real
+reviewer touched the system: (1) `ReviewService` accepted arbitrary reviewer strings — no registry
+enforcement; (2) `packet()` leaked Reviewer A's verdict to Reviewer B before independent submission;
+(3) `governance_state(ACCEPTED)` reported `PHYSICIAN_APPROVED` immediately on two-reviewer consensus,
+with no Medical QA Lead sign-off gate — the most severe finding. All three fixed: new
+`ReviewerRegistry.validate_reviewer_action()` wired into every write path; role/state-aware
+`packet_for_reviewer()` blinding; new `MEDICAL_QA_PENDING` state + mandatory
+`submit_medical_qa_signoff()` as the only path to `PHYSICIAN_APPROVED`/`REJECTED`. Also added:
+`ReviewAssignment` (Phase 3 governed task assignment), `review_decisions` immutable ledger (Phase 8),
+schema v1→v2 migration applied safely to the real 9,153-task database (0 real decisions existed,
+verified before and after, byte-identical backup taken first). 31 new tests (10 registry + 15 pilot
+safety + 30 hardening negative scenarios + 1 synthetic positive workflow), all existing tests updated
+for the new state model, 116/116 review_workbench tests pass, canonical collection 1452 tests, zero
+regressions. No real reviewer registered — `pilot_status = WAITING_FOR_REVIEWERS`. Approved-object
+count remains 0. Clinical Engine remains disconnected. P6 remains BLOCKED. See
+`P56_REVIEW_GOVERNANCE_HARDENING_REPORT.md` for full detail.
+
 ## 2026-07-15: P5.6 Production Recovery and Review Workbench
 
 Security containment, uv lock/environment recovery, canonical pytest recovery, corpus manifest, exact KB identity/write block, 4,506+8,412 issue registry, dose audit, and independent local Clinical Review Workbench implemented. Real queue: 9,153 PENDING tasks; Regimen 1,556; Option 652; corpus 58; conflicts 5,615; approved 0. Tests: canonical 1371 PASS/0 FAIL (1373 collected); Workbench 46 PASS. Production inputs hashes unchanged. P5.6 remains NOT COMPLETE: owner credential rotation and Git reproducibility block closure. P6 remains BLOCKED.

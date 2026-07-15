@@ -1,5 +1,19 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-07-15: Review Governance Hardening (GOV-001/002/003 FIXED)
+
+Repository recovery is complete (commit `32096af`, fresh clone validated). Physician pilot
+activation found three governance defects before any real reviewer was registered: (1) no
+reviewer-registry enforcement in `ReviewService`, (2) Reviewer B could see Reviewer A's verdict
+before submitting, (3) two-reviewer consensus alone reported `PHYSICIAN_APPROVED` with no Medical
+QA Lead gate. All three are now fixed — see `ROOT_CAUSE_REGISTER.md` (GOV-001/002/003),
+`P56_REVIEW_GOVERNANCE_HARDENING_REPORT.md`, `REVIEWER_IDENTITY_AND_ASSIGNMENT_POLICY.md`,
+`SECOND_REVIEW_BLINDING_SPEC.md`, `REVIEW_CONSENSUS_STATE_MODEL.md`, `MEDICAL_QA_SIGNOFF_SPEC.md`.
+Reviewer registry exists but is intentionally **empty** — `pilot_status = WAITING_FOR_REVIEWERS`.
+No real reviewer has been registered, no real clinical decision exists, approved-object count
+remains 0 (verified against all 9,153 tasks, not just the 30-task pilot). Clinical Engine remains
+disconnected. P6 remains BLOCKED.
+
 ## Current authoritative state — 2026-07-15
 
 P5.6 stage: **ACCEPTANCE / NOT COMPLETE**. Review Workbench validated on 1,556 ClinicalRegimen + 652 TherapeuticOption candidates; total queue 9,153, all PENDING, approved=0. Canonical pytest 1,373 collected / 1,371 PASS / 0 FAIL. P6 remains BLOCKED; Clinical Engine disconnected.

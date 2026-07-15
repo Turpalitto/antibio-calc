@@ -2,6 +2,12 @@
 ## Clinical Knowledge Governance · P5.2 · Phase 1
 ## Status: PROPOSED (design only — no code, no database changes)
 
+> **2026-07-15 implementation note:** the implemented `ReviewState`/`ConsensusResult`/`QAVerdict`
+> model (`clinical_engine/review_workbench/models.py`) now separates review consensus from
+> physician approval end-to-end — see `REVIEW_CONSENSUS_STATE_MODEL.md` for the current, tested
+> state machine, which is the authoritative reference where it differs from the lifecycle sketched
+> below.
+
 > Governs the transition Knowledge Objects → Clinical Regimens → Production Recommendations.
 > Builds on P5.1 (`CLINICAL_REGIMEN_MODEL.md`, `REGIMEN_ASSEMBLY_ENGINE_RFC.md`,
 > `REGIMEN_VALIDATION_GATES.md`) and P5.0 (`SINGLE_SOURCE_OF_TRUTH_RFC.md`). This document also

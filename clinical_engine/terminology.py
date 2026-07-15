@@ -57,10 +57,11 @@ class BasicTerminologyProvider:
     def __init__(self, constants: ClinicalConstants) -> None:
         self._allergy_map: dict[str, str] = constants.allergy_class_map
         self._atc_map: dict[str, str] = {}
-        # Load if possible (future data)
+        # Load if possible (future data). load_drug_atc() is @lru_cache'd — copy
+        # before mutating below, or every instance corrupts the shared cached dict.
         try:
             from medical_dictionary.loader import load_drug_atc  # type: ignore
-            self._atc_map = load_drug_atc()
+            self._atc_map = dict(load_drug_atc())
         except Exception:
             self._atc_map = {}
         # P1 demo for clinical validation: sample atc to demonstrate hierarchy (J01C -> Пенициллины)

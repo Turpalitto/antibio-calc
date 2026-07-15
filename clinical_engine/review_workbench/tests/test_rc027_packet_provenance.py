@@ -10,6 +10,7 @@ from clinical_engine.review_workbench.service import (
     ReviewService, resolve_source_wording, source_wording_missing,
 )
 from clinical_engine.review_workbench.storage import ReviewStore
+from clinical_engine.review_workbench.reviewer_registry import ReviewerRegistry
 from clinical_engine.review_workbench.models import TargetType, ReviewState
 
 DB_PATH = "review_workbench_p56.sqlite"
@@ -108,7 +109,7 @@ def test_packet_serialization_is_deterministic():
     if not os.path.exists(DB_PATH):
         pytest.skip("review_workbench_p56.sqlite not available")
     store = ReviewStore(DB_PATH)
-    service = ReviewService(store)
+    service = ReviewService(store, ReviewerRegistry(":memory:"))
     task = store.list_tasks(target_type=TargetType.CLINICAL_REGIMEN, limit=1)[0]
     p1 = service.packet(task.task_id)
     p2 = service.packet(task.task_id)
@@ -119,9 +120,20 @@ def test_packet_serialization_is_deterministic():
 def test_stale_target_version_rejected_still_holds():
     if not os.path.exists(DB_PATH):
         pytest.skip("review_workbench_p56.sqlite not available")
+    from datetime import datetime, timezone
     from clinical_engine.review_workbench.models import ReviewRole
     store = ReviewStore(DB_PATH)
-    service = ReviewService(store)
+    registry = ReviewerRegistry(":memory:")
+    # Register the synthetic reviewer so the stale-revision check (not registry
+    # validation) is what rejects the call — claim() would otherwise write a
+    # REVIEWER_NOT_REGISTERED row to review_rejected_attempts in this real,
+    # production review database, which must never receive synthetic test data.
+    registry.register(
+        reviewer_id="r1", display_name="Synthetic RC-027 Test Reviewer", professional_role="test",
+        organisation="Test Harness", authorised_scope=(ReviewRole.REVIEWER_A,),
+        registered_at=datetime.now(timezone.utc).isoformat(), registered_by="test-harness",
+    )
+    service = ReviewService(store, registry)
     task = store.list_tasks(state=ReviewState.PENDING, limit=1)[0]
     with pytest.raises(Exception):
         service.claim(task.task_id, reviewer="r1", role=ReviewRole.REVIEWER_A,
@@ -133,7 +145,7 @@ def test_packet_construction_does_not_mutate_stored_target():
     if not os.path.exists(DB_PATH):
         pytest.skip("review_workbench_p56.sqlite not available")
     store = ReviewStore(DB_PATH)
-    service = ReviewService(store)
+    service = ReviewService(store, ReviewerRegistry(":memory:"))
     task = store.list_tasks(target_type=TargetType.CLINICAL_REGIMEN, limit=1)[0]
     before = store.target_snapshot(task)["snapshot_hash"]
     service.packet(task.task_id)
@@ -147,7 +159,7 @@ def test_full_queue_rc027_scope_fully_resolved():
     if not os.path.exists(DB_PATH):
         pytest.skip("review_workbench_p56.sqlite not available")
     store = ReviewStore(DB_PATH)
-    service = ReviewService(store)
+    service = ReviewService(store, ReviewerRegistry(":memory:"))
     for tt, expected_total in ((TargetType.CLINICAL_REGIMEN, 1556),
                               (TargetType.THERAPEUTIC_OPTION, 652),
                               (TargetType.GOLDEN_CASE, 7)):

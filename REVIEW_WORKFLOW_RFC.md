@@ -2,6 +2,13 @@
 ## Human Review System · P5.2 · Phase 2 (+ Phase 5 Conflict Governance)
 ## Status: PROPOSED (design only)
 
+> **2026-07-15 implementation note:** the actual built system (`clinical_engine/review_workbench/`)
+> now implements and, where it found real gaps, hardens this design. See
+> `REVIEWER_IDENTITY_AND_ASSIGNMENT_POLICY.md`, `SECOND_REVIEW_BLINDING_SPEC.md`,
+> `REVIEW_CONSENSUS_STATE_MODEL.md`, `MEDICAL_QA_SIGNOFF_SPEC.md`, and
+> `P56_REVIEW_GOVERNANCE_HARDENING_REPORT.md` for the current, implemented, tested state model —
+> which supersedes any conflicting detail below.
+
 > Reuses the roles and verdict vocabulary already defined in `CLINICAL_VALIDATION_FRAMEWORK.md`
 > §1/§2.3 — this document does not invent parallel names. It specifies how those roles operate the
 > Clinical Review Queue for `ClinicalRegimen` objects (P5.1) moving through `REVIEW_REQUIRED`

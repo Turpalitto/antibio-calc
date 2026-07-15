@@ -29,6 +29,7 @@ from pathlib import Path
 
 from clinical_engine.review_workbench.storage import ReviewStore
 from clinical_engine.review_workbench.service import ReviewService
+from clinical_engine.review_workbench.reviewer_registry import ReviewerRegistry
 from clinical_engine.review_workbench.models import ReviewState, TargetType
 
 DB_PATH = "review_workbench_p56.sqlite"
@@ -119,7 +120,10 @@ def select_batch(store: ReviewStore, target_type: TargetType, count: int) -> lis
 def main() -> None:
     OUT_DIR.mkdir(exist_ok=True)
     store = ReviewStore(DB_PATH)
-    service = ReviewService(store)
+    # Read-only export (packet() only) — no reviewer action is ever performed by this
+    # script, so an empty in-memory registry is sufficient and correct.
+    registry = ReviewerRegistry(":memory:")
+    service = ReviewService(store, registry)
 
     regimens = select_batch(store, TargetType.CLINICAL_REGIMEN, 20)
     options = select_batch(store, TargetType.THERAPEUTIC_OPTION, 10)

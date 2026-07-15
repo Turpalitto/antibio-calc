@@ -1,11 +1,17 @@
 # NEXT_TASK.md — ANTIBIO
 
-## Authoritative next actions — 2026-07-15
+## Authoritative next actions — 2026-07-15 (post Review Governance Hardening)
 
-1. OWNER: revoke/rotate exposed provider credentials; record fingerprints/status only.
-2. OWNER/maintainer: review `REPOSITORY_UNTRACKED_INVENTORY.json` (424 entries at acceptance), stage canonical source/docs/tests (never DB/PDF/secrets), commit, then verify fresh clone with locked install and `python -m pytest`.
-3. Physicians: start real Review Workbench pilot with independent Reviewer A/B and adjudicator; no auto approval.
-4. Re-run Golden Dataset against physician-approved population when one exists.
+1. **OWNER: register real Reviewer A, Reviewer B, and Medical QA Lead** via `ReviewerRegistry.register(...)` (`clinical_engine/review_workbench/reviewer_registry.py`) with real professional information. Until then `pilot_status = WAITING_FOR_REVIEWERS` — see `REVIEWER_IDENTITY_AND_ASSIGNMENT_POLICY.md`.
+2. Once registered, real reviewers may claim/review the 30 activated pilot tasks (`PHYSICIAN_PILOT_ACTIVATION_BASELINE.md`) through the hardened `ReviewService`/API — blinding (`SECOND_REVIEW_BLINDING_SPEC.md`) and the mandatory Medical QA sign-off gate (`MEDICAL_QA_SIGNOFF_SPEC.md`) are enforced end-to-end.
+3. Re-run Golden Dataset against physician-approved population when one exists (currently 0 — `GOLDEN_DATASET_APPROVED_ELIGIBILITY.md`).
+4. Documentation-only commit still owed for `P56_STAGED_CONTENT_AUDIT.md` and `FRESH_CLONE_REPRODUCIBILITY_REPORT.md` (classified "track" in `POST_RECOVERY_EVIDENCE_CLASSIFICATION.md`), plus this hardening work's own new files, once the pilot reaches a natural checkpoint.
+5. Only after P6 entry gates and explicit owner approval prepare P6. Clinical Engine stays disconnected now.
+
+### Superseded (resolved 2026-07-15)
+1. ~~OWNER: revoke/rotate exposed provider credentials~~ — done, owner attestation recorded (`API_KEY_ROTATION_VERIFICATION.md`).
+2. ~~stage canonical source/docs/tests, commit, verify fresh clone~~ — done, commit `32096af`, `FRESH_CLONE_REPRODUCIBILITY_REPORT.md`.
+3. ~~Physicians: start real Review Workbench pilot~~ — blocked pending reviewer registration (item 1 above); three governance defects found and fixed first.
 5. Only after P6 entry gates and explicit owner approval prepare P6. Clinical Engine stays disconnected now.
 
 Historical priorities below are superseded where conflicting.

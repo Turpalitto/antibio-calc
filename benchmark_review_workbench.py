@@ -9,6 +9,7 @@ import time
 from pathlib import Path
 
 from clinical_engine.review_workbench.service import ReviewService
+from clinical_engine.review_workbench.reviewer_registry import ReviewerRegistry
 from clinical_engine.review_workbench.storage import ReviewStore
 
 
@@ -36,7 +37,8 @@ def main() -> None:
     args = parser.parse_args()
     path = Path(args.database)
     with ReviewStore(path) as store:
-        service = ReviewService(store)
+        registry = ReviewerRegistry(":memory:")
+        service = ReviewService(store, registry)
         task_id = service.list_queue(limit=1)[0].task_id
         report = {
             "database": str(path.resolve()),

@@ -10,9 +10,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
-from .models import PriorityBand, ReviewDecision, ReviewRole, ReviewState, TargetType
-from .permissions import PermissionDenied
-from .service import InvalidTransition, ReviewService
+from .models import PriorityBand, QAVerdict, ReviewDecision, ReviewRole, ReviewState, TargetType
+from .reviewer_registry import ReviewerRegistrationError, ReviewerRegistry
+from .service import InvalidTransition, ReviewerValidationError, ReviewService
 from .storage import ConcurrencyError, ReviewStore
 
 
@@ -38,9 +38,25 @@ class WaiverRequest(ActorRequest):
     expires_at: str
 
 
-def create_app(database_path: str | Path) -> FastAPI:
+class QASignoffRequest(BaseModel):
+    actor: str
+    role: ReviewRole
+    verdict: QAVerdict
+    rationale: str
+    expected_revision: int
+    target_version: int
+
+
+class AssignRequest(BaseModel):
+    reviewer_id: str
+    role: ReviewRole
+    assigned_by: str
+
+
+def create_app(database_path: str | Path, registry_path: str | Path = "reviewer_registry.sqlite") -> FastAPI:
     store = ReviewStore(database_path)
-    service = ReviewService(store)
+    registry = ReviewerRegistry(registry_path)
+    service = ReviewService(store, registry)
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
@@ -48,14 +64,21 @@ def create_app(database_path: str | Path) -> FastAPI:
             yield
         finally:
             store.close()
+            registry.close()
 
     app = FastAPI(title="ANTIBIO Clinical Review Workbench", version="5.6", lifespan=lifespan)
 
     def domain_error(_request, error: Exception):
-        status = 403 if isinstance(error, PermissionDenied) else 422 if isinstance(error, ValueError) else 409
-        return JSONResponse(status_code=status, content={"detail": str(error)})
+        status = (
+            403 if isinstance(error, (ReviewerValidationError, ReviewerRegistrationError))
+            else 422 if isinstance(error, ValueError)
+            else 409
+        )
+        detail = getattr(error, "reason_code", str(error))
+        return JSONResponse(status_code=status, content={"detail": detail})
 
-    for error_type in (PermissionDenied, InvalidTransition, ConcurrencyError, ValueError):
+    for error_type in (ReviewerValidationError, ReviewerRegistrationError, InvalidTransition,
+                       ConcurrencyError, ValueError):
         app.add_exception_handler(error_type, domain_error)
 
     @app.get("/queue")
@@ -67,11 +90,21 @@ def create_app(database_path: str | Path) -> FastAPI:
             limit=min(limit, 1000), offset=offset)]
 
     @app.get("/tasks/{task_id}")
-    def task_details(task_id: str):
+    def task_details(task_id: str, reviewer_id: str, role: ReviewRole):
+        """Role-aware, blinded packet (Phase 4) — reviewer_id/role are required
+        query params so the response can never accidentally leak the other
+        reviewer's verdict via an unauthenticated call."""
         try:
-            return service.packet(task_id)
+            return service.packet_for_reviewer(task_id, reviewer_id, role)
         except KeyError as error:
             raise HTTPException(404, str(error)) from error
+
+    @app.post("/tasks/{task_id}/assign")
+    def assign(task_id: str, request: AssignRequest):
+        assignment = service.assign_reviewer(
+            task_id, reviewer_id=request.reviewer_id, role=request.role, assigned_by=request.assigned_by,
+        )
+        return asdict(assignment)
 
     @app.post("/tasks/{task_id}/claim")
     def claim(task_id: str, request: ActorRequest):
@@ -109,6 +142,14 @@ def create_app(database_path: str | Path) -> FastAPI:
             reason_codes=request.reason_codes, comments=request.comments,
             expected_revision=request.expected_revision, target_version=request.target_version))
 
+    @app.post("/tasks/{task_id}/qa-signoff")
+    def qa_signoff(task_id: str, request: QASignoffRequest):
+        return asdict(service.submit_medical_qa_signoff(
+            task_id, medical_qa_reviewer_id=request.actor, role=request.role, verdict=request.verdict,
+            rationale=request.rationale, expected_revision=request.expected_revision,
+            target_version=request.target_version,
+        ))
+
     @app.post("/tasks/{task_id}/request-adjudication")
     def request_adjudication(task_id: str, request: NoteRequest):
         return asdict(service.request_adjudication(
@@ -134,8 +175,8 @@ def create_app(database_path: str | Path) -> FastAPI:
                                     expected_revision=request.expected_revision))
 
     @app.get("/tasks/{task_id}/export")
-    def export_packet(task_id: str):
-        return service.packet(task_id)
+    def export_packet(task_id: str, reviewer_id: str, role: ReviewRole):
+        return service.packet_for_reviewer(task_id, reviewer_id, role)
 
     @app.get("/metrics")
     def metrics():
@@ -155,7 +196,8 @@ def create_app(database_path: str | Path) -> FastAPI:
             "clinical_engine_connected": False,
             "metrics": metrics,
             "views": ["dashboard", "queue", "task details", "source/provenance", "comparison",
-                      "first review", "second review", "adjudication", "issue registry", "corpus review"],
+                      "first review", "second review", "adjudication", "medical QA sign-off",
+                      "issue registry", "corpus review"],
         }
 
     @app.get("/ui", response_class=HTMLResponse)
@@ -181,10 +223,10 @@ fetch('/metrics').then(r=>r.json()).then(x=>metrics.textContent=JSON.stringify(x
 <style>body{{font:15px system-ui;max-width:1200px;margin:2rem auto}}pre{{white-space:pre-wrap;border:1px solid #ccc;padding:1rem}}input,select,textarea,button{{display:block;margin:.4rem 0;padding:.4rem;width:100%}}</style></head>
 <body><a href='/ui'>← Queue</a><h1>Task {safe_id}</h1>
 <div style='display:grid;grid-template-columns:1fr 1fr;gap:1rem'><section><h2>Normalized object</h2><pre id='normalized'>Loading…</pre></section><section><h2>Source and provenance</h2><pre id='provenance'>Loading…</pre></section></div><h2>Complete immutable packet</h2><pre id='packet'></pre>
-<h2>Governed action</h2><input id='actor' placeholder='Named reviewer'><select id='role'><option>REVIEWER_A</option><option>REVIEWER_B</option><option>ADJUDICATOR</option></select>
+<h2>Governed action</h2><input id='actor' placeholder='Registered reviewer_id'><select id='role'><option>REVIEWER_A</option><option>REVIEWER_B</option><option>ADJUDICATOR</option><option>MEDICAL_QA_LEAD</option></select>
 <select id='decision'><option>ACCEPT</option><option>ACCEPT_WITH_NOTE</option><option>REJECT_FIDELITY</option><option>REJECT_CLINICAL</option><option>NEEDS_INFO</option><option>ABSTAIN</option></select>
 <textarea id='comments' placeholder='Comments'></textarea><button onclick='claim()'>Claim</button><button onclick='first()'>Submit first review</button><button onclick='second()'>Submit second review</button><button onclick='adjudicate()'>Adjudicate</button><pre id='result'></pre>
-<script>let task;async function load(){{const p=await fetch('/tasks/{safe_id}').then(r=>r.json());task=p.task;normalized.textContent=JSON.stringify(p.normalized_object,null,2);provenance.textContent=JSON.stringify({{source_references:p.source_references,field_level_provenance:p.field_level_provenance,original_source_wording:p.original_source_wording}},null,2);packet.textContent=JSON.stringify(p,null,2)}}
+<script>let task;async function load(){{const q=new URLSearchParams({{reviewer_id:actor.value||'unassigned',role:role.value}});const p=await fetch('/tasks/{safe_id}?'+q).then(r=>r.json());task=p.task;normalized.textContent=JSON.stringify(p.normalized_object,null,2);provenance.textContent=JSON.stringify({{source_references:p.source_references,field_level_provenance:p.field_level_provenance,original_source_wording:p.original_source_wording}},null,2);packet.textContent=JSON.stringify(p,null,2)}}
 function base(){{return {{actor:actor.value,role:role.value,expected_revision:task.revision}}}}function dec(){{return {{...base(),decision:decision.value,target_version:task.target_version,reason_codes:[],comments:comments.value}}}}
 async function call(path,body){{const r=await fetch(path,{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify(body)}});result.textContent=await r.text();await load()}}
 function claim(){{call('/tasks/{safe_id}/claim',base())}}function first(){{call('/tasks/{safe_id}/first-review',dec())}}function second(){{call('/tasks/{safe_id}/second-review',dec())}}function adjudicate(){{call('/tasks/{safe_id}/adjudicate',dec())}}load();</script></body></html>"""

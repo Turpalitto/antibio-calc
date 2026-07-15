@@ -8,6 +8,7 @@ import pytest
 
 from clinical_engine.review_workbench.models import TargetType
 from clinical_engine.review_workbench.service import ReviewService
+from clinical_engine.review_workbench.reviewer_registry import ReviewerRegistry
 from clinical_engine.review_workbench.storage import ReviewStore
 
 
@@ -43,7 +44,7 @@ def test_real_review_populations_and_integrity():
 def test_real_clinical_packet_has_provenance_and_existing_pdf(target_type):
     with ReviewStore(REVIEW_DB) as store:
         task = store.list_tasks(target_type=target_type, limit=1)[0]
-        packet = ReviewService(store).packet(task.task_id)
+        packet = ReviewService(store, ReviewerRegistry(":memory:")).packet(task.task_id)
     assert packet["field_level_provenance"]
     source = packet["source_references"][0]
     assert source.get("pdf") and source.get("page")

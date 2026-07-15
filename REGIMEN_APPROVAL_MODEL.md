@@ -2,6 +2,12 @@
 ## Certification Model — Readiness Gates Before Production · P5.2 · Phase 7
 ## Status: PROPOSED (design only)
 
+> **2026-07-15 implementation note:** `ReviewService.submit_medical_qa_signoff()` is now the
+> implemented final gate before `PHYSICIAN_APPROVED` (`ClinicalRegimen`) / `MEDICALLY_REVIEWED`
+> (`TherapeuticOption`) — see `MEDICAL_QA_SIGNOFF_SPEC.md` for the exact enforced checklist, which
+> closed a real defect (GOV-003, `ROOT_CAUSE_REGISTER.md`) where consensus alone previously reported
+> approval without this gate.
+
 > The final gate a `ClinicalRegimen` passes before `PUBLISHED`
 > (`CLINICAL_KNOWLEDGE_LIFECYCLE.md` §2). Resolves two items other P5.2 documents deferred here:
 > the **fast-path policy** question (`CLINICAL_KNOWLEDGE_LIFECYCLE.md` §5 note) and the
