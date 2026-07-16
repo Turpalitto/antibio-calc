@@ -2,7 +2,6 @@ import sqlite3
 from pathlib import Path
 
 import pytest
-from config import BASE_DIR
 
 
 @pytest.fixture
@@ -49,7 +48,14 @@ def sample_pdf_text_keyword_only():
 
 
 @pytest.fixture
-def sample_item():
+def sample_item(tmp_path):
+    # classifier.classify_one() only checks Path(pdf_path).exists() — every
+    # test using this fixture mocks classifier.detect_sections, so the file
+    # is never opened or parsed. A tiny, deterministic, repository-free
+    # placeholder is sufficient; must NOT point outside the test's own
+    # tmp_path (see TEST_FIXTURE_EXTERNAL_PATH_RCA.md).
+    pdf_path = tmp_path / "test.pdf"
+    pdf_path.write_bytes(b"%PDF-1.4 TEST_FIXTURE_ONLY\n")
     return {
         "Id": 2199,
         "Name": "Внебольничная пневмония",
@@ -62,7 +68,7 @@ def sample_item():
         "abx_drugs_found": ["амоксициллин", "азитромицин", "цефтриаксон"],
         "abx_keywords_found": ["антибактериальная терапия"],
         "abx_score": 35,
-        "pdf_path": str(BASE_DIR / "test.pdf"),
+        "pdf_path": str(pdf_path),
     }
 
 

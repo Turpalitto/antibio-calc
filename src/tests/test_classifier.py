@@ -121,3 +121,37 @@ def test_compute_confidence_score_zero():
         keyword_count=0,
     )
     assert score == 0
+
+
+# Regression: TEST_FIXTURE_EXTERNAL_PATH_RCA.md — sample_item's pdf_path must
+# never depend on a directory outside this test's own tmp_path.
+def test_sample_item_pdf_path_is_repository_free(sample_item, tmp_path):
+    import pathlib
+
+    pdf_path = pathlib.Path(sample_item["pdf_path"])
+    assert pdf_path.exists()
+    # must live inside this test's own tmp_path, not any fixed external dir
+    assert tmp_path in pdf_path.parents or pdf_path.parent == tmp_path
+    assert "clinrec_downloader" not in str(pdf_path)
+
+
+def test_classification_passes_without_external_clinrec_downloader_dir(sample_item, monkeypatch, tmp_path):
+    # Simulate a machine where C:\clinrec_downloader does not exist at all —
+    # e.g. a fresh clone or CI runner — and confirm classify_one still works
+    # correctly via sample_item's self-contained tmp_path fixture file.
+    nonexistent = tmp_path / "definitely_does_not_exist" / "clinrec_downloader"
+    assert not nonexistent.exists()
+
+    with patch("classifier.detect_sections") as mock_detect:
+        mock_detect.return_value = {
+            "clinrec_id": 2199, "total_pages": 10, "relevant_pages": [4],
+            "relevant_text": "Антибактериальная терапия\nАмоксициллин 500 мг.",
+            "sections_found": [{"section": "Антибактериальная терапия", "page": 4}],
+            "dosing_pages": [4],
+        }
+        item = {**sample_item, "abx_drugs_found": ["амоксициллин"],
+                "abx_keywords_found": ["антибактериальная терапия"], "abx_score": 15}
+        result = classify_one(item)
+
+    assert result["abx_level"] == "B"
+    assert result["extraction_priority"] == "medium"
