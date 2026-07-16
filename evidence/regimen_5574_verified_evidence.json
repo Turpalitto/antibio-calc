@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "subject": "regimen_id=5574",
+    "generated_at": "2026-07-15T20:12:02Z",
+    "generator": "evidence/generate_regimen_5574_evidence.py",
+    "purpose": "Post-RC-031 evidence-integrity hardening: machine-generated, hash-verifiable evidence packet replacing the hand-typed comparison that produced the false finding."
+  },
+  "evidence": [
+    {
+      "evidence_origin": "DATABASE_QUERY",
+      "source_artifact": "assembled_regimens.sqlite",
+      "source_hash": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+      "retrieval_command": "SELECT * FROM assembled_regimens WHERE regimen_id='5574'",
+      "retrieved_at": "2026-07-15T20:12:02Z",
+      "record_identifier": "assembled_regimens:5574:1",
+      "is_exact": true,
+      "content": "{\n  \"age_group\": \"child\",\n  \"antibiotic\": \"джозамицин\",\n  \"approved_at\": \"\",\n  \"approved_by\": \"\",\n  \"assembly_ruleset_version\": \"p5.3-v1\",\n  \"confidence\": 0.8544,\n  \"contraindications\": \"[]\",\n  \"created_at\": \"2026-07-15T00:00:00Z\",\n  \"diagnosis\": \"Урогенитальные заболевания, вызванные M. genitalium, у детей с массой тела менее 45 кг\",\n  \"dose\": 50.0,\n  \"duration_recommended\": 10.0,\n  \"evidence_level\": \"UNKNOWN\",\n  \"field_provenance\": \"[[\\\"antibiotic\\\", {\\\"source_object_id\\\": \\\"5574\\\", \\\"source_document\\\": \\\"Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf\\\", \\\"source_location\\\": \\\"page 16\\\", \\\"source_store\\\": \\\"normalized_regimens\\\", \\\"scope\\\": \\\"regimen\\\"}], [\\\"dose\\\", {\\\"source_object_id\\\": \\\"5574\\\", \\\"source_document\\\": \\\"Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf\\\", \\\"source_location\\\": \\\"page 16\\\", \\\"source_store\\\": \\\"normalized_regimens\\\", \\\"scope\\\": \\\"regimen\\\"}], [\\\"route\\\", {\\\"source_object_id\\\": \\\"5574\\\", \\\"source_document\\\": \\\"Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf\\\", \\\"source_location\\\": \\\"page 16\\\", \\\"source_store\\\": \\\"normalized_regimens\\\", \\\"scope\\\": \\\"regimen\\\"}], [\\\"frequency\\\", {\\\"source_object_id\\\": \\\"5574\\\", \\\"source_document\\\": \\\"Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf\\\", \\\"source_location\\\": \\\"page 16\\\", \\\"source_store\\\": \\\"normalized_regimens\\\", \\\"scope\\\": \\\"regimen\\\"}], [\\\"duration_recommended\\\", {\\\"source_object_id\\\": \\\"5574\\\", \\\"source_document\\\": \\\"Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf\\\", \\\"source_location\\\": \\\"page 16\\\", \\\"source_store\\\": \\\"normalized_regimens\\\", \\\"scope\\\": \\\"regimen\\\"}]]\",\n  \"frequency\": 2.0,\n  \"guideline_id\": \"1126\",\n  \"icd_mkb\": \"A63.8\",\n  \"needs_review_reasons\": \"[\\\"no_kb_p44_enrichment_for_guideline_1126\\\"]\",\n  \"pregnancy\": null,\n  \"regimen_id\": \"5574\",\n  \"renal_adjustment\": 0,\n  \"review_status\": \"pending\",\n  \"route\": \"oral\",\n  \"snapshot_version\": \"kb_p44-final-20260714\",\n  \"source_page\": \"16\",\n  \"source_pdf\": \"Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf\",\n  \"source_quote\": \"Рекомендовано  для лечения детей с массой тела менее 45 кг назначать перорально\\nджозамицин** 50 мг на кг массы тела в сутки, разделённые на 2 приема, в течение 10\\nдней\",\n  \"status\": \"REVIEW_REQUIRED\",\n  \"therapy_line\": \"first\",\n  \"unit\": \"mg/kg\",\n  \"validation_verdict\": \"REVIEW\",\n  \"version\": 1\n}"
+    },
+    {
+      "evidence_origin": "DATABASE_QUERY",
+      "source_artifact": "normalized_regimens.sqlite",
+      "source_hash": "c7b67354b0723ad538a185e561ed94d09b11c019279be9c4c6412c4f1eaa4237",
+      "retrieval_command": "SELECT * FROM normalized_regimens WHERE regimen_id='5574'",
+      "retrieved_at": "2026-07-15T20:12:02Z",
+      "record_identifier": "normalized_regimens:5574",
+      "is_exact": true,
+      "content": "{\n  \"adult\": 0,\n  \"approved\": 0,\n  \"atc_code\": \"\",\n  \"child\": 1,\n  \"created_at\": \"2026-07-10T07:37:40Z\",\n  \"diagnosis\": \"Урогенитальные заболевания, вызванные M. genitalium, у детей с массой тела менее 45 кг\",\n  \"dose\": 50.0,\n  \"dose_unit\": \"mg/kg\",\n  \"drug_components\": \"[]\",\n  \"drug_normalized\": \"джозамицин\",\n  \"drug_original\": \"джозамицин**\",\n  \"duration_max\": 10.0,\n  \"duration_min\": 10.0,\n  \"duration_recommended\": 10.0,\n  \"field_confidence\": \"{\\\"drug\\\": 0.6, \\\"dose\\\": 0.9, \\\"route\\\": 0.9, \\\"frequency\\\": 0.9, \\\"duration\\\": 0.85, \\\"population\\\": 0.9, \\\"therapy_line\\\": 0.99, \\\"atc_code\\\": 0.0, \\\"pregnancy\\\": 0.0, \\\"renal_adjustment\\\": 0.0}\",\n  \"frequency\": 2.0,\n  \"guideline_id\": \"1126\",\n  \"manual_notes\": \"\",\n  \"manual_override\": \"\",\n  \"mkb\": \"A63.8\",\n  \"normalizer_version\": \"1.0.0\",\n  \"overall_confidence\": 0.8544,\n  \"parser_confidence\": null,\n  \"population\": \"child\",\n  \"pregnancy\": null,\n  \"regimen_id\": \"5574\",\n  \"renal_adjustment\": 0,\n  \"review_date\": \"\",\n  \"review_status\": \"pending\",\n  \"reviewed_by\": \"\",\n  \"route\": \"oral\",\n  \"schema_version\": \"1.0.0\",\n  \"source_page\": \"16\",\n  \"source_pdf\": \"Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf\",\n  \"source_quote\": \"Рекомендовано  для лечения детей с массой тела менее 45 кг назначать перорально\\nджозамицин** 50 мг на кг массы тела в сутки, разделённые на 2 приема, в течение 10\\nдней\",\n  \"therapy_line\": \"first\",\n  \"updated_at\": \"2026-07-10T07:37:40Z\",\n  \"validation_errors\": 0,\n  \"validation_issues\": \"[{\\\"code\\\": \\\"DRUG_UNKNOWN\\\", \\\"severity\\\": \\\"review\\\", \\\"message\\\": \\\"Drug 'джозамицин' is not in the known drug dictionary.\\\", \\\"field\\\": \\\"drug\\\", \\\"suggested_fix\\\": null}]\",\n  \"validation_reviews\": 1,\n  \"validation_verdict\": \"REVIEW\",\n  \"validation_warnings\": 0\n}"
+    },
+    {
+      "evidence_origin": "SOURCE_PDF_EXTRACT",
+      "source_artifact": "Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf",
+      "source_hash": "b8a525c56b01e63620e20e7c07a9899e74ba1d0f5ec1f31dd7215f675228eade",
+      "retrieval_command": "fitz.open(path).load_page(15).get_text()",
+      "retrieved_at": "2026-07-15T20:12:02Z",
+      "record_identifier": "Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf:page16",
+      "is_exact": true,
+      "content": "Рекомендовано  для лечения детей с массой тела менее 45 кг назначать перорально\nджозамицин** 50 мг на кг массы тела в сутки, разделённые на 2 приема, в течение 10\nдней[66,67].\nУровень убедительности рекомендаций С(уровень достоверности доказательств 5)\nКомментарии:  Лечение детей с массой тела более 45 кг проводится в соответствии со\nсхемами назначения у взрослых с учетом противопоказаний.  \n3.2 Хирургическое лечение\nНе применяется.\n3.3 Иное лечение\nДиетотерапия не применяется.\nОбезболивание не применяется.\n"
+    },
+    {
+      "evidence_origin": "GENERATED_CALCULATION",
+      "source_artifact": "evidence_model.py comparison",
+      "source_hash": "f9b670f9abda5be089d081f2d1f4a50cf251020e7964e7d45f3c699aee40e386",
+      "retrieval_command": "row['antibiotic']==nrow['drug_normalized']; row['dose']==nrow['dose'] and row['unit']==nrow['dose_unit']",
+      "retrieved_at": "2026-07-15T20:12:02Z",
+      "record_identifier": "assembled-vs-normalized-consistency",
+      "is_exact": true,
+      "content": "{\n  \"assembled_antibiotic\": \"джозамицин\",\n  \"normalized_drug_normalized\": \"джозамицин\",\n  \"drug_name_consistent\": true,\n  \"assembled_dose\": [\n    50.0,\n    \"mg/kg\"\n  ],\n  \"normalized_dose\": [\n    50.0,\n    \"mg/kg\"\n  ],\n  \"dose_consistent\": true\n}"
+    }
+  ],
+  "packet_hash": "a559ab5eb54028ca44ad0a4de81fb739804fa46728eddf0481c956cb35f39fe0"
+}

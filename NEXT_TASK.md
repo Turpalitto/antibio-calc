@@ -1,6 +1,36 @@
 # NEXT_TASK.md — ANTIBIO
 
-## Authoritative next actions — 2026-07-15 (post Review Governance Hardening)
+## Authoritative next actions — 2026-07-16 (post RC-030 Evidence Validation)
+
+Status snapshot: approved objects = 0, Clinical Engine disconnected, **P6 remains BLOCKED**.
+
+0. **OWNER: approve or reject staging the sandbox + RC-030 changes.** `DOSE_SANDBOX_PRECOMMIT_AUDIT.md`
+   has the proposed allowlist (updated with the Phase 1 two-commit split confirmation). Two separate
+   commits recommended (P5.6 sandbox, then RC-030) — not combined, per instruction. Nothing has been
+   staged or committed yet.
+1. **RC-031: RETRACTED, filed in error.** The claimed drug-name misattribution on regimen 5574 did not
+   hold up — re-verification against the live database showed it was correctly labeled all along, and
+   the original "mismatch" was a fabricated comparison written during report drafting rather than a
+   real database query. No corpus-wide drug-attribution audit was performed. See
+   `ROOT_CAUSE_REGISTER.md` (RC-031, retracted) and `RC030_TARGETED_SOURCE_RECOVERY_REPORT.md`
+   (corrected) for the full trace, and `PROJECT_STATE.md`'s 2026-07-16 correction entry.
+2. **RC-030: verdict B (PARSER IMPLEMENTED BUT NOT VALIDATED — CALCULATIONS BLOCKED).** To reach a
+   safe calculation-eligible subset, either (a) run a properly-powered precision validation (hundreds
+   of samples per semantic type, not 135) to clear the 99% Wilson-lower-bound threshold and populate
+   `dose_verification_sandbox/validation_status.TYPES_MEETING_PRECISION_THRESHOLD`, or (b) pursue the
+   schema-level fix recommended in `RC030_SCHEMA_RESPONSIBILITY_DECISION.md` (add `denominator_time`
+   to `assembled_regimens` at the assembly layer) and re-validate that implementation independently —
+   moving the logic doesn't itself increase precision. See `RC030_EVIDENCE_VALIDATION_REPORT.md`.
+3. **RC-030 (original schema gap, still open):** the real fix is still an Architecture Change
+   to the P5.3 Regimen Assembly Engine schema (`clinical_engine/regimen/store.py`) — add a
+   `denominator_time` column (and max-dose columns) so future assemblies don't need the read-only
+   text-reconstruction workaround (`dose_verification_sandbox/semantics_parser.py`) at all. The
+   workaround resolves 61.5% of the corpus (87.6% of REVIEW_REQUIRED) but 202 rows remain genuinely
+   `AMBIGUOUS` and 74 `UNPARSED` — those need either human resolution via the new Phase 11 ambiguity
+   workflow (`dose_verification_sandbox/ambiguity_workflow.py`) or an upstream extraction fix.
+   See `RC030_DOSE_SEMANTICS_REPORT.md`.
+
+## Previous next actions — 2026-07-15 (post Review Governance Hardening)
 
 1. **OWNER: register real Reviewer A, Reviewer B, and Medical QA Lead** via `ReviewerRegistry.register(...)` (`clinical_engine/review_workbench/reviewer_registry.py`) with real professional information. Until then `pilot_status = WAITING_FOR_REVIEWERS` — see `REVIEWER_IDENTITY_AND_ASSIGNMENT_POLICY.md`.
 2. Once registered, real reviewers may claim/review the 30 activated pilot tasks (`PHYSICIAN_PILOT_ACTIVATION_BASELINE.md`) through the hardened `ReviewService`/API — blinding (`SECOND_REVIEW_BLINDING_SPEC.md`) and the mandatory Medical QA sign-off gate (`MEDICAL_QA_SIGNOFF_SPEC.md`) are enforced end-to-end.

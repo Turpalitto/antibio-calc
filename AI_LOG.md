@@ -1,5 +1,216 @@
 # AI LOG
 
+## 2026-07-16: CORRECTION — RC-031 retracted
+
+RC-031 (drug-name misattribution on regimen 5574, described below) was investigated further after
+being asked to build a corpus-wide drug-attribution audit around it. Before doing so, re-verified the
+finding against a fresh, live, hash-confirmed query of `assembled_regimens.sqlite` — and it did not
+hold up. Regimen 5574's `antibiotic` field is `"джозамицин"`, matching the source PDF exactly;
+`normalized_regimens.sqlite` independently agrees. The "database quote" compared against in the
+original finding had been written by hand during report drafting rather than copied from a real
+query, and did not match the actual row. The PyMuPDF PDF lookup itself was genuine and found the
+correct source document — the error was in the comparison that followed it, and in an earlier
+mislabeling (a genuine, different Азитромицин 10 mg/kg example, likely `regimen_id=6138`, was called
+"regimen 5574" in an early worked-example write-up, and that label was never re-checked in later
+reports). Corrected every affected document (`ROOT_CAUSE_REGISTER.md`, `PROJECT_STATE.md`,
+`NEXT_TASK.md`, `RC030_TARGETED_SOURCE_RECOVERY_REPORT.md`, `RC030_EVIDENCE_VALIDATION_REPORT.md`,
+`RC030_12CASE_REVALIDATION.md`, `RC030_DOSE_SEMANTICS_REPORT.md`, `DOSE_SANDBOX_RC030_INTEGRATION_REPORT.md`,
+`DOSE_CALCULATION_TRACE_SPEC.md`) rather than deleting the record — each now states plainly what was
+wrong and why. **No corpus-wide drug-attribution audit was built**, since its premise didn't hold;
+asked the user how to proceed and they confirmed "correct the record only." This does not affect
+RC-030's own verdict — the three bugs found and fixed during that validation
+(dose-token-location guard, sub-daily-frequency block, risk-audit gap-measurement fix) were real,
+independently reproduced, and remain in place.
+
+## 2026-07-16: RC-030 Evidence Validation and Safe Closure
+
+Per explicit instruction: do not treat the RC-030 semantics parser's reported coverage as validated
+truth until independently checked. Froze a baseline first (`RC030_VALIDATION_BASELINE.md` — HEAD,
+source DB hashes, module hashes, row counts, test results) before touching anything.
+
+Catalogued every regex rule in the classifier with ID, pattern, examples, and precedence
+(`RC030_RULE_CATALOG.md`) — this made explicit, for the first time, that table-boundary and
+sentence-boundary detection were never implemented (no table structure exists in the source schema
+to detect against; sentence detection didn't exist at all in the classifier).
+
+Built an independent structural risk audit (`semantics_risk_audit.py`) that does not use the
+classifier's own output as ground truth — instead re-derives, from raw `source_quote` text, whether
+the gap between a dose token and its claimed semantic signal crosses an "или" (alternative), a
+different drug's name (source text wraps drug names in "**", confirmed on 2,067/2,675 rows), a
+sentence boundary, or a competing dose number. **Found and fixed a bug in this audit itself**: the
+gap calculation initially started at the dose token's first digit rather than after it, so the
+token's own number was counted as a "competing dose" on nearly every row (952/1,645, 57.9% — clearly
+wrong); fixed, dropped to a plausible 307/1,645 (18.7%) after re-verification against real examples.
+
+Pulled a 135-row stratified sample (smaller than the 380 requested — stated plainly, not minimized)
+and manually re-read each row's `source_quote` independently. This found two more real bugs, neither
+caught by the automated risk audit:
+
+1. **Regimen 7951**: classified `WEIGHT_PER_DAY`/`RESOLVED_BY_FREQUENCY_ONE` despite its dose token
+   ("10") not appearing anywhere in `source_quote` at all — the frequency=1 algebraic shortcut was
+   firing even when the dose-to-text linkage itself was nonexistent. Fixed: the shortcut now requires
+   the dose token to have actually been located first (`dose_token_located` guard). Corpus-wide
+   effect: 34 rows moved from a resolvable type to `AMBIGUOUS`.
+2. **Regimen 5376**: `frequency=3/7≈0.4286` (source text: "3 раза в неделю," 3×/week) applied to the
+   `single = daily ÷ frequency` formula produced a **210 mg single dose from a 90 mg daily total** —
+   a mathematical impossibility, since a single administration cannot exceed the daily amount. Root
+   cause: the formula assumes frequency means "administrations per day," but a sub-daily frequency
+   value represents a different kind of periodicity entirely. Fixed: `calculator.py` now blocks any
+   calculation where `frequency < 1` with a `SUB_DAILY_FREQUENCY` warning. Corpus-wide effect: 42
+   rows affected.
+
+Computed Wilson 95% confidence intervals per stratum from the 135-row sample
+(`RC030_PRECISION_METRICS.md`). Point estimates were strong (93.3–100% across all six strata sampled),
+but **no stratum's lower bound reaches the 99% precision threshold the task required** — with only
+15 samples, even a perfect 15/15 only supports a ~79.6% lower bound; proving 99% requires hundreds of
+samples per type, not 15. Applied the task's own rule literally: every semantic type stays below
+threshold, so `calculation_eligibility = BLOCKED` for the entire corpus — implemented as a real
+enforced field (`dose_verification_sandbox/validation_status.py`), not just documentation.
+
+Fully re-read all 12 original pilot cases plus a dedicated analysis of regimen 5574 (cited separately,
+not one of the formal 12) against complete source quotes (`RC030_12CASE_REVALIDATION.md`). 10/12
+confirmed correct; 2/12 correctly still blocked (compound units); case 2 (5376) is the sub-daily-
+frequency bug above. Regimen 5574 is proven unambiguous from two independent textual markers in one
+self-contained sentence ("...в сутки" + "разделенные на 2 приема") — genuinely resolved, not merely
+algebraically convenient.
+
+Attempted one targeted PDF cross-verification (scoped down from the requested broader six-engine
+pilot, given the effort budget — stated honestly, not padded) on the single highest-stakes case,
+regimen 5574's source PDF. Ruled out a same-titled decoy document (`Хламидийная инфекция.pdf`, wrong
+content) before confirming the real source (`Урогенитальные заболевания, вызванные Mycoplasma
+genitalium.pdf`, page 16, near-verbatim quote match) — this part was genuine and correct. **A false
+finding was then filed on top of it** ("RC-031"): the comparison presented as coming from
+`assembled_regimens.source_quote` had actually been written by hand, not queried, and didn't match
+the real row (which correctly says джозамицин, matching the PDF). Retracted after re-verification —
+see the correction entry at the top of this log.
+
+Exhaustively (not sampled — all 26 that exist) re-verified every max-dose extraction in the corpus;
+all 26 correctly attributed to their own regimen (`RC030_MAX_DOSE_VALIDATION.md`). One cosmetic
+labeling inconsistency found (numerically harmless, since `frequency=1` in both affected rows).
+
+Assessed where `denominator_time` should live long-term (`RC030_SCHEMA_RESPONSIBILITY_DECISION.md`):
+recommended adding it to `assembled_regimens` at the assembly layer (Option C), not the frozen
+normalizer or the not-yet-reconnected extraction layer — but explicitly did not implement this
+migration, since it requires owner/governance sign-off per the Resolution column convention in
+`ROOT_CAUSE_REGISTER.md`.
+
+Added 17 new regression tests across three new test files covering every bug found plus the false-
+positive classes the task asked to be hardened against (alternative/sentence/drug-name boundary
+crossing, age-group mixing, range-upper-bound-not-max-dose, combination-drug component identity,
+unvalidated-cannot-calculate). Full sandbox suite: 83/83 pass (was 66 at the start of this pass).
+Canonical `pytest` full suite: exit code 0. Source DB hashes (`assembled_regimens.sqlite`, `kb_p44.db`,
+`kb_final.db`, `review_workbench_p56.sqlite`) reconfirmed byte-identical to the Phase 0 baseline.
+Approved-object count reconfirmed 0. **Nothing staged or committed** — two-commit split plan
+documented in `DOSE_SANDBOX_PRECOMMIT_AUDIT.md`, awaiting explicit owner approval.
+
+**Final verdict per spec: B) RC-030 PARSER IMPLEMENTED BUT NOT VALIDATED — CALCULATIONS BLOCKED.**
+See `RC030_EVIDENCE_VALIDATION_REPORT.md` for the full 16-section report. P6 remains BLOCKED.
+
+## 2026-07-16: RC-030 Dose Semantic Reconstruction (superseded by Evidence Validation above)
+
+Follow-up to the P5.6 sandbox pilot's finding (all 12 real cases `BLOCKED`). Per the user's spec:
+resolve RC-030 by building an explicit, provenance-backed dose semantics layer, without guessing,
+without AI, without touching source data.
+
+**Phase 0** (`DOSE_SANDBOX_PRECOMMIT_AUDIT.md`): audited the still-uncommitted P5.6 sandbox tree —
+confirmed no Clinical Engine integration, no source-DB writes, no approval mutation, all 45 tests
+passing, no secrets/personal paths. Found and excluded five generated artifacts (12 MB snapshot,
+pilot report, issue log, golden dataset dump) via a new `.gitignore` rule rather than committing
+them. **Nothing staged or committed** — staging requires explicit owner approval, requested but not
+assumed.
+
+**Phase 1** (`RC030_DOSE_SEMANTICS_AUDIT.md`): before writing any classification regex, manually read
+a random 40-row sample of real `source_quote` text (seed 42) to find actual Russian dosing-phrase
+patterns rather than guessing them. Built `semantics_parser.py`: locates the dose number inside
+`source_quote`, takes a bounded text window around it, and searches for explicit per-day signals
+("в сутки", "/сут", "суточная доза") vs. per-dose signals ("N раз(а) в сутки/день" — digits or
+spelled-out — "каждые N часов", "на введение", "разовая доза"). Found and fixed two real classifier
+bugs during validation: (1) "N раз в сутки" was self-conflicting with the plain per-day pattern
+since both matched the same "в сутки" substring — fixed by excluding overlapping spans; (2) when a
+window contained two dose alternatives (e.g. "500 mg 3×/day or 875 mg 2×/day"), the first match was
+used regardless of proximity — fixed with nearest-match-by-distance logic (one residual
+combination-drug edge case documented as a known display-only limitation in
+`DOSE_SEMANTICS_PARSER_SPEC.md`).
+
+One additional, principled (non-guessing) resolution rule: when `frequency == 1.0` exactly, per-dose
+and per-day are algebraically identical, so the ambiguity is resolved by arithmetic, not inference
+(`RESOLVED_BY_FREQUENCY_ONE`).
+
+Ran the validated classifier across all 2,675 `assembled_regimens` rows: 1,645 (61.5%; 87.6% of the
+1,543 `REVIEW_REQUIRED` rows) now resolve to an explicit `WEIGHT_PER_DAY`/`WEIGHT_PER_DOSE`/
+`FIXED_PER_DAY`/`FIXED_PER_DOSE` semantic type. 202 (7.6%) remain genuinely `AMBIGUOUS` (no signal,
+freq≠1) and 74 (2.8%) `UNPARSED` (compound unit strings) — both correctly fail closed, not guessed.
+
+Also implemented: `semantics_store.py` (additive, idempotent, content-hash-deduplicated SQLite store
+— verified with a real double-rebuild test showing 0 duplication on an unchanged re-run);
+`semantics_integration.py` (bridges `DoseSemantics` into the *unchanged* P5.6 `calculate()` engine by
+populating the previously-always-`None` `denominator_time` field — no arithmetic duplicated);
+`ambiguity_workflow.py` (Phase 11 — lets the owner record a source-fidelity classification of a
+genuinely ambiguous row, e.g. "I read the PDF and it confirms per-day", never a clinical
+interpretation; `clinical_approval` stays `NOT_APPROVED` throughout, enforced by the existing
+dataclass lock). `FORMULATION_DATA_GAP_REPORT.md`: confirmed concentration data exists nowhere linked
+to `assembled_regimens` (only in the separate, unlinked `db/antibio_db.json`) — formulation
+conversion stays `NOT_AVAILABLE` for all real regimens, as designed.
+
+Re-ran the original 12-case pilot: 10/12 now calculate correctly (worked example: regimen 5364,
+Пиперациллин+тазобактам, `250 mg/kg` + "/сут" signal + 18 kg + freq=3 → 4500 mg/day → 1500 mg/dose),
+2/12 correctly remain `BLOCKED` (genuinely unparseable compound units — a separate, still-open
+extraction defect, not a semantics problem). 21 new tests added, 66/66 total pass. *(Correction: this
+entry originally cited "regimen 5574, Азитромицин" here — wrong attribution, see the RC-031
+retraction entry at the top of this log.)*
+
+Updated `ROOT_CAUSE_REGISTER.md` RC-030 to **PARTIALLY CLOSED** — this is a read-only text
+reconstruction layer, not a fix to the underlying `assembled_regimens.sqlite` schema, which still has
+no `denominator_time` column. The real architecture-change fix (add the column, backfill from
+`source_quote` at assembly time) remains open and is now the top NEXT_TASK item.
+
+Final verdict per spec: **B) RC-030 PARTIALLY CLOSED — AMBIGUOUS DATA REMAINS.** P6 remains BLOCKED,
+approved-object count unchanged at 0, Clinical Engine still disconnected (test-enforced no
+`clinical_engine` import anywhere in the new modules). See `RC030_DOSE_SEMANTICS_REPORT.md` for the
+full exit-gate checklist.
+
+## 2026-07-16: P5.6 Dose Calculation Verification Sandbox
+
+Built per user's P5.6 spec: local, read-only, isolated QA sandbox to inspect ANTIBIO's dose
+calculations against source data — explicitly not physician approval, not production CDS, does not
+start P6. Phase 0 audit (`DOSE_VERIFICATION_SANDBOX_AUDIT.md`) corrected an inaccurate first-pass
+exploration claim: `kb_p44.db`'s `objects` table has **no** `ClinicalRegimen`/`TherapeuticOption`
+rows (only raw extraction types: Dose, Medication, Diagnosis, Evidence, Contraindication,
+Recommendation) — those two types live exclusively in `assembled_regimens.sqlite` (2,675 rows,
+live-verified), the P5.3 Regimen Assembly Engine's shadow store, still disconnected from the live
+Clinical Engine (which reads `normalized_regimens.sqlite`, a third store — RC-019, unchanged).
+
+Implemented `dose_verification_sandbox/`: `snapshot.py` (read-only export, `mode=ro`), `parser.py`
+(unit-semantics interpreter — never infers per-dose-vs-per-day), `calculator.py` (deterministic trace
+engine, `BLOCKED` on any ambiguity, `MAX_DOSE_NOT_AVAILABLE`/`NOT_APPLIED` rounding by default),
+`verify.py` (8-verdict `DoseVerificationResult`, `clinical_approval` hard-locked `NOT_APPROVED`),
+`issues.py` (local append-only defect log), `pilot.py` (Phase 15), `golden.py` (Phase 16), plus a
+single-file offline HTML/JS UI (`ui/dose_verification_sandbox.html`, FileReader-based snapshot
+loading, no fetch/CORS dependency, QA banner on every screen).
+
+45 deterministic tests (`tests/dose_verification_sandbox/`), all pass, including invariant tests
+confirming no `clinical_engine` import, no write-capable SQL in the exporter, and live 0-approved
+verification against both `assembled_regimens.sqlite` and `review_workbench_p56.sqlite`.
+
+Real-data pilot (12 cases from `assembled_regimens.sqlite`) found **every case legitimately
+`BLOCKED`** — the source schema cannot express per-dose-vs-per-day (`AMBIGUOUS_PERIOD`) and has no
+max-dose or formulation-concentration columns at all. This is the sandbox working correctly, not a
+defect in it; filed as **RC-030** in `ROOT_CAUSE_REGISTER.md`, with 12 `OPEN` `DoseCalculationIssue`
+records. Golden Calculation Dataset (Phase 16) is necessarily synthetic (4 cases, all
+`CALCULATION_VERIFIED`, never `CLINICALLY_APPROVED`) since no real case reaches a computable state
+today.
+
+Live browser verification (served locally via `python -m http.server`, not `file://`, to avoid
+sandboxed-browser navigation issues) caught a real bug before landing: `BLOCKED` traces were
+reporting `max_dose`/`rounding` verdicts as `PASS` instead of `NOT_AVAILABLE` in both `verify.py` and
+its hand-ported JS twin in the HTML page, because `max_dose_reason`/`rounding_status` are only set on
+the non-blocked code path and the verdict builder didn't check `calculation_status` first. Fixed both
+places, added a regression test, re-verified live in the browser after the fix.
+
+Final verdict per spec: **B) DOSE VERIFICATION SANDBOX READY WITH BLOCKED DATA CASES.** P6 remains
+BLOCKED, untouched by this work. See `DOSE_VERIFICATION_SANDBOX_REPORT.md` for the full exit-gate
+checklist.
+
 ## 2026-07-15: P5.6 Review Governance Hardening (GOV-001/002/003)
 
 Repository recovery completed and fresh-clone-verified (commit `32096af`). Physician pilot activation

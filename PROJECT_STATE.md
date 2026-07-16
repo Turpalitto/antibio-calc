@@ -1,5 +1,87 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-07-16: CORRECTION — RC-031 retracted, filed in error
+
+The "RC-031" drug-name misattribution finding described below (regimen 5574: DB said "Азитромицин,"
+PDF said джозамицин) **was false and has been retracted.** Re-verification against the live,
+hash-confirmed `assembled_regimens.sqlite` shows regimen 5574's `antibiotic` field is actually
+`"джозамицин"`, matching the source PDF exactly; `normalized_regimens.sqlite` (upstream) independently
+agrees. The original PyMuPDF PDF lookup was genuine and found the correct source document, but the
+"database quote" it was compared against was written by hand during report drafting rather than
+copied from a live query, and did not match the real row. Root cause: an earlier, differently-
+identified regimen (a genuine Азитромицин 10 mg/kg case, likely `regimen_id=6138`) was mislabeled as
+"regimen 5574" in an early worked example, and the label propagated into later reports without being
+re-checked. This is a citation/reporting defect in this project's own documentation, not a defect in
+the extraction/normalization/assembly pipeline. **No corpus-wide drug-attribution audit was performed
+as a result** — the request that would have triggered one was answered with this correction instead.
+See `ROOT_CAUSE_REGISTER.md` (RC-031, retracted) and `RC030_TARGETED_SOURCE_RECOVERY_REPORT.md`
+(corrected) for the full trace. This does not change RC-030's own verdict (below) — the sub-daily-
+frequency and dose-token-location bugs found during that validation were real and remain fixed.
+
+## 2026-07-16: RC-030 Evidence Validation — VERDICT B, CALCULATIONS BLOCKED (supersedes below)
+
+Independent validation of the RC-030 semantics parser (below), per explicit instruction not to treat
+parser output as validated truth. Found and fixed three more real bugs: (1) the frequency=1 algebraic
+shortcut was applying even when the dose token wasn't locatable in `source_quote` at all (regimen
+7951 — zero textual evidence); (2) `frequency < 1` (e.g. "3×/week" stored as 3/7) broke the
+daily÷frequency formula, producing a single-dose value **larger than** the daily total (regimen 5376:
+210 mg single from 90 mg daily) — now blocked with `SUB_DAILY_FREQUENCY`; (3) the validation's own
+independent risk-audit script had a gap-measurement bug inflating false-positive flags from 18.7% to
+a spurious 60.4%, also fixed. Computed Wilson 95% confidence intervals on a 135-row manual sample
+(smaller than the 380 requested, stated plainly): point precision was 93–100% across six strata, but
+**no stratum's lower bound reaches the required 99% threshold** — small-sample statistics cap the
+provable bound near 80% even at a perfect score. Per the task's own rule, **every semantic type
+remains below the automated-calculation threshold**; `calculation_eligibility = BLOCKED` for all
+2,675 rows, enforced in code (`dose_verification_sandbox/validation_status.py`).
+
+**Byproduct finding, later retracted (see correction entry above)**: targeted PDF cross-verification
+of regimen 5574 was performed and correctly identified the real source PDF, but the follow-up claim
+that its drug name was misattributed ("RC-031") was based on a fabricated comparison and did not
+hold up — the database is correct. All 26 max-dose extractions in the corpus were separately,
+exhaustively (not sampled) re-verified — all correctly attributed; this part stands. Source DB hashes
+reconfirmed byte-identical throughout; approved objects still 0; canonical pytest still passes; 83/83
+sandbox tests pass.
+**Final verdict: B) RC-030 PARSER IMPLEMENTED BUT NOT VALIDATED — CALCULATIONS BLOCKED.** Nothing
+staged or committed. See `RC030_EVIDENCE_VALIDATION_REPORT.md` for full detail. P6 remains BLOCKED.
+
+## 2026-07-16: RC-030 Dose Semantic Reconstruction — PARTIALLY CLOSED (superseded above)
+
+Built an additive, read-only source-text semantics layer (`dose_verification_sandbox/semantics_*.py`)
+that resolves the per-dose-vs-per-day ambiguity RC-030 identified, by scanning `source_quote` for
+explicit Russian/English signals ("в сутки", "N раз в сутки", "каждые N часов", etc.) instead of
+relying on the missing schema column. Full-corpus run on all 2,675 `assembled_regimens` rows:
+**1,645 (61.5%; 87.6% of the 1,543 `REVIEW_REQUIRED` rows) now resolve to an explicit dose
+semantic** — up from 0 before this work. 202 rows (7.6%) remain genuinely `AMBIGUOUS` (no textual
+signal, correctly fails closed), 74 (2.8%) remain `UNPARSED` (compound unit strings — separate open
+defect). The original 12-case pilot re-run: 10/12 now calculate correctly (e.g. regimen 5364,
+Пиперациллин+тазобактам: 250 mg/kg × 18 kg ÷ 3/day = 1500 mg/dose), 2/12 correctly still blocked.
+*(Correction: this line previously cited "regimen 5574, Азитромицин" — that attribution was wrong;
+see the RC-031 retraction entry above.)* This is a
+**reconstruction layer, not a schema fix** — `assembled_regimens.sqlite` itself still has no
+`denominator_time` column; the real fix (Architecture Change, tracked in RC-030) remains open. 21 new
+tests, 66/66 total pass. Precommit audit (`DOSE_SANDBOX_PRECOMMIT_AUDIT.md`) done for both this and
+the underlying P5.6 sandbox — **nothing staged or committed**, awaits owner approval. Final verdict:
+**B) RC-030 PARTIALLY CLOSED — AMBIGUOUS DATA REMAINS**. See `RC030_DOSE_SEMANTICS_REPORT.md`. P6
+remains BLOCKED, unaffected.
+
+## 2026-07-16: Dose Calculation Verification Sandbox (P5.6) — READY WITH BLOCKED DATA CASES
+
+New, isolated, read-only QA tool at `dose_verification_sandbox/` (+ `tests/dose_verification_sandbox/`)
+lets the owner pick a diagnosis/antibiotic/regimen from `assembled_regimens.sqlite` and inspect the
+full dose calculation trace. Never imports `clinical_engine`, never writes to any source database,
+`clinical_approval` is hard-locked `NOT_APPROVED`. 45/45 tests pass. Phase 0 audit corrected an
+inaccurate earlier claim: `kb_p44.db` has **no** `ClinicalRegimen`/`TherapeuticOption` rows — those
+live only in `assembled_regimens.sqlite` (2,675 rows, live-verified, statuses only `REJECTED`/
+`REVIEW_REQUIRED`, 0 `APPROVED`). Real-data pilot (Phase 15, 12 cases) found every case legitimately
+`BLOCKED`: the source schema cannot distinguish per-dose from per-day dosing, and has no max-dose or
+formulation-concentration columns at all — filed as **RC-030** in `ROOT_CAUSE_REGISTER.md`, 12 open
+`DoseCalculationIssue` records in `dose_verification_sandbox/data/issues.json`. A live browser-UI
+smoke test caught and fixed a real bug (BLOCKED traces reporting `max_dose`/`rounding` as `PASS`
+instead of `NOT_AVAILABLE`) before landing. Final verdict: **B) SANDBOX READY WITH BLOCKED DATA
+CASES**. See `DOSE_VERIFICATION_SANDBOX_AUDIT.md`, `DOSE_VERIFICATION_SANDBOX_SPEC.md`,
+`DOSE_CALCULATION_TRACE_SPEC.md`, `DOSE_ROUNDING_POLICY.md`, `DOSE_VERIFICATION_USER_GUIDE.md`,
+`DOSE_VERIFICATION_SANDBOX_REPORT.md`. P6 remains BLOCKED, unaffected by this work.
+
 ## 2026-07-15: Review Governance Hardening (GOV-001/002/003 FIXED)
 
 Repository recovery is complete (commit `32096af`, fresh clone validated). Physician pilot

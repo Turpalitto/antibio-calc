@@ -29,6 +29,21 @@ def calculate(expr: DoseExpression, weight_kg: float) -> DoseCalculationTrace:
         )
         return trace
 
+    if expr.frequency is not None and expr.frequency < 1:
+        # frequency < 1/day represents sub-daily periodicity (e.g. "3 times a
+        # week" stored as 3/7 ≈ 0.4286/day), not N administrations spread
+        # across one day. Dividing a daily dose by such a frequency produces
+        # a single-dose value LARGER than the daily total — a mathematical
+        # impossibility for a true single administration. Discovered on
+        # regimen 5376 (RC-030 Evidence Validation Phase 6): 90 mg/day ÷
+        # 0.4286 = 210 mg "single dose" from a 90 mg daily total.
+        trace.calculation_status = BLOCKED
+        trace.warnings.append(
+            f"SUB_DAILY_FREQUENCY: frequency={expr.frequency:.4f}/day represents intermittent "
+            "(less-than-daily) dosing; daily÷frequency is not a valid single-dose derivation here"
+        )
+        return trace
+
     weight_based = expr.denominator_weight
     trace.add_step(
         label="source",
@@ -119,7 +134,8 @@ def calculate(expr: DoseExpression, weight_kg: float) -> DoseCalculationTrace:
     return trace
 
 
-def apply_max_dose(trace: DoseCalculationTrace, source_max_daily_dose: Optional[float]) -> None:
+def apply_max_dose(trace: DoseCalculationTrace, source_max_daily_dose: Optional[float],
+                    source_max_single_dose: Optional[float] = None) -> None:
     """Phase 7 — apply a maximum dose only if it is explicitly source-backed.
 
     Not called by `calculate()` automatically because assembled_regimens.sqlite
@@ -127,10 +143,11 @@ def apply_max_dose(trace: DoseCalculationTrace, source_max_daily_dose: Optional[
     future source that *does* carry max-dose data can opt in without silently
     changing default behavior.
     """
-    if source_max_daily_dose is None:
+    if source_max_daily_dose is None and source_max_single_dose is None:
         trace.max_dose_reason = "MAX_DOSE_NOT_AVAILABLE"
         return
-    if trace.final_max_daily_dose is not None and trace.final_max_daily_dose > source_max_daily_dose:
+    if source_max_daily_dose is not None and trace.final_max_daily_dose is not None \
+            and trace.final_max_daily_dose > source_max_daily_dose:
         trace.add_step(
             label="maximum dose",
             formula=f"min({trace.final_max_daily_dose}, {source_max_daily_dose})",
@@ -139,7 +156,17 @@ def apply_max_dose(trace: DoseCalculationTrace, source_max_daily_dose: Optional[
         )
         trace.final_max_daily_dose = source_max_daily_dose
         trace.max_dose_reason = "SOURCE_MAX_DAILY_DOSE"
-    else:
+    if source_max_single_dose is not None and trace.final_max_single_dose is not None \
+            and trace.final_max_single_dose > source_max_single_dose:
+        trace.add_step(
+            label="maximum single dose",
+            formula=f"min({trace.final_max_single_dose}, {source_max_single_dose})",
+            operands={"raw": trace.final_max_single_dose, "source_max": source_max_single_dose},
+            result=source_max_single_dose, unit=trace.final_unit,
+        )
+        trace.final_max_single_dose = source_max_single_dose
+        trace.max_dose_reason = "SOURCE_MAX_DAILY_DOSE"
+    if trace.max_dose_reason is None:
         trace.max_dose_reason = "SOURCE_MAX_DAILY_DOSE"
 
 
