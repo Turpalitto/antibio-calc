@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "structured_unit_distinct_values": {
+    "": 755, "mg": 748, "mg/kg": 658, "g": 462, "IU": 27,
+    "капля": 5, "капли": 5, "%": 5, "см": 3, "мкг/кг": 3,
+    "г; мг/кг": 2, "г; мг/кг/сут; мг/кг/сут": 1, "ЕД/г": 1
+  },
+  "range_regex_captured_unit_raw_117_candidates": {
+    "мг/кг": 32, "мг/кг/сут": 26, "г": 24, "мг": 22, "мг/кг/день": 10, "г/сут": 3
+  },
+  "extended_vocabulary_sweep_365_quotes": {
+    "mcg_cyrillic": 0, "mcg_per_kg_per_min": 0, "IU_ED_cyrillic": 8, "IU_ME_cyrillic": 0, "mmol_cyrillic": 0,
+    "bsa_m2": 0, "mg_per_m2": 0, "percent": 0, "drops": 0,
+    "mg_per_day_absolute": 0, "mg_per_dose_explicit": 0
+  },
+  "real_findings": [
+    "мкг/кг structured value is Cyrillic, not Latin-normalized, unlike mg/kg",
+    "3 rows have compound semicolon-separated multi-unit structured values, unrepresentable by a flat unit string",
+    "IU (ЕД) appears 8/365 in real quotes but is not in the current range regex's unit alternation",
+    "mg/m2, mmol, mcg, percent, drops: zero observed occurrences in this 365-record corpus"
+  ]
+}

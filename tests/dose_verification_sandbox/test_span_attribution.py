@@ -330,4 +330,7 @@ def test_unit_mismatch_rejection_reason_is_not_mislabeled_phase_conflict():
     r = attribute(nt.normalized, "Амоксициллин", 20.0, "г")  # unit mismatch, no phase marker present
     assert r.classification == WRONG_RANGE_ANCHOR
     assert "phase_conflict" not in r.rejection_reasons
-    assert "unit_mismatch" in r.rejection_reasons
+    # C6.8: the reason is now the specific DoseUnitSignature compatibility
+    # failure (numerator g != mg), not a bare generic "unit_mismatch".
+    assert any(reason.startswith("unit_mismatch:") for reason in r.rejection_reasons)
+    assert "unit_mismatch:INCOMPATIBLE_NUMERATOR" in r.rejection_reasons

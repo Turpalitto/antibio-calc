@@ -1,0 +1,67 @@
+{
+  "generated_at_utc": "2026-07-17T19:30:00Z",
+  "git": {
+    "head": "fe7782d86e5b63ce9d574b86278d1b14d028bb13",
+    "parent": "a01c9bf695c479583fbb67a0597dd5156692b5e5",
+    "branch": "main",
+    "origin_main": "2908343d1be1bc7e10dc14b4a8a13ca0c4fc3711",
+    "ahead_of_origin": 24,
+    "behind_origin": 0,
+    "staged_changes": 0,
+    "c67_chain_verified": [
+      "c27febe (C6.7-A)",
+      "ed4c87c (C6.7-B)",
+      "2f80d2c (C6.7-C)",
+      "a01c9bf (C7-ENTRY)",
+      "fe7782d (C6.7 final report)"
+    ]
+  },
+  "environment": {
+    "python_version_path": "3.13.14 (bare 'python' on PATH; project venv .venv is 3.12.10, used for all test/tooling execution)"
+  },
+  "code_hashes_sha256": {
+    "uv.lock": "40512b98d7a3a7548171d0eff319553045df77927e6c01e0705da7dee212500d",
+    "dose_verification_sandbox/span_attribution.py": "c253b30833bb9a1b6ec74487c007adc3b55c499def76305795c86e3e8800a16c",
+    "medical_normalizer/dictionary.py": "9d1449b9bd3a664652e4c5a0d667084af39e3503c04f33662c5e5d77e2e0ff3e",
+    "generated/rc030_recovery/build_interface.py": "e7e8199c53880450fca5aecfd9eec4928f852eea2ca8f6dd4f9200d766a4f7a7",
+    "generated/rc030_recovery/owner_review_template.html": "d29e209e168fb31c827a0d435a0083c5cb5442e7b2bb5c390f07114b0264de27",
+    "tests/dose_verification_sandbox/test_c67_unit_basis_adversarial.py": "6d48a6667e17a602cd73ced43ee12f17188f82ac44439436c326d00d109472c7",
+    "clinical_engine/tests/test_review_workbench_isolation.py": "8d861cbef9d5d21260c662a84ee8f4343581ee9078a190605bf1fd3e872f1f97"
+  },
+  "artifact_hashes_sha256": {
+    "generated/rc030_multiworkstream/replay_with_unit_fix_365.json": "0d7ca1a95e7203f44583ffb8acb6cee704343d443052c6beb69670712c9bba6f",
+    "generated/rc030_c67/candidate_117_manifest.json": "c31050e13dcb841ec1d89f8c7108819341f972600d8c3d461d6c71206ab3afb9",
+    "RC030_C67_EXACT_LINK_OWNER_QUEUE.json": "7524bdd37bb5693ee4b76cbf6dc3dcd72cdaf40f896b16fd8f7e341d4f234337",
+    "RC030_C67_SINGLE_CANDIDATE_OWNER_QUEUE.json": "36fffdf03ad7ff880b862af203c44b997e734c982430da7c33fcc44ac1b3d60c"
+  },
+  "database_hashes_sha256": {
+    "assembled_regimens.sqlite": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+    "review_workbench_p56.sqlite": "3e479ee70e59ce9aafa6ba44718dda68d867dbcc660796b81ff63d2b19ca0f29",
+    "kb_final.db": "16c31fba2ecafbb9d6bf7c5bc54afee5b46e41d6088cc0ac10492c852abd67dd",
+    "note": "identical to the C6.7 final-report baseline -- no authoritative DB changed between programs"
+  },
+  "c67_verified_result": {
+    "initial_exact_link": 74,
+    "initial_single_candidate": 43,
+    "candidate_total": 117,
+    "exact_link_retained": 53,
+    "exact_link_downgraded": 18,
+    "exact_link_rejected": 2,
+    "exact_link_engine_review_required": 1,
+    "source_quote_defects": ["5688", "6052"],
+    "unit_basis_affected_records": 14,
+    "unit_basis_affected_exact_link_records": 6
+  },
+  "governance_invariants": {
+    "assembled_count": 2675,
+    "calculation_eligible_count": 0,
+    "approved_count": 0,
+    "types_meeting_precision_threshold": [],
+    "review_decisions": 0,
+    "review_tasks_pending": 9153,
+    "review_tasks_total": 9153,
+    "clinical_engine_connected": false,
+    "staging_area_empty": true
+  },
+  "invariant_check_result": "ALL_BASELINE_INVARIANTS_MATCH_EXPECTED"
+}

@@ -27,7 +27,10 @@ import unicodedata
 from dataclasses import dataclass, field
 from typing import Optional
 
-from medical_normalizer.dictionary import DRUG_SYNONYMS, UnitNormalizer
+from medical_normalizer.dictionary import DRUG_SYNONYMS
+from dose_verification_sandbox.dose_unit_signature import (
+    COMPATIBLE_BASIS_UNSPECIFIED, EXACT_EQUIVALENT, compare_dose_units, parse_dose_unit,
+)
 
 SPAN_ATTRIBUTION_SCHEMA_VERSION = 1
 
@@ -118,26 +121,6 @@ def normalize_text(raw: str) -> NormalizedText:
     return NormalizedText(raw=raw, normalized=normalized, offset_map=tuple(trimmed_map))
 
 
-def _base_unit(unit: str) -> str:
-    """The leading unit token before any '/' (e.g. 'мг/кг/сут' -> 'мг'),
-    lowercased, space-stripped, and script-canonicalized via the governed
-    `UnitNormalizer` (e.g. 'мг' -> 'mg', 'г' -> 'g'). A single-letter unit
-    like 'г' must NOT match as a substring of 'мг' — this compares whole
-    leading tokens only, never substrings.
-
-    Real defect found during C6.5's root-cause analysis: `assembled_regimens`
-    stores structured doses with a LATIN-script unit ('mg', 'mg/kg', 'g'),
-    while the range regex only matches CYRILLIC-script units from source
-    text ('мг', 'мг/кг', 'г'). Without script canonicalization, 'mg' and
-    'мг' compare unequal even though they mean the same thing, causing
-    182/223 real WRONG_RANGE_ANCHOR records (82%) to be rejected on a
-    superficial script mismatch rather than a genuine unit incompatibility.
-    `UnitNormalizer.normalize()` is the same governed dictionary the
-    production parser (`medical_normalizer.drug_parser.DoseNormalizer`)
-    already uses for this exact purpose."""
-    leading = unit.lower().replace(" ", "").split("/")[0]
-    return UnitNormalizer.normalize(leading).lower()
-
 
 def normalize_decimal(text: str) -> str:
     """Decimal comma -> decimal point, for numeric comparison only (never
@@ -204,7 +187,22 @@ class RangeSpan:
 
 
 _NUM = r"\d[\d.,]*"
-_RANGE_RE = re.compile(rf"({_NUM})\s*-\s*({_NUM})\s*(мг/кг/сут|мг/кг/сутки|мг/кг/день|мг/кг|г/сут|г|мг|мл)")
+# C6.8: the compact-token alternatives (мг/кг/сут, etc.) are tried first;
+# the spelled-out per-weight-per-day construction ("20-40 мг на кг массы
+# тела в сутки") is recognized explicitly rather than falling through to
+# the bare "мг" alternative and silently losing the /kg/day qualifier --
+# see RC030_C68_UNIT_VOCABULARY_AUDIT.md and RC030_C67_UNIT_NORMALIZATION_AUDIT.md
+# for the real defect this closes (regimen_id 5917/5918/5441/5442/5475/5478).
+_SPELLED_OUT_UNIT = r"(?:мг|г)\s+на\s+кг\s+массы\s+тела\s+в\s+сутки|(?:мг|г)\s+на\s+кг\s+массы\s+тела|(?:мг|г)\s+на\s+кг"
+# C6.8: concentration forms (мг/мл, г/мл) must be recognized explicitly and
+# BEFORE the bare мг/г alternatives -- otherwise a real "X-Y мг/мл" source
+# range silently truncates to bare "мг", losing the concentration marker
+# entirely (found by the Phase 8 test matrix; the old regex had no
+# concentration alternative at all, unlike its already-present bare "мл"
+# volume alternative).
+_RANGE_RE = re.compile(
+    rf"({_NUM})\s*-\s*({_NUM})\s*({_SPELLED_OUT_UNIT}|мг/кг/сут|мг/кг/сутки|мг/кг/день|мг/кг|мг/мл|г/мл|г/сут|г|мг|мл)"
+)
 
 _MAX_MARKER_RE = re.compile(r"не\s+более|максимальн|макс\.?\s*доза", re.IGNORECASE)
 _LOADING_MARKER_RE = re.compile(
@@ -356,7 +354,21 @@ def attribute(
         if phase_marker_between(normalized, min(nearest.end, rng.end), max(nearest.start, rng.start)):
             components["phase_conflict"] = True
 
-        components["unit_match"] = (not current_unit) or _base_unit(current_unit) == _base_unit(rng.unit_raw)
+        # C6.8: structured compatibility (DoseUnitSignature) replaces the
+        # C6/C6.5 leading-token _base_unit() comparison, which could not
+        # distinguish absolute mg from per-kilogram mg/kg from
+        # per-kilogram-per-day mg/kg/day -- see
+        # RC030_C67_UNIT_NORMALIZATION_AUDIT.md and
+        # RC030_C68_UNIT_VOCABULARY_AUDIT.md. COMPATIBLE_BASIS_UNSPECIFIED
+        # keeps a candidate alive (unit_match=True) but is tracked
+        # separately so it can never alone justify SAFE_EXACT_LINK.
+        if not current_unit:
+            components["unit_compatibility"] = None
+            components["unit_match"] = True
+        else:
+            compat = compare_dose_units(parse_dose_unit(current_unit), parse_dose_unit(rng.unit_raw))
+            components["unit_compatibility"] = compat
+            components["unit_match"] = compat in (EXACT_EQUIVALENT, COMPATIBLE_BASIS_UNSPECIFIED)
 
         if current_scalar is not None:
             components["scalar_match"] = abs(rng.lower - current_scalar) < 1e-6
@@ -385,7 +397,11 @@ def attribute(
             if c.get("phase_conflict"):
                 return "phase_conflict"
             if not c["unit_match"]:
-                return "unit_mismatch"
+                # C6.8: surface the specific DoseUnitSignature compatibility
+                # failure (e.g. concentration/rate/weight-basis conflict)
+                # instead of a single generic "unit_mismatch" string.
+                compat = c.get("unit_compatibility")
+                return f"unit_mismatch:{compat}" if compat else "unit_mismatch"
             return "no_valid_segment"
         rejected = [_reject_reason(c) for _, _, c in scored]
         if any(c.get("phase_conflict") for _, _, c in scored):
@@ -406,7 +422,13 @@ def attribute(
                                       [t[0] for t in valid], ["multiple_equally_plausible_ranges"], {})
 
     rng, ab, comp = valid[0]
-    if len(distinct_drugs) == 1 and comp["scalar_match"] and comp["unit_match"]:
+    # C6.8: COMPATIBLE_BASIS_UNSPECIFIED must not automatically yield
+    # SAFE_EXACT_LINK -- only a structurally EXACT_EQUIVALENT unit
+    # comparison (full numerator/weight/time/administration-basis
+    # agreement) can. A merely-compatible-but-unspecified basis caps out at
+    # SAFE_SINGLE_CANDIDATE, per RC030_C68 Phase 4.
+    exact_unit = comp["unit_compatibility"] in (EXACT_EQUIVALENT, None)
+    if len(distinct_drugs) == 1 and comp["scalar_match"] and exact_unit:
         classification = SAFE_EXACT_LINK
     elif comp["scalar_match"] and comp["unit_match"]:
         classification = SAFE_SINGLE_CANDIDATE
