@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "queue_size": 23,
+  "selection_criteria": "all AMBIGUOUS_MULTIPLE_DRUGS, AMBIGUOUS_TABLE_CONTEXT, AMBIGUOUS_LOADING_MAINTENANCE records (no SAFE_EXACT_LINK/SAFE_SINGLE_CANDIDATE records exist in this run to sample)",
+  "items": [
+    {
+      "regimen_id": "6562",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6231",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6232",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6612",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6618",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6624",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6625",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6631",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6786",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6787",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6788",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6790",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6791",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6793",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6783",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6819",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6854",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6874",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "6988",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "7050",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "7118",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "7177",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    },
+    {
+      "regimen_id": "7292",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_LOADING_MAINTENANCE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED"
+    }
+  ]
+}

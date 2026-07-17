@@ -1,0 +1,28 @@
+{
+  "head": "863f981842521fa860e50ea4fd2dd0bfc11e57b8",
+  "branch": "main",
+  "commit_chain": {
+    "C5_portability_fix": "863f981842521fa860e50ea4fd2dd0bfc11e57b8",
+    "C5_interface": "ed5d86351437220d80ee302acb225fddde09eb64",
+    "C4_governance": "c41efb52ab6ae9cba20d09d046f9738566e7260a",
+    "C3_reports": "d79bb3c98f16b2c425f3f6247e07c5db5f46d72c",
+    "C2_range_preservation": "35d432eddf032f4d6283bbe27f51528909b5e303",
+    "C1_parser_repair": "aa753317617f6871f8faff4e7c795bc920e9df75"
+  },
+  "source_db_hashes": {
+    "assembled_regimens.sqlite": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+    "kb_final.db": "16c31fba2ecafbb9d6bf7c5bc54afee5b46e41d6088cc0ac10492c852abd67dd",
+    "review_workbench_p56.sqlite": "3e479ee70e59ce9aafa6ba44718dda68d867dbcc660796b81ff63d2b19ca0f29"
+  },
+  "existing_365_manifest_sha256": "6797810d4e5ccbe0ff457227b2878cad8d85a58181196cb9be1b5996da2fe239",
+  "suspect_count": 179,
+  "trustworthy_count": 186,
+  "assembled_rows": 2675,
+  "calculation_eligible": 0,
+  "approved_objects": 0,
+  "threshold": [],
+  "review_decisions": 0,
+  "review_tasks_pending": 9153,
+  "clinical_engine": "disconnected",
+  "environment_constraint": "C:\\clinrec_downloader resolves to the repository root in this environment, not a PDF archive; no local PDF corpus is available for table-layout extraction (DocLayout-YOLO/Table Transformer/PyMuPDF page clipping). Attribution runs against `source_quote` text already stored in assembled_regimens.sqlite, the same source text the original naive heuristic used."
+}
