@@ -111,13 +111,22 @@ class DoseNormalizer:
 
     @classmethod
     def parse(cls, regimen: NormalizedRegimen, raw: dict) -> NormalizedRegimen:
-        """Extract dose_value and dose_unit from raw regimen."""
+        """Extract dose_value and dose_unit from raw regimen.
+
+        RC-030 repair Phase 9: `dose_value` is preserved byte-for-byte as the
+        LOWER bound (unchanged legacy behavior). Additionally, when the raw
+        dose is an explicit range ("1,0-2,0"), the UPPER bound — which was
+        previously read by the regex's group(2) and then silently discarded —
+        is now preserved in dose_max, with dose_is_range=True so scalar-only
+        consumers know they are incomplete.
+        """
         dose_raw = _coerce_str(raw.get("dose", "")).strip()
         unit_raw = _coerce_str(raw.get("unit", "")).strip()
 
         if not dose_raw:
             regimen.dose_value = None
             regimen.dose_unit = cls._normalize_unit(unit_raw) if unit_raw else None
+            regimen.dose_is_range = None
             return regimen
 
         # Normalize decimal comma to decimal point
@@ -128,6 +137,10 @@ class DoseNormalizer:
         try:
             regimen.dose_value = float(cleaned)
             regimen.dose_unit = cls._normalize_unit(unit_raw)
+            regimen.dose_min = regimen.dose_max = regimen.dose_value
+            regimen.dose_is_range = False
+            regimen.dose_range_raw = dose_raw
+            regimen.dose_range_confidence = 1.0
             return regimen
         except (ValueError, TypeError):
             pass
@@ -137,14 +150,39 @@ class DoseNormalizer:
         if match:
             try:
                 val = float(match.group(1).replace(",", "."))
-                regimen.dose_value = val
+                regimen.dose_value = val  # legacy scalar remains the LOWER bound
                 regimen.dose_unit = cls._normalize_unit(unit_raw)
+                regimen.dose_min = val
+                # Preserve group(2) upper bound (previously discarded).
+                upper_raw = match.group(2)
+                if upper_raw is not None:
+                    try:
+                        upper = float(upper_raw.replace(",", "."))
+                        if upper > val:
+                            regimen.dose_max = upper
+                            regimen.dose_is_range = True
+                            regimen.dose_range_raw = dose_raw
+                            regimen.dose_source_start, regimen.dose_source_end = match.span()
+                            regimen.dose_range_confidence = 1.0
+                        else:
+                            regimen.dose_max = val
+                            regimen.dose_is_range = False
+                            regimen.dose_range_confidence = 0.5  # malformed range (upper<=lower)
+                    except (ValueError, TypeError):
+                        regimen.dose_max = val
+                        regimen.dose_is_range = None  # RANGE_PARSE_AMBIGUOUS
+                else:
+                    regimen.dose_max = val
+                    regimen.dose_is_range = False
+                    regimen.dose_range_raw = dose_raw
+                    regimen.dose_range_confidence = 1.0
                 return regimen
             except (ValueError, TypeError):
                 pass
 
         regimen.dose_value = None
         regimen.dose_unit = cls._normalize_unit(unit_raw) if unit_raw else None
+        regimen.dose_is_range = None  # RANGE_PARSE_AMBIGUOUS
         return regimen
 
     @classmethod

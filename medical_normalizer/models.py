@@ -34,6 +34,19 @@ class NormalizedRegimen:
     # Dose
     dose_value: float | None = None
     dose_unit: str | None = None
+    # RC-030 repair Phase 9 — additive range preservation. dose_value stays the
+    # LOWER bound for legacy scalar consumers (byte-identical to prior behavior);
+    # dose_max is always separately present; dose_is_range signals scalar
+    # consumers are incomplete. These are NOT written to to_dict() (authoritative
+    # DB serialization is unchanged) — use to_dict_with_range().
+    dose_min: float | None = None
+    dose_max: float | None = None
+    dose_is_range: bool | None = None
+    dose_range_raw: str | None = None
+    dose_basis_raw: str | None = None
+    dose_source_start: int | None = None
+    dose_source_end: int | None = None
+    dose_range_confidence: float | None = None
 
     # Route
     route: str = "unknown"
@@ -82,6 +95,20 @@ class NormalizedRegimen:
             "confidence": self.confidence,
             "warnings": self.warnings,
         }
+
+    def to_dict_with_range(self) -> dict[str, Any]:
+        """to_dict() plus the RC-030 additive range fields. Used only by
+        experimental range-preserving artifacts, never by the authoritative DB
+        writer."""
+        d = self.to_dict()
+        d.update({
+            "dose_min": self.dose_min, "dose_max": self.dose_max,
+            "dose_is_range": self.dose_is_range, "dose_range_raw": self.dose_range_raw,
+            "dose_basis_raw": self.dose_basis_raw,
+            "dose_source_start": self.dose_source_start, "dose_source_end": self.dose_source_end,
+            "dose_range_confidence": self.dose_range_confidence,
+        })
+        return d
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> NormalizedRegimen:

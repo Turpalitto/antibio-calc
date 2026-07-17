@@ -102,6 +102,26 @@ class TestDoseParser:
         assert reg.dose_value == 1.0
         assert reg.dose_unit == "g"
 
+    # RC-030 repair Phase 9: the range regex's group(2) upper bound, previously
+    # matched and then silently discarded, is now preserved additively.
+    def test_dose_range_preserves_upper_bound(self):
+        raw = {"dose": "20-50", "unit": "мг/кг"}
+        reg = DoseNormalizer.parse(NormalizedRegimen(), raw)
+        assert reg.dose_value == 20.0  # legacy scalar unchanged — byte-identical to prior behavior
+        assert reg.dose_min == 20.0
+        assert reg.dose_max == 50.0
+        assert reg.dose_is_range is True
+
+    def test_dose_scalar_backward_compatible(self):
+        raw = {"dose": "500", "unit": "мг"}
+        reg = DoseNormalizer.parse(NormalizedRegimen(), raw)
+        assert reg.dose_value == 500.0
+        assert reg.dose_min == 500.0 and reg.dose_max == 500.0
+        assert reg.dose_is_range is False
+        # to_dict() unchanged — no new keys leak into authoritative serialization
+        assert "dose_min" not in reg.to_dict()
+        assert "dose_min" in reg.to_dict_with_range()
+
     def test_no_dose(self):
         raw = {"dose": "", "unit": "мг"}
         reg = DoseNormalizer.parse(NormalizedRegimen(), raw)
