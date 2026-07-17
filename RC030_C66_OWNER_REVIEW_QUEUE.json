@@ -1,0 +1,1237 @@
+{
+  "schema_version": 1,
+  "queue_size": 123,
+  "selection_criteria": "all SAFE_SINGLE_CANDIDATE (43), all DICTIONARY_GAP (40), all AMBIGUOUS_TABLE_CONTEXT (23), all AMBIGUOUS_LOADING_MAINTENANCE (2), plus a deterministic sample of 15 SAFE_EXACT_LINK (sorted by regimen_id, first 15 of 74).",
+  "items": [
+    {
+      "regimen_id": "5352",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5364",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5441",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5442",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5475",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5478",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5514",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5526",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5527",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5528",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5531",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5533",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5534",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5546",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5547",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5623",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5628",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5659",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5660",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5661",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5671",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5678",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5683",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5688",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5696",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5726",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5727",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5741",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5793",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5824",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5842",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5875",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "5999",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6000",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6052",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6068",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6072",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6092",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6110",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6111",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6121",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6124",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6125",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6126",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6127",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6130",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6131",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6230",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6231",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6232",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6233",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6561",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6562",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6611",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6612",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6617",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6618",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6623",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6624",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6625",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6630",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6631",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6638",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6644",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6756",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6761",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6766",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6771",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6774",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6782",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6783",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6786",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6787",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6788",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6789",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6790",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6791",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6793",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6794",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6799",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6804",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6809",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6818",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6819",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6839",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6853",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6854",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6860",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6873",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6874",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "6989",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7017",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7022",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7026",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7031",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7036",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7059",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7064",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7069",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7177",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7185",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7202",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7205",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7248",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7267",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7281",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7286",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7292",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_LOADING_MAINTENANCE",
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7293",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_LOADING_MAINTENANCE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7301",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7302",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7303",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7304",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7323",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7342",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7463",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7471",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7548",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7559",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7599",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7604",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7956",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    },
+    {
+      "regimen_id": "7962",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "old_trust": "TRUSTWORTHY",
+      "owner_review_required": true,
+      "clinically_approved": false,
+      "calculation_eligibility": "BLOCKED",
+      "authoritative_migration_allowed": false
+    }
+  ]
+}

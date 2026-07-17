@@ -27,7 +27,7 @@ import unicodedata
 from dataclasses import dataclass, field
 from typing import Optional
 
-from medical_normalizer.dictionary import DRUG_SYNONYMS
+from medical_normalizer.dictionary import DRUG_SYNONYMS, UnitNormalizer
 
 SPAN_ATTRIBUTION_SCHEMA_VERSION = 1
 
@@ -120,10 +120,23 @@ def normalize_text(raw: str) -> NormalizedText:
 
 def _base_unit(unit: str) -> str:
     """The leading unit token before any '/' (e.g. 'мг/кг/сут' -> 'мг'),
-    lowercased and space-stripped, for strict dose-basis comparison. A
-    single-letter unit like 'г' must NOT match as a substring of 'мг' —
-    this compares whole leading tokens only, never substrings."""
-    return unit.lower().replace(" ", "").split("/")[0]
+    lowercased, space-stripped, and script-canonicalized via the governed
+    `UnitNormalizer` (e.g. 'мг' -> 'mg', 'г' -> 'g'). A single-letter unit
+    like 'г' must NOT match as a substring of 'мг' — this compares whole
+    leading tokens only, never substrings.
+
+    Real defect found during C6.5's root-cause analysis: `assembled_regimens`
+    stores structured doses with a LATIN-script unit ('mg', 'mg/kg', 'g'),
+    while the range regex only matches CYRILLIC-script units from source
+    text ('мг', 'мг/кг', 'г'). Without script canonicalization, 'mg' and
+    'мг' compare unequal even though they mean the same thing, causing
+    182/223 real WRONG_RANGE_ANCHOR records (82%) to be rejected on a
+    superficial script mismatch rather than a genuine unit incompatibility.
+    `UnitNormalizer.normalize()` is the same governed dictionary the
+    production parser (`medical_normalizer.drug_parser.DoseNormalizer`)
+    already uses for this exact purpose."""
+    leading = unit.lower().replace(" ", "").split("/")[0]
+    return UnitNormalizer.normalize(leading).lower()
 
 
 def normalize_decimal(text: str) -> str:
@@ -356,7 +369,25 @@ def attribute(
     ]
 
     if not valid:
-        rejected = [c.get("boundary") or "phase_conflict" or "unit_mismatch" for _, _, c in scored]
+        # Diagnostic-only: report the actual reason each candidate was
+        # rejected. Real defect found during C6.5's root-cause analysis —
+        # the previous `c.get("boundary") or "phase_conflict" or "unit_mismatch"`
+        # always evaluated to the literal string "phase_conflict" regardless
+        # of the true cause (Python `or`-chaining returns the first truthy
+        # operand; "phase_conflict" is always truthy, making the
+        # "unit_mismatch" branch unreachable dead code). This only affected
+        # the informational `rejection_reasons` list — the classification
+        # decisions below use `comp["boundary"]`/`comp.get("phase_conflict")`
+        # directly and were never affected.
+        def _reject_reason(c: dict) -> str:
+            if c.get("boundary"):
+                return c["boundary"]
+            if c.get("phase_conflict"):
+                return "phase_conflict"
+            if not c["unit_match"]:
+                return "unit_mismatch"
+            return "no_valid_segment"
+        rejected = [_reject_reason(c) for _, _, c in scored]
         if any(c.get("phase_conflict") for _, _, c in scored):
             return AttributionResult(AMBIGUOUS_LOADING_MAINTENANCE, None, None, true_ranges, rejected, {})
         if any(c["boundary"] == "ALTERNATIVE_OR" for _, _, c in scored):

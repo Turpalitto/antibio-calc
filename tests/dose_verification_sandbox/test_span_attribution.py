@@ -313,3 +313,21 @@ def test_full_365_replay_never_produces_wrong_safe_classification_for_known_adve
         r = attribute(nt.normalized, drug, scalar, unit)
         assert r.classification not in ("SAFE_EXACT_LINK", "SAFE_TABLE_LINK"), \
             f"adversarial case wrongly reached SAFE: {text!r}"
+
+
+# ── C6.5 regression: rejection_reasons must reflect the true cause ────────
+
+def test_unit_mismatch_rejection_reason_is_not_mislabeled_phase_conflict():
+    """Regression for a real diagnostic-only bug found during C6.5's
+    root-cause analysis: `c.get("boundary") or "phase_conflict" or
+    "unit_mismatch"` always evaluated to the literal string
+    "phase_conflict" (Python `or`-chaining short-circuits on the first
+    truthy operand), making every WRONG_RANGE_ANCHOR record's
+    rejection_reasons claim a phase conflict even when the real cause was
+    a unit mismatch or generic no-valid-segment case. The classification
+    itself was never affected — only this diagnostic list."""
+    nt = normalize_text("Амоксициллин 20-50 мг/кг в сутки внутрь.")
+    r = attribute(nt.normalized, "Амоксициллин", 20.0, "г")  # unit mismatch, no phase marker present
+    assert r.classification == WRONG_RANGE_ANCHOR
+    assert "phase_conflict" not in r.rejection_reasons
+    assert "unit_mismatch" in r.rejection_reasons

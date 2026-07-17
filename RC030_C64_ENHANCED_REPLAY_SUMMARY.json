@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "pdf_discovery": {
+    "total_referenced": 365,
+    "found": 365,
+    "hash_match": 365,
+    "hash_mismatch": 0,
+    "missing": 0,
+    "page_extract_ok": 363,
+    "page_extract_fail": 2
+  },
+  "dictionary_gap_before": 40,
+  "dictionary_gap_after_context_expansion": 6,
+  "engine_fixes_this_turn": [
+    "DICTIONARY_GAP classification for zero-antibiotic-span case (C6.1)",
+    "rejection_reasons diagnostic or-chain bug fixed (C6.5)",
+    "Latin-vs-Cyrillic unit script mismatch fixed via UnitNormalizer reuse (C6.5) -- the high-impact fix"
+  ],
+  "classification_c61_before_this_turn": {
+    "WRONG_RANGE_ANCHOR": 223,
+    "AMBIGUOUS_ALTERNATIVE_BOUNDARY": 48,
+    "DICTIONARY_GAP": 40,
+    "AMBIGUOUS_TABLE_CONTEXT": 23,
+    "NOT_A_DOSE_RANGE": 26,
+    "AMBIGUOUS_MULTIPLE_DRUGS": 3,
+    "AMBIGUOUS_LOADING_MAINTENANCE": 2
+  },
+  "classification_final_this_turn": {
+    "SAFE_EXACT_LINK": 74,
+    "SAFE_SINGLE_CANDIDATE": 43,
+    "AMBIGUOUS_MULTIPLE_DRUGS": 50,
+    "WRONG_RANGE_ANCHOR": 60,
+    "AMBIGUOUS_ALTERNATIVE_BOUNDARY": 40,
+    "DICTIONARY_GAP": 40,
+    "AMBIGUOUS_TABLE_CONTEXT": 23,
+    "NOT_A_DOSE_RANGE": 26,
+    "AMBIGUOUS_MULTIPLE_RANGES": 7,
+    "AMBIGUOUS_LOADING_MAINTENANCE": 2
+  },
+  "safe_total_final": 117,
+  "safe_exact_link_final": 74,
+  "safe_table_link_final": 0,
+  "safe_single_candidate_final": 43,
+  "v4_artifact_built": true,
+  "v4_rows_with_dose_max_populated": 74,
+  "v4_integrity_clinical_field_mismatches": 0,
+  "v4_row_count_before_after": [
+    2675,
+    2675
+  ],
+  "authoritative_migration_allowed": false,
+  "authoritative_db_hash_unchanged": true,
+  "source_db_hashes": {
+    "assembled_regimens.sqlite": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9"
+  }
+}

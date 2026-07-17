@@ -1,0 +1,44 @@
+{
+  "head": "7530b4796b924b17857b3ef7e52bb32e900d0501",
+  "parent": "549016c6b9fc8330eb93b509664db26ee42d8980",
+  "branch": "main",
+  "origin_main": "2908343d1be1bc7e10dc14b4a8a13ca0c4fc3711",
+  "ahead_count": 16,
+  "commit_chain": {
+    "C6.1_report": "7530b4796b924b17857b3ef7e52bb32e900d0501",
+    "C6.1_main": "549016c6b9fc8330eb93b509664db26ee42d8980",
+    "C6": "6e27cebbfd5ccce5973ab4ee19e9f62c56d37c64",
+    "C5_fix": "863f981842521fa860e50ea4fd2dd0bfc11e57b8",
+    "C5": "ed5d86351437220d80ee302acb225fddde09eb64",
+    "C4": "c41efb52ab6ae9cba20d09d046f9738566e7260a",
+    "C3": "d79bb3c98f16b2c425f3f6247e07c5db5f46d72c",
+    "C2": "35d432eddf032f4d6283bbe27f51528909b5e303",
+    "C1": "aa753317617f6871f8faff4e7c795bc920e9df75",
+    "base": "394818675b0ed199e03cae1d89e38a488f5102ce"
+  },
+  "source_db_hashes": {
+    "assembled_regimens.sqlite": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+    "kb_final.db": "16c31fba2ecafbb9d6bf7c5bc54afee5b46e41d6088cc0ac10492c852abd67dd",
+    "review_workbench_p56.sqlite": "3e479ee70e59ce9aafa6ba44718dda68d867dbcc660796b81ff63d2b19ca0f29"
+  },
+  "assembled_rows": 2675,
+  "range_candidate_total": 365,
+  "old_trustworthy": 186,
+  "old_suspect": 179,
+  "c61_classification_counts": {
+    "WRONG_RANGE_ANCHOR": 223,
+    "AMBIGUOUS_ALTERNATIVE_BOUNDARY": 48,
+    "DICTIONARY_GAP": 40,
+    "AMBIGUOUS_TABLE_CONTEXT": 23,
+    "NOT_A_DOSE_RANGE": 26,
+    "AMBIGUOUS_MULTIPLE_DRUGS": 3,
+    "AMBIGUOUS_LOADING_MAINTENANCE": 2
+  },
+  "calculation_eligible": 0,
+  "approved_objects": 0,
+  "threshold": [],
+  "review_decisions": 0,
+  "review_tasks_pending": 9153,
+  "clinical_engine": "disconnected",
+  "major_correction_this_turn": "C:\\clinrec_downloader is a distinct sibling project directory containing a real PDF corpus (downloads_active/downloads_all/downloads_antibiotics/downloads_other/archive_no_antibiotics/archive_review/quarantine subdirectories), NOT the repository root as incorrectly concluded during the C6 turn's shallow check. Full re-verification this turn: 365/365 candidate-record PDFs found, 365/365 SHA-256 hash matches against CORPUS_MANIFEST.json, 363/365 PyMuPDF page-text extractions succeeded."
+}
