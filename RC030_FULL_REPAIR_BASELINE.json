@@ -1,0 +1,32 @@
+{
+  "head": "394818675b0ed199e03cae1d89e38a488f5102ce",
+  "branch": "main",
+  "assembled_rows": 2675,
+  "normalized_rows": 2675,
+  "source_db_hashes": {
+    "assembled_regimens.sqlite": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+    "normalized_regimens.sqlite": "c7b67354b0723ad538a185e561ed94d09b11c019279be9c4c6412c4f1eaa4237"
+  },
+  "review_db_hash": "3e479ee70e59ce9aafa6ba44718dda68d867dbcc660796b81ff63d2b19ca0f29",
+  "parser_hash": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f",
+  "normalizer_hash": "3c13312e461931232c57aa278e57d39179e16328875fe584370824937e3fa04f",
+  "semantic_distribution": {
+    "MISSING": 658,
+    "FIXED_PER_DOSE": 579,
+    "AMBIGUOUS": 236,
+    "WEIGHT_PER_DAY": 446,
+    "FIXED_PER_DAY": 506,
+    "UNPARSED": 74,
+    "WEIGHT_PER_DOSE": 80,
+    "NOT_APPLICABLE": 96
+  },
+  "max_dose_candidates": 104,
+  "range_candidate_rows": 348,
+  "calculation_eligible": 0,
+  "approved_objects": 0,
+  "review_decisions": 0,
+  "review_tasks_pending": 9153,
+  "owner_events": 1,
+  "ai_audit_events": 60,
+  "clinical_engine": "disconnected"
+}

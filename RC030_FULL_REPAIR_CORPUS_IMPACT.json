@@ -1,0 +1,38 @@
+{
+  "rows": 2675,
+  "parser_exceptions": 0,
+  "old_semantic_distribution": {
+    "MISSING": 658,
+    "FIXED_PER_DOSE": 579,
+    "AMBIGUOUS": 236,
+    "WEIGHT_PER_DAY": 446,
+    "FIXED_PER_DAY": 506,
+    "UNPARSED": 74,
+    "WEIGHT_PER_DOSE": 80,
+    "NOT_APPLICABLE": 96
+  },
+  "new_semantic_distribution": {
+    "MISSING": 658,
+    "FIXED_PER_DOSE": 670,
+    "WEIGHT_PER_DAY": 211,
+    "AMBIGUOUS": 740,
+    "FIXED_PER_DAY": 132,
+    "UNPARSED": 74,
+    "WEIGHT_PER_DOSE": 94,
+    "NOT_APPLICABLE": 96
+  },
+  "schedule_risk_flag_distribution": {
+    "EXPLICIT_DOSE_BASIS_MISSING": 740,
+    "SUB_DAILY_FREQUENCY": 82,
+    "RANGE_VALUE_COLLAPSED_UPSTREAM": 328,
+    "NORMALIZER_RANGE_UPPER_BOUND_DROPPED": 328,
+    "WEEKLY_SCHEDULE_UNSUPPORTED": 18
+  },
+  "old_calc_eligible": 0,
+  "new_calc_eligible": 0,
+  "markerless_now_ambiguous_flag_count": 740,
+  "weekly_schedule_count": 18,
+  "range_collapsed_flag_count": 328,
+  "loading_maintenance_count": 0,
+  "sub_daily_count": 82
+}
