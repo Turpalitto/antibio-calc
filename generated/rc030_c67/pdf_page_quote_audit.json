@@ -1,0 +1,1059 @@
+{
+  "counts": {
+    "PDF_EVIDENCE_VALID": 115,
+    "PDF_QUOTE_NOT_FOUND": 2
+  },
+  "results": [
+    {
+      "regimen_id": "5623",
+      "regimen_version": 1,
+      "source_pdf": "Перелом нижней челюсти.pdf",
+      "source_page": "24",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 2293,
+      "block_count": 32
+    },
+    {
+      "regimen_id": "5628",
+      "regimen_version": 1,
+      "source_pdf": "Перелом нижней челюсти.pdf",
+      "source_page": "25",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 639,
+      "block_count": 49
+    },
+    {
+      "regimen_id": "5659",
+      "regimen_version": 1,
+      "source_pdf": "Атопический дерматит.pdf",
+      "source_page": "36",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 3,
+      "block_count": 37
+    },
+    {
+      "regimen_id": "5671",
+      "regimen_version": 1,
+      "source_pdf": "Острый синусит.pdf",
+      "source_page": "24",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 812,
+      "block_count": 25
+    },
+    {
+      "regimen_id": "5683",
+      "regimen_version": 1,
+      "source_pdf": "Кистозный фиброз (муковисцидоз).pdf",
+      "source_page": "86",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 115,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "5678",
+      "regimen_version": 1,
+      "source_pdf": "Острый обструктивный ларингит [круп] и эпиглоттит.pdf",
+      "source_page": "23",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 270,
+      "block_count": 17
+    },
+    {
+      "regimen_id": "5688",
+      "regimen_version": 1,
+      "source_pdf": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "source_page": "42",
+      "status": "PDF_QUOTE_NOT_FOUND",
+      "block_count": 35
+    },
+    {
+      "regimen_id": "5696",
+      "regimen_version": 1,
+      "source_pdf": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия _ацидурия).pdf",
+      "source_page": "20",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 498,
+      "block_count": 30
+    },
+    {
+      "regimen_id": "5726",
+      "regimen_version": 1,
+      "source_pdf": "Переломы костей голени.pdf",
+      "source_page": "30",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1858,
+      "block_count": 37
+    },
+    {
+      "regimen_id": "5727",
+      "regimen_version": 1,
+      "source_pdf": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия _ацидурия).pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 197,
+      "block_count": 32
+    },
+    {
+      "regimen_id": "5741",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "5793",
+      "regimen_version": 1,
+      "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1530,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "5824",
+      "regimen_version": 1,
+      "source_pdf": "Первичные иммунодефициты с преимущественной недостаточностью синтеза антител.pdf",
+      "source_page": "35",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 63,
+      "block_count": 22
+    },
+    {
+      "regimen_id": "5842",
+      "regimen_version": 1,
+      "source_pdf": "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз).pdf",
+      "source_page": "110",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 754,
+      "block_count": 33
+    },
+    {
+      "regimen_id": "5844",
+      "regimen_version": 1,
+      "source_pdf": "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз).pdf",
+      "source_page": "173",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1837,
+      "block_count": 26
+    },
+    {
+      "regimen_id": "5847",
+      "regimen_version": 1,
+      "source_pdf": "Криопирин-ассоциированные периодические синдромы (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf",
+      "source_page": "91",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 5,
+      "block_count": 32
+    },
+    {
+      "regimen_id": "5875",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "5881",
+      "regimen_version": 1,
+      "source_pdf": "Искусственный аборт (медицинский аборт).pdf",
+      "source_page": "13",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 857,
+      "block_count": 32
+    },
+    {
+      "regimen_id": "5917",
+      "regimen_version": 1,
+      "source_pdf": "Хламидийная инфекция.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 595,
+      "block_count": 10
+    },
+    {
+      "regimen_id": "5918",
+      "regimen_version": 1,
+      "source_pdf": "Хламидийная инфекция.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 595,
+      "block_count": 10
+    },
+    {
+      "regimen_id": "5928",
+      "regimen_version": 1,
+      "source_pdf": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия _ацидурия).pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 197,
+      "block_count": 32
+    },
+    {
+      "regimen_id": "5946",
+      "regimen_version": 1,
+      "source_pdf": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_page": "20",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1028,
+      "block_count": 16
+    },
+    {
+      "regimen_id": "5998",
+      "regimen_version": 1,
+      "source_pdf": "Атопический дерматит.pdf",
+      "source_page": "36",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 3,
+      "block_count": 37
+    },
+    {
+      "regimen_id": "6042",
+      "regimen_version": 1,
+      "source_pdf": "Пропионовая ацидемия _ацидурия.pdf",
+      "source_page": "29",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1201,
+      "block_count": 15
+    },
+    {
+      "regimen_id": "6052",
+      "regimen_version": 1,
+      "source_pdf": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "source_page": "42",
+      "status": "PDF_QUOTE_NOT_FOUND",
+      "block_count": 35
+    },
+    {
+      "regimen_id": "6067",
+      "regimen_version": 1,
+      "source_pdf": "Острый синусит.pdf",
+      "source_page": "24",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 843,
+      "block_count": 25
+    },
+    {
+      "regimen_id": "6072",
+      "regimen_version": 1,
+      "source_pdf": "Отит средний острый.pdf",
+      "source_page": "23",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 2100,
+      "block_count": 23
+    },
+    {
+      "regimen_id": "6073",
+      "regimen_version": 1,
+      "source_pdf": "Отит средний острый.pdf",
+      "source_page": "23",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 2100,
+      "block_count": 23
+    },
+    {
+      "regimen_id": "6074",
+      "regimen_version": 1,
+      "source_pdf": "Отит средний острый.pdf",
+      "source_page": "23",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 2345,
+      "block_count": 23
+    },
+    {
+      "regimen_id": "6075",
+      "regimen_version": 1,
+      "source_pdf": "Отит средний острый.pdf",
+      "source_page": "23",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 2345,
+      "block_count": 23
+    },
+    {
+      "regimen_id": "6085",
+      "regimen_version": 1,
+      "source_pdf": "Отит средний острый.pdf",
+      "source_page": "24",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1789,
+      "block_count": 50
+    },
+    {
+      "regimen_id": "6068",
+      "regimen_version": 1,
+      "source_pdf": "Острый ларингит.pdf",
+      "source_page": "16",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 815,
+      "block_count": 30
+    },
+    {
+      "regimen_id": "6110",
+      "regimen_version": 1,
+      "source_pdf": "Травма носа.pdf",
+      "source_page": "20",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1049,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "6111",
+      "regimen_version": 1,
+      "source_pdf": "Травма носа.pdf",
+      "source_page": "20",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1049,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "6133",
+      "regimen_version": 1,
+      "source_pdf": "Паратонзиллярный абсцесс.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1255,
+      "block_count": 25
+    },
+    {
+      "regimen_id": "6579",
+      "regimen_version": 1,
+      "source_pdf": "Инфекция мочевых путей.pdf",
+      "source_page": "20",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 991,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "6580",
+      "regimen_version": 1,
+      "source_pdf": "Инфекция мочевых путей.pdf",
+      "source_page": "20",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 991,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "6296",
+      "regimen_version": 1,
+      "source_pdf": "Переломы диафиза плечевой кости.pdf",
+      "source_page": "24",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 338,
+      "block_count": 37
+    },
+    {
+      "regimen_id": "6511",
+      "regimen_version": 1,
+      "source_pdf": "Переломы проксимального отдела плечевой кости.pdf",
+      "source_page": "23",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 849,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "6550",
+      "regimen_version": 1,
+      "source_pdf": "Переломы проксимального отдела плечевой кости.pdf",
+      "source_page": "23",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 849,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "6638",
+      "regimen_version": 1,
+      "source_pdf": "Воспалительные заболевания молочных желез.pdf",
+      "source_page": "25",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1492,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "6644",
+      "regimen_version": 1,
+      "source_pdf": "Воспалительные заболевания молочных желез.pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1447,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "6756",
+      "regimen_version": 1,
+      "source_pdf": "Перелом нижней челюсти.pdf",
+      "source_page": "24",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 2293,
+      "block_count": 32
+    },
+    {
+      "regimen_id": "6761",
+      "regimen_version": 1,
+      "source_pdf": "Перелом нижней челюсти.pdf",
+      "source_page": "25",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 639,
+      "block_count": 49
+    },
+    {
+      "regimen_id": "6766",
+      "regimen_version": 1,
+      "source_pdf": "Перелом нижней челюсти.pdf",
+      "source_page": "24",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 2293,
+      "block_count": 32
+    },
+    {
+      "regimen_id": "6771",
+      "regimen_version": 1,
+      "source_pdf": "Перелом нижней челюсти.pdf",
+      "source_page": "25",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 639,
+      "block_count": 49
+    },
+    {
+      "regimen_id": "6799",
+      "regimen_version": 1,
+      "source_pdf": "Перелом нижней челюсти.pdf",
+      "source_page": "24",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 2200,
+      "block_count": 32
+    },
+    {
+      "regimen_id": "6804",
+      "regimen_version": 1,
+      "source_pdf": "Перелом нижней челюсти.pdf",
+      "source_page": "25",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 416,
+      "block_count": 49
+    },
+    {
+      "regimen_id": "6774",
+      "regimen_version": 1,
+      "source_pdf": "Шигеллез.pdf",
+      "source_page": "32",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 570,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "6809",
+      "regimen_version": 1,
+      "source_pdf": "Шигеллез.pdf",
+      "source_page": "32",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 570,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "6839",
+      "regimen_version": 1,
+      "source_pdf": "Шигеллез.pdf",
+      "source_page": "32",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 397,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "6860",
+      "regimen_version": 1,
+      "source_pdf": "Шигеллез.pdf",
+      "source_page": "32",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 570,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "6989",
+      "regimen_version": 1,
+      "source_pdf": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "source_page": "19",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1355,
+      "block_count": 37
+    },
+    {
+      "regimen_id": "6990",
+      "regimen_version": 1,
+      "source_pdf": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "source_page": "19",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1673,
+      "block_count": 37
+    },
+    {
+      "regimen_id": "7042",
+      "regimen_version": 1,
+      "source_pdf": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "source_page": "19",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1463,
+      "block_count": 37
+    },
+    {
+      "regimen_id": "7043",
+      "regimen_version": 1,
+      "source_pdf": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "source_page": "19",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1673,
+      "block_count": 37
+    },
+    {
+      "regimen_id": "7051",
+      "regimen_version": 1,
+      "source_pdf": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "source_page": "19",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1463,
+      "block_count": 37
+    },
+    {
+      "regimen_id": "7017",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7022",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7036",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7059",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7026",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7031",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7064",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7069",
+      "regimen_version": 1,
+      "source_pdf": "Язвенный колит.pdf",
+      "source_page": "52",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 907,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7194",
+      "regimen_version": 1,
+      "source_pdf": "Юношеский артрит с системным началом.pdf",
+      "source_page": "117",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 6,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7195",
+      "regimen_version": 1,
+      "source_pdf": "Юношеский артрит с системным началом.pdf",
+      "source_page": "117",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 6,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7197",
+      "regimen_version": 1,
+      "source_pdf": "Юношеский артрит с системным началом.pdf",
+      "source_page": "178",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 565,
+      "block_count": 27
+    },
+    {
+      "regimen_id": "7198",
+      "regimen_version": 1,
+      "source_pdf": "Юношеский артрит с системным началом.pdf",
+      "source_page": "178",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 565,
+      "block_count": 27
+    },
+    {
+      "regimen_id": "7201",
+      "regimen_version": 1,
+      "source_pdf": "Юношеский артрит с системным началом.pdf",
+      "source_page": "117",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 6,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7204",
+      "regimen_version": 1,
+      "source_pdf": "Юношеский артрит с системным началом.pdf",
+      "source_page": "178",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 565,
+      "block_count": 27
+    },
+    {
+      "regimen_id": "7280",
+      "regimen_version": 1,
+      "source_pdf": "Юношеский артрит с системным началом.pdf",
+      "source_page": "117",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 6,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7285",
+      "regimen_version": 1,
+      "source_pdf": "Юношеский артрит с системным началом.pdf",
+      "source_page": "117",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 6,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7207",
+      "regimen_version": 1,
+      "source_pdf": "Юношеский артрит.pdf",
+      "source_page": "154",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1211,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7258",
+      "regimen_version": 1,
+      "source_pdf": "Сепсис новорождённых.pdf",
+      "source_page": "84",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 157,
+      "block_count": 60
+    },
+    {
+      "regimen_id": "7313",
+      "regimen_version": 1,
+      "source_pdf": "Баланопостит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1563,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7316",
+      "regimen_version": 1,
+      "source_pdf": "Баланопостит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1633,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7414",
+      "regimen_version": 1,
+      "source_pdf": "Баланопостит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1633,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7418",
+      "regimen_version": 1,
+      "source_pdf": "Баланопостит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1633,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7462",
+      "regimen_version": 1,
+      "source_pdf": "Неспецифический аортоартериит.pdf",
+      "source_page": "186",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 259,
+      "block_count": 26
+    },
+    {
+      "regimen_id": "7470",
+      "regimen_version": 1,
+      "source_pdf": "Неспецифический аортоартериит.pdf",
+      "source_page": "186",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 259,
+      "block_count": 26
+    },
+    {
+      "regimen_id": "7598",
+      "regimen_version": 1,
+      "source_pdf": "Неспецифический аортоартериит.pdf",
+      "source_page": "186",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 259,
+      "block_count": 26
+    },
+    {
+      "regimen_id": "7603",
+      "regimen_version": 1,
+      "source_pdf": "Неспецифический аортоартериит.pdf",
+      "source_page": "186",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 259,
+      "block_count": 26
+    },
+    {
+      "regimen_id": "7497",
+      "regimen_version": 1,
+      "source_pdf": "Хронический синусит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1032,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7498",
+      "regimen_version": 1,
+      "source_pdf": "Хронический синусит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1102,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7519",
+      "regimen_version": 1,
+      "source_pdf": "Хронический синусит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1032,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7520",
+      "regimen_version": 1,
+      "source_pdf": "Хронический синусит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1102,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7629",
+      "regimen_version": 1,
+      "source_pdf": "Хронический синусит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1032,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7630",
+      "regimen_version": 1,
+      "source_pdf": "Хронический синусит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1102,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7644",
+      "regimen_version": 1,
+      "source_pdf": "Хронический синусит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1032,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7645",
+      "regimen_version": 1,
+      "source_pdf": "Хронический синусит.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1102,
+      "block_count": 36
+    },
+    {
+      "regimen_id": "7548",
+      "regimen_version": 1,
+      "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1530,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "7559",
+      "regimen_version": 1,
+      "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1530,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "7714",
+      "regimen_version": 1,
+      "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1674,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "7715",
+      "regimen_version": 1,
+      "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1674,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "7728",
+      "regimen_version": 1,
+      "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1674,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "7729",
+      "regimen_version": 1,
+      "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1674,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "7895",
+      "regimen_version": 1,
+      "source_pdf": "Кистозный фиброз (муковисцидоз).pdf",
+      "source_page": "86",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 115,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "7955",
+      "regimen_version": 1,
+      "source_pdf": "Системный склероз.pdf",
+      "source_page": "149",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 254,
+      "block_count": 31
+    },
+    {
+      "regimen_id": "7961",
+      "regimen_version": 1,
+      "source_pdf": "Системный склероз.pdf",
+      "source_page": "149",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 254,
+      "block_count": 31
+    },
+    {
+      "regimen_id": "5352",
+      "regimen_version": 1,
+      "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "source_page": "27",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1530,
+      "block_count": 34
+    },
+    {
+      "regimen_id": "5364",
+      "regimen_version": 1,
+      "source_pdf": "Опухоли головного и спинного мозга у детей.pdf",
+      "source_page": "28",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1098,
+      "block_count": 18
+    },
+    {
+      "regimen_id": "6303",
+      "regimen_version": 1,
+      "source_pdf": "Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf",
+      "source_page": "16",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1496,
+      "block_count": 18
+    },
+    {
+      "regimen_id": "6305",
+      "regimen_version": 1,
+      "source_pdf": "Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf",
+      "source_page": "16",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1638,
+      "block_count": 18
+    },
+    {
+      "regimen_id": "5441",
+      "regimen_version": 1,
+      "source_pdf": "Хламидийная инфекция.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 595,
+      "block_count": 10
+    },
+    {
+      "regimen_id": "5442",
+      "regimen_version": 1,
+      "source_pdf": "Хламидийная инфекция.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 595,
+      "block_count": 10
+    },
+    {
+      "regimen_id": "5475",
+      "regimen_version": 1,
+      "source_pdf": "Гонококковая инфекция.pdf",
+      "source_page": "21",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1096,
+      "block_count": 35
+    },
+    {
+      "regimen_id": "5478",
+      "regimen_version": 1,
+      "source_pdf": "Гонококковая инфекция.pdf",
+      "source_page": "22",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 16,
+      "block_count": 31
+    },
+    {
+      "regimen_id": "5514",
+      "regimen_version": 1,
+      "source_pdf": "ВИЧ-инфекция у взрослых.pdf",
+      "source_page": "45",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 676,
+      "block_count": 23
+    },
+    {
+      "regimen_id": "5526",
+      "regimen_version": 1,
+      "source_pdf": "ВИЧ-инфекция у взрослых.pdf",
+      "source_page": "47",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 765,
+      "block_count": 27
+    },
+    {
+      "regimen_id": "5527",
+      "regimen_version": 1,
+      "source_pdf": "ВИЧ-инфекция у взрослых.pdf",
+      "source_page": "47",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 765,
+      "block_count": 27
+    },
+    {
+      "regimen_id": "5528",
+      "regimen_version": 1,
+      "source_pdf": "ВИЧ-инфекция у взрослых.pdf",
+      "source_page": "47",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 765,
+      "block_count": 27
+    },
+    {
+      "regimen_id": "5531",
+      "regimen_version": 1,
+      "source_pdf": "ВИЧ-инфекция у взрослых.pdf",
+      "source_page": "47",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1438,
+      "block_count": 27
+    },
+    {
+      "regimen_id": "5533",
+      "regimen_version": 1,
+      "source_pdf": "ВИЧ-инфекция у взрослых.pdf",
+      "source_page": "47",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1656,
+      "block_count": 27
+    },
+    {
+      "regimen_id": "5534",
+      "regimen_version": 1,
+      "source_pdf": "ВИЧ-инфекция у взрослых.pdf",
+      "source_page": "47",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 1656,
+      "block_count": 27
+    },
+    {
+      "regimen_id": "5546",
+      "regimen_version": 1,
+      "source_pdf": "Системный склероз.pdf",
+      "source_page": "149",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 254,
+      "block_count": 31
+    },
+    {
+      "regimen_id": "5547",
+      "regimen_version": 1,
+      "source_pdf": "Системный склероз.pdf",
+      "source_page": "149",
+      "status": "PDF_EVIDENCE_VALID",
+      "quote_found_at_offset": 254,
+      "block_count": 31
+    }
+  ]
+}

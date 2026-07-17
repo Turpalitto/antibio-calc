@@ -1,0 +1,108 @@
+{
+  "generated_at_utc": "2026-07-17T13:51:17Z",
+  "git": {
+    "head": "8b9ba872f180bb23eeda68e9c7f9a355d3f92dff",
+    "parent": "2b04e80c26f9dcd0f85268a425d7b9ae82e2478a",
+    "branch": "main",
+    "origin_main": "2908343d1be1bc7e10dc14b4a8a13ca0c4fc3711",
+    "ahead_of_origin": 19,
+    "behind_origin": 0,
+    "staged_changes": 0,
+    "untracked_files_count": 105,
+    "commit_chain_verified": [
+      "aa753317617f6871f8faff4e7c795bc920e9df75",
+      "35d432eddf032f4d6283bbe27f51528909b5e303",
+      "d79bb3c98f16b2c425f3f6247e07c5db5f46d72c",
+      "c41efb52ab6ae9cba20d09d046f9738566e7260a",
+      "ed5d86351437220d80ee302acb225fddde09eb64",
+      "863f981842521fa860e50ea4fd2dd0bfc11e57b8",
+      "6e27cebbfd5ccce5973ab4ee19e9f62c56d37c64",
+      "549016c6b9fc8330eb93b509664db26ee42d8980",
+      "7530b4796b924b17857b3ef7e52bb32e900d0501",
+      "6045eea3a4ec68c7bf2cfa9a31d0306f44a4fcae",
+      "2b04e80c26f9dcd0f85268a425d7b9ae82e2478a",
+      "8b9ba872f180bb23eeda68e9c7f9a355d3f92dff"
+    ],
+    "commit_chain_note": "All 12 full hashes independently re-resolved via `git log --format=%H` and order-verified against the chain listed in the task spec; matches exactly."
+  },
+  "environment": {
+    "python_version": "3.13.14 (shell 'python' on PATH)",
+    "python_version_pinned": "pyproject.toml requires-python >=3.12,<3.13; uv.lock requires-python ==3.12.* -- PATH python (3.13.14) does NOT satisfy pin, project venv is .venv (not verified this pass)",
+    "uv_on_path": false,
+    "uv_lock_sha256": "40512b98d7a3a7548171d0eff319553045df77927e6c01e0705da7dee212500d"
+  },
+  "code_hashes_sha256": {
+    "dose_verification_sandbox/span_attribution.py": "c253b30833bb9a1b6ec74487c007adc3b55c499def76305795c86e3e8800a16c",
+    "dose_verification_sandbox/owner_fidelity_events.py": "498e16a69e41f47db13c744587500f53519b498a77d2c9cd10e3b47558fbc94e",
+    "dose_verification_sandbox/verdict_taxonomy.py": "029f3b0dd02872e71338a5eb04334de8c9ce20499a9d2873dd97ec594c9a48f1",
+    "generated/rc030_recovery/build_interface.py": "861e7697e140107c4f966cc90a0123a03dbeb7190e0c3b1f59b374378feecf2e",
+    "medical_normalizer/dictionary.py": "9d1449b9bd3a664652e4c5a0d667084af39e3503c04f33662c5e5d77e2e0ff3e"
+  },
+  "artifact_hashes_sha256": {
+    "CORPUS_MANIFEST.json": "d6ac8788b79c442f0edf0e7632e94896dea082bc2e160a3460ad527b5e026618",
+    "generated/rc030_multiworkstream/replay_with_unit_fix_365.json": "0d7ca1a95e7203f44583ffb8acb6cee704343d443052c6beb69670712c9bba6f",
+    "RC030_C66_OWNER_REVIEW_QUEUE.json": "3ad7b6127b060f8828f320e74e296df3f1823a19d0a4058aa43cb74a185ae502"
+  },
+  "database_hashes_sha256": {
+    "assembled_regimens.sqlite": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+    "review_workbench_p56.sqlite": "3e479ee70e59ce9aafa6ba44718dda68d867dbcc660796b81ff63d2b19ca0f29",
+    "kb_final.db": "16c31fba2ecafbb9d6bf7c5bc54afee5b46e41d6088cc0ac10492c852abd67dd",
+    "kb_p44.db": "2ff88154bbedefc37f2331bb6c5d25258f5daaa188ba525d76ea996e076a3be9",
+    "kb_p44_ARCHIVED_accumulated_20260714.db": "da3af44bc60279ec652f2f5babf453b2b3b52338c4c7915d27f9c2decdd05fb8",
+    "kb_p44_FLATTEXT_prePR001fix_20260714.db": "a62e3502cf1713a5023eef9864d0747b384a958e3c97dbeecb658784bc64c262",
+    "kb_p44_PREMIGRATION_94of192_20260714.db": "fad7686a6516d35bef651d617d3c26c456ba513ee93695840e7f72640e378219",
+    "kb_p44_RC017affected_20260714.db": "238ec5eb6e9a8f638d2a19b55be208abdf5aca193d24b879d00f073dd520aa2b"
+  },
+  "candidate_pool": {
+    "source_file": "generated/rc030_multiworkstream/replay_with_unit_fix_365.json",
+    "total_replayed": 365,
+    "classification_counts": {
+      "SAFE_EXACT_LINK": 74,
+      "WRONG_RANGE_ANCHOR": 60,
+      "AMBIGUOUS_MULTIPLE_DRUGS": 50,
+      "SAFE_SINGLE_CANDIDATE": 43,
+      "AMBIGUOUS_ALTERNATIVE_BOUNDARY": 40,
+      "DICTIONARY_GAP": 40,
+      "NOT_A_DOSE_RANGE": 26,
+      "AMBIGUOUS_TABLE_CONTEXT": 23,
+      "AMBIGUOUS_MULTIPLE_RANGES": 7,
+      "AMBIGUOUS_LOADING_MAINTENANCE": 2
+    },
+    "safe_exact_link_count": 74,
+    "safe_single_candidate_count": 43,
+    "candidate_total": 117,
+    "non_safe_total": 248,
+    "duplicate_ids_in_exact_link": 0,
+    "duplicate_ids_in_single_candidate": 0,
+    "field_coverage_warning": "replay_with_unit_fix_365.json rows carry only {regimen_id, regimen_version, classification, dose_min, dose_max, old_trust}. Full evidence fields required by Part III (source_pdf, page, quote, spans, table metadata, competing candidates, etc.) are NOT present in this artifact and must be re-derived by joining regimen_id/version against assembled_regimens.sqlite (source_pdf, source_page, source_quote columns exist there) and by re-running dose_verification_sandbox.span_attribution.attribute() to recover span offsets, since no committed replay driver persists that intermediate evidence."
+  },
+  "review_db_state": {
+    "review_targets": 9153,
+    "review_tasks": 9153,
+    "review_tasks_lifecycle_state": {"PENDING": 9153},
+    "review_events": 0,
+    "review_assignments": 0,
+    "review_decisions": 0,
+    "review_rejected_attempts": 0,
+    "clinical_data_issues": 12918
+  },
+  "assembled_db_state": {
+    "row_count": 2675,
+    "review_status_distribution": {"pending": 2675},
+    "validation_verdict_distribution": {"PASS": 566, "REJECT": 1132, "REVIEW": 977},
+    "approved_by_non_empty_count": 0,
+    "note": "approved_by column is never NULL (schema default ''); 'approved' is defined as non-empty approved_by, which is 0/2675."
+  },
+  "governance_invariants": {
+    "assembled_count": 2675,
+    "calculation_eligible_count": 0,
+    "approved_count": 0,
+    "types_meeting_precision_threshold": [],
+    "review_decisions": 0,
+    "review_tasks_pending": 9153,
+    "clinical_engine_connected": false,
+    "clinical_engine_disconnection_evidence": "No single automated gate test found (see RC030_C67_BASELINE.md); relies on repeated grep-verified zero-import checks and module docstring boundaries in span_attribution.py.",
+    "staging_area_empty": true
+  },
+  "invariant_check_result": "ALL_BASELINE_INVARIANTS_MATCH_EXPECTED"
+}
