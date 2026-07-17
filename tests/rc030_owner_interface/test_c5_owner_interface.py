@@ -22,10 +22,18 @@ RECOVERY_DIR = ROOT / "generated" / "rc030_recovery"
 BUILDER = RECOVERY_DIR / "build_interface.py"
 TEMPLATE = RECOVERY_DIR / "owner_review_template.html"
 DATASET_ALL = RECOVERY_DIR / "owner_review_data.json"
-DATASET_CONTROL = RECOVERY_DIR / "owner_control_sample_data.json"
+
+# owner_control_sample_data.json is intentionally NOT committed (it bundles
+# AI-audit comparison fields per record — see RC030_C5_EXACT_ALLOWLIST.md).
+# Tests that need "a control-mode dataset" build a small synthetic one
+# instead of depending on that excluded file, so this suite runs fully in a
+# fresh clone rather than silently skipping (a real gap caught during this
+# turn's fresh-clone verification — the original version of this file gated
+# every test behind that file's presence).
+DATASET_CONTROL = RECOVERY_DIR / "owner_control_sample_data.json"  # optional, local-only
 
 pytestmark = pytest.mark.skipif(
-    not (BUILDER.is_file() and TEMPLATE.is_file() and DATASET_ALL.is_file() and DATASET_CONTROL.is_file()),
+    not (BUILDER.is_file() and TEMPLATE.is_file() and DATASET_ALL.is_file()),
     reason="RC-030 owner-review interface build workspace not present in this checkout",
 )
 
@@ -35,6 +43,30 @@ def _run_builder(*args: str) -> subprocess.CompletedProcess:
         [sys.executable, str(BUILDER), *args],
         capture_output=True, text=True, cwd=str(ROOT),
     )
+
+
+def _synthetic_control_dataset(tmp_path: Path, n: int = 3) -> Path:
+    """A small synthetic stand-in for the excluded AI-bearing control-sample
+    dataset, matching its record shape closely enough to exercise the
+    builder's `--mode control` path without needing the excluded file."""
+    records = [
+        {
+            "regimen_id": str(1000 + i), "regimen_version": 1,
+            "evidence_hash": f"{i:064x}", "pdf_hash": f"{(i+1):064x}",
+            "source_pdf": f"synthetic_{i}.pdf", "source_page": "1",
+            "source_quote": "synthetic quote", "context_before": "", "context_after": "",
+            "antibiotic": "test", "diagnosis": "test", "dose": 1, "unit": "g",
+            "route": "iv", "frequency": 1, "duration_recommended": 1,
+            "parser_candidate": "FIXED_PER_DAY", "parser_version": "v" * 8,
+            "ai_proposed_verdict": "CORRECT_FIXED_DAILY", "ai_confidence": 0.9,
+            "ai_evidence_explanation": "synthetic", "ai_risk_flags": [],
+            "workload_category": "A",
+        }
+        for i in range(n)
+    ]
+    path = tmp_path / "synthetic_control_dataset.json"
+    path.write_text(json.dumps({"schema_version": 1, "records": records}), encoding="utf-8")
+    return path
 
 
 # ── Deterministic build (Phase 17) ────────────────────────────────────────
@@ -111,11 +143,18 @@ def test_builder_refuses_missing_evidence_hash(tmp_path):
     assert "evidence_hash" in r.stderr
 
 
-def test_real_datasets_have_no_duplicate_unit_ids():
-    for dataset in (DATASET_ALL, DATASET_CONTROL):
-        records = json.loads(dataset.read_text(encoding="utf-8"))["records"]
-        hashes = [r["evidence_hash"] for r in records]
-        assert len(hashes) == len(set(hashes)), f"{dataset} has duplicate evidence_hash values"
+def test_real_dataset_has_no_duplicate_unit_ids():
+    records = json.loads(DATASET_ALL.read_text(encoding="utf-8"))["records"]
+    hashes = [r["evidence_hash"] for r in records]
+    assert len(hashes) == len(set(hashes)), f"{DATASET_ALL} has duplicate evidence_hash values"
+
+
+def test_optional_local_control_dataset_has_no_duplicate_unit_ids():
+    if not DATASET_CONTROL.is_file():
+        pytest.skip("owner_control_sample_data.json is intentionally not committed; only checked if present locally")
+    records = json.loads(DATASET_CONTROL.read_text(encoding="utf-8"))["records"]
+    hashes = [r["evidence_hash"] for r in records]
+    assert len(hashes) == len(set(hashes)), f"{DATASET_CONTROL} has duplicate evidence_hash values"
 
 
 # ── Static source safety (Part IX / Phase 13-14) ──────────────────────────
@@ -216,7 +255,8 @@ def test_ui_action_mapping_matches_c4_python_exactly():
 # ── Real datasets never preload a verdict ─────────────────────────────────
 
 def test_real_datasets_never_contain_a_preloaded_verdict():
-    for dataset in (DATASET_ALL, DATASET_CONTROL):
+    datasets = [DATASET_ALL] + ([DATASET_CONTROL] if DATASET_CONTROL.is_file() else [])
+    for dataset in datasets:
         records = json.loads(dataset.read_text(encoding="utf-8"))["records"]
         for r in records:
             for forbidden in ("canonical_verdict", "ui_action", "human_fidelity_verdict", "owner_verdict"):
@@ -236,11 +276,12 @@ def test_built_all_mode_output_is_valid_html_and_has_expected_record_count(tmp_p
 
 
 def test_built_control_mode_output_has_expected_record_count(tmp_path):
+    dataset = _synthetic_control_dataset(tmp_path, n=3)
     out = tmp_path / "control.html"
-    r = _run_builder("--dataset", str(DATASET_CONTROL), "--output", str(out), "--mode", "control")
+    r = _run_builder("--dataset", str(dataset), "--output", str(out), "--mode", "control")
     assert r.returncode == 0, r.stderr
     html = out.read_text(encoding="utf-8")
-    assert html.count('"regimen_id"') == 30
+    assert html.count('"regimen_id"') == 3
 
 
 def test_storage_keys_are_mode_specific_and_distinct_from_legacy_keys():
