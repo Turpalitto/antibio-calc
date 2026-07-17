@@ -22,10 +22,25 @@ import re
 
 _WS_RUN_RE = re.compile(r"\s+")
 
+# C6.8: a PDF line-wrap that splits a word mid-hyphen (e.g. "бета-\nлактамные"
+# from real page-42 text of "Острый гепатит В (ГВ) у взрослых.pdf") must be
+# rejoined WITHOUT a space, not collapsed to "бета- лактамные" -- a spurious
+# space breaks exact quote matching even though the quote genuinely is on
+# that page. Root-caused during C6.8's investigation of regimens 5688/6052
+# (RC030_C68_SOURCE_QUOTE_DEFECT_REPORT.md): both were classified
+# PDF_QUOTE_NOT_FOUND in C6.7 for this reason, not a wrong-page/wrong-PDF
+# defect. Only a hyphen immediately followed by a line break between two
+# Cyrillic/Latin letters is treated as a line-wrap split -- a numeric range
+# dash uses "–"/"—" (en/em dash) or is not immediately followed by a
+# newline, so this never touches real dash-separated ranges.
+_HYPHEN_LINEWRAP_RE = re.compile(r"(?<=[a-zA-Zа-яА-ЯёЁ])-\n(?=[a-zA-Zа-яА-ЯёЁ])")
+
 
 def normalize_whitespace(text: str) -> str:
-    """Collapse all whitespace runs to a single space and strip. Used only
-    for *locating* a quote inside page text — never mutates stored data."""
+    """Rejoin hyphen line-wraps, then collapse all remaining whitespace runs
+    to a single space and strip. Used only for *locating* a quote inside
+    page text — never mutates stored data."""
+    text = _HYPHEN_LINEWRAP_RE.sub("-", text)
     return _WS_RUN_RE.sub(" ", text).strip()
 
 

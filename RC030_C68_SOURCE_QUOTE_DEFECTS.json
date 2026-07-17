@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "regimen_id": "5688",
+      "source_pdf": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "source_page": 42,
+      "c67_status": "PDF_QUOTE_NOT_FOUND",
+      "c68_status": "QUOTE_FOUND_NORMALIZED_MATCH",
+      "root_cause": "hyphenated line-wrap word ('бета-\\nлактамные') collapsed to a spurious space by normalize_whitespace(), not a wrong page/PDF/quote",
+      "fix": "dose_verification_sandbox/pdf_evidence.py normalize_whitespace() now rejoins letter-hyphen-newline-letter sequences before whitespace collapsing",
+      "found_at_offset_after_fix": 1789
+    },
+    {
+      "regimen_id": "6052",
+      "source_pdf": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "source_page": 42,
+      "c67_status": "PDF_QUOTE_NOT_FOUND",
+      "c68_status": "QUOTE_FOUND_NORMALIZED_MATCH",
+      "root_cause": "same as 5688 -- identical quote, same PDF/page",
+      "fix": "same as 5688",
+      "found_at_offset_after_fix": 1789
+    }
+  ]
+}
