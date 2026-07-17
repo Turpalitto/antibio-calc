@@ -3,10 +3,11 @@
 Classifies each regimen's dose into an explicit semantic_type by searching a
 bounded text window around the matched dose number inside `source_quote` for
 explicit Russian/English per-day / per-dose signals. Never infers semantics
-from frequency alone, except for the one case where inference is not a guess
-at all: frequency == 1 makes "per administration" and "per day" algebraically
-identical (see RESOLVED_BY_FREQUENCY_ONE below) — this is arithmetic, not a
-clinical assumption.
+from frequency alone — RC-030 repair Phase 2 removed the former frequency==1
+algebraic shortcut: a markerless dose stays AMBIGUOUS regardless of frequency
+(see EXPLICIT_DOSE_BASIS_MISSING). `RESOLVED_BY_FREQUENCY_ONE` remains a
+legacy-only ambiguity_status value for previously-stored classification
+artifacts; this parser never emits it anymore.
 
 If the dose number cannot be located in source_quote at all, or the window
 around it contains no explicit signal, or contains conflicting signals, the
@@ -31,8 +32,41 @@ WINDOW_CHARS = 90
 _RU_NUMBER_WORD = r"(?:\d+(?:[.,]\d+)?|один|одна|два|две|три|четыре|пять|шесть|дважды|трижды)"
 _FREQ_MULTIPLIER_RE = re.compile(
     rf"{_RU_NUMBER_WORD}\s*раз(?:а|ов)?\s+в\s+(?:сутки|день)"
+    # RC-030 repair Phase 4: single-word "дважды"/"трижды" + "в день/сутки"
+    r"|(?:дважды|трижды)\s+в\s+(?:сутки|день)"
+    # RC-030 repair Phase 4: abbreviated "N р/сут", "N р./сут", "N раз/сут"
+    r"|\d+\s*раз[а]?\.?\s*/\s*сут(?:ки)?|\d+\s*р\.?\s*/\s*сут(?:ки)?|\d+\s*р\.?\s*/\s*д(?:ень)?\b"
     r"|(?:once|twice|three times|four times)\s+(?:a|per)\s+day"
     r"|\d+\s*(?:x|×)\s*/?\s*day",
+    re.IGNORECASE,
+)
+
+# RC-030 repair Phase 3 — explicit SINGLE-administration markers. A single
+# administration is a per-dose amount by definition.
+_SINGLE_ADMIN_RE = re.compile(
+    r"однократн\w*|один\s+раз\b(?!\s+в)|перед\s+операцией\s+однократно|single\s+dose\s+once",
+    re.IGNORECASE,
+)
+
+# RC-030 repair Phase 5 — non-daily schedule markers (do not change dose basis;
+# they annotate the schedule period and raise a fail-closed risk).
+_WEEKLY_RE = re.compile(r"раз(?:а)?\s+в\s+недел\w*|per\s+week|weekly", re.IGNORECASE)
+_EVERY_OTHER_DAY_RE = re.compile(r"через\s+день|каждый\s+второй\s+день|every\s+other\s+day", re.IGNORECASE)
+
+# RC-030 repair Phase 8 — loading / maintenance phase markers.
+_LOADING_RE = re.compile(
+    r"нагрузочн\w*\s+доз\w*|стартов\w*\s+доз\w*|первая\s+доза|загрузочн\w*\s+доз\w*|loading\s+dose",
+    re.IGNORECASE,
+)
+_MAINTENANCE_RE = re.compile(
+    r"поддерживающ\w*\s+доз\w*|последующ\w*\s+введени\w*|\bзатем\b|\bдалее\b|maintenance\s+dose",
+    re.IGNORECASE,
+)
+
+# RC-030 repair Phase 10 — a TRUE numeric dose range (mass units only, so age
+# ranges "2-5 лет" / duration "7-10 дней" / interval "8-12 ч" are excluded).
+_TRUE_RANGE_RE = re.compile(
+    r"(\d+(?:[.,]\d+)?)\s*(?:[-–—]|\.{2,3}|\s+до\s+)\s*(\d+(?:[.,]\d+)?)\s*(мг|г|гр|мкг)\b",
     re.IGNORECASE,
 )
 
@@ -147,6 +181,7 @@ def _detect_period_signal(window: str, anchor: int) -> tuple[Optional[str], Opti
         list(_FREQ_MULTIPLIER_RE.finditer(window))
         + list(_EVERY_N_HOURS_RE.finditer(window))
         + list(_PER_DOSE_NOUN_RE.finditer(window))
+        + list(_SINGLE_ADMIN_RE.finditer(window))  # RC-030 repair Phase 3
     )
 
     plain_day_matches = [
@@ -249,15 +284,12 @@ def classify_regimen(regimen: dict) -> DoseSemantics:
 
     weight_based = expr.denominator_weight
 
-    if time_denom is None and frequency == 1.0 and dose_token_located:
-        # Algebraic shortcut, not a clinical guess: with one administration
-        # per day, per-dose and per-day quantities are numerically identical.
-        # Only applies when the dose token was actually found in source_quote
-        # — if it wasn't (SOURCE_TEXT_INCOMPLETE), we have no evidence this
-        # number even belongs to this sentence, so no shortcut is safe.
-        time_denom = "day"
-        ambiguity = "RESOLVED_BY_FREQUENCY_ONE"
-        fragment = fragment or "(frequency=1: per-dose and per-day are algebraically identical)"
+    # RC-030 repair Phase 2 — the frequency==1 shortcut is REMOVED. Frequency is
+    # never semantic evidence of dose basis. A markerless dose stays AMBIGUOUS
+    # even when frequency==1; the calculation is BLOCKED regardless.
+    schedule_flags: list[str] = []
+    if time_denom is None:
+        schedule_flags.append("EXPLICIT_DOSE_BASIS_MISSING")
 
     is_range = expr.numeric_min != expr.numeric_max
 
@@ -267,6 +299,50 @@ def classify_regimen(regimen: dict) -> DoseSemantics:
         semantic_type = "RANGE_PER_DOSE" if is_range else ("WEIGHT_PER_DOSE" if weight_based else "FIXED_PER_DOSE")
     else:
         semantic_type = "AMBIGUOUS"
+
+    # RC-030 repair Phase 5 — schedule period (kept separate from dose basis).
+    schedule_period = None
+    interval_hours = None
+    admins_per_day = None
+    if _WEEKLY_RE.search(source_quote):
+        schedule_period = "WEEKLY"
+        schedule_flags.append("WEEKLY_SCHEDULE_UNSUPPORTED")
+    elif _EVERY_OTHER_DAY_RE.search(source_quote):
+        schedule_period = "EVERY_OTHER_DAY"
+        schedule_flags.append("NON_DAILY_SCHEDULE")
+    else:
+        m_int = re.search(r"кажд\w*\s+(\d+)\s*ч|every\s+(\d+)\s*hours?", source_quote, re.IGNORECASE)
+        if m_int:
+            schedule_period = "EVERY_N_HOURS"
+            interval_hours = float(m_int.group(1) or m_int.group(2))
+            if interval_hours and 24 % interval_hours == 0:
+                admins_per_day = 24 / interval_hours  # informational only; never activates calculation
+        elif _SINGLE_ADMIN_RE.search(source_quote):
+            schedule_period = "SINGLE"
+        elif time_denom == "day" or time_denom == "dose":
+            schedule_period = "DAILY"
+    if frequency is not None and frequency < 1:
+        schedule_flags.append("SUB_DAILY_FREQUENCY")
+
+    # RC-030 repair Phase 8 — loading/maintenance guard.
+    if _LOADING_RE.search(source_quote) and _MAINTENANCE_RE.search(source_quote):
+        schedule_flags.append("LOADING_MAINTENANCE_UNRESOLVED")
+
+    # RC-030 repair Phase 11 — source-range-loss guard (works on the current
+    # historical corpus; never overwrites the authoritative scalar).
+    range_min_src = range_max_src = None
+    range_collapsed = False
+    m_range = _TRUE_RANGE_RE.search(source_quote)
+    if m_range:
+        lo = float(m_range.group(1).replace(",", "."))
+        hi = float(m_range.group(2).replace(",", "."))
+        if hi > lo:
+            range_min_src, range_max_src = lo, hi
+            # structured dose is scalar (numeric_min == numeric_max) but source is a true range
+            if expr.numeric_min == expr.numeric_max:
+                range_collapsed = True
+                schedule_flags.append("RANGE_VALUE_COLLAPSED_UPSTREAM")
+                schedule_flags.append("NORMALIZER_RANGE_UPPER_BOUND_DROPPED")
 
     base["matched_fragment"] = fragment
     if max_signal:
@@ -279,11 +355,24 @@ def classify_regimen(regimen: dict) -> DoseSemantics:
         # else: max-dose value found but this row's own period is unresolved —
         # do not attach it to either field rather than guess which one it caps.
 
+    # de-duplicate flags, preserve order
+    seen_f = set(); ordered_flags = []
+    for f_ in schedule_flags:
+        if f_ not in seen_f:
+            seen_f.add(f_); ordered_flags.append(f_)
+
     return DoseSemantics(
         semantic_type=semantic_type,
         time_denominator=time_denom,
         administration_scope=fragment,
         parser_status=PARSED,
         ambiguity_status=ambiguity,
+        schedule_period=schedule_period,
+        administrations_per_day=admins_per_day,
+        interval_hours=interval_hours,
+        schedule_risk_flags=ordered_flags,
+        range_min_source=range_min_src,
+        range_max_source=range_max_src,
+        range_collapsed_upstream=range_collapsed,
         **base,
     )

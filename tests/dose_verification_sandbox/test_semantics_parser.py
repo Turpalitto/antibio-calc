@@ -62,12 +62,16 @@ def test_spelled_out_frequency_count():
     assert ds.semantic_type == "FIXED_PER_DOSE"
 
 
-# frequency == 1 collapses per-dose vs per-day ambiguity algebraically
-def test_frequency_one_resolves_without_textual_signal():
+# RC-030 repair Phase 2: the frequency==1 shortcut is REMOVED. A markerless
+# dose with frequency==1 no longer resolves to a per-day/per-dose type — it
+# stays AMBIGUOUS with EXPLICIT_DOSE_BASIS_MISSING. Frequency is not evidence
+# of dose basis.
+def test_frequency_one_no_longer_resolves_markerless_dose():
     row = mk_row(dose=2.0, unit="g", frequency=1.0, source_quote="ампициллин** 2 г внутрь")
     ds = classify_regimen(row)
-    assert ds.ambiguity_status == "RESOLVED_BY_FREQUENCY_ONE"
-    assert ds.semantic_type in ("FIXED_PER_DAY", "FIXED_PER_DOSE")
+    assert ds.semantic_type == "AMBIGUOUS"
+    assert ds.ambiguity_status == "AMBIGUOUS_NO_SIGNAL"
+    assert "EXPLICIT_DOSE_BASIS_MISSING" in ds.schedule_risk_flags
 
 
 # regression (RC-030 Evidence Validation Phase 4): the frequency=1 shortcut
@@ -103,8 +107,11 @@ def test_conflicting_signal_stays_ambiguous():
 
 # max daily dose extraction
 def test_max_daily_dose_extraction():
+    # Quote carries an explicit "/сут" so period is unambiguously per-day (no
+    # longer relying on the removed frequency==1 shortcut); the max-dose value
+    # then attaches to max_daily_dose.
     row = mk_row(dose=50.0, unit="mg/kg", frequency=1.0,
-                 source_quote="амоксициллина в дозе 50 мг/кг (детская дозировка), но не более 2 гр. (взрослая дозировка)")
+                 source_quote="амоксициллина 50 мг/кг/сут, но не более 2 гр")
     ds = classify_regimen(row)
     assert ds.max_daily_dose == 2000.0 or ds.max_single_dose == 2000.0
 
