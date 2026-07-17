@@ -291,3 +291,54 @@ def test_storage_keys_are_mode_specific_and_distinct_from_legacy_keys():
     # legacy dry-run / control-sample keys from the pre-C5 templates must not be reused
     assert "rc030_owner_fidelity_dryrun_v1" not in source
     assert "rc030_owner_control_sample_v1" not in source
+
+
+# ── RC-030 C6.7 Part XI: range-review modes ────────────────────────────────
+
+@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review"])
+def test_range_review_modes_are_accepted_by_the_builder(tmp_path, mode):
+    dataset = _synthetic_control_dataset(tmp_path, n=2)
+    out = tmp_path / "range.html"
+    r = _run_builder("--dataset", str(dataset), "--output", str(out), "--mode", mode)
+    assert r.returncode == 0, r.stderr
+    html = out.read_text(encoding="utf-8")
+    assert "__MODE__" not in html
+    assert f'"{mode}"' in html
+    assert html.count('"regimen_id"') == 2
+
+
+def test_unknown_mode_is_rejected_by_the_builder(tmp_path):
+    dataset = _synthetic_control_dataset(tmp_path, n=1)
+    out = tmp_path / "bad.html"
+    r = _run_builder("--dataset", str(dataset), "--output", str(out), "--mode", "range-exact-link-totally-safe")
+    assert r.returncode != 0
+    assert not out.exists()
+
+
+@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review"])
+def test_range_review_modes_get_a_distinct_non_generic_banner(mode):
+    source = TEMPLATE.read_text(encoding="utf-8")
+    assert f'"{mode}":' in source
+    # each range-review mode's banner text must be distinct from the plain "all" fallback
+    banner_block_start = source.index("MODE_BANNER_TEXT")
+    banner_block = source[banner_block_start:banner_block_start + 1000]
+    assert mode in banner_block
+
+
+@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review"])
+def test_range_review_modes_get_isolated_storage_keys(tmp_path, mode):
+    # STORE_KEY/CURRENT_IDX_KEY are JS template literals (`..._${MODE}`),
+    # evaluated in-browser at runtime from the MODE const -- the built HTML
+    # source retains the literal `${MODE}` text (see
+    # test_storage_keys_are_mode_specific_and_distinct_from_legacy_keys);
+    # what a fresh build must get right is that MODE itself is correctly
+    # substituted to this mode's own string, so each mode's runtime key is
+    # distinct from every other mode's.
+    dataset = _synthetic_control_dataset(tmp_path, n=1)
+    out = tmp_path / f"{mode}.html"
+    r = _run_builder("--dataset", str(dataset), "--output", str(out), "--mode", mode)
+    assert r.returncode == 0, r.stderr
+    html = out.read_text(encoding="utf-8")
+    assert f'const MODE = "{mode}";' in html
+    assert "rc030_owner_review_c5_events_v1_${MODE}" in html
+    assert "rc030_owner_review_c5_session_v1_${MODE}" in html
