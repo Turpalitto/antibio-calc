@@ -166,7 +166,7 @@
 <script>
 "use strict";
 const RECORDS = __RECORDS_JSON__;
-const MODE = "__MODE__"; // "all" | "control" | "range-exact-review" | "range-single-review" — set at build time, never user-editable
+const MODE = "__MODE__"; // "all" | "control" | "range-exact-review" | "range-single-review" | "range-unit-basis-review" | "range-table-review" — set at build time, never user-editable
 const STORE_KEY = `rc030_owner_review_c5_events_v1_${MODE}`;
 const CURRENT_IDX_KEY = `rc030_owner_review_c5_session_v1_${MODE}`;
 const OWNER_FIDELITY_SCHEMA_VERSION = 1;
@@ -201,6 +201,8 @@ const MODE_BANNER_TEXT = {
   "control": "Control-sample mode: a fixed-order curated subset with AI proposals available for comparison after each submission.",
   "range-exact-review": "RC-030 C6.7 exact-link confirmation mode: independently audit-retained dose-range candidates only. Every candidate remains NOT_OWNER_VERIFIED / CALCULATION_BLOCKED until you submit a verdict here — nothing is migration-ready before that.",
   "range-single-review": "RC-030 C6.7 single-candidate review mode: these records are NEVER migration-safe regardless of outcome — a confirming verdict here still requires a separate, later governance step before any authoritative use.",
+  "range-unit-basis-review": "RC-030 C6.8 dose-basis review mode: the source text and the structured dose field disagree or are silent on whether this range is per-day, per-dose, or per-kilogram. Please read the quoted sentence carefully and confirm the correct basis — do not assume PER_DAY or PER_DOSE unless the source states it explicitly.",
+  "range-table-review": "RC-030 C6.8 table-derived dose-range mode: this quote is a flattened table row (drug/dose/route/frequency concatenated, not prose). Verify row/column attribution carefully before confirming.",
 };
 document.getElementById("modeBanner").textContent = MODE_BANNER_TEXT[MODE]
   || "Full review mode: the complete record set. AI comparison is shown after submission only where an AI proposal exists for that record.";

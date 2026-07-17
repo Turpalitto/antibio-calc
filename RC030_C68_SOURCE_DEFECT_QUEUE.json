@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "queue": "SOURCE_QUOTE_DEFECT",
+  "queue_size": 0,
+  "selection_criteria": "Empty by construction -- both known source-quote defects (regimen_id 5688, 6052) were root-caused and fixed in C6.8 Part IV (a quote-matching hyphen-linewrap bug, not a real data defect) and no longer require this queue. See RC030_C68_SOURCE_QUOTE_DEFECT_REPORT.md.",
+  "records": []
+}

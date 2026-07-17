@@ -295,7 +295,7 @@ def test_storage_keys_are_mode_specific_and_distinct_from_legacy_keys():
 
 # ── RC-030 C6.7 Part XI: range-review modes ────────────────────────────────
 
-@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review"])
+@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review", "range-unit-basis-review", "range-table-review"])
 def test_range_review_modes_are_accepted_by_the_builder(tmp_path, mode):
     dataset = _synthetic_control_dataset(tmp_path, n=2)
     out = tmp_path / "range.html"
@@ -315,17 +315,17 @@ def test_unknown_mode_is_rejected_by_the_builder(tmp_path):
     assert not out.exists()
 
 
-@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review"])
+@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review", "range-unit-basis-review", "range-table-review"])
 def test_range_review_modes_get_a_distinct_non_generic_banner(mode):
     source = TEMPLATE.read_text(encoding="utf-8")
     assert f'"{mode}":' in source
     # each range-review mode's banner text must be distinct from the plain "all" fallback
     banner_block_start = source.index("MODE_BANNER_TEXT")
-    banner_block = source[banner_block_start:banner_block_start + 1000]
+    banner_block = source[banner_block_start:banner_block_start + 2000]
     assert mode in banner_block
 
 
-@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review"])
+@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review", "range-unit-basis-review", "range-table-review"])
 def test_range_review_modes_get_isolated_storage_keys(tmp_path, mode):
     # STORE_KEY/CURRENT_IDX_KEY are JS template literals (`..._${MODE}`),
     # evaluated in-browser at runtime from the MODE const -- the built HTML

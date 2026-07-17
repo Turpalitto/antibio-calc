@@ -155,13 +155,20 @@ def main(argv: list[str] | None = None) -> int:
                          help=f"Path to the HTML template (default: {DEFAULT_TEMPLATE}).")
     parser.add_argument("--output", type=Path, required=True,
                          help="Output HTML path (repository-relative).")
-    parser.add_argument("--mode", choices=["all", "control", "range-exact-review", "range-single-review"],
-                         required=True,
+    parser.add_argument("--mode", choices=[
+        "all", "control", "range-exact-review", "range-single-review",
+        "range-unit-basis-review", "range-table-review",
+    ], required=True,
                          help="'all' = full record set, no fixed review order assumed; "
                               "'control' = curated control-sample subset with fixed review order banner; "
                               "'range-exact-review' = RC-030 C6.7 retained-exact-link dose-range confirmation queue; "
                               "'range-single-review' = RC-030 C6.7 single-candidate dose-range review queue "
-                              "(never migration-safe regardless of outcome).")
+                              "(never migration-safe regardless of outcome); "
+                              "'range-unit-basis-review' = RC-030 C6.8 dose-basis-ambiguous queue "
+                              "(COMPATIBLE_BASIS_UNSPECIFIED -- source and structured field disagree or are "
+                              "silent on dose basis); "
+                              "'range-table-review' = RC-030 C6.8 table-derived dose-range queue "
+                              "(requires table-layout evidence, not prose).")
     parser.add_argument("--check", action="store_true",
                          help="Do not write; verify the existing --output file is byte-identical to a "
                               "fresh deterministic build from the current inputs. Exits non-zero on mismatch.")
