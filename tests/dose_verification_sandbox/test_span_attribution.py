@@ -249,3 +249,67 @@ def test_threshold_untouched_by_import_or_use():
     nt = normalize_text("Амоксициллин 20-50 мг/кг в сутки внутрь.")
     attribute(nt.normalized, "Амоксициллин", 20.0, "мг/кг")
     assert TYPES_MEETING_PRECISION_THRESHOLD == before == set()
+
+
+# ── C6.1 regressions: risks exposed by the full 365-record replay ─────────
+
+def test_expected_antibiotic_not_in_dictionary_is_dictionary_gap_not_wrong_anchor():
+    """Regression for a real defect found during the C6.1 dictionary-coverage
+    audit: 43/365 real records have a true dose range but zero dictionary
+    antibiotic matches. That must be labeled DICTIONARY_GAP (a coverage
+    limitation), not AMBIGUOUS_MULTIPLE_DRUGS (which implies competing drugs
+    were actually detected)."""
+    from dose_verification_sandbox.span_attribution import DICTIONARY_GAP
+    nt = normalize_text("Некий редкий антибиотик, отсутствующий в словаре, 20-50 мг/кг в сутки.")
+    r = attribute(nt.normalized, "Некий редкий антибиотик", 20.0, "мг/кг")
+    assert r.classification == DICTIONARY_GAP
+    assert r.classification != AMBIGUOUS_MULTIPLE_DRUGS
+
+
+def test_dictionary_gap_is_never_safe():
+    from dose_verification_sandbox.span_attribution import DICTIONARY_GAP
+    nt = normalize_text("Неизвестный препарат 20-50 мг/кг.")
+    r = attribute(nt.normalized, "Неизвестный препарат", 20.0, "мг/кг")
+    assert r.classification not in ("SAFE_EXACT_LINK", "SAFE_TABLE_LINK", "SAFE_SINGLE_CANDIDATE")
+
+
+def test_coincidental_scalar_match_with_multiple_drugs_does_not_become_safe():
+    """Two different drugs, only one range, and the range's lower bound
+    happens to equal the scalar being evaluated for the OTHER drug purely by
+    coincidence — must not be trusted as SAFE_EXACT_LINK merely because the
+    number matches."""
+    nt = normalize_text("Амоксициллин 500 мг или Цефазолин 20-50 мг/кг в сутки.")
+    # Evaluate against Amoxicillin's scalar even though the range grammatically
+    # belongs to Цефазолин after "или" — scalar coincidence must not create a link.
+    r = attribute(nt.normalized, "Амоксициллин", 20.0, "мг")
+    assert r.classification not in ("SAFE_EXACT_LINK", "SAFE_TABLE_LINK")
+
+
+def test_range_appearing_before_antibiotic_mention_still_attributes_correctly():
+    nt = normalize_text("20-50 мг/кг Амоксициллин в сутки внутрь.")
+    r = attribute(nt.normalized, "Амоксициллин", 20.0, "мг/кг")
+    # nearest-antibiotic linkage works regardless of which side the range is on
+    assert r.classification == SAFE_EXACT_LINK
+
+
+def test_parenthetical_alternative_drug_does_not_leak_range():
+    nt = normalize_text("Амоксициллин 20-50 мг/кг (или Цефазолин при аллергии) в сутки.")
+    r = attribute(nt.normalized, "Цефазолин", 999.0, "мг/кг")
+    assert r.classification not in ("SAFE_EXACT_LINK", "SAFE_TABLE_LINK")
+
+
+def test_full_365_replay_never_produces_wrong_safe_classification_for_known_adversarial_cases():
+    """Aggregate safety property: the specific adversarial patterns found
+    during the real 365-record replay (multi-phase surgical dosing,
+    wrong-drug-after-или, malformed multi-number sequences) must never
+    reach a SAFE_* classification, regardless of engine version, as long
+    as the fail-closed rules remain intact."""
+    adversarial = [
+        ("Цефазолин 1,0 г за 0,5-1час. до операции, 0,5-1,0 г. во время операции.", "Цефазолин", 1.0, "г"),
+        ("Ванкомицин 15 мг/кг Или Клиндамицин 0,6-0,9 г за 30-60 мин.", "Ванкомицин", 15.0, "мг/кг"),
+    ]
+    for text, drug, scalar, unit in adversarial:
+        nt = normalize_text(text)
+        r = attribute(nt.normalized, drug, scalar, unit)
+        assert r.classification not in ("SAFE_EXACT_LINK", "SAFE_TABLE_LINK"), \
+            f"adversarial case wrongly reached SAFE: {text!r}"

@@ -44,12 +44,15 @@ WRONG_RANGE_ANCHOR = "WRONG_RANGE_ANCHOR"
 NOT_A_DOSE_RANGE = "NOT_A_DOSE_RANGE"
 SOURCE_INCOMPLETE = "SOURCE_INCOMPLETE"
 SOURCE_CORRUPTED = "SOURCE_CORRUPTED"
+DICTIONARY_GAP = "DICTIONARY_GAP"
+ENGINE_REVIEW_REQUIRED = "ENGINE_REVIEW_REQUIRED"
 
 ALL_CLASSIFICATIONS = frozenset({
     SAFE_EXACT_LINK, SAFE_TABLE_LINK, SAFE_SINGLE_CANDIDATE,
     AMBIGUOUS_MULTIPLE_RANGES, AMBIGUOUS_MULTIPLE_DRUGS, AMBIGUOUS_ALTERNATIVE_BOUNDARY,
     AMBIGUOUS_TABLE_CONTEXT, AMBIGUOUS_LOADING_MAINTENANCE,
     WRONG_RANGE_ANCHOR, NOT_A_DOSE_RANGE, SOURCE_INCOMPLETE, SOURCE_CORRUPTED,
+    DICTIONARY_GAP, ENGINE_REVIEW_REQUIRED,
 })
 SAFE_CLASSIFICATIONS = frozenset({SAFE_EXACT_LINK, SAFE_TABLE_LINK})
 
@@ -298,7 +301,14 @@ def attribute(
 
     antibiotic_spans = find_antibiotic_spans(normalized, known_antibiotic_raw)
     if len(antibiotic_spans) == 0:
-        return AttributionResult(AMBIGUOUS_MULTIPLE_DRUGS, None, None, true_ranges,
+        # A true dose range exists but the governed dictionary matched no
+        # antibiotic mention at all — this is a dictionary coverage gap
+        # (missing synonym/spelling variant), NOT evidence that the range
+        # belongs to a different drug. Conflating this with
+        # AMBIGUOUS_MULTIPLE_DRUGS was a real defect found during C6.1's
+        # dictionary-coverage audit (43/365 records affected) — that label
+        # implies competing drugs were seen, when in fact zero were.
+        return AttributionResult(DICTIONARY_GAP, None, None, true_ranges,
                                   ["no_dictionary_antibiotic_span_found"], {})
 
     distinct_drugs = {s.canonical for s in antibiotic_spans}

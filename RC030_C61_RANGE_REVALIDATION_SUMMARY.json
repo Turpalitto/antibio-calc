@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "engine_module_sha256_before_c61_fix": "97d30c485643e443fc9e96ddf046a0912844ca1359b400beb4836df22e1a656b",
+  "engine_module_sha256_after_c61_fix": "29150660098da37014680268847f59eeded56d26a6dd9dc328d6120e8264f340",
+  "total_candidates": 365,
+  "old_trustworthy_count": 186,
+  "old_suspect_count": 179,
+  "classification_counts": {
+    "WRONG_RANGE_ANCHOR": 223,
+    "AMBIGUOUS_ALTERNATIVE_BOUNDARY": 48,
+    "DICTIONARY_GAP": 40,
+    "AMBIGUOUS_TABLE_CONTEXT": 23,
+    "NOT_A_DOSE_RANGE": 26,
+    "AMBIGUOUS_MULTIPLE_DRUGS": 3,
+    "AMBIGUOUS_LOADING_MAINTENANCE": 2
+  },
+  "safe_total": 0,
+  "safe_percentage": 0.0,
+  "trust_retained_count": 0,
+  "trust_revoked_count": 186,
+  "trust_revocation_percentage": 100.0,
+  "dictionary_gap_count": 40,
+  "table_blocked_count": 23,
+  "owner_review_required_count": 365,
+  "authoritative_migration_allowed": false,
+  "source_db_hashes": {
+    "assembled_regimens.sqlite": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9"
+  }
+}
