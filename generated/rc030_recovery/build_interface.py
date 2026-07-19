@@ -111,7 +111,17 @@ def _validate_records(records: list[dict]) -> None:
 
 
 def build(dataset_path: Path, template_path: Path, output_path: Path, mode: str, check: bool = False) -> str:
-    template = template_path.read_text(encoding="utf-8")
+    # C7 fix: read/write with newline="\n" explicitly. Python's default text
+    # I/O applies universal-newline translation (LF -> CRLF on write, CRLF ->
+    # LF on read on Windows) -- without pinning this, the printed sha256 (of
+    # the pre-write LF-only string) never matched the actual on-disk bytes,
+    # even though `--check` still reported OK (it re-reads through the same
+    # translation, so it only ever compares two LF-normalized strings to each
+    # other, never to the real file bytes). Any *external* hash check
+    # (sha256sum, this program's own fresh-clone verification) would then
+    # disagree with the tool's own printed hash. Found during C7 Phase 16
+    # build-check verification.
+    template = template_path.read_bytes().decode("utf-8")  # no newline translation, unlike read_text()
     if PLACEHOLDER not in template:
         raise SystemExit(f"template is missing the {PLACEHOLDER} placeholder — refusing to build a broken file")
     if MODE_PLACEHOLDER not in template:
@@ -127,8 +137,8 @@ def build(dataset_path: Path, template_path: Path, output_path: Path, mode: str,
     if check:
         if not output_path.is_file():
             raise SystemExit(f"--check requested but {output_path} does not exist yet")
-        existing = output_path.read_text(encoding="utf-8")
-        existing_hash = hashlib.sha256(existing.encode("utf-8")).hexdigest()
+        existing_bytes = output_path.read_bytes()
+        existing_hash = hashlib.sha256(existing_bytes).hexdigest()
         if existing_hash != content_hash:
             raise SystemExit(
                 f"--check FAILED: {output_path} does not match a fresh deterministic build "
@@ -138,8 +148,10 @@ def build(dataset_path: Path, template_path: Path, output_path: Path, mode: str,
         return content_hash
 
     tmp_path = output_path.with_suffix(output_path.suffix + ".tmp")
-    tmp_path.write_text(final, encoding="utf-8")
+    tmp_path.write_text(final, encoding="utf-8", newline="\n")
     os.replace(tmp_path, output_path)  # atomic on both POSIX and Windows NTFS
+    written_hash = hashlib.sha256(output_path.read_bytes()).hexdigest()
+    assert written_hash == content_hash, "written file bytes do not match the printed sha256 -- I/O bug"
     print(f"built {output_path} ({len(final)} bytes, {len(records)} records, mode={mode}, sha256={content_hash})")
     return content_hash
 
@@ -158,6 +170,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--mode", choices=[
         "all", "control", "range-exact-review", "range-single-review",
         "range-unit-basis-review", "range-table-review",
+        "range-engine-review", "range-blocked-evidence",
     ], required=True,
                          help="'all' = full record set, no fixed review order assumed; "
                               "'control' = curated control-sample subset with fixed review order banner; "
@@ -167,6 +180,11 @@ def main(argv: list[str] | None = None) -> int:
                               "'range-unit-basis-review' = RC-030 C6.8 dose-basis-ambiguous queue "
                               "(COMPATIBLE_BASIS_UNSPECIFIED -- source and structured field disagree or are "
                               "silent on dose basis); "
+                              "'range-engine-review' = RC-030 C7 engine says exact post-repair but the "
+                              "independent Pass A audit separately flagged an unrelated structural concern; "
+                              "'range-blocked-evidence' = RC-030 C7 tasks that failed the evidence-completeness "
+                              "gate (wrong page, quote not found, missing identity) -- for diagnostic review "
+                              "only, never a confirmation surface; "
                               "'range-table-review' = RC-030 C6.8 table-derived dose-range queue "
                               "(requires table-layout evidence, not prose).")
     parser.add_argument("--check", action="store_true",

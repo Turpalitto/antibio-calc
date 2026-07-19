@@ -166,7 +166,7 @@
 <script>
 "use strict";
 const RECORDS = __RECORDS_JSON__;
-const MODE = "__MODE__"; // "all" | "control" | "range-exact-review" | "range-single-review" | "range-unit-basis-review" | "range-table-review" — set at build time, never user-editable
+const MODE = "__MODE__"; // "all" | "control" | "range-exact-review" | "range-single-review" | "range-unit-basis-review" | "range-table-review" | "range-engine-review" | "range-blocked-evidence" — set at build time, never user-editable
 const STORE_KEY = `rc030_owner_review_c5_events_v1_${MODE}`;
 const CURRENT_IDX_KEY = `rc030_owner_review_c5_session_v1_${MODE}`;
 const OWNER_FIDELITY_SCHEMA_VERSION = 1;
@@ -203,6 +203,8 @@ const MODE_BANNER_TEXT = {
   "range-single-review": "RC-030 C6.7 single-candidate review mode: these records are NEVER migration-safe regardless of outcome — a confirming verdict here still requires a separate, later governance step before any authoritative use.",
   "range-unit-basis-review": "RC-030 C6.8 dose-basis review mode: the source text and the structured dose field disagree or are silent on whether this range is per-day, per-dose, or per-kilogram. Please read the quoted sentence carefully and confirm the correct basis — do not assume PER_DAY or PER_DOSE unless the source states it explicitly.",
   "range-table-review": "RC-030 C6.8 table-derived dose-range mode: this quote is a flattened table row (drug/dose/route/frequency concatenated, not prose). Verify row/column attribution carefully before confirming.",
+  "range-engine-review": "RC-030 C7 engine/independent-audit disagreement mode: the automated engine and an earlier independent blinded review reached different conclusions about this record for reasons unrelated to dose basis. Please read the source carefully and decide independently.",
+  "range-blocked-evidence": "RC-030 C7 blocked-evidence mode: these tasks failed the automated evidence-completeness check (missing page, quote not found, or missing identity). This is a diagnostic view only — no confirming verdict should be submitted here without first resolving the underlying evidence problem.",
 };
 document.getElementById("modeBanner").textContent = MODE_BANNER_TEXT[MODE]
   || "Full review mode: the complete record set. AI comparison is shown after submission only where an AI proposal exists for that record.";
@@ -453,7 +455,13 @@ function submitVerdict() {
     interface_version: INTERFACE_VERSION,
     previous_event_id: previousEvent ? previousEvent.event_id : null,
     supersedes_event_id: previousEvent ? previousEvent.event_id : null, // never self: newEventId is freshly generated above
-    test_event: false,
+    // C7 fix: this was hardcoded false for every mode, including "control"
+    // -- browser-synthetic verdicts on the control-sample interface were
+    // silently indistinguishable from genuine OWNER_LOCAL events by this
+    // flag. Found by inspecting a real recorded event during Part VII
+    // browser validation. A record's own test_event=true (synthetic
+    // control records) or MODE === "control" now correctly marks the event.
+    test_event: r.test_event === true || MODE === "control",
   });
   saveStore(store);  // append-only: never removes or overwrites prior entries
   render();

@@ -79,6 +79,33 @@ def test_builder_help_text():
     assert "--check" in result.stdout
 
 
+def test_control_mode_always_stamps_test_event_true():
+    """C7 regression: test_event was hardcoded false in the event-creation
+    function for every mode, including 'control' -- browser-synthetic
+    verdicts recorded on the control-sample interface were silently
+    indistinguishable from genuine OWNER_LOCAL events by this flag. Found
+    by inspecting a real event recorded during C7 Part VII browser
+    validation. The fix must reference both a per-record test_event flag
+    and MODE === "control" in the event object literal."""
+    source = TEMPLATE.read_text(encoding="utf-8")
+    assert 'test_event: r.test_event === true || MODE === "control"' in source
+
+
+def test_dataset_pdf_hash_field_name_matches_template_reader():
+    """C7 regression: the template reads r.pdf_hash (lowercase) and embeds
+    it directly into every exported owner_fidelity_event; a dataset using
+    'PDF_hash' (capitalized) silently produced `undefined`, which
+    JSON.stringify drops -- every such event failed C4's validate_events()
+    'missing required field' check. This is a real bug found by validating
+    an actual browser-exported event under the committed C4 validator, not
+    by static inspection alone."""
+    source = TEMPLATE.read_text(encoding="utf-8")
+    assert "r.pdf_hash" in source
+    dataset = json.loads(DATASET_ALL.read_text(encoding="utf-8"))
+    for r in dataset["records"][:5]:
+        assert "PDF_hash" not in r, "dataset uses the wrong-case key that the template silently ignores"
+
+
 def test_double_build_is_byte_identical(tmp_path):
     out1 = tmp_path / "build1.html"
     out2 = tmp_path / "build2.html"
@@ -87,6 +114,25 @@ def test_double_build_is_byte_identical(tmp_path):
     assert r1.returncode == 0, r1.stderr
     assert r2.returncode == 0, r2.stderr
     assert out1.read_bytes() == out2.read_bytes()
+
+
+def test_printed_hash_matches_actual_file_bytes(tmp_path):
+    """C7 regression: build_interface.py used to compute content_hash from a
+    pre-write LF-only string, then write via write_text() without pinning
+    newline, which applies platform newline translation (LF -> CRLF on
+    Windows) -- the printed sha256 in the 'built ...' message never matched
+    sha256(output_path.read_bytes()), even though --check still reported OK
+    (it re-read through the same translation, comparing two LF-normalized
+    strings to each other, never to the real file bytes). Any external hash
+    check (sha256sum, fresh-clone verification) would disagree with the
+    tool's own printed hash. Fixed by reading/writing with newline="\\n"
+    pinned and asserting written bytes match before returning."""
+    out = tmp_path / "hash_check.html"
+    r = _run_builder("--dataset", str(DATASET_ALL), "--output", str(out), "--mode", "all")
+    assert r.returncode == 0, r.stderr
+    printed_hash = re.search(r"sha256=([0-9a-f]{64})", r.stdout).group(1)
+    actual_hash = __import__("hashlib").sha256(out.read_bytes()).hexdigest()
+    assert printed_hash == actual_hash
 
 
 def test_check_mode_passes_against_a_matching_build(tmp_path):
@@ -295,7 +341,7 @@ def test_storage_keys_are_mode_specific_and_distinct_from_legacy_keys():
 
 # ── RC-030 C6.7 Part XI: range-review modes ────────────────────────────────
 
-@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review", "range-unit-basis-review", "range-table-review"])
+@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review", "range-unit-basis-review", "range-table-review", "range-engine-review", "range-blocked-evidence"])
 def test_range_review_modes_are_accepted_by_the_builder(tmp_path, mode):
     dataset = _synthetic_control_dataset(tmp_path, n=2)
     out = tmp_path / "range.html"
@@ -315,7 +361,7 @@ def test_unknown_mode_is_rejected_by_the_builder(tmp_path):
     assert not out.exists()
 
 
-@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review", "range-unit-basis-review", "range-table-review"])
+@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review", "range-unit-basis-review", "range-table-review", "range-engine-review", "range-blocked-evidence"])
 def test_range_review_modes_get_a_distinct_non_generic_banner(mode):
     source = TEMPLATE.read_text(encoding="utf-8")
     assert f'"{mode}":' in source
@@ -325,7 +371,7 @@ def test_range_review_modes_get_a_distinct_non_generic_banner(mode):
     assert mode in banner_block
 
 
-@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review", "range-unit-basis-review", "range-table-review"])
+@pytest.mark.parametrize("mode", ["range-exact-review", "range-single-review", "range-unit-basis-review", "range-table-review", "range-engine-review", "range-blocked-evidence"])
 def test_range_review_modes_get_isolated_storage_keys(tmp_path, mode):
     # STORE_KEY/CURRENT_IDX_KEY are JS template literals (`..._${MODE}`),
     # evaluated in-browser at runtime from the MODE const -- the built HTML
