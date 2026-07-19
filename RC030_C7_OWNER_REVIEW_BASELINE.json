@@ -1,0 +1,50 @@
+{
+  "generated_at_utc": "2026-07-17T20:15:00Z",
+  "git": {
+    "head": "208f4d94808f8865973d3adc1472bd835bc206f2",
+    "parent": "0cec60c1b07df0422de65f1d6c0204887851ca90",
+    "branch": "main",
+    "origin_main": "2908343d1be1bc7e10dc14b4a8a13ca0c4fc3711",
+    "ahead_of_origin": 29,
+    "behind_origin": 0,
+    "staged_changes": 0,
+    "note": "Spec's 'expected current HEAD' (0cec60c) is the last commit named in the spec's own commit list (C6.8-D); the actual HEAD is one commit later (208f4d9), the C6.8 final report/verdict doc committed immediately after 0cec60c in the same prior turn. Chain verified intact and in order.",
+    "c68_chain_verified": ["3351833 (C6.8-A)", "cbafb2a (C6.8-B)", "fd350c1 (C6.8-C)", "0cec60c (C6.8-D)", "208f4d9 (C6.8 final report)"]
+  },
+  "code_hashes_sha256": {
+    "uv.lock": "40512b98d7a3a7548171d0eff319553045df77927e6c01e0705da7dee212500d",
+    "dose_verification_sandbox/dose_unit_signature.py": "6ba1f5bec802ee46fce8d6f1a05989ab72270fa563d3ab6968af3cd14ee6b3f5",
+    "dose_verification_sandbox/span_attribution.py": "473a466ceffa063fce5cd315c5436704a176c205209eefce65471aafd8ee3ed2",
+    "dose_verification_sandbox/owner_fidelity_events.py": "498e16a69e41f47db13c744587500f53519b498a77d2c9cd10e3b47558fbc94e",
+    "dose_verification_sandbox/verdict_taxonomy.py": "029f3b0dd02872e71338a5eb04334de8c9ce20499a9d2873dd97ec594c9a48f1",
+    "generated/rc030_recovery/build_interface.py": "7e92da0d865759969657b30bfddcefd83e5bab1c6ef9b4a3ffb3d476189a3f3e",
+    "generated/rc030_recovery/owner_review_template.html": "1e3e8595e83c295a20346e2999d4d3135068df8be87746a88f29951ce6d92d10"
+  },
+  "c68_queue_hashes_sha256": {
+    "RC030_C68_EXACT_LINK_OWNER_QUEUE.json": "bab9cd6045eff3928228487f03b6f1bf838622236775bc009b87d1fd254cd6b5",
+    "RC030_C68_SINGLE_CANDIDATE_QUEUE.json": "e78855405278e3b04a0211cc791b3089e06c175fb72c7dc6fffe90e6241257f7",
+    "RC030_C68_UNIT_BASIS_QUEUE.json": "a7c32d1ec05b5bb498897068ed8bfefd447620848c2734ecc98309109cf3a22d",
+    "RC030_C68_SOURCE_DEFECT_QUEUE.json": "a89aaaf585323e3b9eae38f34c0d4e018bbbdd9552a3e3bbde46d182efdf5a7e",
+    "RC030_C68_TABLE_REVIEW_QUEUE.json": "e2655db186fd584e170c6d3a947c80c17e9912c15f44d806f5e065b340a8ef0d",
+    "RC030_C68_ENGINE_REVIEW_QUEUE.json": "c79b6e873dc2499de05edbcef5b63425fc0f70440095a9cc7104e87653978ac3"
+  },
+  "v6_hash_sha256": "7e2c4d8057ba848e3cd4557860d4ea7eb9d353e98d56565fd84e28544575001d",
+  "database_hashes_sha256": {
+    "assembled_regimens.sqlite": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+    "review_workbench_p56.sqlite": "3e479ee70e59ce9aafa6ba44718dda68d867dbcc660796b81ff63d2b19ca0f29",
+    "kb_final.db": "16c31fba2ecafbb9d6bf7c5bc54afee5b46e41d6088cc0ac10492c852abd67dd",
+    "note": "identical to the C6.8 final-report baseline"
+  },
+  "governance_invariants": {
+    "assembled_count": 2675,
+    "calculation_eligible_count": 0,
+    "approved_count": 0,
+    "types_meeting_precision_threshold": [],
+    "review_decisions": 0,
+    "review_tasks_pending": 9153,
+    "registered_reviewers": 0,
+    "clinical_engine_connected": false,
+    "staging_area_empty": true
+  },
+  "invariant_check_result": "ALL_BASELINE_INVARIANTS_MATCH_EXPECTED"
+}

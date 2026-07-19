@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "raw_queue_total": 113,
+  "unique_validation_units": 113,
+  "duplicate_appearances": 0,
+  "duplicate_groups": [],
+  "supplemental_tags_applied": {
+    "5726": {
+      "c67_disposition": "SINGLE_REQUIRES_PHASE_SPLIT",
+      "tag": "PHASE_REVIEW"
+    },
+    "6638": {
+      "c67_disposition": "SINGLE_REQUIRES_ALTERNATIVE_REVIEW",
+      "tag": "ALTERNATIVE_REVIEW"
+    }
+  },
+  "supplemental_tags_not_applicable": {
+    "5514": {
+      "c67_disposition": "SINGLE_REQUIRES_ALTERNATIVE_REVIEW",
+      "tag": "ALTERNATIVE_REVIEW",
+      "reason": "record no longer in any C6.8 queue -- rejected by the C6.8 basis repair"
+    },
+    "5526": {
+      "c67_disposition": "SINGLE_WRONG_ANCHOR",
+      "tag": "MAXIMUM_CONFLICT",
+      "reason": "record no longer in any C6.8 queue -- rejected by the C6.8 basis repair"
+    },
+    "5533": {
+      "c67_disposition": "SINGLE_WRONG_ANCHOR",
+      "tag": "MAXIMUM_CONFLICT",
+      "reason": "record no longer in any C6.8 queue -- rejected by the C6.8 basis repair"
+    }
+  },
+  "final_unique_task_count": 113,
+  "registry_location": "generated/rc030_c7/master_registry_prioritized.json"
+}
