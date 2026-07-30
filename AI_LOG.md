@@ -1,5 +1,23 @@
 # AI LOG
 
+## 2026-07-30: exact C7 acceptance boundary committed
+
+Staged only the 94 paths in
+`P56_C7_ACCEPTANCE_PROPOSED_ALLOWLIST.txt`. Staged audit: 94/94 exact match,
+zero extra/missing paths, zero forbidden DB/PDF/env/key files, zero
+secret-pattern hits, and `git diff --cached --check` PASS.
+
+Created commit
+`60e603387a7132ff2aa6a736c869e5b9a7c6903a`
+(`chore(p5.6): close C7 acceptance boundary`). Its tree
+`2b94cb7bad374bf2f3da7a0a2aa10785942a22a1` exactly equals the isolated
+validated tree. No amend and no push. Branch is 35 commits ahead of
+`origin/main`.
+
+Clinical Engine was not connected: P6 remains BLOCKED, physician-approved
+objects remain zero, and C7 evidence is source-fidelity evidence rather than
+clinical approval.
+
 ## 2026-07-30: P5.6 C7 acceptance and reproducibility audit
 
 Completed a fail-closed audit after C7 closure. Confirmed C7 terminal evidence:

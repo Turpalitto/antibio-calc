@@ -1,5 +1,24 @@
 # NEXT_TASK.md — ANTIBIO
 
+## Next task after commit 60e6033 — 2026-07-30
+
+The exact C7 acceptance boundary is committed. Do not repeat C7 owner review
+and do not connect Clinical Engine.
+
+Next:
+
+1. install/use `uv` in an isolated clone;
+2. run `uv lock --check`;
+3. run frozen test dependency sync;
+4. verify collection and full canonical suite at commit `60e6033`;
+5. publish the accepted commits when explicitly authorized;
+6. only then proceed to real reviewer registration and physician pilot.
+
+P6 entry still requires real physician reviews, physician-approved objects,
+approved-data Golden pass, shadow/safety gates, request audit snapshot, and
+explicit owner authorization. C7 source-fidelity events cannot satisfy these
+clinical gates.
+
 ## Next task after P5.6 C7 acceptance audit — 2026-07-30
 
 Use only `P56_C7_ACCEPTANCE_PROPOSED_ALLOWLIST.txt` for the next commit

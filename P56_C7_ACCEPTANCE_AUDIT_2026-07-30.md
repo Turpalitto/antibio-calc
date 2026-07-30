@@ -4,6 +4,14 @@
 
 **P5.6 remains ACCEPTANCE / NOT COMPLETE. P6 remains BLOCKED.**
 
+## Post-commit status
+
+The exact 94-file boundary was committed on `main` as
+`60e603387a7132ff2aa6a736c869e5b9a7c6903a`. Its committed tree
+`2b94cb7bad374bf2f3da7a0a2aa10785942a22a1` exactly matches the independently
+materialized and tested temporary-index tree. No amend and no push were
+performed. Clinical Engine remains disconnected.
+
 C7 source-fidelity review itself is closed. The remaining acceptance work is
 repository reproducibility: approve an exact file boundary, commit it without
 local/production artifacts, validate that boundary from an isolated checkout,
@@ -120,12 +128,10 @@ Never use `git add .` for this boundary.
 
 ## Remaining gates
 
-1. Review the exact proposed allowlist.
-2. Stage only that list and rerun secret/forbidden-artifact checks against
-   the index.
-3. Commit without amending historical commits.
-4. Validate the commit from an isolated checkout with locked dependencies.
-5. Push the accepted commit(s); current `main` is ahead of `origin/main`.
-6. Keep P6 blocked until real reviewer registration, pilot completion,
+1. Validate commit `60e6033` from an isolated checkout with locked
+   dependencies.
+2. Push the accepted commit(s); current `main` is 35 commits ahead of
+   `origin/main`.
+3. Keep P6 blocked until real reviewer registration, pilot completion,
    physician-approved objects, approved-data Golden pass, shadow/safety
    gates, request audit snapshot, and explicit owner authorization.

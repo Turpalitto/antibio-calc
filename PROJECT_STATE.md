@@ -1,5 +1,17 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-07-30: C7 acceptance boundary committed
+
+Commit `60e603387a7132ff2aa6a736c869e5b9a7c6903a` contains exactly the
+94-file audited boundary. Committed tree
+`2b94cb7bad374bf2f3da7a0a2aa10785942a22a1` matches the isolated tested tree.
+Staged security/artifact checks passed with zero findings.
+
+Remaining P5.6 work: locked-dependency fresh-clone validation of `60e6033`
+and publication; `main` is 35 commits ahead of `origin/main`. P6 remains
+BLOCKED, Clinical Engine remains disconnected, and approved clinical objects
+remain zero.
+
 ## 2026-07-30: P5.6 C7 acceptance boundary prepared
 
 C7 source-fidelity review remains closed: 182 valid append-only events,

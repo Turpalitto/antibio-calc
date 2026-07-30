@@ -1,5 +1,16 @@
 # DECISIONS
 
+## 2026-07-30 — Commit boundary does not authorize Engine connection
+
+Decision: commit `60e6033` closes the repository boundary step only. It does
+not close P5.6 entirely, enter P6, approve a regimen, or authorize Clinical
+Engine integration.
+
+Reason: the approved-object population remains zero and real physician pilot
+gates have not been completed. Treating C7 source-fidelity validation as
+clinical approval would violate the permanent traceability and governance
+rules.
+
 ## 2026-07-30 — P5.6 C7 boundary is explicit and fail-closed
 
 Decision: the next repository boundary may contain only the exact paths in

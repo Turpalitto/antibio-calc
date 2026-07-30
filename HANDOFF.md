@@ -7,9 +7,11 @@ owner attestation; the historical fresh-clone gate passed. C7 source-fidelity
 review is closed at 182 events / 113 regimens / zero validation issues.
 Proposed-boundary canonical tests: 1499 passed, 11 skipped, 1 xfailed,
 0 failed (1511 collected).
-The active P5.6 blocker is a new reproducible Git boundary for the current C7
-and audit state; `main` also remains ahead of `origin/main`. Review Workbench
-is local-only and Clinical Engine remains disconnected. P6 is BLOCKED.
+The exact C7/audit boundary is committed as `60e6033`; its committed tree
+matches the isolated validated tree. Remaining P5.6 blockers are a
+locked-dependency fresh-clone verification of that commit and publication:
+`main` is 35 commits ahead of `origin/main`. Review Workbench is local-only
+and Clinical Engine remains disconnected. P6 is BLOCKED.
 Read `GOVERNANCE_SOURCE_OF_TRUTH.md`, `P5.6_PRODUCTION_RECOVERY_REPORT.md`,
 then `NEXT_TASK.md`.
 
