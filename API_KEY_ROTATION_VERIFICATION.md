@@ -62,11 +62,16 @@ Per the governing instructions for this program, this status is not inferred as 
 - `ROTATION_NOT_CONFIRMED` — not applicable; no evidence rotation has *not* happened, this is simply outside repo-scan authority.
 - `HISTORY_EXPOSURE_REMAINS` — **not** the case: full local Git history (all 6 commits, all refs) was scanned and contains no key literal or `.env` file at any point. If the original incident involved a key being pasted somewhere outside this Git history (e.g. a chat log, an external gist, a screenshot), that is also outside this repository's scan authority and must be attested by the owner separately.
 
-## Owner action required to close Phase 2
+## Historical owner-action section (superseded)
+
+The checklist below was the requirement before the owner attestation recorded
+above. It is retained only as historical audit context and is no longer an
+active blocker.
 
 State explicitly, for each provider key in `.env.example` (Anthropic, DeepSeek, OpenRouter, OpenAI, Gemini):
 1. Was a key for this provider ever exposed?
 2. If yes, has it been revoked/rotated in that provider's console?
 3. Date of rotation (for the record).
 
-Until this attestation is given, Phase 2 remains **OWNER_ATTESTATION_REQUIRED** and the overall P5.6 owner-line exit gate for "provider-side rotation confirmed by owner attestation" is **not met**.
+This attestation was received on 2026-07-15. Current status remains
+**`ROTATED_CONFIRMED_BY_OWNER_ATTESTATION`**; the credential gate is met.

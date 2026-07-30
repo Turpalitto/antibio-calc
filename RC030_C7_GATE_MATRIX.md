@@ -1,5 +1,10 @@
 # RC-030 C7 — Migration and Engine Gate Matrix (Phase 28)
 
+> **Historical pre-execution matrix.** C7 source-fidelity review subsequently
+> closed on 2026-07-30. The unmet gates below describe the state before owner
+> execution and are not current. See
+> `RC030_C7_OWNER_VS_AI_COMPARISON_REPORT.md`.
+
 | Gate | Description | Status | Evidence | Blocker | Owner approval required | Physician review required | Code dependency | Data dependency | P6 blocked by this gate? |
 |---|---|---|---|---|---|---|---|---|---|
 | **A** | Source attribution | **PARTIAL** | 117/365 (32%) reach `SAFE_EXACT_LINK`/`SAFE_SINGLE_CANDIDATE` after C6.5's unit-normalization fix | 248 records remain ambiguous/wrong/dictionary-gap/table-blocked | No (engine work) | No | `span_attribution.py` (committed) | `source_quote` text, real PDF corpus (available) | Yes |

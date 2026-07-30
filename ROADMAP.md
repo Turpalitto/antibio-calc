@@ -2,7 +2,14 @@
 
 ## Current milestone — P5.6 Production Recovery + Clinical Review Workbench
 
-Status: **ACCEPTANCE / NOT COMPLETE** (2026-07-15). Engineering implementation/test gates pass. Security rotation and Git fresh-clone reproducibility remain blocking owner actions. P6 is BLOCKED pending real physician approvals, completed review cases, approved-data Golden pass, shadow validation, safety gates, request audit snapshot, and explicit owner approval.
+Status: **ACCEPTANCE / NOT COMPLETE** (2026-07-30). Credential rotation and
+the historical fresh-clone gate are closed. C7 source-fidelity review is
+closed. The current uncommitted C7/audit state still requires an exact,
+secret-free, production-data-free Git boundary and reproducibility check;
+`main` is also ahead of `origin/main`. P6 is BLOCKED pending real physician
+approvals, completed pilot cases, approved-data Golden pass, shadow
+validation, safety gates, request audit snapshot, and explicit owner
+approval.
 
 Historical roadmap retained below.
 

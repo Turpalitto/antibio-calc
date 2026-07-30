@@ -36,6 +36,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from src.pipeline.extraction.router import ExtractorRouter
 from src.pipeline.knowledge_base import KnowledgeBase
 from src.pipeline.extraction.base import Document
+from clinical_engine.corpus.locator import resolve_corpus_dir
 
 DEFAULT_DB = "kb_p44.db"
 REPORT = "p44_kb_build_report.json"
@@ -47,8 +48,11 @@ def checkpoint_path_for(db_path: str) -> Path:
     DB can never advance another DB's checkpoint)."""
     return Path(db_path).with_suffix(".checkpoint.json")
 
-def load_contributing_pdfs(limit: int = None) -> list[Path]:
-    kb_path = Path("C:/clinrec_downloader/knowledge_base.json")
+def load_contributing_pdfs(
+    limit: int = None, corpus_dir: str | Path | None = None
+) -> list[Path]:
+    corpus_root = Path(corpus_dir) if corpus_dir is not None else resolve_corpus_dir()
+    kb_path = corpus_root / "knowledge_base.json"
     pdf_set = set()
 
     if kb_path.exists():
@@ -58,11 +62,17 @@ def load_contributing_pdfs(limit: int = None) -> list[Path]:
             if g.get("pdf_file"):
                 pdf_set.add(g["pdf_file"])
     else:
-        pdf_set = {Path(p).name for p in glob.glob("C:/clinrec_downloader/downloads_active/*.pdf")}
+        pdf_set = {
+            Path(p).name
+            for p in glob.glob(str(corpus_root / "downloads_active" / "*.pdf"))
+        }
 
     located = []
     for name in sorted(pdf_set):
-        for root in ["C:/clinrec_downloader/downloads_active", "C:/clinrec_downloader/archive_review"]:
+        for root in [
+            corpus_root / "downloads_active",
+            corpus_root / "archive_review",
+        ]:
             p = Path(root) / name
             if p.exists():
                 located.append(p)
@@ -72,10 +82,11 @@ def load_contributing_pdfs(limit: int = None) -> list[Path]:
         located = located[:limit]
     return located
 
-def load_guideline_id_map() -> dict:
+def load_guideline_id_map(corpus_dir: str | Path | None = None) -> dict:
     """pdf filename -> clinrec_id, so provenance can carry guideline_id (PROVENANCE_SPECIFICATION,
     RC-013). Owner of guideline_id is Document metadata; stamped before add_document."""
-    kb_path = Path("C:/clinrec_downloader/knowledge_base.json")
+    corpus_root = Path(corpus_dir) if corpus_dir is not None else resolve_corpus_dir()
+    kb_path = corpus_root / "knowledge_base.json"
     m = {}
     if kb_path.exists():
         with open(kb_path, encoding="utf-8") as f:
@@ -92,11 +103,20 @@ def load_checkpoint(checkpoint: Path) -> dict:
 def save_checkpoint(checkpoint: Path, state: dict):
     json.dump(state, open(checkpoint, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
-def main(full: bool = False, limit: int = None, resume: bool = True, db_path: str = DEFAULT_DB, out: str = REPORT):
+def main(
+    full: bool = False,
+    limit: int = None,
+    resume: bool = True,
+    db_path: str = DEFAULT_DB,
+    out: str = REPORT,
+    corpus_dir: str | Path | None = None,
+):
     router = ExtractorRouter()
     kb = KnowledgeBase(db_path)
-    pdfs = load_contributing_pdfs(limit=limit if not full else None)
-    guideline_map = load_guideline_id_map()
+    pdfs = load_contributing_pdfs(
+        limit=limit if not full else None, corpus_dir=corpus_dir
+    )
+    guideline_map = load_guideline_id_map(corpus_dir=corpus_dir)
 
     checkpoint = checkpoint_path_for(db_path)
     state = load_checkpoint(checkpoint) if resume else {"processed": [], "start_time": datetime.now(timezone.utc).isoformat()}
@@ -206,6 +226,11 @@ if __name__ == "__main__":
     parser.add_argument("--no-resume", action="store_true")
     parser.add_argument("--db", default=DEFAULT_DB)
     parser.add_argument("--out", default=REPORT)
+    parser.add_argument(
+        "--corpus-dir",
+        default=None,
+        help="External corpus root; defaults to ANTIBIO_CORPUS_DIR/config.",
+    )
     args = parser.parse_args()
 
     main(
@@ -214,4 +239,5 @@ if __name__ == "__main__":
         resume=not args.no_resume,
         db_path=args.db,
         out=args.out,
+        corpus_dir=args.corpus_dir,
     )

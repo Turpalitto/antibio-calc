@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>RC-030 Owner Fidelity Review (OFFLINE) — NOT physician approval</title>
+<title>Проверка доз по PDF — ANTIBIO</title>
 <style>
   :root { font-size: 20px; }
   body { font-family: -apple-system, Segoe UI, Arial, sans-serif; max-width: 1320px; margin: 24px auto; padding: 0 20px; background:#0b0f14; color:#e6e6e6; line-height:1.45; }
@@ -52,21 +52,55 @@
   .agree { color:#4fd18a; font-weight:700; } .disagree { color:#ff8a8a; font-weight:700; }
   .charcount { font-size:0.75rem; color:#647587; text-align:right; }
   .charcount.over { color:#ff6b6b; }
+  .quick-title { font-size:0.9rem; font-weight:800; color:#dcecff; margin-bottom:8px; }
+  .simple-guide { background:#173225; border:2px solid #3f9b68; padding:18px 20px; border-radius:12px; margin-bottom:18px; }
+  .simple-guide h2 { margin:0 0 10px; font-size:1.2rem; color:#8ff0b7; }
+  .simple-guide ol { margin:8px 0 0 1.4rem; padding:0; }
+  .simple-guide li { margin:6px 0; }
+  .simple-question { text-align:center; font-size:1.35rem; font-weight:800; color:#fff; margin:2px 0 14px; }
+  .target-card { background:#251d38; border:2px solid #8b6bc4; border-radius:10px; padding:14px 18px; margin-bottom:16px; text-align:center; }
+  .target-card .target-label { color:#cbb7f2; font-size:0.78rem; font-weight:800; text-transform:uppercase; }
+  .target-card .target-value { color:#fff; font-size:1.25rem; font-weight:800; margin-top:4px; }
+  .target-card .target-warning { color:#c8bcd8; font-size:0.75rem; margin-top:5px; }
+  .simple-help { text-align:center; color:#aebdca; font-size:0.82rem; margin-top:10px; }
+  .quick-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; margin-bottom:10px; }
+  .quick-grid button { min-height:108px; margin:0; padding:16px 12px; line-height:1.2; font-size:1.05rem; }
+  .quick-grid button small { display:block; margin-top:7px; font-size:0.72rem; font-weight:500; opacity:.88; }
+  .quick-grid .quick-single { background:#236b4b; }
+  .quick-grid .quick-single:hover { background:#2d865f; }
+  .quick-grid .quick-daily { background:#315f91; }
+  .quick-grid .quick-daily:hover { background:#3e76b1; }
+  .quick-grid .quick-ambiguous { background:#775b24; }
+  .quick-grid .quick-ambiguous:hover { background:#92712c; }
+  .quick-wrong { background:#762f3a; min-height:64px; margin-top:10px; font-size:1rem; }
+  .quick-wrong:hover { background:#963c4a; }
+  .quick-key { display:inline-block; min-width:1.4rem; padding:2px 5px; margin-right:5px; border-radius:4px; background:rgba(0,0,0,.28); }
+  details.support-details, details.tech-details { margin:14px 0; }
+  details.support-details > summary, details.tech-details > summary { cursor:pointer; color:#b8c8d8; padding:10px 12px; background:#18212c; border-radius:8px; font-weight:700; }
+  details.support-details[open] > summary, details.tech-details[open] > summary { margin-bottom:10px; }
+  .detailed-form { padding:12px; border:1px solid #394755; border-radius:8px; }
+  @media (max-width:760px) { .quick-grid { grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
 
-<div class="banner">
-  <b>OFFLINE • BLIND OWNER REVIEW • NOT PHYSICIAN APPROVAL.</b>
-  This interface lets you (the repository owner) check whether the parser's guess about a dose expression
-  matches the source PDF wording. Parser and AI proposals are hidden until you submit your own verdict.
-  Nothing you do here approves any regimen for clinical use, changes <code>calculation_eligibility</code>,
-  writes to any real database, or connects to any network. Verdicts are stored only in this browser tab's
-  local storage under a version- and mode-specific key, and can be exported as JSON for a human to inspect —
-  they are never auto-submitted anywhere.
-  <div class="hint">Keyboard: &larr;/&rarr; = previous/next record &nbsp;&middot;&nbsp; Ctrl+Enter = record verdict</div>
+<div class="simple-guide">
+  <h2>Что делать с каждой записью</h2>
+  <ol>
+    <li>Нажмите <b>«Открыть PDF»</b> и прочитайте указанную страницу.</li>
+    <li>Вернитесь сюда и выберите один из трёх больших ответов.</li>
+    <li>Если не уверены — нажмите <b>«Не могу понять по PDF»</b>. Это правильнее, чем угадывать.</li>
+  </ol>
 </div>
-<div class="banner2" id="modeBanner"></div>
+<div class="banner">
+  Это только сверка текста источника, не назначение лечения и не медицинское одобрение.
+  Ответ сохраняется локально и не подключает Clinical Engine.
+</div>
+<pre id="allEventsExportData" hidden></pre>
+<details class="tech-details">
+  <summary>Техническая информация о пакете</summary>
+  <div class="banner2" id="modeBanner"></div>
+</details>
 
 <div class="topbar">
   <div class="progress-text" id="progressText"></div>
@@ -74,57 +108,76 @@
 </div>
 <div class="badge-row" id="badgeRow"></div>
 <div class="badge-legend">
-  <span class="sw" style="background:#4fd18a;"></span>reviewed
-  <span class="sw" style="background:#3a4656;"></span>unreviewed
-  <span class="sw" style="background:#3a4656;outline:2px solid #7fb3ff;"></span>current record
+  <span class="sw" style="background:#4fd18a;"></span>проверено
+  <span class="sw" style="background:#3a4656;"></span>ещё не проверено
+  <span class="sw" style="background:#3a4656;outline:2px solid #7fb3ff;"></span>текущая запись
 </div>
 
 <div class="panel source">
-  <h3>Source panel <span id="badgeCurrent" style="font-size:0.7rem;color:#7fb3ff;font-weight:normal;text-transform:none;letter-spacing:0;"></span></h3>
+  <h3>Источник <span id="badgeCurrent" style="font-size:0.7rem;color:#7fb3ff;font-weight:normal;text-transform:none;letter-spacing:0;"></span></h3>
   <div class="field"><b>PDF</b><span id="f_pdf"></span></div>
-  <div class="field"><b>Page</b><span id="f_page"></span></div>
+  <div class="field"><b>Страница</b><span id="f_page"></span></div>
   <div class="context-line" id="f_context_before"></div>
   <div class="quote" id="f_quote"></div>
   <div class="context-line" id="f_context_after"></div>
-  <button class="pdf-btn" id="openPdfBtn">Open source PDF page</button>
-  <button class="secondary" id="setPdfRootBtn" type="button" style="margin-top:6px;">Set/change local PDF folder</button>
+  <button class="pdf-btn" id="openPdfBtn">Открыть PDF на нужной странице</button>
   <div class="hint" id="pdfHint"></div>
 </div>
 
-<div class="panel normalized">
-  <h3>Normalized panel</h3>
-  <div class="field"><b>Antibiotic</b><span id="f_antibiotic"></span></div>
-  <div class="field"><b>Diagnosis</b><span id="f_diagnosis"></span></div>
-  <div class="field"><b>Dose</b><span id="f_dose"></span></div>
-  <div class="field"><b>Route</b><span id="f_route"></span></div>
-  <div class="field"><b>Frequency</b><span id="f_frequency"></span></div>
-  <div class="field"><b>Duration</b><span id="f_duration"></span></div>
-</div>
+<details class="support-details">
+  <summary>Показать распознанные поля записи</summary>
+  <div class="panel normalized">
+    <div class="field"><b>Антибиотик</b><span id="f_antibiotic"></span></div>
+    <div class="field"><b>Диагноз</b><span id="f_diagnosis"></span></div>
+    <div class="field"><b>Доза</b><span id="f_dose"></span></div>
+    <div class="field"><b>Путь введения</b><span id="f_route"></span></div>
+    <div class="field"><b>Частота</b><span id="f_frequency"></span></div>
+    <div class="field"><b>Длительность</b><span id="f_duration"></span></div>
+  </div>
+</details>
 
 <div class="panel verdictpanel">
-  <h3>Owner independent verdict — parser and AI proposal are hidden until you submit</h3>
+  <div class="target-card">
+    <div class="target-label">Проверяем именно эту запись</div>
+    <div class="target-value"><span id="f_target_antibiotic"></span> — <span id="f_target_dose"></span></div>
+    <div class="target-warning">Смотрите, относятся ли эти числа именно к указанному препарату.</div>
+  </div>
+  <div id="correctionInstruction" class="warning" style="display:none;margin-bottom:14px;"></div>
+  <div class="simple-question">Как записаны числа дозы?</div>
+  <div class="quick-grid">
+    <button type="button" class="quick-single" id="quickRangeSingleBtn"><span class="quick-key">1</span>РАЗОВАЯ ДОЗА — ЗА 1 ПРИЁМ<small>Например: «500–1000 мг, 1 раз в сутки»</small></button>
+    <button type="button" class="quick-daily" id="quickRangeDailyBtn"><span class="quick-key">2</span>СУТОЧНАЯ ДОЗА — ВСЕГО ЗА 24 ЧАСА<small>«мг/сут», «мг/кг/сут», «мг/день», «мг/кг/день», «в день» = сумма за 24 часа</small></button>
+    <button type="button" class="quick-ambiguous" id="quickAmbiguousBtn"><span class="quick-key">3</span>НЕ МОГУ ПОНЯТЬ ПО PDF<small>Неясно, данных мало или есть сомнение</small></button>
+  </div>
+  <button type="button" class="quick-wrong" id="quickWrongAnchorBtn"><span class="quick-key">4</span>ЭТИ ЧИСЛА ОТНОСЯТСЯ К ДРУГОМУ ПРЕПАРАТУ</button>
+  <div class="simple-help">Нажатие сразу сохранит ответ и откроет следующую запись. Горячие клавиши: 1, 2, 3 или 4.</div>
+  <details class="support-details">
+    <summary>Другой случай / ошибка в записи</summary>
+    <div class="detailed-form">
   <select id="verdictSelect">
-    <option value="" selected disabled>— select a verdict —</option>
-    <option value="SOURCE_CONFIRMS_PER_DAY">SOURCE_CONFIRMS_PER_DAY</option>
-    <option value="SOURCE_CONFIRMS_PER_DOSE">SOURCE_CONFIRMS_PER_DOSE</option>
-    <option value="SOURCE_CONFIRMS_FIXED_DAILY">SOURCE_CONFIRMS_FIXED_DAILY</option>
-    <option value="SOURCE_CONFIRMS_FIXED_SINGLE">SOURCE_CONFIRMS_FIXED_SINGLE</option>
-    <option value="SOURCE_CONFIRMS_RANGE_DAILY">SOURCE_CONFIRMS_RANGE_DAILY</option>
-    <option value="SOURCE_CONFIRMS_RANGE_SINGLE">SOURCE_CONFIRMS_RANGE_SINGLE</option>
-    <option value="TABLE_HEADER_CONFIRMS_PER_DAY">TABLE_HEADER_CONFIRMS_PER_DAY</option>
-    <option value="TABLE_HEADER_CONFIRMS_PER_DOSE">TABLE_HEADER_CONFIRMS_PER_DOSE</option>
-    <option value="WRONG_DOSE_ANCHOR">WRONG_DOSE_ANCHOR</option>
-    <option value="WRONG_FREQUENCY_LINK">WRONG_FREQUENCY_LINK</option>
-    <option value="WRONG_ALTERNATIVE">WRONG_ALTERNATIVE</option>
-    <option value="SOURCE_INCOMPLETE">SOURCE_INCOMPLETE</option>
-    <option value="SOURCE_CORRUPTED">SOURCE_CORRUPTED</option>
-    <option value="TABLE_CONTEXT_REQUIRED">TABLE_CONTEXT_REQUIRED</option>
-    <option value="REMAINS_AMBIGUOUS">REMAINS_AMBIGUOUS</option>
-    <option value="NOT_A_DOSABLE_REGIMEN">NOT_A_DOSABLE_REGIMEN</option>
+    <option value="" selected disabled>— выберите вид ошибки —</option>
+    <option value="SOURCE_CONFIRMS_PER_DAY">Источник подтверждает дозу за сутки</option>
+    <option value="SOURCE_CONFIRMS_PER_DOSE">Источник подтверждает дозу за один приём</option>
+    <option value="SOURCE_CONFIRMS_FIXED_DAILY">Фиксированная доза за сутки</option>
+    <option value="SOURCE_CONFIRMS_FIXED_SINGLE">Фиксированная доза за один приём</option>
+    <option value="SOURCE_CONFIRMS_RANGE_DAILY">Диапазон дозы за сутки</option>
+    <option value="SOURCE_CONFIRMS_RANGE_SINGLE">Диапазон дозы за один приём</option>
+    <option value="TABLE_HEADER_CONFIRMS_PER_DAY">Заголовок таблицы: доза за сутки</option>
+    <option value="TABLE_HEADER_CONFIRMS_PER_DOSE">Заголовок таблицы: доза за один приём</option>
+    <option value="WRONG_DOSE_ANCHOR">Доза относится не к этому препарату</option>
+    <option value="WRONG_FREQUENCY_LINK">Неверно привязана частота приёма</option>
+    <option value="WRONG_ALTERNATIVE">Неверно привязан альтернативный вариант</option>
+    <option value="SOURCE_INCOMPLETE">В источнике не хватает данных</option>
+    <option value="SOURCE_CORRUPTED">Источник повреждён или нечитаем</option>
+    <option value="TABLE_CONTEXT_REQUIRED">Нужно посмотреть всю таблицу</option>
+    <option value="REMAINS_AMBIGUOUS">Даже после проверки остаётся неясно</option>
+    <option value="NOT_A_DOSABLE_REGIMEN">Это не схема с рассчитываемой дозой</option>
   </select>
-  <textarea id="noteBox" rows="3" maxlength="2000" placeholder="Note required for every verdict, including ambiguous ones — state what the source does or does not say"></textarea>
+  <textarea id="noteBox" rows="3" maxlength="2000" placeholder="Кратко напишите, что именно неверно или чего не хватает в источнике"></textarea>
   <div class="charcount" id="noteCharCount">0 / 2000</div>
   <button id="submitBtn" disabled>Select a verdict first</button>
+    </div>
+  </details>
   <div id="storeInfo"></div>
 </div>
 
@@ -148,20 +201,24 @@
 </div>
 
 <div class="navrow">
-  <button class="secondary" id="prevBtn">&larr; Previous</button>
-  <button class="secondary" id="nextBtn">Next &rarr;</button>
-  <button class="secondary" id="exportBtn">Export events as JSON</button>
-  <button class="danger" id="resetBtn">Reset local store</button>
+  <button class="secondary" id="prevBtn">&larr; Предыдущая</button>
+  <button class="secondary" id="nextBtn">Следующая &rarr;</button>
+  <button class="secondary" id="exportBtn">Скачать результаты JSON</button>
+  <button id="exportAllBtn">Скачать ВСЕ 113 ответов одним JSON</button>
+  <button class="danger" id="resetBtn">Удалить локальные ответы</button>
 </div>
 
+<details class="tech-details">
+  <summary>Техническая проверка и импорт JSON</summary>
 <div class="panel">
-  <h3>Export preview / validation</h3>
+  <h3>Предпросмотр экспорта / валидация</h3>
   <div id="exportPreview" style="font-family:Consolas,monospace;font-size:0.7rem;white-space:pre-wrap;max-height:200px;overflow:auto;"></div>
   <h3 style="margin-top:14px;">Import validation (paste a previously exported JSON to check it)</h3>
   <textarea id="importBox" rows="4" placeholder="paste exported JSON here to validate it — this does not load it into this session's store"></textarea>
   <button class="secondary" id="validateImportBtn">Validate pasted JSON</button>
   <div id="importResult" style="font-family:Consolas,monospace;font-size:0.7rem;white-space:pre-wrap;margin-top:8px;"></div>
 </div>
+</details>
 
 <script>
 "use strict";
@@ -169,6 +226,10 @@ const RECORDS = __RECORDS_JSON__;
 const MODE = "__MODE__"; // "all" | "control" | "range-exact-review" | "range-single-review" | "range-unit-basis-review" | "range-table-review" | "range-engine-review" | "range-blocked-evidence" — set at build time, never user-editable
 const STORE_KEY = `rc030_owner_review_c5_events_v1_${MODE}`;
 const CURRENT_IDX_KEY = `rc030_owner_review_c5_session_v1_${MODE}`;
+const CORRECTION_PROGRESS_KEY =
+  `rc030_owner_review_c7_correction_progress_v1_${RECORDS[0]?.correction_round || "default"}`;
+const IS_CORRECTION_BATCH = RECORDS.length > 0
+  && RECORDS.every(record => record.correction_required === true);
 const OWNER_FIDELITY_SCHEMA_VERSION = 1;
 const INTERFACE_VERSION = `owner-review-interface-c5-v1-${MODE}`;
 const MAX_NOTE_LENGTH = 2000;
@@ -208,25 +269,19 @@ const MODE_BANNER_TEXT = {
 };
 document.getElementById("modeBanner").textContent = MODE_BANNER_TEXT[MODE]
   || "Full review mode: the complete record set. AI comparison is shown after submission only where an AI proposal exists for that record.";
+if (IS_CORRECTION_BATCH) {
+  document.getElementById("modeBanner").textContent =
+    "ПОВТОРНАЯ ПРОВЕРКА: здесь показаны только записи, где ваш прошлый ответ " +
+    "разошёлся с независимой проверкой PDF. Новый ответ не удалит старый, а " +
+    "сохранится как исправление с полной историей.";
+}
 
-// PDF root is an owner-machine-local setting, entered once via prompt() and
-// kept only in this browser's localStorage — it is NEVER embedded in this
-// HTML file or in the governed dataset it was built from (which stores only
-// `source_pdf`, a bare filename, not an absolute path). This keeps personal
-// filesystem roots out of git entirely.
-const PDF_ROOT_KEY = "rc030_owner_review_c5_pdf_root_v1";
-function getPdfRoot() { return localStorage.getItem(PDF_ROOT_KEY) || ""; }
-function promptForPdfRoot() {
-  const current = getPdfRoot();
-  const value = prompt(
-    "Enter the local folder containing the source PDFs (e.g. C:\\my-pdfs or /home/me/pdfs).\n" +
-    "This is stored only in this browser's local storage, never written to any file.",
-    current
-  );
-  if (value === null) return; // cancelled
-  if (value.trim()) localStorage.setItem(PDF_ROOT_KEY, value.trim());
-  else localStorage.removeItem(PDF_ROOT_KEY);
-  render();
+// PDFs are served by the local owner-review server under /__pdf__/. The
+// governed dataset still contains only a bare filename; no machine-specific
+// filesystem path is embedded in HTML, localStorage, or exported events.
+function localPdfUrl(record) {
+  const page = encodeURIComponent(record.source_page || 1);
+  return `/__pdf__/${encodeURIComponent(record.source_pdf)}#page=${page}`;
 }
 
 function loadStore() {
@@ -246,7 +301,22 @@ function loadStore() {
 }
 function saveStore(arr) { localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }
 
+function loadCorrectionProgress() {
+  if (!IS_CORRECTION_BATCH) return [];
+  const raw = localStorage.getItem(CORRECTION_PROGRESS_KEY);
+  if (raw === null) return [];
+  const parsed = JSON.parse(raw);
+  if (!Array.isArray(parsed)) throw new Error("correction progress is not an array");
+  return parsed;
+}
+function markCorrectionReviewed(regimenId) {
+  if (!IS_CORRECTION_BATCH) return;
+  const progress = new Set(loadCorrectionProgress());
+  progress.add(regimenId);
+  localStorage.setItem(CORRECTION_PROGRESS_KEY, JSON.stringify([...progress]));
+}
 function reviewedRegimenIds() {
+  if (IS_CORRECTION_BATCH) return new Set(loadCorrectionProgress());
   return new Set(loadStore().map(e => e.regimen_id));
 }
 
@@ -279,7 +349,7 @@ function renderBadges() {
 function renderProgress() {
   const reviewed = reviewedRegimenIds();
   const count = RECORDS.filter(r => reviewed.has(r.regimen_id)).length;
-  document.getElementById("progressText").textContent = `reviewed ${count} / ${RECORDS.length}`;
+  document.getElementById("progressText").textContent = `Проверено: ${count} из ${RECORDS.length}`;
   document.getElementById("progressBarFill").style.width = `${Math.round(100 * count / RECORDS.length)}%`;
 }
 
@@ -287,8 +357,8 @@ function updateSubmitEnabled() {
   const hasVerdict = !!document.getElementById("verdictSelect").value;
   document.getElementById("submitBtn").disabled = !hasVerdict;
   document.getElementById("submitBtn").textContent = hasVerdict
-    ? "Record independent verdict (local only — append-only) — Ctrl+Enter"
-    : "Select a verdict first";
+    ? "Сохранить этот особый случай — Ctrl+Enter"
+    : "Сначала выберите вид ошибки";
 }
 
 function updateCharCount() {
@@ -305,8 +375,8 @@ function render() {
 
   const badgeCurrent = document.getElementById("badgeCurrent");
   badgeCurrent.textContent =
-    `Record ${idx+1} / ${RECORDS.length} — regimen_id=${r.regimen_id} — ` +
-    (hasEvent ? "REVIEWED" : "UNREVIEWED") + " — CURRENT RECORD";
+    `Запись ${idx+1} из ${RECORDS.length} — ` +
+    (hasEvent ? "уже проверена" : "ещё не проверена");
   // NOTE: `r.stratum` is intentionally NOT shown here — for this dataset it
   // is derived from (frequently identical to) parser_semantic_type, so
   // displaying it before submission would leak the parser's own
@@ -336,6 +406,17 @@ function render() {
   document.getElementById("f_route").textContent = r.route || "(none)";
   document.getElementById("f_frequency").textContent = r.frequency ?? "(none)";
   document.getElementById("f_duration").textContent = r.duration_recommended ?? "(none)";
+  document.getElementById("f_target_antibiotic").textContent = r.antibiotic || "препарат не указан";
+  document.getElementById("f_target_dose").textContent = r.source_range_text
+    || `${r.dose ?? "доза не указана"} ${r.unit ?? ""}`.trim();
+  const correctionInstruction = document.getElementById("correctionInstruction");
+  if (r.correction_instruction) {
+    correctionInstruction.style.display = "block";
+    correctionInstruction.textContent = r.correction_instruction;
+  } else {
+    correctionInstruction.style.display = "none";
+    correctionInstruction.textContent = "";
+  }
   document.getElementById("verdictSelect").value = "";  // never preselect the parser's or AI's own answer
   document.getElementById("noteBox").value = "";
   updateCharCount();
@@ -345,12 +426,9 @@ function render() {
   if (r.source_pdf) {
     pdfBtn.disabled = false;
     pdfBtn.onclick = () => {
-      const root = getPdfRoot();
-      if (!root) { promptForPdfRoot(); return; }
-      const sep = root.endsWith("/") || root.endsWith("\\") ? "" : "/";
-      window.open("file:///" + encodeURI(root + sep + r.source_pdf) + "#page=" + r.source_page, "_blank");
+      window.open(localPdfUrl(r), "_blank", "noopener");
     };
-    document.getElementById("pdfHint").textContent = `Target page: ${r.source_page}. If your PDF viewer does not honor #page= navigation, go to page ${r.source_page} manually. First use will ask you to set your local PDF folder (stored only in this browser's localStorage, never in this file).`;
+    document.getElementById("pdfHint").textContent = `Откроется страница ${r.source_page}. Если просмотрщик PDF не учитывает переход #page, перейдите на страницу ${r.source_page} вручную.`;
   } else {
     pdfBtn.disabled = true;
     pdfBtn.onclick = null;
@@ -359,8 +437,8 @@ function render() {
 
   const events = loadStore().filter(v => v.regimen_id === r.regimen_id);
   document.getElementById("storeInfo").textContent = events.length
-    ? `${events.length} prior event(s) recorded locally for this record (append-only; every prior event preserved).`
-    : "No verdict recorded yet for this record.";
+    ? `Для этой записи уже сохранено ответов: ${events.length}.`
+    : "Для этой записи ответ ещё не сохранён.";
 
   // Reveal panel: only becomes available once the owner has submitted at
   // least one event for THIS record in THIS session's store. Opening it
@@ -417,9 +495,31 @@ function updateExportPreview() {
     (store.length ? `Most recent: ${JSON.stringify(store[store.length-1], null, 2)}` : "(empty)");
 }
 
-function submitVerdict() {
-  const uiAction = document.getElementById("verdictSelect").value;
-  const rawNote = document.getElementById("noteBox").value;
+function nextUnreviewedIndex(fromIndex) {
+  const reviewed = reviewedRegimenIds();
+  for (let offset = 1; offset <= RECORDS.length; offset += 1) {
+    const candidate = (fromIndex + offset) % RECORDS.length;
+    if (!reviewed.has(RECORDS[candidate].regimen_id)) return candidate;
+  }
+  return (fromIndex + 1) % RECORDS.length;
+}
+
+function quickNote(uiAction, record) {
+  const basis = (
+    uiAction === "SOURCE_CONFIRMS_RANGE_SINGLE" || uiAction === "TABLE_HEADER_CONFIRMS_PER_DOSE"
+  ) ? "указанный диапазон относится к одному введению"
+    : (
+      uiAction === "SOURCE_CONFIRMS_RANGE_DAILY" || uiAction === "TABLE_HEADER_CONFIRMS_PER_DAY"
+    ) ? "указанный диапазон является суточной дозой"
+      : uiAction === "WRONG_DOSE_ANCHOR"
+        ? "указанные числа относятся к другому препарату"
+        : "источник не позволяет однозначно определить дозу за сутки или за одно введение";
+  return `[БЫСТРАЯ ПРОВЕРКА] Проверено по ${record.source_pdf || "PDF-источнику"}, стр. ${record.source_page || "не указана"}: ${basis}.`;
+}
+
+function submitVerdict(options = {}) {
+  const uiAction = options.uiActionOverride || document.getElementById("verdictSelect").value;
+  const rawNote = options.noteOverride ?? document.getElementById("noteBox").value;
   const note = rawNote.trim();
   if (!uiAction) { alert("Select a verdict first — nothing is preselected."); return; }
   if (!(uiAction in UI_ACTION_TO_CANONICAL)) { alert("Internal error: unmapped UI action " + uiAction); return; }
@@ -464,21 +564,85 @@ function submitVerdict() {
     test_event: r.test_event === true || MODE === "control",
   });
   saveStore(store);  // append-only: never removes or overwrites prior entries
+  markCorrectionReviewed(r.regimen_id);
+  if (options.autoAdvance === true) {
+    idx = nextUnreviewedIndex(idx);
+    saveCurrentIdx(idx);
+  }
   render();
 }
 document.getElementById("submitBtn").addEventListener("click", submitVerdict);
 
+function quickSubmitRange(basis) {
+  const r = RECORDS[idx];
+  const uiAction = basis === "single"
+    ? (r.table_context ? "TABLE_HEADER_CONFIRMS_PER_DOSE" : "SOURCE_CONFIRMS_RANGE_SINGLE")
+    : (r.table_context ? "TABLE_HEADER_CONFIRMS_PER_DAY" : "SOURCE_CONFIRMS_RANGE_DAILY");
+  submitVerdict({uiActionOverride: uiAction, noteOverride: quickNote(uiAction, r), autoAdvance: true});
+}
+
+function quickSubmitAmbiguous() {
+  const r = RECORDS[idx];
+  const uiAction = "REMAINS_AMBIGUOUS";
+  submitVerdict({uiActionOverride: uiAction, noteOverride: quickNote(uiAction, r), autoAdvance: true});
+}
+
+document.getElementById("quickRangeSingleBtn").addEventListener("click", () => quickSubmitRange("single"));
+document.getElementById("quickRangeDailyBtn").addEventListener("click", () => quickSubmitRange("daily"));
+document.getElementById("quickAmbiguousBtn").addEventListener("click", quickSubmitAmbiguous);
+document.getElementById("quickWrongAnchorBtn").addEventListener("click", () => {
+  const r = RECORDS[idx];
+  const uiAction = "WRONG_DOSE_ANCHOR";
+  submitVerdict({uiActionOverride: uiAction, noteOverride: quickNote(uiAction, r), autoAdvance: true});
+});
+
 function goPrev() { idx = (idx - 1 + RECORDS.length) % RECORDS.length; saveCurrentIdx(idx); revealOpen = false; render(); }
 function goNext() { idx = (idx + 1) % RECORDS.length; saveCurrentIdx(idx); revealOpen = false; render(); }
-document.getElementById("setPdfRootBtn").addEventListener("click", promptForPdfRoot);
 document.getElementById("prevBtn").addEventListener("click", goPrev);
 document.getElementById("nextBtn").addEventListener("click", goNext);
-document.getElementById("exportBtn").addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(loadStore(), null, 2)], {type: "application/json"});
+function downloadJson(filename, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: "application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url; a.download = `rc030_owner_review_c5_${MODE}_export.json`; a.click();
+  a.href = url;
+  a.download = filename;
+  a.click();
   URL.revokeObjectURL(url);
+}
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  downloadJson(`rc030_owner_review_c5_${MODE}_export_${stamp}.json`, loadStore());
+});
+
+document.getElementById("exportAllBtn").addEventListener("click", () => {
+  const reviewModes = [
+    "range-exact-review",
+    "range-engine-review",
+    "range-unit-basis-review",
+    "range-table-review",
+    "range-single-review",
+  ];
+  const allEvents = [];
+  for (const mode of reviewModes) {
+    const key = `rc030_owner_review_c5_events_v1_${mode}`;
+    const raw = localStorage.getItem(key);
+    if (raw === null) continue;
+    let events;
+    try { events = JSON.parse(raw); }
+    catch (e) { alert(`Не удалось прочитать локальные ответы режима ${mode}: ${e.message}`); return; }
+    if (!Array.isArray(events)) { alert(`Локальные ответы режима ${mode} повреждены.`); return; }
+    allEvents.push(...events);
+  }
+  const uniqueRegimens = new Set(allEvents.map(event => event.regimen_id)).size;
+  if (uniqueRegimens !== 113) {
+    alert(`Экспорт остановлен: найдено ${uniqueRegimens} из 113 уникальных записей. Ничего не скачано.`);
+    return;
+  }
+  window.__RC030_ALL_OWNER_EVENTS__ = allEvents;
+  document.getElementById("allEventsExportData").textContent = JSON.stringify(allEvents);
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  downloadJson(`rc030_c7_all_113_owner_events_${stamp}.json`, allEvents);
 });
 document.getElementById("resetBtn").addEventListener("click", () => {
   const store = loadStore();
@@ -497,6 +661,10 @@ document.addEventListener("keydown", (e) => {
   const typing = tag === "TEXTAREA" || tag === "SELECT" || tag === "INPUT";
   if (e.ctrlKey && e.key === "Enter") { e.preventDefault(); submitVerdict(); return; }
   if (typing) return;  // don't hijack arrow keys while typing/selecting
+  if (e.key === "1") { e.preventDefault(); quickSubmitRange("single"); return; }
+  if (e.key === "2") { e.preventDefault(); quickSubmitRange("daily"); return; }
+  if (e.key === "3") { e.preventDefault(); quickSubmitAmbiguous(); return; }
+  if (e.key === "4") { e.preventDefault(); document.getElementById("quickWrongAnchorBtn").click(); return; }
   if (e.key === "ArrowLeft") { e.preventDefault(); goPrev(); }
   if (e.key === "ArrowRight") { e.preventDefault(); goNext(); }
 });

@@ -1,5 +1,10 @@
 # RC-030 P5.6 C7 — Owner Source-Fidelity Review Execution — Final Report
 
+> **Superseded by completed owner review on 2026-07-30.** Any
+> OWNER_ACTION_REQUIRED state below is historical. Current terminal result:
+> 182 events, 113/113 regimens, zero validation issues, zero substantive
+> mismatches. See `RC030_C7_OWNER_VS_AI_COMPARISON_REPORT.md`.
+
 ## 1-3. HEAD / commits
 
 1. Starting HEAD: `208f4d94808f8865973d3adc1472bd835bc206f2` (C6.8 final report — one commit past the spec's named `0cec60c`, chain re-verified intact).

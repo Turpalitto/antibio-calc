@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Проверка доз по PDF — ANTIBIO</title>
+<style>
+  :root { font-size: 20px; }
+  body { font-family: -apple-system, Segoe UI, Arial, sans-serif; max-width: 1320px; margin: 24px auto; padding: 0 20px; background:#0b0f14; color:#e6e6e6; line-height:1.45; }
+  .banner { background:#3a1d1d; border:1px solid #a33; padding:14px 18px; border-radius:8px; margin-bottom:18px; font-size:0.85rem; }
+  .banner b { color:#ff6b6b; }
+  .banner2 { background:#1d2f3a; border:1px solid #336a8a; padding:12px 16px; border-radius:8px; margin-bottom:18px; font-size:0.82rem; color:#bcd9ec; }
+
+  .topbar { display:flex; align-items:center; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .progress-text { font-size:1rem; color:#cfe0f0; font-weight:600; }
+  .progress-bar-track { flex:1; min-width:200px; height:10px; background:#1a2330; border-radius:6px; overflow:hidden; }
+  .progress-bar-fill { height:100%; background:linear-gradient(90deg,#2d8a5f,#4fd18a); transition:width .2s ease; }
+
+  .badge-row { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:16px; max-height:110px; overflow-y:auto; padding:8px; background:#0d131c; border-radius:8px; border:1px solid #202b38; }
+  .badge-dot { width:1.6rem; height:1.6rem; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:0.62rem; cursor:pointer; color:#0b0f14; font-weight:700; background:#3a4656; user-select:none; }
+  .badge-dot.reviewed { background:#4fd18a; }
+  .badge-dot.current { outline:3px solid #7fb3ff; outline-offset:1px; }
+  .badge-legend { font-size:0.75rem; color:#8397ab; margin-bottom:14px; }
+  .badge-legend .sw { display:inline-block; width:0.8rem; height:0.8rem; border-radius:3px; vertical-align:middle; margin:0 4px 0 12px; }
+  .cat-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:700; margin-left:8px; background:#2d4a5a; color:#8ad0ff; }
+
+  .panel { border:1px solid #2a3441; border-radius:10px; padding:18px 20px; margin-bottom:16px; background:#111823; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+  .panel h3 { margin:0 0 12px 0; font-size:0.8rem; letter-spacing:.07em; text-transform:uppercase; color:#7fb3ff; border-bottom:1px solid #22303e; padding-bottom:8px; }
+  .panel.source { border-color:#2d5f8a; }
+  .panel.normalized { border-color:#3a5f2d; }
+  .panel.reveal { border-color:#8a5f2d; }
+
+  .context-line { color:#5c6b7c; font-family: Consolas, monospace; font-size:0.85rem; white-space:pre-wrap; padding:4px 12px; }
+  .quote { background:#0a0f16; border-left:4px solid #4a90d9; padding:16px 18px; white-space:pre-wrap; font-family: Consolas, monospace; font-size:1.15rem; line-height:1.6; border-radius:0 6px 6px 0; margin:6px 0; }
+  .table-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:700; margin-left:8px; background:#6a4a2d; color:#ffd08a; }
+
+  .field { margin:8px 0; font-size:0.95rem; }
+  .field b { color:#9fb3c8; display:inline-block; min-width:11rem; }
+
+  select, button, textarea { font-size:0.95rem; padding:10px; border-radius:6px; border:1px solid #2a3441; background:#0a0f16; color:#e6e6e6; width:100%; box-sizing:border-box; margin-top:6px; }
+  button { background:#2d5f8a; cursor:pointer; border:none; margin-top:10px; font-weight:600; }
+  button:hover { background:#3a75a8; }
+  button:disabled { opacity:0.5; cursor:not-allowed; }
+  button.secondary { background:#2a3441; }
+  button.pdf-btn { background:#4a3a2d; }
+  button.pdf-btn:hover { background:#5e4a3a; }
+  button.danger { background:#5a2d2d; }
+  .navrow { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .navrow button { flex:1; min-width:140px; }
+  .verdictpanel { border-color:#4a2d2d; }
+  #storeInfo { font-size:0.8rem; color:#7a8a9a; margin-top:10px; }
+  .hint { font-size:0.75rem; color:#647587; margin-top:8px; }
+  .agree { color:#4fd18a; font-weight:700; } .disagree { color:#ff8a8a; font-weight:700; }
+  .charcount { font-size:0.75rem; color:#647587; text-align:right; }
+  .charcount.over { color:#ff6b6b; }
+  .quick-title { font-size:0.9rem; font-weight:800; color:#dcecff; margin-bottom:8px; }
+  .simple-guide { background:#173225; border:2px solid #3f9b68; padding:18px 20px; border-radius:12px; margin-bottom:18px; }
+  .simple-guide h2 { margin:0 0 10px; font-size:1.2rem; color:#8ff0b7; }
+  .simple-guide ol { margin:8px 0 0 1.4rem; padding:0; }
+  .simple-guide li { margin:6px 0; }
+  .simple-question { text-align:center; font-size:1.35rem; font-weight:800; color:#fff; margin:2px 0 14px; }
+  .target-card { background:#251d38; border:2px solid #8b6bc4; border-radius:10px; padding:14px 18px; margin-bottom:16px; text-align:center; }
+  .target-card .target-label { color:#cbb7f2; font-size:0.78rem; font-weight:800; text-transform:uppercase; }
+  .target-card .target-value { color:#fff; font-size:1.25rem; font-weight:800; margin-top:4px; }
+  .target-card .target-warning { color:#c8bcd8; font-size:0.75rem; margin-top:5px; }
+  .simple-help { text-align:center; color:#aebdca; font-size:0.82rem; margin-top:10px; }
+  .quick-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; margin-bottom:10px; }
+  .quick-grid button { min-height:108px; margin:0; padding:16px 12px; line-height:1.2; font-size:1.05rem; }
+  .quick-grid button small { display:block; margin-top:7px; font-size:0.72rem; font-weight:500; opacity:.88; }
+  .quick-grid .quick-single { background:#236b4b; }
+  .quick-grid .quick-single:hover { background:#2d865f; }
+  .quick-grid .quick-daily { background:#315f91; }
+  .quick-grid .quick-daily:hover { background:#3e76b1; }
+  .quick-grid .quick-ambiguous { background:#775b24; }
+  .quick-grid .quick-ambiguous:hover { background:#92712c; }
+  .quick-wrong { background:#762f3a; min-height:64px; margin-top:10px; font-size:1rem; }
+  .quick-wrong:hover { background:#963c4a; }
+  .quick-key { display:inline-block; min-width:1.4rem; padding:2px 5px; margin-right:5px; border-radius:4px; background:rgba(0,0,0,.28); }
+  details.support-details, details.tech-details { margin:14px 0; }
+  details.support-details > summary, details.tech-details > summary { cursor:pointer; color:#b8c8d8; padding:10px 12px; background:#18212c; border-radius:8px; font-weight:700; }
+  details.support-details[open] > summary, details.tech-details[open] > summary { margin-bottom:10px; }
+  .detailed-form { padding:12px; border:1px solid #394755; border-radius:8px; }
+  @media (max-width:760px) { .quick-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div class="simple-guide">
+  <h2>Что делать с каждой записью</h2>
+  <ol>
+    <li>Нажмите <b>«Открыть PDF»</b> и прочитайте указанную страницу.</li>
+    <li>Вернитесь сюда и выберите один из трёх больших ответов.</li>
+    <li>Если не уверены — нажмите <b>«Не могу понять по PDF»</b>. Это правильнее, чем угадывать.</li>
+  </ol>
+</div>
+<div class="banner">
+  Это только сверка текста источника, не назначение лечения и не медицинское одобрение.
+  Ответ сохраняется локально и не подключает Clinical Engine.
+</div>
+<pre id="allEventsExportData" hidden></pre>
+<details class="tech-details">
+  <summary>Техническая информация о пакете</summary>
+  <div class="banner2" id="modeBanner"></div>
+</details>
+
+<div class="topbar">
+  <div class="progress-text" id="progressText"></div>
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div></div>
+</div>
+<div class="badge-row" id="badgeRow"></div>
+<div class="badge-legend">
+  <span class="sw" style="background:#4fd18a;"></span>проверено
+  <span class="sw" style="background:#3a4656;"></span>ещё не проверено
+  <span class="sw" style="background:#3a4656;outline:2px solid #7fb3ff;"></span>текущая запись
+</div>
+
+<div class="panel source">
+  <h3>Источник <span id="badgeCurrent" style="font-size:0.7rem;color:#7fb3ff;font-weight:normal;text-transform:none;letter-spacing:0;"></span></h3>
+  <div class="field"><b>PDF</b><span id="f_pdf"></span></div>
+  <div class="field"><b>Страница</b><span id="f_page"></span></div>
+  <div class="context-line" id="f_context_before"></div>
+  <div class="quote" id="f_quote"></div>
+  <div class="context-line" id="f_context_after"></div>
+  <button class="pdf-btn" id="openPdfBtn">Открыть PDF на нужной странице</button>
+  <div class="hint" id="pdfHint"></div>
+</div>
+
+<details class="support-details">
+  <summary>Показать распознанные поля записи</summary>
+  <div class="panel normalized">
+    <div class="field"><b>Антибиотик</b><span id="f_antibiotic"></span></div>
+    <div class="field"><b>Диагноз</b><span id="f_diagnosis"></span></div>
+    <div class="field"><b>Доза</b><span id="f_dose"></span></div>
+    <div class="field"><b>Путь введения</b><span id="f_route"></span></div>
+    <div class="field"><b>Частота</b><span id="f_frequency"></span></div>
+    <div class="field"><b>Длительность</b><span id="f_duration"></span></div>
+  </div>
+</details>
+
+<div class="panel verdictpanel">
+  <div class="target-card">
+    <div class="target-label">Проверяем именно эту запись</div>
+    <div class="target-value"><span id="f_target_antibiotic"></span> — <span id="f_target_dose"></span></div>
+    <div class="target-warning">Смотрите, относятся ли эти числа именно к указанному препарату.</div>
+  </div>
+  <div id="correctionInstruction" class="warning" style="display:none;margin-bottom:14px;"></div>
+  <div class="simple-question">Как записаны числа дозы?</div>
+  <div class="quick-grid">
+    <button type="button" class="quick-single" id="quickRangeSingleBtn"><span class="quick-key">1</span>РАЗОВАЯ ДОЗА — ЗА 1 ПРИЁМ<small>Например: «500–1000 мг, 1 раз в сутки»</small></button>
+    <button type="button" class="quick-daily" id="quickRangeDailyBtn"><span class="quick-key">2</span>СУТОЧНАЯ ДОЗА — ВСЕГО ЗА 24 ЧАСА<small>«мг/сут», «мг/кг/сут», «мг/день», «мг/кг/день», «в день» = сумма за 24 часа</small></button>
+    <button type="button" class="quick-ambiguous" id="quickAmbiguousBtn"><span class="quick-key">3</span>НЕ МОГУ ПОНЯТЬ ПО PDF<small>Неясно, данных мало или есть сомнение</small></button>
+  </div>
+  <button type="button" class="quick-wrong" id="quickWrongAnchorBtn"><span class="quick-key">4</span>ЭТИ ЧИСЛА ОТНОСЯТСЯ К ДРУГОМУ ПРЕПАРАТУ</button>
+  <div class="simple-help">Нажатие сразу сохранит ответ и откроет следующую запись. Горячие клавиши: 1, 2, 3 или 4.</div>
+  <details class="support-details">
+    <summary>Другой случай / ошибка в записи</summary>
+    <div class="detailed-form">
+  <select id="verdictSelect">
+    <option value="" selected disabled>— выберите вид ошибки —</option>
+    <option value="SOURCE_CONFIRMS_PER_DAY">Источник подтверждает дозу за сутки</option>
+    <option value="SOURCE_CONFIRMS_PER_DOSE">Источник подтверждает дозу за один приём</option>
+    <option value="SOURCE_CONFIRMS_FIXED_DAILY">Фиксированная доза за сутки</option>
+    <option value="SOURCE_CONFIRMS_FIXED_SINGLE">Фиксированная доза за один приём</option>
+    <option value="SOURCE_CONFIRMS_RANGE_DAILY">Диапазон дозы за сутки</option>
+    <option value="SOURCE_CONFIRMS_RANGE_SINGLE">Диапазон дозы за один приём</option>
+    <option value="TABLE_HEADER_CONFIRMS_PER_DAY">Заголовок таблицы: доза за сутки</option>
+    <option value="TABLE_HEADER_CONFIRMS_PER_DOSE">Заголовок таблицы: доза за один приём</option>
+    <option value="WRONG_DOSE_ANCHOR">Доза относится не к этому препарату</option>
+    <option value="WRONG_FREQUENCY_LINK">Неверно привязана частота приёма</option>
+    <option value="WRONG_ALTERNATIVE">Неверно привязан альтернативный вариант</option>
+    <option value="SOURCE_INCOMPLETE">В источнике не хватает данных</option>
+    <option value="SOURCE_CORRUPTED">Источник повреждён или нечитаем</option>
+    <option value="TABLE_CONTEXT_REQUIRED">Нужно посмотреть всю таблицу</option>
+    <option value="REMAINS_AMBIGUOUS">Даже после проверки остаётся неясно</option>
+    <option value="NOT_A_DOSABLE_REGIMEN">Это не схема с рассчитываемой дозой</option>
+  </select>
+  <textarea id="noteBox" rows="3" maxlength="2000" placeholder="Кратко напишите, что именно неверно или чего не хватает в источнике"></textarea>
+  <div class="charcount" id="noteCharCount">0 / 2000</div>
+  <button id="submitBtn" disabled>Select a verdict first</button>
+    </div>
+  </details>
+  <div id="storeInfo"></div>
+</div>
+
+<div class="panel reveal" id="revealSection" style="display:none;">
+  <h3 id="revealHeader" style="cursor:pointer;">▸ Reveal parser and AI comparison</h3>
+  <div id="revealBody" style="display:none;">
+    <div class="field"><b>Parser candidate</b><span id="r_parser"></span></div>
+    <div class="field" id="r_ai_wrap">
+      <div class="field"><b>AI proposed verdict</b><span id="r_ai_verdict"></span></div>
+      <div class="field"><b>AI confidence</b><span id="r_ai_confidence"></span></div>
+      <div class="field"><b>AI evidence explanation</b><span id="r_ai_explanation"></span></div>
+      <div class="field" id="r_ai_risk_wrap" style="display:none;"><b>AI risk flags</b><span id="r_ai_risk"></span></div>
+      <div class="field"><b>Agreement (you vs AI)</b><span id="r_agreement"></span></div>
+      <div class="hint">AI proposal is NOT_OWNER_VERIFIED — it is shown for comparison only and was never copied into your verdict.</div>
+    </div>
+    <div class="field" id="r_no_ai_wrap" style="display:none;">
+      <div class="hint">No AI proposal is available for this record set — comparison shows the parser candidate only.</div>
+    </div>
+    <div class="field"><b>Your verdict</b><span id="r_owner_verdict"></span></div>
+  </div>
+</div>
+
+<div class="navrow">
+  <button class="secondary" id="prevBtn">&larr; Предыдущая</button>
+  <button class="secondary" id="nextBtn">Следующая &rarr;</button>
+  <button class="secondary" id="exportBtn">Скачать результаты JSON</button>
+  <button id="exportAllBtn">Скачать ВСЕ 113 ответов одним JSON</button>
+  <button class="danger" id="resetBtn">Удалить локальные ответы</button>
+</div>
+
+<details class="tech-details">
+  <summary>Техническая проверка и импорт JSON</summary>
+<div class="panel">
+  <h3>Предпросмотр экспорта / валидация</h3>
+  <div id="exportPreview" style="font-family:Consolas,monospace;font-size:0.7rem;white-space:pre-wrap;max-height:200px;overflow:auto;"></div>
+  <h3 style="margin-top:14px;">Import validation (paste a previously exported JSON to check it)</h3>
+  <textarea id="importBox" rows="4" placeholder="paste exported JSON here to validate it — this does not load it into this session's store"></textarea>
+  <button class="secondary" id="validateImportBtn">Validate pasted JSON</button>
+  <div id="importResult" style="font-family:Consolas,monospace;font-size:0.7rem;white-space:pre-wrap;margin-top:8px;"></div>
+</div>
+</details>
+
+<script>
+"use strict";
+const RECORDS = [{"review_task_schema_version": 1, "review_batch_id": "batch_10_single_candidate", "queue_category": "GENERAL_SINGLE_CANDIDATE", "priority": 4, "unit_id": "f481fb3ce4eb9297b6170dd6fe1de4c6cdafa07f63bfede15b16a1d209b7d6b2", "validation_unit_schema_version": 1, "regimen_id": "5528", "regimen_version": 1, "source_packet_hash": "adb96667fccabe844006149b25d1a7ced565944d461b3e8b7ba7b0e2fc7978e1", "exact_quote": "Кларитромицин** 500 мг 2 раза в сутки + этамбутол** 15 – 20 мг/кг 1 раз в сутки + \n#рифабутин** 5 мг/кг 1 раз в сутки", "table_context": false, "antibiotic": "рифабутин", "diagnosis": "Нетуберкулезные микобактериозы (M. avium complex, M. genavense, M. kansasii), индукционная терапия", "route": "oral", "frequency": 1.0, "duration": 56.0, "source_range_text": "15 - 20 мг/кг", "source_dose_min": 15.0, "source_dose_max": 20.0, "source_unit_signature": {"raw_unit": "мг/кг", "normalized_unit": "мг/кг", "numerator_unit": "mg", "numerator_multiplier": 1.0, "weight_denominator": "kg", "time_denominator": null, "administration_basis": "UNSPECIFIED_WEIGHT_BASED", "concentration_denominator": null, "rate_basis": null, "unknown_tokens": [], "parse_status": "OK", "schema_version": 1}, "structured_unit_signature": {"raw_unit": "mg/kg", "normalized_unit": "mg/kg", "numerator_unit": "mg", "numerator_multiplier": 1.0, "weight_denominator": "kg", "time_denominator": null, "administration_basis": "UNSPECIFIED_WEIGHT_BASED", "concentration_denominator": null, "rate_basis": null, "unknown_tokens": [], "parse_status": "OK", "schema_version": 1}, "risk_flags": ["GENERAL_SINGLE_CANDIDATE"], "readiness": "READY_FOR_OWNER_REVIEW", "readiness_issues": [], "evidence_hash": "f481fb3ce4eb9297b6170dd6fe1de4c6cdafa07f63bfede15b16a1d209b7d6b2", "dose": 5.0, "unit": "mg/kg", "context_before": "", "context_after": "", "source_quote": "Кларитромицин** 500 мг 2 раза в сутки + этамбутол** 15 – 20 мг/кг 1 раз в сутки + \n#рифабутин** 5 мг/кг 1 раз в сутки", "source_pdf": "ВИЧ-инфекция у взрослых.pdf", "source_page": "47", "pdf_hash": "adb96667fccabe844006149b25d1a7ced565944d461b3e8b7ba7b0e2fc7978e1", "correction_required": true, "correction_round": "correction_05_wrong_anchor"}];
+const MODE = "range-single-review"; // "all" | "control" | "range-exact-review" | "range-single-review" | "range-unit-basis-review" | "range-table-review" | "range-engine-review" | "range-blocked-evidence" — set at build time, never user-editable
+const STORE_KEY = `rc030_owner_review_c5_events_v1_${MODE}`;
+const CURRENT_IDX_KEY = `rc030_owner_review_c5_session_v1_${MODE}`;
+const CORRECTION_PROGRESS_KEY =
+  `rc030_owner_review_c7_correction_progress_v1_${RECORDS[0]?.correction_round || "default"}`;
+const IS_CORRECTION_BATCH = RECORDS.length > 0
+  && RECORDS.every(record => record.correction_required === true);
+const OWNER_FIDELITY_SCHEMA_VERSION = 1;
+const INTERFACE_VERSION = `owner-review-interface-c5-v1-${MODE}`;
+const MAX_NOTE_LENGTH = 2000;
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHAR_RE = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/;
+
+// Mirrors dose_verification_sandbox/verdict_taxonomy.py UI_ACTION_TO_CANONICAL —
+// keep these two tables in sync by hand; the Python side has a load-time
+// assertion that catches drift on that end.
+const UI_ACTION_TO_CANONICAL = {
+  "SOURCE_CONFIRMS_PER_DAY": "CORRECT_EXPLICIT_PER_DAY",
+  "SOURCE_CONFIRMS_PER_DOSE": "CORRECT_EXPLICIT_PER_DOSE",
+  "SOURCE_CONFIRMS_FIXED_DAILY": "CORRECT_FIXED_DAILY",
+  "SOURCE_CONFIRMS_FIXED_SINGLE": "CORRECT_FIXED_SINGLE",
+  "SOURCE_CONFIRMS_RANGE_DAILY": "CORRECT_RANGE_DAILY",
+  "SOURCE_CONFIRMS_RANGE_SINGLE": "CORRECT_RANGE_SINGLE",
+  "TABLE_HEADER_CONFIRMS_PER_DAY": "CORRECT_EXPLICIT_PER_DAY",
+  "TABLE_HEADER_CONFIRMS_PER_DOSE": "CORRECT_EXPLICIT_PER_DOSE",
+  "WRONG_DOSE_ANCHOR": "WRONG_DOSE_ANCHOR",
+  "WRONG_FREQUENCY_LINK": "WRONG_FREQUENCY_LINK",
+  "WRONG_ALTERNATIVE": "WRONG_ALTERNATIVE",
+  "SOURCE_INCOMPLETE": "SOURCE_INCOMPLETE",
+  "SOURCE_CORRUPTED": "SOURCE_CORRUPTED",
+  "TABLE_CONTEXT_REQUIRED": "TABLE_CONTEXT_REQUIRED",
+  "REMAINS_AMBIGUOUS": "REMAINS_AMBIGUOUS",
+  "NOT_A_DOSABLE_REGIMEN": "NOT_A_DOSABLE_REGIMEN",
+};
+
+const MODE_BANNER_TEXT = {
+  "control": "Control-sample mode: a fixed-order curated subset with AI proposals available for comparison after each submission.",
+  "range-exact-review": "RC-030 C6.7 exact-link confirmation mode: independently audit-retained dose-range candidates only. Every candidate remains NOT_OWNER_VERIFIED / CALCULATION_BLOCKED until you submit a verdict here — nothing is migration-ready before that.",
+  "range-single-review": "RC-030 C6.7 single-candidate review mode: these records are NEVER migration-safe regardless of outcome — a confirming verdict here still requires a separate, later governance step before any authoritative use.",
+  "range-unit-basis-review": "RC-030 C6.8 dose-basis review mode: the source text and the structured dose field disagree or are silent on whether this range is per-day, per-dose, or per-kilogram. Please read the quoted sentence carefully and confirm the correct basis — do not assume PER_DAY or PER_DOSE unless the source states it explicitly.",
+  "range-table-review": "RC-030 C6.8 table-derived dose-range mode: this quote is a flattened table row (drug/dose/route/frequency concatenated, not prose). Verify row/column attribution carefully before confirming.",
+  "range-engine-review": "RC-030 C7 engine/independent-audit disagreement mode: the automated engine and an earlier independent blinded review reached different conclusions about this record for reasons unrelated to dose basis. Please read the source carefully and decide independently.",
+  "range-blocked-evidence": "RC-030 C7 blocked-evidence mode: these tasks failed the automated evidence-completeness check (missing page, quote not found, or missing identity). This is a diagnostic view only — no confirming verdict should be submitted here without first resolving the underlying evidence problem.",
+};
+document.getElementById("modeBanner").textContent = MODE_BANNER_TEXT[MODE]
+  || "Full review mode: the complete record set. AI comparison is shown after submission only where an AI proposal exists for that record.";
+if (IS_CORRECTION_BATCH) {
+  document.getElementById("modeBanner").textContent =
+    "ПОВТОРНАЯ ПРОВЕРКА: здесь показаны только записи, где ваш прошлый ответ " +
+    "разошёлся с независимой проверкой PDF. Новый ответ не удалит старый, а " +
+    "сохранится как исправление с полной историей.";
+}
+
+// PDFs are served by the local owner-review server under /__pdf__/. The
+// governed dataset still contains only a bare filename; no machine-specific
+// filesystem path is embedded in HTML, localStorage, or exported events.
+function localPdfUrl(record) {
+  const page = encodeURIComponent(record.source_page || 1);
+  return `/__pdf__/${encodeURIComponent(record.source_pdf)}#page=${page}`;
+}
+
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw === null) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) throw new Error("store is not an array");
+    return parsed;
+  } catch (e) {
+    // Fail closed: corrupt localStorage never silently becomes an empty
+    // store that could be overwritten — surface it and refuse to guess.
+    alert("Local event store is corrupted and could not be read: " + e.message +
+          "\n\nExport is disabled until this is resolved manually (inspect localStorage key '" + STORE_KEY + "').");
+    throw e;
+  }
+}
+function saveStore(arr) { localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }
+
+function loadCorrectionProgress() {
+  if (!IS_CORRECTION_BATCH) return [];
+  const raw = localStorage.getItem(CORRECTION_PROGRESS_KEY);
+  if (raw === null) return [];
+  const parsed = JSON.parse(raw);
+  if (!Array.isArray(parsed)) throw new Error("correction progress is not an array");
+  return parsed;
+}
+function markCorrectionReviewed(regimenId) {
+  if (!IS_CORRECTION_BATCH) return;
+  const progress = new Set(loadCorrectionProgress());
+  progress.add(regimenId);
+  localStorage.setItem(CORRECTION_PROGRESS_KEY, JSON.stringify([...progress]));
+}
+function reviewedRegimenIds() {
+  if (IS_CORRECTION_BATCH) return new Set(loadCorrectionProgress());
+  return new Set(loadStore().map(e => e.regimen_id));
+}
+
+function loadCurrentIdx() {
+  const raw = localStorage.getItem(CURRENT_IDX_KEY);
+  const n = raw === null ? 0 : parseInt(raw, 10);
+  if (Number.isNaN(n) || n < 0 || n >= RECORDS.length) return 0;
+  return n;
+}
+function saveCurrentIdx(i) { localStorage.setItem(CURRENT_IDX_KEY, String(i)); }
+
+let idx = loadCurrentIdx();
+let eventCounter = 0;
+let revealOpen = false;
+
+function renderBadges() {
+  const reviewed = reviewedRegimenIds();
+  const row = document.getElementById("badgeRow");
+  row.innerHTML = "";
+  RECORDS.forEach((r, i) => {
+    const dot = document.createElement("div");
+    dot.className = "badge-dot" + (reviewed.has(r.regimen_id) ? " reviewed" : "") + (i === idx ? " current" : "");
+    dot.textContent = String(i + 1);
+    dot.title = `${i+1}: regimen_id=${r.regimen_id} — ${reviewed.has(r.regimen_id) ? "REVIEWED" : "UNREVIEWED"}`;
+    dot.addEventListener("click", () => { idx = i; saveCurrentIdx(idx); revealOpen = false; render(); });
+    row.appendChild(dot);
+  });
+}
+
+function renderProgress() {
+  const reviewed = reviewedRegimenIds();
+  const count = RECORDS.filter(r => reviewed.has(r.regimen_id)).length;
+  document.getElementById("progressText").textContent = `Проверено: ${count} из ${RECORDS.length}`;
+  document.getElementById("progressBarFill").style.width = `${Math.round(100 * count / RECORDS.length)}%`;
+}
+
+function updateSubmitEnabled() {
+  const hasVerdict = !!document.getElementById("verdictSelect").value;
+  document.getElementById("submitBtn").disabled = !hasVerdict;
+  document.getElementById("submitBtn").textContent = hasVerdict
+    ? "Сохранить этот особый случай — Ctrl+Enter"
+    : "Сначала выберите вид ошибки";
+}
+
+function updateCharCount() {
+  const len = document.getElementById("noteBox").value.length;
+  const el = document.getElementById("noteCharCount");
+  el.textContent = `${len} / ${MAX_NOTE_LENGTH}`;
+  el.className = "charcount" + (len > MAX_NOTE_LENGTH ? " over" : "");
+}
+
+function render() {
+  const r = RECORDS[idx];
+  const reviewed = reviewedRegimenIds();
+  const hasEvent = reviewed.has(r.regimen_id);
+
+  const badgeCurrent = document.getElementById("badgeCurrent");
+  badgeCurrent.textContent =
+    `Запись ${idx+1} из ${RECORDS.length} — ` +
+    (hasEvent ? "уже проверена" : "ещё не проверена");
+  // NOTE: `r.stratum` is intentionally NOT shown here — for this dataset it
+  // is derived from (frequently identical to) parser_semantic_type, so
+  // displaying it before submission would leak the parser's own
+  // classification. Only `workload_category` (a review-ordering label, not
+  // a parser output) is safe to show pre-submission.
+  if (r.workload_category) {
+    const tag = document.createElement("span");
+    tag.className = "cat-tag";
+    tag.textContent = r.workload_category;
+    badgeCurrent.appendChild(tag);
+  }
+  if (r.table_context) {
+    const tbadge = document.createElement("span");
+    tbadge.className = "table-badge";
+    tbadge.textContent = "TABLE CONTEXT";
+    badgeCurrent.appendChild(tbadge);
+  }
+
+  document.getElementById("f_pdf").textContent = r.source_pdf || "(none)";
+  document.getElementById("f_page").textContent = r.source_page || "(none)";
+  document.getElementById("f_context_before").textContent = r.context_before || "";
+  document.getElementById("f_quote").textContent = r.source_quote || "(no source quote)";
+  document.getElementById("f_context_after").textContent = r.context_after || "";
+  document.getElementById("f_antibiotic").textContent = r.antibiotic || "(none)";
+  document.getElementById("f_diagnosis").textContent = r.diagnosis || "(none)";
+  document.getElementById("f_dose").textContent = `${r.dose ?? "?"} ${r.unit ?? ""}`;
+  document.getElementById("f_route").textContent = r.route || "(none)";
+  document.getElementById("f_frequency").textContent = r.frequency ?? "(none)";
+  document.getElementById("f_duration").textContent = r.duration_recommended ?? "(none)";
+  document.getElementById("f_target_antibiotic").textContent = r.antibiotic || "препарат не указан";
+  document.getElementById("f_target_dose").textContent = r.source_range_text
+    || `${r.dose ?? "доза не указана"} ${r.unit ?? ""}`.trim();
+  const correctionInstruction = document.getElementById("correctionInstruction");
+  if (r.correction_instruction) {
+    correctionInstruction.style.display = "block";
+    correctionInstruction.textContent = r.correction_instruction;
+  } else {
+    correctionInstruction.style.display = "none";
+    correctionInstruction.textContent = "";
+  }
+  document.getElementById("verdictSelect").value = "";  // never preselect the parser's or AI's own answer
+  document.getElementById("noteBox").value = "";
+  updateCharCount();
+  updateSubmitEnabled();
+
+  const pdfBtn = document.getElementById("openPdfBtn");
+  if (r.source_pdf) {
+    pdfBtn.disabled = false;
+    pdfBtn.onclick = () => {
+      window.open(localPdfUrl(r), "_blank", "noopener");
+    };
+    document.getElementById("pdfHint").textContent = `Откроется страница ${r.source_page}. Если просмотрщик PDF не учитывает переход #page, перейдите на страницу ${r.source_page} вручную.`;
+  } else {
+    pdfBtn.disabled = true;
+    pdfBtn.onclick = null;
+    document.getElementById("pdfHint").textContent = "BLOCKED: source PDF path not resolved for this record — do not record a confirming verdict without visible source evidence; use SOURCE_INCOMPLETE or SOURCE_CORRUPTED if appropriate.";
+  }
+
+  const events = loadStore().filter(v => v.regimen_id === r.regimen_id);
+  document.getElementById("storeInfo").textContent = events.length
+    ? `Для этой записи уже сохранено ответов: ${events.length}.`
+    : "Для этой записи ответ ещё не сохранён.";
+
+  // Reveal panel: only becomes available once the owner has submitted at
+  // least one event for THIS record in THIS session's store. Opening it
+  // never modifies the already-submitted event.
+  const revealSection = document.getElementById("revealSection");
+  const hasAi = r.ai_proposed_verdict !== undefined && r.ai_proposed_verdict !== null;
+  if (hasEvent) {
+    revealSection.style.display = "block";
+    const lastEvent = events[events.length - 1];
+    document.getElementById("r_parser").textContent = r.parser_candidate || r.parser_semantic_type || "(none)";
+    document.getElementById("r_owner_verdict").textContent = lastEvent.canonical_verdict;
+    document.getElementById("r_ai_wrap").style.display = hasAi ? "block" : "none";
+    document.getElementById("r_no_ai_wrap").style.display = hasAi ? "none" : "block";
+    if (hasAi) {
+      document.getElementById("r_ai_verdict").textContent = r.ai_proposed_verdict;
+      document.getElementById("r_ai_confidence").textContent = r.ai_confidence ?? "(none)";
+      document.getElementById("r_ai_explanation").textContent = r.ai_evidence_explanation || "(none)";
+      const agree = lastEvent.canonical_verdict === r.ai_proposed_verdict;
+      const agreeEl = document.getElementById("r_agreement");
+      agreeEl.textContent = agree ? "AGREE with AI proposal" : "DISAGREE with AI proposal";
+      agreeEl.className = agree ? "agree" : "disagree";
+      if (r.ai_risk_flags && r.ai_risk_flags.length) {
+        document.getElementById("r_ai_risk_wrap").style.display = "block";
+        document.getElementById("r_ai_risk").textContent = r.ai_risk_flags.join("; ");
+      } else {
+        document.getElementById("r_ai_risk_wrap").style.display = "none";
+      }
+    }
+  } else {
+    revealSection.style.display = "none";
+  }
+  revealOpen = false;
+  document.getElementById("revealBody").style.display = "none";
+  document.getElementById("revealHeader").textContent = "▸ Reveal parser and AI comparison";
+
+  updateExportPreview();
+  renderProgress();
+  renderBadges();
+}
+
+document.getElementById("revealHeader").addEventListener("click", () => {
+  revealOpen = !revealOpen;
+  document.getElementById("revealBody").style.display = revealOpen ? "block" : "none";
+  document.getElementById("revealHeader").textContent = (revealOpen ? "▾" : "▸") + " Reveal parser and AI comparison";
+});
+
+document.getElementById("verdictSelect").addEventListener("change", updateSubmitEnabled);
+document.getElementById("noteBox").addEventListener("input", updateCharCount);
+
+function updateExportPreview() {
+  const store = loadStore();
+  document.getElementById("exportPreview").textContent =
+    `${store.length} event(s) in local store. Schema version ${OWNER_FIDELITY_SCHEMA_VERSION}. Storage key: ${STORE_KEY}. ` +
+    (store.length ? `Most recent: ${JSON.stringify(store[store.length-1], null, 2)}` : "(empty)");
+}
+
+function nextUnreviewedIndex(fromIndex) {
+  const reviewed = reviewedRegimenIds();
+  for (let offset = 1; offset <= RECORDS.length; offset += 1) {
+    const candidate = (fromIndex + offset) % RECORDS.length;
+    if (!reviewed.has(RECORDS[candidate].regimen_id)) return candidate;
+  }
+  return (fromIndex + 1) % RECORDS.length;
+}
+
+function quickNote(uiAction, record) {
+  const basis = (
+    uiAction === "SOURCE_CONFIRMS_RANGE_SINGLE" || uiAction === "TABLE_HEADER_CONFIRMS_PER_DOSE"
+  ) ? "указанный диапазон относится к одному введению"
+    : (
+      uiAction === "SOURCE_CONFIRMS_RANGE_DAILY" || uiAction === "TABLE_HEADER_CONFIRMS_PER_DAY"
+    ) ? "указанный диапазон является суточной дозой"
+      : uiAction === "WRONG_DOSE_ANCHOR"
+        ? "указанные числа относятся к другому препарату"
+        : "источник не позволяет однозначно определить дозу за сутки или за одно введение";
+  return `[БЫСТРАЯ ПРОВЕРКА] Проверено по ${record.source_pdf || "PDF-источнику"}, стр. ${record.source_page || "не указана"}: ${basis}.`;
+}
+
+function submitVerdict(options = {}) {
+  const uiAction = options.uiActionOverride || document.getElementById("verdictSelect").value;
+  const rawNote = options.noteOverride ?? document.getElementById("noteBox").value;
+  const note = rawNote.trim();
+  if (!uiAction) { alert("Select a verdict first — nothing is preselected."); return; }
+  if (!(uiAction in UI_ACTION_TO_CANONICAL)) { alert("Internal error: unmapped UI action " + uiAction); return; }
+  if (!note) { alert("A note is required for every verdict, including ambiguous ones — whitespace-only notes are rejected."); return; }
+  if (note.length > MAX_NOTE_LENGTH) { alert(`Note exceeds the maximum length of ${MAX_NOTE_LENGTH} characters.`); return; }
+  if (CONTROL_CHAR_RE.test(note)) { alert("Note contains disallowed control characters — please remove them."); return; }
+  const canonicalVerdict = UI_ACTION_TO_CANONICAL[uiAction];
+  const r = RECORDS[idx];
+  eventCounter += 1;
+  const store = loadStore();
+  const priorForRecord = store.filter(e => e.regimen_id === r.regimen_id);
+  const previousEvent = priorForRecord.length ? priorForRecord[priorForRecord.length - 1] : null;
+  const newEventId = `${STORE_KEY}-${Date.now()}-${eventCounter}`;
+  if (store.some(e => e.event_id === newEventId)) {
+    alert("Internal error: generated a duplicate event_id — please try again.");
+    return;
+  }
+  store.push({
+    event_id: newEventId,
+    event_version: OWNER_FIDELITY_SCHEMA_VERSION,
+    created_at: new Date().toISOString(),
+    reviewer_id: "OWNER_LOCAL", // fixed constant — never a user-editable field anywhere in this file
+    unit_id: r.evidence_hash,
+    regimen_id: r.regimen_id,
+    regimen_version: r.regimen_version,
+    ui_action: uiAction,
+    canonical_verdict: canonicalVerdict,
+    note: note,
+    source_packet_hash: r.evidence_hash,
+    pdf_hash: r.pdf_hash,
+    parser_version: r.parser_version || null,
+    parser_semantic_type: r.parser_semantic_type || r.parser_candidate || null,
+    interface_version: INTERFACE_VERSION,
+    previous_event_id: previousEvent ? previousEvent.event_id : null,
+    supersedes_event_id: previousEvent ? previousEvent.event_id : null, // never self: newEventId is freshly generated above
+    // C7 fix: this was hardcoded false for every mode, including "control"
+    // -- browser-synthetic verdicts on the control-sample interface were
+    // silently indistinguishable from genuine OWNER_LOCAL events by this
+    // flag. Found by inspecting a real recorded event during Part VII
+    // browser validation. A record's own test_event=true (synthetic
+    // control records) or MODE === "control" now correctly marks the event.
+    test_event: r.test_event === true || MODE === "control",
+  });
+  saveStore(store);  // append-only: never removes or overwrites prior entries
+  markCorrectionReviewed(r.regimen_id);
+  if (options.autoAdvance === true) {
+    idx = nextUnreviewedIndex(idx);
+    saveCurrentIdx(idx);
+  }
+  render();
+}
+document.getElementById("submitBtn").addEventListener("click", submitVerdict);
+
+function quickSubmitRange(basis) {
+  const r = RECORDS[idx];
+  const uiAction = basis === "single"
+    ? (r.table_context ? "TABLE_HEADER_CONFIRMS_PER_DOSE" : "SOURCE_CONFIRMS_RANGE_SINGLE")
+    : (r.table_context ? "TABLE_HEADER_CONFIRMS_PER_DAY" : "SOURCE_CONFIRMS_RANGE_DAILY");
+  submitVerdict({uiActionOverride: uiAction, noteOverride: quickNote(uiAction, r), autoAdvance: true});
+}
+
+function quickSubmitAmbiguous() {
+  const r = RECORDS[idx];
+  const uiAction = "REMAINS_AMBIGUOUS";
+  submitVerdict({uiActionOverride: uiAction, noteOverride: quickNote(uiAction, r), autoAdvance: true});
+}
+
+document.getElementById("quickRangeSingleBtn").addEventListener("click", () => quickSubmitRange("single"));
+document.getElementById("quickRangeDailyBtn").addEventListener("click", () => quickSubmitRange("daily"));
+document.getElementById("quickAmbiguousBtn").addEventListener("click", quickSubmitAmbiguous);
+document.getElementById("quickWrongAnchorBtn").addEventListener("click", () => {
+  const r = RECORDS[idx];
+  const uiAction = "WRONG_DOSE_ANCHOR";
+  submitVerdict({uiActionOverride: uiAction, noteOverride: quickNote(uiAction, r), autoAdvance: true});
+});
+
+function goPrev() { idx = (idx - 1 + RECORDS.length) % RECORDS.length; saveCurrentIdx(idx); revealOpen = false; render(); }
+function goNext() { idx = (idx + 1) % RECORDS.length; saveCurrentIdx(idx); revealOpen = false; render(); }
+document.getElementById("prevBtn").addEventListener("click", goPrev);
+document.getElementById("nextBtn").addEventListener("click", goNext);
+function downloadJson(filename, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  downloadJson(`rc030_owner_review_c5_${MODE}_export_${stamp}.json`, loadStore());
+});
+
+document.getElementById("exportAllBtn").addEventListener("click", () => {
+  const reviewModes = [
+    "range-exact-review",
+    "range-engine-review",
+    "range-unit-basis-review",
+    "range-table-review",
+    "range-single-review",
+  ];
+  const allEvents = [];
+  for (const mode of reviewModes) {
+    const key = `rc030_owner_review_c5_events_v1_${mode}`;
+    const raw = localStorage.getItem(key);
+    if (raw === null) continue;
+    let events;
+    try { events = JSON.parse(raw); }
+    catch (e) { alert(`Не удалось прочитать локальные ответы режима ${mode}: ${e.message}`); return; }
+    if (!Array.isArray(events)) { alert(`Локальные ответы режима ${mode} повреждены.`); return; }
+    allEvents.push(...events);
+  }
+  const uniqueRegimens = new Set(allEvents.map(event => event.regimen_id)).size;
+  if (uniqueRegimens !== 113) {
+    alert(`Экспорт остановлен: найдено ${uniqueRegimens} из 113 уникальных записей. Ничего не скачано.`);
+    return;
+  }
+  window.__RC030_ALL_OWNER_EVENTS__ = allEvents;
+  document.getElementById("allEventsExportData").textContent = JSON.stringify(allEvents);
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  downloadJson(`rc030_c7_all_113_owner_events_${stamp}.json`, allEvents);
+});
+document.getElementById("resetBtn").addEventListener("click", () => {
+  const store = loadStore();
+  if (!store.length) { alert("Store is already empty."); return; }
+  const confirmed = confirm(
+    `This will permanently delete ${store.length} locally-stored event(s) under key '${STORE_KEY}'.\n\n` +
+    "Export first if you want to keep them. This cannot be undone. Continue?"
+  );
+  if (!confirmed) return;
+  localStorage.removeItem(STORE_KEY);
+  render();
+});
+
+document.addEventListener("keydown", (e) => {
+  const tag = (document.activeElement && document.activeElement.tagName) || "";
+  const typing = tag === "TEXTAREA" || tag === "SELECT" || tag === "INPUT";
+  if (e.ctrlKey && e.key === "Enter") { e.preventDefault(); submitVerdict(); return; }
+  if (typing) return;  // don't hijack arrow keys while typing/selecting
+  if (e.key === "1") { e.preventDefault(); quickSubmitRange("single"); return; }
+  if (e.key === "2") { e.preventDefault(); quickSubmitRange("daily"); return; }
+  if (e.key === "3") { e.preventDefault(); quickSubmitAmbiguous(); return; }
+  if (e.key === "4") { e.preventDefault(); document.getElementById("quickWrongAnchorBtn").click(); return; }
+  if (e.key === "ArrowLeft") { e.preventDefault(); goPrev(); }
+  if (e.key === "ArrowRight") { e.preventDefault(); goNext(); }
+});
+
+function validateImport(text) {
+  const issues = [];
+  let events;
+  try { events = JSON.parse(text); } catch(e) { return ["not valid JSON: " + e.message]; }
+  if (!Array.isArray(events)) return ["top-level value must be an array of events"];
+  const recordsByHash = {};
+  RECORDS.forEach(r => { recordsByHash[r.evidence_hash] = r; });
+  const seenIds = new Set();
+  events.forEach((ev, i) => {
+    const label = `event[${i}] (regimen_id=${ev.regimen_id})`;
+    if (ev.event_version !== OWNER_FIDELITY_SCHEMA_VERSION) {
+      issues.push(`${label}: unsupported schema version ${ev.event_version} (expected ${OWNER_FIDELITY_SCHEMA_VERSION})`);
+    }
+    if (ev.reviewer_id !== "OWNER_LOCAL") {
+      issues.push(`${label}: reviewer_id must be OWNER_LOCAL, got ${JSON.stringify(ev.reviewer_id)}`);
+    }
+    if ("review_origin" in ev || "owner_verified" in ev || "clinically_approved" in ev || "human_validated" in ev) {
+      issues.push(`${label}: contains an AI-provenance field — not a genuine owner event`);
+    }
+    if (typeof ev.test_event !== "boolean") {
+      issues.push(`${label}: test_event must be a JSON boolean, got ${JSON.stringify(ev.test_event)}`);
+    }
+    if (!ev.canonical_verdict) {
+      issues.push(`${label}: missing canonical_verdict`);
+    }
+    if (ev.event_id) {
+      if (seenIds.has(ev.event_id)) issues.push(`${label}: duplicate event_id ${JSON.stringify(ev.event_id)} within this export`);
+      seenIds.add(ev.event_id);
+    }
+    if (ev.supersedes_event_id && ev.supersedes_event_id === ev.event_id) {
+      issues.push(`${label}: self-supersession (supersedes_event_id equals event_id)`);
+    }
+    const known = recordsByHash[ev.source_packet_hash];
+    if (!known) {
+      issues.push(`${label}: source_packet_hash does not match any known record's evidence_hash — evidence mismatch`);
+    } else {
+      if (known.regimen_version !== ev.regimen_version) {
+        issues.push(`${label}: regimen_version stale (event has ${ev.regimen_version}, current is ${known.regimen_version})`);
+      }
+      if (known.pdf_hash !== ev.pdf_hash) {
+        issues.push(`${label}: PDF hash mismatch`);
+      }
+    }
+    if (!ev.note || !ev.note.trim()) {
+      issues.push(`${label}: missing or whitespace-only note`);
+    }
+  });
+  return issues;
+}
+
+document.getElementById("validateImportBtn").addEventListener("click", () => {
+  const issues = validateImport(document.getElementById("importBox").value);
+  document.getElementById("importResult").textContent = issues.length
+    ? `REJECTED — ${issues.length} issue(s):\n` + issues.join("\n")
+    : "VALID — all events pass schema, hash, and note checks. (Validation only — not loaded into this session's store.)";
+});
+
+render();
+</script>
+</body>
+</html>

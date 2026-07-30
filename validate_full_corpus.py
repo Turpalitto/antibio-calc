@@ -4,7 +4,9 @@ Real execution only. Collects metrics for analytics.
 
 import json
 import time
+import argparse
 from pathlib import Path
+from clinical_engine.corpus.locator import resolve_corpus_dir
 from src.pipeline.extraction.router import ExtractorRouter
 from src.pipeline.extraction.metrics import get_metrics, reset_metrics
 
@@ -17,8 +19,8 @@ def find_unique_pdfs(base_path: str) -> list:
                 pdfs[p.name] = str(p.resolve())
     return list(pdfs.values())
 
-def main():
-    base = r'C:\clinrec_downloader'
+def main(base: str | Path | None = None):
+    base = str(Path(base) if base is not None else resolve_corpus_dir())
     print(f'Searching unique PDFs under {base}...')
     pdf_paths = find_unique_pdfs(base)
     print(f'Found {len(pdf_paths)} unique PDFs')
@@ -83,4 +85,11 @@ def main():
     print(f'Success: {len(success)} / {len(stats)}')
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--corpus-dir",
+        default=None,
+        help="External corpus root; defaults to ANTIBIO_CORPUS_DIR/config.",
+    )
+    args = parser.parse_args()
+    main(args.corpus_dir)

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "generated_from": "generated/rc030_c7_owner_review/*_dataset.json",
+  "batch_id": "correction_03_unit_basis",
+  "correction_only": true,
+  "records": [
+    {
+      "review_task_schema_version": 1,
+      "review_batch_id": "batch_05_unit_basis",
+      "queue_category": "UNIT_BASIS_REVIEW",
+      "priority": 2,
+      "unit_id": "b02a47d8ad3d43c8121ddf941c9fd3f9f1d8538a832e4f33928586f46c4c9136",
+      "validation_unit_schema_version": 1,
+      "regimen_id": "5441",
+      "regimen_version": 1,
+      "source_packet_hash": "56123f20d4d50c1442e0d026e4faf87d516e5b483f069dd8713e80888190ac94",
+      "exact_quote": "При генерализованной форме хламидийной инфекции и неонатальной пневмонии в условиях стационара возможно применение эритромицина внутривенно: Детям первых трех месяцев жизни - 20-40 мг на кг массы тела в сутки (при тяжелых инфекциях доза может быть удвоена), детям старше 4 месяцев - 30-50 мг на кг массы тела в сутки за 2-4 введения в течение 14-21 дня.",
+      "table_context": false,
+      "antibiotic": "Эритромицин",
+      "diagnosis": "Генерализованная форма хламидийной инфекции и неонатальная пневмония",
+      "route": "iv",
+      "frequency": 2.0,
+      "duration": null,
+      "source_range_text": "20-40 мг",
+      "source_dose_min": 20.0,
+      "source_dose_max": 40.0,
+      "source_unit_signature": {
+        "raw_unit": "мг",
+        "normalized_unit": "мг",
+        "numerator_unit": "mg",
+        "numerator_multiplier": 1.0,
+        "weight_denominator": null,
+        "time_denominator": null,
+        "administration_basis": "UNSPECIFIED",
+        "concentration_denominator": null,
+        "rate_basis": null,
+        "unknown_tokens": [],
+        "parse_status": "OK",
+        "schema_version": 1
+      },
+      "structured_unit_signature": {
+        "raw_unit": "mg/kg",
+        "normalized_unit": "mg/kg",
+        "numerator_unit": "mg",
+        "numerator_multiplier": 1.0,
+        "weight_denominator": "kg",
+        "time_denominator": null,
+        "administration_basis": "UNSPECIFIED_WEIGHT_BASED",
+        "concentration_denominator": null,
+        "rate_basis": null,
+        "unknown_tokens": [],
+        "parse_status": "OK",
+        "schema_version": 1
+      },
+      "risk_flags": [
+        "UNIT_BASIS_REVIEW"
+      ],
+      "readiness": "READY_FOR_OWNER_REVIEW",
+      "readiness_issues": [],
+      "evidence_hash": "b02a47d8ad3d43c8121ddf941c9fd3f9f1d8538a832e4f33928586f46c4c9136",
+      "dose": 20.0,
+      "unit": "mg/kg",
+      "context_before": "ной дозе азитромицина** для лечения хламидийной инфекции у младенцев и детей с массой тела <45 кг ограничены, имеющиеся данные показывают, что может быть эффективным короткий курс терапии (азитромицин** 20 мг на кг массы тела в сутки 1 раз в сутки в течение 3 дней), а также азитромицин** 10 мг на кг массы тела в сутки в течение 7 дней [37, 38, 65] ",
+      "context_after": "  Рекомендовано новорожденным с хламидийным конъюнктивитом назначать [60-62]: Эритромицин Уровень убедительности рекомендаций В (уровень достоверности доказательств - 2) Комментарии: Согласно мировой практике эритромицин может быть назначен по 50 мг на кг массы тела в сутки, разделенных на 4 приема в течение 14 дней [60-62]. Также в мировой практи",
+      "source_quote": "При генерализованной форме хламидийной инфекции и неонатальной пневмонии в условиях стационара возможно применение эритромицина внутривенно: Детям первых трех месяцев жизни - 20-40 мг на кг массы тела в сутки (при тяжелых инфекциях доза может быть удвоена), детям старше 4 месяцев - 30-50 мг на кг массы тела в сутки за 2-4 введения в течение 14-21 дня.",
+      "source_pdf": "Хламидийная инфекция.pdf",
+      "source_page": "22",
+      "pdf_hash": "56123f20d4d50c1442e0d026e4faf87d516e5b483f069dd8713e80888190ac94",
+      "correction_required": true,
+      "correction_round": "correction_03_unit_basis"
+    }
+  ]
+}

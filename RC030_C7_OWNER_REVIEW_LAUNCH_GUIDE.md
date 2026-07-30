@@ -1,5 +1,11 @@
 # RC-030 / C7 Owner Review — Launch Guide
 
+> **Completed 2026-07-30.** This launch guide is retained as execution
+> history. Do not request additional C7 answers. The terminal result is
+> 182 valid append-only events for 113/113 regimens, zero validation issues,
+> zero substantive owner/AI mismatches, and zero quarantined defects. See
+> `RC030_C7_OWNER_VS_AI_COMPARISON_REPORT.md`.
+
 Read this before reviewing. Nothing here approves any dosing regimen for clinical use. Every verdict you record stays local to your browser until you export it and hand it back for governed processing — it never auto-submits anywhere, ever.
 
 ## 1. Build the batches (already done, rebuild only if you change source data)
@@ -10,15 +16,23 @@ uv run python generated/rc030_c7/build_batches.py
 uv run python generated/rc030_c7/build_c5_datasets.py
 ```
 
-## 2. Start a local static server
+## 2. Start the local review server
 
 From the repository root:
 
-```
-python -m http.server 8977 --directory generated/rc030_c7_owner_review
+```powershell
+python generated/rc030_recovery/serve_owner_review.py `
+  --html-root generated/rc030_c7_owner_review `
+  --pdf-root C:\clinrec_downloader\downloads_active `
+  --pdf-root C:\clinrec_downloader\downloads_antibiotics `
+  --pdf-root C:\clinrec_downloader\archive_review `
+  --pdf-root C:\clinrec_downloader\archive_no_antibiotics `
+  --port 8977
 ```
 
-(Windows PowerShell equivalent is identical — `python` resolves the same way.)
+The server listens only on `127.0.0.1`. It exposes PDFs by bare filename under
+`/__pdf__/`; it never uploads them or embeds machine-specific paths in review
+HTML/events.
 
 ## 3. Open a batch interface
 
@@ -36,19 +50,65 @@ Batch files (in priority order — do batch_01 through batch_03 first):
 - `c7_batch_09_table_review.html` — 8 table-derived records
 - `c7_batch_10_single_candidate.html`, `c7_batch_11_single_candidate.html` — 15 general single-candidates (12/3)
 
-## 4. Configure your local PDF root
+Correction-only pages after the 113-record comparison:
 
-First use of "Open source PDF page" will ask you to set your local PDF folder (the directory containing the RC-030 source PDFs — e.g. `C:\clinrec_downloader`). This is stored only in your browser's `localStorage`, never written into any file in this repository.
+- `correction_01_exact.html` — 2 records;
+- `correction_02_engine.html` — 2 records;
+- `correction_03_unit_basis.html` — 4 records;
+- `correction_04_single.html` — 2 records.
+
+These pages start their own visible correction counter at zero but preserve
+all earlier owner events. Each new answer is appended as a superseding event
+in the record's original review-mode store. Record `6068` is not included:
+its source extraction must be repaired and revalidated first.
+
+## 4. Open source PDFs
+
+Click **Открыть PDF на нужной странице**. The PDF opens through the same local
+server, so the browser does not block it as an unsafe `http://` → `file:///`
+transition. The button adds `#page=<source_page>` automatically.
 
 ## 5. Review records
 
 Read the source quote and context. Select the verdict that matches what the source actually says — not what you'd clinically expect. A note is required for every verdict (explain the source-based reason, not a general clinical opinion). The parser's guess and any AI proposal stay hidden until after you submit.
 
-Keyboard shortcuts: `←`/`→` = previous/next record, `Ctrl+Enter` = record verdict.
+For the common cases, use the large one-click buttons:
+
+- `1` — range per administration;
+- `2` — daily-total range;
+- `3` — source remains ambiguous;
+- `4` — the displayed numbers belong to another drug.
+
+Important: `1 раз в сутки` is a frequency statement, not automatically a
+daily-total dose. Example: `500–1000 мг 1 раз в сутки` uses button `1`,
+because `500–1000 мг` is the amount for that one administration. Use button
+`2` only when the source explicitly gives a total daily basis such as
+`мг/сут`, `мг/кг/сут`, `мг/день`, `мг/кг/день`, `в день`, or
+`суточная доза`. In medication dosing, `/день` and `/сут` both identify the
+total over 24 hours.
+
+The interface writes a standardized PDF/page note and automatically opens the
+next unreviewed record. The click/key press is your deliberate attestation
+after reading the visible source. For wrong frequency, wrong alternatives,
+incomplete/corrupted sources, or unusual cases, use the
+detailed form and write a custom source-based note.
+
+Keyboard shortcuts: `1`/`2`/`3`/`4` = quick actions, `←`/`→` = previous/next
+record, `Ctrl+Enter` = submit the detailed form.
 
 ## 6. Export JSON after each batch
 
-Click "Export events as JSON". The file downloads as `rc030_owner_review_c5_<mode>_export.json`. **Do this after finishing each batch, not just at the end** — your browser's local storage could be cleared by browser settings changes, and an export is your only durable copy until it's processed.
+Click "Export events as JSON". The file downloads as
+`rc030_owner_review_c5_<mode>_export_<UTC-timestamp>.json`; the unique
+timestamp prevents repeated exports from replacing or suppressing one
+another. **Do this after finishing each batch, not just at the end** — your
+browser's local storage could be cleared by browser settings changes, and an
+export is your only durable copy until it's processed.
+
+After all 11 batches are complete, click **Скачать ВСЕ 113 ответов одним
+JSON**. This combines the five review-mode stores into one append-only array,
+but downloads only when exactly 113 unique regimen IDs are present. Repeated
+or superseding events are retained for governed consolidation.
 
 ## 7. Preserve original exports
 

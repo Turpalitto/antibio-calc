@@ -9,6 +9,7 @@ No real database touched. No network access. No genuine owner event
 created (all test data is synthetic, matching the discipline used
 elsewhere in the RC-030 test suite).
 """
+import importlib.util
 import json
 import re
 import subprocess
@@ -21,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 RECOVERY_DIR = ROOT / "generated" / "rc030_recovery"
 BUILDER = RECOVERY_DIR / "build_interface.py"
 TEMPLATE = RECOVERY_DIR / "owner_review_template.html"
+OWNER_REVIEW_SERVER = RECOVERY_DIR / "serve_owner_review.py"
 DATASET_ALL = RECOVERY_DIR / "owner_review_data.json"
 
 # owner_control_sample_data.json is intentionally NOT committed (it bundles
@@ -227,6 +229,79 @@ def test_template_has_no_external_stylesheets_or_scripts():
     assert re.search(r'<script[^>]+src=', source) is None  # no external script src
 
 
+def test_pdf_button_uses_same_origin_server_not_blocked_file_url():
+    source = TEMPLATE.read_text(encoding="utf-8")
+    assert 'return `/__pdf__/${encodeURIComponent(record.source_pdf)}#page=${page}`;' in source
+    assert 'window.open(localPdfUrl(r), "_blank", "noopener")' in source
+    assert "file:///" not in source
+
+
+def test_default_review_screen_is_a_single_plain_russian_question():
+    source = TEMPLATE.read_text(encoding="utf-8")
+    assert "Что делать с каждой записью" in source
+    assert "Как записаны числа дозы?" in source
+    assert 'id="f_target_antibiotic"' in source
+    assert 'id="f_target_dose"' in source
+    assert "РАЗОВАЯ ДОЗА — ЗА 1 ПРИЁМ" in source
+    assert "СУТОЧНАЯ ДОЗА — ВСЕГО ЗА 24 ЧАСА" in source
+    assert "500–1000 мг, 1 раз в сутки" in source
+    assert "мг/кг/сут" in source
+    assert "мг/кг/день" in source
+    assert "в день» = сумма за 24 часа" in source
+    assert "НЕ МОГУ ПОНЯТЬ ПО PDF" in source
+    assert "ЭТИ ЧИСЛА ОТНОСЯТСЯ К ДРУГОМУ ПРЕПАРАТУ" in source
+    assert 'id="quickWrongAnchorBtn"' in source
+    assert "r.source_range_text" in source
+
+
+def test_export_filename_is_unique_and_mode_specific():
+    source = TEMPLATE.read_text(encoding="utf-8")
+    assert 'new Date().toISOString().replace(/[:.]/g, "-")' in source
+    assert 'rc030_owner_review_c5_${MODE}_export_${stamp}.json' in source
+
+
+def test_all_mode_export_requires_113_unique_owner_records():
+    source = TEMPLATE.read_text(encoding="utf-8")
+    assert 'id="exportAllBtn"' in source
+    assert 'new Set(allEvents.map(event => event.regimen_id)).size' in source
+    assert "if (uniqueRegimens !== 113)" in source
+    assert "rc030_c7_all_113_owner_events_${stamp}.json" in source
+    assert "window.__RC030_ALL_OWNER_EVENTS__ = allEvents;" in source
+    assert 'id="allEventsExportData"' in source
+    assert 'document.getElementById("allEventsExportData").textContent = JSON.stringify(allEvents);' in source
+    for mode in (
+        "range-exact-review",
+        "range-engine-review",
+        "range-unit-basis-review",
+        "range-table-review",
+        "range-single-review",
+    ):
+        assert f'"{mode}"' in source
+    assert "<summary>Другой случай / ошибка в записи</summary>" in source
+    assert "<summary>Показать распознанные поля записи</summary>" in source
+
+
+def test_owner_review_server_resolves_only_bare_pdf_names(tmp_path):
+    spec = importlib.util.spec_from_file_location("serve_owner_review", OWNER_REVIEW_SERVER)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+
+    pdf_root = tmp_path / "pdfs"
+    pdf_root.mkdir()
+    expected = pdf_root / "Тест файл.pdf"
+    expected.write_bytes(b"%PDF-1.4\n")
+    roots = (pdf_root,)
+
+    assert module.resolve_pdf(
+        "/__pdf__/%D0%A2%D0%B5%D1%81%D1%82%20%D1%84%D0%B0%D0%B9%D0%BB.pdf",
+        roots,
+    ) == expected
+    assert module.resolve_pdf("/__pdf__/../secret.pdf", roots) is None
+    assert module.resolve_pdf("/__pdf__/%2e%2e%2fsecret.pdf", roots) is None
+    assert module.resolve_pdf("/__pdf__/not-a-pdf.txt", roots) is None
+
+
 def test_template_uses_textcontent_not_innerhtml_for_record_data():
     """innerHTML is only used to CLEAR a container (assigning "") or to build
     static/trusted markup — never to inject a record field directly. This
@@ -273,6 +348,43 @@ def test_note_length_and_control_character_guards_present():
     source = TEMPLATE.read_text(encoding="utf-8")
     assert "MAX_NOTE_LENGTH" in source
     assert "CONTROL_CHAR_RE" in source
+
+
+def test_quick_review_is_explicit_owner_action_with_standardized_note():
+    source = TEMPLATE.read_text(encoding="utf-8")
+    assert 'id="quickRangeSingleBtn"' in source
+    assert 'id="quickRangeDailyBtn"' in source
+    assert 'id="quickAmbiguousBtn"' in source
+    assert "function quickNote(uiAction, record)" in source
+    assert "[БЫСТРАЯ ПРОВЕРКА] Проверено по" in source
+    assert "autoAdvance: true" in source
+    assert "nextUnreviewedIndex" in source
+
+
+def test_quick_review_does_not_preload_or_copy_parser_ai_verdict():
+    source = TEMPLATE.read_text(encoding="utf-8")
+    quick_note = source[
+        source.index("function quickNote"):
+        source.index("function submitVerdict")
+    ]
+    quick_actions = source[
+        source.index("function quickSubmitRange"):
+        source.index("function goPrev")
+    ]
+    quick_block = quick_note + quick_actions
+    assert "parser_candidate" not in quick_block
+    assert "parser_semantic_type" not in quick_block
+    assert "ai_proposed_verdict" not in quick_block
+    assert "r.table_context" in quick_block
+    assert '"TABLE_HEADER_CONFIRMS_PER_DOSE"' in quick_block
+    assert '"TABLE_HEADER_CONFIRMS_PER_DAY"' in quick_block
+
+
+def test_quick_review_keyboard_shortcuts_are_present():
+    source = TEMPLATE.read_text(encoding="utf-8")
+    assert 'e.key === "1"' in source
+    assert 'e.key === "2"' in source
+    assert 'e.key === "3"' in source
 
 
 def test_verdict_select_has_no_preselected_value():

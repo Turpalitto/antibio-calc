@@ -19,10 +19,13 @@ verification=pdf_confirmed.
 
 Usage (from repo root):
     python -m clinical_engine.tools.clinical_data_audit \
-        [--raw C:/clinrec_downloader/metadata.sqlite] \
-        [--norm C:/clinrec_downloader/normalized_regimens.sqlite] \
+        [--raw <corpus>/metadata.sqlite] \
+        [--norm <corpus>/normalized_regimens.sqlite] \
         [--registry clinical_data_issues.json] \
         [--report clinical_data_audit_report.md]
+
+Without explicit database arguments, the tool uses ``ANTIBIO_CORPUS_DIR``
+(or the governed corpus locator configuration).
 """
 
 from __future__ import annotations
@@ -36,8 +39,8 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-_DEFAULT_RAW = r"C:\clinrec_downloader\metadata.sqlite"
-_DEFAULT_NORM = r"C:\clinrec_downloader\normalized_regimens.sqlite"
+from clinical_engine.corpus.locator import CorpusLocator
+
 _DEFAULT_REGISTRY = "clinical_data_issues.json"
 _DEFAULT_REPORT = "clinical_data_audit_report.md"
 
@@ -262,9 +265,10 @@ def render_report(a) -> str:
 
 
 def main() -> None:
+    corpus = CorpusLocator()
     ap = argparse.ArgumentParser()
-    ap.add_argument("--raw", default=_DEFAULT_RAW)
-    ap.add_argument("--norm", default=_DEFAULT_NORM)
+    ap.add_argument("--raw", default=str(corpus.metadata_sqlite))
+    ap.add_argument("--norm", default=str(corpus.normalized_regimens_sqlite))
     ap.add_argument("--registry", default=_DEFAULT_REGISTRY)
     ap.add_argument("--report", default=_DEFAULT_REPORT)
     args = ap.parse_args()

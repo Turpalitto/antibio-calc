@@ -23,12 +23,19 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent))
 from src.pipeline.extraction.router import ExtractorRouter
 from src.pipeline.extraction.base import Document
+from clinical_engine.corpus.locator import resolve_corpus_dir
 
-def load_contributing_pdfs(limit: int = None) -> list[Path]:
-    kb_path = Path("C:/clinrec_downloader/knowledge_base.json")
+def load_contributing_pdfs(
+    limit: int = None, corpus_dir: str | Path | None = None
+) -> list[Path]:
+    corpus_root = Path(corpus_dir) if corpus_dir is not None else resolve_corpus_dir()
+    kb_path = corpus_root / "knowledge_base.json"
     if not kb_path.exists():
         # fallback: scan downloads_active
-        pdfs = [Path(p) for p in glob.glob("C:/clinrec_downloader/downloads_active/*.pdf")]
+        pdfs = [
+            Path(p)
+            for p in glob.glob(str(corpus_root / "downloads_active" / "*.pdf"))
+        ]
         if limit:
             pdfs = pdfs[:limit]
         return pdfs
@@ -44,7 +51,10 @@ def load_contributing_pdfs(limit: int = None) -> list[Path]:
 
     located = []
     for name in sorted(pdf_set):
-        for root in ["C:/clinrec_downloader/downloads_active", "C:/clinrec_downloader/archive_review"]:
+        for root in [
+            corpus_root / "downloads_active",
+            corpus_root / "archive_review",
+        ]:
             p = Path(root) / name
             if p.exists():
                 located.append(p)
@@ -53,9 +63,13 @@ def load_contributing_pdfs(limit: int = None) -> list[Path]:
         located = located[:limit]
     return located
 
-def main(limit: int = 10, out: str = "p45_reprocess_metrics.json"):
+def main(
+    limit: int = 10,
+    out: str = "p45_reprocess_metrics.json",
+    corpus_dir: str | Path | None = None,
+):
     router = ExtractorRouter()
-    pdfs = load_contributing_pdfs(limit=limit)
+    pdfs = load_contributing_pdfs(limit=limit, corpus_dir=corpus_dir)
     print(f"Reprocessing {len(pdfs)} PDFs with P4.5 Layout...")
 
     stats = {
@@ -124,5 +138,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=10, help="Limit PDFs for practical run (full corpus = 193)")
     ap.add_argument("--out", default="p45_reprocess_metrics.json")
+    ap.add_argument(
+        "--corpus-dir",
+        default=None,
+        help="External corpus root; defaults to ANTIBIO_CORPUS_DIR/config.",
+    )
     args = ap.parse_args()
-    main(limit=args.limit, out=args.out)
+    main(limit=args.limit, out=args.out, corpus_dir=args.corpus_dir)

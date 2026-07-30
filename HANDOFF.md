@@ -1,8 +1,17 @@
 # HANDOFF.md — ANTIBIO (Cross-IDE / Cross-AI Onboarding)
 
-## Current handoff — 2026-07-15
+## Current handoff — 2026-07-30
 
-P5.6 is in ACCEPTANCE but NOT COMPLETE. Review Workbench built: 9,153 PENDING tasks, 0 approved; Clinical Engine disconnected. Canonical tests: 1,371 PASS, 0 FAIL. Two blockers: owner credential rotation and Git fresh-clone reproducibility (19 tracked files; see inventory). P6 BLOCKED. Read `GOVERNANCE_SOURCE_OF_TRUTH.md`, `P5.6_PRODUCTION_RECOVERY_REPORT.md`, then `NEXT_TASK.md`.
+P5.6 is in ACCEPTANCE but NOT COMPLETE. Credential rotation is closed by
+owner attestation; the historical fresh-clone gate passed. C7 source-fidelity
+review is closed at 182 events / 113 regimens / zero validation issues.
+Proposed-boundary canonical tests: 1499 passed, 11 skipped, 1 xfailed,
+0 failed (1511 collected).
+The active P5.6 blocker is a new reproducible Git boundary for the current C7
+and audit state; `main` also remains ahead of `origin/main`. Review Workbench
+is local-only and Clinical Engine remains disconnected. P6 is BLOCKED.
+Read `GOVERNANCE_SOURCE_OF_TRUTH.md`, `P5.6_PRODUCTION_RECOVERY_REPORT.md`,
+then `NEXT_TASK.md`.
 
 **Purpose:** Central entry point. Onboard by reading this + all referenced docs. Repository is single source of truth. Chat history = 0.
 

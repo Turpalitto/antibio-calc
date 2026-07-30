@@ -31,6 +31,7 @@ import glob
 sys.path.insert(0, str(Path(__file__).parent))
 from src.pipeline.extraction.router import ExtractorRouter
 from src.pipeline.extraction.base import Document
+from clinical_engine.corpus.locator import resolve_corpus_dir
 
 # Setup logging
 logging.basicConfig(
@@ -47,12 +48,16 @@ CHECKPOINT_FILE = Path("p45_reprocess_checkpoint.json")
 METRICS_FILE = Path("p45_full_corpus_metrics.json")  # default, can be overridden by --out
 AUDIT_FILE = Path("P4.5_PRODUCTION_AUDIT.md")
 
-def load_contributing_pdfs() -> list[Path]:
+def load_contributing_pdfs(corpus_dir: str | Path | None = None) -> list[Path]:
     """Load all unique contributing PDFs from knowledge_base."""
-    kb_path = Path("C:/clinrec_downloader/knowledge_base.json")
+    corpus_root = Path(corpus_dir) if corpus_dir is not None else resolve_corpus_dir()
+    kb_path = corpus_root / "knowledge_base.json"
     if not kb_path.exists():
         logger.warning("knowledge_base.json not found, scanning downloads_active")
-        return [Path(p) for p in glob.glob("C:/clinrec_downloader/downloads_active/*.pdf")]
+        return [
+            Path(p)
+            for p in glob.glob(str(corpus_root / "downloads_active" / "*.pdf"))
+        ]
 
     with open(kb_path, encoding="utf-8") as f:
         kb = json.load(f)
@@ -65,7 +70,10 @@ def load_contributing_pdfs() -> list[Path]:
 
     located = []
     for name in sorted(pdf_set):
-        for root in ["C:/clinrec_downloader/downloads_active", "C:/clinrec_downloader/archive_review"]:
+        for root in [
+            corpus_root / "downloads_active",
+            corpus_root / "archive_review",
+        ]:
             p = Path(root) / name
             if p.exists():
                 located.append(p)
@@ -107,11 +115,17 @@ def collect_metrics(doc: Document, pdf_path: Path, elapsed: float) -> dict:
         "warnings": len(doc.warnings) if hasattr(doc, 'warnings') else 0,
     }
 
-def main(full: bool = False, limit: int = None, resume: bool = False, out_file: str = "p45_full_corpus_metrics.json"):
+def main(
+    full: bool = False,
+    limit: int = None,
+    resume: bool = False,
+    out_file: str = "p45_full_corpus_metrics.json",
+    corpus_dir: str | Path | None = None,
+):
     global METRICS_FILE
     METRICS_FILE = Path(out_file)
     router = ExtractorRouter()
-    all_pdfs = load_contributing_pdfs()
+    all_pdfs = load_contributing_pdfs(corpus_dir=corpus_dir)
 
     if limit:
         all_pdfs = all_pdfs[:limit]
@@ -203,7 +217,18 @@ if __name__ == "__main__":
     parser.add_argument("--limit", type=int, default=None, help="Limit number of PDFs")
     parser.add_argument("--resume", action="store_true", help="Resume from checkpoint")
     parser.add_argument("--out", default="p45_full_corpus_metrics.json", help="Output metrics JSON file")
+    parser.add_argument(
+        "--corpus-dir",
+        default=None,
+        help="External corpus root; defaults to ANTIBIO_CORPUS_DIR/config.",
+    )
     args = parser.parse_args()
 
     limit = None if args.full else (args.limit or 10)
-    main(full=args.full, limit=limit, resume=args.resume, out_file=args.out)
+    main(
+        full=args.full,
+        limit=limit,
+        resume=args.resume,
+        out_file=args.out,
+        corpus_dir=args.corpus_dir,
+    )

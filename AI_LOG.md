@@ -1,5 +1,530 @@
 # AI LOG
 
+## 2026-07-30: P5.6 C7 acceptance and reproducibility audit
+
+Completed a fail-closed audit after C7 closure. Confirmed C7 terminal evidence:
+182 append-only events, 113/113 regimens, zero validation issues, 105 exact
+owner/AI matches, 8 governed label-equivalent per-administration verdicts,
+zero substantive mismatches, and zero quarantined defects.
+
+Created `P56_C7_ACCEPTANCE_AUDIT_2026-07-30.md` and the exact 94-file
+`P56_C7_ACCEPTANCE_PROPOSED_ALLOWLIST.txt`. The allowlist is 3,753,863 bytes,
+has zero missing/duplicate entries, and contains no production DB/PDF,
+credential/private-key file, or local pilot packet. 283 unrelated current
+working-tree files remain explicitly outside the boundary.
+
+Fixed executable corpus-path portability in `build_review_workbench.py`,
+`build_p44_kb.py`, `production_reprocessor.py`,
+`reprocess_p45_layout.py`, `validate_full_corpus.py`,
+`clinical_engine/tools/build_normalized_sqlite.py`, and
+`clinical_engine/tools/clinical_data_audit.py`. These tools now use the
+governed `CorpusLocator` / `ANTIBIO_CORPUS_DIR` contract or explicit
+`--corpus-dir`. Added
+`clinical_engine/tests/test_tool_corpus_portability.py`.
+
+Updated `generated/rc030_c7/finalize_owner_review.py` so future comparison
+artifacts store source-export file names and SHA-256 hashes rather than
+developer absolute paths. Added regression coverage in
+`tests/rc030_owner_interface/test_c7_correction_batches.py`.
+
+Synchronized `GOVERNANCE_SOURCE_OF_TRUTH.md`, `HANDOFF.md`, `ROADMAP.md`,
+`DEVELOPMENT_BACKLOG.md`, and `API_KEY_ROTATION_VERIFICATION.md`: credential
+rotation and historical fresh-clone verification are closed; the current
+blocker is the uncommitted/unpublished C7 boundary. Added supersession
+banners to stale C7 execution documents.
+
+Verification:
+
+- current working-tree marker-selected run: 1506 passed, 1 skipped,
+  1 xfailed, 0 failed;
+- isolated proposed-boundary canonical run: 1499 passed, 11 skipped,
+  1 xfailed, 0 failed (1511 collected);
+- focused C7 + portability suite in the working tree: 396 passed;
+- isolated-boundary focused suite: 392 passed, 4 expected
+  optional-artifact skips, 0 failed;
+- changed Python entry points: `py_compile` PASS;
+- current tree/history secret-pattern scan: zero;
+- proposed boundary: zero forbidden DB/PDF/credential/private-key files;
+- `uv lock --check` not available in this shell because `uv` is not
+  installed; repeat in final isolated clone after commit.
+
+No production DB/PDF, clinical approval, calculation eligibility, Clinical
+Engine connection, or frozen medical logic was changed.
+
+## 2026-07-30: C7 owner review fully reconciled
+
+Validated final export
+`rc030_owner_review_c5_range-single-review_export_2026-07-30T06-40-10-025Z.json`
+(SHA-256
+`B4FD86F3AD7FC86F56F25B1024D843320AB16CD8ABCEDF9E63DE7ED0496BE5F0`).
+The repaired `6068` event is `CORRECT_RANGE_SINGLE`, references evidence hash
+`dc0778152ff3053db9cdf4cb9d74e6759bb7ea09f27b6497148ccbc94a4886a0`,
+and supersedes the old extraction-defect event.
+
+Added `generated/rc030_c7/finalize_owner_review.py` and regenerated final
+artifacts: 182 events, 113/113 regimens, zero validation issues, 105 exact
+owner/AI matches, 8 metric-equivalent table labels, zero substantive
+mismatches, and zero quarantined defects. Tests:
+`.\.venv\Scripts\python.exe -m pytest tests\rc030_owner_interface tests\dose_verification_sandbox -q`
+→ `392 passed`. No production DB/PDF or Clinical Engine state changed.
+
+## 2026-07-30: governed 6068 source repair prepared
+
+Visually rendered and inspected `Острый ларингит.pdf`, page 16. Confirmed
+that `500¹-1000² мг` means numeric range `500-1000 мг`; superscript `¹` and
+`²` are footnote markers. Added
+`generated/rc030_c7/build_source_repair_6068.py`, which creates a derived,
+blocked validation unit with new evidence hash
+`dc0778152ff3053db9cdf4cb9d74e6759bb7ea09f27b6497148ccbc94a4886a0`.
+Built `generated/rc030_c7_owner_review/correction_07_source_repair.html`
+(SHA-256
+`d427477d5a9d50b368bfab7cc2096d3cd30da88f392dfd2c11affc1a288b3293`)
+and opened it for the required superseding owner verdict. Source PDF,
+production database, Clinical Engine, and calculation eligibility were not
+modified. Test command:
+`.\.venv\Scripts\python.exe -m pytest tests\rc030_owner_interface tests\dose_verification_sandbox -q`
+→ `391 passed`.
+
+## 2026-07-30: C7 correction reconciliation complete
+
+Validated final single-mode export
+`rc030_owner_review_c5_range-single-review_export_2026-07-30T06-29-18-808Z.json`
+(SHA-256
+`82E652B5B37C4E93B3E5A496D4461018D3C5668048DF09F93DF6DEBB4C7E8904`):
+24 events, 15 unique regimens, zero issues. Regimen `5528` now terminates in
+`WRONG_DOSE_ANCHOR`.
+
+Consolidated the latest exact, engine, unit-basis, table, and single-mode
+histories into 181 append-only events covering 113/113 regimens. Full
+validation returned zero issues and every regimen has exactly one terminal
+event. Final owner-vs-AI result: 104 exact canonical matches, 8
+table-label-only per-administration equivalents, zero substantive
+mismatches, and one quarantined extraction defect (`6068`).
+
+Wrote final artifacts under
+`C:\Users\TURPAL\Downloads\RC030_C7_FINAL_2026-07-30`. No production DB/PDF
+was changed, no Clinical Engine was connected, and no clinical approval was
+granted.
+
+## 2026-07-30: 5528 remained incorrect after final export
+
+Validated
+`rc030_owner_review_c5_range-single-review_export_2026-07-30T06-23-52-507Z.json`
+(SHA-256
+`A57BDFBD261F34D9F981954948765147ECEB1ED86B1E19B69439075FDDD2D71C`):
+23 events, 15 unique regimens, zero issues.
+
+The export added two further `CORRECT_RANGE_SINGLE` events for `5528`; its
+wrong-dose-anchor defect remains unresolved. Browser inspection confirmed
+the card displays `рифабутин — 15-20 мг/кг` beside the source sentence where
+`15-20 mg/kg` belongs to ethambutol and rifabutin is `5 mg/kg`.
+
+Added `correction_06_wrong_anchor_retry.html` with a visible source
+comparison instruction while preserving all prior events. The owner must
+still generate the final button-4 verdict.
+
+Live verification confirmed `0/1` and the explicit instruction contrasting
+ethambutol `15-20 mg/kg` with rifabutin `5 mg/kg`. Targeted suites remain
+390 passed.
+
+## 2026-07-30: Record 5824 accepted; 5528 still wrong anchor
+
+Validated
+`rc030_owner_review_c5_range-single-review_export_2026-07-30T06-19-37-110Z.json`
+(SHA-256
+`0C6DD25E9CBF67F2B2CDB2854F3E69C745B2127431FCC86EA79A2B788A7CF893`):
+21 events, 15 unique regimens, zero issues.
+
+Accepted terminal `CORRECT_RANGE_SINGLE` for `5824`. Record `5528` again
+terminated in `CORRECT_RANGE_SINGLE`; this is still incorrect because the
+candidate range belongs to ethambutol, not target drug rifabutin. Added a
+one-record `correction_05_wrong_anchor.html` page for final owner correction.
+
+Correction progress is now namespaced by correction batch, preventing the
+earlier incorrect `5528` click from falsely completing the retry page. Live
+page state is `0/1` while preserving three historical events.
+
+Verification:
+`.\.venv\Scripts\python.exe -m pytest tests\rc030_owner_interface tests\dose_verification_sandbox -q`
+→ 390 passed.
+
+## 2026-07-30: Clarified record 5824 frequency wording
+
+For `Амоксициллин+[Клавулановая кислота] 10-20 мг/кг массы тела 1 или 2
+раза/день`, clarified that the review question classifies the basis of the
+`10-20 mg/kg` range, not the frequency. The source structure supports
+per-administration range (`CORRECT_RANGE_SINGLE`); `1 or 2 times/day` is the
+separate administration frequency.
+
+## 2026-07-30: Unit correction accepted; final page opened
+
+Validated
+`rc030_owner_review_c5_range-unit-basis-review_export_2026-07-30T06-14-15-243Z.json`
+(SHA-256
+`CD60F407E2F437492BE304E69D4AEC59B38225004D6C328C0B95B33C20A5C0F2`):
+79 events, 43 unique regimens, zero issues.
+
+Accepted terminal `CORRECT_RANGE_DAILY` for `5441`. Opened the final
+correction page `correction_04_single.html` at `0/2` for `5528` and `5824`.
+
+## 2026-07-30: Engine corrections accepted; unit record opened
+
+Validated
+`rc030_owner_review_c5_range-engine-review_export_2026-07-30T06-12-33-760Z.json`
+(SHA-256
+`514CC7E66AAFBB47F61ACD2B0F04589E21750F6BDA24A149C97CE049A3A1603F`):
+25 events, 11 unique regimens, zero issues.
+
+Accepted terminal `CORRECT_RANGE_SINGLE` verdicts for `5475` and `5478`.
+Three substantive checks remain. Navigated the active tab to
+`correction_03_unit_basis.html` at `0/1` for `5441`.
+
+## 2026-07-30: Repeat exact export detected; current tab corrected
+
+Validated repeat exact-link export
+`rc030_owner_review_c5_range-exact-review_export_2026-07-30T06-03-01-519Z.json`:
+44 events, 36 unique regimens, zero issues. It added redundant but valid
+same-verdict superseding events for `6296` and `6550`; it contained no
+events for `5475` or `5478`.
+
+Navigated the user's current correction tab from
+`correction_01_exact.html` to `correction_02_engine.html`. Live progress is
+`0/2`.
+
+## 2026-07-30: Exact-link corrections accepted; engine page opened
+
+Validated
+`rc030_owner_review_c5_range-exact-review_export_2026-07-30T06-00-31-485Z.json`
+(SHA-256
+`65E7570E9DDE179A4E4A42337BAC76F368088F86121D68A504FE42C531DA53A7`):
+42 events, 36 unique regimens, zero issues.
+
+Accepted new superseding `CORRECT_RANGE_SINGLE` verdicts for `6296` and
+`6550`. Five substantive checks remain. Opened
+`correction_02_engine.html` at `0/2` for `5475` and `5478`.
+
+## 2026-07-30: Reopened correction page 1
+
+Opened `http://127.0.0.1:8977/correction_01_exact.html` for owner review.
+Live correction progress is `0/2`; target records are `6296` and `6550`.
+
+## 2026-07-30: Unit-basis correction export ingested
+
+Validated
+`C:\Users\TURPAL\Downloads\rc030_owner_review_c5_range-unit-basis-review_export_2026-07-30T05-48-17-122Z.json`
+(SHA-256
+`5501995A13AA9406F20381947D6AFA5F438506E3AE2775946D66E5450B267ECF`):
+77 events, 43 unique regimens, zero validator issues.
+
+Confirmed new superseding daily-range verdicts for `7519`, `7629`, and
+`7644`. Record `5441` still has only its original `WRONG_DOSE_ANCHOR`
+verdict. Reduced correction page 3 to the single remaining unit-basis record.
+Added `RC030_C7_CORRECTION_INTAKE_REPORT.md`.
+
+Verification:
+`.\.venv\Scripts\python.exe -m pytest tests\rc030_owner_interface tests\dose_verification_sandbox -q`
+→ 390 passed.
+
+## 2026-07-30: Correction page 1 checked but no new events saved
+
+After the owner reported completion, live inspection of
+`correction_01_exact.html` still showed `0/2`. Regimens `6296` and `6550`
+each retained exactly one historical event and had no new superseding event.
+The page remains on correction batch 1; the owner must press one of the
+large verdict buttons for both records before advancing.
+
+## 2026-07-30: C7 correction-only review pages launched
+
+Built four correction-only owner pages covering exactly the ten substantive
+owner/AI/PDF disagreements:
+
+- `correction_01_exact.html`: 6296, 6550;
+- `correction_02_engine.html`: 5475, 5478;
+- `correction_03_unit_basis.html`: 5441, 7519, 7629, 7644;
+- `correction_04_single.html`: 5528, 5824.
+
+The pages retain each record's original review mode, so a new owner answer
+appends to the correct local event store and supersedes the prior event.
+Correction progress is tracked separately from the historical event store,
+therefore each correction page starts at 0/N while still displaying the
+number of previous answers. `6068` is intentionally excluded because its
+source extraction must be repaired and revalidated before another owner
+verdict.
+
+Added `generated/rc030_c7/build_correction_batches.py` and
+`tests/rc030_owner_interface/test_c7_correction_batches.py`. Opened
+`http://127.0.0.1:8977/correction_01_exact.html` and verified the live UI
+shows `0 из 2`, the correction banner, and one preserved prior event.
+
+Verification:
+`.\.venv\Scripts\python.exe -m pytest tests\rc030_owner_interface tests\dose_verification_sandbox -q`
+→ 390 passed.
+
+## 2026-07-30: C7 exports recovered, validated, and compared
+
+Recovered the completed browser-local owner history without changing any
+owner verdict: 157 append-only events covering 113/113 unique regimens.
+Saved one consolidated export plus 11 batch exports under
+`C:\Users\TURPAL\Downloads\RC030_C7_owner_exports_2026-07-30T05-33-36-881Z`.
+`dose_verification_sandbox.owner_fidelity_events.validate_events` returned
+zero issues; every regimen has one terminal event.
+
+Compared terminal owner verdicts with all 113 independent AI pre-review
+events and visually checked the disagreement sources from rendered PDF
+pages. Result: 94 exact matches, 8 label-only per-administration
+equivalences, 10 substantive disagreements where the AI/source reading
+prevails, and confirmed extraction defect `6068`. Added
+`RC030_C7_OWNER_VS_AI_COMPARISON_REPORT.md`.
+
+Improved `generated/rc030_recovery/owner_review_template.html` with a
+113-record consolidated export button, unique filenames, and a hidden
+in-memory fallback used only when the embedded browser blocks downloads.
+Rebuilt all 11 interfaces plus control. No production DB/PDF changed, no
+Clinical Engine connected, and no clinical approval granted.
+
+Verification:
+`.\.venv\Scripts\python.exe -m pytest tests\rc030_owner_interface tests\dose_verification_sandbox -q`
+→ 387 passed.
+
+## 2026-07-30: C7 owner review complete — 113/113
+
+Live UI verification confirmed final batch 11 at `3/3`; triggered its export.
+Across the workflow, all 11 batches reached full counters, totalling 113/113
+records. Created `RC030_C7_OWNER_REVIEW_COMPLETION_REPORT.md`.
+
+Investigated the owner's verbal report of `5001`/`10002` in batch 10. The
+unique affected C7 record is `regimen_id=6068`, `Острый ларингит.pdf`, page
+16. Visual PDF evidence and the existing independent AI pre-review agree that
+the text is `500¹–1000² мг`: superscript footnote markers were flattened into
+the dose. Correct clinical numeric range is `500–1000 мг`. The record is
+documented as blocked from automatic use pending governed repair.
+
+No export bytes were ingested, no production data changed, no Clinical Engine
+was connected, and no regimen was approved.
+
+## 2026-07-30: Owner completed C7 batch 10
+
+Live UI verification confirmed `c7_batch_10_single_candidate.html` at
+`12/12`. Triggered export and opened final
+`c7_batch_11_single_candidate.html` at `0/3`. No owner verdict was generated
+or changed by the assistant; export bytes remain pending governed validation.
+
+## 2026-07-30: Owner completed C7 batch 09
+
+Live UI verification confirmed `c7_batch_09_table_review.html` at `8/8`.
+Triggered export and opened `c7_batch_10_single_candidate.html` at `0/12`.
+No owner verdict was generated or changed by the assistant; export bytes
+remain pending governed validation.
+
+## 2026-07-30: Owner completed C7 batch 08
+
+Live UI verification confirmed `c7_batch_08_unit_basis.html` at `7/7`.
+Triggered export and opened `c7_batch_09_table_review.html` at `0/8`. No
+owner verdict was generated or changed by the assistant; export bytes remain
+pending governed validation.
+
+## 2026-07-30: Owner completed C7 batch 07
+
+Live UI verification confirmed `c7_batch_07_unit_basis.html` at `12/12`.
+Triggered export and opened `c7_batch_08_unit_basis.html` at `0/7`. No owner
+verdict was generated or changed by the assistant; export bytes remain
+pending governed validation.
+
+## 2026-07-30: Owner completed C7 batch 06
+
+Live UI verification confirmed `c7_batch_06_unit_basis.html` at `12/12`.
+Triggered export and opened `c7_batch_07_unit_basis.html` at `0/12`. No owner
+verdict was generated or changed by the assistant; export bytes remain
+pending governed validation.
+
+## 2026-07-30: Owner completed C7 batch 05
+
+Live UI verification confirmed `c7_batch_05_unit_basis.html` at `12/12`.
+Triggered export and opened `c7_batch_06_unit_basis.html` at `0/12`. No owner
+verdict was generated or changed by the assistant; export bytes remain
+pending governed validation.
+
+## 2026-07-30: Clarified `/день` as daily-total dose basis
+
+Updated the owner UI helper for choice `2` to state explicitly that
+`мг/день`, `мг/кг/день`, and `в день` identify a total over 24 hours in
+medication dosing, equivalent in basis to `/сут`. Rebuilt all 11 batches plus
+control and reloaded batch 05 without changing owner events.
+
+Verification:
+`python -m pytest tests/rc030_owner_interface tests/dose_verification_sandbox -q`
+→ 385 passed. Browser check confirmed the new helper is visible.
+
+## 2026-07-30: Owner completed C7 batch 04
+
+Live UI verification confirmed
+`c7_batch_04_engine_disagreement.html` at `11/11`. Triggered the interface
+export action and opened `c7_batch_05_unit_basis.html` at `0/12`. No owner
+verdict was generated or changed by the assistant; export bytes remain
+pending user handoff and governed validation.
+
+## 2026-07-30: Owner completed C7 batch 03
+
+Live UI verification confirmed `c7_batch_03_exact.html` at `12/12`.
+Triggered the interface export button; the browser did not expose the
+download as an assistant-accessible artifact, so its bytes remain pending
+user handoff. Opened `c7_batch_04_engine_disagreement.html`, which reports
+`0/11`. No owner verdict was generated or changed by the assistant.
+
+## 2026-07-30: Restored owner-review server and batch 03
+
+The local review server was no longer running. Restarted
+`generated/rc030_recovery/serve_owner_review.py` on `127.0.0.1:8977` with
+the four configured PDF roots and reopened `c7_batch_03_exact.html`.
+The new browser session reports `0/12`. No owner verdict was generated or
+changed by the assistant.
+
+The prior browser-local counter was not available in the new session;
+downloaded JSON exports remain the durable handoff artifacts.
+
+## 2026-07-29: Owner completed C7 batch 02
+
+Live UI verification confirmed `c7_batch_02_exact.html` at `12/12`.
+Triggered the штатный JSON export action and opened
+`c7_batch_03_exact.html`, which reports `0/12`. No verdict was generated or
+changed by the assistant. Export bytes remain pending governed intake.
+
+## 2026-07-29: Batch 02 completion check caught one missing verdict
+
+Owner reported batch 02 complete, but live UI verification showed
+`Проверено: 11 из 12`; record 1 was open and marked `ещё не проверена`.
+Fail-closed action: did not export and did not advance to batch 03. No verdict
+was generated or changed by the assistant.
+
+## 2026-07-29: Owner completed C7 batch 01
+
+Observed the live owner-review UI reporting `Проверено: 12 из 12` for
+`c7_batch_01_exact.html`. Triggered the interface's штатный
+`Скачать результаты JSON` action without changing any verdict, then opened
+`c7_batch_02_exact.html`, which reports `Проверено: 0 из 12`.
+
+The browser download was not exposed as a filesystem path to the assistant,
+so the batch-01 export has not yet been independently validated or ingested.
+No database, Clinical Engine, or approval state changed.
+
+## 2026-07-29: Clarified per-dose versus per-day owner choices
+
+Corrected an unsafe/ambiguous UI label: the presence of `1 раз в сутки` is a
+frequency statement and does not by itself mean that the numeric dose field
+is a daily-total dose. Button `1` now says **РАЗОВАЯ ДОЗА — ЗА 1 ПРИЁМ** and
+uses `500–1000 мг, 1 раз в сутки` as its example. Button `2` now says
+**СУТОЧНАЯ ДОЗА — ВСЕГО ЗА 24 ЧАСА** and is limited by its helper text to
+explicit `мг/сут`, `мг/кг/сут`, or `суточная доза` evidence.
+
+The target card now displays `source_range_text` when available, fixing the
+misleading display of only `500 мг` for the source range `500–1000 мг`.
+All 11 C7 batches plus control were rebuilt. Browser verification confirmed
+the revised labels and full target range. No owner verdict was submitted.
+
+Verification:
+`python -m pytest tests/rc030_owner_interface tests/dose_verification_sandbox -q`
+→ 385 passed.
+
+## 2026-07-29: Simplified C7 owner-review screen
+
+Reworked `generated/rc030_recovery/owner_review_template.html` into a plain
+Russian four-choice workflow. The default screen now shows: three short
+steps, source PDF/quote, a prominent target card with the exact antibiotic
+and structured dose being checked, and four explicit answers (`1` one
+administration, `2` whole day, `3` unclear, `4` numbers belong to another
+drug). Technical mode text, normalized fields, unusual verdict form, and
+JSON tooling remain available but collapsed by default.
+
+All 11 C7 batches and the synthetic control were rebuilt. Browser visual QA
+confirmed that the target card disambiguates multi-drug quotes and that no
+technical form competes with the primary question. No owner verdict was
+submitted.
+
+Files: `generated/rc030_recovery/owner_review_template.html`,
+`tests/rc030_owner_interface/test_c5_owner_interface.py`,
+`RC030_C7_OWNER_REVIEW_LAUNCH_GUIDE.md`.
+
+Verification:
+`python -m pytest tests/rc030_owner_interface tests/dose_verification_sandbox -q`
+→ 385 passed.
+
+## 2026-07-29: Fixed PDF opening in C7 owner review
+
+Root cause: `owner_review_template.html` attempted an `http://` to `file:///`
+navigation, which browsers block. Added
+`generated/rc030_recovery/serve_owner_review.py`, a local-only server that
+serves review HTML and source PDFs from explicitly configured roots. PDF
+requests accept only bare `.pdf` filenames under `/__pdf__/`; traversal and
+subpaths are rejected. The template now opens the same-origin PDF URL with
+`#page=<source_page>` and no longer stores or prompts for a local PDF root.
+
+Rebuilt all 11 C7 batches plus the synthetic control. Replaced the old
+`python -m http.server` process on port 8977 with the owner-review server
+(PID 26020). Browser verification opened `ВИЧ-инфекция у взрослых.pdf` at
+`#page=47`; no owner verdict was created.
+
+Files: `generated/rc030_recovery/serve_owner_review.py`,
+`generated/rc030_recovery/owner_review_template.html`,
+`tests/rc030_owner_interface/test_c5_owner_interface.py`,
+`RC030_C7_OWNER_REVIEW_LAUNCH_GUIDE.md`.
+
+Verification:
+`python -m pytest tests/rc030_owner_interface tests/dose_verification_sandbox -q`
+→ 384 passed. HTTP HEAD for the verified PDF → 200,
+`Content-Type: application/pdf`, 2,664,985 bytes.
+
+## 2026-07-29: One-click C7 owner-review workflow
+
+Added a safe fast path to
+`generated/rc030_recovery/owner_review_template.html`: three large Russian
+buttons and keyboard shortcuts (`1` per-administration range, `2` daily-total
+range, `3` ambiguous). Each explicit click/key press creates a standardized
+PDF/page note, appends the existing canonical owner event, and automatically
+opens the next unreviewed record. No answer is preselected; parser/AI output
+remains blinded. Error/unusual verdicts still use the detailed form with a
+custom note.
+
+Rebuilt all 11 local C7 batch interfaces plus the synthetic control. Live
+browser validation on the control interface proved one-click submission,
+automatic advance, canonical mapping, standardized note, and
+`test_event=true`. No real batch verdict was submitted by the assistant.
+
+Files: `generated/rc030_recovery/owner_review_template.html`,
+`tests/rc030_owner_interface/test_c5_owner_interface.py`,
+`RC030_C7_QUICK_REVIEW_REPORT.md`,
+`RC030_C7_OWNER_REVIEW_LAUNCH_GUIDE.md`.
+
+Verification:
+`python -m pytest tests/rc030_owner_interface tests/dose_verification_sandbox -q`
+-> 382 passed.
+
+## 2026-07-29: C7 AI pre-review of 113 source-fidelity tasks
+
+Owner requested that the assistant inspect the prepared C7 tasks directly.
+Completed an explicitly non-human, non-clinical AI pre-review of all 113 ready
+tasks. Re-read every task's quote/context and visually rendered the PDF pages
+needed for flattened tables, OCR footnotes, mixed perioperative phases, and a
+questionable printed maximum. Generated
+`RC030_C7_AI_PRE_REVIEW_EVENTS.json` through
+`generated/rc030_c7/build_ai_pre_review.py`; added
+`tests/rc030_owner_interface/test_c7_ai_pre_review.py`.
+
+Results: 64 `CORRECT_RANGE_SINGLE`, 48 `CORRECT_RANGE_DAILY`, and one
+`WRONG_DOSE_ANCHOR` (`regimen_id=5528`: the 15-20 mg/kg range belongs to
+ethambutol, while target rifabutin is 5 mg/kg). All 113 events are
+`review_origin=AI_PRE_REVIEW`, `owner_verified=false`,
+`human_validated=false`, `clinically_approved=false`, and
+`calculation_eligibility=BLOCKED`. No `OWNER_LOCAL` event or database change
+was made. Full report: `RC030_C7_AI_PRE_REVIEW_REPORT.md`.
+
+Verification:
+- `python -m pytest tests/rc030_owner_interface tests/dose_verification_sandbox -q`
+  -> 379 passed.
+- `python -m pytest medical_normalizer/tests clinical_engine/tests src/tests -q`
+  -> 1357 passed, 1 skipped, 1 xfailed, 1 warning.
+
+P6 remains BLOCKED; Clinical Engine remains disconnected.
+
 ## 2026-07-16: CORRECTION — RC-031 retracted
 
 RC-031 (drug-name misattribution on regimen 5574, described below) was investigated further after

@@ -1,12 +1,19 @@
 # ANTIBIO — Development Backlog
 
-## Active P5.6 blockers — 2026-07-15
+## Active P5.6 blockers — 2026-07-30
 
-1. BLOCKING/OWNER: revoke and rotate exposed provider credentials.
-2. BLOCKING/OWNER: recover canonical source/docs/tests into Git; validate fresh clone.
-3. P6 gate: complete real physician pilot cases in Review Workbench.
-4. P6 gate: establish physician-approved population and pass Golden against approved data.
-5. WARNING: optimize metrics summary only after review workload produces real usage data.
+1. BLOCKING: create an exact Git boundary for current C7/audit source,
+   tests, and governance evidence; exclude production DB/PDF, local corpus
+   manifests, pilot packets, and unrelated historical artifacts.
+2. BLOCKING/OWNER: publish the accepted boundary because `main` is ahead of
+   `origin/main`.
+3. CLOSED: provider credential rotation (owner attestation, 2026-07-15).
+4. CLOSED: historical fresh-clone verification at `6e26aeb`.
+5. P6 gate: complete real physician pilot cases in Review Workbench.
+6. P6 gate: establish physician-approved population and pass Golden against
+   approved data.
+7. WARNING: optimize metrics summary only after review workload produces
+   real usage data.
 
 > **Статус:** ПРИНЯТО (2026-07-10). Строго по `ARCHITECTURE_V3.md` + `ENGINEERING_MASTER_PLAN.md`.
 > Задачи мелкие и независимые (по одной, без крупных рефакторингов). Легенда: сложность **S/M/L/XL**, приоритет **Crit/High/Med/Low**.

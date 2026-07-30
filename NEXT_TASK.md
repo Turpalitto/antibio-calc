@@ -1,5 +1,331 @@
 # NEXT_TASK.md — ANTIBIO
 
+## Next task after P5.6 C7 acceptance audit — 2026-07-30
+
+Use only `P56_C7_ACCEPTANCE_PROPOSED_ALLOWLIST.txt` for the next commit
+boundary. Do not use `git add .`.
+
+Required sequence:
+
+1. review the exact 94-file allowlist;
+2. stage only those files;
+3. scan the staged index for secret patterns and forbidden DB/PDF/key/env
+   artifacts;
+4. verify staged diff and file count;
+5. create a new commit (do not amend historical commits);
+6. run `uv lock --check`, frozen dependency install, collection, and full
+   canonical tests from an isolated clone/worktree of that commit;
+7. publish the accepted branch so `origin/main` is no longer behind;
+8. keep P6 and Clinical Engine integration blocked.
+
+Explicit exclusions: `CORPUS_MANIFEST.json`, `pilot_review_batch/`,
+`pilot_review_batch_v2/`, `medical_dictionary/unknown_drugs.csv`, production
+or backup DB/SQLite files, all PDFs, local owner exports, unrelated RC-030
+historical generated trees, and session scratch files.
+
+After repository reproducibility is closed, the next clinical-governance
+work is real reviewer registration and the physician pilot. It must not
+auto-approve any regimen or reuse C7 source-fidelity events as clinical
+approval.
+
+## Next task after C7 closure — 2026-07-30
+
+C7 owner source-fidelity review is complete. Do not request more C7 owner
+answers. Preserve the 182-event final append-only artifact and the explicit
+8-label metric-equivalence decision.
+
+Next work is a separate governed P5.6 acceptance audit against
+`GOVERNANCE_SOURCE_OF_TRUTH.md`: identify remaining non-C7 acceptance gates,
+verify repository reproducibility/credential requirements, and keep P6 plus
+Clinical Engine integration blocked. Do not mutate production medical data
+or convert source-fidelity events into clinical approvals.
+
+## Immediate owner action: repaired 6068 — 2026-07-30
+
+On `correction_07_source_repair.html`, verify the displayed source
+`500¹-1000² мг 3 раза в сутки` and press button `1` if it matches the PDF:
+the numeric dose range is `500-1000 мг` per administration; `¹` and `²` are
+footnote markers. Then export the `range-single-review` JSON and attach it
+for final event validation, supersession reconciliation, and consolidation.
+
+## Immediate next task: governed repair of 6068 — 2026-07-30
+
+Owner correction review is complete. Next:
+
+1. repair the extracted source for `6068` from flattened
+   `5001-10002 mg` to visual `500¹-1000² mg` / numeric `500-1000 mg`;
+2. rebuild the evidence identity and validation unit without modifying the
+   source PDF or production database;
+3. present the repaired evidence for a new owner superseding verdict;
+4. rerun final consolidation and comparison;
+5. explicitly record whether the eight table-aware
+   `CORRECT_EXPLICIT_PER_DOSE` labels count as metric-equivalent to
+   `CORRECT_RANGE_SINGLE`.
+
+## Retry 5528 with explicit anchor comparison — 2026-07-30
+
+On `correction_06_wrong_anchor_retry.html`, compare the source sentence and
+press button `4`. Export `range-single-review` once more. Do not press button
+`1`: the displayed `15-20 mg/kg` range is not rifabutin's dose.
+
+## Final substantive owner action: 5528 — 2026-07-30
+
+Open `correction_05_wrong_anchor.html` and choose button `4`: the displayed
+`15-20 mg/kg` range belongs to ethambutol, while the target rifabutin dose is
+`5 mg/kg once daily`. Export `range-single-review` afterward.
+
+## Current record 5824 — 2026-07-30
+
+For the displayed amoxicillin/clavulanate text, record choice `1` (range per
+administration). The phrase `1 or 2 times/day` is frequency and is not a
+separate option in this dose-basis review.
+
+## Final owner corrections — 2026-07-30
+
+Complete `correction_04_single.html` for `5528` and `5824`, export the
+`range-single-review` JSON, then run final consolidation and comparison.
+`6068` remains a separate governed source-repair item.
+
+## Current owner action: erythromycin daily range — 2026-07-30
+
+Complete the single record `5441` on
+`correction_03_unit_basis.html`, export the `range-unit-basis-review` JSON,
+then proceed to `correction_04_single.html` for the final two records.
+
+## Do not repeat exact page — 2026-07-30
+
+The active page is now `correction_02_engine.html`. Record answers for
+`5475` and `5478`, then export `range-engine-review`; do not return to or
+re-export `correction_01_exact.html`.
+
+## Current owner action: engine disagreements — 2026-07-30
+
+Complete `correction_02_engine.html` from `0/2` to `2/2` for `5475` and
+`5478`, export the `range-engine-review` JSON, then continue to the
+single-record unit-basis correction `5441`.
+
+## Current owner action — 2026-07-30
+
+Complete `correction_01_exact.html` from `0/2` to `2/2` by recording one
+large-button verdict for each record, then continue to
+`correction_02_engine.html`.
+
+## Remaining correction sequence — 2026-07-30
+
+1. `correction_01_exact.html`: `6296`, `6550`;
+2. `correction_02_engine.html`: `5475`, `5478`;
+3. `correction_03_unit_basis.html`: `5441`;
+4. `correction_04_single.html`: `5528`, `5824`.
+
+Corrections `7519`, `7629`, and `7644` are complete and must not be requested
+again.
+
+## Immediate owner action: save both correction answers — 2026-07-30
+
+On `correction_01_exact.html`, press one large verdict button (`1`, `2`, `3`,
+or `4`) for each of the two records. Confirm that the visible correction
+counter changes from `0/2` to `2/2`; merely reading the PDF does not create a
+superseding owner event.
+
+## Active owner task: correction page 1 — 2026-07-30
+
+Complete the four correction pages in order:
+
+1. `correction_01_exact.html` — 2 records;
+2. `correction_02_engine.html` — 2 records;
+3. `correction_03_unit_basis.html` — 4 records;
+4. `correction_04_single.html` — 2 records.
+
+After all reach full counters, export the consolidated owner history again,
+validate the new supersession chains, and rerun owner-vs-AI/PDF comparison.
+Do not include `6068` until its flattened-footnote source is repaired and
+revalidated.
+
+## Immediate next task: owner correction mini-batch — 2026-07-30
+
+Create a correction-only review queue without mutating existing events:
+
+1. request superseding owner verdicts for substantive disagreements
+   `6296`, `6550`, `5475`, `5478`, `5441`, `7519`, `7629`, `7644`, `5528`,
+   and `5824`;
+2. repair the source extraction for `6068` from flattened
+   `5001-10002 mg` to visual `500¹-1000² mg` / numeric `500-1000 mg`;
+3. rebuild and revalidate the repaired `6068` evidence identity before a
+   superseding owner verdict;
+4. decide explicitly whether table-aware
+   `CORRECT_EXPLICIT_PER_DOSE` and generic `CORRECT_RANGE_SINGLE` are
+   equivalent for precision metrics, without rewriting immutable events;
+5. rerun event validation, consolidation, and owner-vs-AI comparison.
+
+Do not change production DB, calculation eligibility, clinical approval, or
+Clinical Engine state.
+
+## Immediate next task: governed export intake — 2026-07-30
+
+Obtain the downloaded owner JSON files. Prefer the latest/largest export for
+each of five modes (expected event counts: exact 36, engine 11, unit basis
+43, table 8, single candidate 15), or accept all copies and deduplicate them
+append-only.
+
+Then:
+
+1. validate every event with the committed owner-event validator;
+2. reconcile exactly 113 distinct reviewed regimen IDs;
+3. preserve supersession history and reject malformed/test events;
+4. quarantine `regimen_id=6068` for footnote-marker source repair;
+5. review any other owner/AI/parser disagreements;
+6. produce an intake report without changing production DB, calculation
+   eligibility, or Clinical Engine state.
+
+## Final owner task: batch 11 — 2026-07-30
+
+Complete `c7_batch_11_single_candidate.html` from `0/3` to `3/3`, export
+JSON, then collect all preserved exports for governed validation,
+deduplication, and consolidation. Do not infer approval from UI completion.
+
+## Active owner task: batch 10 — 2026-07-30
+
+Complete `c7_batch_10_single_candidate.html` from `0/12` to `12/12`, then
+export JSON and proceed to final batch 11 (`3` records).
+
+## Active owner task: batch 09 — 2026-07-30
+
+Complete `c7_batch_09_table_review.html` from `0/8` to `8/8`, then export
+JSON. Verify row/column attribution against the visible PDF table; use `3` or
+the detailed table-context verdict when headers cannot be attributed safely.
+
+## Active owner task: batch 08 — 2026-07-30
+
+Complete `c7_batch_08_unit_basis.html` from `0/7` to `7/7`, then export JSON.
+After this, proceed to the 8-record table-context batch 09.
+
+## Active owner task: batch 07 — 2026-07-30
+
+Complete `c7_batch_07_unit_basis.html` from `0/12` to `12/12`, then export
+JSON. Use the same explicit dose-basis rules; do not infer a daily total from
+administration frequency alone.
+
+## Active owner task: batch 06 — 2026-07-30
+
+Complete `c7_batch_06_unit_basis.html` from `0/12` to `12/12`, then export
+JSON. Continue using `1` for per-administration amounts, `2` for explicit
+daily totals (`/сут` or `/день`), and `3` when the source is inconclusive.
+
+## Current dose-basis guidance — 2026-07-30
+
+For batch 05, classify `20–30 мг/кг/день в три приема` as choice `2`: the
+range is the total over 24 hours and is then divided among three
+administrations. Continue the remaining batch-05 records using the same
+source-fidelity rule.
+
+## Active owner task: batch 05 — 2026-07-30
+
+Complete `c7_batch_05_unit_basis.html` from `0/12` to `12/12`, then export
+JSON. These records specifically require distinguishing per-administration
+from explicit daily-total dose basis; use `3` rather than inferring when the
+source is silent.
+
+## Active owner task: batch 04 — 2026-07-30
+
+Complete `c7_batch_04_engine_disagreement.html` from `0/11` to `11/11`, then
+export JSON. This batch contains engine/independent-review disagreements, so
+use `3` when the source does not establish the basis and the detailed form
+for unusual mismatches.
+
+## Active owner task — 2026-07-30
+
+Complete `c7_batch_03_exact.html` from `0/12` to `12/12`, then export JSON
+before moving to batch 04. Keep all previously downloaded exports; do not
+assume browser-local counters survive a new session.
+
+## Continue with C7 batch 03 — 2026-07-29
+
+Current browser page:
+`http://127.0.0.1:8977/c7_batch_03_exact.html` (`0/12`).
+Complete all records with buttons `1`–`4`, verify `12/12`, then export JSON.
+
+## Finish the missing batch-02 record — 2026-07-29
+
+The browser is on record 1 of `c7_batch_02_exact.html`, currently marked
+unreviewed. Submit one deliberate answer (`1`–`4`), confirm the counter is
+`12/12`, then export and proceed to batch 03.
+
+## Continue C7 owner review — 2026-07-29
+
+Current browser page:
+`http://127.0.0.1:8977/c7_batch_02_exact.html` (`0/12`).
+Complete batch 02 using buttons `1`–`4`, then download JSON again. Preserve
+the downloaded batch-01 export and provide it to the assistant before
+governed validation/consolidation; UI completion alone is not intake.
+
+## Dose-basis rule shown in the UI — 2026-07-29
+
+Do not classify by frequency alone:
+
+- `500–1000 мг 1 раз в сутки` → choice `1` (the numbers are the dose for
+  one administration; it happens once daily);
+- explicit `мг/сут`, `мг/кг/сут`, or `суточная доза` → choice `2` (the
+  numbers are the total over 24 hours);
+- if the source does not establish the basis → choice `3`.
+
+## Simplified owner answers — 2026-07-29
+
+For each record, open the PDF and compare the quote with the purple
+**Проверяем именно эту запись** card. Answer with:
+
+- `1` — dose is for one administration;
+- `2` — dose is the total for the whole day;
+- `3` — the PDF does not make this clear;
+- `4` — the numbers belong to another drug.
+
+Use collapsed **Другой случай / ошибка в записи** only when none of these
+four answers fits. Export JSON after each batch.
+
+## Immediate PDF-enabled owner workflow — 2026-07-29
+
+The local owner-review server is running at
+`http://127.0.0.1:8977/c7_batch_01_exact.html`. Click
+**Открыть PDF на нужной странице** before each verdict; it now opens the
+source under `/__pdf__/` with the record's `#page=` anchor. Continue with
+keys `1`/`2`/`3`, then export JSON after each batch.
+
+If the server must be restarted, use the exact multi-root command in
+`RC030_C7_OWNER_REVIEW_LAUNCH_GUIDE.md`; do not revert to
+`python -m http.server`, because that server cannot expose PDFs stored
+outside the HTML directory.
+
+## Immediate owner workflow — 2026-07-29
+
+Open `http://127.0.0.1:8977/c7_batch_01_exact.html` and review with:
+
+- `1` = range per administration;
+- `2` = daily-total range;
+- `3` = ambiguous.
+
+Each action saves a standardized source/page note and advances automatically.
+Use the detailed form for errors or unusual cases. Export JSON after each
+12-record batch. The assistant may then validate and consolidate exports;
+it must not generate real owner events.
+
+## Authoritative next actions — 2026-07-29 (post C7 AI pre-review)
+
+Status: AI advisory review covers 113/113 C7 tasks, but genuine owner events
+remain 0. Approved objects remain 0, Clinical Engine is disconnected, and P6
+remains BLOCKED.
+
+1. Treat `regimen_id=5528` as an open AI finding: do not apply the
+   `15-20 mg/kg` ethambutol range to rifabutin. Independently review before any
+   authoritative data correction.
+2. If the owner continues without human source-fidelity review, retain the
+   current DRAFT/BLOCKED state. Do not populate
+   `TYPES_MEETING_PRECISION_THRESHOLD`, clinical approval, or engine inputs
+   from `RC030_C7_AI_PRE_REVIEW_EVENTS.json`.
+3. Product work may continue only on clearly labelled DRAFT/reference
+   functionality (coverage, formulations, UX, citations) without claiming
+   clinical validation.
+4. P6 still requires real reviewers, physician-approved objects, governed
+   precision evidence, and explicit owner authorization.
+
 ## Authoritative next actions — 2026-07-16 (post RC-030 Evidence Validation)
 
 Status snapshot: approved objects = 0, Clinical Engine disconnected, **P6 remains BLOCKED**.

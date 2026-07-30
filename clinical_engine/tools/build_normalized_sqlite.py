@@ -11,8 +11,11 @@ line up.
 
 Usage (from repo root):
     python -m clinical_engine.tools.build_normalized_sqlite \
-        [--src C:/clinrec_downloader/metadata.sqlite] \
-        [--out C:/clinrec_downloader/normalized_regimens.sqlite]
+        [--src <corpus>/metadata.sqlite] \
+        [--out <corpus>/normalized_regimens.sqlite]
+
+Without these arguments, the tool uses ``ANTIBIO_CORPUS_DIR`` (or the
+governed corpus locator configuration).
 """
 
 from __future__ import annotations
@@ -22,11 +25,9 @@ import sqlite3
 import time
 from pathlib import Path
 
+from clinical_engine.corpus.locator import CorpusLocator
 from medical_normalizer.db import NormalizerDB
 from medical_normalizer.normalizer import MedicalNormalizer
-
-_DEFAULT_SRC = r"C:\clinrec_downloader\metadata.sqlite"
-_DEFAULT_OUT = r"C:\clinrec_downloader\normalized_regimens.sqlite"
 
 
 def _raw_of(row: sqlite3.Row) -> dict:
@@ -79,9 +80,10 @@ def build(src: str, out: str) -> dict:
 
 
 def main() -> None:
+    corpus = CorpusLocator()
     ap = argparse.ArgumentParser()
-    ap.add_argument("--src", default=_DEFAULT_SRC)
-    ap.add_argument("--out", default=_DEFAULT_OUT)
+    ap.add_argument("--src", default=str(corpus.metadata_sqlite))
+    ap.add_argument("--out", default=str(corpus.normalized_regimens_sqlite))
     args = ap.parse_args()
     r = build(args.src, args.out)
     print("=== normalized_regimens.sqlite built ===")

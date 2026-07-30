@@ -6,12 +6,18 @@ import argparse
 import json
 from pathlib import Path
 
+from clinical_engine.corpus.locator import CorpusLocator
 from clinical_engine.review_workbench.queue_builder import build_initial_queue
 
 
 def main() -> None:
+    corpus = CorpusLocator()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--normalized-db", default=r"C:\clinrec_downloader\normalized_regimens.sqlite")
+    parser.add_argument(
+        "--normalized-db",
+        default=str(corpus.normalized_regimens_sqlite),
+        help="Defaults to ANTIBIO_CORPUS_DIR/normalized_regimens.sqlite.",
+    )
     parser.add_argument("--kb-db", default="kb_p44.db")
     parser.add_argument("--corpus-manifest", default="CORPUS_MANIFEST.json")
     parser.add_argument("--issues", default="clinical_data_issues.json")

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "datasets": [
+    {
+      "batch_id": "batch_01_exact",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_01_exact_dataset.json",
+      "mode": "range-exact-review",
+      "record_count": 12
+    },
+    {
+      "batch_id": "batch_02_exact",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_02_exact_dataset.json",
+      "mode": "range-exact-review",
+      "record_count": 12
+    },
+    {
+      "batch_id": "batch_03_exact",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_03_exact_dataset.json",
+      "mode": "range-exact-review",
+      "record_count": 12
+    },
+    {
+      "batch_id": "batch_04_engine_disagreement",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_04_engine_disagreement_dataset.json",
+      "mode": "range-engine-review",
+      "record_count": 11
+    },
+    {
+      "batch_id": "batch_05_unit_basis",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_05_unit_basis_dataset.json",
+      "mode": "range-unit-basis-review",
+      "record_count": 12
+    },
+    {
+      "batch_id": "batch_06_unit_basis",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_06_unit_basis_dataset.json",
+      "mode": "range-unit-basis-review",
+      "record_count": 12
+    },
+    {
+      "batch_id": "batch_07_unit_basis",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_07_unit_basis_dataset.json",
+      "mode": "range-unit-basis-review",
+      "record_count": 12
+    },
+    {
+      "batch_id": "batch_08_unit_basis",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_08_unit_basis_dataset.json",
+      "mode": "range-unit-basis-review",
+      "record_count": 7
+    },
+    {
+      "batch_id": "batch_09_table_review",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_09_table_review_dataset.json",
+      "mode": "range-table-review",
+      "record_count": 8
+    },
+    {
+      "batch_id": "batch_10_single_candidate",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_10_single_candidate_dataset.json",
+      "mode": "range-single-review",
+      "record_count": 12
+    },
+    {
+      "batch_id": "batch_11_single_candidate",
+      "dataset_path": "generated\\rc030_c7_owner_review\\batch_11_single_candidate_dataset.json",
+      "mode": "range-single-review",
+      "record_count": 3
+    }
+  ]
+}

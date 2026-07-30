@@ -1,5 +1,336 @@
 # DECISIONS
 
+## 2026-07-30 — P5.6 C7 boundary is explicit and fail-closed
+
+Decision: the next repository boundary may contain only the exact paths in
+`P56_C7_ACCEPTANCE_PROPOSED_ALLOWLIST.txt`. Broad staging is prohibited.
+Machine-local corpus manifests, pilot packets, production DB/PDF, local owner
+exports, and unrelated historical scratch/generated artifacts remain outside
+the boundary.
+
+Reason: the working tree contains hundreds of heterogeneous historical and
+machine-local files. An exact allowlist is the only auditable way to preserve
+C7 source/test/governance evidence without accidentally publishing medical
+databases, corpus paths, or unrelated state.
+
+## 2026-07-30 — External corpus paths use one governed contract
+
+Decision: executable tooling resolves the external corpus through
+`CorpusLocator` / `ANTIBIO_CORPUS_DIR`, with explicit `--corpus-dir` overrides
+where needed. Workstation-specific paths may remain only in historical audit
+prose or the governed fallback configuration, not as independent executable
+defaults.
+
+This is a reproducibility fix, not a Clinical Engine integration or medical
+architecture change.
+
+## 2026-07-30 — C7 export provenance is portable
+
+Decision: future C7 final-comparison metadata records each source export by
+file name and SHA-256, not by an absolute developer path. Existing external
+final evidence remains identified by its published SHA-256 and is not copied
+into production data or rewritten.
+
+## 2026-07-30 — C7 source-fidelity review is closed
+
+Decision: the new owner event for repaired `6068` evidence supersedes the
+historical `WRONG_FREQUENCY_LINK` event and terminates in
+`CORRECT_RANGE_SINGLE`. Final comparison counts the eight table-aware
+`CORRECT_EXPLICIT_PER_DOSE` labels as metric-equivalent to
+`CORRECT_RANGE_SINGLE` for per-administration basis reporting, without
+rewriting their canonical owner labels.
+
+C7 closure is source-fidelity closure only. It does not imply clinical
+approval, production activation, calculation eligibility, P5.6 completion,
+or permission to connect the Clinical Engine.
+
+## 2026-07-30 — 6068 repair is additive and changes evidence identity
+
+Decision: do not rewrite `assembled_regimens.sqlite`, the source PDF, or the
+historical owner event. The visual correction from flattened
+`5001-10002 мг` to `500¹-1000² мг` / numeric `500-1000 мг` is represented by
+a new derived validation unit with a new evidence hash. It remains
+`calculation_eligibility=BLOCKED`, `clinically_approved=false`, and
+`authoritative_migration_allowed=false` until a new owner event is exported
+and governed consolidation succeeds.
+
+## 2026-07-30 — C7 substantive correction set is closed
+
+Decision: the final validated terminal event for `5528` is
+`WRONG_DOSE_ANCHOR`; all ten substantive owner/AI disagreements are now
+closed. The eight table-aware label differences remain semantically
+equivalent per-administration classifications but are not rewritten.
+
+`6068` remains outside correction closure as a governed source-extraction
+repair. Completion of owner source-fidelity correction does not imply
+clinical approval, calculation eligibility, P5.6 completion, or permission
+to connect the Clinical Engine.
+
+## 2026-07-30 — Structurally valid does not mean semantically corrected
+
+Decision reaffirmed: the latest `5528` events pass schema and chain
+validation but do not close the defect because their terminal semantic
+verdict remains wrong. Final reconciliation requires an owner-generated
+`WRONG_DOSE_ANCHOR` event; repeated confirming events cannot be treated as
+equivalent.
+
+## 2026-07-30 — 5528 is a wrong-dose-anchor defect
+
+Decision reaffirmed from visual source review: for target drug rifabutin,
+the candidate `15-20 mg/kg` range is linked to adjacent ethambutol. The
+correct source-fidelity verdict for regimen `5528` is
+`WRONG_DOSE_ANCHOR`, not `CORRECT_RANGE_SINGLE`.
+
+Correction progress is namespaced per correction batch so a prior wrong
+answer cannot mark a later retry complete. This progress state remains
+non-authoritative UI convenience only.
+
+## 2026-07-30 — Frequency does not redefine an unqualified dose range
+
+Decision applied to `5824`: in the table expression `10-20 mg/kg body
+weight 1 or 2 times/day`, the numeric range is per administration and the
+following phrase is administration frequency. It is not an explicit
+`mg/kg/day` daily-total unit.
+
+## 2026-07-30 — Unit-basis correction evidence accepted
+
+Decision: terminal `CORRECT_RANGE_DAILY` closes the source-fidelity
+disagreement for `5441`. Its redundant same-verdict successor remains in
+append-only history. No clinical approval or production activation follows.
+
+## 2026-07-30 — Engine correction evidence accepted
+
+Decision: validated terminal `CORRECT_RANGE_SINGLE` events close the
+source-fidelity disagreements for `5475` and `5478`. Redundant intermediate
+events remain preserved. No clinical approval or production eligibility is
+implied.
+
+## 2026-07-30 — Redundant same-verdict supersession is preserved
+
+Decision: the repeated valid corrections for `6296` and `6550` remain in
+append-only history and are not deleted. They do not reopen either
+source-fidelity decision because the terminal verdict is unchanged.
+
+## 2026-07-30 — Exact-link correction evidence accepted
+
+Decision: the validated superseding events for `6296` and `6550` close their
+source-fidelity disagreements. Their terminal verdict is
+`CORRECT_RANGE_SINGLE`; the original daily-range events remain preserved in
+history. This does not grant clinical approval or production eligibility.
+
+## 2026-07-30 — Correction order remains unchanged
+
+Operational decision: resume with exact-link corrections `6296` and `6550`
+before opening the engine-disagreement correction page. No evidence,
+verdict, or production state was changed by opening the page.
+
+## 2026-07-30 — Valid corrections count regardless of entry page
+
+Decision: a valid superseding owner event is accepted based on its identity,
+event chain, and source-fidelity verdict, even when it was recorded from an
+original batch page rather than the correction-only page. The correction UI
+progress marker is convenience state, not authoritative evidence.
+
+Accordingly, `7519`, `7629`, and `7644` are removed from the remaining
+correction queue after their valid superseding events were found in the
+unit-basis export.
+
+## 2026-07-30 — Reading a correction page is not a saved correction
+
+Decision reaffirmed: advancing requires a new owner-generated event for
+each record and a full correction counter. A verbal completion statement
+does not substitute for the UI click or authorize the assistant to generate
+the owner verdict.
+
+## 2026-07-30 — Corrections use original stores plus separate progress
+
+Decision: correction pages retain each record's original review mode so new
+answers append to the correct immutable event chain and reference the prior
+event through `previous_event_id` and `supersedes_event_id`.
+
+Historical events do not count as completion of the correction mini-batch.
+A separate local correction-progress key controls only UI counters and never
+changes exported clinical-review evidence. `6068` is excluded until governed
+source repair because a new verdict against known-corrupted evidence would
+not close the defect.
+
+## 2026-07-30 — Preserve owner history; correct only by supersession
+
+Decision: all 157 valid C7 owner events are immutable review evidence.
+Ten source-fidelity disagreements and the mislabeled `6068` defect must be
+corrected only through new owner-generated events with
+`supersedes_event_id`; downloaded JSON must never be hand-edited.
+
+The eight table-review differences between
+`CORRECT_EXPLICIT_PER_DOSE` and `CORRECT_RANGE_SINGLE` are semantically the
+same per-administration basis, but no automatic canonical collapse is
+authorized. Metric equivalence requires a separate explicit normalization
+decision.
+
+Validated owner evidence does not imply clinical approval, production
+activation, or permission to connect the Clinical Engine.
+
+## 2026-07-30 — Flattened superscript footnotes are not dose digits
+
+Decision: for `regimen_id=6068`, the visually verified PDF expression
+`500¹–1000² мг` is interpreted as the numeric dose range `500–1000 мг` plus
+footnote markers `1` and `2`. The flattened extraction
+`5001–10002 мг` is invalid and must remain blocked from automatic use until a
+governed source repair is applied and validated.
+
+This owner verbal observation is corroborated by the independent AI visual
+pre-review, but it is not itself permission to mutate production data or
+approve the regimen.
+
+## 2026-07-30 — 113/113 UI completion does not complete P5.6
+
+Decision: all 11 full UI counters establish completion of the owner review
+interaction only. P5.6 remains acceptance/not complete until exported event
+bytes pass schema validation, deduplication, identity reconciliation,
+supersession handling, and defect quarantine.
+
+## 2026-07-30 — Batch 10 advanced only after live 12/12
+
+Decision applied: single-candidate batch 10 advanced only after live
+verification reported full completion. Export activation remains distinct
+from validated owner-event intake.
+
+## 2026-07-30 — Batch 09 advanced only after live 8/8
+
+Decision applied: table-context batch 09 advanced only after live
+verification reported full completion. Export activation remains distinct
+from validated owner-event intake.
+
+## 2026-07-30 — Batch 08 advanced only after live 7/7
+
+Decision applied: final unit-basis batch 08 advanced only after live
+verification reported full completion. Export activation remains distinct
+from validated owner-event intake.
+
+## 2026-07-30 — Batch 07 advanced only after live 12/12
+
+Decision applied: unit-basis batch 07 advanced only after live verification
+reported full completion. Export activation remains distinct from validated
+owner-event intake.
+
+## 2026-07-30 — Batch 06 advanced only after live 12/12
+
+Decision applied: unit-basis batch 06 advanced only after live verification
+reported full completion. Export activation remains distinct from validated
+owner-event intake.
+
+## 2026-07-30 — Batch 05 advanced only after live 12/12
+
+Decision applied: unit-basis batch 05 advanced only after live verification
+reported full completion. Export activation remains distinct from validated
+owner-event intake.
+
+## 2026-07-30 — `/день` and `/сут` share the daily-total dose basis
+
+Decision: in medication dose notation, `мг/день`, `мг/кг/день`, and
+`в день` are classified as total dose over 24 hours, the same basis as
+`мг/сут` and `мг/кг/сут`. A following phrase such as `в три приема` describes
+how that daily total is divided and does not convert it to a per-dose range.
+
+## 2026-07-30 — Batch 04 advanced only after live 11/11
+
+Decision applied: the engine-disagreement batch advanced only after the live
+counter reported full completion. Export activation remains distinct from
+validated owner-event intake.
+
+## 2026-07-30 — Batch 03 advanced only after live 12/12
+
+Decision applied: batch 03 was exported/advanced only after live verification
+reported full completion. The export action is not treated as governed intake
+because the browser did not expose the downloaded bytes for validation.
+
+## 2026-07-30 — Downloaded exports are required across browser sessions
+
+Decision: browser-local progress is treated as session-local and
+non-durable. After a new session reported `0/12`, no prior completion was
+reconstructed or inferred. Only preserved exported JSON may carry owner
+events across sessions and enter governed validation.
+
+## 2026-07-29 — Batch 02 may advance only after verified 12/12
+
+Decision applied: after live verification changed from `11/12` to `12/12`,
+the interface export was triggered and the workflow advanced to batch 03.
+This records workflow progression only; export validation and governed intake
+remain separate.
+
+## 2026-07-29 — Do not advance on a verbal completion report alone
+
+Decision: export/advance only after the live batch counter reports full
+completion. A verbal completion report with UI state `11/12` is treated as
+incomplete; the missing owner verdict must be supplied by the owner.
+
+## 2026-07-29 — UI completion is not governed owner-event intake
+
+Decision: a `12/12` progress indicator and activation of the export button
+prove only local browser completion. The result must not be called validated,
+consolidated, approved, or ingested until the exported JSON bytes are
+provided and pass the governed event validator.
+
+Reason: the browser download in this session was not exposed as a filesystem
+artifact to the assistant. Preserving this distinction prevents local UI
+state from being mistaken for authoritative clinical state.
+
+## 2026-07-29 — Frequency wording must not be treated as daily-dose basis
+
+Decision: phrases such as `1 раз в сутки` describe administration frequency,
+not automatically the basis of the numeric dose. The owner-review UI maps a
+plain amount followed by a separate frequency (for example,
+`500–1000 мг 1 раз в сутки`) to the per-administration choice. The daily-total
+choice is presented only for direct evidence such as `мг/сут`, `мг/кг/сут`,
+or `суточная доза`.
+
+Reason: the former button helper included bare `в сутки`, which could cause a
+false daily-total verdict whenever the source merely stated frequency. This
+is a UI clarification of existing source-fidelity semantics; event schema,
+clinical data, and approval gates are unchanged.
+
+## 2026-07-29 — Owner review defaults to one target and four plain answers
+
+Decision: the C7 source-fidelity screen must visibly identify the exact
+target antibiotic/dose before asking for a verdict. Its primary workflow has
+four plain-language choices: per administration, per day, unclear, and
+wrong drug anchor. Technical metadata and rare verdicts remain available in
+collapsed sections.
+
+Reason: source quotes can contain several drugs and doses. Hiding the target
+made a simple three-choice screen unsafe because the owner could classify
+the correct range for the wrong drug. The fourth choice maps to the existing
+`WRONG_DOSE_ANCHOR` event; no schema, clinical data, or approval gate changed.
+
+## 2026-07-29 — Serve owner-review PDFs through a constrained local endpoint
+
+Decision: source PDFs are opened through the same local origin as the C7
+review UI (`/__pdf__/<bare filename>`), served by
+`generated/rc030_recovery/serve_owner_review.py`.
+
+Reason: browsers block navigation from an HTTP review page to a `file:///`
+path. Embedding absolute machine paths would also violate repository
+portability and data-governance constraints. The server receives PDF roots
+only as runtime CLI arguments, binds to `127.0.0.1`, accepts only bare PDF
+filenames, and rejects traversal/subpaths. This changes evidence viewing
+only; it does not change events, clinical data, calculation eligibility, or
+Clinical Engine state.
+
+## 2026-07-29 — One-click owner confirmation is allowed only as an explicit action
+
+Decision: permit one-click/one-key confirmation for three common
+source-fidelity outcomes while retaining the existing owner-event schema and
+all clinical gates.
+
+The quick action is not a preloaded answer. It occurs only after the owner
+clicks `1`, `2`, or `3`; the interface then writes a standardized PDF/page
+note and advances. Parser and AI proposals remain hidden until submission.
+Wrong-anchor, wrong-frequency, wrong-alternative, source-blocked, and other
+unusual outcomes remain in the detailed form and require a custom note.
+
+This improves review throughput without granting clinical approval, changing
+calculation eligibility, writing a database, or connecting Clinical Engine.
+
 ## 2026-07-15: P5.3 assembly source — normalized_regimens backbone + kb_p44 enrichment
 
 **Decision (owner, `P5.3_DECISION_RECORD.md`):** the Regimen Assembly Layer sources regimen
@@ -1105,3 +1436,25 @@ This rule is now part of the project's permanent process (see AGENTS.md, HANDOFF
 - Legacy fuzzy KB writes are blocked; production DB not migrated in place.
 - P5.6 cannot close until credential rotation and Git fresh-clone reproducibility pass.
 - P6 remains blocked until all entry gates and explicit owner approval.
+
+## 2026-07-29 — AI pre-review is advisory and cannot substitute owner review
+
+Decision: the assistant may inspect C7 source quotes and rendered PDF pages and
+produce a complete advisory `AI_PRE_REVIEW` artifact, but must not write or
+impersonate `OWNER_LOCAL` events.
+
+Rationale: the owner chose to proceed without the prepared manual review.
+Allowing AI analysis preserves useful defect discovery while maintaining the
+provenance boundary required by clinical governance. A disclaimer does not
+turn unvalidated data into clinically approved data.
+
+Implementation:
+- `RC030_C7_AI_PRE_REVIEW_EVENTS.json` covers 113/113 tasks;
+- all events force `owner_verified=false`, `human_validated=false`,
+  `clinically_approved=false`, `calculation_eligibility=BLOCKED`;
+- the artifact is excluded from governed precision and Clinical Engine input;
+- one advisory defect was identified: `regimen_id=5528`,
+  `WRONG_DOSE_ANCHOR`.
+
+No source database mutation, threshold activation, clinical approval, or P6
+entry is authorized by this decision.

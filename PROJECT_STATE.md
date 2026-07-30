@@ -1,5 +1,327 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-07-30: P5.6 C7 acceptance boundary prepared
+
+C7 source-fidelity review remains closed: 182 valid append-only events,
+113/113 regimens, zero validation issues, 105 exact owner/AI matches,
+8 governed per-administration label equivalents, zero substantive
+mismatches, and zero quarantined defects.
+
+An exact 94-file, 3,753,863-byte proposed Git boundary is recorded in
+`P56_C7_ACCEPTANCE_PROPOSED_ALLOWLIST.txt`. It excludes 283 unrelated local
+changes/artifacts, all production DB/PDF files, machine-local corpus
+manifests, pilot packets, and local owner exports.
+
+Corpus-dependent executable tools now honor `ANTIBIO_CORPUS_DIR` /
+`CorpusLocator` or explicit `--corpus-dir`; regression tests cover the
+portable selection contract. C7 finalizer provenance is machine-independent
+(file name + SHA-256, no developer home path).
+
+Current tests: isolated proposed boundary 1499 passed, 11 skipped, 1 xfailed,
+0 failed (1511 collected); focused C7/portability is 396 passed in the local
+tree and 392 passed / 4 expected optional-artifact skips in the isolated
+boundary. Secret pattern scan found zero current/history hits. Proposed
+boundary contains zero forbidden DB/PDF/credential/private-key files.
+
+P5.6 remains ACCEPTANCE/NOT COMPLETE until the exact boundary is reviewed,
+committed, revalidated from an isolated locked environment, and published.
+`main` remains ahead of `origin/main`. P6 and Clinical Engine integration
+remain BLOCKED. Approved clinical objects remain zero.
+
+## 2026-07-30: C7 owner review fully reconciled
+
+Final state: 182 valid append-only events, 113/113 regimens, zero validation
+issues, and one terminal event per regimen. Owner-vs-AI comparison: 105 exact
+canonical matches, 8 explicitly accepted per-administration label
+equivalents, zero substantive mismatches, and zero quarantined defects.
+`6068` is closed against repaired evidence as `CORRECT_RANGE_SINGLE`.
+
+Targeted suites: 392 passed. C7 source-fidelity review is complete. This does
+not grant clinical approval or calculation eligibility. P5.6 remains
+ACCEPTANCE/NOT COMPLETE under the broader governance gates; P6 remains
+BLOCKED. Production DB/PDF and Clinical Engine were not changed.
+
+## 2026-07-30: 6068 repaired evidence awaiting owner verdict
+
+The visual PDF repair is implemented as an additive, derived validation
+unit. Regimen `6068` now displays `500¹-1000² мг` and validates the numeric
+range `500-1000 мг` per administration, frequency 3/day. Its repaired
+evidence identity is
+`dc0778152ff3053db9cdf4cb9d74e6759bb7ea09f27b6497148ccbc94a4886a0`.
+The owner page `correction_07_source_repair.html` is open at 0/1. Targeted
+tests: 391 passed. P5.6 remains ACCEPTANCE/NOT COMPLETE until the owner
+exports the superseding event and final consolidation is rerun. P6 remains
+BLOCKED; no production or Clinical Engine state changed.
+
+## 2026-07-30: C7 owner correction reconciliation complete
+
+Final consolidated state: 181 valid append-only events, 113/113 unique
+regimens, one terminal event per regimen, and zero validation issues.
+Comparison result: 104 exact matches, 8 table-label equivalents, zero
+substantive owner/AI disagreements, and quarantined source-extraction defect
+`6068`.
+
+Owner correction work is complete. P5.6 remains ACCEPTANCE/NOT COMPLETE only
+because `6068` still requires governed source repair/revalidation and the
+eight-label metric-equivalence rule remains a documented governance choice.
+P6 remains BLOCKED. No production or Clinical Engine state changed.
+
+## 2026-07-30: 5528 remains the final substantive correction
+
+The latest single-mode export is structurally valid but still terminates
+`5528` in `CORRECT_RANGE_SINGLE`. A dedicated retry page with explicit
+ethambutol/rifabutin comparison is required. Final reconciliation is not yet
+closed. The retry page is open at `0/1`; targeted suites are 390 passed.
+
+## 2026-07-30: One substantive owner correction remains
+
+`5824` is corrected to `CORRECT_RANGE_SINGLE`. `5528` remains incorrectly
+classified as a per-administration range; it requires
+`WRONG_DOSE_ANCHOR`. `correction_05_wrong_anchor.html` is open at `0/1`;
+three prior events remain preserved. Latest targeted verification: 390
+passed.
+
+## 2026-07-30: Final record 5824 clarification
+
+For `5824`, `10-20 mg/kg` is treated as a per-administration range and
+`1 or 2 times/day` as frequency. Final correction page remains active.
+
+## 2026-07-30: Only two substantive corrections remain
+
+Validated terminal correction for `5441` is `CORRECT_RANGE_DAILY`. Only
+`5528` and `5824` remain. `correction_04_single.html` is open at `0/2`.
+
+## 2026-07-30: Engine corrections complete
+
+Validated terminal corrections for `5475` and `5478` are
+`CORRECT_RANGE_SINGLE`. Remaining checks: `5441`, `5528`, and `5824`.
+`correction_03_unit_basis.html` is open at `0/1`.
+
+## 2026-07-30: Engine correction still pending
+
+The latest supplied file was a repeat exact-mode export. It did not contain
+`5475` or `5478`; engine correction remains `0/2`. Exact-link terminal
+verdicts remain correct despite the redundant superseding events.
+
+## 2026-07-30: Exact-link corrections complete
+
+Corrections `6296` and `6550` passed event validation and now terminate in
+`CORRECT_RANGE_SINGLE`. Five substantive checks remain:
+`5475`, `5478`, `5441`, `5528`, and `5824`.
+
+`correction_02_engine.html` is open at `0/2`.
+
+## 2026-07-30: Exact-link correction page open
+
+`correction_01_exact.html` is open at `0/2` for records `6296` and `6550`.
+Seven substantive owner checks remain in total.
+
+## 2026-07-30: Three unit-basis corrections accepted
+
+The supplied unit-basis export passed validation with zero issues. New
+superseding verdicts corrected `7519`, `7629`, and `7644` to
+`CORRECT_RANGE_DAILY`. Seven substantive owner checks remain:
+`6296`, `6550`, `5475`, `5478`, `5441`, `5528`, and `5824`.
+
+See `RC030_C7_CORRECTION_INTAKE_REPORT.md`. `6068` remains quarantined.
+Latest targeted verification: 390 passed.
+
+## 2026-07-30: Correction page 1 awaiting saved clicks
+
+Live state remains `0/2` for `correction_01_exact.html`. Both records still
+have only their original historical event; no superseding corrections have
+been written. Do not advance until the UI reports `2/2`.
+
+## 2026-07-30: Correction mini-batch active
+
+Four correction-only pages now cover the ten substantive C7 disagreements
+without deleting or rewriting any of the 157 validated owner events. The
+first page is open at `correction_01_exact.html` with progress `0/2`.
+
+Correction pages use the original review-mode stores, append superseding
+events, and maintain a separate correction progress marker. `6068` remains
+excluded and quarantined pending governed source repair. P5.6 remains
+ACCEPTANCE/NOT COMPLETE; P6 remains BLOCKED.
+
+Latest targeted verification: 390 passed.
+
+## 2026-07-30: C7 governed export intake valid; reconciliation open
+
+The browser-local C7 history was recovered and preserved as 157 append-only
+events covering 113/113 regimens. Schema, identity, and supersession
+validation returned zero issues; every regimen has exactly one terminal
+owner event.
+
+Owner-vs-AI/PDF reconciliation produced 94 exact label matches, 8
+label-only per-administration equivalences, 10 substantive disagreements,
+and one confirmed extraction defect (`regimen_id=6068`). See
+`RC030_C7_OWNER_VS_AI_COMPARISON_REPORT.md`.
+
+P5.6 remains ACCEPTANCE/NOT COMPLETE: immutable owner corrections and a
+governed repair of `6068` are still required. P6 remains BLOCKED. No
+production data, calculation eligibility, or Clinical Engine state changed.
+
+Latest targeted verification:
+`.\.venv\Scripts\python.exe -m pytest tests\rc030_owner_interface tests\dose_verification_sandbox -q`
+→ 387 passed.
+
+## 2026-07-30: C7 owner UI review complete; intake pending
+
+All 11 C7 owner-review batches reached full live counters: 113/113 records.
+Export actions were triggered, but downloaded bytes have not yet entered
+governed validation/consolidation. Therefore P5.6 remains
+ACCEPTANCE/NOT COMPLETE and P6 remains BLOCKED.
+
+Owner-observed extraction defect `regimen_id=6068` is confirmed as flattened
+footnote markers (`500¹–1000² мг`, not `5001–10002 мг`) and remains blocked
+from automatic use. See `RC030_C7_OWNER_REVIEW_COMPLETION_REPORT.md`.
+
+## 2026-07-30: C7 batch 10 complete; final batch 11 open
+
+Single-candidate batch 10 completed at `12/12` and its export action was
+triggered. Final batch 11 is open at `0/3`. No authoritative intake or
+clinical activation occurred.
+
+## 2026-07-30: C7 batch 09 complete; batch 10 open
+
+Table-context batch 09 completed at `8/8` and its export action was
+triggered. Single-candidate batch 10 is open at `0/12`; only batch 11 remains
+after it. No authoritative intake or clinical activation occurred.
+
+## 2026-07-30: C7 batch 08 complete; batch 09 open
+
+Final unit-basis batch 08 completed at `7/7` and its export action was
+triggered. Table-context batch 09 is open at `0/8`. No authoritative intake
+or clinical activation occurred.
+
+## 2026-07-30: C7 batch 07 complete; batch 08 open
+
+Unit-basis batch 07 completed at `12/12` and its export action was triggered.
+Final unit-basis batch 08 is open at `0/7`. No authoritative intake or
+clinical activation occurred.
+
+## 2026-07-30: C7 batch 06 complete; batch 07 open
+
+Unit-basis batch 06 completed at `12/12` and its export action was triggered.
+Unit-basis batch 07 is open at `0/12`. No authoritative intake or clinical
+activation occurred.
+
+## 2026-07-30: C7 batch 05 complete; batch 06 open
+
+Unit-basis batch 05 completed at `12/12` and its export action was triggered.
+Unit-basis batch 06 is open at `0/12`. No authoritative intake or clinical
+activation occurred.
+
+## 2026-07-30: Daily-basis helper covers `/день`
+
+Choice `2` in every C7 owner-review batch now explicitly covers `/день`,
+`мг/кг/день`, and `в день` as daily totals over 24 hours, alongside `/сут`.
+All interfaces rebuilt; targeted suites remain 385 passed.
+
+## 2026-07-30: C7 batch 04 complete; batch 05 open
+
+Live owner-review state: engine-disagreement batch 04 completed at `11/11`
+and its export action was triggered. Unit-basis batch 05 is open at `0/12`.
+No export has entered governed intake.
+
+## 2026-07-30: C7 batch 03 complete; batch 04 open
+
+Live owner-review state: batch 03 exact-link review completed at `12/12`;
+its export action was triggered. Batch 04 engine-disagreement review is open
+at `0/11`. Export bytes remain outside governed intake.
+
+## 2026-07-30: Owner review resumed at batch 03
+
+Local review server is running again on `127.0.0.1:8977`. Batch 03 is open
+and currently reports `0/12` in the new browser session. Previous package
+exports must be preserved separately; no export has been ingested or
+approved.
+
+## 2026-07-29: C7 batch 02 complete; batch 03 open
+
+Live owner-review state: batch 02 exact-link review is complete (`12/12`) and
+its export action was triggered. Batch 03 is open at `0/12`. Export bytes
+have not yet been supplied for validation/intake; no authoritative clinical
+state changed.
+
+## 2026-07-29: C7 batch 02 is 11/12, not complete
+
+Live UI verification found record 1 still unreviewed despite a completion
+report. Batch 02 remains open at `11/12`; no export or transition to batch 03
+was performed.
+
+## 2026-07-29: C7 owner review progress
+
+Live UI state: batch 01 exact-link review is complete (`12/12`); batch 02 is
+open and unreviewed (`0/12`). The batch-01 export action was triggered, but
+the resulting file has not been supplied for governed validation/intake.
+Therefore this is local owner-review progress only, not an approved or
+ingested clinical state.
+
+## 2026-07-29: C7 dose-basis wording corrected
+
+The owner UI now distinguishes a dose's numeric basis from administration
+frequency. `1 раз в сутки` no longer appears as a reason to choose daily
+total. Choice `2` explicitly means total over 24 hours and requires direct
+daily-unit wording. The target card displays the full source range through
+`source_range_text` where present.
+
+Targeted RC-030/C7 suites: 385 passed. No genuine owner event was generated.
+
+## 2026-07-29: C7 owner review simplified for direct use
+
+The live interface at `127.0.0.1:8977` now presents one plain Russian
+question with a visible target antibiotic/dose and four large answers:
+one administration, whole day, unclear, or dose belongs to another drug.
+All technical/rare-case sections are collapsed by default. PDF viewing,
+blinding, append-only events, and governance restrictions are unchanged.
+
+Targeted RC-030/C7 suites: 385 passed. Browser visual QA passed; no genuine
+owner event was generated by the assistant.
+
+## 2026-07-29: C7 PDF opening fixed and live
+
+The owner-review interface now opens source PDFs through the same local
+server instead of a browser-blocked `file:///` URL. The server is running on
+`127.0.0.1:8977` (PID 26020) with four explicitly configured local PDF roots;
+all 39 unique PDFs referenced by the 11 C7 batches resolve across those
+roots. Browser verification opened `ВИЧ-инфекция у взрослых.pdf#page=47`.
+
+Targeted RC-030/C7 suites: 384 passed. No owner verdict, clinical approval,
+production database write, or Clinical Engine connection occurred.
+
+## 2026-07-29: C7 quick owner-review UI ready
+
+The 11-batch owner source-fidelity interface now supports deliberate
+one-click confirmation for per-administration range, daily-total range, and
+ambiguous source. It writes a standardized PDF/page note and automatically
+advances to the next unreviewed record. Error and unusual outcomes continue
+to require the detailed form and custom note. Blinding, append-only storage,
+local-only operation, control-mode `test_event=true`, and the prohibition on
+clinical/calculation activation are unchanged.
+
+Live synthetic browser validation passed. Targeted RC-030/C7 suites:
+382 passed. See `RC030_C7_QUICK_REVIEW_REPORT.md`.
+
+## 2026-07-29: C7 AI PRE-REVIEW COMPLETE (advisory only)
+
+All 113 `READY_FOR_OWNER_REVIEW` C7 source-fidelity tasks now have a separate
+AI advisory classification in `RC030_C7_AI_PRE_REVIEW_EVENTS.json`: 64
+`CORRECT_RANGE_SINGLE`, 48 `CORRECT_RANGE_DAILY`, 1
+`WRONG_DOSE_ANCHOR` (`regimen_id=5528`). Ten records used visual table
+evidence, three additional records used targeted visual PDF evidence, and 100
+used direct quote plus context.
+
+This does not satisfy owner or physician review. Every event remains
+`owner_verified=false`, `human_validated=false`,
+`clinically_approved=false`, and `calculation_eligibility=BLOCKED`.
+Approved objects remain 0; Clinical Engine remains disconnected; P6 remains
+BLOCKED. See `RC030_C7_AI_PRE_REVIEW_REPORT.md`.
+
+Latest verification:
+- targeted RC-030/C7: 379 passed;
+- canonical suites: 1357 passed, 1 skipped, 1 xfailed, 1 warning.
+
 ## 2026-07-16: CORRECTION — RC-031 retracted, filed in error
 
 The "RC-031" drug-name misattribution finding described below (regimen 5574: DB said "Азитромицин,"
