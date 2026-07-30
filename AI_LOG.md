@@ -1,5 +1,25 @@
 # AI LOG
 
+## 2026-07-30: locked fresh-clone verification passed
+
+Cloned current commit `5817a60ae63c581d6b1fe23f77b2105bf210783b`
+using `--no-local --no-hardlinks` into a temporary isolated directory.
+Initial checkout: clean, 788 tracked files.
+
+Installed uv 0.11.32 in unmanaged temporary mode without PATH/profile
+changes. Official installer SHA-256:
+`D84B0D973693497F8C1C1D82B2D2F52E32E50C7C24EFA3D925341BD6FC5238B2`.
+`uv lock --check` passed. Frozen sync installed 36 test/clinical packages
+under Python 3.12.10.
+
+Verification results: 1511 collected; canonical suite 1499 passed,
+11 skipped, 1 xfailed, 0 failed; C7/portability suite 392 passed,
+4 expected optional-artifact skips, 0 failed. Secret and forbidden-artifact
+scans returned zero. Core imports resolve only from the isolated clone.
+
+No production DB/PDF was copied, no push was performed, and Clinical Engine
+remains disconnected because P6/physician-approval gates are unmet.
+
 ## 2026-07-30: post-commit governance state synchronized
 
 Recorded the `60e6033` boundary result across the governing handoff/state

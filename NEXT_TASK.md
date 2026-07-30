@@ -1,5 +1,26 @@
 # NEXT_TASK.md — ANTIBIO
 
+## Next task after fresh-clone PASS — 2026-07-30
+
+Fresh-clone/lock/tests are complete. Do not repeat C7 source-fidelity review
+and do not connect Clinical Engine.
+
+Next repository action: push the validated commits only when explicitly
+authorized.
+
+Next clinical-governance action after publication:
+
+1. register real Reviewer A;
+2. register real Reviewer B;
+3. register Adjudicator and Medical QA Lead;
+4. assign the governed physician pilot;
+5. preserve blinding, independence, provenance, and audit history;
+6. keep all regimens non-approved and calculation-blocked until the full
+   review/consensus/Medical-QA state machine completes.
+
+P6 still additionally requires approved-data Golden, shadow validation,
+safety gates, request-audit snapshot, and explicit owner authorization.
+
 ## Next task after commit 60e6033 — 2026-07-30
 
 The exact C7 acceptance boundary is committed. Do not repeat C7 owner review

@@ -5,7 +5,7 @@
 1. CLOSED: exact C7/audit Git boundary committed as `60e6033`; production
    DB/PDF, local corpus manifests, pilot packets, and unrelated historical
    artifacts excluded.
-2. BLOCKING: run locked-dependency fresh-clone verification for `60e6033`.
+2. CLOSED: locked-dependency fresh-clone verification at `5817a60` passed.
 3. BLOCKING/OWNER: publish the accepted boundary because `main` is ahead of
    `origin/main`.
 4. CLOSED: provider credential rotation (owner attestation, 2026-07-15).

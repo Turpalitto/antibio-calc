@@ -8,8 +8,9 @@ review is closed at 182 events / 113 regimens / zero validation issues.
 Proposed-boundary canonical tests: 1499 passed, 11 skipped, 1 xfailed,
 0 failed (1511 collected).
 The exact C7/audit boundary is committed as `60e6033`; its committed tree
-matches the isolated validated tree. Remaining P5.6 blockers are a
-locked-dependency fresh-clone verification of that commit and publication:
+matches the isolated validated tree. Locked-dependency fresh-clone
+verification at `5817a60` passed: 1511 collected, 1499 passed, 11 skipped,
+1 xfailed, 0 failed. The remaining repository blocker is publication:
 `main` is ahead of `origin/main`. Review Workbench is local-only
 and Clinical Engine remains disconnected. P6 is BLOCKED.
 Read `GOVERNANCE_SOURCE_OF_TRUTH.md`, `P5.6_PRODUCTION_RECOVERY_REPORT.md`,

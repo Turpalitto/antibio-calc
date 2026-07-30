@@ -5,8 +5,9 @@
 Status: **ACCEPTANCE / NOT COMPLETE** (2026-07-30). Credential rotation and
 the historical fresh-clone gate are closed. C7 source-fidelity review is
 closed. The exact secret-free, production-data-free C7/audit boundary is
-committed as `60e6033`; locked-dependency fresh-clone verification and
-publication remain, and `main` is ahead of `origin/main`. P6 is
+committed as `60e6033`; locked-dependency fresh-clone verification at
+`5817a60` passed. Publication remains, and `main` is ahead of
+`origin/main`. P6 is
 BLOCKED pending real physician
 approvals, completed pilot cases, approved-data Golden pass, shadow
 validation, safety gates, request audit snapshot, and explicit owner

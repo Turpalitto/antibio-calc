@@ -1,5 +1,20 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-07-30: locked fresh-clone verification passed
+
+Commit `5817a60ae63c581d6b1fe23f77b2105bf210783b` passed isolated
+fresh-clone validation with temporary uv 0.11.32, Python 3.12.10, and frozen
+dependencies from `uv.lock`.
+
+Results: `uv lock --check` PASS; 1511 collected; canonical suite
+1499 passed / 11 skipped / 1 xfailed / 0 failed; focused C7/portability
+392 passed / 4 expected optional-artifact skips / 0 failed. Forbidden
+DB/PDF/key/env files and secret-pattern hits: zero. Imports resolve only from
+the clone.
+
+Remaining repository gate: publication. P6 remains BLOCKED, Clinical Engine
+remains disconnected, and physician-approved clinical objects remain zero.
+
 ## 2026-07-30: C7 acceptance boundary committed
 
 Commit `60e603387a7132ff2aa6a736c869e5b9a7c6903a` contains exactly the

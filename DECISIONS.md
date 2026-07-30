@@ -1,5 +1,15 @@
 # DECISIONS
 
+## 2026-07-30 — Fresh-clone PASS closes the technical reproducibility gate
+
+Decision: commit `5817a60` satisfies the locked-dependency fresh-clone gate.
+The remaining repository action is publication, not further C7
+source-fidelity review.
+
+This technical PASS does not satisfy physician-review, approved-data Golden,
+shadow, safety, request-audit, or owner-authorization gates. Clinical Engine
+integration therefore remains prohibited.
+
 ## 2026-07-30 — Commit boundary does not authorize Engine connection
 
 Decision: commit `60e6033` closes the repository boundary step only. It does
