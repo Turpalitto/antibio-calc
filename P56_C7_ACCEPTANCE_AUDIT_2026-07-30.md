@@ -130,8 +130,7 @@ Never use `git add .` for this boundary.
 
 1. Validate commit `60e6033` from an isolated checkout with locked
    dependencies.
-2. Push the accepted commit(s); current `main` is 35 commits ahead of
-   `origin/main`.
+2. Push the accepted commit(s); current `main` is ahead of `origin/main`.
 3. Keep P6 blocked until real reviewer registration, pilot completion,
    physician-approved objects, approved-data Golden pass, shadow/safety
    gates, request audit snapshot, and explicit owner authorization.

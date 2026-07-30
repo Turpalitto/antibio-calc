@@ -19,8 +19,7 @@ BLOCKED.
   `60e603387a7132ff2aa6a736c869e5b9a7c6903a`; committed tree exactly matches
   validated tree `2b94cb7bad374bf2f3da7a0a2aa10785942a22a1`;
 - текущие P5.6 blockers: locked-dependency fresh-clone verification для
-  commit `60e6033` ещё не выполнен, а `main` опережает `origin/main` на
-  35 commits;
+  commit `60e6033` ещё не выполнен, а `main` опережает `origin/main`;
 - C7 source-fidelity review: CLOSED — 182 append-only events, 113/113
   regimens, 0 validation issues, 105 exact matches, 8 governed
   per-administration label equivalents, 0 substantive mismatches;

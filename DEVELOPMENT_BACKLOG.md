@@ -6,8 +6,8 @@
    DB/PDF, local corpus manifests, pilot packets, and unrelated historical
    artifacts excluded.
 2. BLOCKING: run locked-dependency fresh-clone verification for `60e6033`.
-3. BLOCKING/OWNER: publish the accepted boundary because `main` is 35
-   commits ahead of `origin/main`.
+3. BLOCKING/OWNER: publish the accepted boundary because `main` is ahead of
+   `origin/main`.
 4. CLOSED: provider credential rotation (owner attestation, 2026-07-15).
 5. CLOSED: historical fresh-clone verification at `6e26aeb`.
 6. P6 gate: complete real physician pilot cases in Review Workbench.

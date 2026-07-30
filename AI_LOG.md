@@ -1,5 +1,13 @@
 # AI LOG
 
+## 2026-07-30: post-commit governance state synchronized
+
+Recorded the `60e6033` boundary result across the governing handoff/state
+documents and removed volatile ahead-count wording so documentation remains
+correct after subsequent documentation-only commits. P5.6 still requires
+locked-dependency fresh-clone verification and publication. P6 and Clinical
+Engine integration remain blocked.
+
 ## 2026-07-30: exact C7 acceptance boundary committed
 
 Staged only the 94 paths in

@@ -10,7 +10,7 @@ Proposed-boundary canonical tests: 1499 passed, 11 skipped, 1 xfailed,
 The exact C7/audit boundary is committed as `60e6033`; its committed tree
 matches the isolated validated tree. Remaining P5.6 blockers are a
 locked-dependency fresh-clone verification of that commit and publication:
-`main` is 35 commits ahead of `origin/main`. Review Workbench is local-only
+`main` is ahead of `origin/main`. Review Workbench is local-only
 and Clinical Engine remains disconnected. P6 is BLOCKED.
 Read `GOVERNANCE_SOURCE_OF_TRUTH.md`, `P5.6_PRODUCTION_RECOVERY_REPORT.md`,
 then `NEXT_TASK.md`.

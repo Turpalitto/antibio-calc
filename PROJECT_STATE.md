@@ -8,7 +8,7 @@ Commit `60e603387a7132ff2aa6a736c869e5b9a7c6903a` contains exactly the
 Staged security/artifact checks passed with zero findings.
 
 Remaining P5.6 work: locked-dependency fresh-clone validation of `60e6033`
-and publication; `main` is 35 commits ahead of `origin/main`. P6 remains
+and publication; `main` is ahead of `origin/main`. P6 remains
 BLOCKED, Clinical Engine remains disconnected, and approved clinical objects
 remain zero.
 
