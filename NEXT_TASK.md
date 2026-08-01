@@ -1,5 +1,19 @@
 # NEXT_TASK.md — ANTIBIO
 
+## Next task after fail-closed API preview — 2026-08-01
+
+The standalone developer API is running and verified fail-closed. Do not wire
+an uncurated recommender or expose dose fields from unapproved regimens.
+
+Safe next options:
+
+1. continue API/UI testing with synthetic or empty curated knowledge;
+2. register the owner as real Reviewer A after receiving the required identity
+   metadata;
+3. obtain an independent real Reviewer B and Medical QA Lead before the real
+   physician pilot can create approved objects;
+4. only after all P6 gates, wire the approved curated recommender.
+
 ## Immediate owner input for physician pilot — 2026-08-01
 
 Read-only pilot preflight is green; no reviewer registry exists. Before any

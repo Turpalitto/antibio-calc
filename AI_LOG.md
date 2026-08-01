@@ -1,5 +1,20 @@
 # AI LOG
 
+## 2026-08-01: fail-closed Engine API developer preview verified
+
+Ran the complete Engine, regimen, and Review Workbench test scope with the
+locked local Python 3.12.10 environment: 595 passed, 0 failed, one dependency
+deprecation warning. The real review DB remained byte-identical at SHA-256
+`3e479ee70e59ce9aafa6ba44718dda68d867dbcc660796b81ff63d2b19ca0f29`;
+all 9,153 tasks remain `PENDING`, with zero decisions, assignments, and
+rejected attempts.
+
+Started the local Clinical Decision Platform API on
+`http://127.0.0.1:8980/docs` without a curated recommender. A valid recommend
+request returned `REVIEW_REQUIRED / KNOWLEDGE_UNAVAILABLE` and zero
+recommendations, proving the developer connection is fail-closed. No Clinical
+Engine-to-unapproved-data integration or clinical approval was created.
+
 ## 2026-08-01: physician-pilot preflight passed read-only
 
 Inspected `review_workbench_p56.sqlite` through SQLite read-only mode before

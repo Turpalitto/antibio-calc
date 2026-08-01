@@ -1,5 +1,16 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-08-01: fail-closed Engine developer API running
+
+Engine/regimen/Review Workbench scope: 595 passed, 0 failed under Python
+3.12.10. The local API is available at `http://127.0.0.1:8980/docs` with no
+curated recommender. `/v1/recommend` returns explicit
+`REVIEW_REQUIRED / KNOWLEDGE_UNAVAILABLE` and an empty recommendation list.
+
+The real review DB is unchanged and contains zero approved objects. This is a
+developer preview, not P6 entry and not Clinical Engine authorization over
+real unapproved regimens.
+
 ## 2026-08-01: physician-pilot store ready; reviewers not registered
 
 Read-only pilot preflight passed: authoritative review DB SHA-256

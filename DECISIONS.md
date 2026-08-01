@@ -1,5 +1,15 @@
 # DECISIONS
 
+## 2026-08-01 — Personal use does not bypass fail-closed gates
+
+Decision: a physician owner may operate the API and Engine in isolated
+developer mode, but personal use does not convert unreviewed regimens into
+physician-approved content or waive independent review/Medical-QA gates.
+
+The API may run without a recommender because that state deterministically
+returns `REVIEW_REQUIRED` and zero recommendations. Wiring real unapproved
+content remains prohibited.
+
 ## 2026-08-01 — Reviewer identities must be owner-supplied
 
 Decision: no synthetic, inferred, or placeholder identity may be written to
