@@ -1,5 +1,15 @@
 # DECISIONS
 
+## 2026-08-01 — Publication closes only the repository gate
+
+Decision: successful push through `bab018f` closes the P5.6 repository
+publication gate. It does not close P5.6, enter P6, approve clinical content,
+or authorize Clinical Engine integration.
+
+Reason: real independent physician reviews, adjudication/Medical-QA state,
+approved-data Golden, shadow validation, safety gates, request-audit snapshot,
+and explicit owner authorization remain unmet.
+
 ## 2026-07-30 — Fresh-clone PASS closes the technical reproducibility gate
 
 Decision: commit `5817a60` satisfies the locked-dependency fresh-clone gate.

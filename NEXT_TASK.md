@@ -1,5 +1,24 @@
 # NEXT_TASK.md — ANTIBIO
 
+## Next task after publication — 2026-08-01
+
+The validated P5.6/C7 commits through `bab018f` are published on
+`origin/main`. Do not repeat repository publication, C7 source-fidelity
+review, or fresh-clone verification.
+
+Next owner-governed actions:
+
+1. provide and register real Reviewer A identity and professional metadata;
+2. provide and register independent Reviewer B;
+3. provide and register Adjudicator and Medical QA Lead;
+4. assign the governed physician pilot with blinding and audit history;
+5. keep every regimen non-approved and calculation-blocked until the complete
+   review/consensus/Medical-QA state machine succeeds.
+
+Do not invent reviewer identities. Do not connect Clinical Engine. P6 still
+requires physician-approved objects, approved-data Golden, shadow validation,
+safety gates, request-audit snapshot, and explicit owner authorization.
+
 ## Next task after fresh-clone PASS — 2026-07-30
 
 Fresh-clone/lock/tests are complete. Do not repeat C7 source-fidelity review

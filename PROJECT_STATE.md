@@ -1,5 +1,16 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-08-01: repository publication gate closed
+
+Validated commits through `bab018fac400acfe5731c3157a6f547473631f9c`
+were pushed to `origin/main`; the pre-push divergence was 0 behind / 38 ahead.
+No untracked local artifacts were included.
+
+The next gate is clinical governance: register real Reviewer A, Reviewer B,
+Adjudicator, and Medical QA Lead, then run the governed physician pilot.
+P5.6 remains ACCEPTANCE/NOT COMPLETE. P6 remains BLOCKED, Clinical Engine
+remains disconnected, and physician-approved clinical objects remain zero.
+
 ## 2026-07-30: locked fresh-clone verification passed
 
 Commit `5817a60ae63c581d6b1fe23f77b2105bf210783b` passed isolated

@@ -1,6 +1,6 @@
 # ANTIBIO Governance Source of Truth
 
-Дата: 2026-07-30.
+Дата: 2026-08-01.
 
 Приоритет: repository/code/tests/real execution → current governance docs →
 historical docs → chat.
@@ -20,8 +20,8 @@ BLOCKED.
   validated tree `2b94cb7bad374bf2f3da7a0a2aa10785942a22a1`;
 - locked-dependency fresh-clone verification at commit `5817a60`: PASS
   (`P56_C7_FRESH_CLONE_VERIFICATION_2026-07-30.md`);
-- текущий repository blocker: validated local commits are not yet published;
-  `main` опережает `origin/main`;
+- repository publication gate: CLOSED; validated commits through `bab018f`
+  were pushed to `origin/main` on 2026-08-01;
 - C7 source-fidelity review: CLOSED — 182 append-only events, 113/113
   regimens, 0 validation issues, 105 exact matches, 8 governed
   per-administration label equivalents, 0 substantive mismatches;

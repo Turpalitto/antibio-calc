@@ -1,6 +1,6 @@
 # HANDOFF.md — ANTIBIO (Cross-IDE / Cross-AI Onboarding)
 
-## Current handoff — 2026-07-30
+## Current handoff — 2026-08-01
 
 P5.6 is in ACCEPTANCE but NOT COMPLETE. Credential rotation is closed by
 owner attestation; the historical fresh-clone gate passed. C7 source-fidelity
@@ -10,9 +10,11 @@ Proposed-boundary canonical tests: 1499 passed, 11 skipped, 1 xfailed,
 The exact C7/audit boundary is committed as `60e6033`; its committed tree
 matches the isolated validated tree. Locked-dependency fresh-clone
 verification at `5817a60` passed: 1511 collected, 1499 passed, 11 skipped,
-1 xfailed, 0 failed. The remaining repository blocker is publication:
-`main` is ahead of `origin/main`. Review Workbench is local-only
-and Clinical Engine remains disconnected. P6 is BLOCKED.
+1 xfailed, 0 failed. The repository publication gate is closed: validated
+commits through `bab018f` were pushed to `origin/main` on 2026-08-01.
+The next gate is real physician reviewer registration and the governed pilot.
+Review Workbench is local-only and Clinical Engine remains disconnected.
+P6 is BLOCKED.
 Read `GOVERNANCE_SOURCE_OF_TRUTH.md`, `P5.6_PRODUCTION_RECOVERY_REPORT.md`,
 then `NEXT_TASK.md`.
 
