@@ -95,3 +95,7 @@ weights/
 /dose_verification_sandbox/data/*.json
 /dose_verification_sandbox/data/*.md
 /dose_verification_sandbox/data/*.sqlite
+
+# PERSONAL_PHYSICIAN mode: local identity, token hash, attestations, bundles,
+# and minimized request audit. These artifacts never enter source control.
+/.local/personal_physician/

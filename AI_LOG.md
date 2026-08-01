@@ -1,5 +1,46 @@
 # AI LOG
 
+## 2026-08-01: accepted PERSONAL_PHYSICIAN RFC implemented end-to-end
+
+Implemented the accepted RFC on `codex/personal-physician-mode` without
+modifying the frozen Engine kernel, Production Guard, production approval
+state machine, production DB/PDF, or API v1 behaviour.
+
+Created `clinical_engine/personal/{models,bundle,guard,recommender,runtime}.py`,
+`clinical_engine/api/v2_contract.py`, bundle JSON schema, personal/API/runtime
+tests, and calculator bridge tests. Updated `clinical_engine/api/app.py` and
+`service.py` with loopback-only owner workflow and recommendation routes.
+Updated `antibiotic_calc.html.template`, rebuilt `antibiotic_calc.html`, and
+gitignored `.local/personal_physician/`.
+
+The UI now supports local owner registration, one-time token handoff, exact
+per-regimen attestation, explicit immutable bundle activation, complete patient
+safety inputs, owner-reviewed candidate selection, source/trace display, and
+handoff to the unchanged calculator arithmetic for doses, forms, suspensions,
+reconstitution and dilution. No real clinical object was auto-attested.
+
+Verification:
+
+- `db/build_db.ps1` and `build_html.ps1`: PASS; 72 diseases, 40 drugs,
+  286 regimens; eight pre-existing age-scope warnings.
+- `.venv\Scripts\python.exe -m pytest -q`: 1550 passed, 1 skipped,
+  1 xfailed, 0 failed; one dependency deprecation warning.
+- Browser: `/personal` loaded; ordinary pediatric AOM calculation at 18 kg
+  produced 810 mg per administration / 1620 mg per day and suspension volume;
+  amoxicillin/clavulanate suspension forms were present; missing active owner
+  bundle returned an explicit blocked state while the standalone calculator
+  remained usable.
+
+Production P5.6/P6 status did not change.
+
+Independent diff review identified loopback spoofing, incomplete population
+and safety filtering, missing attestation-event trace, calculator-binding
+drift, unsigned bundles, and a concurrent ledger append risk. Remediation adds
+peer-address enforcement, HMAC owner signatures, event hashes, explicit
+population/contraindication/interaction gates, verified calculator-regimen
+hashes, and a runtime lock. The 1550-test canonical result is after these
+remediations.
+
 ## 2026-08-01: PERSONAL_PHYSICIAN_MODE RFC drafted
 
 Created `PERSONAL_PHYSICIAN_MODE_RFC.md` as a documentation-only draft and

@@ -68,9 +68,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
 .drawer.open{right:0}
 .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:999;opacity:0;pointer-events:none;transition:opacity .3s}
 .drawer-overlay.open{opacity:1;pointer-events:auto}
+.personal-banner{position:sticky;top:0;z-index:900;background:#7f1d1d;color:#fff;border:2px solid #fca5a5;box-shadow:0 8px 20px rgba(127,29,29,.25)}
+.personal-status[data-state="ready"]{color:#047857}.personal-status[data-state="blocked"],.personal-status[data-state="error"]{color:#b91c1c}.personal-status[data-state="checking"]{color:#b45309}
+.dark .personal-status[data-state="ready"]{color:#6ee7b7}.dark .personal-status[data-state="blocked"],.dark .personal-status[data-state="error"]{color:#fca5a5}.dark .personal-status[data-state="checking"]{color:#fcd34d}
 </style>
 </head>
 <body class="antialiased pb-12">
+<div id="personal-mode-banner" class="personal-banner hidden no-print px-4 py-3 text-center text-xs font-black uppercase tracking-wider" role="alert" aria-live="assertive">
+  OWNER_REVIEWED_EXPERIMENTAL — локальный режим врача-владельца; схема не имеет независимого production-одобрения. Проверяйте источник и расчёт.
+</div>
 <div class="max-w-3xl mx-auto px-4 md:px-6 pt-6">
 
   <header class="mb-6 no-print">
@@ -102,6 +108,73 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
   </header>
 
   <div class="space-y-5">
+
+    <section class="premium-card p-4 md:p-6 no-print" id="personal-mode-control">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <div class="text-[11px] font-black text-slate-500 dark:text-slate-300 uppercase tracking-widest">Личный режим врача</div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Опциональный локальный API v2. Обычный калькулятор работает независимо от API.</p>
+        </div>
+        <label class="inline-flex items-center gap-2 cursor-pointer shrink-0">
+          <input id="personal-mode-toggle" type="checkbox" class="w-5 h-5 accent-blue-600" aria-controls="personal-mode-panel">
+          <span class="text-[10px] font-black uppercase">Включить</span>
+        </label>
+      </div>
+      <div id="personal-mode-panel" class="hidden mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <input id="personal-owner-id" type="text" autocomplete="off" placeholder="owner_id (только локально)" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
+          <input id="personal-session-token" type="password" autocomplete="off" placeholder="session_token (только локально)" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <select id="personal-pregnancy" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="unknown">Беременность: неизвестно</option><option value="no">Беременность: нет</option><option value="yes">Беременность: да</option></select>
+          <input id="personal-renal" type="text" placeholder="Почки: СКФ/статус или «нет»" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
+          <select id="personal-hepatic" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="unknown">Печень: неизвестно</option><option value="no">Печёночная недостаточность: нет</option><option value="yes">Печёночная недостаточность: да</option></select>
+          <input id="personal-allergies" type="text" placeholder="Аллергии через запятую или «нет»" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
+          <input id="personal-current-meds" type="text" placeholder="Текущие препараты или «нет»" class="input-field rounded-xl px-3 py-2 text-xs font-bold md:col-span-2">
+          <select id="personal-contra-cleared" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="no">Противопоказания: не проверены</option><option value="yes">Противопоказания: проверены</option></select>
+          <select id="personal-interactions-reviewed" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="no">Взаимодействия: не проверены</option><option value="yes">Взаимодействия: проверены</option></select>
+        </div>
+        <div class="flex items-center gap-3 flex-wrap">
+          <button id="personal-request" type="button" class="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-[11px] font-black uppercase tracking-wider">Получить кандидатов</button>
+          <button id="personal-health" type="button" class="rounded-xl bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 text-[11px] font-black uppercase tracking-wider">Проверить режим</button>
+          <span id="personal-api-status" class="personal-status text-[11px] font-bold" data-state="idle" role="status">API не проверен</span>
+        </div>
+        <details class="rounded-2xl border border-slate-200 dark:border-slate-700 p-4 text-xs">
+          <summary class="cursor-pointer font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Первичная настройка и аттестация схем</summary>
+          <div class="mt-4 space-y-4">
+            <div class="rounded-xl bg-amber-50 dark:bg-amber-950/20 p-3 text-[11px] text-amber-900 dark:text-amber-200">Регистрация выполняется один раз. Токен показывается один раз и не сохраняется приложением. Аттестация допускается только после вашей точной сверки страницы, цитаты, дозы и привязки к калькулятору.</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <input id="owner-register-id" class="input-field rounded-xl px-3 py-2" placeholder="owner_id">
+              <input id="owner-register-name" class="input-field rounded-xl px-3 py-2" placeholder="Ф.И.О. врача-владельца">
+              <input id="owner-register-role" class="input-field rounded-xl px-3 py-2" value="physician" placeholder="Профессиональная роль">
+              <input id="owner-register-org" class="input-field rounded-xl px-3 py-2" value="independent practice" placeholder="Организация">
+            </div>
+            <button id="owner-register" type="button" class="rounded-xl bg-emerald-700 text-white px-4 py-2 font-black uppercase">Зарегистрировать локально</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <textarea id="owner-regimen-json" rows="9" class="input-field rounded-xl px-3 py-2 font-mono" placeholder='regimen_payload JSON: идентификаторы, dose, population, safety, provenance, terminology_mappings, alternatives'></textarea>
+              <textarea id="owner-binding-json" rows="9" class="input-field rounded-xl px-3 py-2 font-mono" placeholder='calculator_binding JSON: disease_id, scenario_id, line_number, route, drug_ref/combo_ref, regimen_label/regimen_index, binding_version'></textarea>
+              <input id="owner-source-page" type="number" min="1" class="input-field rounded-xl px-3 py-2" placeholder="Страница PDF">
+              <input id="owner-pdf-sha" class="input-field rounded-xl px-3 py-2 font-mono" placeholder="sha256:... PDF">
+              <textarea id="owner-source-quote" rows="3" class="input-field rounded-xl px-3 py-2 md:col-span-2" placeholder="Точная цитата из КР"></textarea>
+              <input id="owner-rationale" class="input-field rounded-xl px-3 py-2 md:col-span-2" placeholder="Обоснование аттестации">
+            </div>
+            <button id="owner-attest" type="button" class="rounded-xl bg-amber-700 text-white px-4 py-2 font-black uppercase">Аттестовать одну схему</button>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+              <input id="owner-event-ids" class="input-field rounded-xl px-3 py-2 md:col-span-2" placeholder="event_id через запятую">
+              <input id="owner-bundle-version" class="input-field rounded-xl px-3 py-2" placeholder="Версия bundle, например owner-1.0">
+              <input id="owner-stale-days" type="number" min="1" max="365" value="30" class="input-field rounded-xl px-3 py-2" placeholder="Срок актуальности, дней">
+              <button id="owner-build" type="button" class="rounded-xl bg-red-700 text-white px-4 py-2 font-black uppercase md:col-span-2">Собрать и активировать bundle</button>
+            </div>
+            <pre id="owner-workflow-result" class="rounded-xl bg-slate-950 text-slate-100 p-3 overflow-auto whitespace-pre-wrap">Локальный workflow не запускался.</pre>
+          </div>
+        </details>
+        <div id="personal-candidates" class="hidden space-y-2" aria-live="polite"></div>
+        <div id="personal-trace-panel" class="hidden rounded-2xl border border-slate-200 dark:border-slate-700 p-4 text-xs space-y-3">
+          <div class="font-black uppercase tracking-widest text-slate-500">Trace / источник</div>
+          <div id="personal-trace-content" class="space-y-2 text-slate-700 dark:text-slate-300 whitespace-pre-wrap"></div>
+        </div>
+      </div>
+    </section>
 
     <section class="premium-card p-4 md:p-6 no-print">
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -374,6 +447,7 @@ let activeDisease = null, activeScenario = null, activeLine = null, activeDrug =
 let activeAge = 'child';
 let userPickedAge = false;
 let currentRouteGroup = 'all';
+let personalCandidates = [];
 
 function $(id){return document.getElementById(id);}
 function toast(msg){
@@ -445,6 +519,7 @@ function init(){
     };
   });
   setupButtons();
+  setupPersonalMode();
   setupTheme();
   loadHistory();
   if(window.location.hash){
@@ -465,6 +540,274 @@ function setupButtons(){
   window.addEventListener('resize', ()=>{
     document.querySelector('.mobile-nav').style.display = (window.innerWidth < 768) ? 'flex' : 'none';
   });
+}
+function isLoopbackOrigin(){
+  return window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+}
+function setPersonalStatus(state, message){
+  const el = $('personal-api-status');
+  el.dataset.state = state;
+  el.textContent = message;
+}
+function setupPersonalMode(){
+  $('personal-mode-toggle').addEventListener('change', function(){
+    const enabled = this.checked;
+    $('personal-mode-panel').classList.toggle('hidden', !enabled);
+    $('personal-mode-banner').classList.toggle('hidden', !enabled);
+    personalCandidates = [];
+    $('personal-candidates').classList.add('hidden');
+    $('personal-trace-panel').classList.add('hidden');
+    if(!enabled) setPersonalStatus('idle', 'API не проверен');
+    else if(!isLoopbackOrigin()) setPersonalStatus('blocked', 'BLOCKED: режим доступен только на localhost/127.0.0.1');
+    else setPersonalStatus('idle', 'Готов к локальной проверке API');
+  });
+  $('personal-request').addEventListener('click', requestPersonalCandidates);
+  $('personal-health').addEventListener('click', checkPersonalHealth);
+  $('owner-register').addEventListener('click', registerPersonalOwner);
+  $('owner-attest').addEventListener('click', attestPersonalRegimen);
+  $('owner-build').addEventListener('click', buildPersonalBundle);
+}
+function showOwnerWorkflow(value){
+  $('owner-workflow-result').textContent = typeof value === 'string' ? value : JSON.stringify(value,null,2);
+}
+async function personalJson(url, options={}){
+  if(!isLoopbackOrigin()) throw new Error('Личный workflow разрешён только на localhost/127.0.0.1');
+  const response = await fetch(url, Object.assign({credentials:'same-origin'}, options));
+  const body = await response.json();
+  if(!response.ok) throw new Error((body.review&&(body.review.reason||body.review.detail))||('HTTP '+response.status));
+  return body;
+}
+async function checkPersonalHealth(){
+  try{
+    const body=await personalJson('/v2/personal/health');
+    showOwnerWorkflow(body);
+    setPersonalStatus(body.recommendation_eligible?'ready':'blocked', body.recommendation_eligible?'Bundle готов к рекомендациям':'Режим настроен не полностью: '+(body.bundle_version||'нет активного bundle'));
+  }catch(error){ setPersonalStatus('error',error.message); showOwnerWorkflow(error.message); }
+}
+async function registerPersonalOwner(){
+  try{
+    const body=await personalJson('/v2/personal/register-owner',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      owner_id:$('owner-register-id').value.trim(), display_name:$('owner-register-name').value.trim(),
+      professional_role:$('owner-register-role').value.trim(), organisation:$('owner-register-org').value.trim()
+    })});
+    $('personal-owner-id').value=body.owner_id; $('personal-session-token').value=body.session_token;
+    showOwnerWorkflow(body); setPersonalStatus('ready','Владелец зарегистрирован; сохраните одноразовый токен');
+  }catch(error){ setPersonalStatus('error',error.message); showOwnerWorkflow(error.message); }
+}
+function parseOwnerJson(id,label){
+  try{return JSON.parse($(id).value);}catch(_){throw new Error(label+': некорректный JSON');}
+}
+async function attestPersonalRegimen(){
+  try{
+    const body=await personalJson('/v2/personal/attest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      session_token:$('personal-session-token').value.trim(), regimen_payload:parseOwnerJson('owner-regimen-json','regimen_payload'),
+      calculator_binding:parseOwnerJson('owner-binding-json','calculator_binding'), source_page:Number($('owner-source-page').value),
+      source_quote:$('owner-source-quote').value.trim(), pdf_sha256:$('owner-pdf-sha').value.trim(), rationale:$('owner-rationale').value.trim()
+    })});
+    $('owner-event-ids').value=[$('owner-event-ids').value.trim(),body.event_id].filter(Boolean).join(',');
+    showOwnerWorkflow(body); setPersonalStatus('ready','Схема аттестована; теперь соберите bundle');
+  }catch(error){ setPersonalStatus('error',error.message); showOwnerWorkflow(error.message); }
+}
+async function buildPersonalBundle(){
+  try{
+    const body=await personalJson('/v2/personal/build-bundle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      session_token:$('personal-session-token').value.trim(), attestation_event_ids:splitLocalList($('owner-event-ids').value),
+      bundle_version:$('owner-bundle-version').value.trim(), stale_days:Number($('owner-stale-days').value)
+    })});
+    showOwnerWorkflow(body); setPersonalStatus(body.recommendation_eligible?'ready':'blocked','Bundle '+body.bundle_version+' активирован');
+  }catch(error){ setPersonalStatus('error',error.message); showOwnerWorkflow(error.message); }
+}
+function splitLocalList(value){
+  return value.split(/[;,\n]/).map(v=>v.trim()).filter(v=>v && v.toLowerCase() !== 'нет');
+}
+function buildPersonalRequest(){
+  if(!$('personal-mode-toggle').checked) throw new Error('Личный режим не включён');
+  if(!isLoopbackOrigin()) throw new Error('Режим разрешён только на loopback origin');
+  if(!activeDisease) throw new Error('Сначала выберите нозологию во встроенном калькуляторе');
+  const ownerId = $('personal-owner-id').value.trim();
+  const sessionToken = $('personal-session-token').value.trim();
+  const pregnancy = $('personal-pregnancy').value;
+  const hepatic = $('personal-hepatic').value;
+  const renal = $('personal-renal').value.trim();
+  const allergiesRaw = $('personal-allergies').value.trim();
+  const medsRaw = $('personal-current-meds').value.trim();
+  const contraindicationsCleared = $('personal-contra-cleared').value === 'yes';
+  const interactionsReviewed = $('personal-interactions-reviewed').value === 'yes';
+  if(!ownerId || !sessionToken) throw new Error('Требуются локальные owner_id и session_token');
+  if(pregnancy === 'unknown' || hepatic === 'unknown' || !renal || !allergiesRaw || !medsRaw || !contraindicationsCleared || !interactionsReviewed) throw new Error('Заполните и подтвердите все safety-поля; неизвестные значения блокируют запрос');
+  const age = parseFloat($('patient-age').value);
+  const weight = parseFloat($('weight').value);
+  return {
+    api_version:'2', operating_mode:'PERSONAL_PHYSICIAN', owner_id:ownerId, session_token:sessionToken,
+    query:{
+      diagnosis:activeDisease.name,
+      icd10:(activeDisease.mkb10||[])[0] || null,
+      patient:{
+        age:Number.isFinite(age)&&age>=0?age:null,
+        weight_kg:Number.isFinite(weight)&&weight>0?weight:null,
+        pregnant:pregnancy === 'yes', renal_function:renal,
+        hepatic_impairment:hepatic === 'yes',
+        allergies:splitLocalList(allergiesRaw), current_meds:splitLocalList(medsRaw),
+        contraindications_cleared:contraindicationsCleared, interactions_reviewed:interactionsReviewed
+      },
+      preferences:{population:activeAge}
+    }
+  };
+}
+function validatePersonalEnvelope(body){
+  if(!body || body.api_version !== '2' || body.operating_mode !== 'PERSONAL_PHYSICIAN') throw new Error('Несовместимый ответ API v2');
+  if(body.status !== 'OWNER_REVIEWED') throw new Error((body.review&&(body.review.reason||body.review.detail)) || ('API: '+(body.status||'ERROR')));
+  if(body.governance_status !== 'OWNER_REVIEWED_EXPERIMENTAL') throw new Error('Неверный governance_status ответа');
+  if(!body.banner || body.banner.dismissible !== false) throw new Error('Ответ не содержит обязательный non-dismissible banner');
+  if(!Array.isArray(body.recommendations) || body.recommendations.length === 0) throw new Error('API не вернул допустимых кандидатов');
+  body.recommendations.forEach((candidate, index)=>{
+    if(candidate.governance_status !== 'OWNER_REVIEWED_EXPERIMENTAL') throw new Error('Кандидат '+(index+1)+': неверный governance_status');
+    resolveCalculatorBinding(candidate.calculator_binding);
+    if(candidate.calculator_binding_verified !== true) throw new Error('Кандидат не прошёл проверку hash-привязки калькулятора');
+  });
+  return body.recommendations;
+}
+async function requestPersonalCandidates(){
+  personalCandidates = [];
+  $('personal-candidates').classList.add('hidden');
+  $('personal-trace-panel').classList.add('hidden');
+  try{
+    const payload = buildPersonalRequest();
+    setPersonalStatus('checking', 'Проверка локального API…');
+    const response = await fetch('/v2/recommend', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+    if(!response.ok) throw new Error('HTTP '+response.status);
+    const body = await response.json();
+    personalCandidates = validatePersonalEnvelope(body);
+    renderPersonalCandidates(personalCandidates, body);
+    setPersonalStatus('ready', 'OWNER_REVIEWED · '+personalCandidates.length+' кандидат(ов) · '+(body.bundle_version||'bundle unknown'));
+  }catch(error){
+    setPersonalStatus('blocked', 'BLOCKED: '+error.message+'; автономный калькулятор доступен');
+  }
+}
+function renderPersonalCandidates(candidates, envelope){
+  const box = $('personal-candidates');
+  box.innerHTML = '';
+  candidates.forEach((candidate, index)=>{
+    const card = document.createElement('div');
+    card.className = 'rounded-2xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/20 p-3';
+    const title = document.createElement('div');
+    title.className = 'font-black text-sm text-slate-800 dark:text-slate-200';
+    title.textContent = (typeof candidate.drug === 'string' ? candidate.drug : (candidate.drug&&candidate.drug.name)) || candidate.regimen_id || ('Кандидат '+(index+1));
+    const meta = document.createElement('div');
+    meta.className = 'text-[10px] font-bold text-red-700 dark:text-red-300 mt-1';
+    meta.textContent = 'OWNER_REVIEWED_EXPERIMENTAL · '+((candidate.calculator_binding&&candidate.calculator_binding.regimen_label)||'точная привязка по индексу');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'mt-3 rounded-lg bg-red-700 hover:bg-red-800 text-white px-3 py-2 text-[10px] font-black uppercase';
+    button.textContent = 'Применить к калькулятору';
+    button.onclick = ()=>applyPersonalCandidate(index, envelope);
+    card.append(title, meta, button);
+    box.appendChild(card);
+  });
+  box.classList.remove('hidden');
+}
+function sameStringArray(a,b){
+  return Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((value,index)=>value === b[index]);
+}
+function resolveCalculatorBinding(binding){
+  if(!binding || typeof binding !== 'object') throw new Error('Отсутствует calculator_binding');
+  const required = ['disease_id','scenario_id','line_number','route'];
+  if(required.some(key=>binding[key] === undefined || binding[key] === null || binding[key] === '')) throw new Error('Неполный calculator_binding');
+  const hasDrug = typeof binding.drug_ref === 'string' && binding.drug_ref.length > 0;
+  const hasCombo = Array.isArray(binding.combo_ref) && binding.combo_ref.length > 0;
+  if(hasDrug === hasCombo) throw new Error('Привязка должна содержать ровно один drug_ref или combo_ref');
+  const hasLabel = typeof binding.regimen_label === 'string' && binding.regimen_label.length > 0;
+  const hasIndex = Number.isInteger(binding.regimen_index) && binding.regimen_index >= 0;
+  if(!hasLabel && !hasIndex) throw new Error('Требуется regimen_label или точный regimen_index');
+  const disease = (DB.recommendations||[]).find(item=>item.id === binding.disease_id);
+  if(!disease) throw new Error('Неизвестный disease_id');
+  const scenario = (disease.scenarios||[]).find(item=>item.id === binding.scenario_id);
+  if(!scenario) throw new Error('scenario_id не принадлежит disease_id');
+  if(scenario.age_group !== 'all' && scenario.age_group !== activeAge) throw new Error('scenario_id не подходит возрастной группе');
+  const lineMatches = (scenario.lines||[]).filter(item=>item.line_number === binding.line_number);
+  const matches = [];
+  lineMatches.forEach(line=>(line.drugs||[]).forEach(drug=>{
+    const identityMatches = hasDrug ? drug.drug_ref === binding.drug_ref : sameStringArray(drug.combo_ref,binding.combo_ref);
+    const routeMatches = Array.isArray(drug.route) && drug.route.includes(binding.route);
+    if(identityMatches && routeMatches) matches.push({line,drug});
+  }));
+  if(matches.length !== 1) throw new Error(matches.length ? 'Неоднозначный calculator_binding' : 'Препарат/комбинация/route не совпадают со встроенной БД');
+  const drug = matches[0].drug;
+  const eligible = (drug.regimens||[]).filter(reg=>reg.age_group === activeAge || reg.age_group === 'all');
+  let regimen = null;
+  if(hasIndex){
+    regimen = (drug.regimens||[])[binding.regimen_index];
+    if(!regimen || !eligible.includes(regimen)) throw new Error('regimen_index неизвестен или не подходит возрастной группе');
+  }
+  if(hasLabel){
+    const labels = eligible.filter(reg=>reg.regimen_label === binding.regimen_label);
+    if(labels.length !== 1) throw new Error(labels.length ? 'Неоднозначный regimen_label' : 'regimen_label не найден во встроенной БД');
+    if(regimen && regimen !== labels[0]) throw new Error('regimen_label и regimen_index не совпадают');
+    regimen = labels[0];
+  }
+  const routeMap = {per_os:'po',iv:'iv',im:'im'};
+  if(!routeMap[binding.route]) throw new Error('Неизвестный route в calculator_binding');
+  const routeGroup = routeMap[binding.route];
+  const mainRef = DB.drugs_reference[getDrugRefs(drug)[0]];
+  if(!mainRef) throw new Error('drug_ref отсутствует во встроенном drugs_reference');
+  const forms = mainRef.forms || [];
+  const routeSupported = routeGroup === 'po'
+    ? forms.some(form=>['tablet','capsule','suspension','syrup','granules'].includes(form.form_type) || (form.form_type === 'powder_for_suspension' && form.concentration_mg_per_ml != null))
+    : routeGroup === 'im'
+      ? !!(mainRef.dilution && mainRef.dilution.im && forms.some(form=>['powder_for_suspension','solution_im'].includes(form.form_type)))
+      : !!(mainRef.dilution && (mainRef.dilution.iv_bolus || mainRef.dilution.iv_infusion) && forms.some(form=>['powder_for_suspension','solution_iv'].includes(form.form_type)));
+  if(!routeSupported) throw new Error('route не поддержан формами во встроенной БД');
+  const line = matches[0].line;
+  return {
+    disease, scenario, line, drug,
+    scenarioIndex:(disease.scenarios||[]).indexOf(scenario),
+    lineIndex:(scenario.lines||[]).indexOf(line),
+    drugIndex:(line.drugs||[]).indexOf(drug),
+    regimenIndex:eligible.indexOf(regimen), routeGroup
+  };
+}
+function applyPersonalCandidate(index, envelope){
+  try{
+    const candidate = personalCandidates[index];
+    if(!candidate || candidate.governance_status !== 'OWNER_REVIEWED_EXPERIMENTAL') throw new Error('Кандидат недоступен или потерял governance status');
+    const resolved = resolveCalculatorBinding(candidate.calculator_binding);
+    activeDisease = resolved.disease;
+    activeScenario = resolved.scenario;
+    activeLine = resolved.line;
+    activeDrug = resolved.drug;
+    activeFormIdx = 0; activeRegimenIdx = resolved.regimenIndex; activeRouteKey = null; activeVialIdx = 0;
+    $('active-disease').classList.remove('hidden'); $('empty-state').classList.add('hidden');
+    $('active-title').textContent = activeDisease.name;
+    $('active-mkb').textContent = 'МКБ-10: '+activeDisease.mkb10.join(', ');
+    $('active-cr').textContent = 'КР #'+activeDisease.cr_id+' · '+activeDisease.cr_year;
+    $('active-indications').textContent = activeDisease.indications ? 'Показания: '+activeDisease.indications.join('; ') : '';
+    $('scenario-step').classList.remove('hidden'); $('drug-step').classList.remove('hidden'); $('form-step').classList.remove('hidden'); $('result-step').classList.remove('hidden');
+    renderScenarios(resolved.scenario, resolved.lineIndex, resolved.drugIndex, resolved.routeGroup, resolved.regimenIndex);
+    renderPersonalTrace(candidate, envelope);
+    updateHash();
+    setPersonalStatus('ready', 'Кандидат применён через встроенную БД; расчёт выполнен штатными функциями');
+  }catch(error){
+    setPersonalStatus('blocked', 'BLOCKED: '+error.message+'; выбор калькулятора не изменён');
+  }
+}
+function renderPersonalTrace(candidate, envelope){
+  const content = $('personal-trace-content');
+  content.innerHTML = '';
+  const rows = [
+    ['Governance', candidate.governance_status],
+    ['Regimen / guideline', (candidate.regimen_id||'—')+' / '+(candidate.guideline_id||'—')],
+    ['Источник', candidate.source ? ('стр. '+(candidate.source.source_page||'—')+' · '+(candidate.source.source_wording||'—')+' · '+(candidate.source.source_url||'—')+' · SHA-256 '+(candidate.source.source_pdf_sha256||'—')) : '—'],
+    ['Рассмотрено / отклонено', JSON.stringify(candidate.alternatives_considered||candidate.alternatives||[])],
+    ['Safety filters', JSON.stringify(candidate.safety_filters||candidate.safety||{})],
+    ['Terminology mappings', JSON.stringify(candidate.terminology_mappings||[])],
+    ['Engine stages', JSON.stringify((candidate.trace&&candidate.trace.stages)||(envelope&&envelope.trace&&envelope.trace.participating_stages)||[])],
+    ['Request trace', JSON.stringify((envelope&&envelope.trace)||{})]
+  ];
+  rows.forEach(row=>{
+    const div=document.createElement('div'), label=document.createElement('b'), value=document.createElement('span');
+    label.textContent=row[0]+': '; value.textContent=row[1]; div.append(label,value); content.appendChild(div);
+  });
+  $('personal-trace-panel').classList.remove('hidden');
 }
 function setupTheme(){
   const saved = localStorage.getItem('antibio_theme');
@@ -557,10 +900,10 @@ function resetDisease(){
   $('empty-state').classList.remove('hidden');
   history.replaceState(null, '', window.location.pathname);
 }
-function renderScenarios(){
+function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
   const list = $('scenario-list');
   list.innerHTML = '';
-  let firstVisible = null;
+  let firstVisible = null, firstVisibleCard = null, preferredCard = null;
   activeDisease.scenarios.forEach((s, idx)=>{
     const ageMatch = s.age_group === 'all' || s.age_group === activeAge;
     const card = document.createElement('div');
@@ -569,21 +912,24 @@ function renderScenarios(){
     card.innerHTML = '<div class="flex justify-between items-center"><div><div class="font-bold text-slate-800 dark:text-slate-200 text-sm">'+s.name+'</div>'+(ageMatch?'':'<div class="text-[10px] text-red-500 font-bold mt-1">Не подходит для выбранной возрастной группы</div>')+'</div><i class="fas fa-chevron-right text-slate-300"></i></div>';
     card.onclick = ()=>selectScenario(s, card);
     list.appendChild(card);
-    if(ageMatch && !firstVisible) firstVisible = s;
+    if(ageMatch && !firstVisible){ firstVisible = s; firstVisibleCard = card; }
+    if(ageMatch && s === preferredScenario) preferredCard = card;
   });
-  if(firstVisible) selectScenario(firstVisible, list.querySelector('.scenario-card.active') || list.firstChild);
+  if(preferredCard) selectScenario(preferredScenario, preferredCard, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx);
+  else if(firstVisible) selectScenario(firstVisible, firstVisibleCard);
 }
-function selectScenario(s, card){
+function selectScenario(s, card, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
   activeScenario = s;
   document.querySelectorAll('#scenario-list .scenario-card').forEach(c=>c.classList.remove('active'));
   if(card) card.classList.add('active');
   $('drug-step').classList.remove('hidden');
-  renderLines();
+  renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx);
   updateHash();
 }
-function renderLines(){
+function renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
   const list = $('drug-list');
   list.innerHTML = '';
+  let preferredCard = null, preferredDrug = null, preferredLine = null;
   activeScenario.lines.forEach((line, lineIdx)=>{
     line.drugs.forEach((drug, drugIdx)=>{
       const isCombo = !!drug.combo_ref;
@@ -598,19 +944,23 @@ function renderLines(){
       card.innerHTML = '<div class="min-w-0 flex-1"><div class="font-bold text-slate-800 dark:text-slate-200 text-sm">'+names+'</div>'+(drug.indication_note?'<div class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mt-0.5">'+drug.indication_note+'</div>':'')+(line.combo_therapy?'<div class="text-[10px] text-blue-600 font-black mt-1 uppercase tracking-widest"><i class="fas fa-link mr-1"></i>комбинированная терапия</div>':'')+'</div><span class="badge '+lineCls+' bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 ml-2" style="border:1px solid">'+lineLabel+'</span>';
       card.onclick = ()=>selectDrug(drug, line, card);
       list.appendChild(card);
+      if(lineIdx === preferredLineIndex && drugIdx === preferredDrugIndex){ preferredCard = card; preferredDrug = drug; preferredLine = line; }
     });
   });
-  const first = list.querySelector('.drug-card');
-  if(first) first.click();
+  if(preferredCard) selectDrug(preferredDrug, preferredLine, preferredCard, preferredRoute, preferredRegimenIdx);
+  else {
+    const first = list.querySelector('.drug-card');
+    if(first) first.click();
+  }
 }
-function selectDrug(drug, line, card){
+function selectDrug(drug, line, card, preferredRoute, preferredRegimenIdx){
   activeDrug = drug; activeLine = line; activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0;
   document.querySelectorAll('#drug-list .drug-card').forEach(c=>c.classList.remove('active'));
   card.classList.add('active');
   $('form-step').classList.remove('hidden');
   $('result-step').classList.remove('hidden');
-  renderForms();
-  renderRegimens();
+  renderForms(preferredRoute);
+  renderRegimens(preferredRegimenIdx);
   calculate();
   updateHash();
 }
@@ -618,7 +968,7 @@ function getDrugRefs(drug){
   if(drug.combo_ref) return drug.combo_ref;
   return [drug.drug_ref];
 }
-function renderForms(){
+function renderForms(preferredRoute){
   const refs = getDrugRefs(activeDrug);
   const mainRef = DB.drugs_reference[refs[0]];
   if(!mainRef) return;
@@ -673,7 +1023,7 @@ function renderForms(){
   const restrictedKeys = groupKeys.filter(k=>intendedKeys.includes(k));
   const finalKeys = restrictedKeys.length > 0 ? restrictedKeys : groupKeys;
 
-  currentRouteGroup = finalKeys[0];
+  currentRouteGroup = preferredRoute && finalKeys.includes(preferredRoute) ? preferredRoute : finalKeys[0];
   finalKeys.forEach(k=>{
     const tab = document.createElement('button');
     tab.className = 'route-tab chip text-[10px] font-black uppercase rounded-lg px-2 py-1'+(k===currentRouteGroup?' active':'');
@@ -722,18 +1072,19 @@ function renderFormChips(group){
   });
   activeFormIdx = group[defaultIdx].idx;
 }
-function renderRegimens(){
+function renderRegimens(preferredRegimenIdx){
   const refs = getDrugRefs(activeDrug);
   const mainRef = DB.drugs_reference[refs[0]];
   const regimens = (activeDrug.regimens || []).filter(r=>r.age_group === activeAge || r.age_group === 'all');
   const sel = $('regimen-selector');
   const list = $('regimen-list');
   list.innerHTML = '';
+  const selectedIdx = Number.isInteger(preferredRegimenIdx) && preferredRegimenIdx >= 0 && preferredRegimenIdx < regimens.length ? preferredRegimenIdx : 0;
   if(regimens.length > 1){
     sel.classList.remove('hidden');
     regimens.forEach((r, idx)=>{
       const btn = document.createElement('button');
-      btn.className = 'chip text-[10px] font-black rounded-lg px-3 py-2'+(idx===0?' active':'');
+      btn.className = 'chip text-[10px] font-black rounded-lg px-3 py-2'+(idx===selectedIdx?' active':'');
       const label = r.regimen_label || ((r.dose_mg_kg_day?r.dose_mg_kg_day+' мг/кг':'')+' '+(r.freq_per_day?r.freq_per_day+' р/д':''));
       btn.textContent = label;
       btn.onclick = ()=>{
@@ -744,10 +1095,10 @@ function renderRegimens(){
       };
       list.appendChild(btn);
     });
-    activeRegimenIdx = 0;
+    activeRegimenIdx = selectedIdx;
   } else {
     sel.classList.add('hidden');
-    activeRegimenIdx = 0;
+    activeRegimenIdx = selectedIdx;
   }
 }
 function getActiveRegimen(){

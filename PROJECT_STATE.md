@@ -1,16 +1,30 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
-## 2026-08-01: PERSONAL_PHYSICIAN_MODE RFC is DRAFT
+## 2026-08-01: PERSONAL_PHYSICIAN_MODE implemented; clinical activation gated
 
-`PERSONAL_PHYSICIAN_MODE_RFC.md` defines an additive local-only mode that
-preserves the calculator's current default/offline workflow and reuses its
-existing calculation functions. Proposed personal content is labelled
-`OWNER_REVIEWED_EXPERIMENTAL`, never `PHYSICIAN_APPROVED`, and is isolated from
-production bundles and governance.
+The owner explicitly accepted `PERSONAL_PHYSICIAN_MODE_RFC.md`. Branch
+`codex/personal-physician-mode` now contains the additive implementation:
 
-This is design only. No implementation or rule activation has occurred. P5.6
-remains ACCEPTANCE/NOT COMPLETE; P6 remains BLOCKED; the running API remains
-fail-closed without a recommender; approved clinical objects remain zero.
+- `clinical_engine/personal/`: immutable bundle contracts, hash validation,
+  external guard, recommender, local runtime, one-time owner token,
+  append-only attestation ledger and minimized request audit;
+- `clinical_engine/api/v2_contract.py` and API routes under `/v2/`;
+- `antibiotic_calc.html.template` and generated `antibiotic_calc.html`:
+  explicit personal-mode UI, owner workflow, full patient safety inputs,
+  source/trace display and exact calculator binding;
+- `.local/personal_physician/` is gitignored; production DB/PDF and production
+  approval states are untouched.
+
+Canonical verification: `.venv\Scripts\python.exe -m pytest -q` -> 1550
+passed, 1 skipped, 1 xfailed, 0 failed. Browser QA on
+`http://127.0.0.1:8980/personal` verified the ordinary calculator, pediatric
+suspension output, amoxicillin/clavulanate forms, visible non-dismissible
+banner, and fail-closed state without an active owner bundle.
+
+No real owner or regimen was registered automatically. Personal clinical
+activation requires explicit per-regimen source attestation and bundle build.
+Production approved clinical objects remain zero; P5.6 remains
+ACCEPTANCE/NOT COMPLETE and P6 remains BLOCKED.
 
 ## 2026-08-01: fail-closed Engine developer API running
 

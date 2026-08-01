@@ -2,11 +2,11 @@
 
 ## RFC — Local Personal Physician Decision-Support Mode
 
-**Status:** DRAFT — design only; no implementation or governance activation
+**Status:** ACCEPTED — implementation authorized; activation remains gated
 **Date:** 2026-08-01
 **Owner request:** preserve the application as designed while enabling a real,
 local physician-owner workflow
-**Requires explicit acceptance before implementation:** yes
+**Accepted by project owner:** 2026-08-01
 **Touches frozen contracts:** yes; all changes must be additive and versioned
 
 ## 1. Decision sought
@@ -348,7 +348,11 @@ The RFC may be accepted only if the owner agrees that:
 
 ## 15. Current decision state
 
-This document authorizes no code or data change. Until explicitly accepted:
+The owner accepted this RFC on 2026-08-01. Implementation is authorized only
+within the additive, local-only, fail-closed boundaries defined above.
+
+Acceptance does not itself activate recommendation eligibility. Until an exact
+owner-reviewed bundle passes the RFC gates:
 
 - P5.6 remains ACCEPTANCE/NOT COMPLETE;
 - P6 remains BLOCKED;

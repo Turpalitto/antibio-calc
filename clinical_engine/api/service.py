@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from clinical_engine.api import contract
+from clinical_engine.api import contract, v2_contract
 from clinical_engine.corpus.locator import CorpusLocator
 
 _DEFAULT_KNOWLEDGE = "clinical_engine/resources/curated_knowledge.json"
@@ -35,10 +35,17 @@ class ApiContext:
     corpus: CorpusLocator
     curated_knowledge_path: str = _DEFAULT_KNOWLEDGE
     recommender: Any | None = None
+    # PERSONAL_PHYSICIAN_MODE_RFC: separate additive service. Never reused by
+    # v1 and never interpreted as production physician approval.
+    personal_service: Any | None = None
 
     @classmethod
     def default(cls) -> "ApiContext":
-        return cls(corpus=CorpusLocator())
+        # Additive local facade. It stays fail-closed until an owner profile
+        # and an explicitly activated immutable bundle exist.
+        from clinical_engine.personal.runtime import PersonalRuntime
+
+        return cls(corpus=CorpusLocator(), personal_service=PersonalRuntime())
 
 
 def _knowledge_meta(path: str) -> dict[str, Any]:
@@ -187,3 +194,88 @@ def handle_recommend(ctx: ApiContext, body: dict[str, Any]) -> tuple[int, dict[s
 
     return 200, contract.envelope(contract.Status.APPROVED, knowledge_version=kv,
                                   recommendations=recs)
+
+
+def handle_recommend_v2(
+    ctx: ApiContext,
+    body: dict[str, Any],
+    *,
+    host: str,
+    origin: str = "",
+) -> tuple[int, dict[str, Any]]:
+    """Fail-closed local personal-physician API.
+
+    This path is deliberately separate from :func:`handle_recommend`: API v1
+    and its production approval vocabulary remain frozen.
+    """
+    try:
+        request = v2_contract.parse_recommend_request(body)
+    except v2_contract.RequestError as exc:
+        return 400, v2_contract.blocked(exc.code, exc.detail, status=v2_contract.Status.ERROR)
+
+    if ctx.personal_service is None:
+        return 200, v2_contract.blocked(
+            "PERSONAL_MODE_NOT_CONFIGURED",
+            "owner-reviewed personal service is not configured",
+            status=v2_contract.Status.REVIEW_REQUIRED,
+        )
+
+    try:
+        raw = ctx.personal_service.recommend(
+            request=request,
+            host=host,
+            origin=origin,
+        )
+    except Exception as exc:  # domain errors are converted, never leaked
+        code = str(getattr(exc, "code", "PERSONAL_MODE_BLOCKED"))
+        detail = str(getattr(
+            exc, "detail", "personal-mode guard or bundle validation failed"
+        ))
+        return 200, v2_contract.blocked(code, detail)
+
+    if not isinstance(raw, dict):
+        return 200, v2_contract.blocked(
+            "INVALID_PERSONAL_SERVICE_RESULT",
+            "personal service returned a non-object result",
+        )
+
+    status = raw.get("status")
+    if status == "APPROVED" or status not in v2_contract.ALLOWED_STATUSES:
+        return 200, v2_contract.blocked(
+            "INVALID_PERSONAL_SERVICE_STATUS",
+            "personal service returned a forbidden or unknown status",
+        )
+
+    recommendations = raw.get("recommendations") or []
+    if not isinstance(recommendations, list):
+        return 200, v2_contract.blocked(
+            "INVALID_PERSONAL_RECOMMENDATIONS",
+            "recommendations must be an array",
+        )
+
+    if status != v2_contract.Status.OWNER_REVIEWED:
+        recommendations = []
+    elif not recommendations:
+        return 200, v2_contract.blocked(
+            "NO_OWNER_REVIEWED_REGIMEN",
+            "no eligible owner-reviewed regimen for this request",
+            status=v2_contract.Status.REVIEW_REQUIRED,
+        )
+    elif any(
+        not isinstance(item, dict)
+        or item.get("governance_status") != "OWNER_REVIEWED_EXPERIMENTAL"
+        for item in recommendations
+    ):
+        return 200, v2_contract.blocked(
+            "INVALID_RECOMMENDATION_GOVERNANCE",
+            "every recommendation must be OWNER_REVIEWED_EXPERIMENTAL",
+        )
+
+    return 200, v2_contract.envelope(
+        status,
+        recommendations=recommendations,
+        bundle_version=raw.get("bundle_version"),
+        review=raw.get("review"),
+        errors=raw.get("errors"),
+        trace=raw.get("trace"),
+    )

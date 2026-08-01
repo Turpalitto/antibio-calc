@@ -1,20 +1,31 @@
 # HANDOFF.md — ANTIBIO (Cross-IDE / Cross-AI Onboarding)
 
-## Pending design decision — 2026-08-01
+## PERSONAL_PHYSICIAN implementation — 2026-08-01
 
-`PERSONAL_PHYSICIAN_MODE_RFC.md` is a DRAFT awaiting explicit owner review.
-It proposes an additive local-only owner-reviewed mode while preserving the
-existing calculator, API v1, Production Guard, and production governance.
-This draft authorizes no implementation and does not unblock P6 or connect a
-curated recommender.
+`PERSONAL_PHYSICIAN_MODE_RFC.md` was explicitly accepted and implemented on
+branch `codex/personal-physician-mode`. The additive implementation provides a
+loopback-only API v2, local owner registration, one-time token, append-only
+per-regimen attestation, immutable owner bundle activation, minimized local
+request audit, and a calculator bridge that reuses the existing dose and
+formulation arithmetic.
+
+Technical verification: `.venv\Scripts\python.exe -m pytest -q` ->
+1550 passed, 1 skipped, 1 xfailed, 0 failed. Browser QA confirmed the existing
+child suspension calculation and amoxicillin/clavulanate forms, plus explicit
+fail-closed personal mode with no active bundle.
+
+No real owner profile or clinical regimen was auto-created. Recommendation
+eligibility remains blocked until the owner uses `/personal` to register
+locally, attests exact source-linked regimens individually, and explicitly
+builds a small bundle. Production approved objects remain zero; P5.6 remains
+ACCEPTANCE/NOT COMPLETE and P6 remains BLOCKED.
 
 ## Current handoff — 2026-08-01
 
 P5.6 is in ACCEPTANCE but NOT COMPLETE. Credential rotation is closed by
 owner attestation; the historical fresh-clone gate passed. C7 source-fidelity
 review is closed at 182 events / 113 regimens / zero validation issues.
-Proposed-boundary canonical tests: 1499 passed, 11 skipped, 1 xfailed,
-0 failed (1511 collected).
+Current canonical tests: 1550 passed, 1 skipped, 1 xfailed, 0 failed.
 The exact C7/audit boundary is committed as `60e6033`; its committed tree
 matches the isolated validated tree. Locked-dependency fresh-clone
 verification at `5817a60` passed: 1511 collected, 1499 passed, 11 skipped,

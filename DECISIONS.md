@@ -1,5 +1,27 @@
 # DECISIONS
 
+## 2026-08-01 — Accepted personal mode uses a separate local trust domain
+
+Decision: accept and implement `PERSONAL_PHYSICIAN_MODE_RFC.md` through an
+additive `OWNER_REVIEWED_EXPERIMENTAL` bundle, external guard and API v2.
+The local owner workflow is per exact regimen, hash-bound, append-only and
+explicitly activated. Local identity, ledgers, bundles and minimized request
+audit live under gitignored `.local/personal_physician/`.
+
+The complete calculator binding is a stable disease/scenario/line/drug-or-
+combination/route/regimen identity. The API supplies this identity but never
+duplicates dose arithmetic; the physician manually selects a candidate and
+the existing calculator functions remain the sole implementation of dose,
+suspension, reconstitution and dilution calculations.
+
+Reason: this makes the accepted personal workflow usable while preserving
+traceability, deterministic calculations, offline/default compatibility and
+strict separation from production approval. Personal results can never be
+serialized as `APPROVED` or exported into the production bundle.
+
+Status: implemented technically; recommendation eligibility remains gated on
+real owner registration and explicit exact-regimen attestations.
+
 ## 2026-08-01 — Personal mode must be additive and versioned
 
 Decision proposed in `PERSONAL_PHYSICIAN_MODE_RFC.md`: preserve the existing
@@ -12,7 +34,7 @@ data with physician-facing content and risk breaking the application. A
 separate status and versioned boundary preserve intended behaviour while
 allowing an explicit local physician-owner workflow.
 
-Status: DRAFT, not yet accepted or implemented.
+Status: superseded by the accepted implementation decision above.
 
 ## 2026-08-01 — Personal use does not bypass fail-closed gates
 

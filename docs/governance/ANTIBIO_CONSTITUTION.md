@@ -345,3 +345,23 @@ that will still be maintainable years from now.
 
 This Constitution remains active
 until explicitly superseded.
+
+=========================================================
+PERSONAL PHYSICIAN MODE AMENDMENT — 2026-08-01
+=========================================================
+
+The project owner accepted `PERSONAL_PHYSICIAN_MODE_RFC.md`.
+
+An additive local-only physician-owner mode may be implemented provided that:
+
+- default calculator and production behaviour remain unchanged;
+- production approval vocabulary and gates remain unchanged;
+- single-physician attestation is labelled `OWNER_REVIEWED_EXPERIMENTAL`,
+  never `PHYSICIAN_APPROVED`;
+- a separate immutable bundle and external fail-closed guard enforce the mode;
+- every recommendation remains fully source- and calculation-traceable;
+- activation is impossible without exact owner review of the served content;
+- the API binds to loopback and transmits no patient data externally.
+
+This amendment does not authorize autonomous diagnosis or prescribing and
+does not unblock P6.

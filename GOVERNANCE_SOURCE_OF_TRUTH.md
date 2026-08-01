@@ -29,6 +29,10 @@ BLOCKED.
   0 failed (1511 collected; 2026-07-30);
 - P6: BLOCKED;
 - Clinical Decision Engine integration: запрещена до P6 entry gates;
+- `PERSONAL_PHYSICIAN_MODE_RFC.md`: ACCEPTED on 2026-08-01 for additive,
+  loopback-only implementation. It does not unblock P6 or production Engine
+  integration. Personal recommendation eligibility remains BLOCKED until a
+  separately validated `OWNER_REVIEWED_EXPERIMENTAL` bundle exists;
 - physician-approved ClinicalRegimen/TherapeuticOption: 0;
 - Review Workbench: реализован, local-only, disconnected.
 

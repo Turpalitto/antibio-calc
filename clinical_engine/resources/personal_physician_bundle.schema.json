@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://antibio.local/schemas/personal_physician_bundle.schema.json",
+  "title": "ANTIBIO Personal Physician Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "bundle_version", "build_version", "status", "owner_id",
+    "built_at", "stale_after", "payload_sha256", "owner_signature", "regimens"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "bundle_version": {"type": "string", "minLength": 1},
+    "build_version": {"type": "string", "minLength": 1},
+    "status": {"const": "OWNER_REVIEWED_EXPERIMENTAL"},
+    "owner_id": {"type": "string", "minLength": 1},
+    "built_at": {"type": "string", "format": "date-time"},
+    "stale_after": {"type": "string", "format": "date-time"},
+    "payload_sha256": {"$ref": "#/$defs/sha256"},
+    "owner_signature": {
+      "type": "string",
+      "pattern": "^hmac-sha256:[0-9a-fA-F]{64}$"
+    },
+    "regimens": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/regimen"}
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-fA-F]{64}$"
+    },
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "stringArray": {"type": "array", "items": {"$ref": "#/$defs/nonEmptyString"}},
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "guideline_id", "guideline_title", "rubricator_id", "rubricator_version",
+        "approval_year", "source_url", "source_pdf_sha256", "source_page",
+        "source_wording", "guideline_status"
+      ],
+      "properties": {
+        "guideline_id": {"$ref": "#/$defs/nonEmptyString"},
+        "guideline_title": {"$ref": "#/$defs/nonEmptyString"},
+        "rubricator_id": {"$ref": "#/$defs/nonEmptyString"},
+        "rubricator_version": {"$ref": "#/$defs/nonEmptyString"},
+        "approval_year": {"type": "integer", "minimum": 1900},
+        "source_url": {"type": "string", "format": "uri"},
+        "source_pdf_sha256": {"$ref": "#/$defs/sha256"},
+        "source_page": {"type": "integer", "minimum": 1},
+        "source_wording": {"$ref": "#/$defs/nonEmptyString"},
+        "guideline_status": {"const": "CURRENT"}
+      }
+    },
+    "dose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value_min", "value_max", "unit", "basis", "formulation_basis",
+        "route", "frequency", "duration", "maximum_dose"
+      ],
+      "properties": {
+        "value_min": {"type": "number", "exclusiveMinimum": 0},
+        "value_max": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"$ref": "#/$defs/nonEmptyString"},
+        "basis": {
+          "enum": ["PER_ADMINISTRATION", "DAILY_TOTAL", "MG_KG_PER_ADMINISTRATION", "MG_KG_PER_DAY"]
+        },
+        "formulation_basis": {"$ref": "#/$defs/nonEmptyString"},
+        "route": {"$ref": "#/$defs/nonEmptyString"},
+        "frequency": {"$ref": "#/$defs/nonEmptyString"},
+        "duration": {"$ref": "#/$defs/nonEmptyString"},
+        "maximum_dose": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "population": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible_groups", "adult", "pediatric", "neonatal", "pregnancy", "lactation", "renal", "hepatic"],
+      "properties": {
+        "eligible_groups": {"type": "array", "minItems": 1, "items": {"enum": ["adult", "child", "neonate"]}},
+        "adult": {"$ref": "#/$defs/nonEmptyString"},
+        "pediatric": {"$ref": "#/$defs/nonEmptyString"},
+        "neonatal": {"$ref": "#/$defs/nonEmptyString"},
+        "pregnancy": {"$ref": "#/$defs/nonEmptyString"},
+        "lactation": {"$ref": "#/$defs/nonEmptyString"},
+        "renal": {"$ref": "#/$defs/nonEmptyString"},
+        "hepatic": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allergy_classes", "contraindications", "interactions", "warnings",
+        "requires_weight_kg", "requires_renal_function", "requires_pregnancy_status", "requires_hepatic_function"
+      ],
+      "properties": {
+        "allergy_classes": {"$ref": "#/$defs/stringArray"},
+        "contraindications": {"$ref": "#/$defs/stringArray"},
+        "interactions": {"$ref": "#/$defs/stringArray"},
+        "warnings": {"$ref": "#/$defs/stringArray"},
+        "requires_weight_kg": {"type": "boolean"},
+        "requires_renal_function": {"type": "boolean"},
+        "requires_pregnancy_status": {"type": "boolean"},
+        "requires_hepatic_function": {"type": "boolean"}
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "normalized", "system", "code"],
+      "properties": {
+        "source": {"$ref": "#/$defs/nonEmptyString"},
+        "normalized": {"$ref": "#/$defs/nonEmptyString"},
+        "system": {"$ref": "#/$defs/nonEmptyString"},
+        "code": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "alternative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["regimen_id", "rejection_reason"],
+      "properties": {
+        "regimen_id": {"$ref": "#/$defs/nonEmptyString"},
+        "rejection_reason": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id", "event_sha256", "owner_id", "attested_at", "rationale", "source_snapshot_sha256",
+        "attested_payload_sha256", "status"
+      ],
+      "properties": {
+        "event_id": {"$ref": "#/$defs/nonEmptyString"},
+        "event_sha256": {"$ref": "#/$defs/sha256"},
+        "owner_id": {"$ref": "#/$defs/nonEmptyString"},
+        "attested_at": {"type": "string", "format": "date-time"},
+        "rationale": {"$ref": "#/$defs/nonEmptyString"},
+        "source_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+        "attested_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "status": {"const": "OWNER_REVIEWED_EXPERIMENTAL"}
+      }
+    },
+    "regimen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "regimen_id", "diagnosis", "icd10", "therapy_line", "drug", "components",
+        "dose", "population", "safety", "provenance", "terminology_mappings",
+        "alternatives", "calculator_binding", "attestation", "governance_status"
+      ],
+      "properties": {
+        "regimen_id": {"$ref": "#/$defs/nonEmptyString"},
+        "diagnosis": {"$ref": "#/$defs/nonEmptyString"},
+        "icd10": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/nonEmptyString"}},
+        "therapy_line": {"$ref": "#/$defs/nonEmptyString"},
+        "drug": {"$ref": "#/$defs/nonEmptyString"},
+        "components": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/nonEmptyString"}},
+        "dose": {"$ref": "#/$defs/dose"},
+        "population": {"$ref": "#/$defs/population"},
+        "safety": {"$ref": "#/$defs/safety"},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "terminology_mappings": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/mapping"}},
+        "alternatives": {"type": "array", "items": {"$ref": "#/$defs/alternative"}},
+        "calculator_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["disease_id", "scenario_id", "line_number", "route", "binding_version", "calculator_regimen_sha256"],
+          "oneOf": [
+            {"required": ["drug_ref"], "not": {"required": ["combo_ref"]}},
+            {"required": ["combo_ref"], "not": {"required": ["drug_ref"]}}
+          ],
+          "anyOf": [
+            {"required": ["regimen_label"]},
+            {"required": ["regimen_index"]}
+          ],
+          "properties": {
+            "disease_id": {"$ref": "#/$defs/nonEmptyString"},
+            "scenario_id": {"$ref": "#/$defs/nonEmptyString"},
+            "line_number": {"type": "integer", "minimum": 1},
+            "route": {"$ref": "#/$defs/nonEmptyString"},
+            "drug_ref": {"$ref": "#/$defs/nonEmptyString"},
+            "combo_ref": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/nonEmptyString"}},
+            "regimen_label": {"$ref": "#/$defs/nonEmptyString"},
+            "regimen_index": {"type": "integer", "minimum": 0},
+            "binding_version": {"$ref": "#/$defs/nonEmptyString"},
+            "calculator_regimen_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "attestation": {"$ref": "#/$defs/attestation"},
+        "governance_status": {"const": "OWNER_REVIEWED_EXPERIMENTAL"}
+      }
+    }
+  }
+}

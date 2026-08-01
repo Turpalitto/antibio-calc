@@ -24,7 +24,7 @@
 **P0 MILESTONE COMPLETE + FROZEN (2026-07-10).** See P0_COMPLETION_REPORT.md. All P0 contracts locked.
 | P2-1 | Conformance Validator | CLOSED + FROZEN | 2026-07-11 | not_guideline_id + trace_code. Negative Golden now prove exclusion. Review PASS.
 | P3 | Clinical Data Curation | In progress | 2026-07-11 | Medical data only. 101 conflicts, renal structure, synonyms x10, ATC, 300+ Golden. No engine touch.
-| PERSONAL-PHYSICIAN | Local Personal Physician Decision-Support Mode | **Draft** | 2026-08-01 | Explicit local opt-in; default calculator and production governance unchanged. Requires owner acceptance before implementation. |
+| PERSONAL-PHYSICIAN | Local Personal Physician Decision-Support Mode | **Accepted / implementation active** | 2026-08-01 | Explicit local opt-in; default calculator and production governance unchanged. Activation requires a validated owner-reviewed bundle. |
 | H1 | Per-recommendation Evidence / Trace (§7.5) | Closed for v1 | 2026-07-10 | Recommendation: revisit in v1.1 if Flutter requires per-rec Evidence. |
 | (Future) | — | — | — | — |
 

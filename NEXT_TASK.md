@@ -1,22 +1,22 @@
 # NEXT_TASK.md — ANTIBIO
 
-## Owner review of PERSONAL_PHYSICIAN_MODE RFC — 2026-08-01
+## Activate a small owner-reviewed personal bundle — 2026-08-01
 
-Read `PERSONAL_PHYSICIAN_MODE_RFC.md` and explicitly accept or request changes.
-Implementation must not begin while status is `DRAFT`.
+The RFC is accepted and the local implementation is complete. The next task is
+clinical owner input, not more Engine wiring:
 
-Acceptance confirms:
+1. Open `http://127.0.0.1:8980/personal` and enable **Личный режим врача**.
+2. Under **Первичная настройка и аттестация схем**, register the real local
+   physician-owner once and save the one-time token outside the repository.
+3. Start with a small subset. For each regimen, inspect the exact current КР,
+   PDF SHA-256, page and wording; complete dose basis, population/safety,
+   terminology and exact calculator binding; attest one regimen only.
+4. Enter only the returned event IDs, create a new bundle version, and activate
+   it explicitly.
+5. Run owner-reviewed Golden cases before increasing the subset.
 
-1. existing calculator behaviour remains the default and is regression-locked;
-2. personal mode is explicit, local-only, and fail-closed;
-3. owner-reviewed content is labelled `OWNER_REVIEWED_EXPERIMENTAL`, not
-   independently `PHYSICIAN_APPROVED`;
-4. API v1 and production governance remain unchanged;
-5. implementation starts with contracts/negative tests and a small manually
-   reviewed subset, never bulk auto-approval.
-
-After acceptance, start Phase A governance amendments only. Do not connect an
-uncurated recommender or modify production medical data.
+Do not bulk-import draft calculator data, infer missing clinical fields, add
+personal records to production export, or label them `PHYSICIAN_APPROVED`.
 
 ## Next task after fail-closed API preview — 2026-08-01
 

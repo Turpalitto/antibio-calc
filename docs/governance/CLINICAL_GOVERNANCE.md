@@ -269,3 +269,18 @@ Can it be independently verified?
 If any answer is missing, the statement is not production-ready.
 
 This Constitution remains active until explicitly superseded.
+
+=========================================================
+PERSONAL PHYSICIAN OWNER ATTESTATION — 2026-08-01
+=========================================================
+
+`OWNER_REVIEWED_EXPERIMENTAL` is a separate local decision-support status.
+It means one identified physician-owner reviewed the exact source-linked
+object for personal use. It is never equivalent to independent review,
+`PHYSICIAN_APPROVED`, publication, or production eligibility.
+
+Owner-attested objects must live in a separate immutable bundle and remain
+excluded from production exports. Missing source, provenance, required dose
+semantics, population limits, safety data, or version identity blocks serving.
+All personal-mode outputs must display the status and preserve the complete
+causal trace.
