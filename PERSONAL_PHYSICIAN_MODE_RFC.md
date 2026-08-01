@@ -2,11 +2,11 @@
 
 ## RFC — Local Personal Physician Decision-Support Mode
 
-**Status:** DRAFT — design only; no implementation or governance activation  
-**Date:** 2026-08-01  
+**Status:** DRAFT — design only; no implementation or governance activation
+**Date:** 2026-08-01
 **Owner request:** preserve the application as designed while enabling a real,
-local physician-owner workflow  
-**Requires explicit acceptance before implementation:** yes  
+local physician-owner workflow
+**Requires explicit acceptance before implementation:** yes
 **Touches frozen contracts:** yes; all changes must be additive and versioned
 
 ## 1. Decision sought
