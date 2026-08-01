@@ -1,5 +1,21 @@
 # NEXT_TASK.md — ANTIBIO
 
+## Immediate owner input for physician pilot — 2026-08-01
+
+Read-only pilot preflight is green; no reviewer registry exists. Before any
+review task can be assigned, the owner must provide real data for four
+people: Reviewer A, independent Reviewer B, Adjudicator, and Medical QA Lead.
+
+Required per person: stable `reviewer_id`, display name, professional role,
+organisation, and assigned review role. Optional: credential reference and
+credential expiry. Also provide `registered_by` for the registration audit
+trail. Do not send credential documents or other sensitive personal data.
+
+After receipt: create the local gitignored registry through
+`ReviewerRegistry.register(...)`, verify `pilot_status`, launch the local
+Review Workbench, and assign only the governed 30-task pilot. Do not connect
+Clinical Engine or change clinical approval state automatically.
+
 ## Next task after publication — 2026-08-01
 
 The validated P5.6/C7 commits through `bab018f` are published on

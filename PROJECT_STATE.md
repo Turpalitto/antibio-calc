@@ -1,5 +1,17 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-08-01: physician-pilot store ready; reviewers not registered
+
+Read-only pilot preflight passed: authoritative review DB SHA-256
+`3e479ee70e59ce9aafa6ba44718dda68d867dbcc660796b81ff63d2b19ca0f29`,
+integrity `ok`, 9,153/9,153 tasks `PENDING`, 30 unique pilot task IDs,
+0 decisions, 0 assignments, 0 rejected attempts, and 0 approved objects.
+
+No `reviewer_registry.sqlite` exists. Pilot status remains
+`WAITING_FOR_REVIEWERS` until the owner supplies real identity and
+professional metadata for distinct Reviewer A and Reviewer B, plus an
+Adjudicator and Medical QA Lead. Clinical Engine remains disconnected.
+
 ## 2026-08-01: repository publication gate closed
 
 Validated commits through `bab018fac400acfe5731c3157a6f547473631f9c`

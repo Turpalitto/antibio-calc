@@ -1,5 +1,16 @@
 # DECISIONS
 
+## 2026-08-01 — Reviewer identities must be owner-supplied
+
+Decision: no synthetic, inferred, or placeholder identity may be written to
+the real reviewer registry. Registration pauses until the owner supplies real
+identity and professional metadata for Reviewer A, Reviewer B, Adjudicator,
+and Medical QA Lead.
+
+Reason: reviewer identity, independence, role scope, and registration
+authority are clinical-governance evidence. Test identities cannot satisfy
+the physician-pilot gate.
+
 ## 2026-08-01 — Publication closes only the repository gate
 
 Decision: successful push through `bab018f` closes the P5.6 repository

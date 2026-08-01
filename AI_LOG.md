@@ -1,5 +1,18 @@
 # AI LOG
 
+## 2026-08-01: physician-pilot preflight passed read-only
+
+Inspected `review_workbench_p56.sqlite` through SQLite read-only mode before
+reviewer registration. SHA-256 is
+`3e479ee70e59ce9aafa6ba44718dda68d867dbcc660796b81ff63d2b19ca0f29`;
+`PRAGMA integrity_check` returned `ok`. The store contains 9,153 tasks, all
+`PENDING`; decisions, assignments, rejected attempts, and approved objects
+are all zero. The governed pilot manifest contains 30 unique task IDs.
+
+`reviewer_registry.sqlite` does not exist, so no reviewer identity has been
+registered. Work is waiting for real identity/professional metadata from the
+owner. Clinical Engine and production medical content were not changed.
+
 ## 2026-08-01: validated P5.6/C7 commits published
 
 Verified GitHub CLI authentication, confirmed `origin/main...main` divergence
