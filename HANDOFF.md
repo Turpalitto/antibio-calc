@@ -1,5 +1,13 @@
 # HANDOFF.md — ANTIBIO (Cross-IDE / Cross-AI Onboarding)
 
+## Pending design decision — 2026-08-01
+
+`PERSONAL_PHYSICIAN_MODE_RFC.md` is a DRAFT awaiting explicit owner review.
+It proposes an additive local-only owner-reviewed mode while preserving the
+existing calculator, API v1, Production Guard, and production governance.
+This draft authorizes no implementation and does not unblock P6 or connect a
+curated recommender.
+
 ## Current handoff — 2026-08-01
 
 P5.6 is in ACCEPTANCE but NOT COMPLETE. Credential rotation is closed by

@@ -1,5 +1,17 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-08-01: PERSONAL_PHYSICIAN_MODE RFC is DRAFT
+
+`PERSONAL_PHYSICIAN_MODE_RFC.md` defines an additive local-only mode that
+preserves the calculator's current default/offline workflow and reuses its
+existing calculation functions. Proposed personal content is labelled
+`OWNER_REVIEWED_EXPERIMENTAL`, never `PHYSICIAN_APPROVED`, and is isolated from
+production bundles and governance.
+
+This is design only. No implementation or rule activation has occurred. P5.6
+remains ACCEPTANCE/NOT COMPLETE; P6 remains BLOCKED; the running API remains
+fail-closed without a recommender; approved clinical objects remain zero.
+
 ## 2026-08-01: fail-closed Engine developer API running
 
 Engine/regimen/Review Workbench scope: 595 passed, 0 failed under Python

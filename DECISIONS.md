@@ -1,5 +1,19 @@
 # DECISIONS
 
+## 2026-08-01 — Personal mode must be additive and versioned
+
+Decision proposed in `PERSONAL_PHYSICIAN_MODE_RFC.md`: preserve the existing
+calculator and API v1 as defaults; add personal mode through a separate
+owner-reviewed bundle, external guard, and API v2. Existing dose/formulation
+functions remain the sole arithmetic implementation.
+
+Reason: reusing `strict_mode=False` or changing API v1 would conflate research
+data with physician-facing content and risk breaking the application. A
+separate status and versioned boundary preserve intended behaviour while
+allowing an explicit local physician-owner workflow.
+
+Status: DRAFT, not yet accepted or implemented.
+
 ## 2026-08-01 — Personal use does not bypass fail-closed gates
 
 Decision: a physician owner may operate the API and Engine in isolated

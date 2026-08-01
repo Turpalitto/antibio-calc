@@ -1,5 +1,19 @@
 # AI LOG
 
+## 2026-08-01: PERSONAL_PHYSICIAN_MODE RFC drafted
+
+Created `PERSONAL_PHYSICIAN_MODE_RFC.md` as a documentation-only draft and
+registered it in `RFC_INDEX.md`. The proposed mode is explicit, local-only,
+owner-reviewed, source-traced, and fail-closed. It introduces a separate
+`OWNER_REVIEWED_EXPERIMENTAL` status and an additive API v2/personal bundle;
+it does not reinterpret `PHYSICIAN_APPROVED`.
+
+Compatibility is a hard acceptance criterion: the existing offline calculator,
+its dose/formulation arithmetic, API v1, Production Guard, production review
+workflow, and default application behaviour remain unchanged. No code,
+clinical data, reviewer registry, production DB/PDF, or Engine recommender was
+changed. Implementation requires explicit RFC acceptance.
+
 ## 2026-08-01: fail-closed Engine API developer preview verified
 
 Ran the complete Engine, regimen, and Review Workbench test scope with the

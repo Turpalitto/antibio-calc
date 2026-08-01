@@ -1,5 +1,23 @@
 # NEXT_TASK.md — ANTIBIO
 
+## Owner review of PERSONAL_PHYSICIAN_MODE RFC — 2026-08-01
+
+Read `PERSONAL_PHYSICIAN_MODE_RFC.md` and explicitly accept or request changes.
+Implementation must not begin while status is `DRAFT`.
+
+Acceptance confirms:
+
+1. existing calculator behaviour remains the default and is regression-locked;
+2. personal mode is explicit, local-only, and fail-closed;
+3. owner-reviewed content is labelled `OWNER_REVIEWED_EXPERIMENTAL`, not
+   independently `PHYSICIAN_APPROVED`;
+4. API v1 and production governance remain unchanged;
+5. implementation starts with contracts/negative tests and a small manually
+   reviewed subset, never bulk auto-approval.
+
+After acceptance, start Phase A governance amendments only. Do not connect an
+uncurated recommender or modify production medical data.
+
 ## Next task after fail-closed API preview — 2026-08-01
 
 The standalone developer API is running and verified fail-closed. Do not wire
