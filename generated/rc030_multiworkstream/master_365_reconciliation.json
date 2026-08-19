@@ -1,0 +1,3657 @@
+{
+  "total": 365,
+  "found": 365,
+  "missing": 0,
+  "items": [
+    {
+      "regimen_id": "5584",
+      "pdf_name": "Кисты челюстно-лицевой области и шеи.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "37"
+    },
+    {
+      "regimen_id": "5620",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "5621",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "5622",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "5623",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "5624",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "5625",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "5627",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "5628",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "5659",
+      "pdf_name": "Атопический дерматит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "36"
+    },
+    {
+      "regimen_id": "5660",
+      "pdf_name": "Атопический дерматит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "36"
+    },
+    {
+      "regimen_id": "5661",
+      "pdf_name": "Атопический дерматит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "36"
+    },
+    {
+      "regimen_id": "5671",
+      "pdf_name": "Острый синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "5683",
+      "pdf_name": "Кистозный фиброз (муковисцидоз).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "86"
+    },
+    {
+      "regimen_id": "5677",
+      "pdf_name": "Острый обструктивный ларингит [круп] и эпиглоттит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "5678",
+      "pdf_name": "Острый обструктивный ларингит [круп] и эпиглоттит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "5686",
+      "pdf_name": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "42"
+    },
+    {
+      "regimen_id": "5687",
+      "pdf_name": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "42"
+    },
+    {
+      "regimen_id": "5688",
+      "pdf_name": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "42"
+    },
+    {
+      "regimen_id": "5696",
+      "pdf_name": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия _ацидурия).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "5697",
+      "pdf_name": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия _ацидурия).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "5698",
+      "pdf_name": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия _ацидурия).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "6561",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6562",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "5726",
+      "pdf_name": "Переломы костей голени.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "30"
+    },
+    {
+      "regimen_id": "5727",
+      "pdf_name": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия _ацидурия).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5741",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "5742",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "5745",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "53"
+    },
+    {
+      "regimen_id": "5792",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5793",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5794",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5795",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5824",
+      "pdf_name": "Первичные иммунодефициты с преимущественной недостаточностью синтеза антител.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "35"
+    },
+    {
+      "regimen_id": "5829",
+      "pdf_name": "Менингококковая инфекция у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "5830",
+      "pdf_name": "Менингококковая инфекция у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "5842",
+      "pdf_name": "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "110"
+    },
+    {
+      "regimen_id": "5844",
+      "pdf_name": "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "173"
+    },
+    {
+      "regimen_id": "5847",
+      "pdf_name": "Криопирин-ассоциированные периодические синдромы (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "91"
+    },
+    {
+      "regimen_id": "5875",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "5876",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "5877",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52-53"
+    },
+    {
+      "regimen_id": "5878",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52-53"
+    },
+    {
+      "regimen_id": "5879",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "53"
+    },
+    {
+      "regimen_id": "5881",
+      "pdf_name": "Искусственный аборт (медицинский аборт).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "13"
+    },
+    {
+      "regimen_id": "5917",
+      "pdf_name": "Хламидийная инфекция.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "5918",
+      "pdf_name": "Хламидийная инфекция.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "5928",
+      "pdf_name": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия _ацидурия).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5949",
+      "pdf_name": "ВИЧ-инфекция у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "105"
+    },
+    {
+      "regimen_id": "5946",
+      "pdf_name": "Выкидыш (самопроизвольный аборт).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "5998",
+      "pdf_name": "Атопический дерматит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "36"
+    },
+    {
+      "regimen_id": "5999",
+      "pdf_name": "Атопический дерматит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "36"
+    },
+    {
+      "regimen_id": "6000",
+      "pdf_name": "Атопический дерматит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "36"
+    },
+    {
+      "regimen_id": "6042",
+      "pdf_name": "Пропионовая ацидемия _ацидурия.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "6050",
+      "pdf_name": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "42"
+    },
+    {
+      "regimen_id": "6051",
+      "pdf_name": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "42"
+    },
+    {
+      "regimen_id": "6052",
+      "pdf_name": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "42"
+    },
+    {
+      "regimen_id": "6067",
+      "pdf_name": "Острый синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6071",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6072",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6073",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6074",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6075",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6078",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6084",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6085",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6086",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6092",
+      "pdf_name": "Отит средний острый.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6068",
+      "pdf_name": "Острый ларингит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "16"
+    },
+    {
+      "regimen_id": "6107",
+      "pdf_name": "Травма гортани.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6110",
+      "pdf_name": "Травма носа.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "6111",
+      "pdf_name": "Травма носа.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "6112",
+      "pdf_name": "Травма носа.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "6113",
+      "pdf_name": "Травма носа.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "6114",
+      "pdf_name": "Травма носа.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "6115",
+      "pdf_name": "Травма носа.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "6121",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6124",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6125",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6126",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6127",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6130",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6131",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6132",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6133",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6134",
+      "pdf_name": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "6199",
+      "pdf_name": "Воспалительные поражения позвоночника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "42"
+    },
+    {
+      "regimen_id": "6230",
+      "pdf_name": "Лямблиоз у детей и взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "21"
+    },
+    {
+      "regimen_id": "6231",
+      "pdf_name": "Лямблиоз у детей и взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "21"
+    },
+    {
+      "regimen_id": "6232",
+      "pdf_name": "Лямблиоз у детей и взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "21"
+    },
+    {
+      "regimen_id": "6233",
+      "pdf_name": "Лямблиоз у детей и взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "21"
+    },
+    {
+      "regimen_id": "6579",
+      "pdf_name": "Инфекция мочевых путей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "6580",
+      "pdf_name": "Инфекция мочевых путей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "20"
+    },
+    {
+      "regimen_id": "6275",
+      "pdf_name": "Рак носоглотки.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "64"
+    },
+    {
+      "regimen_id": "6276",
+      "pdf_name": "Рак носоглотки.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "64"
+    },
+    {
+      "regimen_id": "6296",
+      "pdf_name": "Переломы диафиза плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6297",
+      "pdf_name": "Переломы диафиза плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6298",
+      "pdf_name": "Переломы диафиза плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6299",
+      "pdf_name": "Переломы диафиза плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6323",
+      "pdf_name": "Переломы диафиза плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6324",
+      "pdf_name": "Переломы диафиза плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6325",
+      "pdf_name": "Переломы диафиза плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6326",
+      "pdf_name": "Переломы диафиза плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6511",
+      "pdf_name": "Переломы проксимального отдела плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6512",
+      "pdf_name": "Переломы проксимального отдела плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6513",
+      "pdf_name": "Переломы проксимального отдела плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6514",
+      "pdf_name": "Переломы проксимального отдела плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6550",
+      "pdf_name": "Переломы проксимального отдела плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6551",
+      "pdf_name": "Переломы проксимального отдела плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6552",
+      "pdf_name": "Переломы проксимального отдела плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6553",
+      "pdf_name": "Переломы проксимального отдела плечевой кости.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "23"
+    },
+    {
+      "regimen_id": "6638",
+      "pdf_name": "Воспалительные заболевания молочных желез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6639",
+      "pdf_name": "Воспалительные заболевания молочных желез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6642",
+      "pdf_name": "Воспалительные заболевания молочных желез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "6643",
+      "pdf_name": "Воспалительные заболевания молочных желез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "6644",
+      "pdf_name": "Воспалительные заболевания молочных желез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "6645",
+      "pdf_name": "Воспалительные заболевания молочных желез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "6611",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6612",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6617",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6618",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6623",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6624",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6625",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6630",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6631",
+      "pdf_name": "Бронхит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6688",
+      "pdf_name": "Переломы проксимального отдела голени.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "43"
+    },
+    {
+      "regimen_id": "6689",
+      "pdf_name": "Переломы проксимального отдела голени.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "43"
+    },
+    {
+      "regimen_id": "6690",
+      "pdf_name": "Переломы проксимального отдела голени.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "43"
+    },
+    {
+      "regimen_id": "6691",
+      "pdf_name": "Переломы проксимального отдела голени.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "43"
+    },
+    {
+      "regimen_id": "6753",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6754",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6755",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6756",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6757",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6758",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6760",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6761",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6763",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6764",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6765",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6766",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6767",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6768",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6770",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6771",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6786",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6787",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6788",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6789",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6790",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6791",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6793",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6794",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6796",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6797",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6798",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6799",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "6800",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6801",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6802",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6803",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6804",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6805",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "25"
+    },
+    {
+      "regimen_id": "6773",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6774",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6775",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6776",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6777",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6778",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6782",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "6783",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "6808",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6809",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6810",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6811",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6812",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6813",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6818",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "6819",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "6838",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6839",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6840",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6841",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6842",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6843",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6853",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "6854",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "6859",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6860",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6861",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6862",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6863",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6864",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "32"
+    },
+    {
+      "regimen_id": "6873",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "6874",
+      "pdf_name": "Шигеллез.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "6988",
+      "pdf_name": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "19"
+    },
+    {
+      "regimen_id": "6989",
+      "pdf_name": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "19"
+    },
+    {
+      "regimen_id": "6990",
+      "pdf_name": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "19"
+    },
+    {
+      "regimen_id": "7042",
+      "pdf_name": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "19"
+    },
+    {
+      "regimen_id": "7043",
+      "pdf_name": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "19"
+    },
+    {
+      "regimen_id": "7050",
+      "pdf_name": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "19"
+    },
+    {
+      "regimen_id": "7051",
+      "pdf_name": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "19"
+    },
+    {
+      "regimen_id": "7017",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7018",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7022",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7036",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7037",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7038",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7039",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7040",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7059",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7060",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7061",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7062",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7063",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7026",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7027",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7028",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7029",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7030",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "53"
+    },
+    {
+      "regimen_id": "7031",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7032",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7033",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7034",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7035",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "53"
+    },
+    {
+      "regimen_id": "7064",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7065",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7066",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7067",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7068",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7069",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7070",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7071",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7072",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "7073",
+      "pdf_name": "Язвенный колит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "52"
+    },
+    {
+      "regimen_id": "6405",
+      "pdf_name": "Рак носоглотки.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "64"
+    },
+    {
+      "regimen_id": "6407",
+      "pdf_name": "Рак носоглотки.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "64"
+    },
+    {
+      "regimen_id": "7118",
+      "pdf_name": "Рак носоглотки.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "64"
+    },
+    {
+      "regimen_id": "7119",
+      "pdf_name": "Рак носоглотки.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "64"
+    },
+    {
+      "regimen_id": "7177",
+      "pdf_name": "Нейробластома.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "100"
+    },
+    {
+      "regimen_id": "7185",
+      "pdf_name": "Нейробластома.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "101"
+    },
+    {
+      "regimen_id": "7208",
+      "pdf_name": "Экстракраниальные герминогенные опухоли.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "64"
+    },
+    {
+      "regimen_id": "7259",
+      "pdf_name": "Экстракраниальные герминогенные опухоли.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "64"
+    },
+    {
+      "regimen_id": "7194",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "117"
+    },
+    {
+      "regimen_id": "7195",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "117"
+    },
+    {
+      "regimen_id": "7197",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "178"
+    },
+    {
+      "regimen_id": "7198",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "178"
+    },
+    {
+      "regimen_id": "7201",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "117"
+    },
+    {
+      "regimen_id": "7202",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "117"
+    },
+    {
+      "regimen_id": "7204",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "178"
+    },
+    {
+      "regimen_id": "7205",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "178"
+    },
+    {
+      "regimen_id": "7280",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "117"
+    },
+    {
+      "regimen_id": "7281",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "117"
+    },
+    {
+      "regimen_id": "7285",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "117"
+    },
+    {
+      "regimen_id": "7286",
+      "pdf_name": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "117"
+    },
+    {
+      "regimen_id": "7207",
+      "pdf_name": "Юношеский артрит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "154"
+    },
+    {
+      "regimen_id": "7301",
+      "pdf_name": "Юношеский артрит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "154"
+    },
+    {
+      "regimen_id": "7302",
+      "pdf_name": "Юношеский артрит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "154"
+    },
+    {
+      "regimen_id": "7303",
+      "pdf_name": "Юношеский артрит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "228"
+    },
+    {
+      "regimen_id": "7304",
+      "pdf_name": "Юношеский артрит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "228"
+    },
+    {
+      "regimen_id": "7248",
+      "pdf_name": "Врожденная пневмония.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "57"
+    },
+    {
+      "regimen_id": "7267",
+      "pdf_name": "Врожденная пневмония.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "57"
+    },
+    {
+      "regimen_id": "7323",
+      "pdf_name": "Врожденная пневмония.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "57"
+    },
+    {
+      "regimen_id": "7342",
+      "pdf_name": "Врожденная пневмония.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "57"
+    },
+    {
+      "regimen_id": "7258",
+      "pdf_name": "Сепсис новорождённых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "84"
+    },
+    {
+      "regimen_id": "7289",
+      "pdf_name": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "7290",
+      "pdf_name": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "7292",
+      "pdf_name": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "7293",
+      "pdf_name": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "7383",
+      "pdf_name": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "7384",
+      "pdf_name": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "7385",
+      "pdf_name": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "33"
+    },
+    {
+      "regimen_id": "7313",
+      "pdf_name": "Баланопостит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7316",
+      "pdf_name": "Баланопостит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7414",
+      "pdf_name": "Баланопостит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7418",
+      "pdf_name": "Баланопостит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7366",
+      "pdf_name": "Кисты челюстно-лицевой области и шеи.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "37"
+    },
+    {
+      "regimen_id": "7370",
+      "pdf_name": "Кисты челюстно-лицевой области и шеи.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "37"
+    },
+    {
+      "regimen_id": "7451",
+      "pdf_name": "Кисты челюстно-лицевой области и шеи.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "37"
+    },
+    {
+      "regimen_id": "7454",
+      "pdf_name": "Кисты челюстно-лицевой области и шеи.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "37"
+    },
+    {
+      "regimen_id": "7462",
+      "pdf_name": "Неспецифический аортоартериит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "186"
+    },
+    {
+      "regimen_id": "7463",
+      "pdf_name": "Неспецифический аортоартериит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "186"
+    },
+    {
+      "regimen_id": "7470",
+      "pdf_name": "Неспецифический аортоартериит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "186"
+    },
+    {
+      "regimen_id": "7471",
+      "pdf_name": "Неспецифический аортоартериит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "186"
+    },
+    {
+      "regimen_id": "7598",
+      "pdf_name": "Неспецифический аортоартериит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "186"
+    },
+    {
+      "regimen_id": "7599",
+      "pdf_name": "Неспецифический аортоартериит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "186"
+    },
+    {
+      "regimen_id": "7603",
+      "pdf_name": "Неспецифический аортоартериит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "186"
+    },
+    {
+      "regimen_id": "7604",
+      "pdf_name": "Неспецифический аортоартериит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "186"
+    },
+    {
+      "regimen_id": "7494",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7497",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7498",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7516",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7519",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7520",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7626",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7629",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7630",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7641",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7644",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7645",
+      "pdf_name": "Хронический синусит.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7547",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7548",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7549",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7550",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7558",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7559",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7560",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7561",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7714",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7715",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7717",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7718",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7728",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7729",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7731",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7732",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "7587",
+      "pdf_name": "Гидраденит гнойный.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7742",
+      "pdf_name": "Гидраденит гнойный.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7747",
+      "pdf_name": "Гидраденит гнойный.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "7653",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7654",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7655",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7656",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7803",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7804",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7805",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7806",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7814",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7815",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7816",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7817",
+      "pdf_name": "Переломы надколенника.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "29"
+    },
+    {
+      "regimen_id": "7895",
+      "pdf_name": "Кистозный фиброз (муковисцидоз).pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "86"
+    },
+    {
+      "regimen_id": "7955",
+      "pdf_name": "Системный склероз.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "149"
+    },
+    {
+      "regimen_id": "7956",
+      "pdf_name": "Системный склероз.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "149"
+    },
+    {
+      "regimen_id": "7961",
+      "pdf_name": "Системный склероз.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "149"
+    },
+    {
+      "regimen_id": "7962",
+      "pdf_name": "Системный склероз.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "149"
+    },
+    {
+      "regimen_id": "6421",
+      "pdf_name": "Хирургические инфекции кожи и подкожной клетчатки у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "17"
+    },
+    {
+      "regimen_id": "6448",
+      "pdf_name": "Хирургические инфекции кожи и подкожной клетчатки у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "17"
+    },
+    {
+      "regimen_id": "5351",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5352",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5353",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5354",
+      "pdf_name": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "27"
+    },
+    {
+      "regimen_id": "5364",
+      "pdf_name": "Опухоли головного и спинного мозга у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "28"
+    },
+    {
+      "regimen_id": "5365",
+      "pdf_name": "Опухоли головного и спинного мозга у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "28"
+    },
+    {
+      "regimen_id": "5366",
+      "pdf_name": "Опухоли головного и спинного мозга у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "28"
+    },
+    {
+      "regimen_id": "6303",
+      "pdf_name": "Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "16"
+    },
+    {
+      "regimen_id": "6305",
+      "pdf_name": "Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "16"
+    },
+    {
+      "regimen_id": "5382",
+      "pdf_name": "Перелом нижней челюсти.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "5383",
+      "pdf_name": "Рак носоглотки.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "64"
+    },
+    {
+      "regimen_id": "6332",
+      "pdf_name": "ВИЧ-инфекция у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "105"
+    },
+    {
+      "regimen_id": "5441",
+      "pdf_name": "Хламидийная инфекция.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "5442",
+      "pdf_name": "Хламидийная инфекция.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "5475",
+      "pdf_name": "Гонококковая инфекция.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "21"
+    },
+    {
+      "regimen_id": "5478",
+      "pdf_name": "Гонококковая инфекция.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "22"
+    },
+    {
+      "regimen_id": "5479",
+      "pdf_name": "Менингококковая инфекция у детей.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "24"
+    },
+    {
+      "regimen_id": "5514",
+      "pdf_name": "ВИЧ-инфекция у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "45"
+    },
+    {
+      "regimen_id": "5526",
+      "pdf_name": "ВИЧ-инфекция у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "47"
+    },
+    {
+      "regimen_id": "5527",
+      "pdf_name": "ВИЧ-инфекция у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "47"
+    },
+    {
+      "regimen_id": "5528",
+      "pdf_name": "ВИЧ-инфекция у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "47"
+    },
+    {
+      "regimen_id": "5531",
+      "pdf_name": "ВИЧ-инфекция у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "47"
+    },
+    {
+      "regimen_id": "5533",
+      "pdf_name": "ВИЧ-инфекция у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "47"
+    },
+    {
+      "regimen_id": "5534",
+      "pdf_name": "ВИЧ-инфекция у взрослых.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_active",
+        "C:\\clinrec_downloader\\downloads_antibiotics"
+      ],
+      "page": "47"
+    },
+    {
+      "regimen_id": "5546",
+      "pdf_name": "Системный склероз.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "149"
+    },
+    {
+      "regimen_id": "5547",
+      "pdf_name": "Системный склероз.pdf",
+      "status": "PDF_FOUND",
+      "roots": [
+        "C:\\clinrec_downloader\\downloads_antibiotics",
+        "C:\\clinrec_downloader\\archive_review"
+      ],
+      "page": "149"
+    }
+  ]
+}

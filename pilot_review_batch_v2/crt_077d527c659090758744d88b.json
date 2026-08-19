@@ -1,0 +1,249 @@
+{
+  "task": {
+    "task_id": "crt_077d527c659090758744d88b",
+    "task_key": "ClinicalRegimen|5644|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "5644",
+    "target_version": 1,
+    "priority_score": 80,
+    "priority": "HIGH",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "HIGH",
+    "safety_axes": [
+      "missing_unit"
+    ],
+    "source_references": [
+      {
+        "guideline_id": "1204",
+        "page": "32",
+        "pdf": "Атопический дерматит.pdf",
+        "source_quote": "фузидовая кислота, 2% крем для наружного применения или 2% мазь для наружного применения наносить на инфицированные очаги поражения 3 раза в сутки в течение 7–14 дней"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Атопический дерматит.pdf",
+        "source_location": "page 32",
+        "source_object_id": "5644",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Атопический дерматит.pdf",
+        "source_location": "page 32",
+        "source_object_id": "5644",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Атопический дерматит.pdf",
+        "source_location": "page 32",
+        "source_object_id": "5644",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Атопический дерматит.pdf",
+        "source_location": "page 32",
+        "source_object_id": "5644",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Атопический дерматит.pdf",
+        "source_location": "page 32",
+        "source_object_id": "5644",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_unit:40"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult",
+    "alternatives": [],
+    "antibiotic": "фузидовая кислота",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.8544,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "Атопический дерматит, осложненный вторичной инфекцией",
+    "dose": 2.0,
+    "duration_max": 14.0,
+    "duration_min": 7.0,
+    "duration_recommended": null,
+    "evidence_level": "UNKNOWN",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Атопический дерматит.pdf",
+          "source_location": "page 32",
+          "source_object_id": "5644",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Атопический дерматит.pdf",
+          "source_location": "page 32",
+          "source_object_id": "5644",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Атопический дерматит.pdf",
+          "source_location": "page 32",
+          "source_object_id": "5644",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Атопический дерматит.pdf",
+          "source_location": "page 32",
+          "source_object_id": "5644",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Атопический дерматит.pdf",
+          "source_location": "page 32",
+          "source_object_id": "5644",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "frequency": 3.0,
+    "guideline_id": "1204",
+    "icd_mkb": "L20",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [
+      "no_kb_p44_enrichment_for_guideline_1204",
+      "unresolved_conflict"
+    ],
+    "pregnancy": null,
+    "regimen_id": "5644",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "topical",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "32",
+    "source_pdf": "Атопический дерматит.pdf",
+    "source_quote": "фузидовая кислота, 2% крем для наружного применения или 2% мазь для наружного применения наносить на инфицированные очаги поражения 3 раза в сутки в течение 7–14 дней",
+    "status": "ASSEMBLED",
+    "therapy_line": "first",
+    "unit": "",
+    "validation_verdict": "REVIEW",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "фузидовая кислота, 2% крем для наружного применения или 2% мазь для наружного применения наносить на инфицированные очаги поражения 3 раза в сутки в течение 7–14 дней",
+    "фузидовая кислота, 2% крем для наружного применения или 2% мазь для наружного применения наносить на инфицированные очаги поражения 3 раза в сутки в течение 7–14 дней",
+    "фузидовая кислота, 2% крем для наружного применения или 2% мазь для наружного применения наносить на инфицированные очаги поражения 3 раза в сутки в течение 7–14 дней",
+    "фузидовая кислота, 2% крем для наружного применения или 2% мазь для наружного применения наносить на инфицированные очаги поражения 3 раза в сутки в течение 7–14 дней",
+    "фузидовая кислота, 2% крем для наружного применения или 2% мазь для наружного применения наносить на инфицированные очаги поражения 3 раза в сутки в течение 7–14 дней"
+  ],
+  "source_wording_status": "AVAILABLE",
+  "review_blocked": false,
+  "source_references": [
+    {
+      "guideline_id": "1204",
+      "page": "32",
+      "pdf": "Атопический дерматит.pdf",
+      "source_quote": "фузидовая кислота, 2% крем для наружного применения или 2% мазь для наружного применения наносить на инфицированные очаги поражения 3 раза в сутки в течение 7–14 дней"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Атопический дерматит.pdf",
+      "source_location": "page 32",
+      "source_object_id": "5644",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Атопический дерматит.pdf",
+      "source_location": "page 32",
+      "source_object_id": "5644",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Атопический дерматит.pdf",
+      "source_location": "page 32",
+      "source_object_id": "5644",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Атопический дерматит.pdf",
+      "source_location": "page 32",
+      "source_object_id": "5644",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Атопический дерматит.pdf",
+      "source_location": "page 32",
+      "source_object_id": "5644",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [
+    "no_kb_p44_enrichment_for_guideline_1204",
+    "unresolved_conflict"
+  ],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "794056b331a01900575dd2f6103ac752cfc4764a2777572e03870681ef10f2cf"
+}

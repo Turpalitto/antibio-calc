@@ -20,10 +20,10 @@
         "сепсис новорождённых",
         "неонатальный сепсис"
       ],
-      "cr_id": "912",
+      "cr_id": "912_1",
       "cr_year": 2025,
-      "cr_updated": "2025",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/912",
+      "cr_updated": "2025-05-20",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/912_1",
       "antibiotics_indicated": true,
       "indications": [
         "Клинические признаки сепсиса у новорождённого + лабораторные маркеры"
@@ -217,10 +217,10 @@
         "НЭК",
         "некротизирующий энтероколит новорождённых"
       ],
-      "cr_id": "264",
+      "cr_id": "—",
       "cr_year": 2023,
       "cr_updated": "2023-11-20",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/264",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Стадии II-III НЭК по Bell-модификации"
@@ -353,10 +353,10 @@
         "неонатальный конъюнктивит",
         "офтальмия новорождённых"
       ],
-      "cr_id": "629",
+      "cr_id": "629_2",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/629",
+      "cr_updated": "2024-09-17",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/629_2",
       "antibiotics_indicated": true,
       "indications": [
         "Гнойный конъюнктивит новорождённых",
@@ -447,10 +447,10 @@
       "synonyms": [
         "инфекция пупочной ранки"
       ],
-      "cr_id": "16",
+      "cr_id": "—",
       "cr_year": 2024,
       "cr_updated": "2024-03-01",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/16",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Гнойное отделяемое из пупочной ранки",

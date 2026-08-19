@@ -1,0 +1,141 @@
+{
+  "task": {
+    "task_id": "crt_522e1fdb3569b55c3c2274f2",
+    "task_key": "TherapeuticOption|opt_7474|1|THERAPEUTIC_OPTION_VALIDATION",
+    "target_type": "TherapeuticOption",
+    "target_id": "opt_7474",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1950",
+        "page": "66",
+        "pdf": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+        "source_quote": "Комментарий: (Общий (клинический) анализ мочи) следует выполнять с периодичностью 1 раз в месяц (ранняя диагностика инфекций мочеполовой системы), устранять бактериурию независимо от наличия клинических проявлений. Во избежание фето- и нефротоксичности необходимо назначать бета-лактамные антибактериальные препараты: пенициллины."
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "indication",
+        "scope": "regimen",
+        "source_document": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+        "source_location": "page 66",
+        "source_object_id": "7474",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "therapeutic_class",
+        "scope": "regimen",
+        "source_document": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+        "source_location": "page 66",
+        "source_object_id": "7474",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "alternatives": [],
+    "approved_at": "",
+    "approved_by": "",
+    "contraindications": [],
+    "field_provenance": [
+      [
+        "indication",
+        {
+          "scope": "regimen",
+          "source_document": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+          "source_location": "page 66",
+          "source_object_id": "7474",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "therapeutic_class",
+        {
+          "scope": "regimen",
+          "source_document": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+          "source_location": "page 66",
+          "source_object_id": "7474",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "guideline_id": "1950",
+    "indication": "Бактериурия / инфекции мочеполовой системы у беременных женщин после трансплантации почки",
+    "lifecycle_state": "ASSEMBLED",
+    "option_id": "opt_7474",
+    "origin_category": "A_therapeutic_class_recommendation",
+    "origin_regimen_id": "7474",
+    "review_status": "pending",
+    "selection_conditions": "UNKNOWN",
+    "source": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+    "source_page": "66",
+    "source_quote": "Комментарий: (Общий (клинический) анализ мочи) следует выполнять с периодичностью 1 раз в месяц (ранняя диагностика инфекций мочеполовой системы), устранять бактериурию независимо от наличия клинических проявлений. Во избежание фето- и нефротоксичности необходимо назначать бета-лактамные антибактериальные препараты: пенициллины.",
+    "status": "ASSEMBLED",
+    "therapeutic_class": "бета-лактамные антибактериальные препараты: пенициллины",
+    "version": 1
+  },
+  "original_source_wording": [
+    "Комментарий: (Общий (клинический) анализ мочи) следует выполнять с периодичностью 1 раз в месяц (ранняя диагностика инфекций мочеполовой системы), устранять бактериурию независимо от наличия клинических проявлений. Во избежание фето- и нефротоксичности необходимо назначать бета-лактамные антибактериальные препараты: пенициллины."
+  ],
+  "source_references": [
+    {
+      "guideline_id": "1950",
+      "page": "66",
+      "pdf": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+      "source_quote": "Комментарий: (Общий (клинический) анализ мочи) следует выполнять с периодичностью 1 раз в месяц (ранняя диагностика инфекций мочеполовой системы), устранять бактериурию независимо от наличия клинических проявлений. Во избежание фето- и нефротоксичности необходимо назначать бета-лактамные антибактериальные препараты: пенициллины."
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "indication",
+      "scope": "regimen",
+      "source_document": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+      "source_location": "page 66",
+      "source_object_id": "7474",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "therapeutic_class",
+      "scope": "regimen",
+      "source_document": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+      "source_location": "page 66",
+      "source_object_id": "7474",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "4a8e44797ab1051ba87a431c8444d5606b8d28f2520bdd81adf3bdd137400733",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

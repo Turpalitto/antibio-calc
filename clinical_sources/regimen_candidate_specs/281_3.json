@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1.0",
+  "guideline_id": "281_3",
+  "rubricator_revision": "281_3",
+  "guideline_title": "Инфекция мочевых путей",
+  "approval_year": 2024,
+  "source_url": "https://cr.minzdrav.gov.ru/view-cr/281_3",
+  "expected_pdf_sha256": "sha256:7db13a28ac5708ffccfc7216d81f4a2c3ffcbb9527be87988207a608713577df",
+  "expected_candidates_sha256": "sha256:015af17c3ddb9cae68cd69d689fcc13a77dccc857219ac326d8245fc1b74d56d",
+  "diagnosis": "Инфекция мочевых путей у детей",
+  "icd10": ["N10", "N11", "N13.6", "N15.1", "N30", "N30.0", "N30.1", "N30.9", "N39.0"],
+  "table_pages": [20, 21],
+  "duration": "CONDITION_DEPENDENT_5_7_OR_AT_LEAST_10_DAYS",
+  "duration_page": 21,
+  "duration_wording": "Острый пиелонефрит: в среднем не менее 10 дней. Нижняя ИМП: 5-7 дней. Исключение: однократный фосфомицин при остром цистите.",
+  "row_groups": [
+    {"page":20,"table_index":0,"row_start":1,"row_end":1,"drug_col":0,"dose_col":3,"therapy_line":"oral","atc":"J01CR02","drug":"Амоксициллин+[Клавулановая кислота]","population_constraints":{"age_years_max_exclusive":12},"blocking_reasons":["MULTIPLE_AGE_STRATA","DURATION_DEPENDS_ON_INFECTION_SITE"]},
+    {"page":20,"table_index":0,"row_start":2,"row_end":2,"drug_col":0,"dose_col":3,"therapy_line":"cystitis_oral","atc":"J01XE01","drug":"Нитрофурантоин","duration":"5-7 days","population_constraints":{"age_years_min_inclusive":6,"age_years_max_inclusive":12},"blocking_reasons":["MULTIPLE_AGE_STRATA"]},
+    {"page":20,"table_index":0,"row_start":3,"row_end":3,"drug_col":0,"dose_col":3,"therapy_line":"oral","atc":"J01DD08","drug":"Цефиксим","population_constraints":{"age_months_min_inclusive":6,"age_years_max_inclusive":12},"blocking_reasons":["MULTIPLE_AGE_STRATA","DURATION_DEPENDS_ON_INFECTION_SITE"]},
+    {"page":20,"table_index":0,"row_start":4,"row_end":4,"drug_col":0,"dose_col":3,"therapy_line":"oral","atc":"J01DC02","drug":"Цефуроксим","population_constraints":{"age_months_min_inclusive":3,"age_years_max_inclusive":12},"blocking_reasons":["MULTIPLE_AGE_STRATA","MAXIMUM_DOSE_NOT_STRUCTURED","DURATION_DEPENDS_ON_INFECTION_SITE"]},
+    {"page":20,"table_index":0,"row_start":5,"row_end":5,"drug_col":0,"dose_col":3,"therapy_line":"oral_age_12_plus","atc":"J01DD13","drug":"Цефподоксим","duration":"CONDITION_DEPENDENT_5_7_OR_AT_LEAST_10_DAYS","population_constraints":{"age_years_min_exclusive":12},"blocking_reasons":["DURATION_DEPENDS_ON_INFECTION_SITE"]},
+    {"page":20,"table_index":0,"row_start":6,"row_end":6,"drug_col":0,"dose_col":3,"therapy_line":"acute_cystitis_age_12_plus","atc":"J01XX01","drug":"Фосфомицин","duration":"1 day","population_constraints":{"age_years_min_exclusive":12}},
+    {"page":20,"table_index":0,"row_start":7,"row_end":7,"drug_col":0,"dose_col":3,"therapy_line":"cystitis_oral","atc":"J01XE03","drug":"Фуразидин","duration":"5-7 days","population_constraints":{"age_years_min_exclusive":3},"blocking_reasons":["MAXIMUM_DOSE_NOT_STRUCTURED"]},
+    {"page":20,"table_index":0,"row_start":8,"row_end":8,"drug_col":0,"dose_col":3,"therapy_line":"oral","atc":"J01EE01","drug":"Ко-тримоксазол","population_constraints":{"age_weeks_min_inclusive":6,"age_months_max_inclusive":5},"blocking_reasons":["MULTIPLE_AGE_STRATA","CROSS_PAGE_ROW_NOT_FULLY_STRUCTURED","DURATION_DEPENDS_ON_INFECTION_SITE"]}
+  ]
+}

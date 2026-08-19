@@ -141,6 +141,83 @@ class LayoutProcessor:
         except Exception:
             return ""
 
+    @staticmethod
+    def _extract_native_cell_text(page: fitz.Page, rect: fitz.Rect) -> str:
+        """Extract one digital-PDF table cell while preserving footnote semantics.
+
+        ``Table.extract()`` concatenates superscript footnote markers with the
+        preceding number (for example ``50-60¹`` becomes ``50-601``).  That is
+        unsafe for clinical doses.  PyMuPDF exposes the superscript bit on the
+        original span, so keep the marker explicit and non-numeric instead.
+        """
+        blocks = page.get_text("dict", clip=rect).get("blocks", [])
+        lines: List[str] = []
+        for block in blocks:
+            for line in block.get("lines", []):
+                parts: List[str] = []
+                for span in line.get("spans", []):
+                    value = str(span.get("text") or "")
+                    if not value:
+                        continue
+                    flags = int(span.get("flags") or 0)
+                    if flags & 1 and value.strip().isdigit():
+                        parts.append(f"[fn:{value.strip()}]")
+                    else:
+                        parts.append(value)
+                text = "".join(parts).strip()
+                if text:
+                    lines.append(text)
+        return "\n".join(lines).strip()
+
+    def _extract_tables_pymupdf_native(
+        self, page: fitz.Page, page_num: int, source_pdf: str
+    ) -> List[TableObject]:
+        """Primary fallback for born-digital PDFs using native ruled tables.
+
+        This path has no heavyweight ML dependency and retains exact row/column,
+        cell bbox, page, source PDF and explicit footnote markers.
+        """
+        tables: List[TableObject] = []
+        try:
+            finder = page.find_tables()
+        except Exception as exc:
+            logger.warning("PyMuPDF native table detection failed on page %s: %s", page_num, exc)
+            return tables
+
+        for native in finder.tables:
+            cells: List[TableCell] = []
+            for row_index, row in enumerate(native.rows):
+                for col_index, raw_bbox in enumerate(row.cells):
+                    if raw_bbox is None:
+                        continue
+                    rect = fitz.Rect(raw_bbox)
+                    bbox = BoundingBox(*raw_bbox, page=page_num)
+                    cells.append(TableCell(
+                        row=row_index,
+                        col=col_index,
+                        text=self._extract_native_cell_text(page, rect),
+                        bbox=bbox,
+                        confidence=0.97,
+                        engine="pymupdf-native-table",
+                        source_pdf=source_pdf,
+                        page_num=page_num,
+                    ))
+            if not cells:
+                continue
+            table_bbox = BoundingBox(*native.bbox, page=page_num)
+            tables.append(TableObject(
+                page_num=page_num,
+                bbox=table_bbox,
+                rows=native.row_count,
+                cols=native.col_count,
+                cells=cells,
+                header_rows=0,
+                confidence=0.97,
+                engine="pymupdf-native-table",
+                source_pdf=source_pdf,
+            ))
+        return tables
+
     def _build_cells_from_words(self, page: fitz.Page, table_bbox: BoundingBox, approx_rows: int, approx_cols: int) -> List[TableCell]:
         """Production-grade: extract words with bboxes inside table region and cluster into grid."""
         cells: List[TableCell] = []
@@ -371,8 +448,10 @@ class LayoutProcessor:
             # Layout blocks (DocLayout-YOLO)
             blocks = self._run_doclayout(image, page_num, page_rect)
 
-            # Tables — primary Table Transformer path, fallback RapidTable
-            structured = self._extract_table_with_transformers(image, page, page_num, page_rect)
+            # Tables — native digital-PDF path first; image/ML fallbacks for scans.
+            structured = self._extract_tables_pymupdf_native(page, page_num, str(pdf_path))
+            if not structured:
+                structured = self._extract_table_with_transformers(image, page, page_num, page_rect)
             if not structured:
                 structured = self._extract_tables_rapid_only(image, page, page_num, page_rect)
 
@@ -411,6 +490,6 @@ def add_layout_to_document(doc: 'Document', pdf_path: Path) -> None:
     doc.tables.extend([t for pl in page_layouts for t in pl.get("tables", [])])
     doc.structured_tables.extend(structured_tables)
 
-    doc.metadata["layout_engine"] = "doclayout-yolo + table-transformer + rapidtable"
+    doc.metadata["layout_engine"] = "pymupdf-native-table + doclayout-yolo + table-transformer + rapidtable"
     doc.metadata["layout_processed"] = True
     doc.metadata["layout_table_count"] = len(structured_tables)

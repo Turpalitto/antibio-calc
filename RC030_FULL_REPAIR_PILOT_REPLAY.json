@@ -1,0 +1,820 @@
+[
+  {
+    "regimen_id": "6657",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": true
+  },
+  {
+    "regimen_id": "6659",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": true
+  },
+  {
+    "regimen_id": "6658",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": true
+  },
+  {
+    "regimen_id": "6121",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      20.0,
+      40.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_RANGE_DAILY",
+    "changed": false
+  },
+  {
+    "regimen_id": "6653",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": true
+  },
+  {
+    "regimen_id": "6090",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+    "changed": false
+  },
+  {
+    "regimen_id": "6088",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+    "changed": false
+  },
+  {
+    "regimen_id": "6304",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+    "changed": false
+  },
+  {
+    "regimen_id": "5916",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+    "changed": false
+  },
+  {
+    "regimen_id": "6094",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+    "changed": false
+  },
+  {
+    "regimen_id": "5374",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "WEEKLY",
+    "new_flags": [
+      "WEEKLY_SCHEDULE_UNSUPPORTED"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "WRONG_FREQUENCY_LINK",
+    "changed": false
+  },
+  {
+    "regimen_id": "6092",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      40.0,
+      50.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_RANGE_DAILY",
+    "changed": false
+  },
+  {
+    "regimen_id": "6579",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      45.0,
+      60.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_RANGE_DAILY",
+    "changed": false
+  },
+  {
+    "regimen_id": "7644",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      75.0,
+      80.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_RANGE_DAILY",
+    "changed": false
+  },
+  {
+    "regimen_id": "6580",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      45.0,
+      60.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_RANGE_DAILY",
+    "changed": false
+  },
+  {
+    "regimen_id": "7325",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7344",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7269",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7346",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7939",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7947",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "5903",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7345",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7326",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "5457",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7270",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "5534",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      15.0,
+      20.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_RANGE_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "5619",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7347",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7256",
+    "old_semantic": "WEIGHT_PER_DOSE",
+    "new_semantic": "WEIGHT_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+    "changed": false
+  },
+  {
+    "regimen_id": "6651",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": true
+  },
+  {
+    "regimen_id": "6652",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": true
+  },
+  {
+    "regimen_id": "6655",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": true
+  },
+  {
+    "regimen_id": "6654",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": true
+  },
+  {
+    "regimen_id": "5450",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "SINGLE",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": true
+  },
+  {
+    "regimen_id": "5895",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "SINGLE",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": true
+  },
+  {
+    "regimen_id": "5913",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "SINGLE",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": true
+  },
+  {
+    "regimen_id": "6976",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": true
+  },
+  {
+    "regimen_id": "7025",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": true
+  },
+  {
+    "regimen_id": "5961",
+    "old_semantic": "FIXED_PER_DAY",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": true
+  },
+  {
+    "regimen_id": "6944",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "6939",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "6945",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "6946",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "6942",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "EVERY_N_HOURS",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7730",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7716",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "5905",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "5897",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "5452",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "7343",
+    "old_semantic": "AMBIGUOUS",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": false
+  },
+  {
+    "regimen_id": "5683",
+    "old_semantic": "AMBIGUOUS",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING",
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      50.0,
+      80.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "TABLE_CONTEXT_REQUIRED",
+    "changed": false
+  },
+  {
+    "regimen_id": "7895",
+    "old_semantic": "AMBIGUOUS",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING",
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      50.0,
+      80.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "TABLE_CONTEXT_REQUIRED",
+    "changed": false
+  },
+  {
+    "regimen_id": "6224",
+    "old_semantic": "AMBIGUOUS",
+    "new_semantic": "AMBIGUOUS",
+    "new_schedule": null,
+    "new_flags": [
+      "EXPLICIT_DOSE_BASIS_MISSING"
+    ],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "REMAINS_AMBIGUOUS",
+    "changed": false
+  },
+  {
+    "regimen_id": "7354",
+    "old_semantic": "AMBIGUOUS",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": true
+  },
+  {
+    "regimen_id": "5670",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [],
+    "range_recovered": null,
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "6072",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      80.0,
+      90.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_FIXED_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "6073",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      80.0,
+      90.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_RANGE_DAILY",
+    "changed": false
+  },
+  {
+    "regimen_id": "6074",
+    "old_semantic": "FIXED_PER_DOSE",
+    "new_semantic": "FIXED_PER_DOSE",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      500.0,
+      1000.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_RANGE_SINGLE",
+    "changed": false
+  },
+  {
+    "regimen_id": "6075",
+    "old_semantic": "WEIGHT_PER_DAY",
+    "new_semantic": "WEIGHT_PER_DAY",
+    "new_schedule": "DAILY",
+    "new_flags": [
+      "RANGE_VALUE_COLLAPSED_UPSTREAM",
+      "NORMALIZER_RANGE_UPPER_BOUND_DROPPED"
+    ],
+    "range_recovered": [
+      500.0,
+      1000.0
+    ],
+    "old_elig": "BLOCKED",
+    "new_elig": "BLOCKED",
+    "ai_verdict": "CORRECT_RANGE_DAILY",
+    "changed": false
+  }
+]

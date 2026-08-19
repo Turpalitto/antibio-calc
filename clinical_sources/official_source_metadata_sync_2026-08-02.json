@@ -1,0 +1,8 @@
+{
+  "artifact_type": "OFFICIAL_SOURCE_METADATA_SYNC",
+  "schema_version": "1.0.0",
+  "applied": false,
+  "change_count": 0,
+  "changes": [],
+  "warning": "No clinical regimen or calculation status is modified."
+}

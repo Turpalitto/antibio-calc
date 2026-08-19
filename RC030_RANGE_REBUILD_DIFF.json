@@ -1,0 +1,3659 @@
+{
+  "rows_compared": 2675,
+  "clinical_field_violations": [],
+  "rows_added": [],
+  "rows_dropped": [],
+  "only_range_fields_differ": true,
+  "changed_rows": [
+    {
+      "regimen_id": "5584",
+      "old_scalar": 1.0,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5–1,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5620",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5621",
+      "old_scalar": 1.5,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5622",
+      "old_scalar": 15.0,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5623",
+      "old_scalar": 0.6,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5624",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5625",
+      "old_scalar": 1.5,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-1,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5627",
+      "old_scalar": 15.0,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5628",
+      "old_scalar": 0.6,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5659",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1–2 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5660",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 50.0,
+      "evidence": "20–50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5661",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20–80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5671",
+      "old_scalar": 500.0,
+      "new_min": 500.0,
+      "new_max": 1000.0,
+      "evidence": "500 - 1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5683",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 80.0,
+      "evidence": "50-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5677",
+      "old_scalar": 100.0,
+      "new_min": 100.0,
+      "new_max": 200.0,
+      "evidence": "100-200 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5678",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5686",
+      "old_scalar": 1000.0,
+      "new_min": 250.0,
+      "new_max": 500.0,
+      "evidence": "250 – 500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5687",
+      "old_scalar": 1000.0,
+      "new_min": 250.0,
+      "new_max": 500.0,
+      "evidence": "250 – 500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5688",
+      "old_scalar": 250.0,
+      "new_min": 250.0,
+      "new_max": 500.0,
+      "evidence": "250 – 500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5696",
+      "old_scalar": 10.0,
+      "new_min": 10.0,
+      "new_max": 20.0,
+      "evidence": "10-20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5697",
+      "old_scalar": 50.0,
+      "new_min": 10.0,
+      "new_max": 20.0,
+      "evidence": "10-20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5698",
+      "old_scalar": 20.0,
+      "new_min": 10.0,
+      "new_max": 20.0,
+      "evidence": "10-20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6561",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6562",
+      "old_scalar": 625.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5726",
+      "old_scalar": 1.0,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-1,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5727",
+      "old_scalar": 10.0,
+      "new_min": 10.0,
+      "new_max": 20.0,
+      "evidence": "10-20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5741",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5742",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5745",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5792",
+      "old_scalar": 0.5,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5793",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5794",
+      "old_scalar": 0.4,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5795",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5824",
+      "old_scalar": 10.0,
+      "new_min": 10.0,
+      "new_max": 20.0,
+      "evidence": "10-20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5829",
+      "old_scalar": 12.5,
+      "new_min": 12.5,
+      "new_max": 25.0,
+      "evidence": "12.5-25 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5830",
+      "old_scalar": 250.0,
+      "new_min": 12.5,
+      "new_max": 25.0,
+      "evidence": "12.5-25 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5842",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 \nмг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5844",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-\n5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5847",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5875",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5876",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5877",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5878",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5879",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5881",
+      "old_scalar": 500.0,
+      "new_min": 500.0,
+      "new_max": 1000.0,
+      "evidence": "500-1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5917",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 40.0,
+      "evidence": "20-40 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5918",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 40.0,
+      "evidence": "20-40 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5928",
+      "old_scalar": 10.0,
+      "new_min": 10.0,
+      "new_max": 20.0,
+      "evidence": "10-20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5949",
+      "old_scalar": null,
+      "new_min": 2.5,
+      "new_max": 5.0,
+      "evidence": "2,5-5 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5946",
+      "old_scalar": 500.0,
+      "new_min": 500.0,
+      "new_max": 1000.0,
+      "evidence": "500-1000 \nмг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5998",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1–2 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5999",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 50.0,
+      "evidence": "20–50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6000",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20–80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6042",
+      "old_scalar": 10.0,
+      "new_min": 10.0,
+      "new_max": 20.0,
+      "evidence": "10-20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6050",
+      "old_scalar": 1000.0,
+      "new_min": 250.0,
+      "new_max": 500.0,
+      "evidence": "250 – 500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6051",
+      "old_scalar": 1000.0,
+      "new_min": 250.0,
+      "new_max": 500.0,
+      "evidence": "250 – 500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6052",
+      "old_scalar": 250.0,
+      "new_min": 250.0,
+      "new_max": 500.0,
+      "evidence": "250 – 500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6067",
+      "old_scalar": 500.0,
+      "new_min": 500.0,
+      "new_max": 1000.0,
+      "evidence": "500 - 1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6071",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 60.0,
+      "evidence": "50-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6072",
+      "old_scalar": 1000.0,
+      "new_min": 80.0,
+      "new_max": 90.0,
+      "evidence": "80-90 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6073",
+      "old_scalar": 80.0,
+      "new_min": 80.0,
+      "new_max": 90.0,
+      "evidence": "80-90 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6074",
+      "old_scalar": 500.0,
+      "new_min": 500.0,
+      "new_max": 1000.0,
+      "evidence": "500- 1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6075",
+      "old_scalar": 45.0,
+      "new_min": 500.0,
+      "new_max": 1000.0,
+      "evidence": "500- 1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6078",
+      "old_scalar": 45.0,
+      "new_min": 45.0,
+      "new_max": 60.0,
+      "evidence": "45-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6084",
+      "old_scalar": 250.0,
+      "new_min": 250.0,
+      "new_max": 500.0,
+      "evidence": "250-500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6085",
+      "old_scalar": 2.0,
+      "new_min": 2.0,
+      "new_max": 4.0,
+      "evidence": "2,0-4,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6086",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 80.0,
+      "evidence": "50-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6092",
+      "old_scalar": 40.0,
+      "new_min": 40.0,
+      "new_max": 50.0,
+      "evidence": "40-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6068",
+      "old_scalar": 500.0,
+      "new_min": 5001.0,
+      "new_max": 10002.0,
+      "evidence": "5001- 10002 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6107",
+      "old_scalar": 1.0,
+      "new_min": 50.0,
+      "new_max": 75.0,
+      "evidence": "50-75 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6110",
+      "old_scalar": 3.0,
+      "new_min": 3.0,
+      "new_max": 12.0,
+      "evidence": "3-12 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6111",
+      "old_scalar": 3.0,
+      "new_min": 3.0,
+      "new_max": 12.0,
+      "evidence": "3-12 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6112",
+      "old_scalar": 150.0,
+      "new_min": 3.0,
+      "new_max": 12.0,
+      "evidence": "3-12 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6113",
+      "old_scalar": 150.0,
+      "new_min": 3.0,
+      "new_max": 12.0,
+      "evidence": "3-12 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6114",
+      "old_scalar": 150.0,
+      "new_min": 3.0,
+      "new_max": 12.0,
+      "evidence": "3-12 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6115",
+      "old_scalar": 150.0,
+      "new_min": 3.0,
+      "new_max": 12.0,
+      "evidence": "3-12 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6121",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 40.0,
+      "evidence": "20-40 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6124",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 50.0,
+      "evidence": "20-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6125",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 50.0,
+      "evidence": "20-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6126",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6127",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6130",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 100.0,
+      "evidence": "50-100 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6131",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 100.0,
+      "evidence": "50-100 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6132",
+      "old_scalar": 300.0,
+      "new_min": 1.2,
+      "new_max": 4.8,
+      "evidence": "1,2-4,8 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6133",
+      "old_scalar": 1.2,
+      "new_min": 1.2,
+      "new_max": 4.8,
+      "evidence": "1,2-4,8 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6134",
+      "old_scalar": 20.0,
+      "new_min": 1.2,
+      "new_max": 4.8,
+      "evidence": "1,2-4,8 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6199",
+      "old_scalar": 1.5,
+      "new_min": 1.5,
+      "new_max": 2.0,
+      "evidence": "1,5-2 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6230",
+      "old_scalar": 1.5,
+      "new_min": 1.5,
+      "new_max": 2.0,
+      "evidence": "1,5–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6231",
+      "old_scalar": 30.0,
+      "new_min": 1.5,
+      "new_max": 2.0,
+      "evidence": "1,5–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6232",
+      "old_scalar": 2.0,
+      "new_min": 50.0,
+      "new_max": 75.0,
+      "evidence": "50–75 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6233",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 75.0,
+      "evidence": "50–75 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6579",
+      "old_scalar": 45.0,
+      "new_min": 45.0,
+      "new_max": 60.0,
+      "evidence": "45-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6580",
+      "old_scalar": 45.0,
+      "new_min": 45.0,
+      "new_max": 60.0,
+      "evidence": "45-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6275",
+      "old_scalar": 4.5,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15–20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6276",
+      "old_scalar": null,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15–20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6296",
+      "old_scalar": 30.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6297",
+      "old_scalar": 50.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6298",
+      "old_scalar": 10.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6299",
+      "old_scalar": 15.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6323",
+      "old_scalar": 30.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6324",
+      "old_scalar": 50.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6325",
+      "old_scalar": 10.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6326",
+      "old_scalar": 15.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6511",
+      "old_scalar": 30.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6512",
+      "old_scalar": 50.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6513",
+      "old_scalar": 10.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6514",
+      "old_scalar": 15.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6550",
+      "old_scalar": 30.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6551",
+      "old_scalar": 50.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6552",
+      "old_scalar": 10.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6553",
+      "old_scalar": 15.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6638",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 90.0,
+      "evidence": "20-90 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6639",
+      "old_scalar": 500.0,
+      "new_min": 20.0,
+      "new_max": 90.0,
+      "evidence": "20-90 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6642",
+      "old_scalar": 100.0,
+      "new_min": 250.0,
+      "new_max": 1000.0,
+      "evidence": "250-1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6643",
+      "old_scalar": 600.0,
+      "new_min": 250.0,
+      "new_max": 1000.0,
+      "evidence": "250-1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6644",
+      "old_scalar": 250.0,
+      "new_min": 250.0,
+      "new_max": 1000.0,
+      "evidence": "250-1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6645",
+      "old_scalar": 300.0,
+      "new_min": 250.0,
+      "new_max": 1000.0,
+      "evidence": "250-1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6611",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6612",
+      "old_scalar": 625.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6617",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6618",
+      "old_scalar": 625.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6623",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6624",
+      "old_scalar": 625.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6625",
+      "old_scalar": 1000.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6630",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6631",
+      "old_scalar": 625.0,
+      "new_min": 20.0,
+      "new_max": 60.0,
+      "evidence": "20-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6688",
+      "old_scalar": 30.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6689",
+      "old_scalar": 50.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6690",
+      "old_scalar": 10.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6691",
+      "old_scalar": 15.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6753",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6754",
+      "old_scalar": 1.5,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6755",
+      "old_scalar": 15.0,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6756",
+      "old_scalar": 0.6,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6757",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6758",
+      "old_scalar": 1.5,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-1,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6760",
+      "old_scalar": 15.0,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6761",
+      "old_scalar": 0.6,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6763",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6764",
+      "old_scalar": 1.5,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6765",
+      "old_scalar": 15.0,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6766",
+      "old_scalar": 0.6,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6767",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6768",
+      "old_scalar": 1.5,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-1,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6770",
+      "old_scalar": 15.0,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6771",
+      "old_scalar": 0.6,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6786",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6787",
+      "old_scalar": 1.5,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6788",
+      "old_scalar": 15.0,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6789",
+      "old_scalar": 0.6,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6790",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6791",
+      "old_scalar": 1.5,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6793",
+      "old_scalar": 15.0,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6794",
+      "old_scalar": 0.6,
+      "new_min": 0.6,
+      "new_max": 0.9,
+      "evidence": "0,6-0,9 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6796",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6797",
+      "old_scalar": 1.5,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6798",
+      "old_scalar": 15.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6799",
+      "old_scalar": 0.6,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6800",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6801",
+      "old_scalar": 1.5,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6802",
+      "old_scalar": 1.2,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6803",
+      "old_scalar": 15.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6804",
+      "old_scalar": 0.6,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6805",
+      "old_scalar": 1.5,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6773",
+      "old_scalar": 0.5,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6774",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6775",
+      "old_scalar": 0.4,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6776",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6777",
+      "old_scalar": 200.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6778",
+      "old_scalar": 400.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6782",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 60.0,
+      "evidence": "50-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6783",
+      "old_scalar": 2.0,
+      "new_min": 50.0,
+      "new_max": 60.0,
+      "evidence": "50-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6808",
+      "old_scalar": 0.5,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6809",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6810",
+      "old_scalar": 0.4,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6811",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6812",
+      "old_scalar": 200.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6813",
+      "old_scalar": 400.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6818",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 60.0,
+      "evidence": "50-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6819",
+      "old_scalar": 2.0,
+      "new_min": 50.0,
+      "new_max": 60.0,
+      "evidence": "50-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6838",
+      "old_scalar": 0.5,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6839",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6840",
+      "old_scalar": 0.4,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6841",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6842",
+      "old_scalar": 200.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6843",
+      "old_scalar": 400.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6853",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 60.0,
+      "evidence": "50-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6854",
+      "old_scalar": 2.0,
+      "new_min": 50.0,
+      "new_max": 60.0,
+      "evidence": "50-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6859",
+      "old_scalar": 0.5,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6860",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6861",
+      "old_scalar": 0.4,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6862",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6863",
+      "old_scalar": 200.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6864",
+      "old_scalar": 400.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6873",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 60.0,
+      "evidence": "50-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6874",
+      "old_scalar": 2.0,
+      "new_min": 50.0,
+      "new_max": 60.0,
+      "evidence": "50-60 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6988",
+      "old_scalar": null,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6989",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6990",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 100.0,
+      "evidence": "50-100 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7042",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7043",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 100.0,
+      "evidence": "50-100 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7050",
+      "old_scalar": null,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7051",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 80.0,
+      "evidence": "20-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7017",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7018",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7022",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7036",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7037",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7038",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7039",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7040",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7059",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7060",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7061",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7062",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7063",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7026",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7027",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7028",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7029",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7030",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7031",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7032",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7033",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7034",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7035",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7064",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7065",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7066",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7067",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7068",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7069",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7070",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 30.0,
+      "evidence": "20-30 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7071",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7072",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7073",
+      "old_scalar": null,
+      "new_min": 60.0,
+      "new_max": 80.0,
+      "evidence": "60 до 80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6405",
+      "old_scalar": 4.5,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15–20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6407",
+      "old_scalar": null,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15–20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7118",
+      "old_scalar": null,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15–20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7119",
+      "old_scalar": 4.5,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15–20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7177",
+      "old_scalar": null,
+      "new_min": 8.0,
+      "new_max": 10.0,
+      "evidence": "8 – 10 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7185",
+      "old_scalar": 8.0,
+      "new_min": 8.0,
+      "new_max": 10.0,
+      "evidence": "8 – 10 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7208",
+      "old_scalar": null,
+      "new_min": 15.0,
+      "new_max": 22.5,
+      "evidence": "15–22,5 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7259",
+      "old_scalar": null,
+      "new_min": 15.0,
+      "new_max": 22.5,
+      "evidence": "15–22,5 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7194",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7195",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7197",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7198",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7201",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7202",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7204",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7205",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7280",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7281",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7285",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7286",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7207",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7301",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7302",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7303",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 \nмг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7304",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 \nмг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7248",
+      "old_scalar": 7.5,
+      "new_min": 7.5,
+      "new_max": 9.0,
+      "evidence": "7,5-9,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7267",
+      "old_scalar": 7.5,
+      "new_min": 7.5,
+      "new_max": 9.0,
+      "evidence": "7,5-9,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7323",
+      "old_scalar": 7.5,
+      "new_min": 7.5,
+      "new_max": 9.0,
+      "evidence": "7,5-9,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7342",
+      "old_scalar": 7.5,
+      "new_min": 7.5,
+      "new_max": 9.0,
+      "evidence": "7,5-9,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7258",
+      "old_scalar": 25.0,
+      "new_min": 25.0,
+      "new_max": 50.0,
+      "evidence": "25-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7289",
+      "old_scalar": 1.0,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-\n1,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7290",
+      "old_scalar": 0.5,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-\n1,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7292",
+      "old_scalar": null,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-1,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7293",
+      "old_scalar": 0.5,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-1,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7383",
+      "old_scalar": 1.0,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-1,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7384",
+      "old_scalar": null,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-\n1,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7385",
+      "old_scalar": 0.5,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5-\n1,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7313",
+      "old_scalar": 400.0,
+      "new_min": 400.0,
+      "new_max": 500.0,
+      "evidence": "400–500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7316",
+      "old_scalar": 400.0,
+      "new_min": 400.0,
+      "new_max": 500.0,
+      "evidence": "400–500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7414",
+      "old_scalar": 400.0,
+      "new_min": 400.0,
+      "new_max": 500.0,
+      "evidence": "400–500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7418",
+      "old_scalar": 400.0,
+      "new_min": 400.0,
+      "new_max": 500.0,
+      "evidence": "400–500 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7366",
+      "old_scalar": 1.0,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5–1,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7370",
+      "old_scalar": 1.0,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5–1,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7451",
+      "old_scalar": 1.0,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5–1,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7454",
+      "old_scalar": 1.0,
+      "new_min": 0.5,
+      "new_max": 1.0,
+      "evidence": "0,5–1,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7462",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7463",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7470",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7471",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7598",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7599",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7603",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7604",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7494",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1-2 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7497",
+      "old_scalar": 75.0,
+      "new_min": 75.0,
+      "new_max": 80.0,
+      "evidence": "75-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7498",
+      "old_scalar": 100.0,
+      "new_min": 100.0,
+      "new_max": 200.0,
+      "evidence": "100-200 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7516",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1-2 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7519",
+      "old_scalar": 75.0,
+      "new_min": 75.0,
+      "new_max": 80.0,
+      "evidence": "75-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7520",
+      "old_scalar": 100.0,
+      "new_min": 100.0,
+      "new_max": 200.0,
+      "evidence": "100-200 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7626",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1-2 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7629",
+      "old_scalar": 75.0,
+      "new_min": 75.0,
+      "new_max": 80.0,
+      "evidence": "75-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7630",
+      "old_scalar": 100.0,
+      "new_min": 100.0,
+      "new_max": 200.0,
+      "evidence": "100-200 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7641",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1-2 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7644",
+      "old_scalar": 75.0,
+      "new_min": 75.0,
+      "new_max": 80.0,
+      "evidence": "75-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7645",
+      "old_scalar": 100.0,
+      "new_min": 100.0,
+      "new_max": 200.0,
+      "evidence": "100-200 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7547",
+      "old_scalar": 0.5,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7548",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7549",
+      "old_scalar": 0.4,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7550",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7558",
+      "old_scalar": 0.5,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7559",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7560",
+      "old_scalar": 0.4,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7561",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7714",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7715",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7717",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7718",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7728",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7729",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7731",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7732",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7587",
+      "old_scalar": 25.0,
+      "new_min": 25.0,
+      "new_max": 200.0,
+      "evidence": "25 до 200 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7742",
+      "old_scalar": 25.0,
+      "new_min": 25.0,
+      "new_max": 200.0,
+      "evidence": "25 до 200 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7747",
+      "old_scalar": 25.0,
+      "new_min": 25.0,
+      "new_max": 200.0,
+      "evidence": "25 до 200 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7653",
+      "old_scalar": 30.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7654",
+      "old_scalar": 50.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7655",
+      "old_scalar": 10.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7656",
+      "old_scalar": 15.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7803",
+      "old_scalar": 30.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7804",
+      "old_scalar": 50.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7805",
+      "old_scalar": 10.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7806",
+      "old_scalar": 15.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7814",
+      "old_scalar": 30.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7815",
+      "old_scalar": 50.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7816",
+      "old_scalar": 10.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7817",
+      "old_scalar": 15.0,
+      "new_min": 30.0,
+      "new_max": 50.0,
+      "evidence": "30-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7895",
+      "old_scalar": 50.0,
+      "new_min": 50.0,
+      "new_max": 80.0,
+      "evidence": "50-80 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7955",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7956",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7961",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "7962",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6421",
+      "old_scalar": 2.0,
+      "new_min": 2.0,
+      "new_max": 4.0,
+      "evidence": "2 – 4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6448",
+      "old_scalar": 2.0,
+      "new_min": 2.0,
+      "new_max": 4.0,
+      "evidence": "2 – 4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5351",
+      "old_scalar": 0.5,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5352",
+      "old_scalar": 0.2,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5353",
+      "old_scalar": 0.4,
+      "new_min": 0.2,
+      "new_max": 0.4,
+      "evidence": "0,2–0,4 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5354",
+      "old_scalar": 1.0,
+      "new_min": 1.0,
+      "new_max": 2.0,
+      "evidence": "1,0–2,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5364",
+      "old_scalar": 250.0,
+      "new_min": 250.0,
+      "new_max": 300.0,
+      "evidence": "250 –\n300 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5365",
+      "old_scalar": 15.0,
+      "new_min": 250.0,
+      "new_max": 300.0,
+      "evidence": "250 –\n300 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5366",
+      "old_scalar": null,
+      "new_min": 250.0,
+      "new_max": 300.0,
+      "evidence": "250 –\n300 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6303",
+      "old_scalar": 80.0,
+      "new_min": 80.0,
+      "new_max": 100.0,
+      "evidence": "80-100 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6305",
+      "old_scalar": 80.0,
+      "new_min": 80.0,
+      "new_max": 100.0,
+      "evidence": "80-100 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5382",
+      "old_scalar": 1.0,
+      "new_min": 2.0,
+      "new_max": 3.0,
+      "evidence": "2,0-3,0 г",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5383",
+      "old_scalar": 4.5,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15–20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "6332",
+      "old_scalar": null,
+      "new_min": 2.5,
+      "new_max": 5.0,
+      "evidence": "2,5-5 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5441",
+      "old_scalar": 20.0,
+      "new_min": 20.0,
+      "new_max": 40.0,
+      "evidence": "20-40 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5442",
+      "old_scalar": 30.0,
+      "new_min": 20.0,
+      "new_max": 40.0,
+      "evidence": "20-40 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5475",
+      "old_scalar": 25.0,
+      "new_min": 25.0,
+      "new_max": 50.0,
+      "evidence": "25-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5478",
+      "old_scalar": 25.0,
+      "new_min": 25.0,
+      "new_max": 50.0,
+      "evidence": "25-50 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5479",
+      "old_scalar": 12.5,
+      "new_min": 12.5,
+      "new_max": 25.0,
+      "evidence": "12.5-25 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5514",
+      "old_scalar": 15.0,
+      "new_min": 75.0,
+      "new_max": 100.0,
+      "evidence": "75 – 100 \nмг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5526",
+      "old_scalar": 500.0,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15 – 20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5527",
+      "old_scalar": 15.0,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15 – 20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5528",
+      "old_scalar": 5.0,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15 – 20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5531",
+      "old_scalar": 500.0,
+      "new_min": 500.0,
+      "new_max": 1000.0,
+      "evidence": "500 – \n1000 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5533",
+      "old_scalar": 500.0,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15 – 20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5534",
+      "old_scalar": 15.0,
+      "new_min": 15.0,
+      "new_max": 20.0,
+      "evidence": "15 – 20 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5546",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    },
+    {
+      "regimen_id": "5547",
+      "old_scalar": 3.75,
+      "new_min": 3.75,
+      "new_max": 5.0,
+      "evidence": "3,75-5,0 мг",
+      "code_path": "DoseNormalizer.parse group(2) + sandbox _TRUE_RANGE_RE",
+      "confidence": 1.0,
+      "owner_review_still_required": true
+    }
+  ]
+}

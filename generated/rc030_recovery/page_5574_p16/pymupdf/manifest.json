@@ -1,0 +1,11 @@
+{
+  "tool": "pymupdf",
+  "version": "1.24.10",
+  "pdf_hash": "b8a525c56b01e63620e20e7c07a9899e74ba1d0f5ec1f31dd7215f675228eade",
+  "page_index": 15,
+  "runtime_sec": 0.006,
+  "exit_status": "OK",
+  "output_files": [
+    "raw_text.txt"
+  ]
+}

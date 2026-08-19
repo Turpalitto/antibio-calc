@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+cache-control: private
+content-type: application/pdf;
+access-control-allow-origin: *
+content-security-policy: frame-ancestors *.minzdrav.gov.ru
+content-disposition: attachment;filename=КР1632.pdf
+x-aspnet-version: 4.0.30319
+date: Sat, 01 Aug 2026 19:09:03 GMT
+content-length: 1407
+strict-transport-security: max-age=63072000; includeSubDomains
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+content-security-policy: upgrade-insecure-requests
+server: webserver
+x-powered-by: Light side of the Force
+

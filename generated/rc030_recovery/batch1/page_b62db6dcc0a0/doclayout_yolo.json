@@ -1,0 +1,34 @@
+{
+  "infer_time_sec": 0.69,
+  "regions": [
+    {
+      "class": "plain text",
+      "conf": 0.982
+    },
+    {
+      "class": "plain text",
+      "conf": 0.978
+    },
+    {
+      "class": "plain text",
+      "conf": 0.977
+    },
+    {
+      "class": "plain text",
+      "conf": 0.969
+    },
+    {
+      "class": "table",
+      "conf": 0.968
+    },
+    {
+      "class": "table_caption",
+      "conf": 0.873
+    },
+    {
+      "class": "table_footnote",
+      "conf": 0.648
+    }
+  ],
+  "exit_status": "OK"
+}

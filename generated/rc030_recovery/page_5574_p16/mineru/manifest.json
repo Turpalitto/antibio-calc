@@ -1,0 +1,16 @@
+{
+  "tool": "mineru",
+  "backend": "pipeline",
+  "exit_status": "OK",
+  "md_len": 523,
+  "output_files": [
+    "out\\input_page16\\auto\\input_page16.md",
+    "out\\input_page16\\auto\\input_page16_content_list.json",
+    "out\\input_page16\\auto\\input_page16_content_list_v2.json",
+    "out\\input_page16\\auto\\input_page16_layout.pdf",
+    "out\\input_page16\\auto\\input_page16_middle.json",
+    "out\\input_page16\\auto\\input_page16_model.json",
+    "out\\input_page16\\auto\\input_page16_origin.pdf",
+    "out\\input_page16\\auto\\input_page16_span.pdf"
+  ]
+}

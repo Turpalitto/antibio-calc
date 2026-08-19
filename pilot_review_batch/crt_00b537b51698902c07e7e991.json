@@ -1,0 +1,240 @@
+{
+  "task": {
+    "task_id": "crt_00b537b51698902c07e7e991",
+    "task_key": "ClinicalRegimen|5621|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "5621",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1196",
+        "page": "24",
+        "pdf": "Перелом нижней челюсти.pdf",
+        "source_quote": "Хирургическое лечение пациентов с закрытым ... Цефазолин²** 1,0-2,0-3,0 г или Цефуроксим** 1,5 г ... За 30-60 мин. до разреза ... Внутривенно капельно ... ПАП проводится однократно"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Перелом нижней челюсти.pdf",
+        "source_location": "page 24",
+        "source_object_id": "5621",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Перелом нижней челюсти.pdf",
+        "source_location": "page 24",
+        "source_object_id": "5621",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Перелом нижней челюсти.pdf",
+        "source_location": "page 24",
+        "source_object_id": "5621",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Перелом нижней челюсти.pdf",
+        "source_location": "page 24",
+        "source_object_id": "5621",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Перелом нижней челюсти.pdf",
+        "source_location": "page 24",
+        "source_object_id": "5621",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult",
+    "alternatives": [],
+    "antibiotic": "Цефуроксим",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.9194,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "Перелом нижней челюсти",
+    "dose": 1.5,
+    "duration_max": 1.0,
+    "duration_min": 1.0,
+    "duration_recommended": 1.0,
+    "evidence_level": "UNKNOWN",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Перелом нижней челюсти.pdf",
+          "source_location": "page 24",
+          "source_object_id": "5621",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Перелом нижней челюсти.pdf",
+          "source_location": "page 24",
+          "source_object_id": "5621",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Перелом нижней челюсти.pdf",
+          "source_location": "page 24",
+          "source_object_id": "5621",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Перелом нижней челюсти.pdf",
+          "source_location": "page 24",
+          "source_object_id": "5621",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Перелом нижней челюсти.pdf",
+          "source_location": "page 24",
+          "source_object_id": "5621",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "frequency": 1.0,
+    "guideline_id": "1196",
+    "icd_mkb": "S02.6",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [
+      "no_kb_p44_enrichment_for_guideline_1196"
+    ],
+    "pregnancy": null,
+    "regimen_id": "5621",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "iv",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "24",
+    "source_pdf": "Перелом нижней челюсти.pdf",
+    "source_quote": "Хирургическое лечение пациентов с закрытым ... Цефазолин²** 1,0-2,0-3,0 г или Цефуроксим** 1,5 г ... За 30-60 мин. до разреза ... Внутривенно капельно ... ПАП проводится однократно",
+    "status": "ASSEMBLED",
+    "therapy_line": "prophylaxis",
+    "unit": "g",
+    "validation_verdict": "PASS",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "Хирургическое лечение пациентов с закрытым ... Цефазолин²** 1,0-2,0-3,0 г или Цефуроксим** 1,5 г ... За 30-60 мин. до разреза ... Внутривенно капельно ... ПАП проводится однократно"
+  ],
+  "source_references": [
+    {
+      "guideline_id": "1196",
+      "page": "24",
+      "pdf": "Перелом нижней челюсти.pdf",
+      "source_quote": "Хирургическое лечение пациентов с закрытым ... Цефазолин²** 1,0-2,0-3,0 г или Цефуроксим** 1,5 г ... За 30-60 мин. до разреза ... Внутривенно капельно ... ПАП проводится однократно"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Перелом нижней челюсти.pdf",
+      "source_location": "page 24",
+      "source_object_id": "5621",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Перелом нижней челюсти.pdf",
+      "source_location": "page 24",
+      "source_object_id": "5621",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Перелом нижней челюсти.pdf",
+      "source_location": "page 24",
+      "source_object_id": "5621",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Перелом нижней челюсти.pdf",
+      "source_location": "page 24",
+      "source_object_id": "5621",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Перелом нижней челюсти.pdf",
+      "source_location": "page 24",
+      "source_object_id": "5621",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [
+    "no_kb_p44_enrichment_for_guideline_1196"
+  ],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "552e4ad24838942964aceb18fe909cb15901a1c1ebfecb6b461f27c6b4acefd3",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

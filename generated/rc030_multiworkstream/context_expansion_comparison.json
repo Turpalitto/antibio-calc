@@ -1,0 +1,527 @@
+{
+  "same": 259,
+  "changed": 104,
+  "new_safe": [],
+  "all_changes": [
+    {
+      "regimen_id": "5622",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5623",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5659",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5660",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5661",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5678",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5795",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "5824",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5949",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5998",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5999",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6000",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6107",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6121",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6124",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6125",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6126",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6127",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6130",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6131",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6132",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6133",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6134",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6199",
+      "old": "NOT_A_DOSE_RANGE",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6755",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6756",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6765",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6766",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6788",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6789",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6773",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6774",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6775",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6782",
+      "old": "DICTIONARY_GAP",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6783",
+      "old": "DICTIONARY_GAP",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6808",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6809",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6810",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6818",
+      "old": "DICTIONARY_GAP",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6819",
+      "old": "DICTIONARY_GAP",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6838",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6839",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6840",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6853",
+      "old": "DICTIONARY_GAP",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6854",
+      "old": "DICTIONARY_GAP",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6859",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6860",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6861",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "6873",
+      "old": "DICTIONARY_GAP",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6874",
+      "old": "DICTIONARY_GAP",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6988",
+      "old": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "new": "AMBIGUOUS_MULTIPLE_RANGES"
+    },
+    {
+      "regimen_id": "7050",
+      "old": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "new": "AMBIGUOUS_MULTIPLE_RANGES"
+    },
+    {
+      "regimen_id": "7118",
+      "old": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "new": "AMBIGUOUS_MULTIPLE_RANGES"
+    },
+    {
+      "regimen_id": "7185",
+      "old": "DICTIONARY_GAP",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7201",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7202",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7204",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7205",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7280",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7281",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7285",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7286",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7207",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7248",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_LOADING_MAINTENANCE"
+    },
+    {
+      "regimen_id": "7267",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_LOADING_MAINTENANCE"
+    },
+    {
+      "regimen_id": "7323",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_LOADING_MAINTENANCE"
+    },
+    {
+      "regimen_id": "7342",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_LOADING_MAINTENANCE"
+    },
+    {
+      "regimen_id": "7289",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7290",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7292",
+      "old": "AMBIGUOUS_LOADING_MAINTENANCE",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7293",
+      "old": "AMBIGUOUS_LOADING_MAINTENANCE",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7383",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7384",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7385",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7462",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7463",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7470",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7471",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7598",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7599",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7603",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7604",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7497",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7498",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7519",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7520",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7629",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7630",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7644",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7645",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7550",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7561",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7717",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7718",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7731",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7732",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "7955",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7956",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7961",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "7962",
+      "old": "DICTIONARY_GAP",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5354",
+      "old": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "new": "WRONG_RANGE_ANCHOR"
+    },
+    {
+      "regimen_id": "6332",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5546",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    },
+    {
+      "regimen_id": "5547",
+      "old": "WRONG_RANGE_ANCHOR",
+      "new": "AMBIGUOUS_ALTERNATIVE_BOUNDARY"
+    }
+  ]
+}

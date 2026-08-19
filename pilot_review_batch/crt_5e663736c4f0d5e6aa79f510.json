@@ -1,0 +1,266 @@
+{
+  "task": {
+    "task_id": "crt_5e663736c4f0d5e6aa79f510",
+    "task_key": "ClinicalRegimen|6331|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "6331",
+    "target_version": 1,
+    "priority_score": 100,
+    "priority": "HIGH",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "HIGH",
+    "safety_axes": [
+      "missing_unit",
+      "pediatric"
+    ],
+    "source_references": [
+      {
+        "guideline_id": "1206",
+        "page": "19",
+        "pdf": "Экзема.pdf",
+        "source_quote": "бетаметазон+гентамицин+клотримазол 0,05%+0,1%+1% мазь для наружного применения, 0,05%+0,1%+1% крем для наружного применения наносить в небольшом количестве на пораженные участки кожи, слегка втирая, 2 раза в сутки в течение 7-14 дней"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Экзема.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6331",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Экзема.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6331",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Экзема.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6331",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Экзема.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6331",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Экзема.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6331",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\archive_review\\Экзема.pdf",
+        "source_location": "page 6",
+        "source_object_id": "evi_009599e759baf404",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_unit:40",
+      "pediatric:35"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "child",
+    "alternatives": [],
+    "antibiotic": "бетаметазон + гентамицин + клотримазол",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.8544,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "Экзема при развитии инфицирования, в том числе инфекционная экзема",
+    "dose": 0.05,
+    "duration_max": 14.0,
+    "duration_min": 7.0,
+    "duration_recommended": null,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Экзема.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6331",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Экзема.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6331",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Экзема.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6331",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Экзема.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6331",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Экзема.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6331",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\archive_review\\Экзема.pdf",
+          "source_location": "page 6",
+          "source_object_id": "evi_009599e759baf404",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": 2.0,
+    "guideline_id": "1206",
+    "icd_mkb": "L30",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [],
+    "pregnancy": null,
+    "regimen_id": "6331",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "topical",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "19",
+    "source_pdf": "Экзема.pdf",
+    "source_quote": "бетаметазон+гентамицин+клотримазол 0,05%+0,1%+1% мазь для наружного применения, 0,05%+0,1%+1% крем для наружного применения наносить в небольшом количестве на пораженные участки кожи, слегка втирая, 2 раза в сутки в течение 7-14 дней",
+    "status": "ASSEMBLED",
+    "therapy_line": "first",
+    "unit": "",
+    "validation_verdict": "REVIEW",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "бетаметазон+гентамицин+клотримазол 0,05%+0,1%+1% мазь для наружного применения, 0,05%+0,1%+1% крем для наружного применения наносить в небольшом количестве на пораженные участки кожи, слегка втирая, 2 раза в сутки в течение 7-14 дней"
+  ],
+  "source_references": [
+    {
+      "guideline_id": "1206",
+      "page": "19",
+      "pdf": "Экзема.pdf",
+      "source_quote": "бетаметазон+гентамицин+клотримазол 0,05%+0,1%+1% мазь для наружного применения, 0,05%+0,1%+1% крем для наружного применения наносить в небольшом количестве на пораженные участки кожи, слегка втирая, 2 раза в сутки в течение 7-14 дней"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Экзема.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6331",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Экзема.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6331",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Экзема.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6331",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Экзема.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6331",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Экзема.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6331",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\archive_review\\Экзема.pdf",
+      "source_location": "page 6",
+      "source_object_id": "evi_009599e759baf404",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "c27e3c38c4049785aa6e9813a9a6cf4f652d7109596f15ad3054c059f8e1e6a4",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

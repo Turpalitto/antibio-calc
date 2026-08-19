@@ -1,0 +1,264 @@
+{
+  "task": {
+    "task_id": "crt_3b7d7883ae7bdcf41fb7f480",
+    "task_key": "ClinicalRegimen|7447|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "7447",
+    "target_version": 1,
+    "priority_score": 80,
+    "priority": "HIGH",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "HIGH",
+    "safety_axes": [
+      "missing_unit"
+    ],
+    "source_references": [
+      {
+        "guideline_id": "2020",
+        "page": "8",
+        "pdf": "Эритразма.pdf",
+        "source_quote": "фузидовая кислота, крем 2% наружно 3-4 раза в сутки в течение 2 недель [2]."
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Эритразма.pdf",
+        "source_location": "page 8",
+        "source_object_id": "7447",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Эритразма.pdf",
+        "source_location": "page 8",
+        "source_object_id": "7447",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Эритразма.pdf",
+        "source_location": "page 8",
+        "source_object_id": "7447",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Эритразма.pdf",
+        "source_location": "page 8",
+        "source_object_id": "7447",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Эритразма.pdf",
+        "source_location": "page 8",
+        "source_object_id": "7447",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\downloads_active\\Эритразма.pdf",
+        "source_location": "page 6",
+        "source_object_id": "evi_29a6645821d41342",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_unit:40"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult",
+    "alternatives": [],
+    "antibiotic": "фузидовая кислота",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.8544,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "Эритразма",
+    "dose": 2.0,
+    "duration_max": 14.0,
+    "duration_min": 14.0,
+    "duration_recommended": 14.0,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Эритразма.pdf",
+          "source_location": "page 8",
+          "source_object_id": "7447",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Эритразма.pdf",
+          "source_location": "page 8",
+          "source_object_id": "7447",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Эритразма.pdf",
+          "source_location": "page 8",
+          "source_object_id": "7447",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Эритразма.pdf",
+          "source_location": "page 8",
+          "source_object_id": "7447",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Эритразма.pdf",
+          "source_location": "page 8",
+          "source_object_id": "7447",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\downloads_active\\Эритразма.pdf",
+          "source_location": "page 6",
+          "source_object_id": "evi_29a6645821d41342",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": 4.0,
+    "guideline_id": "2020",
+    "icd_mkb": "L08.1",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [],
+    "pregnancy": null,
+    "regimen_id": "7447",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "topical",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "8",
+    "source_pdf": "Эритразма.pdf",
+    "source_quote": "фузидовая кислота, крем 2% наружно 3-4 раза в сутки в течение 2 недель [2].",
+    "status": "ASSEMBLED",
+    "therapy_line": "first",
+    "unit": "",
+    "validation_verdict": "PASS",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "фузидовая кислота, крем 2% наружно 3-4 раза в сутки в течение 2 недель [2]."
+  ],
+  "source_references": [
+    {
+      "guideline_id": "2020",
+      "page": "8",
+      "pdf": "Эритразма.pdf",
+      "source_quote": "фузидовая кислота, крем 2% наружно 3-4 раза в сутки в течение 2 недель [2]."
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Эритразма.pdf",
+      "source_location": "page 8",
+      "source_object_id": "7447",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Эритразма.pdf",
+      "source_location": "page 8",
+      "source_object_id": "7447",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Эритразма.pdf",
+      "source_location": "page 8",
+      "source_object_id": "7447",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Эритразма.pdf",
+      "source_location": "page 8",
+      "source_object_id": "7447",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Эритразма.pdf",
+      "source_location": "page 8",
+      "source_object_id": "7447",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\downloads_active\\Эритразма.pdf",
+      "source_location": "page 6",
+      "source_object_id": "evi_29a6645821d41342",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "ebf6d3148b1f1fe0efcf921c521bba3d728cca8ce55a2405ed48ab016fed2b2a",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

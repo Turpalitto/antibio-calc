@@ -1,0 +1,295 @@
+{
+  "task": {
+    "task_id": "crt_11a2a6f114e87c4355252aec",
+    "task_key": "ClinicalRegimen|6491|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "6491",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1751",
+        "page": "22",
+        "pdf": "Переломы проксимального отдела костей предплечья.pdf",
+        "source_quote": "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6491",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6491",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6491",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6491",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6491",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела костей предплечья.pdf",
+        "source_location": "page 60",
+        "source_object_id": "evi_03aa3bfb050debed",
+        "source_store": "kb_p44"
+      },
+      {
+        "field": "contraindications",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела костей предплечья.pdf",
+        "source_location": "page 43",
+        "source_object_id": "con_1228e40e2f2567f1",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult",
+    "alternatives": [],
+    "antibiotic": "Цефазолин",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.9194,
+    "conflicts": [],
+    "contraindications": [
+      "{'pregnancy_re': 'беремен|pregnan|гестаци', 'lactation_re': 'лактаци|грудн\\\\w* вскарм|breastfeed|lactat'}",
+      "{'renal_re': 'почечн|ренальн|crcl|кк|клиренс|gfr|скорость клубочков|creatinine', 'hemodialysis_re': 'гемодиализ|hemodialysis|гд\\\\b', 'peritoneal_re': 'перитонеальн.*диализ|peritoneal.*dialysis|пд\\\\b'}"
+    ],
+    "diagnosis": "Переломы проксимального отдела костей предплечья; хирургическая антибиотикопрофилактика при оперативных вмешательствах в травматологии и ортопедии",
+    "dose": 3.0,
+    "duration_max": 1.0,
+    "duration_min": 1.0,
+    "duration_recommended": 1.0,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6491",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6491",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6491",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6491",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6491",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела костей предплечья.pdf",
+          "source_location": "page 60",
+          "source_object_id": "evi_03aa3bfb050debed",
+          "source_store": "kb_p44"
+        }
+      ],
+      [
+        "contraindications",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела костей предплечья.pdf",
+          "source_location": "page 43",
+          "source_object_id": "con_1228e40e2f2567f1",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": 1.0,
+    "guideline_id": "1751",
+    "icd_mkb": "S52.0, S52.1, S52.7, S53.0, T92.1",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [
+      "unresolved_conflict"
+    ],
+    "pregnancy": null,
+    "regimen_id": "6491",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "iv",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "22",
+    "source_pdf": "Переломы проксимального отдела костей предплечья.pdf",
+    "source_quote": "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)",
+    "status": "ASSEMBLED",
+    "therapy_line": "prophylaxis",
+    "unit": "g",
+    "validation_verdict": "REVIEW",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)"
+  ],
+  "source_references": [
+    {
+      "guideline_id": "1751",
+      "page": "22",
+      "pdf": "Переломы проксимального отдела костей предплечья.pdf",
+      "source_quote": "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6491",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6491",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6491",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6491",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Переломы проксимального отдела костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6491",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела костей предплечья.pdf",
+      "source_location": "page 60",
+      "source_object_id": "evi_03aa3bfb050debed",
+      "source_store": "kb_p44"
+    },
+    {
+      "field": "contraindications",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела костей предплечья.pdf",
+      "source_location": "page 43",
+      "source_object_id": "con_1228e40e2f2567f1",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [
+    "unresolved_conflict"
+  ],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "8d1ffbb963f712e1e128718f359252337f7a959f73bd92a293f2acbfc3f3156c",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

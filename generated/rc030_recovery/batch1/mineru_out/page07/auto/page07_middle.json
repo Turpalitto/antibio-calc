@@ -1,0 +1,912 @@
+{
+    "pdf_info": [
+        {
+            "preproc_blocks": [
+                {
+                    "score": 0.9705,
+                    "bbox": [
+                        14,
+                        0,
+                        578,
+                        97
+                    ],
+                    "index": 1,
+                    "type": "text",
+                    "lines": [
+                        {
+                            "bbox": [
+                                17,
+                                3,
+                                577,
+                                19
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        3,
+                                        577,
+                                        19
+                                    ],
+                                    "type": "text",
+                                    "content": "При тяжелом течении ОСО у стационарных пациентов предпочтителен внутримышечный и",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                16,
+                                22,
+                                577,
+                                39
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        16,
+                                        22,
+                                        577,
+                                        39
+                                    ],
+                                    "type": "text",
+                                    "content": "внутривенный пути введения антибиотиков, целесообразно назначение парентеральных",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                42,
+                                577,
+                                56
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        42,
+                                        577,
+                                        56
+                                    ],
+                                    "type": "text",
+                                    "content": "цефалоспоринов 3-его поколения: цефотаксима** (Код АТХ: J01DD01) или цефтриаксона**",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                59,
+                                578,
+                                77
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        59,
+                                        578,
+                                        77
+                                    ],
+                                    "type": "text",
+                                    "content": "(Код АТХ: J01DD04). При условии внутривенного введения возможно использование",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                18,
+                                82,
+                                371,
+                                95
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        18,
+                                        82,
+                                        371,
+                                        95
+                                    ],
+                                    "type": "text",
+                                    "content": "Амоксициллин+Клавулановая кислота** (Код АТХ:J01CR02).",
+                                    "score": 1.0
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "score": 0.9828,
+                    "bbox": [
+                        14,
+                        114,
+                        578,
+                        208
+                    ],
+                    "index": 2,
+                    "type": "text",
+                    "lines": [
+                        {
+                            "bbox": [
+                                17,
+                                114,
+                                576,
+                                128
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        114,
+                                        576,
+                                        128
+                                    ],
+                                    "type": "text",
+                                    "content": "При наличии в анамнезе у пациента непереносимости пенициллинов в качестве препаратов",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                134,
+                                576,
+                                147
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        134,
+                                        576,
+                                        147
+                                    ],
+                                    "type": "text",
+                                    "content": "выбора целесообразно использовать препараты цефалоспоринов 3-его поколения: для",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                153,
+                                576,
+                                168
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        153,
+                                        576,
+                                        168
+                                    ],
+                                    "type": "text",
+                                    "content": "амбулаторной практики - цефиксим (Код АТХ: J01DD08), для пациентов стационара при",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                173,
+                                576,
+                                185
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        173,
+                                        576,
+                                        185
+                                    ],
+                                    "type": "text",
+                                    "content": "необходимости парентерального введения - цефотаксима** (Код АТХ: J01DD01) или",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                193,
+                                239,
+                                206
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        193,
+                                        239,
+                                        206
+                                    ],
+                                    "type": "text",
+                                    "content": "цефтриаксона** (Код АТХ: J01DD04).",
+                                    "score": 1.0
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "score": 0.982,
+                    "bbox": [
+                        14,
+                        225,
+                        578,
+                        319
+                    ],
+                    "index": 3,
+                    "type": "text",
+                    "lines": [
+                        {
+                            "bbox": [
+                                16,
+                                226,
+                                575,
+                                240
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        16,
+                                        226,
+                                        575,
+                                        240
+                                    ],
+                                    "type": "text",
+                                    "content": "В настоящее время, в связи с нарастающей резистентностью основных патогенов,",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                16,
+                                245,
+                                574,
+                                259
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        16,
+                                        245,
+                                        574,
+                                        259
+                                    ],
+                                    "type": "text",
+                                    "content": "вызывающих гнойные воспаления ЛОР органов, к антибактериальным препаратам,",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                264,
+                                575,
+                                278
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        264,
+                                        575,
+                                        278
+                                    ],
+                                    "type": "text",
+                                    "content": "рекомендовано увеличение разовой и суточной дозы введения антибиотиков при ОСО у",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                284,
+                                576,
+                                298
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        284,
+                                        576,
+                                        298
+                                    ],
+                                    "type": "text",
+                                    "content": "взрослых и детей. Суточные дозы и режим введения антибиотиков при остром среднем отите",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                19,
+                                306,
+                                174,
+                                316
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        19,
+                                        306,
+                                        174,
+                                        316
+                                    ],
+                                    "type": "text",
+                                    "content": "представлены в таблице 4.",
+                                    "score": 1.0
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "score": 0.7389,
+                    "bbox": [
+                        16,
+                        335,
+                        426,
+                        351
+                    ],
+                    "index": 4,
+                    "type": "text",
+                    "lines": [
+                        {
+                            "bbox": [
+                                18,
+                                337,
+                                424,
+                                351
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        18,
+                                        337,
+                                        424,
+                                        351
+                                    ],
+                                    "type": "text",
+                                    "content": "Таблица 4. Суточные дозы и режим введения антибиотиков при ОСО",
+                                    "score": 1.0
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "table",
+                    "bbox": [
+                        17,
+                        364,
+                        576,
+                        816
+                    ],
+                    "blocks": [
+                        {
+                            "score": 0.9894,
+                            "bbox": [
+                                17,
+                                364,
+                                576,
+                                816
+                            ],
+                            "index": 5,
+                            "type": "table_body",
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        364,
+                                        576,
+                                        816
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                17,
+                                                364,
+                                                576,
+                                                816
+                                            ],
+                                            "type": "table",
+                                            "html": "<table><tr><td rowspan=2 colspan=1></td><td rowspan=1 colspan=2></td><td rowspan=2 colspan=1>   </td></tr><tr><td rowspan=1 colspan=1></td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4> </td></tr><tr><td rowspan=1 colspan=1>* ( : 104)</td><td rowspan=1 colspan=1>0,5[1] - 1,0[2] r 3  </td><td rowspan=1 colspan=1>50-60¹ /κ/yT B2-3 </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>+[]** ( :0102)</td><td rowspan=1 colspan=1>500/125 Mr 3 pa3aB        875/125 Mr 2 pa3a </td><td rowspan=1 colspan=1>45-60 /κ/cyτ B2-3 </td><td rowspan=1 colspan=1>   </td></tr><tr><td rowspan=1 colspan=1>+[4** ( :0102)</td><td rowspan=1 colspan=1>3,6 /CyT B/B B 3</td><td rowspan=1 colspan=1>90 /κ/ B 3</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>+[][](ATX JÓ1CR01)</td><td rowspan=1 colspan=1>500/500 Mr 3 pa3aB         875/125 Mr 2 pa3a </td><td rowspan=1 colspan=1>2-6  - 250  3  6-12  - 250-500    </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>[4]**      (     ATX:J01DD04)</td><td rowspan=1 colspan=1>2,0-4,0 /cyT B 1</td><td rowspan=1 colspan=1>50-80 M/κr/cyτ B 1</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4>   ( )</td></tr><tr><td rowspan=1 colspan=1>**( : 0102)</td><td rowspan=1 colspan=1>1,0 /cyτ  B  2</td><td rowspan=1 colspan=1>30 /κ/τ B 2</td><td rowspan=1 colspan=1>  </td></tr><tr><td rowspan=1 colspan=1> ( : 0108)</td><td rowspan=1 colspan=1>400M/CyT B1</td><td rowspan=1 colspan=1>8 /κ/cyτ B 1</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4>    </td></tr><tr><td rowspan=1 colspan=1>( : 0107)</td><td rowspan=1 colspan=1>2000 /  2</td><td rowspan=1 colspan=1>40-50 //2-3 </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>*( : 0109)</td><td rowspan=1 colspan=1>1000 /cyτ B 2 ( -  1 )</td><td rowspan=1 colspan=1>15 /κ/cyτ B 2</td><td rowspan=1 colspan=1></td></tr></table>",
+                                            "image_path": "af76fc0d6d1613df073793a541483167f6b8a0838d8e6127516d37a97a77e7a6.jpg"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "index": 5,
+                    "score": 0.9894
+                }
+            ],
+            "page_idx": 0,
+            "page_size": [
+                594,
+                841
+            ],
+            "discarded_blocks": [],
+            "para_blocks": [
+                {
+                    "score": 0.9705,
+                    "bbox": [
+                        14,
+                        0,
+                        578,
+                        97
+                    ],
+                    "index": 1,
+                    "type": "text",
+                    "lines": [
+                        {
+                            "bbox": [
+                                17,
+                                3,
+                                577,
+                                19
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        3,
+                                        577,
+                                        19
+                                    ],
+                                    "type": "text",
+                                    "content": "При тяжелом течении ОСО у стационарных пациентов предпочтителен внутримышечный и",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                16,
+                                22,
+                                577,
+                                39
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        16,
+                                        22,
+                                        577,
+                                        39
+                                    ],
+                                    "type": "text",
+                                    "content": "внутривенный пути введения антибиотиков, целесообразно назначение парентеральных",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                42,
+                                577,
+                                56
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        42,
+                                        577,
+                                        56
+                                    ],
+                                    "type": "text",
+                                    "content": "цефалоспоринов 3-его поколения: цефотаксима** (Код АТХ: J01DD01) или цефтриаксона**",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                59,
+                                578,
+                                77
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        59,
+                                        578,
+                                        77
+                                    ],
+                                    "type": "text",
+                                    "content": "(Код АТХ: J01DD04). При условии внутривенного введения возможно использование",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                18,
+                                82,
+                                371,
+                                95
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        18,
+                                        82,
+                                        371,
+                                        95
+                                    ],
+                                    "type": "text",
+                                    "content": "Амоксициллин+Клавулановая кислота** (Код АТХ:J01CR02).",
+                                    "score": 1.0
+                                }
+                            ]
+                        }
+                    ],
+                    "bbox_fs": [
+                        16,
+                        3,
+                        578,
+                        95
+                    ]
+                },
+                {
+                    "score": 0.9828,
+                    "bbox": [
+                        14,
+                        114,
+                        578,
+                        208
+                    ],
+                    "index": 2,
+                    "type": "text",
+                    "lines": [
+                        {
+                            "bbox": [
+                                17,
+                                114,
+                                576,
+                                128
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        114,
+                                        576,
+                                        128
+                                    ],
+                                    "type": "text",
+                                    "content": "При наличии в анамнезе у пациента непереносимости пенициллинов в качестве препаратов",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                134,
+                                576,
+                                147
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        134,
+                                        576,
+                                        147
+                                    ],
+                                    "type": "text",
+                                    "content": "выбора целесообразно использовать препараты цефалоспоринов 3-его поколения: для",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                153,
+                                576,
+                                168
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        153,
+                                        576,
+                                        168
+                                    ],
+                                    "type": "text",
+                                    "content": "амбулаторной практики - цефиксим (Код АТХ: J01DD08), для пациентов стационара при",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                173,
+                                576,
+                                185
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        173,
+                                        576,
+                                        185
+                                    ],
+                                    "type": "text",
+                                    "content": "необходимости парентерального введения - цефотаксима** (Код АТХ: J01DD01) или",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                193,
+                                239,
+                                206
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        193,
+                                        239,
+                                        206
+                                    ],
+                                    "type": "text",
+                                    "content": "цефтриаксона** (Код АТХ: J01DD04).",
+                                    "score": 1.0
+                                }
+                            ]
+                        }
+                    ],
+                    "bbox_fs": [
+                        17,
+                        114,
+                        576,
+                        206
+                    ]
+                },
+                {
+                    "score": 0.982,
+                    "bbox": [
+                        14,
+                        225,
+                        578,
+                        319
+                    ],
+                    "index": 3,
+                    "type": "text",
+                    "lines": [
+                        {
+                            "bbox": [
+                                16,
+                                226,
+                                575,
+                                240
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        16,
+                                        226,
+                                        575,
+                                        240
+                                    ],
+                                    "type": "text",
+                                    "content": "В настоящее время, в связи с нарастающей резистентностью основных патогенов,",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                16,
+                                245,
+                                574,
+                                259
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        16,
+                                        245,
+                                        574,
+                                        259
+                                    ],
+                                    "type": "text",
+                                    "content": "вызывающих гнойные воспаления ЛОР органов, к антибактериальным препаратам,",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                264,
+                                575,
+                                278
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        264,
+                                        575,
+                                        278
+                                    ],
+                                    "type": "text",
+                                    "content": "рекомендовано увеличение разовой и суточной дозы введения антибиотиков при ОСО у",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                17,
+                                284,
+                                576,
+                                298
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        284,
+                                        576,
+                                        298
+                                    ],
+                                    "type": "text",
+                                    "content": "взрослых и детей. Суточные дозы и режим введения антибиотиков при остром среднем отите",
+                                    "score": 1.0
+                                }
+                            ]
+                        },
+                        {
+                            "bbox": [
+                                19,
+                                306,
+                                174,
+                                316
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        19,
+                                        306,
+                                        174,
+                                        316
+                                    ],
+                                    "type": "text",
+                                    "content": "представлены в таблице 4.",
+                                    "score": 1.0
+                                }
+                            ]
+                        }
+                    ],
+                    "bbox_fs": [
+                        16,
+                        226,
+                        576,
+                        316
+                    ]
+                },
+                {
+                    "score": 0.7389,
+                    "bbox": [
+                        16,
+                        335,
+                        426,
+                        351
+                    ],
+                    "index": 4,
+                    "type": "text",
+                    "lines": [
+                        {
+                            "bbox": [
+                                18,
+                                337,
+                                424,
+                                351
+                            ],
+                            "spans": [
+                                {
+                                    "bbox": [
+                                        18,
+                                        337,
+                                        424,
+                                        351
+                                    ],
+                                    "type": "text",
+                                    "content": "Таблица 4. Суточные дозы и режим введения антибиотиков при ОСО",
+                                    "score": 1.0
+                                }
+                            ]
+                        }
+                    ],
+                    "bbox_fs": [
+                        18,
+                        337,
+                        424,
+                        351
+                    ]
+                },
+                {
+                    "type": "table",
+                    "bbox": [
+                        17,
+                        364,
+                        576,
+                        816
+                    ],
+                    "blocks": [
+                        {
+                            "score": 0.9894,
+                            "bbox": [
+                                17,
+                                364,
+                                576,
+                                816
+                            ],
+                            "index": 5,
+                            "type": "table_body",
+                            "lines": [
+                                {
+                                    "bbox": [
+                                        17,
+                                        364,
+                                        576,
+                                        816
+                                    ],
+                                    "spans": [
+                                        {
+                                            "bbox": [
+                                                17,
+                                                364,
+                                                576,
+                                                816
+                                            ],
+                                            "type": "table",
+                                            "html": "<table><tr><td rowspan=2 colspan=1></td><td rowspan=1 colspan=2></td><td rowspan=2 colspan=1>   </td></tr><tr><td rowspan=1 colspan=1></td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4> </td></tr><tr><td rowspan=1 colspan=1>* ( : 104)</td><td rowspan=1 colspan=1>0,5[1] - 1,0[2] r 3  </td><td rowspan=1 colspan=1>50-60¹ /κ/yT B2-3 </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>+[]** ( :0102)</td><td rowspan=1 colspan=1>500/125 Mr 3 pa3aB        875/125 Mr 2 pa3a </td><td rowspan=1 colspan=1>45-60 /κ/cyτ B2-3 </td><td rowspan=1 colspan=1>   </td></tr><tr><td rowspan=1 colspan=1>+[4** ( :0102)</td><td rowspan=1 colspan=1>3,6 /CyT B/B B 3</td><td rowspan=1 colspan=1>90 /κ/ B 3</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>+[][](ATX JÓ1CR01)</td><td rowspan=1 colspan=1>500/500 Mr 3 pa3aB         875/125 Mr 2 pa3a </td><td rowspan=1 colspan=1>2-6  - 250  3  6-12  - 250-500    </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>[4]**      (     ATX:J01DD04)</td><td rowspan=1 colspan=1>2,0-4,0 /cyT B 1</td><td rowspan=1 colspan=1>50-80 M/κr/cyτ B 1</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4>   ( )</td></tr><tr><td rowspan=1 colspan=1>**( : 0102)</td><td rowspan=1 colspan=1>1,0 /cyτ  B  2</td><td rowspan=1 colspan=1>30 /κ/τ B 2</td><td rowspan=1 colspan=1>  </td></tr><tr><td rowspan=1 colspan=1> ( : 0108)</td><td rowspan=1 colspan=1>400M/CyT B1</td><td rowspan=1 colspan=1>8 /κ/cyτ B 1</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4>    </td></tr><tr><td rowspan=1 colspan=1>( : 0107)</td><td rowspan=1 colspan=1>2000 /  2</td><td rowspan=1 colspan=1>40-50 //2-3 </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>*( : 0109)</td><td rowspan=1 colspan=1>1000 /cyτ B 2 ( -  1 )</td><td rowspan=1 colspan=1>15 /κ/cyτ B 2</td><td rowspan=1 colspan=1></td></tr></table>",
+                                            "image_path": "af76fc0d6d1613df073793a541483167f6b8a0838d8e6127516d37a97a77e7a6.jpg"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "index": 5,
+                    "score": 0.9894
+                }
+            ]
+        }
+    ],
+    "_backend": "pipeline",
+    "_version_name": "3.4.4"
+}

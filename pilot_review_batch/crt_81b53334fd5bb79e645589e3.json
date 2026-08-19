@@ -1,0 +1,242 @@
+{
+  "task": {
+    "task_id": "crt_81b53334fd5bb79e645589e3",
+    "task_key": "ClinicalRegimen|5600|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "5600",
+    "target_version": 1,
+    "priority_score": 75,
+    "priority": "HIGH",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "HIGH",
+    "safety_axes": [
+      "pregnancy"
+    ],
+    "source_references": [
+      {
+        "guideline_id": "1148",
+        "page": "54",
+        "pdf": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+        "source_quote": "При аллергических реакциях на пенициллины\n#клиндамицин** или э\nи/или цефалоспорины применимы \nштромицин\n#Клиндамицин **\n600 мг\nвнутримышечно, \nвнутривенно капельно"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+        "source_location": "page 54",
+        "source_object_id": "5600",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+        "source_location": "page 54",
+        "source_object_id": "5600",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+        "source_location": "page 54",
+        "source_object_id": "5600",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+        "source_location": "page 54",
+        "source_object_id": "5600",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+        "source_location": "page 54",
+        "source_object_id": "5600",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "pregnancy:35"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult|pregnancy",
+    "alternatives": [],
+    "antibiotic": "Клиндамицин",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.9132,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "Роды одноплодные, родоразрешение путем кесарева сечения",
+    "dose": 600.0,
+    "duration_max": 1.0,
+    "duration_min": 1.0,
+    "duration_recommended": 1.0,
+    "evidence_level": "UNKNOWN",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+          "source_location": "page 54",
+          "source_object_id": "5600",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+          "source_location": "page 54",
+          "source_object_id": "5600",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+          "source_location": "page 54",
+          "source_object_id": "5600",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+          "source_location": "page 54",
+          "source_object_id": "5600",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+          "source_location": "page 54",
+          "source_object_id": "5600",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "frequency": 1.0,
+    "guideline_id": "1148",
+    "icd_mkb": "O82, O82.0, O82.1, O82.2, O82.8, O82.9",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [
+      "no_kb_p44_enrichment_for_guideline_1148"
+    ],
+    "pregnancy": true,
+    "regimen_id": "5600",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "iv",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "54",
+    "source_pdf": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+    "source_quote": "При аллергических реакциях на пенициллины\n#клиндамицин** или э\nи/или цефалоспорины применимы \nштромицин\n#Клиндамицин **\n600 мг\nвнутримышечно, \nвнутривенно капельно",
+    "status": "ASSEMBLED",
+    "therapy_line": "alternative",
+    "unit": "mg",
+    "validation_verdict": "PASS",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "При аллергических реакциях на пенициллины\n#клиндамицин** или э\nи/или цефалоспорины применимы \nштромицин\n#Клиндамицин **\n600 мг\nвнутримышечно, \nвнутривенно капельно"
+  ],
+  "source_references": [
+    {
+      "guideline_id": "1148",
+      "page": "54",
+      "pdf": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+      "source_quote": "При аллергических реакциях на пенициллины\n#клиндамицин** или э\nи/или цефалоспорины применимы \nштромицин\n#Клиндамицин **\n600 мг\nвнутримышечно, \nвнутривенно капельно"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+      "source_location": "page 54",
+      "source_object_id": "5600",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+      "source_location": "page 54",
+      "source_object_id": "5600",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+      "source_location": "page 54",
+      "source_object_id": "5600",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+      "source_location": "page 54",
+      "source_object_id": "5600",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+      "source_location": "page 54",
+      "source_object_id": "5600",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [
+    "no_kb_p44_enrichment_for_guideline_1148"
+  ],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "f926d6c7027b966540659e1ddcf7217b253f3e8426515078ef67d497a96c546b",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

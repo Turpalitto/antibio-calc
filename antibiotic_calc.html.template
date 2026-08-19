@@ -150,6 +150,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
               <input id="owner-register-org" class="input-field rounded-xl px-3 py-2" value="independent practice" placeholder="Организация">
             </div>
             <button id="owner-register" type="button" class="rounded-xl bg-emerald-700 text-white px-4 py-2 font-black uppercase">Зарегистрировать локально</button>
+            <div class="rounded-2xl border-2 border-blue-300 dark:border-blue-800 p-4 space-y-3">
+              <div class="font-black text-blue-900 dark:text-blue-200">Дозировки, извлечённые из актуального PDF КР</div>
+              <div class="text-[11px] text-slate-600 dark:text-slate-400">Приложение показывает точную строку таблицы, страницу и хеш PDF. Выберите допустимый вариант расчёта и подтвердите его одной кнопкой. Неоднозначные строки блокируются.</div>
+              <div class="flex flex-col md:flex-row gap-2">
+                <input id="owner-guideline-id" class="input-field rounded-xl px-3 py-2 flex-1" value="314" placeholder="Номер КР, например 314">
+                <button id="owner-load-extracted" type="button" class="rounded-xl bg-blue-700 text-white px-4 py-2 font-black uppercase">Загрузить из PDF КР</button>
+              </div>
+              <div id="owner-extracted-candidates" class="space-y-3"></div>
+            </div>
+            <details class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+              <summary class="cursor-pointer font-bold">Ручной JSON (резервный режим)</summary>
+              <div class="mt-3 space-y-2">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               <textarea id="owner-regimen-json" rows="9" class="input-field rounded-xl px-3 py-2 font-mono" placeholder='regimen_payload JSON: идентификаторы, dose, population, safety, provenance, terminology_mappings, alternatives'></textarea>
               <textarea id="owner-binding-json" rows="9" class="input-field rounded-xl px-3 py-2 font-mono" placeholder='calculator_binding JSON: disease_id, scenario_id, line_number, route, drug_ref/combo_ref, regimen_label/regimen_index, binding_version'></textarea>
@@ -159,6 +171,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
               <input id="owner-rationale" class="input-field rounded-xl px-3 py-2 md:col-span-2" placeholder="Обоснование аттестации">
             </div>
             <button id="owner-attest" type="button" class="rounded-xl bg-amber-700 text-white px-4 py-2 font-black uppercase">Аттестовать одну схему</button>
+              </div>
+            </details>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
               <input id="owner-event-ids" class="input-field rounded-xl px-3 py-2 md:col-span-2" placeholder="event_id через запятую">
               <input id="owner-bundle-version" class="input-field rounded-xl px-3 py-2" placeholder="Версия bundle, например owner-1.0">
@@ -214,6 +228,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
           <button onclick="resetDisease()" class="text-blue-300 hover:text-red-500"><i class="fas fa-times-circle text-lg"></i></button>
         </div>
         <div id="active-indications" class="mt-2 text-[11px] text-blue-900/80 dark:text-blue-300/80 font-semibold"></div>
+        <div id="source-calculation-block" class="hidden mt-3 rounded-xl border-2 border-red-500 bg-red-50 dark:bg-red-950/40 px-3 py-3 text-[12px] font-black text-red-800 dark:text-red-200"></div>
       </div>
     </section>
 
@@ -448,6 +463,7 @@ let activeAge = 'child';
 let userPickedAge = false;
 let currentRouteGroup = 'all';
 let personalCandidates = [];
+let extractedReviewCandidates = [];
 
 function $(id){return document.getElementById(id);}
 function toast(msg){
@@ -564,6 +580,7 @@ function setupPersonalMode(){
   $('personal-request').addEventListener('click', requestPersonalCandidates);
   $('personal-health').addEventListener('click', checkPersonalHealth);
   $('owner-register').addEventListener('click', registerPersonalOwner);
+  $('owner-load-extracted').addEventListener('click', loadExtractedCandidates);
   $('owner-attest').addEventListener('click', attestPersonalRegimen);
   $('owner-build').addEventListener('click', buildPersonalBundle);
 }
@@ -607,6 +624,48 @@ async function attestPersonalRegimen(){
     $('owner-event-ids').value=[$('owner-event-ids').value.trim(),body.event_id].filter(Boolean).join(',');
     showOwnerWorkflow(body); setPersonalStatus('ready','Схема аттестована; теперь соберите bundle');
   }catch(error){ setPersonalStatus('error',error.message); showOwnerWorkflow(error.message); }
+}
+async function loadExtractedCandidates(){
+  const box=$('owner-extracted-candidates'); box.textContent='Загрузка проверяемых строк PDF…';
+  try{
+    const guidelineId=$('owner-guideline-id').value.trim();
+    const body=await personalJson('/v2/personal/extracted-candidates/'+encodeURIComponent(guidelineId));
+    extractedReviewCandidates=body.candidates||[]; renderExtractedCandidates(extractedReviewCandidates);
+    setPersonalStatus('ready','Из PDF КР №'+guidelineId+' извлечено схем: '+extractedReviewCandidates.length);
+  }catch(error){ box.textContent='BLOCKED: '+error.message; setPersonalStatus('blocked','BLOCKED: '+error.message); }
+}
+function renderExtractedCandidates(candidates){
+  const box=$('owner-extracted-candidates'); box.innerHTML='';
+  candidates.forEach((candidate,index)=>{
+    const card=document.createElement('div'); card.className='rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2';
+    const title=document.createElement('div'); title.className='font-black'; title.textContent=candidate.drug+' · '+candidate.dose.value_min+(candidate.dose.value_max!==candidate.dose.value_min?'–'+candidate.dose.value_max:'')+' мг/кг/сут';
+    const source=document.createElement('div'); source.className='text-[11px] whitespace-pre-wrap text-slate-600 dark:text-slate-400'; source.textContent='Стр. '+candidate.source.page+': '+candidate.source.wording;
+    const select=document.createElement('select'); select.className='input-field rounded-xl px-3 py-2 w-full';
+    (candidate.calculator_options||[]).forEach((option,optionIndex)=>{const el=document.createElement('option');el.value=optionIndex;el.textContent=option.label;select.appendChild(el);});
+    const button=document.createElement('button'); button.type='button'; button.className='rounded-xl bg-emerald-700 disabled:bg-slate-400 text-white px-4 py-2 font-black uppercase';
+    if(candidate.blocking_reasons&&candidate.blocking_reasons.length){button.textContent='Требуется ручная проверка: '+candidate.blocking_reasons.map(candidateReasonLabel).join('; ');button.disabled=true;}
+    else if(!(candidate.calculator_options||[]).length){button.textContent='Нет точного варианта калькулятора';button.disabled=true;}
+    else {button.textContent='Подтвердить эту схему';button.onclick=()=>attestExtractedCandidate(index,Number(select.value));}
+    card.append(title,source,select,button); box.appendChild(card);
+  });
+  if(!candidates.length) box.textContent='В локальном проверяемом пакете нет схем.';
+}
+function candidateReasonLabel(code){
+  const labels={MULTIPLE_DOSE_STRATA:'в строке несколько весовых категорий',FREQUENCY_NOT_EXTRACTED:'не удалось однозначно извлечь кратность',ROUTE_NOT_EXACT:'в строке не указан точный путь введения'};
+  return labels[code]||code;
+}
+async function attestExtractedCandidate(candidateIndex,optionIndex){
+  try{
+    const candidate=extractedReviewCandidates[candidateIndex], option=(candidate.calculator_options||[])[optionIndex];
+    if(!candidate||!option) throw new Error('Не выбран точный вариант расчёта');
+    const rationale=$('owner-rationale').value.trim()||'Проверены строка таблицы PDF КР, суточная доза, кратность, длительность и вариант расчёта';
+    const body=await personalJson('/v2/personal/attest-candidate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      session_token:$('personal-session-token').value.trim(), guideline_id:$('owner-guideline-id').value.trim(),
+      candidate_id:candidate.candidate_id, calculator_binding:option.binding, rationale
+    })});
+    $('owner-event-ids').value=[$('owner-event-ids').value.trim(),body.event_id].filter(Boolean).join(',');
+    showOwnerWorkflow(body); setPersonalStatus('ready',candidate.drug+' подтверждён; соберите и активируйте bundle');
+  }catch(error){setPersonalStatus('error',error.message);showOwnerWorkflow(error.message);}
 }
 async function buildPersonalBundle(){
   try{
@@ -721,6 +780,7 @@ function resolveCalculatorBinding(binding){
   if(!hasLabel && !hasIndex) throw new Error('Требуется regimen_label или точный regimen_index');
   const disease = (DB.recommendations||[]).find(item=>item.id === binding.disease_id);
   if(!disease) throw new Error('Неизвестный disease_id');
+  if(disease.calculation_blocked) throw new Error('Расчёт для этой нозологии заблокирован до верификации актуального источника');
   const scenario = (disease.scenarios||[]).find(item=>item.id === binding.scenario_id);
   if(!scenario) throw new Error('scenario_id не принадлежит disease_id');
   if(scenario.age_group !== 'all' && scenario.age_group !== activeAge) throw new Error('scenario_id не подходит возрастной группе');
@@ -883,6 +943,10 @@ function selectDisease(d){
   $('active-cr').textContent = 'КР #'+d.cr_id+' • '+d.cr_year;
   $('active-indications').textContent = d.indications ? 'Показания: '+d.indications.join('; ') : '';
   $('empty-state').classList.add('hidden');
+  if(!applyDiseaseSourceGate(d)){
+    updateHash();
+    return;
+  }
   $('scenario-step').classList.remove('hidden');
   $('drug-step').classList.add('hidden');
   $('form-step').classList.add('hidden');
@@ -890,9 +954,23 @@ function selectDisease(d){
   renderScenarios();
   updateHash();
 }
+function applyDiseaseSourceGate(d){
+  const block=$('source-calculation-block');
+  const blocked=!!(d&&d.calculation_blocked);
+  block.classList.toggle('hidden',!blocked);
+  block.textContent=blocked?'РАСЧЁТ ЗАБЛОКИРОВАН: '+(d.calculation_block_reason||'источник требует повторной верификации'):'';
+  if(blocked){
+    $('scenario-step').classList.add('hidden');
+    $('drug-step').classList.add('hidden');
+    $('form-step').classList.add('hidden');
+    $('result-step').classList.add('hidden');
+  }
+  return !blocked;
+}
 function resetDisease(){
   activeDisease = null; activeScenario = null; activeDrug = null;
   $('active-disease').classList.add('hidden');
+  $('source-calculation-block').classList.add('hidden');
   $('scenario-step').classList.add('hidden');
   $('drug-step').classList.add('hidden');
   $('form-step').classList.add('hidden');

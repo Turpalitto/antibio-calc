@@ -1,5 +1,213 @@
 # AI LOG
 
+## 2026-08-02: official registry audit, invalid-ID quarantine, CAP source contracts
+
+Captured all 746 current cards from the official Minzdrav registry API using
+100-record pagination. Of the calculator's remaining declared sources, 33
+unique current revisions now map to 37 disease records and all have official
+`ApplyStatusCalculated=1`. Corrected AOM identity from legacy `314` to current
+`314_3`; its PDF/candidate hashes are repinned. Added
+`clinical_sources/invalid_source_mappings_2026-08-02.json`: eight numeric code
+collisions (NEC, omphalitis, animal bite, postoperative prophylaxis, recurrent
+UTI prophylaxis, erysipelas, pneumococcal meningitis, diphtheria) and five codes
+absent from the current registry were removed from disease source fields. They
+remain fail-closed.
+
+Added reproducible official-card and metadata-sync tooling with semantic title
+guards. Added pinned source contracts for adult CAP `654_2` (32 candidates,
+payload `306e434b...e6494f`) and pediatric CAP `714_2` (19 candidates, payload
+`4c380648...84fff`); all are review-blocked until dose-table rows are bound to
+clinical scenarios/age strata. Extended interval parsing for `каждые N ч` and
+`каждые N-M ч`, then regenerated and repinned all seven candidate artifacts.
+Files changed include `src/pipeline/extraction/official_card_audit.py`,
+`sync_official_source_metadata.py`, `regimen_candidates.py`, source specs,
+disease JSON, and corresponding tests. DB build: 72 diseases, 40 drugs, 287
+regimens; source gate leaves 71 blocked. Full test command
+`.venv\Scripts\python.exe -m pytest -q` → 1584 passed, 1 xfailed, 0 failed.
+
+## 2026-08-02: UTI source batch and fixed-dose extraction
+
+Official cards confirmed: cystitis in women `14_3`/2024, acute pyelonephritis
+`9_3`/2024, UTI in pregnancy `719_2`/2025, and urolithiasis `7_2`/2024. Updated
+all four DB IDs and source URLs. Current local PDFs open successfully and are
+recorded in the full inventory.
+
+Extended `regimen_candidates.py` for fixed mg/g per-dose regimens, mg/kg per
+dose, compact `N r/day`, every-N-hours intervals, one-time dosing, declarative
+ATC/drug identity, and inclusive age constraints. Added pinned CR 9_3 spec:
+PDF SHA-256 `b46960a144b21cacf97f39435c53489bb8a57f0e775be6d8df9e658f67ce08cf`,
+21 deterministic candidates, payload SHA-256
+`d268ac78f7ad595ac5a3bfa3a522954001d4dbd2068348e325115da5aa7ac24a`.
+Seven rows are structurally calculation-ready; mixed IV/IM and compound rows
+remain blocked.
+
+Corrected cystitis cefixime duration from 7 to the source-stated 5 days. Found
+an unresolved severe-pyelonephritis disagreement: table 2 gives ceftriaxone
+1-2 g twice daily for 14 days while the old calculator used 2 g once daily for
+7-14 days; the disease remains blocked. Tightened source gate: a pinned spec
+alone cannot unblock calculation without `CALCULATOR_BOUND_VERIFIED`.
+Rebuilt DB/HTML. Tests: 1569 passed, 1 xfailed, 0 failed.
+
+## 2026-08-02: full 72-disease inventory and global source fail-closed gate
+
+Built `clinical_sources/source_inventory_2026-08-02.json` with all 72
+calculator diseases, declared CR ID/year/URL, local rubricator metadata match,
+PDF path, byte size, page count and SHA-256. Added reproducible generator
+`src/pipeline/extraction/source_inventory.py` and tests. Results: 50/72 have a
+declared non-placeholder CR ID, 48 match local rubricator metadata, and 43 have
+a discoverable local PDF. Twenty-two records still use a dash/no CR ID; several
+numeric IDs collide with unrelated rubricator diseases and require title-led
+official discovery.
+
+Added `calculator_source_gate.py` and integrated it into `db/build_db.ps1`.
+Every generated calculator record now fails closed unless it has a tracked
+hash-pinned source spec or an existing explicit block. Build result: 67 newly
+blocked, 4 already blocked, 1 source-covered record remains unblocked. Browser
+QA confirmed pediatric CAP hides all calculation controls with a clear source
+reason.
+
+Official rubricator cards confirmed: adult CAP `654_2`/2024, pediatric CAP
+`714_2`/2025, adult sepsis `898_1`/2024, neonatal sepsis `912_1`/2025. Updated
+their DB IDs/URLs and corrected pediatric CAP year from 2024 to 2025. Rebuilt
+DB/HTML. Full tests: 1568 passed, 1 xfailed, 0 failed.
+
+## 2026-08-02: CR 306_3 source contract and fail-closed candidates
+
+Verified the official Ministry rubricator card
+`https://cr.minzdrav.gov.ru/view-cr/306_3`: acute tonsillitis/pharyngitis,
+ID `306_3`, approval year 2024, adults and children, revision no later than
+2026. Inspected the 55-page local current PDF (736,786 bytes), SHA-256
+`33d3393ae7f5aec31cfe933e186a98e6aef853cc563665399d46d79f803ec337`.
+
+Added `clinical_sources/regimen_candidate_specs/306_3.json` and extended
+`src/pipeline/extraction/regimen_candidates.py` with hash-pinned row groups,
+per-table dose columns, row-specific duration, `1 or 2` frequency parsing,
+ATX spelling support, mixed IV/IM detection, and explicit blocking reasons.
+The deterministic payload contains 16 pediatric candidates, hash
+`0203f140cf97fe3d49cfe93b8bf6b5cf0252694b9e0579455b6250eed5ef0283f`;
+6 simple oral rows are machine-parseable and 10 fail closed.
+
+Material mismatches were found in the old calculator, including pediatric
+azithromycin 12 instead of 20 mg/kg/day, adult cefuroxime 500 instead of
+1000 mg/day, and adult josamycin 2000 instead of 1000 mg/day. Both
+`pharyngitis_adult` and `pharyngitis_child` now reference CR 306_3 and are
+`calculation_blocked` pending exact reconstruction and owner review. Rebuilt
+DB/HTML. Source audit: 3/72 diseases have a pinned spec; 4 are blocked; 67
+remain unblocked without a spec. Browser QA passed. Full tests: 1566 passed,
+1 xfailed, 0 failed.
+
+## 2026-08-02: stale sinusitis regimens blocked against current CR 313_3
+
+Verified the official Ministry rubricator card
+`https://cr.minzdrav.gov.ru/view-cr/313_3`: `Острый синусит`, ID `313_3`,
+approval year 2024, adults and children, revision no later than 2026. The
+existing calculator records `sinusitis_adult` and `sinusitis_child` still
+referenced CR 313/2021 and contained unverified old regimens.
+
+The current official web document shows clinically material differences. For
+children it states standard amoxicillin 50-60 mg/kg/day in 2-3 doses;
+80-90 mg/kg/day only with risk of resistant pneumococcus; amoxicillin/
+clavulanate 45-60 mg/kg/day in 2-3 doses with beta-lactamase risk or failure
+after 48-72 hours; cefixime 8 mg/kg/day in 1-2 doses; clarithromycin
+15 mg/kg/day in 2 doses. The stale calculator instead presented 90 mg/kg/day
+as the standard pediatric amoxicillin regimen.
+
+The complete current PDF endpoint reported 1,284,442 bytes but repeatedly
+stalled after a small prefix. The local corpus PDF was inspected and rejected:
+it is 51 pages, CR 313, approval year 2021, revision due 2023. No incomplete or
+stale PDF was accepted into the source registry.
+
+Updated both sinusitis records to CR 313_3/2024 and marked them
+`CURRENT_WEB_CONFIRMED_PDF_PENDING` plus `calculation_blocked=true`.
+`antibiotic_calc.html.template` now renders a red source block and hides
+scenario, drug, form and result controls. Server-side personal calculator
+binding also rejects these records as `CALCULATOR_SOURCE_BLOCKED`. Rebuilt
+`db/antibio_db.json` and `antibiotic_calc.html`.
+
+Coverage is now 1 verified / 2 explicitly source-blocked / 69 unblocked
+missing-spec diseases. Browser QA confirmed `КР #313_3 • 2024` and full UI
+calculation blocking for pediatric sinusitis. Verification:
+`.venv\Scripts\python.exe -m pytest -q` -> 1564 passed, 1 xfailed, 0 failed;
+one dependency deprecation warning.
+
+## 2026-08-01: source registry and tamper-evident extraction contract added
+
+Added the tracked source registry under
+`clinical_sources/regimen_candidate_specs/`. CR 314 is the first verified
+entry and pins both the official PDF SHA-256 and the canonical SHA-256 of all
+eight extracted candidate payloads. `regimen_candidates.py` now loads strict
+JSON specs, rejects missing fields, PDF replacement and extraction drift, and
+provides a reproducible CLI for artifact/Versioned-KB generation.
+
+`clinical_engine/personal/extracted_candidates.py` now revalidates the local
+artifact against the tracked source contract on every list/attestation access.
+Any local change to dose, frequency, route, wording, provenance or candidate
+set fails closed as `EXTRACTED_SOURCE_CONTRACT_MISMATCH`. No candidate was
+attested and no bundle was activated.
+
+Added `source_coverage.py` and its disease-level audit. Current truthful
+coverage is 1/72 calculator diseases with a verified source spec; 71 remain
+explicitly `MISSING_SPEC`. The official rubricator exposes a newer sinusitis
+revision at `https://cr.minzdrav.gov.ru/view-cr/313_3`, but the API download
+timed out twice and produced only 31,475 of 1,284,442 bytes. That partial file
+was not accepted, parsed or registered.
+
+Verification: focused source/runtime tests -> 11 passed. Canonical
+`.venv\Scripts\python.exe -m pytest -q` -> 1563 passed, 1 xfailed, 0 failed;
+one Starlette/httpx deprecation warning. Restarted the preview on
+`http://127.0.0.1:8980/personal`; live API returned all eight CR 314
+candidates, and browser QA showed eight cards with four correctly blocked.
+
+## 2026-08-01: calculator linked to queued PDF-extracted regimen candidates
+
+Implemented the first end-to-end source-data path on current Ministry of
+Health CR 314 (`Отит средний острый`, 2024): official PDF SHA-256
+`6022928b4138f2a2ab9319c34e2a3b2c13bb53f2d08add5eb3fa83eed296665d`,
+table pages 21-23 and duration page 25.
+
+`src/pipeline/extraction/layout.py` now uses PyMuPDF native tables before ML
+fallbacks and preserves superscript footnotes as `[fn:N]`; `50-60¹` can no
+longer become `601`. Added
+`src/pipeline/extraction/regimen_candidates.py`: row/column/bbox/PDF-hash
+provenance, cross-page row continuation, dose/frequency/route parsing,
+fail-closed ambiguity flags and queued Versioned-KB persistence.
+
+Added `clinical_engine/personal/extracted_candidates.py`, API routes
+`GET /v2/personal/extracted-candidates/{guideline_id}` and
+`POST /v2/personal/attest-candidate`, server-side calculator-range validation,
+and the one-click PDF candidate UI in `antibiotic_calc.html.template`.
+Manual JSON remains only as a collapsed fallback. The current CR 314 artifact
+contains 8 extracted pediatric schemes; multi-stratum IV amoxicillin/clavulanate
+and unspecified parenteral ceftriaxone are blocked. Cefuroxime under 3 years is
+not offered for calculation because the local formulary lacks a verified oral
+suspension concentration. Amoxicillin, oral amoxicillin/clavulanate, cefixime
+and clarithromycin have calculator options with suspension forms.
+
+Corrected `db/diseases/respiratory.json::aom_child` to current CR 314 values
+and rebuilt `db/antibio_db.json` plus `antibiotic_calc.html`. Local preview was
+restarted on `http://127.0.0.1:8980/personal`; browser QA loaded all 8 cards
+with exact pages/wording and the expected blocked states. No candidate was
+attested and no personal bundle was activated.
+
+Verification: `.venv\Scripts\python.exe -m pytest -q` -> 1558 passed,
+1 xfailed, 0 failed; one dependency deprecation warning. DB/HTML builds PASS
+with 72 diseases, 40 drugs, 287 regimens and eight pre-existing age warnings.
+
+## 2026-08-01: local physician owner registered and lost-token recovery hardened
+
+Registered the local PERSONAL_PHYSICIAN owner as `khatiev_turpal`
+(`Хатиев Турпал Хусаинович`, physician, `МЕГИ`) under the gitignored
+`.local/personal_physician/` state directory. No regimen was attested and no
+clinical bundle was activated. The one-time raw token is not persisted.
+
+Added `recover_unactivated_owner()` plus `/v2/personal/recover-owner`. Recovery
+is allowed only while no attestation ledger, bundle, active pointer, or request
+audit exists; it fails closed after any clinical ownership artifact exists.
+Focused verification: `pytest clinical_engine/tests/test_personal_runtime.py
+clinical_engine/tests/test_api_v2.py -q` -> 13 passed.
+Full verification: `.venv\Scripts\python.exe -m pytest -q` -> 1552 passed,
+1 skipped, 1 xfailed, 0 failed.
+
 ## 2026-08-01: accepted PERSONAL_PHYSICIAN RFC implemented end-to-end
 
 Implemented the accepted RFC on `codex/personal-physician-mode` without

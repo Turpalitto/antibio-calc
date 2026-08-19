@@ -1,0 +1,42 @@
+{
+  "infer_time_sec": 0.86,
+  "regions": [
+    {
+      "class": "plain text",
+      "conf": 0.985
+    },
+    {
+      "class": "plain text",
+      "conf": 0.98
+    },
+    {
+      "class": "plain text",
+      "conf": 0.98
+    },
+    {
+      "class": "plain text",
+      "conf": 0.974
+    },
+    {
+      "class": "plain text",
+      "conf": 0.972
+    },
+    {
+      "class": "plain text",
+      "conf": 0.946
+    },
+    {
+      "class": "plain text",
+      "conf": 0.94
+    },
+    {
+      "class": "plain text",
+      "conf": 0.939
+    },
+    {
+      "class": "abandon",
+      "conf": 0.873
+    }
+  ],
+  "exit_status": "OK"
+}

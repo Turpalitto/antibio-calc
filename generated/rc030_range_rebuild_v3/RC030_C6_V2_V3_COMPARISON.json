@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "v2_original_candidates": 365,
+  "v2_trustworthy": 186,
+  "v2_suspect": 179,
+  "v3_input_suspect_count": 179,
+  "v3_safe_exact_link": 0,
+  "v3_safe_table_link": 0,
+  "v3_safe_single_candidate": 0,
+  "v3_safe_total": 0,
+  "v3_ambiguous_total": 46,
+  "v3_wrong_range_anchor": 111,
+  "v3_not_a_dose_range": 22,
+  "v3_classification_counts": {
+    "WRONG_RANGE_ANCHOR": 111,
+    "AMBIGUOUS_ALTERNATIVE_BOUNDARY": 23,
+    "AMBIGUOUS_TABLE_CONTEXT": 12,
+    "NOT_A_DOSE_RANGE": 22,
+    "AMBIGUOUS_MULTIPLE_DRUGS": 10,
+    "AMBIGUOUS_LOADING_MAINTENANCE": 1
+  },
+  "rows_where_v2_selected_wrong_drug_range_confirmed_by_v3": 179,
+  "unrelated_clinical_field_changes": 0,
+  "calculation_eligible_before": 0,
+  "calculation_eligible_after": 0,
+  "approved_objects_before": 0,
+  "approved_objects_after": 0,
+  "authoritative_db_hash_before": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+  "authoritative_db_hash_after": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9"
+}

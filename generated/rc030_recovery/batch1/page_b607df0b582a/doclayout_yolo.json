@@ -1,0 +1,26 @@
+{
+  "infer_time_sec": 0.7,
+  "regions": [
+    {
+      "class": "plain text",
+      "conf": 0.981
+    },
+    {
+      "class": "plain text",
+      "conf": 0.98
+    },
+    {
+      "class": "plain text",
+      "conf": 0.971
+    },
+    {
+      "class": "table",
+      "conf": 0.969
+    },
+    {
+      "class": "table_caption",
+      "conf": 0.853
+    }
+  ],
+  "exit_status": "OK"
+}

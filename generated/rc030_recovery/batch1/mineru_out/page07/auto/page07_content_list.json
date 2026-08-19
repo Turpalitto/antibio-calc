@@ -1,0 +1,60 @@
+[
+    {
+        "type": "text",
+        "text": "При тяжелом течении ОСО у стационарных пациентов предпочтителен внутримышечный и внутривенный пути введения антибиотиков, целесообразно назначение парентеральных цефалоспоринов 3-его поколения: цефотаксима\\*\\* (Код АТХ: J01DD01) или цефтриаксона\\*\\* (Код АТХ: J01DD04). При условии внутривенного введения возможно использование Амоксициллин+Клавулановая кислота\\*\\* (Код АТХ:J01CR02).",
+        "bbox": [
+            23,
+            0,
+            973,
+            115
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "При наличии в анамнезе у пациента непереносимости пенициллинов в качестве препаратов выбора целесообразно использовать препараты цефалоспоринов 3-его поколения: для амбулаторной практики - цефиксим (Код АТХ: J01DD08), для пациентов стационара при необходимости парентерального введения - цефотаксима\\*\\* (Код АТХ: J01DD01) или цефтриаксона\\*\\* (Код АТХ: J01DD04).",
+        "bbox": [
+            23,
+            135,
+            973,
+            247
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "В настоящее время, в связи с нарастающей резистентностью основных патогенов, вызывающих гнойные воспаления ЛОР органов, к антибактериальным препаратам, рекомендовано увеличение разовой и суточной дозы введения антибиотиков при ОСО у взрослых и детей. Суточные дозы и режим введения антибиотиков при остром среднем отите представлены в таблице 4.",
+        "bbox": [
+            23,
+            267,
+            973,
+            379
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Таблица 4. Суточные дозы и режим введения антибиотиков при ОСО",
+        "bbox": [
+            26,
+            398,
+            717,
+            417
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "table",
+        "img_path": "images/af76fc0d6d1613df073793a541483167f6b8a0838d8e6127516d37a97a77e7a6.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=2 colspan=1></td><td rowspan=1 colspan=2></td><td rowspan=2 colspan=1>   </td></tr><tr><td rowspan=1 colspan=1></td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4> </td></tr><tr><td rowspan=1 colspan=1>* ( : 104)</td><td rowspan=1 colspan=1>0,5[1] - 1,0[2] r 3  </td><td rowspan=1 colspan=1>50-60¹ /κ/yT B2-3 </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>+[]** ( :0102)</td><td rowspan=1 colspan=1>500/125 Mr 3 pa3aB        875/125 Mr 2 pa3a </td><td rowspan=1 colspan=1>45-60 /κ/cyτ B2-3 </td><td rowspan=1 colspan=1>   </td></tr><tr><td rowspan=1 colspan=1>+[4** ( :0102)</td><td rowspan=1 colspan=1>3,6 /CyT B/B B 3</td><td rowspan=1 colspan=1>90 /κ/ B 3</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>+[][](ATX JÓ1CR01)</td><td rowspan=1 colspan=1>500/500 Mr 3 pa3aB         875/125 Mr 2 pa3a </td><td rowspan=1 colspan=1>2-6  - 250  3  6-12  - 250-500    </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>[4]**      (     ATX:J01DD04)</td><td rowspan=1 colspan=1>2,0-4,0 /cyT B 1</td><td rowspan=1 colspan=1>50-80 M/κr/cyτ B 1</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4>   ( )</td></tr><tr><td rowspan=1 colspan=1>**( : 0102)</td><td rowspan=1 colspan=1>1,0 /cyτ  B  2</td><td rowspan=1 colspan=1>30 /κ/τ B 2</td><td rowspan=1 colspan=1>  </td></tr><tr><td rowspan=1 colspan=1> ( : 0108)</td><td rowspan=1 colspan=1>400M/CyT B1</td><td rowspan=1 colspan=1>8 /κ/cyτ B 1</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4>    </td></tr><tr><td rowspan=1 colspan=1>( : 0107)</td><td rowspan=1 colspan=1>2000 /  2</td><td rowspan=1 colspan=1>40-50 //2-3 </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>*( : 0109)</td><td rowspan=1 colspan=1>1000 /cyτ B 2 ( -  1 )</td><td rowspan=1 colspan=1>15 /κ/cyτ B 2</td><td rowspan=1 colspan=1></td></tr></table>",
+        "bbox": [
+            28,
+            432,
+            969,
+            970
+        ],
+        "page_idx": 0
+    }
+]

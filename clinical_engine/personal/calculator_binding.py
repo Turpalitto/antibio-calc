@@ -8,8 +8,17 @@ from .models import PersonalModeError
 DEFAULT_CALCULATOR_DB = Path(__file__).resolve().parents[2] / "db" / "antibio_db.json"
 
 def verified_binding(binding: Mapping[str, Any], db_path: str | Path = DEFAULT_CALCULATOR_DB) -> dict[str, Any]:
+    raw, _ = resolve_binding(binding, db_path)
+    return raw
+
+def resolve_binding(binding: Mapping[str, Any], db_path: str | Path = DEFAULT_CALCULATOR_DB) -> tuple[dict[str, Any], dict[str, Any]]:
     raw, db = dict(binding), json.loads(Path(db_path).read_text(encoding="utf-8-sig"))
     disease = _one(db.get("recommendations", []), "id", raw.get("disease_id"), "disease")
+    if disease.get("calculation_blocked"):
+        raise PersonalModeError(
+            "CALCULATOR_SOURCE_BLOCKED",
+            str(disease.get("calculation_block_reason") or "calculator source requires verification"),
+        )
     scenario = _one(disease.get("scenarios", []), "id", raw.get("scenario_id"), "scenario")
     lines = [x for x in scenario.get("lines", []) if x.get("line_number") == raw.get("line_number")]
     matches = []
@@ -31,7 +40,7 @@ def verified_binding(binding: Mapping[str, Any], db_path: str | Path = DEFAULT_C
     projection = {"disease":{k:disease.get(k) for k in ("id","name","mkb10","cr_id","cr_year","source_url")},"scenario":{"id":scenario.get("id"),"age_group":scenario.get("age_group")},"line":{"line_number":line.get("line_number"),"line_label":line.get("line_label")},"drug":{k:drug.get(k) for k in ("drug_ref","combo_ref","route")},"regimen":regimen}
     canonical = json.dumps(projection, ensure_ascii=False, sort_keys=True, separators=(",",":"), allow_nan=False)
     raw["calculator_regimen_sha256"] = "sha256:" + hashlib.sha256(canonical.encode()).hexdigest()
-    return raw
+    return raw, projection
 
 def _one(items:list[dict[str,Any]], key:str, value:Any, label:str)->dict[str,Any]:
     matches=[x for x in items if x.get(key)==value]

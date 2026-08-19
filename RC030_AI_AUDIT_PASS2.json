@@ -1,0 +1,606 @@
+{
+  "pass": "PASS2_REVEAL",
+  "pass1_frozen_sha256": "a7b7bdd68469c08c5e22131612b2e9bea8e6822711cf0db6aca7fbd045cde7cf",
+  "records": [
+    {
+      "regimen_id": "6657",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6659",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6658",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6121",
+      "blinded_pass1_verdict": "CORRECT_RANGE_DAILY",
+      "final_ai_verdict": "CORRECT_RANGE_DAILY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_RANGE_DAILY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6653",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6090",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6088",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6304",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5916",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6094",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DAY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5374",
+      "blinded_pass1_verdict": "WRONG_FREQUENCY_LINK",
+      "final_ai_verdict": "WRONG_FREQUENCY_LINK",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "WRONG_FREQUENCY_LINK",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6092",
+      "blinded_pass1_verdict": "CORRECT_RANGE_DAILY",
+      "final_ai_verdict": "CORRECT_RANGE_DAILY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_RANGE_DAILY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6579",
+      "blinded_pass1_verdict": "CORRECT_RANGE_DAILY",
+      "final_ai_verdict": "CORRECT_RANGE_DAILY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_RANGE_DAILY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7644",
+      "blinded_pass1_verdict": "CORRECT_RANGE_DAILY",
+      "final_ai_verdict": "CORRECT_RANGE_DAILY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_RANGE_DAILY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6580",
+      "blinded_pass1_verdict": "CORRECT_RANGE_DAILY",
+      "final_ai_verdict": "CORRECT_RANGE_DAILY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_RANGE_DAILY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7325",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7344",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7269",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7346",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7939",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7947",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5903",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7345",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7326",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5457",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7270",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5534",
+      "blinded_pass1_verdict": "CORRECT_RANGE_SINGLE",
+      "final_ai_verdict": "CORRECT_RANGE_SINGLE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_RANGE_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5619",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7347",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7256",
+      "blinded_pass1_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "final_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6651",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6652",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6655",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6654",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5450",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5895",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5913",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6976",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7025",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5961",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6944",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6939",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6945",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6946",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6942",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7730",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7716",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5905",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5897",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5452",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7343",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5683",
+      "blinded_pass1_verdict": "TABLE_CONTEXT_REQUIRED",
+      "final_ai_verdict": "TABLE_CONTEXT_REQUIRED",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "TABLE_CONTEXT_REQUIRED",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7895",
+      "blinded_pass1_verdict": "TABLE_CONTEXT_REQUIRED",
+      "final_ai_verdict": "TABLE_CONTEXT_REQUIRED",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "TABLE_CONTEXT_REQUIRED",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6224",
+      "blinded_pass1_verdict": "REMAINS_AMBIGUOUS",
+      "final_ai_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "AI_NONCONFIRMING",
+      "prior_ai_verdict": "REMAINS_AMBIGUOUS",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "7354",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "DISAGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "5670",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6072",
+      "blinded_pass1_verdict": "CORRECT_FIXED_SINGLE",
+      "final_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_FIXED_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6073",
+      "blinded_pass1_verdict": "CORRECT_RANGE_DAILY",
+      "final_ai_verdict": "CORRECT_RANGE_DAILY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_RANGE_DAILY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6074",
+      "blinded_pass1_verdict": "CORRECT_RANGE_SINGLE",
+      "final_ai_verdict": "CORRECT_RANGE_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_RANGE_SINGLE",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    },
+    {
+      "regimen_id": "6075",
+      "blinded_pass1_verdict": "CORRECT_RANGE_DAILY",
+      "final_ai_verdict": "CORRECT_RANGE_DAILY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "AGREE",
+      "prior_ai_verdict": "CORRECT_RANGE_DAILY",
+      "prior_ai_agreement": "SAME",
+      "internal_conflict": false
+    }
+  ]
+}

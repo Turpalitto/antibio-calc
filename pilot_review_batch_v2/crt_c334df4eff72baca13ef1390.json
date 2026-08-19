@@ -1,0 +1,270 @@
+{
+  "task": {
+    "task_id": "crt_c334df4eff72baca13ef1390",
+    "task_key": "ClinicalRegimen|6724|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "6724",
+    "target_version": 1,
+    "priority_score": 75,
+    "priority": "HIGH",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "HIGH",
+    "safety_axes": [
+      "renal"
+    ],
+    "source_references": [
+      {
+        "guideline_id": "1769",
+        "page": "19",
+        "pdf": "Повреждения хряща коленного сустава.pdf",
+        "source_quote": "При значимых факторах риска носительства метициллин-резистентных стафилококков (MRS) схема ХАП должна включать антибактериальный препарат системного применения с анти-MRS-активностью (ванкомицин**)."
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Повреждения хряща коленного сустава.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6724",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Повреждения хряща коленного сустава.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6724",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Повреждения хряща коленного сустава.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6724",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Повреждения хряща коленного сустава.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6724",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Повреждения хряща коленного сустава.pdf",
+        "source_location": "page 19",
+        "source_object_id": "6724",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\downloads_active\\Повреждения хряща коленного сустава.pdf",
+        "source_location": "page 24",
+        "source_object_id": "evi_01146ac5d4b4c889",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "renal:35"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult|renal",
+    "alternatives": [],
+    "antibiotic": "Ванкомицин",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.9132,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "Повреждения хряща коленного сустава",
+    "dose": 15.0,
+    "duration_max": 1.0,
+    "duration_min": 1.0,
+    "duration_recommended": 1.0,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Повреждения хряща коленного сустава.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6724",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Повреждения хряща коленного сустава.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6724",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Повреждения хряща коленного сустава.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6724",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Повреждения хряща коленного сустава.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6724",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Повреждения хряща коленного сустава.pdf",
+          "source_location": "page 19",
+          "source_object_id": "6724",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\downloads_active\\Повреждения хряща коленного сустава.pdf",
+          "source_location": "page 24",
+          "source_object_id": "evi_01146ac5d4b4c889",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": 1.0,
+    "guideline_id": "1769",
+    "icd_mkb": "M23.4, M94.2, M94.8, S83.3",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [],
+    "pregnancy": null,
+    "regimen_id": "6724",
+    "renal_adjustment": true,
+    "review_status": "pending",
+    "route": "iv",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "19",
+    "source_pdf": "Повреждения хряща коленного сустава.pdf",
+    "source_quote": "При значимых факторах риска носительства метициллин-резистентных стафилококков (MRS) схема ХАП должна включать антибактериальный препарат системного применения с анти-MRS-активностью (ванкомицин**).",
+    "status": "ASSEMBLED",
+    "therapy_line": "prophylaxis",
+    "unit": "mg/kg",
+    "validation_verdict": "PASS",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "При значимых факторах риска носительства метициллин-резистентных стафилококков (MRS) схема ХАП должна включать антибактериальный препарат системного применения с анти-MRS-активностью (ванкомицин**).",
+    "При значимых факторах риска носительства метициллин-резистентных стафилококков (MRS) схема ХАП должна включать антибактериальный препарат системного применения с анти-MRS-активностью (ванкомицин**).",
+    "При значимых факторах риска носительства метициллин-резистентных стафилококков (MRS) схема ХАП должна включать антибактериальный препарат системного применения с анти-MRS-активностью (ванкомицин**).",
+    "При значимых факторах риска носительства метициллин-резистентных стафилококков (MRS) схема ХАП должна включать антибактериальный препарат системного применения с анти-MRS-активностью (ванкомицин**).",
+    "При значимых факторах риска носительства метициллин-резистентных стафилококков (MRS) схема ХАП должна включать антибактериальный препарат системного применения с анти-MRS-активностью (ванкомицин**).",
+    "При значимых факторах риска носительства метициллин-резистентных стафилококков (MRS) схема ХАП должна включать антибактериальный препарат системного применения с анти-MRS-активностью (ванкомицин**)."
+  ],
+  "source_wording_status": "AVAILABLE",
+  "review_blocked": false,
+  "source_references": [
+    {
+      "guideline_id": "1769",
+      "page": "19",
+      "pdf": "Повреждения хряща коленного сустава.pdf",
+      "source_quote": "При значимых факторах риска носительства метициллин-резистентных стафилококков (MRS) схема ХАП должна включать антибактериальный препарат системного применения с анти-MRS-активностью (ванкомицин**)."
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Повреждения хряща коленного сустава.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6724",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Повреждения хряща коленного сустава.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6724",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Повреждения хряща коленного сустава.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6724",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Повреждения хряща коленного сустава.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6724",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Повреждения хряща коленного сустава.pdf",
+      "source_location": "page 19",
+      "source_object_id": "6724",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\downloads_active\\Повреждения хряща коленного сустава.pdf",
+      "source_location": "page 24",
+      "source_object_id": "evi_01146ac5d4b4c889",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "af357ee7617a24fa43d6323d49ea2e94108dc4fea6ac6d38e68372cddc07d9e0"
+}

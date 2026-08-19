@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "seed": 20260716,
+  "generated_from": {
+    "assembled_regimens_sha256": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9"
+  },
+  "queue": [
+    {
+      "regimen_id": "6657",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6659",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6658",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6121",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6653",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6090",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6088",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6304",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "5916",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6094",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "5374",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6092",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6579",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "7644",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "6580",
+      "stratum": "WEIGHT_PER_DAY"
+    },
+    {
+      "regimen_id": "7325",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7344",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7269",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7346",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7939",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7947",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "5903",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7345",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7326",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "5457",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7270",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "5534",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "5619",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7347",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "7256",
+      "stratum": "WEIGHT_PER_DOSE"
+    },
+    {
+      "regimen_id": "6651",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "6652",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "6655",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "6654",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "5450",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "5895",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "5913",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "6976",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "7025",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "5961",
+      "stratum": "FIXED_PER_DAY"
+    },
+    {
+      "regimen_id": "6944",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "6939",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "6945",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "6946",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "6942",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "7730",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "7716",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "5905",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "5897",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "5452",
+      "stratum": "FIXED_PER_DOSE"
+    },
+    {
+      "regimen_id": "7343",
+      "stratum": "AMBIGUOUS_CONTROL"
+    },
+    {
+      "regimen_id": "5683",
+      "stratum": "AMBIGUOUS_CONTROL"
+    },
+    {
+      "regimen_id": "7895",
+      "stratum": "AMBIGUOUS_CONTROL"
+    },
+    {
+      "regimen_id": "6224",
+      "stratum": "AMBIGUOUS_CONTROL"
+    },
+    {
+      "regimen_id": "7354",
+      "stratum": "AMBIGUOUS_CONTROL"
+    },
+    {
+      "regimen_id": "5670",
+      "stratum": "TABLE_SOURCE_RECOVERY"
+    },
+    {
+      "regimen_id": "6072",
+      "stratum": "TABLE_SOURCE_RECOVERY"
+    },
+    {
+      "regimen_id": "6073",
+      "stratum": "TABLE_SOURCE_RECOVERY"
+    },
+    {
+      "regimen_id": "6074",
+      "stratum": "TABLE_SOURCE_RECOVERY"
+    },
+    {
+      "regimen_id": "6075",
+      "stratum": "TABLE_SOURCE_RECOVERY"
+    }
+  ]
+}

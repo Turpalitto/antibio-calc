@@ -80,16 +80,68 @@ def test_merge_provenance_retains_distinct_cells():
     assert len(rows) == 2, f"expected 2 distinct cell provenances, got {len(rows)} (RC-017 regression)"
 
 
+def test_pymupdf_native_table_keeps_footnote_out_of_dose(tmp_path):
+    """A superscript footnote must never be concatenated into a clinical dose."""
+    import fitz
+    from src.pipeline.extraction.layout import LayoutProcessor
+
+    pdf = tmp_path / "dose-table.pdf"
+    doc = fitz.open()
+    page = doc.new_page(width=400, height=240)
+    xs, ys = (40, 210, 360), (40, 90, 150)
+    for x in xs:
+        page.draw_line((x, ys[0]), (x, ys[-1]))
+    for y in ys:
+        page.draw_line((xs[0], y), (xs[-1], y))
+    page.insert_text((50, 70), "Drug", fontsize=12)
+    page.insert_text((220, 70), "Child dose", fontsize=12)
+    page.insert_text((50, 125), "Amoxicillin", fontsize=12)
+    page.insert_text((220, 125), "50-60", fontsize=12)
+    page.insert_text((254, 120), "1", fontsize=8)  # superscript footnote marker
+    page.insert_text((260, 125), "mg/kg/day", fontsize=12)
+    doc.save(pdf)
+    doc.close()
+
+    opened = fitz.open(pdf)
+    processor = LayoutProcessor.__new__(LayoutProcessor)  # no heavyweight model loading
+    tables = processor._extract_tables_pymupdf_native(opened[0], 0, str(pdf))
+    opened.close()
+
+    assert len(tables) == 1
+    dose_cell = next(cell for cell in tables[0].cells if "50-60" in cell.text)
+    assert "50-601" not in dose_cell.text
+    compact = dose_cell.text.replace("\n", "").replace(" ", "")
+    assert "50-60[fn:1]" in compact
+    assert dose_cell.row == 1 and dose_cell.col == 1
+    assert dose_cell.source_pdf == str(pdf)
+    assert dose_cell.engine == "pymupdf-native-table"
+
+
+def test_current_aom_pdf_native_table_extracts_safe_pediatric_dose():
+    """Local acceptance guard for the current official CR 314 snapshot."""
+    import fitz
+    from src.pipeline.extraction.layout import LayoutProcessor
+
+    pdf = Path(r"C:\ANTIBIO\tmp\pdfs\aom\official_314.pdf")
+    if not pdf.is_file():
+        pytest.skip("current official CR 314 snapshot not available")
+    doc = fitz.open(pdf)
+    processor = LayoutProcessor.__new__(LayoutProcessor)
+    tables = processor._extract_tables_pymupdf_native(doc[20], 20, str(pdf))
+    doc.close()
+    texts = [cell.text.replace("\n", "") for table in tables for cell in table.cells]
+    assert any("50-60[fn:1]мг/кг/сут" in text for text in texts)
+    assert all("50-601мг/кг/сут" not in text for text in texts)
+
+
 def test_layout_produces_structured_tables_real():
-    """Real execution guard for the exact regressed stage. Skips if models/PDF unavailable."""
+    """Real execution guard; native digital tables work without heavyweight models."""
     pdf = Path(r"C:\clinrec_downloader\downloads_active\Сепсис новорождённых.pdf")
     if not pdf.exists():
         pytest.skip("real table-heavy PDF not available")
     try:
         from src.pipeline.extraction.layout import LayoutProcessor, add_layout_to_document
-        proc = LayoutProcessor()
-        if not (proc.table_detector and proc.table_structure):
-            pytest.skip("layout table models not available")
+        LayoutProcessor()
     except Exception:
         pytest.skip("layout stack not importable")
 

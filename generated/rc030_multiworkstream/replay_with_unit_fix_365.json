@@ -1,0 +1,2925 @@
+{
+  "count": 365,
+  "results": [
+    {
+      "regimen_id": "5584",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5620",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5621",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5622",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5623",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5624",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.5,
+      "dose_max": 1.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5625",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.5,
+      "dose_max": 1.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5627",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5628",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5659",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 1.0,
+      "dose_max": 2.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5660",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5661",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5671",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 500.0,
+      "dose_max": 1000.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5683",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 50.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5677",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5678",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 20.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5686",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 250.0,
+      "dose_max": 500.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5687",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 250.0,
+      "dose_max": 500.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5688",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 250.0,
+      "dose_max": 500.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5696",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 10.0,
+      "dose_max": 20.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5697",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 10.0,
+      "dose_max": 20.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5698",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 10.0,
+      "dose_max": 20.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6561",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6562",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5726",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.5,
+      "dose_max": 1.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5727",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 10.0,
+      "dose_max": 20.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5741",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5742",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5745",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5792",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5793",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5794",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5795",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5824",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 10.0,
+      "dose_max": 20.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5829",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5830",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5842",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5844",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5847",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5875",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5876",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5877",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5878",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5879",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5881",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 500.0,
+      "dose_max": 1000.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5917",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 20.0,
+      "dose_max": 40.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5918",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 30.0,
+      "dose_max": 50.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5928",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 10.0,
+      "dose_max": 20.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5949",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_RANGES",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5946",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 500.0,
+      "dose_max": 1000.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5998",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 1.0,
+      "dose_max": 2.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5999",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6000",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6042",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 10.0,
+      "dose_max": 20.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6050",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 250.0,
+      "dose_max": 500.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6051",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 250.0,
+      "dose_max": 500.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6052",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 250.0,
+      "dose_max": 500.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6067",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 500.0,
+      "dose_max": 1000.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6071",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6072",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 80.0,
+      "dose_max": 90.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6073",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 80.0,
+      "dose_max": 90.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6074",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 500.0,
+      "dose_max": 1000.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6075",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 45.0,
+      "dose_max": 60.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6078",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6084",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6085",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 2.0,
+      "dose_max": 4.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6086",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6092",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6068",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 5001.0,
+      "dose_max": 10002.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6107",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6110",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 3.0,
+      "dose_max": 12.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6111",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 3.0,
+      "dose_max": 12.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6112",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6113",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6114",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6115",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6121",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6124",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6125",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6126",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6127",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6130",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6131",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6132",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6133",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 1.2,
+      "dose_max": 4.8,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6134",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6199",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6230",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6231",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6232",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6233",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6579",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 45.0,
+      "dose_max": 60.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6580",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 45.0,
+      "dose_max": 60.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6275",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6276",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 15.0,
+      "dose_max": 20.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6296",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 30.0,
+      "dose_max": 50.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6297",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6298",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6299",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6323",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6324",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6325",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6326",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6511",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 30.0,
+      "dose_max": 50.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6512",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6513",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6514",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6550",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 30.0,
+      "dose_max": 50.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6551",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6552",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6553",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6638",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 90.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6639",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 90.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6642",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 250.0,
+      "dose_max": 1000.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6643",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 250.0,
+      "dose_max": 1000.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6644",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 250.0,
+      "dose_max": 1000.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6645",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 250.0,
+      "dose_max": 1000.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6611",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6612",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6617",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6618",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6623",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6624",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6625",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6630",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6631",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6688",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6689",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6690",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6691",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6753",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6754",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6755",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6756",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6757",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.5,
+      "dose_max": 1.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6758",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.5,
+      "dose_max": 1.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6760",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6761",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6763",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6764",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6765",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6766",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6767",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.5,
+      "dose_max": 1.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6768",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.5,
+      "dose_max": 1.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6770",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6771",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6786",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6787",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6788",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6789",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6790",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6791",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6793",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6794",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6796",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6797",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6798",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6799",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6800",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_RANGES",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6801",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_RANGES",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6802",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_RANGES",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6803",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6804",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.6,
+      "dose_max": 0.9,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6805",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6773",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6774",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6775",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6776",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6777",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6778",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6782",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6783",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6808",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6809",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6810",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6811",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6812",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6813",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6818",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6819",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6838",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6839",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6840",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6841",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6842",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6843",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6853",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6854",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6859",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6860",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6861",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6862",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6863",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6864",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6873",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6874",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6988",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 80.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6989",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6990",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 50.0,
+      "dose_max": 100.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7042",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 20.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7043",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 50.0,
+      "dose_max": 100.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7050",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 80.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7051",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 20.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7017",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7018",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7022",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7036",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7037",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7038",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7039",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7040",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7059",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7060",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7061",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7062",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7063",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7026",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7027",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7028",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7029",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7030",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7031",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7032",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7033",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7034",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7035",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7064",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7065",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7066",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7067",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7068",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7069",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7070",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 20.0,
+      "dose_max": 30.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7071",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7072",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7073",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6405",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6407",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7118",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 15.0,
+      "dose_max": 20.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7119",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7177",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7185",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7208",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 15.0,
+      "dose_max": 22.5,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7259",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 15.0,
+      "dose_max": 22.5,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7194",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7195",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7197",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7198",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7201",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7202",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7204",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7205",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7280",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7281",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7285",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7286",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7207",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7301",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7302",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7303",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7304",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_TABLE_CONTEXT",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7248",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7267",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7323",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7342",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7258",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 25.0,
+      "dose_max": 50.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7289",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7290",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7292",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_LOADING_MAINTENANCE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7293",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_LOADING_MAINTENANCE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7383",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7384",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7385",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7313",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 400.0,
+      "dose_max": 500.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7316",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 400.0,
+      "dose_max": 500.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7414",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 400.0,
+      "dose_max": 500.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7418",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 400.0,
+      "dose_max": 500.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7366",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7370",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7451",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7454",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7462",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7463",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7470",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7471",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7598",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7599",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7603",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7604",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7494",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7497",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 75.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7498",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 100.0,
+      "dose_max": 200.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7516",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7519",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 75.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7520",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 100.0,
+      "dose_max": 200.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7626",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7629",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 75.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7630",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 100.0,
+      "dose_max": 200.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7641",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7644",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 75.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7645",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 100.0,
+      "dose_max": 200.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7547",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7548",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7549",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7550",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7558",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7559",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7560",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7561",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7714",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7715",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7717",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7718",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7728",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7729",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7731",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7732",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7587",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7742",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7747",
+      "regimen_version": 1,
+      "classification": "NOT_A_DOSE_RANGE",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7653",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7654",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7655",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7656",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7803",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7804",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7805",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7806",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7814",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7815",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7816",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7817",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "7895",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 50.0,
+      "dose_max": 80.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7955",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7956",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7961",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "7962",
+      "regimen_version": 1,
+      "classification": "DICTIONARY_GAP",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6421",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6448",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5351",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5352",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5353",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_DRUGS",
+      "dose_min": 0.2,
+      "dose_max": 0.4,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5354",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5364",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 250.0,
+      "dose_max": 300.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5365",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_RANGES",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5366",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_RANGES",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6303",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 80.0,
+      "dose_max": 100.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "6305",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 80.0,
+      "dose_max": 100.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5382",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_ALTERNATIVE_BOUNDARY",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5383",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "6332",
+      "regimen_version": 1,
+      "classification": "AMBIGUOUS_MULTIPLE_RANGES",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5441",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 20.0,
+      "dose_max": 40.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5442",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 30.0,
+      "dose_max": 50.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5475",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 25.0,
+      "dose_max": 50.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5478",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 25.0,
+      "dose_max": 50.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5479",
+      "regimen_version": 1,
+      "classification": "WRONG_RANGE_ANCHOR",
+      "dose_min": null,
+      "dose_max": null,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5514",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 75.0,
+      "dose_max": 100.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5526",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 15.0,
+      "dose_max": 20.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5527",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 15.0,
+      "dose_max": 20.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5528",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 15.0,
+      "dose_max": 20.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5531",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 500.0,
+      "dose_max": 1000.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5533",
+      "regimen_version": 1,
+      "classification": "SAFE_SINGLE_CANDIDATE",
+      "dose_min": 15.0,
+      "dose_max": 20.0,
+      "old_trust": "SUSPECT_MULTI_DRUG_QUOTE"
+    },
+    {
+      "regimen_id": "5534",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 15.0,
+      "dose_max": 20.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5546",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    },
+    {
+      "regimen_id": "5547",
+      "regimen_version": 1,
+      "classification": "SAFE_EXACT_LINK",
+      "dose_min": 3.75,
+      "dose_max": 5.0,
+      "old_trust": "TRUSTWORTHY"
+    }
+  ]
+}

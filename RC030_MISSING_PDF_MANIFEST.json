@@ -1,0 +1,1939 @@
+{
+  "total_distinct_pdfs": 193,
+  "available_in_downloads_active_only": 125,
+  "available_somewhere_in_approved_storage": 193,
+  "genuinely_unavailable": 0,
+  "hash_mismatches": 0,
+  "records": [
+    {
+      "pdf": "Абсцесс. Фурункул носа. Карбункул носа..pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Апластическая анемия.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 59,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Атопический дерматит.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 36,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Баланопостит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 13,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Болезни бартолиновой железы.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 5,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Болезнь Крона.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 30,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Болезнь Лайма у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 55,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Ботулизм у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Бронхиальная астма.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Бронхит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 31,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 71,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "ВИЧ-инфекция у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 27,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "ВИЧ-инфекция у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Вирусные менингиты у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Внебольничная пневмония у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Волосатоклеточный лейкоз.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Воспалительные болезни женских тазовых органов.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Воспалительные болезни органов мошонки.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Воспалительные заболевания молочных желез.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 17,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Воспалительные заболевания челюстей. Одонтогенный остеомиелит челюсти..pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Воспалительные поражения позвоночника.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Врожденная нейтропения (ВН).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Врожденная патология слёзоотводящей системы у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 8,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Врожденная пневмония.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 58,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Врожденный подклапанный стеноз аорты.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 10,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Врожденный стеноз клапана легочной артерии.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 10,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Выкидыш (самопроизвольный аборт).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 9,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Гастрит и дуоденит у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 21,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Гастрит и дуоденит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 12,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Гемангиома инфантильная.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Гемолитико-уремический синдром.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 14,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Гепатобластома.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Гидраденит гнойный.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 13,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Гипертрофия аденоидов. Гипертрофия небных миндалин..pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Гипоксическая ишемическая энцефалопатия новорожденного вследствие перенесенной асфиксии при родах.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Гонококковая инфекция.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 22,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Грипп у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Грыжи передней брюшной стенки.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Дефект аортолегочной перегородки.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 17,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Дивертикулярная болезнь.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия _ацидурия).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия _ацидурия).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Идиопатическая тромбоцитопеническая пурпура (ИТП) у взрослых.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Идиопатический сколиоз.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 11,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Инородное тело в пищеварительном тракте.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 16,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Инфекции амниотической полости и плодных оболочек (хориоамнионит).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Инфекционный эндокардит и инфекция внутрисердечных устройств.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Инфекция мочевыводящих путей у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Инфекция мочевых путей при беременности.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Инфекция мочевых путей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Инфекция, ассоциированная с ортопедическими имплантатами.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Инфекция, специфичная для перинатального периода.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Искусственный аборт (медицинский аборт).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Истмико-цервикальная недостаточность.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 14,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Кампилобактериоз у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 16,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Катаракта старческая.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 12,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Кератит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 18,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Кистозный фиброз (муковисцидоз).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Кисты челюстно-лицевой области и шеи.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 13,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Комбинированные врожденные и приобретенные дефекты и деформации челюстно-лицевой локализации.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 16,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Конъюнктивиты.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 14,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Криопирин-ассоциированные периодические синдромы (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Лепра [болезнь Гансена].pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 114,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Лимфедема конечностей.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 20,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Лимфома маргинальной зоны.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Лимфоотек после мастэктомии.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Лямблиоз у детей и взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 18,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Менингококковая инфекция у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Митральный стеноз.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 23,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Множественные переломы мозгового и лицевого отделов черепа.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Наружные отиты.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Наружный отит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 12,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Нарушения митохондриального β-окисления жирных кислот.pdf",
+      "found_in": [
+        "downloads_other",
+        "archive_no_antibiotics"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": null
+    },
+    {
+      "pdf": "Наследственный сфероцитоз.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 10,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Неалкогольная жировая болезнь печени у взрослых.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Негонококковый (неспецифический) уретрит у мужчин.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 7,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Нейробластома.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 20,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Неспецифический аортоартериит.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 20,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Нодальные Т-клеточные лимфомы.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Нормальные роды (роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 7,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Оперативные влагалищные роды (Роды одноплодные, родоразрешение с наложением щипцов или с применением вакуум-экстрактора).pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 5,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Опухоли головного и спинного мозга у детей.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 5,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Осложненная катаракта.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острая кишечная непроходимость опухолевой этиологии.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острые и хронические тиреоидиты (исключая аутоиммунный и амиодарон-индуцированный тиреоидит).pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острые и хронические тиреоидиты (исключая аутоиммунный тиреоидит).pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острые лимфобластные лейкозы.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 15,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острые миелоидные лейкозы.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 37,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый аппендицит и перитонит у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 12,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый бронхит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 36,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый гепатит A (ГА) у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 15,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый гепатит С (ОГС) у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый ларингит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый лимфобластный лейкоз.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый обструктивный ларингит [круп] и эпиглоттит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 27,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый пиелонефрит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый синусит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый тонзиллит и фарингит (Острый тонзиллофарингит).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Острый холецистит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Отит средний острый.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Открытая рана головы.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Открытые раны головы.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Открытый артериальный проток (ОАП).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Паратонзиллярный абсцесс.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 18,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Первичные иммунодефициты с преимущественной недостаточностью синтеза антител.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 14,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Первичный иммунодефицит- Х-сцепленный лимфопролиферативный синдром.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Перелом дна глазницы.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Перелом нижней челюсти.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 51,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы бедренной кости (кроме проксимального отдела бедренной кости).pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 57,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы диафиза большеберцовой кости.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 27,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы диафиза костей предплечья.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы диафиза плечевой кости.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы дистального отдела костей голени.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы дистального отдела костей предплечья.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 15,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы дистального отдела плечевой кости.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 14,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы и ложные суставы костей запястья.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы ключицы и лопатки.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы костей голени.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы костей стопы (кроме переломов пяточной кости).pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы лодыжек.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы надколенника.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 34,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы проксимального отдела бедренной кости.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы проксимального отдела голени.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 15,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы проксимального отдела костей предплечья.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 29,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Переломы проксимального отдела плечевой кости.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Периодический синдром, ассоциированный с мутацией гена рецептора фактора некроза опухоли (TRAPS) (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Периоральный дерматит.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Пиодермия гангренозная.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Пневмония (внебольничная).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Повреждение мениска коленного сустава.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 23,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Повреждение связок коленного сустава.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 53,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Повреждения тазового кольца.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Повреждения хряща коленного сустава.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 45,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Послеоперационная вентральная грыжа.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Послеродовые инфекционные осложнения.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 11,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Преждевременные роды.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 7,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Приобретенные деформации стопы.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 8,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Приобретенные нейтропении.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Приобретённая патология слёзоотводящих путей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Пропионовая ацидемия _ацидурия.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Рак носоглотки.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 7,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 10,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании (нормальные роды).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 5,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Сальмонеллез у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 5,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Сепсис новорождённых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Серповидно-клеточные нарушения.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 14,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Синдром гипоплазии левых отделов сердца.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 24,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Синдром делеции 22 хромосомы (синдром Ди Георга (Ди Джорджи)).pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Системный склероз.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 18,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Сифилис.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 10,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Тиреоидиты у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 13,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Травма глаза закрытая.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Травма гортани.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Травма носа.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 8,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Трансплантация поджелудочной железы, наличие трансплантированной поджелудочной железы, отмирание и отторжение трансплантата поджелудочной железы.pdf",
+      "found_in": [
+        "downloads_other",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 1,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 8,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Трехпредсердное сердце.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Туберкулез у взрослых.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 16,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Туберкулез у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 23,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 16,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Урогенитальный трихомониаз.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 31,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Химический ожог пищевода.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хирургические инфекции кожи и подкожной клетчатки у детей.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хламидийная инфекция.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 35,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хламидийная лимфогранулёма (венерическая).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 10,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Холецистит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 10,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хроническая болезнь почек (ХБП).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 8,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хроническая обструктивная болезнь легких.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 39,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хронический бронхит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 23,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хронический вирусный гепатит B.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 6,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хронический лимфоцитарный лейкоз _ лимфома из малых лимфоцитов.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 9,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хронический синусит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 65,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Хронический тонзиллит.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Цирроз и фиброз печени.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 36,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Цистит у женщин.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 15,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Черепно-мозговая травма у детей.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Шигеллез.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 70,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Экзема.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 3,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Экстракраниальные герминогенные опухоли.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 2,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Энтероколит, вызванный Clostridioides difficile (C. difficile).pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 19,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Эритемы.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 4,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Эритразма.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 24,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Юношеский артрит с системным началом.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 26,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Юношеский артрит.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 10,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Язвенная болезнь желудка и_или двенадцатиперстной кишки.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 11,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Язвенная болезнь.pdf",
+      "found_in": [
+        "downloads_active",
+        "downloads_antibiotics"
+      ],
+      "status": "AVAILABLE_PRIMARY",
+      "affected_regimen_count": 33,
+      "hash_matches_corpus_manifest": true
+    },
+    {
+      "pdf": "Язвенный колит.pdf",
+      "found_in": [
+        "downloads_antibiotics",
+        "archive_review"
+      ],
+      "status": "AVAILABLE_DUPLICATE",
+      "affected_regimen_count": 46,
+      "hash_matches_corpus_manifest": true
+    }
+  ]
+}

@@ -14,10 +14,10 @@
         "мастит пуэрперальный",
         "лактационный мастит"
       ],
-      "cr_id": "858",
+      "cr_id": "858_1",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/858",
+      "cr_updated": "2024-12-19",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/858_1",
       "antibiotics_indicated": true,
       "indications": [
         "Клинические признаки мастита с лихорадкой",
@@ -160,10 +160,10 @@
         "эндометрит",
         "пельвиоперитонит"
       ],
-      "cr_id": "643",
+      "cr_id": "643_2",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/643",
+      "cr_updated": "2024-09-24",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/643_2",
       "antibiotics_indicated": true,
       "indications": [
         "Клинические признаки ВЗОТ",
@@ -559,10 +559,10 @@
         "паратонзиллярный абсцесс",
         "флегмона паратонзиллярной клетчатки"
       ],
-      "cr_id": "664",
+      "cr_id": "664_2",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/664",
+      "cr_updated": "2024-11-20",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/664_2",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённый перитонзиллярный абсцесс",

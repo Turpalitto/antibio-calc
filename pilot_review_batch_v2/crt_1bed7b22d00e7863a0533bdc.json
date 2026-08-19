@@ -1,0 +1,270 @@
+{
+  "task": {
+    "task_id": "crt_1bed7b22d00e7863a0533bdc",
+    "task_key": "ClinicalRegimen|7315|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "7315",
+    "target_version": 1,
+    "priority_score": 80,
+    "priority": "HIGH",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "HIGH",
+    "safety_axes": [
+      "missing_unit"
+    ],
+    "source_references": [
+      {
+        "guideline_id": "1936",
+        "page": "22",
+        "pdf": "Баланопостит.pdf",
+        "source_quote": "Мупироцин 2% мазь 2-3 раза в день, местно до 10 дней"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Баланопостит.pdf",
+        "source_location": "page 22",
+        "source_object_id": "7315",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Баланопостит.pdf",
+        "source_location": "page 22",
+        "source_object_id": "7315",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Баланопостит.pdf",
+        "source_location": "page 22",
+        "source_object_id": "7315",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Баланопостит.pdf",
+        "source_location": "page 22",
+        "source_object_id": "7315",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Баланопостит.pdf",
+        "source_location": "page 22",
+        "source_object_id": "7315",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\downloads_active\\Баланопостит.pdf",
+        "source_location": "page 1",
+        "source_object_id": "evi_0036a754b4a221b4",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_unit:40"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult",
+    "alternatives": [],
+    "antibiotic": "Мупироцин 2% мазь",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.8544,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "аэробный баланопостит",
+    "dose": 2.0,
+    "duration_max": 10.0,
+    "duration_min": 10.0,
+    "duration_recommended": 10.0,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Баланопостит.pdf",
+          "source_location": "page 22",
+          "source_object_id": "7315",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Баланопостит.pdf",
+          "source_location": "page 22",
+          "source_object_id": "7315",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Баланопостит.pdf",
+          "source_location": "page 22",
+          "source_object_id": "7315",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Баланопостит.pdf",
+          "source_location": "page 22",
+          "source_object_id": "7315",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Баланопостит.pdf",
+          "source_location": "page 22",
+          "source_object_id": "7315",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\downloads_active\\Баланопостит.pdf",
+          "source_location": "page 1",
+          "source_object_id": "evi_0036a754b4a221b4",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": 3.0,
+    "guideline_id": "1936",
+    "icd_mkb": "N48.1, N51.2",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [],
+    "pregnancy": null,
+    "regimen_id": "7315",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "topical",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "22",
+    "source_pdf": "Баланопостит.pdf",
+    "source_quote": "Мупироцин 2% мазь 2-3 раза в день, местно до 10 дней",
+    "status": "ASSEMBLED",
+    "therapy_line": "alternative",
+    "unit": "",
+    "validation_verdict": "PASS",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "Мупироцин 2% мазь 2-3 раза в день, местно до 10 дней",
+    "Мупироцин 2% мазь 2-3 раза в день, местно до 10 дней",
+    "Мупироцин 2% мазь 2-3 раза в день, местно до 10 дней",
+    "Мупироцин 2% мазь 2-3 раза в день, местно до 10 дней",
+    "Мупироцин 2% мазь 2-3 раза в день, местно до 10 дней",
+    "Мупироцин 2% мазь 2-3 раза в день, местно до 10 дней"
+  ],
+  "source_wording_status": "AVAILABLE",
+  "review_blocked": false,
+  "source_references": [
+    {
+      "guideline_id": "1936",
+      "page": "22",
+      "pdf": "Баланопостит.pdf",
+      "source_quote": "Мупироцин 2% мазь 2-3 раза в день, местно до 10 дней"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Баланопостит.pdf",
+      "source_location": "page 22",
+      "source_object_id": "7315",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Баланопостит.pdf",
+      "source_location": "page 22",
+      "source_object_id": "7315",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Баланопостит.pdf",
+      "source_location": "page 22",
+      "source_object_id": "7315",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Баланопостит.pdf",
+      "source_location": "page 22",
+      "source_object_id": "7315",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Баланопостит.pdf",
+      "source_location": "page 22",
+      "source_object_id": "7315",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\downloads_active\\Баланопостит.pdf",
+      "source_location": "page 1",
+      "source_object_id": "evi_0036a754b4a221b4",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "ed85a9627d163433952e8b920170d2aebac774b7baaaa71db8582c6f824741cb"
+}

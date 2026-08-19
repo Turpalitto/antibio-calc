@@ -121,12 +121,44 @@ def create_app(ctx: "service.ApiContext | None" = None):
     ) -> Any:
         return _personal_action(request, "register_owner", payload or {})
 
+    @app.post("/v2/personal/recover-owner")
+    def recover_personal_owner(
+        request: Request,
+        payload: dict[str, Any] | None = Body(default=None),
+    ) -> Any:
+        return _personal_action(request, "recover_owner", payload or {})
+
     @app.post("/v2/personal/attest")
     def attest_personal_regimen(
         request: Request,
         payload: dict[str, Any] | None = Body(default=None),
     ) -> Any:
         return _personal_action(request, "attest", payload or {})
+
+    @app.get("/v2/personal/extracted-candidates/{guideline_id}")
+    def list_extracted_candidates(request: Request, guideline_id: str) -> Any:
+        if not _loopback(request):
+            return _json((403, service.v2_contract.blocked(
+                "NON_LOOPBACK_REQUEST", "personal owner workflow is loopback-only"
+            )))
+        personal = context.personal_service
+        if personal is None or not hasattr(personal, "list_extracted_candidates"):
+            return _json((503, service.v2_contract.blocked(
+                "PERSONAL_RUNTIME_UNAVAILABLE", "personal runtime is unavailable"
+            )))
+        try:
+            return personal.list_extracted_candidates(guideline_id)
+        except Exception as exc:
+            code = getattr(exc, "code", "EXTRACTED_CANDIDATES_INVALID")
+            detail = getattr(exc, "detail", "extracted candidate store is unavailable")
+            return _json((409, service.v2_contract.blocked(code, detail)))
+
+    @app.post("/v2/personal/attest-candidate")
+    def attest_extracted_candidate(
+        request: Request,
+        payload: dict[str, Any] | None = Body(default=None),
+    ) -> Any:
+        return _personal_action(request, "attest_extracted_candidate", payload or {})
 
     @app.post("/v2/personal/build-bundle")
     def build_personal_bundle(

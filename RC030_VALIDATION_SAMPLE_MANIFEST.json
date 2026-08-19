@@ -1,0 +1,2990 @@
+{
+  "schema_version": 1,
+  "seed": 20260716,
+  "generated_from": {
+    "assembled_regimens_sha256": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+    "semantics_parser_sha256": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f"
+  },
+  "strata_achieved": {
+    "WEIGHT_PER_DAY": "60/60 requested (446 available)",
+    "WEIGHT_PER_DOSE": "60/60 requested (80 available)",
+    "FIXED_PER_DAY": "40/40 requested (506 available)",
+    "FIXED_PER_DOSE": "40/40 requested (579 available)",
+    "RANGE_PER_DAY": "0/30 requested (0 available)",
+    "RANGE_PER_DOSE": "0/30 requested (0 available)",
+    "AMBIGUOUS_CONTROL": "30/30 requested (236 available)",
+    "UNPARSED_CONTROL": "20/20 requested (74 available)",
+    "MAX_DOSE_CANDIDATE_ALL": "104 selected (104 available)",
+    "MULTI_ALTERNATIVE_HIGH_RISK": "30 selected (820 available)",
+    "PEDIATRIC_HIGH_RISK": "30 selected (868 available)",
+    "SUB_DAILY_FREQUENCY": "30 selected (85 available)",
+    "LOADING_MAINTENANCE": "7 selected (7 available)",
+    "LONGEST_QUOTE": "20 selected (20 available)",
+    "SHORTEST_QUOTE": "20 selected (20 available)",
+    "MULTI_NUMERIC_DOSE": "30 selected (1614 available)"
+  },
+  "unique_regimen_count": 488,
+  "entries": [
+    {
+      "regimen_id": "5371",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "5381",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5382",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5406",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5410",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5418",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5421",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5427",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5430",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5438",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5440",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5444",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5457",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5469",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5470",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5474",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5475",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "MULTI_ALTERNATIVE_HIGH_RISK",
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5476",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5478",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5480",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5497",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5516",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5517",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5521",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5527",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5528",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5529",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5534",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5546",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5551",
+      "strata": [
+        "LOADING_MAINTENANCE"
+      ]
+    },
+    {
+      "regimen_id": "5585",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "5590",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "MULTI_ALTERNATIVE_HIGH_RISK",
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5607",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "5608",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "5619",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5621",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5623",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5624",
+      "strata": [
+        "FIXED_PER_DAY",
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5625",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5626",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5627",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5628",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5629",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5631",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5646",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5647",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5654",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5661",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5670",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5683",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5726",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5728",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5731",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "5745",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5746",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5765",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5768",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "5781",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5782",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5789",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5806",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5809",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5811",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5814",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5820",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5823",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "5824",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5834",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5836",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5844",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5846",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK",
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "5858",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5863",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5867",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5871",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5877",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5878",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5879",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5880",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5892",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5903",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5914",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5915",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "5929",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5936",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "5949",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5969",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5970",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "5978",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5979",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5980",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5981",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5982",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "5983",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5985",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "5999",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6006",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6008",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6015",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6019",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6021",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6022",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6023",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6024",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6025",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6026",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6027",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6029",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6030",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6032",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6033",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6034",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6035",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6036",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6037",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6042",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6044",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6054",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6064",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6071",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6074",
+      "strata": [
+        "FIXED_PER_DOSE",
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6076",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6079",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6090",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK",
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6095",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6104",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6111",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6112",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6122",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6134",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6150",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6169",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6207",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6209",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6215",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6224",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6232",
+      "strata": [
+        "FIXED_PER_DAY",
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6233",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6234",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6237",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6242",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6243",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6291",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6300",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6311",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6313",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6317",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6325",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6327",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6328",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6332",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6344",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6353",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6354",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6356",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6372",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6378",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6385",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6386",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6397",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6402",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6403",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6409",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6410",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6414",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6415",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6417",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6419",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK",
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6425",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6433",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6439",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6443",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6453",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6460",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6473",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6478",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6488",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6490",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6492",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6497",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6502",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6503",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6519",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6529",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6531",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6532",
+      "strata": [
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6537",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6542",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6549",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6552",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6553",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6555",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6558",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6561",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6583",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6589",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6590",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6593",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6600",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6601",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6605",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6608",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6609",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6610",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6612",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6620",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6623",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6630",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK",
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6648",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6651",
+      "strata": [
+        "FIXED_PER_DAY",
+        "SHORTEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6657",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6689",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6691",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6699",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6706",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6707",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6708",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6709",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6710",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6711",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6727",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6736",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6742",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6743",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "6744",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6745",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6748",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6753",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6757",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6758",
+      "strata": [
+        "FIXED_PER_DAY",
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6759",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6760",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6761",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6762",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6767",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6768",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6769",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6770",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6771",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6772",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6777",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6781",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6782",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6790",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6791",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6792",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6793",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6794",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6795",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6800",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6801",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6802",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6803",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6804",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6805",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "6809",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6846",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6853",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6855",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6856",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6862",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6865",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6879",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6882",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6905",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "6909",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6910",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6911",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6912",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6914",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "6953",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6956",
+      "strata": [
+        "LOADING_MAINTENANCE"
+      ]
+    },
+    {
+      "regimen_id": "6967",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6973",
+      "strata": [
+        "LOADING_MAINTENANCE"
+      ]
+    },
+    {
+      "regimen_id": "6980",
+      "strata": [
+        "LOADING_MAINTENANCE"
+      ]
+    },
+    {
+      "regimen_id": "6983",
+      "strata": [
+        "LOADING_MAINTENANCE"
+      ]
+    },
+    {
+      "regimen_id": "6986",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "6988",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "6999",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7011",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7014",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7019",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7028",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7029",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7030",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7032",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7033",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7034",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7035",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7037",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7038",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7039",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7040",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7042",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7043",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7047",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7058",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "7061",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7062",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7063",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7066",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7067",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7068",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7070",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7071",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7072",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7073",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7080",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7083",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7085",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7093",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7099",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7101",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7102",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7107",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7119",
+      "strata": [
+        "FIXED_PER_DOSE",
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7122",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7125",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7127",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7131",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7147",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7149",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7158",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7159",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7177",
+      "strata": [
+        "LOADING_MAINTENANCE"
+      ]
+    },
+    {
+      "regimen_id": "7179",
+      "strata": [
+        "LOADING_MAINTENANCE"
+      ]
+    },
+    {
+      "regimen_id": "7187",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7194",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7197",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7200",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7208",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7209",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7211",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7218",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7226",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7253",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7255",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7256",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7259",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7264",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7269",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7271",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7273",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7274",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7276",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7284",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK",
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7286",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK",
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7295",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7299",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7302",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7306",
+      "strata": [
+        "AMBIGUOUS_CONTROL",
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7309",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7311",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7321",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7325",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7327",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7329",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7330",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK",
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7333",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7344",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7345",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7346",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7348",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7349",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7350",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7352",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7356",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7360",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7362",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7368",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7373",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7390",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7396",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7397",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7414",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7420",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7424",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7427",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7429",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7431",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7432",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7435",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7439",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7442",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7446",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7447",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7448",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7453",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7456",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7460",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7461",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7462",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7484",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7498",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7510",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7511",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7514",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7516",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7519",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7537",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7538",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7539",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7541",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7554",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7566",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7569",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7570",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7580",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7584",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7585",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7586",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7601",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7615",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7630",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7632",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7633",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7634",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7654",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7679",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7681",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7685",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7687",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7688",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7700",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7703",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7718",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7728",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7733",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7736",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7737",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7739",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7749",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7766",
+      "strata": [
+        "FIXED_PER_DAY",
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7768",
+      "strata": [
+        "MULTI_NUMERIC_DOSE",
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7770",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7771",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7773",
+      "strata": [
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7774",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7784",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7786",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7801",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7804",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7810",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "7811",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "7812",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "7813",
+      "strata": [
+        "LONGEST_QUOTE",
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7817",
+      "strata": [
+        "WEIGHT_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7818",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7819",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7820",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7834",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7835",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7838",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK",
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7839",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7843",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7845",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7854",
+      "strata": [
+        "AMBIGUOUS_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7861",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7863",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7869",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7877",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7881",
+      "strata": [
+        "SUB_DAILY_FREQUENCY"
+      ]
+    },
+    {
+      "regimen_id": "7887",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    },
+    {
+      "regimen_id": "7898",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7909",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7914",
+      "strata": [
+        "PEDIATRIC_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7918",
+      "strata": [
+        "MULTI_ALTERNATIVE_HIGH_RISK"
+      ]
+    },
+    {
+      "regimen_id": "7921",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "7922",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "7923",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "7924",
+      "strata": [
+        "LONGEST_QUOTE"
+      ]
+    },
+    {
+      "regimen_id": "7933",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7939",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7940",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7941",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7942",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7943",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7947",
+      "strata": [
+        "WEIGHT_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7948",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7949",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7950",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL",
+        "MULTI_NUMERIC_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7951",
+      "strata": [
+        "MAX_DOSE_CANDIDATE_ALL"
+      ]
+    },
+    {
+      "regimen_id": "7969",
+      "strata": [
+        "FIXED_PER_DOSE"
+      ]
+    },
+    {
+      "regimen_id": "7987",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7990",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7994",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "7996",
+      "strata": [
+        "UNPARSED_CONTROL"
+      ]
+    },
+    {
+      "regimen_id": "8018",
+      "strata": [
+        "FIXED_PER_DAY"
+      ]
+    }
+  ]
+}

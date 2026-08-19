@@ -20,11 +20,13 @@ from .bundle import (
     attest,
     build_personal_bundle,
     load_owner_profile,
+    recover_unactivated_owner,
     register_owner,
     sha256_text,
 )
 from .models import OWNER_BUNDLE_STATUS, PersonalModeError
 from .calculator_binding import DEFAULT_CALCULATOR_DB, verified_binding
+from .extracted_candidates import ExtractedCandidateStore
 from .recommender import PersonalModeService
 
 
@@ -34,10 +36,11 @@ DEFAULT_STATE_DIR = Path(__file__).resolve().parents[2] / ".local" / "personal_p
 class PersonalRuntime:
     """State-dir-backed local service used by the API adapter."""
 
-    def __init__(self, state_dir: str | Path | None = None, *, calculator_db_path: str | Path = DEFAULT_CALCULATOR_DB) -> None:
+    def __init__(self, state_dir: str | Path | None = None, *, calculator_db_path: str | Path = DEFAULT_CALCULATOR_DB, candidate_specs_dir: str | Path | None = None) -> None:
         configured = state_dir or os.environ.get("ANTIBIO_PERSONAL_STATE_DIR")
         self.state_dir = Path(configured or DEFAULT_STATE_DIR).resolve()
         self.calculator_db_path = Path(calculator_db_path).resolve()
+        self.candidate_specs_dir = Path(candidate_specs_dir).resolve() if candidate_specs_dir else None
         self._lock = threading.RLock()
 
     @property
@@ -47,6 +50,14 @@ class PersonalRuntime:
     @property
     def active_pointer_path(self) -> Path:
         return self.state_dir / "active_bundle.json"
+
+    @property
+    def extracted_candidates(self) -> ExtractedCandidateStore:
+        if self.candidate_specs_dir is None:
+            return ExtractedCandidateStore(self.state_dir, self.calculator_db_path)
+        return ExtractedCandidateStore(
+            self.state_dir, self.calculator_db_path, self.candidate_specs_dir
+        )
 
     def health(self) -> dict[str, Any]:
         base = {
@@ -108,6 +119,23 @@ class PersonalRuntime:
             "persist_patient_data": False,
         }
 
+    def recover_owner(self, payload: Mapping[str, Any]) -> dict[str, Any]:
+        with self._lock:
+            profile, token = recover_unactivated_owner(
+                self.state_dir,
+                owner_id=_required_text(payload, "owner_id"),
+                display_name=_required_text(payload, "display_name"),
+                professional_role=_required_text(payload, "professional_role"),
+                organisation=_required_text(payload, "organisation"),
+            )
+        return {
+            "status": "RECOVERED",
+            "owner_id": profile.owner_id,
+            "session_token": token,
+            "token_displayed_once": True,
+            "persist_patient_data": False,
+        }
+
     def attest(self, payload: Mapping[str, Any]) -> dict[str, Any]:
         with self._lock:
             event = attest(
@@ -124,6 +152,49 @@ class PersonalRuntime:
             "status": "ATTESTED",
             "event_id": event["event_id"],
             "sequence": event["sequence"],
+            "governance_status": OWNER_BUNDLE_STATUS,
+        }
+
+    def list_extracted_candidates(self, guideline_id: str) -> dict[str, Any]:
+        return self.extracted_candidates.list(guideline_id)
+
+    def attest_extracted_candidate(self, payload: Mapping[str, Any]) -> dict[str, Any]:
+        guideline_id = _required_text(payload, "guideline_id")
+        candidate = self.extracted_candidates.get(
+            guideline_id, _required_text(payload, "candidate_id")
+        )
+        if not candidate.get("calculation_ready") or candidate.get("blocking_reasons"):
+            raise PersonalModeError(
+                "EXTRACTED_CANDIDATE_AMBIGUOUS",
+                ", ".join(candidate.get("blocking_reasons") or ["candidate is not calculation-ready"]),
+            )
+        binding = self.extracted_candidates.validate_binding(
+            candidate, _required_object(payload, "calculator_binding")
+        )
+        source = candidate["source"]
+        secondary = source.get("secondary_evidence") or []
+        quote = source["wording"]
+        if secondary:
+            quote += "\n" + "\n".join(
+                f"Дополнительный источник, стр. {item['page']}: {item['wording']}"
+                for item in secondary
+            )
+        with self._lock:
+            event = attest(
+                self.state_dir,
+                raw_token=_required_text(payload, "session_token"),
+                regimen_payload=self.extracted_candidates.regimen_payload(candidate),
+                source_page=int(source["page"]),
+                source_quote=quote,
+                pdf_sha256=candidate["guideline"]["pdf_sha256"],
+                calculator_binding=binding,
+                rationale=_required_text(payload, "rationale"),
+            )
+        return {
+            "status": "ATTESTED",
+            "event_id": event["event_id"],
+            "sequence": event["sequence"],
+            "candidate_id": candidate["candidate_id"],
             "governance_status": OWNER_BUNDLE_STATUS,
         }
 

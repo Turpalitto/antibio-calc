@@ -20,10 +20,10 @@
         "сепсис",
         "септический шок"
       ],
-      "cr_id": "898",
+      "cr_id": "898_1",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/898",
+      "cr_updated": "2024-12-27",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/898_1",
       "antibiotics_indicated": true,
       "indications": [
         "Сепсис или септический шок — в/в АБ в течение 1 часа"
@@ -95,10 +95,10 @@
       "synonyms": [
         "менингит S.pneumoniae"
       ],
-      "cr_id": "215",
+      "cr_id": "—",
       "cr_year": 2024,
       "cr_updated": "2024-02-25",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/215",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённый или подозреваемый пневмококковый гнойный менингит"
@@ -230,10 +230,10 @@
         "менингококковый менингит",
         "Neisseria meningitidis"
       ],
-      "cr_id": "1020",
+      "cr_id": "1020_1",
       "cr_year": 2026,
-      "cr_updated": "2026",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/1020",
+      "cr_updated": "2026-01-20",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/1020_1",
       "antibiotics_indicated": true,
       "indications": [
         "Генерализованная форма менингококковой инфекции"
@@ -333,8 +333,8 @@
       ],
       "cr_id": "54_3",
       "cr_year": 2026,
-      "cr_updated": "2026",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/54_3",
+      "cr_updated": "2026-01-14",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/54_3",
       "antibiotics_indicated": true,
       "indications": [
         "Длительная в/в терапия 4-6 недель; коррекция по результатам гемокультуры"

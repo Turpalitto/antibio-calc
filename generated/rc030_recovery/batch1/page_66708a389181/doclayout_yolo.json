@@ -1,0 +1,58 @@
+{
+  "infer_time_sec": 0.7,
+  "regions": [
+    {
+      "class": "plain text",
+      "conf": 0.959
+    },
+    {
+      "class": "plain text",
+      "conf": 0.868
+    },
+    {
+      "class": "plain text",
+      "conf": 0.842
+    },
+    {
+      "class": "plain text",
+      "conf": 0.805
+    },
+    {
+      "class": "title",
+      "conf": 0.8
+    },
+    {
+      "class": "plain text",
+      "conf": 0.767
+    },
+    {
+      "class": "plain text",
+      "conf": 0.746
+    },
+    {
+      "class": "plain text",
+      "conf": 0.74
+    },
+    {
+      "class": "plain text",
+      "conf": 0.703
+    },
+    {
+      "class": "plain text",
+      "conf": 0.45
+    },
+    {
+      "class": "plain text",
+      "conf": 0.401
+    },
+    {
+      "class": "plain text",
+      "conf": 0.373
+    },
+    {
+      "class": "title",
+      "conf": 0.316
+    }
+  ],
+  "exit_status": "OK"
+}

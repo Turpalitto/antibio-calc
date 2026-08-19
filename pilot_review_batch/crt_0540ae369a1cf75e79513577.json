@@ -1,0 +1,262 @@
+{
+  "task": {
+    "task_id": "crt_0540ae369a1cf75e79513577",
+    "task_key": "ClinicalRegimen|7811|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "7811",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "2075",
+        "page": "29",
+        "pdf": "Переломы надколенника.pdf",
+        "source_quote": "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого (J01DB) и второго (J01DC) поколения (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. В большинстве случаев для эффективной профилактики достаточно одной предоперационной дозы антибактериального препарата. При длительных вмешательствах или массивной кровопотере следует назначать дополнительную интраоперационную дозу антибактериального препарата (ориентировочный срок интраоперационного введения – через 2 периода полувыведения после предоперационной дозы). Введение антибактериального препарата после закрытия раны в операционной нецелесообразно даже при наличии установленных дренажей.\nРазовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г), цефуроксим** 1,5 г, #клиндамицин** 900 мг, ванкомицин** по 15 мг/кг в виде медленной в/в инфузии [, 72]."
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Переломы надколенника.pdf",
+        "source_location": "page 29",
+        "source_object_id": "7811",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Переломы надколенника.pdf",
+        "source_location": "page 29",
+        "source_object_id": "7811",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Переломы надколенника.pdf",
+        "source_location": "page 29",
+        "source_object_id": "7811",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Переломы надколенника.pdf",
+        "source_location": "page 29",
+        "source_object_id": "7811",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Переломы надколенника.pdf",
+        "source_location": "page 29",
+        "source_object_id": "7811",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы надколенника.pdf",
+        "source_location": "page 24",
+        "source_object_id": "evi_01146ac5d4b4c889",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult",
+    "alternatives": [],
+    "antibiotic": "Цефуроксим",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.9194,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "Переломы надколенника (закрытые ПН), хирургическое лечение",
+    "dose": 1.5,
+    "duration_max": 1.0,
+    "duration_min": 1.0,
+    "duration_recommended": 1.0,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы надколенника.pdf",
+          "source_location": "page 29",
+          "source_object_id": "7811",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы надколенника.pdf",
+          "source_location": "page 29",
+          "source_object_id": "7811",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы надколенника.pdf",
+          "source_location": "page 29",
+          "source_object_id": "7811",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы надколенника.pdf",
+          "source_location": "page 29",
+          "source_object_id": "7811",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы надколенника.pdf",
+          "source_location": "page 29",
+          "source_object_id": "7811",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы надколенника.pdf",
+          "source_location": "page 24",
+          "source_object_id": "evi_01146ac5d4b4c889",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": 1.0,
+    "guideline_id": "2075",
+    "icd_mkb": "S82.0",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [],
+    "pregnancy": null,
+    "regimen_id": "7811",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "iv",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "29",
+    "source_pdf": "Переломы надколенника.pdf",
+    "source_quote": "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого (J01DB) и второго (J01DC) поколения (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. В большинстве случаев для эффективной профилактики достаточно одной предоперационной дозы антибактериального препарата. При длительных вмешательствах или массивной кровопотере следует назначать дополнительную интраоперационную дозу антибактериального препарата (ориентировочный срок интраоперационного введения – через 2 периода полувыведения после предоперационной дозы). Введение антибактериального препарата после закрытия раны в операционной нецелесообразно даже при наличии установленных дренажей.\nРазовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г), цефуроксим** 1,5 г, #клиндамицин** 900 мг, ванкомицин** по 15 мг/кг в виде медленной в/в инфузии [, 72].",
+    "status": "ASSEMBLED",
+    "therapy_line": "prophylaxis",
+    "unit": "g",
+    "validation_verdict": "PASS",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого (J01DB) и второго (J01DC) поколения (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. В большинстве случаев для эффективной профилактики достаточно одной предоперационной дозы антибактериального препарата. При длительных вмешательствах или массивной кровопотере следует назначать дополнительную интраоперационную дозу антибактериального препарата (ориентировочный срок интраоперационного введения – через 2 периода полувыведения после предоперационной дозы). Введение антибактериального препарата после закрытия раны в операционной нецелесообразно даже при наличии установленных дренажей.\nРазовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г), цефуроксим** 1,5 г, #клиндамицин** 900 мг, ванкомицин** по 15 мг/кг в виде медленной в/в инфузии [, 72]."
+  ],
+  "source_references": [
+    {
+      "guideline_id": "2075",
+      "page": "29",
+      "pdf": "Переломы надколенника.pdf",
+      "source_quote": "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого (J01DB) и второго (J01DC) поколения (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. В большинстве случаев для эффективной профилактики достаточно одной предоперационной дозы антибактериального препарата. При длительных вмешательствах или массивной кровопотере следует назначать дополнительную интраоперационную дозу антибактериального препарата (ориентировочный срок интраоперационного введения – через 2 периода полувыведения после предоперационной дозы). Введение антибактериального препарата после закрытия раны в операционной нецелесообразно даже при наличии установленных дренажей.\nРазовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г), цефуроксим** 1,5 г, #клиндамицин** 900 мг, ванкомицин** по 15 мг/кг в виде медленной в/в инфузии [, 72]."
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Переломы надколенника.pdf",
+      "source_location": "page 29",
+      "source_object_id": "7811",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Переломы надколенника.pdf",
+      "source_location": "page 29",
+      "source_object_id": "7811",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Переломы надколенника.pdf",
+      "source_location": "page 29",
+      "source_object_id": "7811",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Переломы надколенника.pdf",
+      "source_location": "page 29",
+      "source_object_id": "7811",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Переломы надколенника.pdf",
+      "source_location": "page 29",
+      "source_object_id": "7811",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы надколенника.pdf",
+      "source_location": "page 24",
+      "source_object_id": "evi_01146ac5d4b4c889",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "0595abf5c064fed578caf54fb2be55b9ae2f6eca8e2261ae788ae1d7309073a1",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

@@ -1,0 +1,626 @@
+[
+  {
+    "regimen_id": "5590",
+    "max_signal": "максимальная разовая доза",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "5631",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5624",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "5625",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "5626",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5627",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "5628",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "5629",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5646",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5746",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5745",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "5806",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5809",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "5877",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "5878",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "5879",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "5949",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "5979",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5980",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5981",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5982",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5985",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6169",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6232",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6233",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6327",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6402",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6502",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6757",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6758",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6759",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6760",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6761",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6762",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6767",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6768",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6769",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6770",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6771",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6772",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6790",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6791",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6792",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6793",
+    "max_signal": "не \nболее",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6794",
+    "max_signal": "не \nболее",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6795",
+    "max_signal": "не \nболее",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "6800",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6801",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6802",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6803",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6804",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "6805",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  },
+  {
+    "regimen_id": "7038",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7039",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7040",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7061",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7062",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7063",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7028",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7029",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7030",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7033",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7034",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7035",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7066",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7067",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7068",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7071",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7072",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7073",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7101",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7149",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7102",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7107",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7159",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7211",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7208",
+    "max_signal": "максимальная суточная доза",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7259",
+    "max_signal": "максимальная суточная доза",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7350",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7352",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7360",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7362",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7429",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7431",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7432",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7435",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7424",
+    "max_signal": "максимальная суточная доза",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7537",
+    "max_signal": "максимальная суточная доза",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7580",
+    "max_signal": "максимальная суточная доза",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7818",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7933",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "7940",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7941",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7942",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7943",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7948",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7949",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7950",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "7951",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "6332",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "5474",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5475",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "MAXIMUM_ALTERNATIVE_CONFLICT"
+  },
+  {
+    "regimen_id": "5476",
+    "max_signal": "не более",
+    "has_true_range": false,
+    "flag": "MAXIMUM_ATTRIBUTION_UNCERTAIN"
+  },
+  {
+    "regimen_id": "5478",
+    "max_signal": "не более",
+    "has_true_range": true,
+    "flag": "RANGE_UPPER_BOUND_NOT_MAXIMUM"
+  }
+]

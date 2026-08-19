@@ -1,6 +1,145 @@
 # NEXT_TASK.md — ANTIBIO
 
+## Continue automatically after official-registry/CAP batch — 2026-08-02
+
+Do not ask between batches; retain the global source gate.
+
+1. Build exact source contracts for adult sepsis `898_1` and neonatal sepsis
+   `912_1`, then neonatal conjunctivitis `629_2`; preserve organ dysfunction,
+   gestational/postnatal age and renal/TDM constraints.
+2. Bind CAP treatment-selection tables to the 32 adult and 19 pediatric dose
+   rows. Do not unblock a generic reference-table dose without severity/risk,
+   route, duration and age/weight linkage.
+3. Continue the 33 verified revisions by clinical priority: CNS/endocarditis,
+   genital infections, GI, skin/soft tissue, then zoonotic infections.
+4. For the 35 records without a valid declared card, search the official
+   746-card registry by title, MKB and population. Never reuse the quarantined
+   numeric IDs in `invalid_source_mappings_2026-08-02.json`.
+5. Rebuild DB/HTML and run `.venv\Scripts\python.exe -m pytest -q` after every
+   source batch. Current baseline: 1584 passed, 1 xfailed.
+
+## Continue after UTI batch — 2026-08-02
+
+1. Create the table-based `719_2` pregnancy-UTI candidate spec from pages
+   43-44, preserving route, every-N-hours interval and 7-10 day duration.
+2. Create narrative/table candidates for `14_3` cystitis; retain IFU-only
+   nitrofurantoin/furazidine as unresolved rather than inventing doses.
+3. Reconcile all CR 9_3 calculator scenarios. Explicitly resolve the severe
+   ceftriaxone disagreement before any unblocking.
+4. Continue official-card batches for pediatric UTI, genital infections, CNS,
+   neonatal and skin/soft-tissue disease. Keep global source gate active.
+5. Run per-guideline Golden tests and the complete suite after each batch.
+
+## Continue full-corpus source verification — 2026-08-02
+
+Do not ask the owner between batches. Keep the global source gate active.
+
+1. Official-card batch: current revisions for CAP, UTI, sepsis, ENT,
+   obstetric/neonatal, CNS, skin/soft tissue, GI and zoonotic diseases.
+2. For the 22 placeholder-ID records, discover the actual guideline by title,
+   MKB and population; never trust the old dash/year placeholder.
+3. For every confirmed card, obtain the complete PDF, verify title/ID/year,
+   page count and SHA-256, then create a pinned candidate spec.
+4. Extract adult, child and neonatal dose basis, frequency, duration, maximum,
+   route, age/weight strata and formulation. Ambiguous rows remain blocked.
+5. Rebuild and unblock a disease only after exact candidate-to-calculator
+   bindings and Golden tests cover every physician-visible regimen.
+
+Current first source batch confirmed: `654_2`, `714_2`, `898_1`, `912_1`.
+Canonical verification command: `.venv\Scripts\python.exe -m pytest -q`.
+
+## Finish exact CR 306_3 calculator reconstruction — 2026-08-02
+
+1. Extend extraction to adult fixed daily/per-dose schemes from table 1.
+2. Resolve the cross-page clarithromycin frequency, clavulanate maximum
+   footnote, azithromycin `3 days / #5 days` footnote, and parenteral duration.
+   Do not remove blocking reasons by inference.
+3. Rebuild child/adult records only from exact candidates. Golden-test
+   amoxicillin, cefuroxime, cefixime, josamycin, midecamycin and clindamycin,
+   including frequency, duration, age and suspension concentration.
+4. Generate exact candidate-to-calculator options while calculation remains
+   blocked; perform owner review; unblock only after every visible row binds.
+5. Then resume CR 313_3 PDF acquisition and sinusitis reconstruction.
+
+Verification: `.venv\Scripts\python.exe -m pytest -q`.
+
+## Complete CR 313_3 PDF verification and rebuild sinusitis — 2026-08-02
+
+The stale sinusitis calculation is safely blocked. Next:
+
+1. Obtain the complete 1,284,442-byte official CR 313_3 PDF from the Ministry
+   endpoint or a byte-identical authoritative mirror. Verify `%PDF`, page
+   count, title, ID, year and SHA-256. Reject the local 51-page CR 313/2021
+   file and all partial downloads.
+2. Locate adult and pediatric treatment tables plus duration evidence, create
+   `clinical_sources/regimen_candidate_specs/313_3.json`, and extract exact
+   row/cell candidates with PDF and payload hashes.
+3. Rebuild adult and pediatric sinusitis calculator records from candidates.
+   Required pediatric distinctions: standard amoxicillin 50-60 mg/kg/day;
+   high-dose 80-90 only for resistant-pneumococcus risk; amoxicillin/
+   clavulanate 45-60 with beta-lactamase risk/failure; explicit frequency,
+   duration, maximum dose, route, age and formulation constraints.
+4. Enable calculation only after exact candidate-to-calculator binding and
+   Golden tests pass. Keep ambiguous adult footnotes (`500¹-1000²`) and table
+   superscripts non-numeric.
+5. Update source coverage and run the complete suite. Owner attestation remains
+   separate and explicit.
+
+## Next verified-source batch after CR 314 — 2026-08-01
+
+Current registry coverage is exactly 1/72 diseases. Continue in small,
+reproducible batches; do not present the remaining 71 records as verified.
+
+1. Resume/download the complete official sinusitis revision `313_3` from the
+   Ministry rubricator, verify `%PDF`, page count, title/version and SHA-256.
+   Never use the partial 31,475-byte file or silently retain the stale
+   calculator reference `313`/2021.
+2. Inspect its antibacterial tables/narrative, add a strict source spec with
+   exact pages and both PDF/candidate hashes, then generate queued candidates.
+3. Compare each candidate with calculator disease/formulation records. Bind
+   only exact dose basis, range, frequency, route, population and verified
+   formulation; leave all disagreements blocked.
+4. Repeat for high-priority pediatric respiratory diseases, updating the
+   disease-level source-coverage report after each guideline.
+5. Run focused extraction/runtime tests and the complete suite after every
+   batch. Owner attestation remains a separate explicit action.
+
+## Continue PDF-to-calculator rollout after CR 314 — 2026-08-01
+
+The source-linked pipeline and one-click review UI are implemented for current
+CR 314. Immediate owner step: open `http://127.0.0.1:8980/personal`, enable
+personal mode, expand setup, click **Загрузить из PDF КР**, review the exact
+page/wording and select one amoxicillin calculation policy. Only the owner may
+click **Подтвердить эту схему**, then build a small bundle from its event ID.
+
+Engineering continuation:
+
+1. Add declarative `GuidelineCandidateSpec` records for the remaining current
+   PDFs and run them through `extract_regimen_candidates()`.
+2. Add parsers for non-table narrative regimens, fixed adult doses, per-dose
+   mg/kg, maximum doses, age/weight strata and split combination components.
+3. Persist every result as `RegimenCandidate` in Versioned KB with
+   `draft/pending/queued`; never auto-attest.
+4. Generate calculator bindings only when dose, frequency, route, population
+   and required formulation are exact and compatible.
+5. Verify oral cefuroxime pediatric suspension concentration from an
+   authoritative formulation source before enabling volume calculation.
+6. Run per-guideline Golden cases and full tests after each batch.
+
+Do not treat CR 314 completion as full-corpus completion. Do not activate the
+two blocked CR 314 rows until their weight strata/path are explicitly split
+and source-verified.
+
 ## Activate a small owner-reviewed personal bundle — 2026-08-01
+
+## First exact owner attestation — 2026-08-01
+
+Owner registration is complete. Next, prepare one exact current-guideline
+regimen for owner review. The owner must verify the source PDF, SHA-256, page,
+quote, dose basis, population/safety fields, terminology mapping, and exact
+calculator binding before explicitly attesting it. Build and activate a bundle
+only from the returned attestation event ID, then run one Golden case. Never
+auto-attest, bulk-approve, or copy draft calculator content into the bundle.
 
 The RFC is accepted and the local implementation is complete. The next task is
 clinical owner input, not more Engine wiring:

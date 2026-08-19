@@ -1,0 +1,298 @@
+{
+  "task": {
+    "task_id": "crt_925d66320f0ca5fed8d74e51",
+    "task_key": "ClinicalRegimen|7258|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "7258",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1889",
+        "page": "84",
+        "pdf": "Сепсис новорождённых.pdf",
+        "source_quote": "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Сепсис новорождённых.pdf",
+        "source_location": "page 84",
+        "source_object_id": "7258",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Сепсис новорождённых.pdf",
+        "source_location": "page 84",
+        "source_object_id": "7258",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Сепсис новорождённых.pdf",
+        "source_location": "page 84",
+        "source_object_id": "7258",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Сепсис новорождённых.pdf",
+        "source_location": "page 84",
+        "source_object_id": "7258",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Сепсис новорождённых.pdf",
+        "source_location": "page 84",
+        "source_object_id": "7258",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\downloads_active\\Сепсис новорождённых.pdf",
+        "source_location": "page 20",
+        "source_object_id": "evi_0191697767ffeb3f",
+        "source_store": "kb_p44"
+      },
+      {
+        "field": "contraindications",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\downloads_active\\Сепсис новорождённых.pdf",
+        "source_location": "page 63",
+        "source_object_id": "con_30a5defa041a954e",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult",
+    "alternatives": [],
+    "antibiotic": "Ампициллин",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.825,
+    "conflicts": [],
+    "contraindications": [
+      "{'pregnancy_re': 'беремен|pregnan|гестаци', 'lactation_re': 'лактаци|грудн\\\\w* вскарм|breastfeed|lactat'}",
+      "{'renal_re': 'почечн|ренальн|crcl|кк|клиренс|gfr|скорость клубочков|creatinine', 'hemodialysis_re': 'гемодиализ|hemodialysis|гд\\\\b', 'peritoneal_re': 'перитонеальн.*диализ|peritoneal.*dialysis|пд\\\\b'}"
+    ],
+    "diagnosis": "Сепсис новорождённых",
+    "dose": 25.0,
+    "duration_max": null,
+    "duration_min": null,
+    "duration_recommended": null,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Сепсис новорождённых.pdf",
+          "source_location": "page 84",
+          "source_object_id": "7258",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Сепсис новорождённых.pdf",
+          "source_location": "page 84",
+          "source_object_id": "7258",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Сепсис новорождённых.pdf",
+          "source_location": "page 84",
+          "source_object_id": "7258",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Сепсис новорождённых.pdf",
+          "source_location": "page 84",
+          "source_object_id": "7258",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Сепсис новорождённых.pdf",
+          "source_location": "page 84",
+          "source_object_id": "7258",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\downloads_active\\Сепсис новорождённых.pdf",
+          "source_location": "page 20",
+          "source_object_id": "evi_0191697767ffeb3f",
+          "source_store": "kb_p44"
+        }
+      ],
+      [
+        "contraindications",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\downloads_active\\Сепсис новорождённых.pdf",
+          "source_location": "page 63",
+          "source_object_id": "con_30a5defa041a954e",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": 2.0,
+    "guideline_id": "1889",
+    "icd_mkb": "[\"P36.0\", \"P36.1\", \"P36.2\", \"P36.3\", \"P36.4\", \"P36.5\", \"P36.8\", \"P36.9\"]",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [],
+    "pregnancy": null,
+    "regimen_id": "7258",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "iv",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "84",
+    "source_pdf": "Сепсис новорождённых.pdf",
+    "source_quote": "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч",
+    "status": "ASSEMBLED",
+    "therapy_line": "first",
+    "unit": "mg/kg",
+    "validation_verdict": "PASS",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч",
+    "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч",
+    "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч",
+    "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч",
+    "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч",
+    "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч",
+    "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч"
+  ],
+  "source_wording_status": "AVAILABLE",
+  "review_blocked": false,
+  "source_references": [
+    {
+      "guideline_id": "1889",
+      "page": "84",
+      "pdf": "Сепсис новорождённых.pdf",
+      "source_quote": "Ампициллин** (код АТХ – J01CA01) для внутривенного введения Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Сепсис новорождённых.pdf",
+      "source_location": "page 84",
+      "source_object_id": "7258",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Сепсис новорождённых.pdf",
+      "source_location": "page 84",
+      "source_object_id": "7258",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Сепсис новорождённых.pdf",
+      "source_location": "page 84",
+      "source_object_id": "7258",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Сепсис новорождённых.pdf",
+      "source_location": "page 84",
+      "source_object_id": "7258",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Сепсис новорождённых.pdf",
+      "source_location": "page 84",
+      "source_object_id": "7258",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\downloads_active\\Сепсис новорождённых.pdf",
+      "source_location": "page 20",
+      "source_object_id": "evi_0191697767ffeb3f",
+      "source_store": "kb_p44"
+    },
+    {
+      "field": "contraindications",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\downloads_active\\Сепсис новорождённых.pdf",
+      "source_location": "page 63",
+      "source_object_id": "con_30a5defa041a954e",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "fdb78774067b755b1b984035915d6f3ffd2aafacaa4b070ea8e1420f9141343b"
+}

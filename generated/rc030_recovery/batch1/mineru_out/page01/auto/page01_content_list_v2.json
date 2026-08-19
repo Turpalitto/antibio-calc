@@ -1,0 +1,330 @@
+[
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "**         30    (   **  **  #** (ff-lbl    12- )   20 /,    600  (  ) [36, 177]"
+                    }
+                ]
+            },
+            "bbox": [
+                134,
+                63,
+                929,
+                153
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "."
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                271,
+                190,
+                788,
+                208
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "     :"
+                    }
+                ]
+            },
+            "bbox": [
+                134,
+                217,
+                671,
+                234
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": ")    ;"
+                    }
+                ]
+            },
+            "bbox": [
+                157,
+                242,
+                621,
+                258
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2)   ;"
+                    }
+                ]
+            },
+            "bbox": [
+                157,
+                267,
+                474,
+                283
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "3   ."
+                    }
+                ]
+            },
+            "bbox": [
+                155,
+                291,
+                472,
+                307
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "   :"
+                    }
+                ]
+            },
+            "bbox": [
+                134,
+                316,
+                517,
+                332
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": ")           ,   ;"
+                    }
+                ]
+            },
+            "bbox": [
+                155,
+                340,
+                927,
+                382
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2)  ;"
+                    }
+                ]
+            },
+            "bbox": [
+                157,
+                389,
+                440,
+                405
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "3)  ,   ."
+                    }
+                ]
+            },
+            "bbox": [
+                134,
+                414,
+                745,
+                455
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "1)          ;"
+                    }
+                ]
+            },
+            "bbox": [
+                157,
+                464,
+                927,
+                504
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2)    ."
+                    }
+                ]
+            },
+            "bbox": [
+                157,
+                513,
+                815,
+                529
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": ".      ,"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                155,
+                566,
+                906,
+                614
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": ",       ,     , , ,    [18,87]."
+                    }
+                ]
+            },
+            "bbox": [
+                157,
+                623,
+                929,
+                714
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "  ( ,  2)."
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                134,
+                721,
+                363,
+                739
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "          []."
+                    }
+                ]
+            },
+            "bbox": [
+                155,
+                747,
+                927,
+                789
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "  ( ,  )."
+                    }
+                ]
+            },
+            "bbox": [
+                134,
+                796,
+                380,
+                813
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "   [18,45]."
+                    }
+                ]
+            },
+            "bbox": [
+                155,
+                822,
+                929,
+                889
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "  ( ,  2)."
+                    }
+                ]
+            },
+            "bbox": [
+                132,
+                894,
+                375,
+                911
+            ]
+        }
+    ]
+]

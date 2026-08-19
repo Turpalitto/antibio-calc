@@ -1,0 +1,295 @@
+{
+  "task": {
+    "task_id": "crt_15c1518b780b7f90f02e1dd2",
+    "task_key": "ClinicalRegimen|7508|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "7508",
+    "target_version": 1,
+    "priority_score": 100,
+    "priority": "HIGH",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "HIGH",
+    "safety_axes": [
+      "pediatric",
+      "renal"
+    ],
+    "source_references": [
+      {
+        "guideline_id": "2041",
+        "page": "21",
+        "pdf": "Хронический синусит.pdf",
+        "source_quote": "В случае высокого риска инфекции, вызванной полирезистентными штаммами пневмококка, в качестве стартовой эмпирической терапии целесообразно использовать форму препарата в виде порошка для приготовления суспензии для приема внутрь 600 мг+42.9 мг/5 мл с расчётной дозой по амоксициллину 90 мг/кг/сутки на 2 приема"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Хронический синусит.pdf",
+        "source_location": "page 21",
+        "source_object_id": "7508",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Хронический синусит.pdf",
+        "source_location": "page 21",
+        "source_object_id": "7508",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Хронический синусит.pdf",
+        "source_location": "page 21",
+        "source_object_id": "7508",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Хронический синусит.pdf",
+        "source_location": "page 21",
+        "source_object_id": "7508",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Хронический синусит.pdf",
+        "source_location": "page 21",
+        "source_object_id": "7508",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\downloads_active\\Хронический синусит.pdf",
+        "source_location": "page 24",
+        "source_object_id": "evi_01146ac5d4b4c889",
+        "source_store": "kb_p44"
+      },
+      {
+        "field": "contraindications",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\downloads_active\\Хронический синусит.pdf",
+        "source_location": "page 36",
+        "source_object_id": "con_c0c3549e80efc6ba",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "pediatric:35",
+      "renal:35"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "child|renal",
+    "alternatives": [],
+    "antibiotic": "Амоксициллин + клавулановая кислота",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.9132,
+    "conflicts": [],
+    "contraindications": [
+      "{'pregnancy_re': 'беремен|pregnan|гестаци', 'lactation_re': 'лактаци|грудн\\\\w* вскарм|breastfeed|lactat'}",
+      "{'renal_re': 'почечн|ренальн|crcl|кк|клиренс|gfr|скорость клубочков|creatinine', 'hemodialysis_re': 'гемодиализ|hemodialysis|гд\\\\b', 'peritoneal_re': 'перитонеальн.*диализ|peritoneal.*dialysis|пд\\\\b'}"
+    ],
+    "diagnosis": "Хронический синусит (обострение)",
+    "dose": 90.0,
+    "duration_max": 14.0,
+    "duration_min": 10.0,
+    "duration_recommended": null,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Хронический синусит.pdf",
+          "source_location": "page 21",
+          "source_object_id": "7508",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Хронический синусит.pdf",
+          "source_location": "page 21",
+          "source_object_id": "7508",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Хронический синусит.pdf",
+          "source_location": "page 21",
+          "source_object_id": "7508",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Хронический синусит.pdf",
+          "source_location": "page 21",
+          "source_object_id": "7508",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Хронический синусит.pdf",
+          "source_location": "page 21",
+          "source_object_id": "7508",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\downloads_active\\Хронический синусит.pdf",
+          "source_location": "page 24",
+          "source_object_id": "evi_01146ac5d4b4c889",
+          "source_store": "kb_p44"
+        }
+      ],
+      [
+        "contraindications",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\downloads_active\\Хронический синусит.pdf",
+          "source_location": "page 36",
+          "source_object_id": "con_c0c3549e80efc6ba",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": 2.0,
+    "guideline_id": "2041",
+    "icd_mkb": "J32.0, J32.1, J32.2, J32.3, J32.4, J32.8, J32.9, J34.1",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [],
+    "pregnancy": null,
+    "regimen_id": "7508",
+    "renal_adjustment": true,
+    "review_status": "pending",
+    "route": "oral",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "21",
+    "source_pdf": "Хронический синусит.pdf",
+    "source_quote": "В случае высокого риска инфекции, вызванной полирезистентными штаммами пневмококка, в качестве стартовой эмпирической терапии целесообразно использовать форму препарата в виде порошка для приготовления суспензии для приема внутрь 600 мг+42.9 мг/5 мл с расчётной дозой по амоксициллину 90 мг/кг/сутки на 2 приема",
+    "status": "ASSEMBLED",
+    "therapy_line": "first",
+    "unit": "mg/kg",
+    "validation_verdict": "REVIEW",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "В случае высокого риска инфекции, вызванной полирезистентными штаммами пневмококка, в качестве стартовой эмпирической терапии целесообразно использовать форму препарата в виде порошка для приготовления суспензии для приема внутрь 600 мг+42.9 мг/5 мл с расчётной дозой по амоксициллину 90 мг/кг/сутки на 2 приема"
+  ],
+  "source_references": [
+    {
+      "guideline_id": "2041",
+      "page": "21",
+      "pdf": "Хронический синусит.pdf",
+      "source_quote": "В случае высокого риска инфекции, вызванной полирезистентными штаммами пневмококка, в качестве стартовой эмпирической терапии целесообразно использовать форму препарата в виде порошка для приготовления суспензии для приема внутрь 600 мг+42.9 мг/5 мл с расчётной дозой по амоксициллину 90 мг/кг/сутки на 2 приема"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Хронический синусит.pdf",
+      "source_location": "page 21",
+      "source_object_id": "7508",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Хронический синусит.pdf",
+      "source_location": "page 21",
+      "source_object_id": "7508",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Хронический синусит.pdf",
+      "source_location": "page 21",
+      "source_object_id": "7508",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Хронический синусит.pdf",
+      "source_location": "page 21",
+      "source_object_id": "7508",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Хронический синусит.pdf",
+      "source_location": "page 21",
+      "source_object_id": "7508",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\downloads_active\\Хронический синусит.pdf",
+      "source_location": "page 24",
+      "source_object_id": "evi_01146ac5d4b4c889",
+      "source_store": "kb_p44"
+    },
+    {
+      "field": "contraindications",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\downloads_active\\Хронический синусит.pdf",
+      "source_location": "page 36",
+      "source_object_id": "con_c0c3549e80efc6ba",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "407477285010843f8d51c0596012c009646222fde7caefe2c5256cd9039bd405",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

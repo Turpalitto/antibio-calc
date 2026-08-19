@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "guideline_id": "314_3",
+  "rubricator_revision": "314_3",
+  "guideline_title": "Отит средний острый",
+  "approval_year": 2024,
+  "source_url": "https://cr.minzdrav.gov.ru/view-cr/314_3",
+  "expected_pdf_sha256": "sha256:6022928b4138f2a2ab9319c34e2a3b2c13bb53f2d08add5eb3fa83eed296665d",
+  "expected_candidates_sha256": "sha256:465614b96deaebdabbd258e8ff274d923c67165715a1d93818925a621818dc2f",
+  "diagnosis": "Острый средний отит у детей",
+  "icd10": ["H65.0", "H65.1", "H66.0"],
+  "table_pages": [21, 22, 23],
+  "duration": "7-10 days",
+  "duration_page": 25,
+  "duration_wording": "Рекомендована стандартная длительность курса антибиотикотерапии (7-10 дней) пациентам при ОСО."
+}

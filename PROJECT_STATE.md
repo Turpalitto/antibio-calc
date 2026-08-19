@@ -1,5 +1,139 @@
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
 
+## 2026-08-02: official registry current; CAP contracts pinned
+
+Official registry snapshot contains 746 current cards. The calculator now has
+33 unique officially applicable revisions covering 37/72 disease records.
+Thirteen invalid/stale mappings are quarantined (8 semantic numeric-code
+collisions, 5 codes absent from the current registry); 35 disease records have
+no currently valid declared CR and remain blocked.
+
+Source coverage: 72 diseases, 7 unique hash-pinned specs covering 9 disease
+records, 71 source-blocked, zero unblocked without a spec. Only pediatric AOM
+`314_3` is `CALCULATOR_BOUND_VERIFIED`. Adult CAP `654_2` has 32 extracted
+reference-dose candidates and pediatric CAP `714_2` has 19; all CAP candidates
+remain blocked pending scenario and age/weight binding. No owner attestation,
+production activation, or clinical auto-approval occurred. Canonical tests:
+1584 passed, 1 xfailed, 0 failed.
+
+## 2026-08-02: UTI source batch verified; CR 9_3 candidates pinned
+
+Current official IDs: cystitis `14_3`, adult acute pyelonephritis `9_3`, UTI
+in pregnancy `719_2`, urolithiasis `7_2`. CR 9_3 has a hash-pinned PDF and 21
+source candidates; seven are structurally parseable, but calculator binding is
+not complete and the disease remains blocked. Cystitis cefixime duration is
+corrected to 5 days while the entire disease remains source-gated.
+
+Coverage: 72 diseases, 3 unique pinned guideline specs covering 4 disease
+records, 71 calculation-blocked, zero unblocked missing-spec records. Only AOM
+CR 314 is marked `CALCULATOR_BOUND_VERIFIED`. No owner attestation or bundle
+activation occurred. DB/HTML rebuilt; canonical tests: 1569 passed, 1 xfailed,
+0 failed. Production P5.6/P6 remains unchanged.
+
+## 2026-08-02: all unverified calculator records now fail closed
+
+The complete 72-disease source inventory is tracked at
+`clinical_sources/source_inventory_2026-08-02.json`: 50 declared CR IDs, 48
+local metadata matches, 43 local PDFs, and 22 records without a usable CR ID.
+The generated calculator now applies a mandatory source gate: 67 records are
+automatically blocked for missing source specs, 4 retain existing explicit
+blocks, and only CR 314 remains unblocked.
+
+Official cards were checked for `654_2` adult CAP (2024), `714_2` pediatric CAP
+(2025), `898_1` adult sepsis (2024), and `912_1` neonatal sepsis (2025). Their
+IDs/URLs are corrected, but calculations remain blocked pending exact PDF
+candidate extraction and binding. No owner attestation or bundle activation
+occurred. Generated DB/HTML: 72 diseases, 40 drugs, 287 regimens. Tests: 1568
+passed, 1 xfailed, 0 failed. Production P5.6/P6 status is unchanged.
+
+## 2026-08-02: CR 306_3 pinned; tonsillopharyngitis calculation blocked
+
+Official CR `306_3`/2024 is confirmed for adults and children. Its current
+55-page PDF and deterministic 16-candidate pediatric extraction are hash-pinned
+in `clinical_sources/regimen_candidate_specs/306_3.json`. Six candidates are
+structurally parseable; ten remain explicitly blocked. No owner attestation or
+bundle activation occurred.
+
+The old adult and pediatric calculator records contain material source
+disagreements and are blocked in UI and server binding. Source audit: 72
+diseases; 3 covered by pinned specs, 4 calculation-blocked, 67 unblocked
+missing-spec. CR 313_3 sinusitis remains blocked pending a complete PDF.
+Generated DB/HTML: 72 diseases, 40 drugs, 287 regimens, eight pre-existing age
+warnings. Canonical tests: 1566 passed, 1 xfailed, 0 failed. Production P5.6/P6
+status remains unchanged.
+
+## 2026-08-02: current sinusitis revision identified; stale calculation blocked
+
+The Ministry rubricator confirms current acute sinusitis CR `313_3`, approval
+year 2024, adults and children, revision no later than 2026. Both calculator
+records previously referenced CR 313/2021. Their static regimens are now
+blocked at UI and server binding boundaries until the complete 313_3 PDF is
+hash-pinned and candidates are extracted.
+
+Current source audit: 72 diseases total; 1 `VERIFIED_SPEC` (CR 314 pediatric
+AOM), 2 `SOURCE_BLOCKED` (adult and pediatric sinusitis), and 69 unblocked
+`MISSING_SPEC`. The current CR 313_3 PDF download remains incomplete and is
+not registered. No owner attestation or personal bundle activation occurred.
+
+Generated DB/HTML builds pass with 72 diseases, 40 drugs, 287 regimens and the
+eight pre-existing age warnings. Canonical tests: 1564 passed, 1 xfailed,
+0 failed. Production P5.6/P6 status remains unchanged.
+
+## 2026-08-01: verified source coverage is explicit and fail-closed
+
+The tracked source registry currently covers 1 of 72 calculator diseases:
+`aom_child` / CR 314. Its source contract pins PDF SHA-256
+`6022928b4138f2a2ab9319c34e2a3b2c13bb53f2d08add5eb3fa83eed296665d`
+and candidate-payload SHA-256
+`48a240e3abbab90762ca93c9f7dd3f4e7c09edc3d14cdc3bbc9fc47e9c73ca13`.
+The other 71 disease records remain `MISSING_SPEC`; this is not full-corpus
+clinical verification.
+
+The personal API checks this tracked contract on every extracted-candidate
+read and attestation. Local artifact edits and extraction-code drift are
+blocked. The official rubricator indicates sinusitis revision `313_3`, while
+the local calculator still references CR 313/2021; its official PDF snapshot
+has not yet downloaded completely and therefore is not registered or used.
+
+No owner attestation or active personal bundle exists. Production P5.6/P6
+status is unchanged. Preview is running at `http://127.0.0.1:8980/personal`;
+live API/UI QA passed for eight CR 314 cards, four fail-closed. Canonical
+tests: 1563 passed, 1 xfailed, 0 failed.
+
+## 2026-08-01: PDF-extracted dosing path active for pediatric AOM
+
+The personal calculator now consumes queued, source-linked regimen candidates
+derived from structured PDF tables instead of requiring dose JSON to be typed
+by hand. The first live source is current CR 314 (`Отит средний острый`, 2024),
+official PDF SHA-256
+`6022928b4138f2a2ab9319c34e2a3b2c13bb53f2d08add5eb3fa83eed296665d`.
+
+Eight pediatric table schemes are extracted with page/row/column/bbox/source
+wording. Six are semantically parseable; two fail closed. Four candidates have
+five exact compatible calculator/form options: amoxicillin (two allowed
+calculation policies within 50-60 mg/kg/day and 2-3 administrations), oral
+amoxicillin/clavulanate, cefixime and clarithromycin. Cefuroxime is intentionally
+not offered because its required under-3 oral suspension concentration is not
+verified in `drugs_reference`.
+
+Versioned-KB objects remain `draft/pending/queued`; no automatic clinical
+approval occurs. Owner registration exists, but there are still zero owner
+attestations and no active personal bundle. Production P5.6/P6 status is
+unchanged. Canonical tests: 1558 passed, 1 xfailed, 0 failed.
+
+## 2026-08-01: personal owner registered; bundle still inactive
+
+Local owner `khatiev_turpal` is registered as physician
+`Хатиев Турпал Хусаинович`, organisation `МЕГИ`. The application accepts the
+owner ID and one-time token. Recommendation eligibility is still false because
+zero exact regimens have been owner-attested and no personal bundle is active.
+No production approval state changed.
+
+Lost-token recovery is available only for a pristine owner state and is
+permanently refused after any attestation, bundle, active pointer, or request
+audit exists. Canonical test result: 1552 passed, 1 skipped, 1 xfailed,
+0 failed.
+
 ## 2026-08-01: PERSONAL_PHYSICIAN_MODE implemented; clinical activation gated
 
 The owner explicitly accepted `PERSONAL_PHYSICIAN_MODE_RFC.md`. Branch
@@ -21,8 +155,9 @@ passed, 1 skipped, 1 xfailed, 0 failed. Browser QA on
 suspension output, amoxicillin/clavulanate forms, visible non-dismissible
 banner, and fail-closed state without an active owner bundle.
 
-No real owner or regimen was registered automatically. Personal clinical
-activation requires explicit per-regimen source attestation and bundle build.
+The real local owner is now registered; no regimen was registered or attested
+automatically. Personal clinical activation still requires explicit
+per-regimen source attestation and bundle build.
 Production approved clinical objects remain zero; P5.6 remains
 ACCEPTANCE/NOT COMPLETE and P6 remains BLOCKED.
 

@@ -17,10 +17,10 @@
         "Lyme",
         "Ixodes"
       ],
-      "cr_id": "338",
+      "cr_id": "—",
       "cr_year": 2023,
       "cr_updated": "2023-05-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/338",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Мигрирующая эритема, ранний локализованный боррелиоз, диссеминированный, поздний"
@@ -153,10 +153,10 @@
       "synonyms": [
         "Brucella"
       ],
-      "cr_id": "48",
+      "cr_id": "—",
       "cr_year": 2023,
       "cr_updated": "2023-06-01",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/48",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённый бруцеллёз"
@@ -316,10 +316,10 @@
         "anthrax",
         "Bacillus anthracis"
       ],
-      "cr_id": "20",
+      "cr_id": "—",
       "cr_year": 2023,
       "cr_updated": "2023-09-01",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/20",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Кожная, лёгочная, кишечная форма сибирской язвы"
@@ -459,10 +459,10 @@
       "synonyms": [
         "Corynebacterium diphtheriae"
       ],
-      "cr_id": "97",
+      "cr_id": "—",
       "cr_year": 2023,
       "cr_updated": "2023-08-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/97",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённая или клинически предполагаемая дифтерия"
@@ -597,10 +597,10 @@
         "Bordetella pertussis",
         "whooping cough"
       ],
-      "cr_id": "1023",
+      "cr_id": "1023_1",
       "cr_year": 2026,
-      "cr_updated": "2026",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/1023",
+      "cr_updated": "2026-01-26",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/1023_1",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённый коклюш (для эрадикации и ограничения передачи)"
@@ -706,10 +706,10 @@
         "Salmonella enteritidis",
         "сальмонеллёз"
       ],
-      "cr_id": "700",
+      "cr_id": "700_3",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/700",
+      "cr_updated": "2024-09-17",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/700_3",
       "antibiotics_indicated": true,
       "indications": [
         "Тяжёлая форма (инвазивная диарея, лихорадка, кровь в стуле)",
@@ -807,10 +807,10 @@
         "дизентерия",
         "Shigella"
       ],
-      "cr_id": "869",
+      "cr_id": "869_1",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/869",
+      "cr_updated": "2024-12-24",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/869_1",
       "antibiotics_indicated": true,
       "indications": [
         "Тяжёлая форма, кровавая диарея, лихорадка, иммунокомпрометированные пациенты"
@@ -897,10 +897,10 @@
         "Salmonella Typhi",
         "паратиф"
       ],
-      "cr_id": "494",
-      "cr_year": 2022,
-      "cr_updated": "2022",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/494",
+      "cr_id": "494_3",
+      "cr_year": 2025,
+      "cr_updated": "2025-10-30",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/494_3",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённый брюшной тиф или паратиф"

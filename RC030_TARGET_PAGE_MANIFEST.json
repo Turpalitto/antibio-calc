@@ -1,0 +1,501 @@
+[
+  {
+    "pdf_id": "Повреждение связок коленного сустава.pdf",
+    "pdf_hash": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5",
+    "guideline_ids": [
+      "1283",
+      "1767"
+    ],
+    "page_index_0based": 25,
+    "page_label": "26",
+    "related_regimen_ids": [
+      "5731",
+      "5732",
+      "5733",
+      "5734",
+      "5735",
+      "5736",
+      "5737",
+      "5738",
+      "5739",
+      "5740",
+      "6651",
+      "6652",
+      "6654",
+      "6655",
+      "6656",
+      "6657",
+      "6658",
+      "6659",
+      "6660",
+      "6661",
+      "6667",
+      "6668",
+      "6669",
+      "6670",
+      "6695",
+      "6696",
+      "6697",
+      "6698",
+      "6699",
+      "6700",
+      "6701",
+      "6702",
+      "6703",
+      "6704",
+      "6705",
+      "6706",
+      "6707",
+      "6708",
+      "6709",
+      "6710",
+      "6711",
+      "6712",
+      "6713",
+      "6714",
+      "6715",
+      "6716"
+    ],
+    "selection_reason": [
+      "multi_alternative",
+      "multi_numeric",
+      "pediatric_weight_based",
+      "source_corrupted_or_short"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Дефект аортолегочной перегородки.pdf",
+    "pdf_hash": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284",
+    "guideline_ids": [
+      "1352",
+      "1940"
+    ],
+    "page_index_0based": 35,
+    "page_label": "36",
+    "related_regimen_ids": [
+      "5807",
+      "5808",
+      "5809",
+      "7351",
+      "7352",
+      "7361",
+      "7362",
+      "7430",
+      "7431",
+      "7433",
+      "7434",
+      "7435"
+    ],
+    "selection_reason": [
+      "ambiguous_mgkg",
+      "max_dose",
+      "multi_alternative",
+      "multi_numeric",
+      "pediatric_weight_based"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Лямблиоз у детей и взрослых.pdf",
+    "pdf_hash": "3381e1b986436cbe8fc2461d1aeaa5435ac143851c861012ea71d366bbfd7260",
+    "guideline_ids": [
+      "1722"
+    ],
+    "page_index_0based": 20,
+    "page_label": "21",
+    "related_regimen_ids": [
+      "6220",
+      "6223",
+      "6224",
+      "6225",
+      "6226",
+      "6228",
+      "6229",
+      "6230",
+      "6231",
+      "6232",
+      "6233",
+      "6234",
+      "6235",
+      "6236",
+      "6237"
+    ],
+    "selection_reason": [
+      "ambiguous_mgkg",
+      "explicit_v_sutki",
+      "max_dose",
+      "multi_numeric",
+      "pediatric_weight_based"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Гонококковая инфекция.pdf",
+    "pdf_hash": "b7ffae3a55d3c4d4eb71462fefacb6bdaab55e8c8dfdcb8af21d21e017bc54a1",
+    "guideline_ids": [
+      "854"
+    ],
+    "page_index_0based": 20,
+    "page_label": "21",
+    "related_regimen_ids": [
+      "5474",
+      "5475",
+      "5476",
+      "5477"
+    ],
+    "selection_reason": [
+      "explicit_v_sutki",
+      "max_dose",
+      "multi_alternative",
+      "multi_numeric",
+      "pediatric_weight_based"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Лепра [болезнь Гансена].pdf",
+    "pdf_hash": "2dbb3c3c6033072ba4eb0c7321cdce54a4ce3ff9e265affbcf15df9a9ded7808",
+    "guideline_ids": [
+      "2062"
+    ],
+    "page_index_0based": 30,
+    "page_label": "31",
+    "related_regimen_ids": [
+      "7686",
+      "7687",
+      "7688",
+      "7689",
+      "7690",
+      "7691",
+      "7692",
+      "7693",
+      "7694",
+      "7695",
+      "7696",
+      "7697",
+      "7698",
+      "7699",
+      "7700",
+      "7701",
+      "7702",
+      "7769",
+      "7770",
+      "7771",
+      "7772",
+      "7773",
+      "7774",
+      "7775",
+      "7776",
+      "7777",
+      "7778",
+      "7779",
+      "7780",
+      "7781",
+      "7782",
+      "7783",
+      "7784",
+      "7785",
+      "7837",
+      "7838",
+      "7839",
+      "7840",
+      "7841",
+      "7842",
+      "7843",
+      "7844",
+      "7845",
+      "7846",
+      "7847",
+      "7848",
+      "7849",
+      "7850",
+      "7851",
+      "7852",
+      "7853",
+      "7864",
+      "7865",
+      "7866",
+      "7867",
+      "7868",
+      "7869",
+      "7870",
+      "7871",
+      "7872",
+      "7873",
+      "7874",
+      "7875",
+      "7876",
+      "7877",
+      "7878",
+      "7879",
+      "7880"
+    ],
+    "selection_reason": [
+      "ambiguous_mgkg",
+      "explicit_v_sutki",
+      "multi_numeric",
+      "sub_daily_freq"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Лепра [болезнь Гансена].pdf",
+    "pdf_hash": "2dbb3c3c6033072ba4eb0c7321cdce54a4ce3ff9e265affbcf15df9a9ded7808",
+    "guideline_ids": [
+      "2062"
+    ],
+    "page_index_0based": 31,
+    "page_label": "32",
+    "related_regimen_ids": [
+      "7703",
+      "7704",
+      "7705",
+      "7786",
+      "7787",
+      "7788",
+      "7854",
+      "7855",
+      "7856",
+      "7881",
+      "7882",
+      "7883"
+    ],
+    "selection_reason": [
+      "ambiguous_mgkg",
+      "explicit_v_sutki",
+      "multi_numeric",
+      "sub_daily_freq"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Бронхит.pdf",
+    "pdf_hash": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4",
+    "guideline_ids": [
+      "1267",
+      "1760"
+    ],
+    "page_index_0based": 24,
+    "page_label": "25",
+    "related_regimen_ids": [
+      "6561",
+      "6562",
+      "6611",
+      "6612",
+      "6617",
+      "6618",
+      "6623",
+      "6624",
+      "6625",
+      "6630",
+      "6631"
+    ],
+    "selection_reason": [
+      "explicit_v_sutki",
+      "multi_alternative",
+      "multi_numeric",
+      "pediatric_weight_based"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Отит средний острый.pdf",
+    "pdf_hash": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a",
+    "guideline_ids": [
+      "1222",
+      "1633"
+    ],
+    "page_index_0based": 23,
+    "page_label": "24",
+    "related_regimen_ids": [
+      "5669",
+      "6070",
+      "6071",
+      "6076",
+      "6077",
+      "6078",
+      "6079",
+      "6080",
+      "6081",
+      "6082",
+      "6083",
+      "6084",
+      "6085",
+      "6086",
+      "6087",
+      "6088",
+      "6089",
+      "6090",
+      "6091",
+      "6092",
+      "6093",
+      "6094"
+    ],
+    "selection_reason": [
+      "explicit_v_sutki",
+      "multi_alternative",
+      "multi_numeric",
+      "pediatric_weight_based"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Паратонзиллярный абсцесс.pdf",
+    "pdf_hash": "e4a62f1ad5567e5af3ab7b028d9a5a40ffd50d04e1d928f6dbc55b306cbebfa3",
+    "guideline_ids": [
+      "1223",
+      "1669"
+    ],
+    "page_index_0based": 21,
+    "page_label": "22",
+    "related_regimen_ids": [
+      "5670",
+      "6118",
+      "6119",
+      "6120",
+      "6121",
+      "6122",
+      "6123",
+      "6124",
+      "6125",
+      "6126",
+      "6127",
+      "6128",
+      "6129",
+      "6130",
+      "6131",
+      "6132",
+      "6133",
+      "6134"
+    ],
+    "selection_reason": [
+      "explicit_v_sutki",
+      "multi_alternative",
+      "multi_numeric",
+      "pediatric_weight_based"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Воспалительные заболевания молочных желез.pdf",
+    "pdf_hash": "41c1a7d91dec211f07af087eba023b228e20eb0f879db5418c212e15665a726d",
+    "guideline_ids": [
+      "1759"
+    ],
+    "page_index_0based": 24,
+    "page_label": "25",
+    "related_regimen_ids": [
+      "6581",
+      "6632",
+      "6633",
+      "6634",
+      "6636",
+      "6637",
+      "6638",
+      "6639",
+      "6641",
+      "6648"
+    ],
+    "selection_reason": [
+      "explicit_v_sutki",
+      "multi_alternative",
+      "multi_numeric",
+      "pediatric_weight_based"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Хронический синусит.pdf",
+    "pdf_hash": "66aea8082fc74f26b16ee110db611194758847fc13f4cb82969320381ab8f8b0",
+    "guideline_ids": [
+      "2041"
+    ],
+    "page_index_0based": 20,
+    "page_label": "21",
+    "related_regimen_ids": [
+      "7484",
+      "7485",
+      "7486",
+      "7487",
+      "7488",
+      "7489",
+      "7491",
+      "7492",
+      "7506",
+      "7507",
+      "7508",
+      "7509",
+      "7510",
+      "7511",
+      "7513",
+      "7514",
+      "7616",
+      "7617",
+      "7618",
+      "7619",
+      "7620",
+      "7621",
+      "7623",
+      "7624",
+      "7631",
+      "7632",
+      "7633",
+      "7634",
+      "7635",
+      "7636",
+      "7637",
+      "7638",
+      "7639"
+    ],
+    "selection_reason": [
+      "explicit_v_sutki",
+      "multi_alternative",
+      "multi_numeric",
+      "pediatric_weight_based"
+    ],
+    "expected_structural_difficulty": "high"
+  },
+  {
+    "pdf_id": "Хронический синусит.pdf",
+    "pdf_hash": "66aea8082fc74f26b16ee110db611194758847fc13f4cb82969320381ab8f8b0",
+    "guideline_ids": [
+      "2041"
+    ],
+    "page_index_0based": 21,
+    "page_label": "22",
+    "related_regimen_ids": [
+      "7493",
+      "7494",
+      "7495",
+      "7496",
+      "7497",
+      "7498",
+      "7515",
+      "7516",
+      "7517",
+      "7518",
+      "7519",
+      "7520",
+      "7625",
+      "7626",
+      "7627",
+      "7628",
+      "7629",
+      "7630",
+      "7640",
+      "7641",
+      "7642",
+      "7643",
+      "7644",
+      "7645"
+    ],
+    "selection_reason": [
+      "explicit_v_sutki",
+      "multi_alternative",
+      "multi_numeric",
+      "pediatric_weight_based"
+    ],
+    "expected_structural_difficulty": "high"
+  }
+]

@@ -14,10 +14,10 @@
         "ИМП",
         "острый цистит"
       ],
-      "cr_id": "14",
+      "cr_id": "14_3",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/14",
+      "cr_updated": "2024-11-02",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/14_3",
       "antibiotics_indicated": true,
       "indications": [
         "Острый неосложнённый цистит у небеременных женщин репродуктивного возраста"
@@ -93,7 +93,7 @@
                       "single_dose_mg": 400,
                       "max_daily_mg": 400,
                       "freq_per_day": 1,
-                      "duration_days": "7",
+                      "duration_days": "5",
                       "duration_note": null
                     }
                   ]
@@ -117,10 +117,10 @@
         "пиелонефрит",
         "ИМП осложнённая"
       ],
-      "cr_id": "9",
+      "cr_id": "9_3",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/9",
+      "cr_updated": "2024-12-28",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/9_3",
       "antibiotics_indicated": true,
       "indications": [
         "Острый необструктивный пиелонефрит лёгкого и среднетяжёлого течения"
@@ -249,10 +249,10 @@
         "пиелонефрит у детей",
         "цистит у детей"
       ],
-      "cr_id": "262",
+      "cr_id": "281_3",
       "cr_year": 2024,
-      "cr_updated": "2024-01-20",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/262",
+      "cr_updated": "2024-12-12",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/281_3",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённая ИМП у детей"
@@ -380,10 +380,10 @@
         "МКБ",
         "уролитиаз"
       ],
-      "cr_id": "7",
+      "cr_id": "7_2",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/7",
+      "cr_updated": "2024-11-22",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/7_2",
       "antibiotics_indicated": true,
       "indications": [
         "Подозрение на инфицированный камень, предоперационная профилактика, послеоперационная терапия"
@@ -440,10 +440,10 @@
         "lues",
         "treponema pallidum"
       ],
-      "cr_id": "197",
+      "cr_id": "197_2",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/197",
+      "cr_updated": "2024-07-09",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/197_2",
       "antibiotics_indicated": true,
       "indications": [
         "Любая стадия сифилиса"
@@ -618,10 +618,10 @@
         "гонорея",
         "Neisseria gonorrhoeae"
       ],
-      "cr_id": "218",
+      "cr_id": "218_2",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/218",
+      "cr_updated": "2024-07-09",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/218_2",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённая или клинически предполагаемая гонококковая инфекция"
@@ -703,10 +703,10 @@
       "synonyms": [
         "Chlamydia trachomatis"
       ],
-      "cr_id": "194",
+      "cr_id": "194_2",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/194",
+      "cr_updated": "2024-07-09",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/194_2",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённая C.trachomatis-инфекция"
@@ -780,10 +780,10 @@
         "M.genitalium",
         "микоплазма генитальная"
       ],
-      "cr_id": "216",
+      "cr_id": "216_2",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/216",
+      "cr_updated": "2024-07-09",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/216_2",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённая M.genitalium-инфекция"
@@ -863,10 +863,10 @@
         "БВ",
         "гарднереллёз"
       ],
-      "cr_id": "206",
-      "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/206",
+      "cr_id": "206_2",
+      "cr_year": 2022,
+      "cr_updated": "2022-05-04",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/206_2",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённый БВ (критерии Амселя)"
@@ -952,10 +952,10 @@
         "эндометрит после родов",
         "пуэрперальный сепсис"
       ],
-      "cr_id": "791",
+      "cr_id": "791_1",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/791",
+      "cr_updated": "2024-07-19",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/791_1",
       "antibiotics_indicated": true,
       "indications": [
         "Клинические признаки послеродового эндометрита"
@@ -1042,10 +1042,10 @@
         "цистит беременных",
         "пиелонефрит беременных"
       ],
-      "cr_id": "719",
+      "cr_id": "719_2",
       "cr_year": 2025,
-      "cr_updated": "2025",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/719",
+      "cr_updated": "2025-09-16",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/719_2",
       "antibiotics_indicated": true,
       "indications": [
         "Бессимптомная бактериурия у беременных ПОДЛЕЖИТ лечению. Фторхинолоны и тетрациклины противопоказаны"
@@ -1096,7 +1096,7 @@
                       "single_dose_mg": 400,
                       "max_daily_mg": 400,
                       "freq_per_day": 1,
-                      "duration_days": "5-7",
+                      "duration_days": "7-10",
                       "duration_note": null,
                       "regimen_label": "400 мг 1 р/д"
                     }
@@ -1116,7 +1116,7 @@
                       "single_dose_mg": 875,
                       "max_daily_mg": 2000,
                       "freq_per_day": 2,
-                      "duration_days": "5-7",
+                      "duration_days": "7-10",
                       "duration_note": null,
                       "regimen_label": "875/125 мг 2 р/д"
                     }
@@ -1150,7 +1150,7 @@
                       "single_dose_mg": 2000,
                       "max_daily_mg": 2000,
                       "freq_per_day": 1,
-                      "duration_days": "10-14",
+                      "duration_days": "7-10",
                       "duration_note": null,
                       "regimen_label": "1-2 г 1 р/д"
                     }
@@ -1170,7 +1170,7 @@
                       "single_dose_mg": 1000,
                       "max_daily_mg": 6000,
                       "freq_per_day": 3,
-                      "duration_days": "10-14",
+                      "duration_days": "7-10",
                       "duration_note": null,
                       "regimen_label": "1 г 3 р/д"
                     }

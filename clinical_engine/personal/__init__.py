@@ -8,6 +8,7 @@ from .bundle import (
     load_owner_profile,
     load_personal_bundle,
     load_personal_service,
+    recover_unactivated_owner,
     register_owner,
     sha256_text,
 )
@@ -31,5 +32,5 @@ __all__ = [
     "PersonalPhysicianGuard", "PersonalRecommendationResult", "PersonalRecommender",
     "PersonalRegimen", "attest", "build_personal_bundle", "compute_owner_signature", "compute_payload_sha256",
     "load_owner_profile", "load_personal_bundle", "load_personal_service",
-    "register_owner", "sha256_text", "DEFAULT_STATE_DIR", "PersonalRuntime",
+    "recover_unactivated_owner", "register_owner", "sha256_text", "DEFAULT_STATE_DIR", "PersonalRuntime",
 ]

@@ -459,6 +459,11 @@ class KnowledgeBase:
         """, (obj_id, reason, datetime.now(timezone.utc).isoformat()))
 
     def _validate_basic(self, content: Dict, otype: str) -> bool:
+        # Extracted regimen rows are review candidates, never automatically
+        # validated clinical recommendations.  They remain queued until an
+        # explicit physician attestation creates a separate governed bundle.
+        if otype == "RegimenCandidate":
+            return False
         if otype == "Medication" and not content.get("name"):
             return False
         if otype == "Dose" and not (content.get("value") or content.get("raw")):

@@ -1,0 +1,10 @@
+{
+  "experimental_assembled_db": "generated/rc030_range_rebuild/assembled_regimens_range_v2.sqlite",
+  "rows_total": 2675,
+  "rows_with_range_recovered": 365,
+  "authoritative_assembled_sha256_before": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+  "authoritative_assembled_sha256_after": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9",
+  "authoritative_normalized_sha256_before": "c7b67354b0723ad538a185e561ed94d09b11c019279be9c4c6412c4f1eaa4237",
+  "authoritative_normalized_sha256_after": "c7b67354b0723ad538a185e561ed94d09b11c019279be9c4c6412c4f1eaa4237",
+  "authoritative_unchanged": true
+}

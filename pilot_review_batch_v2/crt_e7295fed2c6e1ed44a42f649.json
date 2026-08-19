@@ -1,0 +1,268 @@
+{
+  "task": {
+    "task_id": "crt_e7295fed2c6e1ed44a42f649",
+    "task_key": "ClinicalRegimen|5947|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "5947",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1487",
+        "page": "20",
+        "pdf": "Выкидыш (самопроизвольный аборт).pdf",
+        "source_quote": "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\n#метронидазол** (500 мг перорально перед абортом, 500 мг перорально\nчерез 4 и 8 часов после) [95], [96]."
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+        "source_location": "page 20",
+        "source_object_id": "5947",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+        "source_location": "page 20",
+        "source_object_id": "5947",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+        "source_location": "page 20",
+        "source_object_id": "5947",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+        "source_location": "page 20",
+        "source_object_id": "5947",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+        "source_location": "page 20",
+        "source_object_id": "5947",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\downloads_active\\Выкидыш (самопроизвольный аборт).pdf",
+        "source_location": "page 1",
+        "source_object_id": "evi_0036a754b4a221b4",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult",
+    "alternatives": [],
+    "antibiotic": "Метронидазол",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.675,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "Неполный выкидыш или неразвивающаяся беременность, хирургическое лечение",
+    "dose": 500.0,
+    "duration_max": null,
+    "duration_min": null,
+    "duration_recommended": null,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+          "source_location": "page 20",
+          "source_object_id": "5947",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+          "source_location": "page 20",
+          "source_object_id": "5947",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+          "source_location": "page 20",
+          "source_object_id": "5947",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+          "source_location": "page 20",
+          "source_object_id": "5947",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+          "source_location": "page 20",
+          "source_object_id": "5947",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\downloads_active\\Выкидыш (самопроизвольный аборт).pdf",
+          "source_location": "page 1",
+          "source_object_id": "evi_0036a754b4a221b4",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": null,
+    "guideline_id": "1487",
+    "icd_mkb": "N85.3, N85.7, O02, O02.0, O02.1, O02.8, O02.9, O03, O03.0, O03.1, O03.3, O03.4, O03.5, O03.6, O03.8, O03.9, O05, O05.0, O05.1, O05.3, O05.4, O05.5, O05.6, O05.8, O05.9, O20, O20.0, O20.8, O20.9",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [],
+    "pregnancy": null,
+    "regimen_id": "5947",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "oral",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "20",
+    "source_pdf": "Выкидыш (самопроизвольный аборт).pdf",
+    "source_quote": "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\n#метронидазол** (500 мг перорально перед абортом, 500 мг перорально\nчерез 4 и 8 часов после) [95], [96].",
+    "status": "ASSEMBLED",
+    "therapy_line": "prophylaxis",
+    "unit": "mg",
+    "validation_verdict": "REVIEW",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\n#метронидазол** (500 мг перорально перед абортом, 500 мг перорально\nчерез 4 и 8 часов после) [95], [96].",
+    "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\n#метронидазол** (500 мг перорально перед абортом, 500 мг перорально\nчерез 4 и 8 часов после) [95], [96].",
+    "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\n#метронидазол** (500 мг перорально перед абортом, 500 мг перорально\nчерез 4 и 8 часов после) [95], [96].",
+    "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\n#метронидазол** (500 мг перорально перед абортом, 500 мг перорально\nчерез 4 и 8 часов после) [95], [96].",
+    "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\n#метронидазол** (500 мг перорально перед абортом, 500 мг перорально\nчерез 4 и 8 часов после) [95], [96].",
+    "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\n#метронидазол** (500 мг перорально перед абортом, 500 мг перорально\nчерез 4 и 8 часов после) [95], [96]."
+  ],
+  "source_wording_status": "AVAILABLE",
+  "review_blocked": false,
+  "source_references": [
+    {
+      "guideline_id": "1487",
+      "page": "20",
+      "pdf": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_quote": "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\n#метронидазол** (500 мг перорально перед абортом, 500 мг перорально\nчерез 4 и 8 часов после) [95], [96]."
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_location": "page 20",
+      "source_object_id": "5947",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_location": "page 20",
+      "source_object_id": "5947",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_location": "page 20",
+      "source_object_id": "5947",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_location": "page 20",
+      "source_object_id": "5947",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_location": "page 20",
+      "source_object_id": "5947",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\downloads_active\\Выкидыш (самопроизвольный аборт).pdf",
+      "source_location": "page 1",
+      "source_object_id": "evi_0036a754b4a221b4",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "0ec6a7b9fd0c28873d8907ed9ea7fa911e8e31d6a0d1e94e2c4f64a494f84241"
+}

@@ -1,0 +1,141 @@
+{
+  "task": {
+    "task_id": "crt_0d13d449b12e83fe72cfe6e1",
+    "task_key": "TherapeuticOption|opt_6274|1|THERAPEUTIC_OPTION_VALIDATION",
+    "target_type": "TherapeuticOption",
+    "target_id": "opt_6274",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1735",
+        "page": "24",
+        "pdf": "Наружный отит.pdf",
+        "source_quote": "Длительность лечения составляет, в среднем, 7-10 дней (до 14 дней). Используются как монопрепараты, так и комбинированные - сочетания различных противомикробных препаратов, глюкокортикостероидов, глюкокортикостероидов в комбинации с противомикробными препаратами, анальгетиков и анестетиков. Приведенные ниже препараты рекомендованы в качестве начальной местной терапии неосложненного наружного отита из-за безопасности и эффективности их применения. Таблица 1. Препараты для местного лечения заболеваний уха, применяемые в педиатрической практике при терапии наружного отита ... Офлоксацин** (капли) Офлоксацин"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "indication",
+        "scope": "regimen",
+        "source_document": "Наружный отит.pdf",
+        "source_location": "page 24",
+        "source_object_id": "6274",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "therapeutic_class",
+        "scope": "regimen",
+        "source_document": "Наружный отит.pdf",
+        "source_location": "page 24",
+        "source_object_id": "6274",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "alternatives": [],
+    "approved_at": "",
+    "approved_by": "",
+    "contraindications": [],
+    "field_provenance": [
+      [
+        "indication",
+        {
+          "scope": "regimen",
+          "source_document": "Наружный отит.pdf",
+          "source_location": "page 24",
+          "source_object_id": "6274",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "therapeutic_class",
+        {
+          "scope": "regimen",
+          "source_document": "Наружный отит.pdf",
+          "source_location": "page 24",
+          "source_object_id": "6274",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "guideline_id": "1735",
+    "indication": "Неосложненный наружный отит",
+    "lifecycle_state": "ASSEMBLED",
+    "option_id": "opt_6274",
+    "origin_category": "A_therapeutic_class_recommendation",
+    "origin_regimen_id": "6274",
+    "review_status": "pending",
+    "selection_conditions": "UNKNOWN",
+    "source": "Наружный отит.pdf",
+    "source_page": "24",
+    "source_quote": "Длительность лечения составляет, в среднем, 7-10 дней (до 14 дней). Используются как монопрепараты, так и комбинированные - сочетания различных противомикробных препаратов, глюкокортикостероидов, глюкокортикостероидов в комбинации с противомикробными препаратами, анальгетиков и анестетиков. Приведенные ниже препараты рекомендованы в качестве начальной местной терапии неосложненного наружного отита из-за безопасности и эффективности их применения. Таблица 1. Препараты для местного лечения заболеваний уха, применяемые в педиатрической практике при терапии наружного отита ... Офлоксацин** (капли) Офлоксацин",
+    "status": "ASSEMBLED",
+    "therapeutic_class": "Офлоксацин** (капли)",
+    "version": 1
+  },
+  "original_source_wording": [
+    "Длительность лечения составляет, в среднем, 7-10 дней (до 14 дней). Используются как монопрепараты, так и комбинированные - сочетания различных противомикробных препаратов, глюкокортикостероидов, глюкокортикостероидов в комбинации с противомикробными препаратами, анальгетиков и анестетиков. Приведенные ниже препараты рекомендованы в качестве начальной местной терапии неосложненного наружного отита из-за безопасности и эффективности их применения. Таблица 1. Препараты для местного лечения заболеваний уха, применяемые в педиатрической практике при терапии наружного отита ... Офлоксацин** (капли) Офлоксацин"
+  ],
+  "source_references": [
+    {
+      "guideline_id": "1735",
+      "page": "24",
+      "pdf": "Наружный отит.pdf",
+      "source_quote": "Длительность лечения составляет, в среднем, 7-10 дней (до 14 дней). Используются как монопрепараты, так и комбинированные - сочетания различных противомикробных препаратов, глюкокортикостероидов, глюкокортикостероидов в комбинации с противомикробными препаратами, анальгетиков и анестетиков. Приведенные ниже препараты рекомендованы в качестве начальной местной терапии неосложненного наружного отита из-за безопасности и эффективности их применения. Таблица 1. Препараты для местного лечения заболеваний уха, применяемые в педиатрической практике при терапии наружного отита ... Офлоксацин** (капли) Офлоксацин"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "indication",
+      "scope": "regimen",
+      "source_document": "Наружный отит.pdf",
+      "source_location": "page 24",
+      "source_object_id": "6274",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "therapeutic_class",
+      "scope": "regimen",
+      "source_document": "Наружный отит.pdf",
+      "source_location": "page 24",
+      "source_object_id": "6274",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "b9762d87d5c9d40533fee72e1463544204fb03f26dfb145e7da227cfcdfc01a1",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

@@ -14,10 +14,10 @@
       "synonyms": [
         "рожистое воспаление"
       ],
-      "cr_id": "62",
+      "cr_id": "—",
       "cr_year": 2023,
       "cr_updated": "2023-08-25",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/62",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённая рожа (β-гемолитический стрептококк)"
@@ -173,10 +173,10 @@
         "СДС",
         "диабетическая язва"
       ],
-      "cr_id": "525",
+      "cr_id": "—",
       "cr_year": 2015,
       "cr_updated": "2015",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/525",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Инфицированная язва диабетической стопы"

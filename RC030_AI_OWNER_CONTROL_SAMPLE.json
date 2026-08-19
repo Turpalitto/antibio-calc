@@ -1,0 +1,381 @@
+{
+  "schema_note": "AI pre-review triage output — NOT owner validation, NOT clinical approval. review_origin=AI_PRE_REVIEW throughout.",
+  "target_note": "Mission target was ~12-20 records; required risk categories (B+D+C) alone total 23, already exceeding the target. Per instruction (do not reduce sample below required risk cases), all risk cases are included in full, plus a 20pct calibration sample of clear confirmations.",
+  "composition": {
+    "clear_parser_errors_B": 12,
+    "table_owner_required_D": 5,
+    "ambiguous_owner_required_C": 6,
+    "ai_internal_conflict_F": 0,
+    "clear_confirmation_20pct_sample": 7
+  },
+  "calibration_record_included": true,
+  "total_records": 30,
+  "records": [
+    {
+      "regimen_id": "5374",
+      "category": "B",
+      "proposed_verdict": "WRONG_FREQUENCY_LINK",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "MEDIUM_CONTEXTUAL",
+      "risk_flags": [
+        "stored frequency=1.0 does not represent \"3 раза в неделю\"; sub-weekly periodicity lost"
+      ],
+      "pdf": "Врожденная нейтропения (ВН).pdf",
+      "page": "20"
+    },
+    {
+      "regimen_id": "6651",
+      "category": "B",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [
+        "mirrors the calibration record's exact ambiguity pattern"
+      ],
+      "pdf": "Повреждение связок коленного сустава.pdf",
+      "page": "26"
+    },
+    {
+      "regimen_id": "6652",
+      "category": "B",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [
+        "mirrors the calibration record's exact ambiguity pattern"
+      ],
+      "pdf": "Повреждение связок коленного сустава.pdf",
+      "page": "26"
+    },
+    {
+      "regimen_id": "6655",
+      "category": "B",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [
+        "mirrors the calibration record's exact ambiguity pattern"
+      ],
+      "pdf": "Повреждение связок коленного сустава.pdf",
+      "page": "26"
+    },
+    {
+      "regimen_id": "6654",
+      "category": "B",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [
+        "mirrors the calibration record's exact ambiguity pattern"
+      ],
+      "pdf": "Повреждение связок коленного сустава.pdf",
+      "page": "26"
+    },
+    {
+      "regimen_id": "5450",
+      "category": "B",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [
+        "parser type FIXED_PER_DAY mismatches an explicitly single/one-time regimen"
+      ],
+      "pdf": "Урогенитальный трихомониаз.pdf",
+      "page": "14"
+    },
+    {
+      "regimen_id": "5895",
+      "category": "B",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [
+        "parser type FIXED_PER_DAY mismatches an explicitly single/one-time regimen"
+      ],
+      "pdf": "Урогенитальный трихомониаз.pdf",
+      "page": "14"
+    },
+    {
+      "regimen_id": "5913",
+      "category": "B",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [
+        "parser type FIXED_PER_DAY mismatches an explicitly single/one-time regimen"
+      ],
+      "pdf": "Хламидийная инфекция.pdf",
+      "page": "21"
+    },
+    {
+      "regimen_id": "6976",
+      "category": "B",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [
+        "likely real parser regex gap: abbreviated \"р/сут\" not recognized as per-dose marker (spelled-out \"раза в сутки\" elsewhere IS recognized correctly, e.g. regimen 5897/5905)"
+      ],
+      "pdf": "Острый пиелонефрит.pdf",
+      "page": "32"
+    },
+    {
+      "regimen_id": "7025",
+      "category": "B",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [
+        "likely real parser regex gap: abbreviated \"р/сут\" not recognized as per-dose marker"
+      ],
+      "pdf": "Острый пиелонефрит.pdf",
+      "page": "32"
+    },
+    {
+      "regimen_id": "5961",
+      "category": "B",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "FIXED_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [],
+      "pdf": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+      "page": "54"
+    },
+    {
+      "regimen_id": "7354",
+      "category": "B",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "DISAGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [
+        "likely real parser regex gap: \"дважды\" (twice) not recognized where \"2 раза\"/spelled forms are"
+      ],
+      "pdf": "Хламидийная лимфогранулёма (венерическая).pdf",
+      "page": "18"
+    },
+    {
+      "regimen_id": "5534",
+      "category": "D",
+      "proposed_verdict": "CORRECT_RANGE_SINGLE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "PARTIAL_RANGE_NOT_CAPTURED",
+      "confidence": "MEDIUM_CONTEXTUAL",
+      "risk_flags": [
+        "multi-alternative-drug quote — verify anchor belongs to this antibiotic, not a neighboring one"
+      ],
+      "pdf": "ВИЧ-инфекция у взрослых.pdf",
+      "page": "47"
+    },
+    {
+      "regimen_id": "5683",
+      "category": "D",
+      "proposed_verdict": "TABLE_CONTEXT_REQUIRED",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "AGREE",
+      "confidence": "SOURCE_BLOCKED",
+      "risk_flags": [
+        "flattened table, headers lost"
+      ],
+      "pdf": "Кистозный фиброз (муковисцидоз).pdf",
+      "page": "86"
+    },
+    {
+      "regimen_id": "7895",
+      "category": "D",
+      "proposed_verdict": "TABLE_CONTEXT_REQUIRED",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "AGREE",
+      "confidence": "SOURCE_BLOCKED",
+      "risk_flags": [
+        "flattened table, headers lost"
+      ],
+      "pdf": "Кистозный фиброз (муковисцидоз).pdf",
+      "page": "86"
+    },
+    {
+      "regimen_id": "5670",
+      "category": "D",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "confidence": "MEDIUM_CONTEXTUAL",
+      "risk_flags": [
+        "multiple valid alternatives — confirm intended one, not a wrong-alternative case but real ambiguity about which to prefer"
+      ],
+      "pdf": "Паратонзиллярный абсцесс.pdf",
+      "page": "22"
+    },
+    {
+      "regimen_id": "6074",
+      "category": "D",
+      "proposed_verdict": "CORRECT_RANGE_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "confidence": "MEDIUM_CONTEXTUAL",
+      "risk_flags": [
+        "age_group=child mapped to a clause literally about \"adults and children ≥40kg\" — weight qualifier not separately captured"
+      ],
+      "pdf": "Отит средний острый.pdf",
+      "page": "23"
+    },
+    {
+      "regimen_id": "6657",
+      "category": "C",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [],
+      "pdf": "Повреждение связок коленного сустава.pdf",
+      "page": "26"
+    },
+    {
+      "regimen_id": "6659",
+      "category": "C",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [],
+      "pdf": "Повреждение связок коленного сустава.pdf",
+      "page": "26"
+    },
+    {
+      "regimen_id": "6658",
+      "category": "C",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [],
+      "pdf": "Повреждение связок коленного сустава.pdf",
+      "page": "26"
+    },
+    {
+      "regimen_id": "6653",
+      "category": "C",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "DISAGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [],
+      "pdf": "Повреждение связок коленного сустава.pdf",
+      "page": "26"
+    },
+    {
+      "regimen_id": "7343",
+      "category": "C",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "AGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [
+        "loading/maintenance-dose distinction — see mission fail-closed rules"
+      ],
+      "pdf": "Врожденная пневмония.pdf",
+      "page": "57"
+    },
+    {
+      "regimen_id": "6224",
+      "category": "C",
+      "proposed_verdict": "REMAINS_AMBIGUOUS",
+      "parser_candidate": "AMBIGUOUS",
+      "parser_agreement": "AGREE",
+      "confidence": "LOW_AMBIGUOUS",
+      "risk_flags": [],
+      "pdf": "Лямблиоз у детей и взрослых.pdf",
+      "page": "21"
+    },
+    {
+      "regimen_id": "5452",
+      "category": "A",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [],
+      "pdf": "Урогенитальный трихомониаз.pdf",
+      "page": "14"
+    },
+    {
+      "regimen_id": "5457",
+      "category": "A",
+      "proposed_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "confidence": "MEDIUM_CONTEXTUAL",
+      "risk_flags": [],
+      "pdf": "Урогенитальный трихомониаз.pdf",
+      "page": "15"
+    },
+    {
+      "regimen_id": "5905",
+      "category": "A",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [],
+      "pdf": "Хламидийная инфекция.pdf",
+      "page": "19"
+    },
+    {
+      "regimen_id": "6945",
+      "category": "A",
+      "proposed_verdict": "CORRECT_FIXED_SINGLE",
+      "parser_candidate": "FIXED_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [],
+      "pdf": "Острый бронхит.pdf",
+      "page": "39"
+    },
+    {
+      "regimen_id": "7269",
+      "category": "A",
+      "proposed_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [],
+      "pdf": "Врожденная пневмония.pdf",
+      "page": "57"
+    },
+    {
+      "regimen_id": "7326",
+      "category": "A",
+      "proposed_verdict": "CORRECT_EXPLICIT_PER_DOSE",
+      "parser_candidate": "WEIGHT_PER_DOSE",
+      "parser_agreement": "AGREE",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [],
+      "pdf": "Врожденная пневмония.pdf",
+      "page": "57"
+    },
+    {
+      "regimen_id": "7644",
+      "category": "A",
+      "proposed_verdict": "CORRECT_RANGE_DAILY",
+      "parser_candidate": "WEIGHT_PER_DAY",
+      "parser_agreement": "PARTIAL_RANGE_NOT_CAPTURED",
+      "confidence": "HIGH_EXPLICIT",
+      "risk_flags": [
+        "parser type WEIGHT_PER_DAY does not capture the range — known limitation"
+      ],
+      "pdf": "Хронический синусит.pdf",
+      "page": "22"
+    }
+  ]
+}

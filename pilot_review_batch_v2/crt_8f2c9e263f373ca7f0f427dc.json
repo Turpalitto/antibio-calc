@@ -1,0 +1,143 @@
+{
+  "task": {
+    "task_id": "crt_8f2c9e263f373ca7f0f427dc",
+    "task_key": "TherapeuticOption|opt_5398|1|THERAPEUTIC_OPTION_VALIDATION",
+    "target_type": "TherapeuticOption",
+    "target_id": "opt_5398",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "804",
+        "page": "35",
+        "pdf": "Кампилобактериоз у детей.pdf",
+        "source_quote": "Меропенем\nПри тяжелой форме кампилобактериоза\nили лекарственной аллергии в анамнезе на\nдругие антибиотики, отсутствие эффекта\nпри использовании антибиотиков других\nгрупп\n2+"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "indication",
+        "scope": "regimen",
+        "source_document": "Кампилобактериоз у детей.pdf",
+        "source_location": "page 35",
+        "source_object_id": "5398",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "therapeutic_class",
+        "scope": "regimen",
+        "source_document": "Кампилобактериоз у детей.pdf",
+        "source_location": "page 35",
+        "source_object_id": "5398",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "alternatives": [],
+    "approved_at": "",
+    "approved_by": "",
+    "contraindications": [],
+    "field_provenance": [
+      [
+        "indication",
+        {
+          "scope": "regimen",
+          "source_document": "Кампилобактериоз у детей.pdf",
+          "source_location": "page 35",
+          "source_object_id": "5398",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "therapeutic_class",
+        {
+          "scope": "regimen",
+          "source_document": "Кампилобактериоз у детей.pdf",
+          "source_location": "page 35",
+          "source_object_id": "5398",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "guideline_id": "804",
+    "indication": "Кампилобактериоз у детей",
+    "lifecycle_state": "ASSEMBLED",
+    "option_id": "opt_5398",
+    "origin_category": "A_therapeutic_class_recommendation",
+    "origin_regimen_id": "5398",
+    "review_status": "pending",
+    "selection_conditions": "UNKNOWN",
+    "source": "Кампилобактериоз у детей.pdf",
+    "source_page": "35",
+    "source_quote": "Меропенем\nПри тяжелой форме кампилобактериоза\nили лекарственной аллергии в анамнезе на\nдругие антибиотики, отсутствие эффекта\nпри использовании антибиотиков других\nгрупп\n2+",
+    "status": "ASSEMBLED",
+    "therapeutic_class": "Меропенем",
+    "version": 1
+  },
+  "original_source_wording": [
+    "Меропенем\nПри тяжелой форме кампилобактериоза\nили лекарственной аллергии в анамнезе на\nдругие антибиотики, отсутствие эффекта\nпри использовании антибиотиков других\nгрупп\n2+",
+    "Меропенем\nПри тяжелой форме кампилобактериоза\nили лекарственной аллергии в анамнезе на\nдругие антибиотики, отсутствие эффекта\nпри использовании антибиотиков других\nгрупп\n2+"
+  ],
+  "source_wording_status": "AVAILABLE",
+  "review_blocked": false,
+  "source_references": [
+    {
+      "guideline_id": "804",
+      "page": "35",
+      "pdf": "Кампилобактериоз у детей.pdf",
+      "source_quote": "Меропенем\nПри тяжелой форме кампилобактериоза\nили лекарственной аллергии в анамнезе на\nдругие антибиотики, отсутствие эффекта\nпри использовании антибиотиков других\nгрупп\n2+"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "indication",
+      "scope": "regimen",
+      "source_document": "Кампилобактериоз у детей.pdf",
+      "source_location": "page 35",
+      "source_object_id": "5398",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "therapeutic_class",
+      "scope": "regimen",
+      "source_document": "Кампилобактериоз у детей.pdf",
+      "source_location": "page 35",
+      "source_object_id": "5398",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "0c120ac5e0378b53d5ff3bb2f25e0b3518d5776521424bc489026f824d106e76"
+}

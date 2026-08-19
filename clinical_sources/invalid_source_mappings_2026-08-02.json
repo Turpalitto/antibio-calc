@@ -1,0 +1,23 @@
+{
+  "artifact_type": "INVALID_OR_STALE_CALCULATOR_SOURCE_MAPPINGS",
+  "schema_version": "1.0.0",
+  "audit_date": "2026-08-02",
+  "official_registry_record_count": 746,
+  "action": "All listed disease calculations remain fail-closed; colliding IDs were replaced with an unassigned rubricator source.",
+  "mappings": [
+    {"disease_id":"nec","declared_code":"264","official_current_id":"264_2","official_current_title":"Крапивница","verdict":"SEMANTIC_CODE_COLLISION"},
+    {"disease_id":"omphalitis","declared_code":"16","official_current_id":"16_4","official_current_title":"Туберкулез у взрослых","verdict":"SEMANTIC_CODE_COLLISION"},
+    {"disease_id":"animal_bite","declared_code":"62","official_current_id":"62_3","official_current_title":"Артериальная гипертензия у взрослых","verdict":"SEMANTIC_CODE_COLLISION"},
+    {"disease_id":"postop_prophylaxis","declared_code":"75","official_current_id":"75_2","official_current_title":"Опухоли слюнных желез у детей","verdict":"SEMANTIC_CODE_COLLISION"},
+    {"disease_id":"uti_prophylaxis","declared_code":"10","official_current_id":"10_5","official_current_title":"Рак паренхимы почки","verdict":"SEMANTIC_CODE_COLLISION"},
+    {"disease_id":"erysipelas","declared_code":"62","official_current_id":"62_3","official_current_title":"Артериальная гипертензия у взрослых","verdict":"SEMANTIC_CODE_COLLISION"},
+    {"disease_id":"pneumococcal_meningitis","declared_code":"215","official_current_id":"215_3","official_current_title":"Себорейный дерматит","verdict":"SEMANTIC_CODE_COLLISION"},
+    {"disease_id":"diphtheria","declared_code":"97","official_current_id":"97_2","official_current_title":"Регматогенная отслойка сетчатки","verdict":"SEMANTIC_CODE_COLLISION"},
+    {"disease_id":"anthrax","declared_code":"20","official_current_id":null,"official_current_title":null,"verdict":"CODE_ABSENT_FROM_CURRENT_REGISTRY"},
+    {"disease_id":"brucellosis","declared_code":"48","official_current_id":null,"official_current_title":null,"verdict":"CODE_ABSENT_FROM_CURRENT_REGISTRY"},
+    {"disease_id":"asplenia_prophylaxis","declared_code":"326","official_current_id":null,"official_current_title":null,"verdict":"CODE_ABSENT_FROM_CURRENT_REGISTRY"},
+    {"disease_id":"lyme_disease","declared_code":"338","official_current_id":null,"official_current_title":null,"verdict":"CODE_ABSENT_FROM_CURRENT_REGISTRY"},
+    {"disease_id":"diabetic_foot","declared_code":"525","official_current_id":null,"official_current_title":null,"verdict":"CODE_ABSENT_FROM_CURRENT_REGISTRY"}
+  ],
+  "warning": "An absent or colliding code does not prove that no relevant recommendation exists under another title; it requires a new title/MKB search and PDF review."
+}

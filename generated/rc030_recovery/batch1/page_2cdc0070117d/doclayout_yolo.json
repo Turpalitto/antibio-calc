@@ -1,0 +1,78 @@
+{
+  "infer_time_sec": 0.69,
+  "regions": [
+    {
+      "class": "plain text",
+      "conf": 0.964
+    },
+    {
+      "class": "plain text",
+      "conf": 0.96
+    },
+    {
+      "class": "plain text",
+      "conf": 0.957
+    },
+    {
+      "class": "plain text",
+      "conf": 0.95
+    },
+    {
+      "class": "plain text",
+      "conf": 0.944
+    },
+    {
+      "class": "plain text",
+      "conf": 0.939
+    },
+    {
+      "class": "plain text",
+      "conf": 0.938
+    },
+    {
+      "class": "plain text",
+      "conf": 0.932
+    },
+    {
+      "class": "plain text",
+      "conf": 0.932
+    },
+    {
+      "class": "plain text",
+      "conf": 0.929
+    },
+    {
+      "class": "plain text",
+      "conf": 0.926
+    },
+    {
+      "class": "plain text",
+      "conf": 0.924
+    },
+    {
+      "class": "plain text",
+      "conf": 0.888
+    },
+    {
+      "class": "plain text",
+      "conf": 0.883
+    },
+    {
+      "class": "abandon",
+      "conf": 0.88
+    },
+    {
+      "class": "plain text",
+      "conf": 0.868
+    },
+    {
+      "class": "plain text",
+      "conf": 0.868
+    },
+    {
+      "class": "plain text",
+      "conf": 0.802
+    }
+  ],
+  "exit_status": "OK"
+}

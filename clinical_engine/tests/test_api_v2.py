@@ -47,6 +47,12 @@ class _PersonalService:
     def health(self):
         return {"recommendation_eligible": True, "bundle_version": "owner-bundle-1"}
 
+    def list_extracted_candidates(self, guideline_id):
+        return {"status": "REVIEW_REQUIRED", "guideline_id": guideline_id, "candidates": []}
+
+    def attest_extracted_candidate(self, payload):
+        return {"status": "ATTESTED", "candidate_id": payload["candidate_id"], "event_id": "event-1"}
+
 
 def _recommendation():
     return {
@@ -157,6 +163,12 @@ def test_fastapi_v2_route_and_health(tmp_path):
     assert health["configured"] is True
     assert health["recommendation_eligible"] is True
     assert health["production_mode_changed"] is False
+    extracted = client.get("/v2/personal/extracted-candidates/314")
+    assert extracted.status_code == 200
+    assert extracted.json()["guideline_id"] == "314"
+    attested = client.post("/v2/personal/attest-candidate", json={"candidate_id": "erc-1"})
+    assert attested.status_code == 200
+    assert attested.json()["status"] == "ATTESTED"
 
 
 def test_v1_contract_remains_version_one(tmp_path):
@@ -185,3 +197,19 @@ def test_owner_registration_route_is_loopback_only_and_token_is_one_time(tmp_pat
     )
     assert blocked.status_code == 403
     assert blocked.json()["recommendations"] == []
+
+
+def test_owner_recovery_route_reissues_lost_token_before_attestation(tmp_path):
+    runtime = PersonalRuntime(tmp_path / "personal")
+    client = TestClient(create_app(_context(tmp_path, runtime)), base_url="http://127.0.0.1")
+    client.post("/v2/personal/register-owner", json={
+        "owner_id": "owner-1", "display_name": "Broken Name",
+        "professional_role": "physician", "organisation": "Broken Org",
+    })
+    response = client.post("/v2/personal/recover-owner", json={
+        "owner_id": "khatiev_turpal", "display_name": "Хатиев Турпал Хусаинович",
+        "professional_role": "physician", "organisation": "МЕГИ",
+    })
+    assert response.status_code == 200
+    assert response.json()["status"] == "RECOVERED"
+    assert response.json()["session_token"]

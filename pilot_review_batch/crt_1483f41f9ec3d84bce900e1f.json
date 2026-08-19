@@ -1,0 +1,242 @@
+{
+  "task": {
+    "task_id": "crt_1483f41f9ec3d84bce900e1f",
+    "task_key": "ClinicalRegimen|5437|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "5437",
+    "target_version": 1,
+    "priority_score": 75,
+    "priority": "HIGH",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "HIGH",
+    "safety_axes": [
+      "pregnancy"
+    ],
+    "source_references": [
+      {
+        "guideline_id": "834",
+        "page": "21",
+        "pdf": "Хламидийная инфекция.pdf",
+        "source_quote": "Рекомендовано для лечения беременных и женщин в период лактации с целью эрадикации Chlamydia trachomatis назначать перорально: азитромицин** 1,0 г однократно"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Хламидийная инфекция.pdf",
+        "source_location": "page 21",
+        "source_object_id": "5437",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Хламидийная инфекция.pdf",
+        "source_location": "page 21",
+        "source_object_id": "5437",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Хламидийная инфекция.pdf",
+        "source_location": "page 21",
+        "source_object_id": "5437",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Хламидийная инфекция.pdf",
+        "source_location": "page 21",
+        "source_object_id": "5437",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Хламидийная инфекция.pdf",
+        "source_location": "page 21",
+        "source_object_id": "5437",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "pregnancy:35"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult|pregnancy",
+    "alternatives": [],
+    "antibiotic": "Азитромицин",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.9132,
+    "conflicts": [],
+    "contraindications": [],
+    "diagnosis": "Хламидийная инфекция у беременных и женщин в период лактации",
+    "dose": 1.0,
+    "duration_max": 1.0,
+    "duration_min": 1.0,
+    "duration_recommended": 1.0,
+    "evidence_level": "UNKNOWN",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Хламидийная инфекция.pdf",
+          "source_location": "page 21",
+          "source_object_id": "5437",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Хламидийная инфекция.pdf",
+          "source_location": "page 21",
+          "source_object_id": "5437",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Хламидийная инфекция.pdf",
+          "source_location": "page 21",
+          "source_object_id": "5437",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Хламидийная инфекция.pdf",
+          "source_location": "page 21",
+          "source_object_id": "5437",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Хламидийная инфекция.pdf",
+          "source_location": "page 21",
+          "source_object_id": "5437",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "frequency": 1.0,
+    "guideline_id": "834",
+    "icd_mkb": "A56, A74",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [
+      "no_kb_p44_enrichment_for_guideline_834"
+    ],
+    "pregnancy": true,
+    "regimen_id": "5437",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "oral",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "21",
+    "source_pdf": "Хламидийная инфекция.pdf",
+    "source_quote": "Рекомендовано для лечения беременных и женщин в период лактации с целью эрадикации Chlamydia trachomatis назначать перорально: азитромицин** 1,0 г однократно",
+    "status": "ASSEMBLED",
+    "therapy_line": "first",
+    "unit": "g",
+    "validation_verdict": "PASS",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "Рекомендовано для лечения беременных и женщин в период лактации с целью эрадикации Chlamydia trachomatis назначать перорально: азитромицин** 1,0 г однократно"
+  ],
+  "source_references": [
+    {
+      "guideline_id": "834",
+      "page": "21",
+      "pdf": "Хламидийная инфекция.pdf",
+      "source_quote": "Рекомендовано для лечения беременных и женщин в период лактации с целью эрадикации Chlamydia trachomatis назначать перорально: азитромицин** 1,0 г однократно"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Хламидийная инфекция.pdf",
+      "source_location": "page 21",
+      "source_object_id": "5437",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Хламидийная инфекция.pdf",
+      "source_location": "page 21",
+      "source_object_id": "5437",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Хламидийная инфекция.pdf",
+      "source_location": "page 21",
+      "source_object_id": "5437",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Хламидийная инфекция.pdf",
+      "source_location": "page 21",
+      "source_object_id": "5437",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Хламидийная инфекция.pdf",
+      "source_location": "page 21",
+      "source_object_id": "5437",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [
+    "no_kb_p44_enrichment_for_guideline_834"
+  ],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "46f6fcad3a770183d3142adbd8674212da45977dc040f0c15370c97a581e2b64",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

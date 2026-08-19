@@ -1,0 +1,298 @@
+{
+  "task": {
+    "task_id": "crt_139b5e0feab8b2b6e8dc99cd",
+    "task_key": "ClinicalRegimen|6330|1|CLINICAL_REGIMEN_VALIDATION",
+    "target_type": "ClinicalRegimen",
+    "target_id": "6330",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "CLINICAL_REGIMEN_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1740",
+        "page": "22",
+        "pdf": "Переломы диафиза костей предплечья.pdf",
+        "source_quote": "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "antibiotic",
+        "scope": "regimen",
+        "source_document": "Переломы диафиза костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6330",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "dose",
+        "scope": "regimen",
+        "source_document": "Переломы диафиза костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6330",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "route",
+        "scope": "regimen",
+        "source_document": "Переломы диафиза костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6330",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "frequency",
+        "scope": "regimen",
+        "source_document": "Переломы диафиза костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6330",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "duration_recommended",
+        "scope": "regimen",
+        "source_document": "Переломы диафиза костей предплечья.pdf",
+        "source_location": "page 22",
+        "source_object_id": "6330",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "evidence_level",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы диафиза костей предплечья.pdf",
+        "source_location": "page 46",
+        "source_object_id": "evi_02119957a4a25ed3",
+        "source_store": "kb_p44"
+      },
+      {
+        "field": "contraindications",
+        "scope": "guideline",
+        "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы диафиза костей предплечья.pdf",
+        "source_location": "page 38",
+        "source_object_id": "con_4fbe32916ff9c665",
+        "source_store": "kb_p44"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "age_group": "adult",
+    "alternatives": [],
+    "antibiotic": "Цефазолин",
+    "approved_at": "",
+    "approved_by": "",
+    "assembly_ruleset_version": "p5.3-v1",
+    "confidence": 0.675,
+    "conflicts": [],
+    "contraindications": [
+      "{'pregnancy_re': 'беремен|pregnan|гестаци', 'lactation_re': 'лактаци|грудн\\\\w* вскарм|breastfeed|lactat'}",
+      "{'renal_re': 'почечн|ренальн|crcl|кк|клиренс|gfr|скорость клубочков|creatinine', 'hemodialysis_re': 'гемодиализ|hemodialysis|гд\\\\b', 'peritoneal_re': 'перитонеальн.*диализ|peritoneal.*dialysis|пд\\\\b'}"
+    ],
+    "diagnosis": "Переломы диафиза костей предплечья; хирургическая антибиотикопрофилактика при оперативных вмешательствах в травматологии и ортопедии",
+    "dose": 2.0,
+    "duration_max": null,
+    "duration_min": null,
+    "duration_recommended": null,
+    "evidence_level": "MoH_RU",
+    "field_provenance": [
+      [
+        "antibiotic",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы диафиза костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6330",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "dose",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы диафиза костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6330",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "route",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы диафиза костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6330",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "frequency",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы диафиза костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6330",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "duration_recommended",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы диафиза костей предплечья.pdf",
+          "source_location": "page 22",
+          "source_object_id": "6330",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "evidence_level",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы диафиза костей предплечья.pdf",
+          "source_location": "page 46",
+          "source_object_id": "evi_02119957a4a25ed3",
+          "source_store": "kb_p44"
+        }
+      ],
+      [
+        "contraindications",
+        {
+          "scope": "guideline",
+          "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы диафиза костей предплечья.pdf",
+          "source_location": "page 38",
+          "source_object_id": "con_4fbe32916ff9c665",
+          "source_store": "kb_p44"
+        }
+      ]
+    ],
+    "frequency": null,
+    "guideline_id": "1740",
+    "icd_mkb": "S52.2, S52.3, S52.4, S52.7, S59.7",
+    "lifecycle_state": "ASSEMBLED",
+    "needs_review_reasons": [],
+    "pregnancy": null,
+    "regimen_id": "6330",
+    "renal_adjustment": false,
+    "review_status": "pending",
+    "route": "iv",
+    "snapshot_version": "kb_p44-final-20260714",
+    "source_page": "22",
+    "source_pdf": "Переломы диафиза костей предплечья.pdf",
+    "source_quote": "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)",
+    "status": "ASSEMBLED",
+    "therapy_line": "prophylaxis",
+    "unit": "g",
+    "validation_verdict": "REVIEW",
+    "version": 1,
+    "weight_range": "UNKNOWN"
+  },
+  "original_source_wording": [
+    "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)",
+    "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)",
+    "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)",
+    "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)",
+    "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)",
+    "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)",
+    "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)"
+  ],
+  "source_wording_status": "AVAILABLE",
+  "review_blocked": false,
+  "source_references": [
+    {
+      "guideline_id": "1740",
+      "page": "22",
+      "pdf": "Переломы диафиза костей предплечья.pdf",
+      "source_quote": "Для пациентов с неотягощенным аллергоанамнезом и без значимых факторов риска носительства метициллин-резистентных стафилококков для профилактики ХАП используются цефалоспорины первого и второго (I и II поколения) (цефазолин**, цефуроксим**), которые вводятся внутривенно в интервале от 30 до 60 минут до разреза кожи. ... Разовые дозы основных антибактериальных препаратов для ХАП при оперативных вмешательствах в травматологии и ортопедии у взрослых: цефазолин** 2 г (при весе пациента ≥120 кг — 3 г)"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "antibiotic",
+      "scope": "regimen",
+      "source_document": "Переломы диафиза костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6330",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "dose",
+      "scope": "regimen",
+      "source_document": "Переломы диафиза костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6330",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "route",
+      "scope": "regimen",
+      "source_document": "Переломы диафиза костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6330",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "frequency",
+      "scope": "regimen",
+      "source_document": "Переломы диафиза костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6330",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "duration_recommended",
+      "scope": "regimen",
+      "source_document": "Переломы диафиза костей предплечья.pdf",
+      "source_location": "page 22",
+      "source_object_id": "6330",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "evidence_level",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы диафиза костей предплечья.pdf",
+      "source_location": "page 46",
+      "source_object_id": "evi_02119957a4a25ed3",
+      "source_store": "kb_p44"
+    },
+    {
+      "field": "contraindications",
+      "scope": "guideline",
+      "source_document": "C:\\clinrec_downloader\\archive_review\\Переломы диафиза костей предплечья.pdf",
+      "source_location": "page 38",
+      "source_object_id": "con_4fbe32916ff9c665",
+      "source_store": "kb_p44"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "5cc94d1b1ca7473f39c8fe2b07bc7217081fdea7cfc629ed7aa51a6f4d15e175"
+}

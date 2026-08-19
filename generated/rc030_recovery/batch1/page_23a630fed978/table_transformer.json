@@ -1,0 +1,10 @@
+{
+  "infer_time_sec": 0.18,
+  "detections": [
+    {
+      "label": "table",
+      "score": 0.731
+    }
+  ],
+  "exit_status": "OK"
+}

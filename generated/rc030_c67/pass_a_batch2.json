@@ -1,0 +1,354 @@
+[
+  {
+    "regimen_id": "5847",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.6,
+    "rationale": "Single drug (ко-тримоксазол) but quote contains two competing numeric ranges for the same drug: per-dose 3,75-5,0 мг/кг/введение and parenthetical daily-total 15-20 мг/кг/сут; structured_dose=3.75 matches the per-dose range but the daily range is a plausible alternate anchor.",
+    "competing_candidates": "parenthetical daily-total range 15-20 мг/кг/сут for same drug"
+  },
+  {
+    "regimen_id": "5875",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.65,
+    "rationale": "Метронидазол 20-30 мг/кг/день range is directly adjacent to the drug name and matches structured_dose/unit, but the quote also names ципрофлоксацин with its own range in the same sentence, a structural imperfection short of exact.",
+    "competing_candidates": "ципрофлоксацин 30 мг/кг/день range mentioned in same sentence for a different drug"
+  },
+  {
+    "regimen_id": "5881",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug азитромицин immediately followed by a single dose range 500-1000 мг with no other drug or hard boundary intervening; unit matches structured_unit.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "5917",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.6,
+    "rationale": "Single drug эритромицин but quote contains two age-stratified ranges (20-40 мг/кг/сут for <3 months, 30-50 мг/кг/сут for >4 months); structured_dose=20 matches the first band but the record's age_group is generic 'child', not specifically infant, leaving competing candidate range.",
+    "competing_candidates": "second age-band range 30-50 мг/кг/сут for children older than 4 months"
+  },
+  {
+    "regimen_id": "5918",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.6,
+    "rationale": "Same quote as 5917; structured_dose=30 matches the older-child age band (30-50 мг/кг/сут) but the younger-infant band (20-40) is a competing range for the same drug in the same sentence.",
+    "competing_candidates": "first age-band range 20-40 мг/кг/сут for infants under 3 months"
+  },
+  {
+    "regimen_id": "5928",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug метронидазол directly followed by a single dose range 10-20 мг/кг/сут; the only other numeric range in the sentence (10-14 дней) is clearly a duration, not competing.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "5946",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug азитромицин immediately followed by single range 500-1000 мг, unit matches, no other drug present.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "5998",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug цефтриаксон directly followed by single range 1-2 г в сутки, unit matches, no other drug or hard boundary.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6042",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug метронидазол directly followed by single dose range 10-20 мг/кг/сут; the 10-14 дней figure is clearly a duration, not competing.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6052",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.65,
+    "rationale": "Метронидазол 250-500 мг range matches structured values and is adjacent to the drug name, but the same sentence names цефазолин/цефтриаксон (with a separate scalar dose) before it, a structural imperfection.",
+    "competing_candidates": "цефазолин/цефтриаксон scalar dose 1000мг mentioned earlier in same sentence"
+  },
+  {
+    "regimen_id": "6067",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug амоксициллин directly followed by single range 500-1000 мг, unit matches, no other drug present.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6068",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.55,
+    "rationale": "Single drug амоксициллин with an apparent range, but the digits are OCR-corrupted with glued footnote markers ('5001-10002' likely '500¹-1000²'), making literal range extraction uncertain even though intent (500-1000 мг) is recoverable.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6072",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_NOT_A_RANGE",
+    "confidence": 0.75,
+    "rationale": "For the adult population matching this record's structured_dose (1000 мг, oral, adult), the quote gives a single scalar value '1000 мг 3 раза в сутки у взрослых', not a range; the true range in the sentence (80-90 мг/кг/сутки) belongs to the child population instead.",
+    "competing_candidates": "80-90 мг/кг/сутки range belongs to children, not this adult record"
+  },
+  {
+    "regimen_id": "6073",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Range 80-90 мг/кг/сутки is explicitly attributed to 'у детей' and matches structured_dose/unit exactly; the adult figure in the same sentence is a scalar (1000 мг), not a competing range.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6074",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.6,
+    "rationale": "Range 500-1000 мг matches structured_dose/unit and applies to 'взрослых и детей с массой более 40 кг', but the same sentence contains a second competing range in a different unit (45-60 мг/кг/сутки) for children generally.",
+    "competing_candidates": "45-60 мг/кг/сутки range for children in same sentence"
+  },
+  {
+    "regimen_id": "6075",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.6,
+    "rationale": "Range 45-60 мг/кг/сутки matches structured_dose/unit and is attributed to 'у детей', but the same sentence contains a competing range in a different unit (500-1000 мг) for children >40 kg/adults.",
+    "competing_candidates": "500-1000 мг range for children >40 kg / adults in same sentence"
+  },
+  {
+    "regimen_id": "6085",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug цефтриаксон directly followed by single range 2,0-4,0 г/сут, unit matches, no other drug present.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6110",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single drug ампициллин+сульбактам with adult range 3-12 г/сутки explicitly marked 'у взрослых', matching structured_dose/unit; the children's figure is a scalar (150 мг/кг), not a competing range, and the 5-14 day figure is duration.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6111",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same quote/structure as 6110, only route differs (iv); adult range 3-12 г/сутки unambiguously matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6133",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_WRONG_ANCHOR",
+    "confidence": 0.55,
+    "rationale": "structured_dose=1.2g aligns with 'до 1,2-4,8 г/сут' but this phrase is framed with 'до' (up to/maximum) for severe-course dosing, functioning as a maximum-dose qualifier rather than a standard therapeutic range, and competes with a preceding standard scalar dose (300 мг 2 раза в сутки) and a separate children's range (20-40 мг/кг/сут).",
+    "competing_candidates": "standard scalar dose 300 мг 2 раза в сутки; children's range 20-40 мг/кг/сут"
+  },
+  {
+    "regimen_id": "6296",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug цефазолин directly followed by single range 30-50 мг/кг, unit matches, no other drug present.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6303",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single drug цефепим directly followed by single range 80-100 мг/кг/сут inside a parenthetical example, unit matches, no other drug's range competes in this fragment.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6305",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single drug меропенем directly followed by single range 80-100 мг/кг/сут inside a parenthetical example, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6511",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug цефазолин directly followed by single range 30-50 мг/кг, unit matches, no other drug present.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6550",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Same quote as 6296/6511; single drug цефазолин with single range 30-50 мг/кг matching structured values.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6579",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.6,
+    "rationale": "Quote is a flattened table-row fragment ('Дети до 12 лет: 45-60 мг/кг/сутки (по амоксициллину) в 2-3 приема') with no explicit drug name stated in the quote itself, only an implied basis ('по амоксициллину'); prose structure cannot be fully assessed.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6580",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.6,
+    "rationale": "Identical table-row fragment as 6579, drug name not explicitly present in the quote itself.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6638",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.8,
+    "rationale": "Амоксициллин directly followed by single range 20-90 мг на кг массы тела в сутки matching structured_dose/unit; метронидазол in the same sentence has only a scalar dose (500 мг), not a competing range.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6644",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.65,
+    "rationale": "Кларитромицин 250-1000 мг range is directly adjacent to the drug name and matches structured values, but the sentence lists three other drugs (доксициклин, линезолид, рифампицин) each with their own dose, a structural imperfection despite clear comma delimiters.",
+    "competing_candidates": "doses of доксициклин 100 мг, линезолид 600 мг, рифампицин 300 мг listed in same sentence"
+  },
+  {
+    "regimen_id": "6756",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.65,
+    "rationale": "Quote is a flattened prophylaxis table row with ellipsis-separated columns ('Ванкомицин...Или Клиндамицин 0,6-0,9 г ... За 30-60 мин...Внутривенно...') rather than continuous prose; full structure cannot be assessed.",
+    "competing_candidates": "Ванкомицин 15 мг/кг scalar listed as alternative in same row"
+  },
+  {
+    "regimen_id": "6761",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.65,
+    "rationale": "Same flattened table-row structure as 6756, with an added exception clause about contaminated operations.",
+    "competing_candidates": "Ванкомицин 15 мг/кг scalar listed as alternative in same row"
+  },
+  {
+    "regimen_id": "6766",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.65,
+    "rationale": "Same flattened table-row structure as 6756/6761.",
+    "competing_candidates": "Ванкомицин 15 мг/кг scalar listed as alternative in same row"
+  },
+  {
+    "regimen_id": "6771",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.6,
+    "rationale": "Flattened table row with three drugs (Ванкомицин scalar, Клиндамицин range, ± Гентамицин scalar with a max-dose clause) separated by ellipses/column breaks rather than prose.",
+    "competing_candidates": "Ванкомицин 15 мг/кг and Гентамицин 1,5 мг/кг (не более 120 мг) in same row"
+  },
+  {
+    "regimen_id": "6774",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "офлоксацин is directly followed by its own range 0,2-0,4 г, separated from ципрофлоксацин and пефлоксацин by semicolons (hard boundaries), so the range unambiguously belongs to офлоксацин; unit and dose match.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6799",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.6,
+    "rationale": "Quote is clearly a flattened prophylaxis table row listing multiple drugs (Цефазолин, Цефуроксим, Ванкомицин, Клиндамицин) with column-like breaks; full prose structure cannot be assessed.",
+    "competing_candidates": "Цефазолин 1,0-2,0-3,0 г, Цефуроксим 1,5 г, Ванкомицин 15 мг/кг in same row"
+  },
+  {
+    "regimen_id": "6804",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.6,
+    "rationale": "Quote is a flattened table row with many drugs and combinations (Цефазолин+Метронидазол, Цефуроксим+Метронидазол, Амоксициллин+клавуланат, Ванкомицин, Клиндамицин, Гентамицин); full prose structure cannot be assessed.",
+    "competing_candidates": "multiple regimen options and drugs listed in same row"
+  },
+  {
+    "regimen_id": "6809",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same quote as 6774; офлоксацин directly followed by its own range 0,2-0,4 г, separated from other drugs by semicolons.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6839",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Fuller version of the same quote; офлоксацин range 0,2-0,4 г is clearly delimited by semicolons from ципрофлоксацин and пефлоксацин.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6860",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same quote pattern as 6774/6809; офлоксацин range 0,2-0,4 г clearly delimited by semicolons.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "6989",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.55,
+    "rationale": "цефтриаксон range 20-80 мг/кг/сут matches structured values, but the sentence also names цефотаксим (no dose) and offers a specific competing recommended dose ('наиболее оправданной считается доза 75 мг/кг/сут') within the same range, a structural imperfection.",
+    "competing_candidates": "specific recommended point-dose 75 мг/кг/сут mentioned in same sentence; цефотаксим mentioned without dose"
+  },
+  {
+    "regimen_id": "6990",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single drug цефтриаксон directly followed by single range 50-100 мг/кг/сут, unit matches, no other drug or competing figure in this fragment.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7017",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.65,
+    "rationale": "метронидазол 20-30 мг/кг/день range is adjacent to the drug name and matches structured values, but ципрофлоксацин is named with its own range later in the same sentence, a structural imperfection.",
+    "competing_candidates": "ципрофлоксацин 30 мг/кг/день range mentioned in same sentence"
+  },
+  {
+    "regimen_id": "7022",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.65,
+    "rationale": "Same pattern as 7017; метронидазол range matches but ципрофлоксацин and будесонид are also named in the same sentence with their own doses.",
+    "competing_candidates": "ципрофлоксацин 30 мг/кг/день range and будесонид 9 мг dose mentioned in same sentence"
+  },
+  {
+    "regimen_id": "7026",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.65,
+    "rationale": "Same pattern as 7017/7022; метронидазол range matches but ципрофлоксацин and будесонид are also named in the same sentence with their own doses.",
+    "competing_candidates": "ципрофлоксацин 30 мг/кг/день range and будесонид 9 мг dose mentioned in same sentence"
+  }
+]

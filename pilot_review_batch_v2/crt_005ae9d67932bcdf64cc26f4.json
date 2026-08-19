@@ -1,0 +1,146 @@
+{
+  "task": {
+    "task_id": "crt_005ae9d67932bcdf64cc26f4",
+    "task_key": "TherapeuticOption|opt_6515|1|THERAPEUTIC_OPTION_VALIDATION",
+    "target_type": "TherapeuticOption",
+    "target_id": "opt_6515",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1754",
+        "page": "23",
+        "pdf": "Переломы проксимального отдела плечевой кости.pdf",
+        "source_quote": "В случае открытых переломов профилактическое введение антибиотиков эффективно для предупреждения ранней инфекции. При этом АБ следует вводить как можно скорее после травмы антибиотиком выбора является цефазолин**"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "indication",
+        "scope": "regimen",
+        "source_document": "Переломы проксимального отдела плечевой кости.pdf",
+        "source_location": "page 23",
+        "source_object_id": "6515",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "therapeutic_class",
+        "scope": "regimen",
+        "source_document": "Переломы проксимального отдела плечевой кости.pdf",
+        "source_location": "page 23",
+        "source_object_id": "6515",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "alternatives": [],
+    "approved_at": "",
+    "approved_by": "",
+    "contraindications": [
+      "{'pregnancy_re': 'беремен|pregnan|гестаци', 'lactation_re': 'лактаци|грудн\\\\w* вскарм|breastfeed|lactat'}",
+      "{'renal_re': 'почечн|ренальн|crcl|кк|клиренс|gfr|скорость клубочков|creatinine', 'hemodialysis_re': 'гемодиализ|hemodialysis|гд\\\\b', 'peritoneal_re': 'перитонеальн.*диализ|peritoneal.*dialysis|пд\\\\b'}"
+    ],
+    "field_provenance": [
+      [
+        "indication",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы проксимального отдела плечевой кости.pdf",
+          "source_location": "page 23",
+          "source_object_id": "6515",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "therapeutic_class",
+        {
+          "scope": "regimen",
+          "source_document": "Переломы проксимального отдела плечевой кости.pdf",
+          "source_location": "page 23",
+          "source_object_id": "6515",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "guideline_id": "1754",
+    "indication": "Открытые переломы проксимального отдела плечевой кости: антибактериальная терапия для предупреждения ранней инфекции",
+    "lifecycle_state": "ASSEMBLED",
+    "option_id": "opt_6515",
+    "origin_category": "A_therapeutic_class_recommendation",
+    "origin_regimen_id": "6515",
+    "review_status": "pending",
+    "selection_conditions": "UNKNOWN",
+    "source": "Переломы проксимального отдела плечевой кости.pdf",
+    "source_page": "23",
+    "source_quote": "В случае открытых переломов профилактическое введение антибиотиков эффективно для предупреждения ранней инфекции. При этом АБ следует вводить как можно скорее после травмы антибиотиком выбора является цефазолин**",
+    "status": "ASSEMBLED",
+    "therapeutic_class": "Цефазолин",
+    "version": 1
+  },
+  "original_source_wording": [
+    "В случае открытых переломов профилактическое введение антибиотиков эффективно для предупреждения ранней инфекции. При этом АБ следует вводить как можно скорее после травмы антибиотиком выбора является цефазолин**",
+    "В случае открытых переломов профилактическое введение антибиотиков эффективно для предупреждения ранней инфекции. При этом АБ следует вводить как можно скорее после травмы антибиотиком выбора является цефазолин**"
+  ],
+  "source_wording_status": "AVAILABLE",
+  "review_blocked": false,
+  "source_references": [
+    {
+      "guideline_id": "1754",
+      "page": "23",
+      "pdf": "Переломы проксимального отдела плечевой кости.pdf",
+      "source_quote": "В случае открытых переломов профилактическое введение антибиотиков эффективно для предупреждения ранней инфекции. При этом АБ следует вводить как можно скорее после травмы антибиотиком выбора является цефазолин**"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "indication",
+      "scope": "regimen",
+      "source_document": "Переломы проксимального отдела плечевой кости.pdf",
+      "source_location": "page 23",
+      "source_object_id": "6515",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "therapeutic_class",
+      "scope": "regimen",
+      "source_document": "Переломы проксимального отдела плечевой кости.pdf",
+      "source_location": "page 23",
+      "source_object_id": "6515",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "5323c40dbc8286990e87ebad73c2adf0854880246d71d187f12de85dd7b20c61"
+}

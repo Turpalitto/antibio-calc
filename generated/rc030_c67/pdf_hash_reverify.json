@@ -1,0 +1,203 @@
+{
+  "unique_pdf_count": 39,
+  "valid": 39,
+  "mismatch": 0,
+  "missing": 0,
+  "results": [
+    {
+      "file": "Перелом нижней челюсти.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Перелом нижней челюсти.pdf"
+    },
+    {
+      "file": "Атопический дерматит.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Атопический дерматит.pdf"
+    },
+    {
+      "file": "Острый синусит.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Острый синусит.pdf"
+    },
+    {
+      "file": "Кистозный фиброз (муковисцидоз).pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Кистозный фиброз (муковисцидоз).pdf"
+    },
+    {
+      "file": "Острый обструктивный ларингит [круп] и эпиглоттит.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Острый обструктивный ларингит [круп] и эпиглоттит.pdf"
+    },
+    {
+      "file": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Острый гепатит В (ГВ) у взрослых.pdf"
+    },
+    {
+      "file": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия _ацидурия).pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия _ацидурия).pdf"
+    },
+    {
+      "file": "Переломы костей голени.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Переломы костей голени.pdf"
+    },
+    {
+      "file": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия _ацидурия).pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия _ацидурия).pdf"
+    },
+    {
+      "file": "Язвенный колит.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Язвенный колит.pdf"
+    },
+    {
+      "file": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf"
+    },
+    {
+      "file": "Первичные иммунодефициты с преимущественной недостаточностью синтеза антител.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Первичные иммунодефициты с преимущественной недостаточностью синтеза антител.pdf"
+    },
+    {
+      "file": "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз).pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз).pdf"
+    },
+    {
+      "file": "Криопирин-ассоциированные периодические синдромы (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Криопирин-ассоциированные периодические синдромы (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf"
+    },
+    {
+      "file": "Искусственный аборт (медицинский аборт).pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Искусственный аборт (медицинский аборт).pdf"
+    },
+    {
+      "file": "Хламидийная инфекция.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Хламидийная инфекция.pdf"
+    },
+    {
+      "file": "Выкидыш (самопроизвольный аборт).pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Выкидыш (самопроизвольный аборт).pdf"
+    },
+    {
+      "file": "Пропионовая ацидемия _ацидурия.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Пропионовая ацидемия _ацидурия.pdf"
+    },
+    {
+      "file": "Отит средний острый.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Отит средний острый.pdf"
+    },
+    {
+      "file": "Острый ларингит.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Острый ларингит.pdf"
+    },
+    {
+      "file": "Травма носа.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Травма носа.pdf"
+    },
+    {
+      "file": "Паратонзиллярный абсцесс.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Паратонзиллярный абсцесс.pdf"
+    },
+    {
+      "file": "Инфекция мочевых путей.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Инфекция мочевых путей.pdf"
+    },
+    {
+      "file": "Переломы диафиза плечевой кости.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Переломы диафиза плечевой кости.pdf"
+    },
+    {
+      "file": "Переломы проксимального отдела плечевой кости.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Переломы проксимального отдела плечевой кости.pdf"
+    },
+    {
+      "file": "Воспалительные заболевания молочных желез.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Воспалительные заболевания молочных желез.pdf"
+    },
+    {
+      "file": "Шигеллез.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Шигеллез.pdf"
+    },
+    {
+      "file": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf"
+    },
+    {
+      "file": "Юношеский артрит с системным началом.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Юношеский артрит с системным началом.pdf"
+    },
+    {
+      "file": "Юношеский артрит.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Юношеский артрит.pdf"
+    },
+    {
+      "file": "Сепсис новорождённых.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Сепсис новорождённых.pdf"
+    },
+    {
+      "file": "Баланопостит.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Баланопостит.pdf"
+    },
+    {
+      "file": "Неспецифический аортоартериит.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Неспецифический аортоартериит.pdf"
+    },
+    {
+      "file": "Хронический синусит.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Хронический синусит.pdf"
+    },
+    {
+      "file": "Системный склероз.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Системный склероз.pdf"
+    },
+    {
+      "file": "Опухоли головного и спинного мозга у детей.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_antibiotics\\Опухоли головного и спинного мозга у детей.pdf"
+    },
+    {
+      "file": "Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf"
+    },
+    {
+      "file": "Гонококковая инфекция.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\Гонококковая инфекция.pdf"
+    },
+    {
+      "file": "ВИЧ-инфекция у взрослых.pdf",
+      "status": "PDF_EVIDENCE_VALID",
+      "path": "C:\\clinrec_downloader\\downloads_active\\ВИЧ-инфекция у взрослых.pdf"
+    }
+  ]
+}

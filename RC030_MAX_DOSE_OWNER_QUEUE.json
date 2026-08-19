@@ -1,0 +1,345 @@
+{
+  "schema_version": 1,
+  "generated_from": {
+    "assembled_regimens_sha256": "9f505d08428cd2841983d3c8881c15e0813ada4a9056dea360a357a0f3eebcd9"
+  },
+  "queue": [
+    {
+      "regimen_id": "5476",
+      "tags": [
+        "pediatric",
+        "multi_numeric"
+      ],
+      "antibiotic": "спектиномицин",
+      "age_group": "child",
+      "route": "im",
+      "dose": 40.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Гонококковая инфекция.pdf",
+      "source_page": "21",
+      "source_quote": "#спектиномицин 40 мг на кг массы тела (не более 2,0 г) внутримышечно однократно [29,30,31]."
+    },
+    {
+      "regimen_id": "5474",
+      "tags": [
+        "pediatric",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "спектиномицин",
+      "age_group": "child",
+      "route": "im",
+      "dose": 40.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Гонококковая инфекция.pdf",
+      "source_page": "21",
+      "source_quote": "спектиномицин 40 мг на кг массы тела (не более 2,0 г) внутримышечно однократно [13-15,29,31-33]."
+    },
+    {
+      "regimen_id": "7933",
+      "tags": [
+        "adult",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "офлоксацин** (S01AE01)",
+      "age_group": "adult",
+      "route": "topical",
+      "dose": 1.0,
+      "unit": "",
+      "max_dose_signal": "не более",
+      "source_pdf": "Приобретённая патология слёзоотводящих путей.pdf",
+      "source_page": "15",
+      "source_quote": "офлоксацин** (S01AE01) – закапывают по 1 капле в конъюнктивальный мешок 2-4 раза в сутки не более 14 дней."
+    },
+    {
+      "regimen_id": "5475",
+      "tags": [
+        "pediatric",
+        "alternative",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "^цефтриаксон",
+      "age_group": "child",
+      "route": "im|iv",
+      "dose": 25.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Гонококковая инфекция.pdf",
+      "source_page": "21",
+      "source_quote": "^цефтриаксон** 25-50 мг на кг массы тела (не более 125 мг) внутримышечно или внутривенно 1 раз в сутки в течение 3 дней"
+    },
+    {
+      "regimen_id": "5982",
+      "tags": [
+        "adult",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "дексаметазон О.Змг + гентамицин 5 мг",
+      "age_group": "adult",
+      "route": "unknown",
+      "dose": 1.0,
+      "unit": "",
+      "max_dose_signal": "не более",
+      "source_pdf": "Конъюнктивиты.pdf",
+      "source_page": "19",
+      "source_quote": "дексаметазон О.Змг+гентамицин 5 мг, дозе и длительности его приема: глазная мазь -по 1 см от 2-3 раза/сут. Курс лечения от 5 дней, не более 2-"
+    },
+    {
+      "regimen_id": "6232",
+      "tags": [
+        "adult",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "Тинидазол",
+      "age_group": "adult",
+      "route": "oral",
+      "dose": 2.0,
+      "unit": "g",
+      "max_dose_signal": "не более",
+      "source_pdf": "Лямблиоз у детей и взрослых.pdf",
+      "source_page": "21",
+      "source_quote": "Тинидазол внутрь: взрослым в дозе 2 г внутрь однократно; детям старше 12 лет в дозе 50–75 мг/кг массы тела в сутки (не более 2 г) однократно после еды. Курс 1 сут."
+    },
+    {
+      "regimen_id": "6233",
+      "tags": [
+        "pediatric",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "Тинидазол",
+      "age_group": "child",
+      "route": "oral",
+      "dose": 50.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Лямблиоз у детей и взрослых.pdf",
+      "source_page": "21",
+      "source_quote": "Тинидазол внутрь: взрослым в дозе 2 г внутрь однократно; детям старше 12 лет в дозе 50–75 мг/кг массы тела в сутки (не более 2 г) однократно после еды. Курс 1 сут."
+    },
+    {
+      "regimen_id": "5809",
+      "tags": [
+        "pediatric",
+        "alternative",
+        "multi_numeric"
+      ],
+      "antibiotic": "Клиндамицин",
+      "age_group": "child",
+      "route": "unknown",
+      "dose": 20.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "36",
+      "source_quote": "при аллергии на бензилпенициллин** или ампициллин** используется #клиндамицин** (о//-1аЬе1 у детей до 12-ти лет) в дозе 20 мг/кг, но не более 600 мг (дозировка для взрослых)"
+    },
+    {
+      "regimen_id": "7352",
+      "tags": [
+        "pediatric",
+        "alternative",
+        "multi_numeric"
+      ],
+      "antibiotic": "Клиндамицин",
+      "age_group": "child",
+      "route": "unknown",
+      "dose": 20.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "36",
+      "source_quote": "при аллергии на бензилпенициллин** или ампициллин** используется #клиндамицин** (о//-1аЬе1 у детей до 12-ти лет) в дозе 20 мг/кг, но не более 600 мг (дозировка для взрослых)"
+    },
+    {
+      "regimen_id": "7362",
+      "tags": [
+        "pediatric",
+        "alternative",
+        "multi_numeric"
+      ],
+      "antibiotic": "Клиндамицин",
+      "age_group": "child",
+      "route": "im|iv",
+      "dose": 20.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "36",
+      "source_quote": "при аллергии на бензилпенициллин** или ампициллин** используется #клиндамицин** (о//-1аЬе1 у детей до 12-ти лет) в дозе 20 мг/кг, но не более 600 мг (дозировка для взрослых)"
+    },
+    {
+      "regimen_id": "7435",
+      "tags": [
+        "pediatric",
+        "alternative",
+        "multi_numeric"
+      ],
+      "antibiotic": "Клиндамицин",
+      "age_group": "child",
+      "route": "unknown",
+      "dose": 20.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "36",
+      "source_quote": "при аллергии на бензилпенициллин** или ампициллин** используется #клиндамицин** (о//-1аЬе1 у детей до 12-ти лет) в дозе 20 мг/кг, но не более 600 мг (дозировка для взрослых)"
+    },
+    {
+      "regimen_id": "7431",
+      "tags": [
+        "pediatric",
+        "alternative",
+        "multi_numeric"
+      ],
+      "antibiotic": "Клиндамицин",
+      "age_group": "child",
+      "route": "unknown",
+      "dose": 20.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "36",
+      "source_quote": "при аллергии на бензилпенициллин** или ампициллин** используется #клиндамицин** (о//-1аЬе1 у детей до 12-ти лет) в дозе 20 мг/кг, но не более 600 мг (дозировка для взрослых))"
+    },
+    {
+      "regimen_id": "7424",
+      "tags": [
+        "adult",
+        "multi_numeric"
+      ],
+      "antibiotic": "Клиндамицин",
+      "age_group": "adult",
+      "route": "unknown",
+      "dose": 20.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "максимальная суточная доза",
+      "source_pdf": "Митральный стеноз.pdf",
+      "source_page": "86",
+      "source_quote": "Есть аллергия на бензилпенициллин** (J01C: бета-лактамные антибактериальные препараты, #Клиндамицин** [160, 172] 20 мг/кг в день в 3 приема (максимальная суточная доза 1,8 г/сутки)"
+    },
+    {
+      "regimen_id": "7537",
+      "tags": [
+        "adult",
+        "multi_numeric"
+      ],
+      "antibiotic": "Клиндамицин",
+      "age_group": "adult",
+      "route": "oral",
+      "dose": 20.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "максимальная суточная доза",
+      "source_pdf": "Митральный стеноз.pdf",
+      "source_page": "86",
+      "source_quote": "Есть аллергия на бензилпенициллин** (J01C: бета-лактамные антибактериальные препараты, #Клиндамицин** [160, 172] 20 мг/кг в день в 3 приема (максимальная суточная доза 1,8 г/сутки)"
+    },
+    {
+      "regimen_id": "7580",
+      "tags": [
+        "adult",
+        "multi_numeric"
+      ],
+      "antibiotic": "Клиндамицин",
+      "age_group": "adult",
+      "route": "unknown",
+      "dose": 20.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "максимальная суточная доза",
+      "source_pdf": "Митральный стеноз.pdf",
+      "source_page": "86",
+      "source_quote": "Есть аллергия на бензилпенициллин** (J01C: бета-лактамные антибактериальные препараты, #Клиндамицин** [160, 172] 20 мг/кг в день в 3 приема (максимальная суточная доза 1,8 г/сутки)"
+    },
+    {
+      "regimen_id": "5806",
+      "tags": [
+        "pediatric",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "амоксициллина",
+      "age_group": "child",
+      "route": "oral",
+      "dose": 50.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "35",
+      "source_quote": "Профилактика инфекционного эндокардита заключается в приёме внутрь за 30-60 минут до процедуры амоксициллина** в дозе 50 мг/кг (детская дозировка), но не более 2 гр. (взрослая дозировка)"
+    },
+    {
+      "regimen_id": "7350",
+      "tags": [
+        "pediatric",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "амоксициллина",
+      "age_group": "child",
+      "route": "oral",
+      "dose": 50.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "35",
+      "source_quote": "Профилактика инфекционного эндокардита заключается в приёме внутрь за 30-60 минут до процедуры амоксициллина** в дозе 50 мг/кг (детская дозировка), но не более 2 гр. (взрослая дозировка)"
+    },
+    {
+      "regimen_id": "7360",
+      "tags": [
+        "pediatric",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "Амоксициллин",
+      "age_group": "child",
+      "route": "oral",
+      "dose": 50.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "35",
+      "source_quote": "Профилактика инфекционного эндокардита заключается в приёме внутрь за 30-60 минут до процедуры амоксициллина** в дозе 50 мг/кг (детская дозировка), но не более 2 гр. (взрослая дозировка)"
+    },
+    {
+      "regimen_id": "7429",
+      "tags": [
+        "pediatric",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "амоксициллина",
+      "age_group": "child",
+      "route": "oral",
+      "dose": 50.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "35",
+      "source_quote": "Профилактика инфекционного эндокардита заключается в приёме внутрь за 30-60 минут до процедуры амоксициллина** в дозе 50 мг/кг (детская дозировка), но не более 2 гр. (взрослая дозировка)"
+    },
+    {
+      "regimen_id": "7432",
+      "tags": [
+        "pediatric",
+        "range_near_max",
+        "multi_numeric"
+      ],
+      "antibiotic": "Амоксициллин",
+      "age_group": "child",
+      "route": "oral",
+      "dose": 50.0,
+      "unit": "mg/kg",
+      "max_dose_signal": "не более",
+      "source_pdf": "Дефект аортолегочной перегородки.pdf",
+      "source_page": "35",
+      "source_quote": "Профилактика инфекционного эндокардита заключается в приёме внутрь за 30-60 минут до процедуры амоксициллина** в дозе 50 мг/кг (детская дозировка), но не более 2 гр. (взрослая дозировка)"
+    }
+  ]
+}

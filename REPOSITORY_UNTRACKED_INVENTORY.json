@@ -1,0 +1,2559 @@
+{
+  "schema_version": 1,
+  "total": 424,
+  "counts": {
+    "A": 151,
+    "B": 5,
+    "C": 1,
+    "D": 136,
+    "E": 86,
+    "F": 31,
+    "TRACKED_MODIFIED": 14
+  },
+  "records": [
+    {
+      "status": " M",
+      "path": ".gitignore",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "antibiotic_calc.html",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "antibiotic_calc.html.template",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "build_html.ps1",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/antibio_db.json",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/build_db.ps1",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/diseases/adult_specific.json",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/diseases/neonatal.json",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/diseases/prophylaxis.json",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/diseases/respiratory.json",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/diseases/skin_soft_tissue.json",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/diseases/urogenital.json",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/diseases/zoonotic_specific.json",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": " M",
+      "path": "db/index.json",
+      "category": "TRACKED_MODIFIED",
+      "meaning": "already tracked, modified"
+    },
+    {
+      "status": "??",
+      "path": ".env.example",
+      "category": "B",
+      "meaning": "required configuration template"
+    },
+    {
+      "status": "??",
+      "path": ".gitleaks.toml",
+      "category": "B",
+      "meaning": "required configuration template"
+    },
+    {
+      "status": "??",
+      "path": "AGENTS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "AI_LOG.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ANTIBIO_ROADMAP_P5_P10.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ARCHITECTURAL_INVARIANTS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ARCHITECTURE_STATUS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ARCHITECTURE_V2.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ARCHITECTURE_V3.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CAP_ROOT_CAUSE_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CLINICAL_DATA_ISSUE_REGISTRY.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CLINICAL_ENGINE_ADAPTER_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CLINICAL_KNOWLEDGE_LIFECYCLE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CLINICAL_KNOWLEDGE_YIELD.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CLINICAL_REGIMEN_MODEL.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CLINICAL_SAFETY_GATES.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CLINICAL_VALIDATION_FRAMEWORK.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CORPUS_CERTIFICATION.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "CORPUS_MANIFEST.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "DECISIONS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "DECISION_MATRIX.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "DEPENDENCY_AUDIT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "DEVELOPMENT_BACKLOG.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "DOSE_NORMALIZATION_POLICY.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "DOSE_UNIT_AUDIT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "DOSE_UNIT_NORMALIZATION_POLICY.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ENGINEERING_MASTER_PLAN.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ENGINEERING_RETROSPECTIVE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ENTERPRISE_ARCHITECTURE_REVIEW.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ENVIRONMENT_REPRODUCTION_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "EXECUTIVE_SUMMARY.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "GOLDEN_DATASET_FAILURE_ANALYSIS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "GOLDEN_DATASET_SPECIFICATION.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "GOVERNANCE_CONSISTENCY_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "GOVERNANCE_SOURCE_OF_TRUTH.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "HANDOFF.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "KB_IDENTITY_SPECIFICATION.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "KB_VERSIONING_MIGRATION_PLAN.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "KB_VERSIONING_RCA.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "KNOWLEDGE_AUDIT_MODEL.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "KNOWLEDGE_COVERAGE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "KNOWLEDGE_PLATFORM_MIGRATION_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "KNOWLEDGE_TO_REGIMEN_PIPELINE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "MIGRATION_PLAN_NORMALIZED_REGIMENS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "NEXT_TASK.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P0-1_Implementation_Report.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P0-2_Implementation_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P0-2_Reader_Analysis.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P0-3_Bundle_Loader_Analysis.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P0-3_Bundle_Loader_Implementation_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P0-4_Checklist.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P0_COMPLETION_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P0_Phase_Gate_Review.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P1-B_Diagnosis_Terminology_Analysis.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P1-B_Diagnosis_Terminology_Implementation_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P1_Terminology_Analysis.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P1_Terminology_Implementation_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P2-1_Conformance_Validator_Analysis.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P2-1_Conformance_Validator_Implementation_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P2-2_Coverage_Metrics_Analysis.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P4.3_PRODUCTION_AUDIT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P4.4_PRODUCTION_AUDIT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P4.4_PRODUCTION_KNOWLEDGE_BASE_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P4.5_PRODUCTION_AUDIT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P5.3_DECISION_RECORD.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P5.3_IMPLEMENTATION_AUDIT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P5.3_IMPLEMENTATION_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P5.4_IMPLEMENTATION_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P5.5_IMPLEMENTATION_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P5.6_PRODUCTION_RECOVERY_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P5.6_RECOVERY_BASELINE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P5.6_REVIEW_WORKBENCH_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "P5_MIGRATION_MASTER_PLAN.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PHYSICIAN_VALIDATION_GUIDE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PRODUCTION_QA_PROGRAM.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PRODUCTION_READINESS_AUDIT_2026-07-15.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PRODUCTION_READINESS_PROGRAM.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PRODUCTION_SCORECARD.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PROJECT_STATE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PROVENANCE_CERTIFICATION.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PROVENANCE_CONTRACT_MATRIX.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PROVENANCE_SPECIFICATION.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "PYTEST_POLICY.md",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "QUERY_LAYER_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "RC024_CLASS_LEVEL_ANALYSIS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "RC024_DOSE_AUDIT_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "RCA_DATA_QUALITY.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "README.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "REGIMEN_APPROVAL_MODEL.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "REGIMEN_ASSEMBLY_ENGINE_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "REGIMEN_VALIDATION_GATES.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "RELEASE_READINESS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "REPOSITORY_MANIFEST.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "REPOSITORY_UNTRACKED_INVENTORY.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "REPRODUCIBLE_BUILD.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "REVIEW_WORKFLOW_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "RFC_INDEX.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "RISK_REGISTER.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ROADMAP.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ROADMAP_STATUS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "ROOT_CAUSE_REGISTER.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "SECRETS_MANAGEMENT_POLICY.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "SECURITY_INCIDENT_REPORT.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "SESSION_HISTORY.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "SESSION_SUMMARY.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "SINGLE_SOURCE_OF_TRUTH_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "TECH_DEBT_BACKLOG.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "TEST_RECOVERY_REPORT.md",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "THERAPEUTIC_OPTION_RULES.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "VERSIONING_GOVERNANCE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "benchmark_review_workbench.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "build_p44_kb.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "build_review_workbench.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_data_audit_report.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/_population.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/api/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/api/app.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/api/contract.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/api/service.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/bundles/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/bundles/loader.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/config.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/conformance.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/corpus/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/corpus/build_manifest.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/corpus/corpus_config.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/corpus/locator.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/corpus/provenance.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/curated/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/curated/knowledge.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/engine.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/README.md",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/_TEMPLATE.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/__init__.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/cap_penicillin_allergy.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/diagnosis_acute_sinusitis_gaimorit.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/diagnosis_cap_pneumonia.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/diagnosis_cystitis_uncomplicated.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/diagnosis_negative_gaimorit_not_chronic.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/diagnosis_negative_tonsillitis_not_combined.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/diagnosis_negative_tonsillitis_not_pharyngitis.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/runner.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/golden_cases/schema.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/manifest.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/models.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/pipeline.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/readers/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/readers/canonical_regimen_provider.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/readers/diagnosis_reader.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/readers/drug_reference_reader.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/readers/sqlite_reader.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/approval_workflow.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/assembly_engine.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/class_level_migration.py",
+      "category": "C",
+      "meaning": "migration"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/clinical_regimen.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/conflict_detector.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/field_normalization.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/quality_improvement.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/reject_classifier.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/store.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/tests/__init__.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/tests/test_p53_assembly.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/tests/test_p54_quality_improvement.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/tests/test_p55_class_level_separation.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/therapeutic_option.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/regimen/validator.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/bundle_manifest.schema.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/clinical_constants.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/curated_knowledge.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/curated_regimens.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/diagnosis_index.curated.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/diagnosis_index.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/regimen_bundle_manifest.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/regimen_review_areas.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/safety_bundle_manifest.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/score_profile_bundle_manifest.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/score_profiles/default.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/resources/terminology_bundle_manifest.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/api.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/dose_unit_audit.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/issue_registry.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/models.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/permissions.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/priority.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/queue_builder.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/reporting.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/service.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/storage.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/tests/__init__.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/tests/test_real_review_artifact.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/tests/test_review_api.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/review_workbench/tests/test_review_workbench.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/diagnosis_match.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/dose_adjustment.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/dose_calculation.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/hard_safety_filter.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/interaction_check.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/population_filter.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/rank_recommendations.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/regimen_load.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/therapy_line_select.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/stages/trace.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/terminology.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/__init__.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/conftest.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/fixtures/__init__.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/fixtures/test_clinical_constants.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/fixtures/test_diagnosis_index.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/fixtures/test_drugs_reference.json",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_api_recommend_behaviour.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_api_skeleton.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_bundle_loader.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_config.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_corpus_locator.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_corpus_provenance.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_curated_knowledge.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_curation.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_curation_tooling.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_diagnosis_reader.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_drug_reference_reader.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_engine.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_golden_runner.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_guideline_verifier.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_invariants.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_manifest.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_models.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_pipeline.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_regimen_curation.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_regimen_workbench.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_sqlite_reader.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_diagnosis_match.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_dose_adjustment.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_dose_calculation.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_hard_safety_filter.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_interaction_check.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_population_filter.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_rank_recommendations.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_regimen_load.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_therapy_line_select.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tests/test_stage_trace.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/analyze_diagnosis_conflicts.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/build_conflict_worklist.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/build_curated_index.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/build_curated_knowledge.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/build_curated_regimens.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/build_decision_ledger.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/build_diagnosis_index_draft.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/build_golden_template.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/build_normalized_sqlite.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/build_regimen_ledger.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/clinical_data_audit.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/performance_audit.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/regimen_review_workbench.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/validate_curated_knowledge.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/validate_curation.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/validate_regimen_curation.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "clinical_engine/tools/verify_regimen_against_guideline.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "config/document_processing.yaml",
+      "category": "B",
+      "meaning": "required configuration template"
+    },
+    {
+      "status": "??",
+      "path": "curated_knowledge_validation.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "dataset_pruning_report.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "db/validate_db.js",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "diagnosis_index_review.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "dictionary_expansion.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/AGENTS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/AI_LOG.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/DECISIONS.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/NEXT_TASK.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/PROJECT_STATE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/architecture/INT-5_API_Architecture_Review.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/design/CLINICAL_DECISION_ENGINE_DESIGN.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/extraction/ARCHITECTURE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/extraction/README.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/governance/AI_OPERATING_SYSTEM.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/governance/ANTIBIO_CONSTITUTION.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/governance/AUTONOMOUS_ENGINEERING_KERNEL.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/governance/CLINICAL_GOVERNANCE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/governance/CURRENT_PROJECT_STATE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/governance/ENGINEERING_PLAYBOOK.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/governance/README.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/governance/REPOSITORY_INTELLIGENCE.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/rfc/P5_KNOWLEDGE_PLATFORM_RFC.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/superpowers/specs/2026-07-09-medical-normalizer-v1-design.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "docs/superpowers/specs/clinical-decision-engine-v1.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "generate_review_workbench_report.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "main.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/diagnosis_synonyms.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/dictionary_candidates.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/drug_atc.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/drug_groups.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/drug_synonyms.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/duration_dictionary.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/frequency_dictionary.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/loader.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/metadata.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/pregnancy_dictionary.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/renal_dictionary.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/route_dictionary.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/unit_dictionary.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_dictionary/unknown_drugs.csv",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/confidence.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/db.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/dictionary.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/drug_parser.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/duration_parser.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/frequency_parser.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/models.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/normalizer.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/population_parser.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/route_parser.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/__init__.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_confidence.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_db.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_dictionary.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_drug_parser.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_duration_parser.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_frequency_parser.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_medical_dictionary_loader.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_normalizer.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_population_parser.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_route_parser.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_therapy_line_parser.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/tests/test_validator.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/therapy_line_parser.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "medical_normalizer/validator.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "migration_report.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "p56_queue_report.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "p56_review_benchmark.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "performance_audit_engine.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "prefilter_rules.json",
+      "category": "F",
+      "meaning": "generated artifact"
+    },
+    {
+      "status": "??",
+      "path": "production_readiness.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "production_reprocessor.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "pyproject.toml",
+      "category": "B",
+      "meaning": "required configuration template"
+    },
+    {
+      "status": "??",
+      "path": "quality_audit_after_parsers.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "quality_report.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "quality_root_cause.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "repository_inventory.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "reprocess_p45_layout.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "restore_archived_pdfs.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/cache.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/llm_provider.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/anthropic.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/base.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/deepseek.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/gemini_provider.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/local_provider.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/ollama_provider.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/openai_provider.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/openrouter.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/llm/providers/vllm_provider.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/_explore_data.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/analyzer.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/antibiotic_gate.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/api_client.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/classifier.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/config.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/database.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/downloader.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/__init__.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/base.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/cache.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/config.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/diagnose_pipeline.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/docling.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/layout.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/metrics.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/mineru.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/pymupdf.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/quality.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/router.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/semantic.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extraction/semantic_yield_audit.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extractor.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/extractor_llm.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/knowledge_base.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/knowledge_coverage.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/knowledge_identity.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/knowledge_invariants.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/main.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/normalizer.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/prefilter.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/progress.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/reporter.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/pipeline/section_detector.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/__init__.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/conftest.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_antibiotic_gate.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_classifier.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_database.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_document_extraction.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_extractor_llm.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_knowledge_base.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_knowledge_identity.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_layout_table_provenance.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_normalizer.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_prefilter.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_progress.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "src/tests/test_section_detector.py",
+      "category": "E",
+      "meaning": "test fixture or test source"
+    },
+    {
+      "status": "??",
+      "path": "table_dependency_audit_2026-07-13.md",
+      "category": "D",
+      "meaning": "documentation"
+    },
+    {
+      "status": "??",
+      "path": "uv.lock",
+      "category": "B",
+      "meaning": "required configuration template"
+    },
+    {
+      "status": "??",
+      "path": "validate_full_corpus.py",
+      "category": "A",
+      "meaning": "source code that must be tracked"
+    }
+  ]
+}

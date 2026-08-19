@@ -1,0 +1,346 @@
+[
+  {
+    "regimen_id": "7031",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Range 20-30 мг/кг/день immediately follows #метронидазол** with no intervening drug name or hard boundary; unit mg/kg matches structured_unit; separate max-dose parenthetical does not alter the range.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7036",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same quote as 7031: range 20-30 мг/кг/день directly attached to #метронидазол**, unit matches, no competing range for this drug.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7042",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single drug (Цефтриаксон), single range 20-80 мг/кг/сут directly following the name; the later '75 мг/кг/сут' is a scalar preferred value, not a competing range; unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7043",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Explicit structure 'дозировки Цефтриаксона... в диапазоне 50-100 мг/кг/сут' unambiguously attributes the single range to the single named drug; unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7051",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.55,
+    "rationale": "Quote contains two ranges for the same drug (Цефтриаксон): the primary label range 20-80 мг/кг/сут (matches structured_dose=20) and a secondary foreign-literature range 50-100 мг/кг/сут, which is a structural imperfection short of exact despite a clear primary winner.",
+    "competing_candidates": "50-100 mg/kg/day (secondary, foreign-publication range for same drug)"
+  },
+  {
+    "regimen_id": "7059",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same recurring quote: range 20-30 мг/кг/день directly attached to #метронидазол**, unit matches, no competing range.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7064",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same recurring quote: range 20-30 мг/кг/день directly attached to #метронидазол**, unit matches, no competing range.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7069",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same recurring quote: range 20-30 мг/кг/день directly attached to #метронидазол**, unit matches, no competing range.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7194",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.75,
+    "rationale": "Single drug ко-тримоксазол; range 3,75-5,0 мг/кг directly follows the drug name and literally matches structured_unit mg/kg; the bracketed 15-20 мг/кг/сут is a distinct daily-total unit, not a competing mg/kg range; the moderate-severity clause (freq 3, каждые 8 часов) is the one directly adjacent to the range.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7195",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.75,
+    "rationale": "Same range 3,75-5,0 мг/кг is explicitly restated for the severe-pneumonia clause ('или в дозе ... при развитии тяжелой ... каждые 6-8 часов'), directly linked with matching unit; the daily-total bracket is a different unit and not competing.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7197",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.78,
+    "rationale": "Same structure as 7194 with a shorter (uncited) quote; single drug, range 3,75-5,0 мг/кг directly attached, unit matches, moderate-severity clause is adjacent.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7198",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.78,
+    "rationale": "Same structure as 7195 with shorter quote; range 3,75-5,0 мг/кг restated for the severe clause, unit matches, directly linked.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7201",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Quote truncated to only the moderate-severity clause: single drug, single mg/kg range 3,75-5,0 directly attached, unit matches, no second clause present to create ambiguity.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7204",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same single-clause quote as 7201 (page 178 duplicate); direct link, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7207",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single-clause quote, single drug, range 3,75-5,0 мг/кг directly attached to the name, unit matches structured_unit.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7258",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.75,
+    "rationale": "Quote is a flattened dosing-table row ('Масса < 2000 г 0-7 дней 25-50 мг/кг каждые 12 ч') with weight, age, dose and interval concatenated with no prose connectors, typical of a table extraction.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7280",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single-clause quote (moderate severity), single drug ко-тримоксазол, range 3,75-5,0 мг/кг directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7285",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single-clause quote, single drug, range directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7313",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Single drug #Метронидазол**, single range 400-500 мг directly follows the name, unit mg matches structured_unit, no other drug or boundary present.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7316",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Isolated single-sentence quote, single drug, range 400-500 мг directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7414",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Isolated single-sentence quote, single drug, range 400-500 мг directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7418",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Isolated single-sentence quote, single drug, range 400-500 мг directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7462",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single-clause quote, single drug ко-тримоксазол, range 3,75-5,0 мг/кг directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7470",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same single-clause quote, single drug, range directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7497",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single drug цефтриаксона, single range 75-80 мг/кг/сутки directly following the name (only ATX code parenthetical intervenes), unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7498",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single drug цефотаксима, single range 100-200 мг/кг/сутки directly attached, unit matches; the '2-4 введения' is a frequency range, not a competing dose range.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7519",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same цефтриаксон quote, range 75-80 мг/кг/сутки directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7520",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same цефотаксима quote, range 100-200 мг/кг/сутки directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7548",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.55,
+    "rationale": "Офлоксацин's own range 0,2-0,4 г is directly adjacent to its name with a semicolon separating it from ципрофлоксацин and пефлоксацин, but three drugs are listed in the same quote, which is a structural imperfection short of exact.",
+    "competing_candidates": "ципрофлоксацин 0.5 г (scalar), пефлоксацин 0.4 г (scalar) — other drugs in the same enumerated list"
+  },
+  {
+    "regimen_id": "7559",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_SINGLE_PLAUSIBLE",
+    "confidence": 0.55,
+    "rationale": "Same multi-drug list quote; офлоксацин's range 0,2-0,4 г is clearly delimited by semicolons but the quote names three antibiotics total.",
+    "competing_candidates": "ципрофлоксацин 0.5 г (scalar), пефлоксацин 0.4 г (scalar) — other drugs in the same enumerated list"
+  },
+  {
+    "regimen_id": "7598",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single-clause ко-тримоксазол quote, range 3,75-5,0 мг/кг directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7603",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same single-clause quote, single drug, range directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7629",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same цефтриаксон quote, range 75-80 мг/кг/сутки directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7630",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same цефотаксима quote, range 100-200 мг/кг/сутки directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7644",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same цефтриаксон quote, range 75-80 мг/кг/сутки directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7645",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same цефотаксима quote, range 100-200 мг/кг/сутки directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7714",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Quote isolated to офлоксацин alone ('офлоксацин** по 0,2-0,4 г 2 раза в день внутрь или в/в'); single drug, single range, unit matches; 'внутрь или в/в' is a route alternative, not a drug boundary.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7715",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Same isolated офлоксацин-only quote; single range, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7728",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Same isolated офлоксацин-only quote; single range, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7729",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.9,
+    "rationale": "Same isolated офлоксацин-only quote; single range, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7895",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_TABLE_LINK",
+    "confidence": 0.75,
+    "rationale": "Quote is a newline-separated flattened table row ('Цефтриаксон** / 50-80 мг/кг / 4 г / В/в / 1-2') with drug, dose range, max dose, route and frequency as separate fields, not prose.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7955",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Single-clause ко-тримоксазол quote, range 3,75-5,0 мг/кг directly attached, unit matches.",
+    "competing_candidates": null
+  },
+  {
+    "regimen_id": "7961",
+    "regimen_version": 1,
+    "verdict": "INDEPENDENT_EXACT_LINK",
+    "confidence": 0.85,
+    "rationale": "Same single-clause quote, single drug, range directly attached, unit matches.",
+    "competing_candidates": null
+  }
+]

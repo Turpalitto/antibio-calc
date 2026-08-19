@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>RC-030 Owner Fidelity Review (OFFLINE) — NOT physician approval</title>
+<style>
+  :root { font-size: 20px; }
+  body { font-family: -apple-system, Segoe UI, Arial, sans-serif; max-width: 1320px; margin: 24px auto; padding: 0 20px; background:#0b0f14; color:#e6e6e6; line-height:1.45; }
+  .banner { background:#3a1d1d; border:1px solid #a33; padding:14px 18px; border-radius:8px; margin-bottom:18px; font-size:0.85rem; }
+  .banner b { color:#ff6b6b; }
+  .banner2 { background:#1d2f3a; border:1px solid #336a8a; padding:12px 16px; border-radius:8px; margin-bottom:18px; font-size:0.82rem; color:#bcd9ec; }
+
+  .topbar { display:flex; align-items:center; gap:16px; margin-bottom:10px; flex-wrap:wrap; }
+  .progress-text { font-size:1rem; color:#cfe0f0; font-weight:600; }
+  .progress-bar-track { flex:1; min-width:200px; height:10px; background:#1a2330; border-radius:6px; overflow:hidden; }
+  .progress-bar-fill { height:100%; background:linear-gradient(90deg,#2d8a5f,#4fd18a); transition:width .2s ease; }
+
+  .badge-row { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:16px; max-height:110px; overflow-y:auto; padding:8px; background:#0d131c; border-radius:8px; border:1px solid #202b38; }
+  .badge-dot { width:1.6rem; height:1.6rem; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:0.62rem; cursor:pointer; color:#0b0f14; font-weight:700; background:#3a4656; user-select:none; }
+  .badge-dot.reviewed { background:#4fd18a; }
+  .badge-dot.current { outline:3px solid #7fb3ff; outline-offset:1px; }
+  .badge-legend { font-size:0.75rem; color:#8397ab; margin-bottom:14px; }
+  .badge-legend .sw { display:inline-block; width:0.8rem; height:0.8rem; border-radius:3px; vertical-align:middle; margin:0 4px 0 12px; }
+  .cat-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:700; margin-left:8px; background:#2d4a5a; color:#8ad0ff; }
+
+  .panel { border:1px solid #2a3441; border-radius:10px; padding:18px 20px; margin-bottom:16px; background:#111823; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+  .panel h3 { margin:0 0 12px 0; font-size:0.8rem; letter-spacing:.07em; text-transform:uppercase; color:#7fb3ff; border-bottom:1px solid #22303e; padding-bottom:8px; }
+  .panel.source { border-color:#2d5f8a; }
+  .panel.normalized { border-color:#3a5f2d; }
+  .panel.reveal { border-color:#8a5f2d; }
+
+  .context-line { color:#5c6b7c; font-family: Consolas, monospace; font-size:0.85rem; white-space:pre-wrap; padding:4px 12px; }
+  .quote { background:#0a0f16; border-left:4px solid #4a90d9; padding:16px 18px; white-space:pre-wrap; font-family: Consolas, monospace; font-size:1.15rem; line-height:1.6; border-radius:0 6px 6px 0; margin:6px 0; }
+  .table-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:700; margin-left:8px; background:#6a4a2d; color:#ffd08a; }
+
+  .field { margin:8px 0; font-size:0.95rem; }
+  .field b { color:#9fb3c8; display:inline-block; min-width:11rem; }
+
+  select, button, textarea { font-size:0.95rem; padding:10px; border-radius:6px; border:1px solid #2a3441; background:#0a0f16; color:#e6e6e6; width:100%; box-sizing:border-box; margin-top:6px; }
+  button { background:#2d5f8a; cursor:pointer; border:none; margin-top:10px; font-weight:600; }
+  button:hover { background:#3a75a8; }
+  button:disabled { opacity:0.5; cursor:not-allowed; }
+  button.secondary { background:#2a3441; }
+  button.pdf-btn { background:#4a3a2d; }
+  button.pdf-btn:hover { background:#5e4a3a; }
+  button.danger { background:#5a2d2d; }
+  .navrow { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .navrow button { flex:1; min-width:140px; }
+  .verdictpanel { border-color:#4a2d2d; }
+  #storeInfo { font-size:0.8rem; color:#7a8a9a; margin-top:10px; }
+  .hint { font-size:0.75rem; color:#647587; margin-top:8px; }
+  .agree { color:#4fd18a; font-weight:700; } .disagree { color:#ff8a8a; font-weight:700; }
+  .charcount { font-size:0.75rem; color:#647587; text-align:right; }
+  .charcount.over { color:#ff6b6b; }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <b>OFFLINE • BLIND OWNER REVIEW • NOT PHYSICIAN APPROVAL.</b>
+  This interface lets you (the repository owner) check whether the parser's guess about a dose expression
+  matches the source PDF wording. Parser and AI proposals are hidden until you submit your own verdict.
+  Nothing you do here approves any regimen for clinical use, changes <code>calculation_eligibility</code>,
+  writes to any real database, or connects to any network. Verdicts are stored only in this browser tab's
+  local storage under a version- and mode-specific key, and can be exported as JSON for a human to inspect —
+  they are never auto-submitted anywhere.
+  <div class="hint">Keyboard: &larr;/&rarr; = previous/next record &nbsp;&middot;&nbsp; Ctrl+Enter = record verdict</div>
+</div>
+<div class="banner2" id="modeBanner"></div>
+
+<div class="topbar">
+  <div class="progress-text" id="progressText"></div>
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div></div>
+</div>
+<div class="badge-row" id="badgeRow"></div>
+<div class="badge-legend">
+  <span class="sw" style="background:#4fd18a;"></span>reviewed
+  <span class="sw" style="background:#3a4656;"></span>unreviewed
+  <span class="sw" style="background:#3a4656;outline:2px solid #7fb3ff;"></span>current record
+</div>
+
+<div class="panel source">
+  <h3>Source panel <span id="badgeCurrent" style="font-size:0.7rem;color:#7fb3ff;font-weight:normal;text-transform:none;letter-spacing:0;"></span></h3>
+  <div class="field"><b>PDF</b><span id="f_pdf"></span></div>
+  <div class="field"><b>Page</b><span id="f_page"></span></div>
+  <div class="context-line" id="f_context_before"></div>
+  <div class="quote" id="f_quote"></div>
+  <div class="context-line" id="f_context_after"></div>
+  <button class="pdf-btn" id="openPdfBtn">Open source PDF page</button>
+  <button class="secondary" id="setPdfRootBtn" type="button" style="margin-top:6px;">Set/change local PDF folder</button>
+  <div class="hint" id="pdfHint"></div>
+</div>
+
+<div class="panel normalized">
+  <h3>Normalized panel</h3>
+  <div class="field"><b>Antibiotic</b><span id="f_antibiotic"></span></div>
+  <div class="field"><b>Diagnosis</b><span id="f_diagnosis"></span></div>
+  <div class="field"><b>Dose</b><span id="f_dose"></span></div>
+  <div class="field"><b>Route</b><span id="f_route"></span></div>
+  <div class="field"><b>Frequency</b><span id="f_frequency"></span></div>
+  <div class="field"><b>Duration</b><span id="f_duration"></span></div>
+</div>
+
+<div class="panel verdictpanel">
+  <h3>Owner independent verdict — parser and AI proposal are hidden until you submit</h3>
+  <select id="verdictSelect">
+    <option value="" selected disabled>— select a verdict —</option>
+    <option value="SOURCE_CONFIRMS_PER_DAY">SOURCE_CONFIRMS_PER_DAY</option>
+    <option value="SOURCE_CONFIRMS_PER_DOSE">SOURCE_CONFIRMS_PER_DOSE</option>
+    <option value="SOURCE_CONFIRMS_FIXED_DAILY">SOURCE_CONFIRMS_FIXED_DAILY</option>
+    <option value="SOURCE_CONFIRMS_FIXED_SINGLE">SOURCE_CONFIRMS_FIXED_SINGLE</option>
+    <option value="SOURCE_CONFIRMS_RANGE_DAILY">SOURCE_CONFIRMS_RANGE_DAILY</option>
+    <option value="SOURCE_CONFIRMS_RANGE_SINGLE">SOURCE_CONFIRMS_RANGE_SINGLE</option>
+    <option value="TABLE_HEADER_CONFIRMS_PER_DAY">TABLE_HEADER_CONFIRMS_PER_DAY</option>
+    <option value="TABLE_HEADER_CONFIRMS_PER_DOSE">TABLE_HEADER_CONFIRMS_PER_DOSE</option>
+    <option value="WRONG_DOSE_ANCHOR">WRONG_DOSE_ANCHOR</option>
+    <option value="WRONG_FREQUENCY_LINK">WRONG_FREQUENCY_LINK</option>
+    <option value="WRONG_ALTERNATIVE">WRONG_ALTERNATIVE</option>
+    <option value="SOURCE_INCOMPLETE">SOURCE_INCOMPLETE</option>
+    <option value="SOURCE_CORRUPTED">SOURCE_CORRUPTED</option>
+    <option value="TABLE_CONTEXT_REQUIRED">TABLE_CONTEXT_REQUIRED</option>
+    <option value="REMAINS_AMBIGUOUS">REMAINS_AMBIGUOUS</option>
+    <option value="NOT_A_DOSABLE_REGIMEN">NOT_A_DOSABLE_REGIMEN</option>
+  </select>
+  <textarea id="noteBox" rows="3" maxlength="2000" placeholder="Note required for every verdict, including ambiguous ones — state what the source does or does not say"></textarea>
+  <div class="charcount" id="noteCharCount">0 / 2000</div>
+  <button id="submitBtn" disabled>Select a verdict first</button>
+  <div id="storeInfo"></div>
+</div>
+
+<div class="panel reveal" id="revealSection" style="display:none;">
+  <h3 id="revealHeader" style="cursor:pointer;">▸ Reveal parser and AI comparison</h3>
+  <div id="revealBody" style="display:none;">
+    <div class="field"><b>Parser candidate</b><span id="r_parser"></span></div>
+    <div class="field" id="r_ai_wrap">
+      <div class="field"><b>AI proposed verdict</b><span id="r_ai_verdict"></span></div>
+      <div class="field"><b>AI confidence</b><span id="r_ai_confidence"></span></div>
+      <div class="field"><b>AI evidence explanation</b><span id="r_ai_explanation"></span></div>
+      <div class="field" id="r_ai_risk_wrap" style="display:none;"><b>AI risk flags</b><span id="r_ai_risk"></span></div>
+      <div class="field"><b>Agreement (you vs AI)</b><span id="r_agreement"></span></div>
+      <div class="hint">AI proposal is NOT_OWNER_VERIFIED — it is shown for comparison only and was never copied into your verdict.</div>
+    </div>
+    <div class="field" id="r_no_ai_wrap" style="display:none;">
+      <div class="hint">No AI proposal is available for this record set — comparison shows the parser candidate only.</div>
+    </div>
+    <div class="field"><b>Your verdict</b><span id="r_owner_verdict"></span></div>
+  </div>
+</div>
+
+<div class="navrow">
+  <button class="secondary" id="prevBtn">&larr; Previous</button>
+  <button class="secondary" id="nextBtn">Next &rarr;</button>
+  <button class="secondary" id="exportBtn">Export events as JSON</button>
+  <button class="danger" id="resetBtn">Reset local store</button>
+</div>
+
+<div class="panel">
+  <h3>Export preview / validation</h3>
+  <div id="exportPreview" style="font-family:Consolas,monospace;font-size:0.7rem;white-space:pre-wrap;max-height:200px;overflow:auto;"></div>
+  <h3 style="margin-top:14px;">Import validation (paste a previously exported JSON to check it)</h3>
+  <textarea id="importBox" rows="4" placeholder="paste exported JSON here to validate it — this does not load it into this session's store"></textarea>
+  <button class="secondary" id="validateImportBtn">Validate pasted JSON</button>
+  <div id="importResult" style="font-family:Consolas,monospace;font-size:0.7rem;white-space:pre-wrap;margin-top:8px;"></div>
+</div>
+
+<script>
+"use strict";
+const RECORDS = [{"regimen_id": "6657", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Цефуроксим", "diagnosis": "Повреждение связок коленного сустава; разрыв ПКС, хирургическая антибиотикопрофилактика", "age_group": "child", "dose": 50.0, "unit": "mg/kg", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Повреждение связок коленного сустава.pdf", "source_page": "26", "source_quote": "цефуроксим** 50 мг/кг", "pdf_hash": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5", "evidence_hash": "c9a7025bd3a54c8ca2a8723e048c4d1e9b63d9d65adbbe3505a1bf77a23f010d", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "Разовые дозы для детей следует рассчитывать по фактическому весу: цефазолин**", "context_after": "применение фторхинолонов в период формирования костно-суставной системы"}, {"regimen_id": "6659", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Ванкомицин", "diagnosis": "Повреждение связок коленного сустава; разрыв ПКС, хирургическая антибиотикопрофилактика при непереносимости бета-лактамных антибиотиков или факторах риска носительства MRS", "age_group": "child", "dose": 15.0, "unit": "mg/kg", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Повреждение связок коленного сустава.pdf", "source_page": "26", "source_quote": "ванкомицин** 15 мг/кг", "pdf_hash": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5", "evidence_hash": "8da9bdb698afaaa99b4925bb1d22623725b962f09679e16e2a8af2ac5dc5d8f7", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "Разовые дозы для детей следует рассчитывать по фактическому весу: цефазолин**", "context_after": "применение фторхинолонов в период формирования костно-суставной системы"}, {"regimen_id": "6658", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Клиндамицин", "diagnosis": "Повреждение связок коленного сустава; разрыв ПКС, хирургическая антибиотикопрофилактика при непереносимости бета-лактамных антибиотиков", "age_group": "child", "dose": 10.0, "unit": "mg/kg", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Повреждение связок коленного сустава.pdf", "source_page": "26", "source_quote": "#клиндамицин** 10 мг/кг", "pdf_hash": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5", "evidence_hash": "188ef7cd7b4cc1bc1f7769fcaa008bac783c852bfbd926dfdd18ab6a7732b264", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "Разовые дозы для детей следует рассчитывать по фактическому весу: цефазолин**", "context_after": "применение фторхинолонов в период формирования костно-суставной системы"}, {"regimen_id": "6121", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Амоксициллин + клавулановая кислота", "diagnosis": "Паратонзиллярный абсцесс", "age_group": "child", "dose": 20.0, "unit": "mg/kg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Паратонзиллярный абсцесс.pdf", "source_page": "22", "source_quote": "Дети до 12 лет: 20-40 мг/кг/ сут в 2-3 приема.", "pdf_hash": "e4a62f1ad5567e5af3ab7b028d9a5a40ffd50d04e1d928f6dbc55b306cbebfa3", "evidence_hash": "cd06a4b7dc23cb63dac87bf111f23b68bd976bad33e067fe0d10216039208b1e", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/ сут", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "старше до 10 дней.", "context_after": ""}, {"regimen_id": "6653", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Ванкомицин", "diagnosis": "Повреждение связок коленного сустава; разрыв ПКС, хирургическая антибиотикопрофилактика при непереносимости бета-лактамных антибиотиков или факторах риска носительства MRS", "age_group": "adult", "dose": 15.0, "unit": "mg/kg", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Повреждение связок коленного сустава.pdf", "source_page": "26", "source_quote": "ванкомицин** по 15 мг/кг в виде медленной в/в инфузии", "pdf_hash": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5", "evidence_hash": "3c21043d2d83cf6073c6680272679011f1bb3b62af99c04337bf03e39a3c6c9b", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "вмешательствах в травматологии и ортопедии: цефазолин** 2 г (при весе пациента ≥120", "context_after": "медленной в/в инфузии [85], ципрофлоксацин** 400 мг [85], #левофлоксацин** 500 мг [85]"}, {"regimen_id": "6090", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Цефиксим", "diagnosis": "Отит средний острый", "age_group": "child", "dose": 8.0, "unit": "mg/kg", "frequency": 1.0, "route": "oral", "duration_recommended": null, "source_pdf": "Отит средний острый.pdf", "source_page": "24", "source_quote": "Цефиксим (Код АТХ: J01DD08) ... 8 мг/кг/сут в 1 прием", "pdf_hash": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a", "evidence_hash": "14a4d03f6cdd1be720596857d45d9ec079b52b7de59196d3b67a09797f3bc6e6", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сут", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["CROSSES_SENTENCE_BOUNDARY", "COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "Сразу после еды", "context_after": "400"}, {"regimen_id": "6088", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Цефуроксим", "diagnosis": "Отит средний острый", "age_group": "child", "dose": 30.0, "unit": "mg/kg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Отит средний острый.pdf", "source_page": "24", "source_quote": "Цефуроксим** (Код АТХ: J01DC02) ... 30 мг/кг/сут в 2 приема", "pdf_hash": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a", "evidence_hash": "becab7d8547a076c1e39b719784adeb950ce3e12357d39c6ff251cd19fb6427e", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сут", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "При аллергии на пенициллины (не анафилактической)", "context_after": "1,0"}, {"regimen_id": "6304", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "цефоперазон + сульбактам", "diagnosis": "Присоединение инфекций при ТКИН", "age_group": "child", "dose": 80.0, "unit": "mg/kg", "frequency": 2.0, "route": "iv", "duration_recommended": null, "source_pdf": "Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf", "source_page": "16", "source_quote": "цефоперазон+сульбактам** 80 мг/кг/сут в/в кап за 2 введения);", "pdf_hash": "4bade711541fb1ea277a4794f75dacfdc8ef9a5cf3491b87d6e982faf2990783", "evidence_hash": "6f07b7d6a72bcdc04dd2484d0bdad2379450ca921ab6873e31b4668d26ed8977", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сут", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "цефалоспорины 3-4 поколения (#цефепим** 80-100 мг/кг/сут в/в кап за 2 введения;", "context_after": "карбопенемы (#меропенем** 80-100 мг/кг/сут в/в кап за 3 введения)."}, {"regimen_id": "5916", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Азитромицин", "diagnosis": "Хламидийная инфекция у детей", "age_group": "child", "dose": 10.0, "unit": "mg/kg", "frequency": 1.0, "route": "oral", "duration_recommended": 7.0, "source_pdf": "Хламидийная инфекция.pdf", "source_page": "22", "source_quote": "азитромицин** 10 мг на кг массы тела в сутки в течение 7 дней", "pdf_hash": "56123f20d4d50c1442e0d026e4faf87d516e5b483f069dd8713e80888190ac94", "evidence_hash": "2f330f1eff838837ac00985609ec44ef84927d2446ff1158950b2c7ce8ffe911", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "в сутки", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "курс терапии (азитромицин** 20 мг на кг массы тела в сутки 1 раз в сутки в", "context_after": "течение 7 дней [37, 38, 65]"}, {"regimen_id": "6094", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Кларитромицин", "diagnosis": "Отит средний острый", "age_group": "child", "dose": 15.0, "unit": "mg/kg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Отит средний острый.pdf", "source_page": "24", "source_quote": "Кларитромицин**(Код АТХ: J01FA09) ... 15 мг/кг/сут в 2 приема", "pdf_hash": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a", "evidence_hash": "32eb164c2fcaf4ef8f04b96cab4899cd6b6c3cdcbb19a67fe3b27c6e056f410a", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сут", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "Независимо", "context_after": "1000 мг/сут в 2"}, {"regimen_id": "5374", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Азитромицин", "diagnosis": "Врожденная нейтропения (ВН)", "age_group": "adult", "dose": 10.0, "unit": "mg/kg", "frequency": 1.0, "route": "unknown", "duration_recommended": null, "source_pdf": "Врожденная нейтропения (ВН).pdf", "source_page": "20", "source_quote": "2. Азитромицин** 10 мг/кг/сут 1 раз в день – 3 раза в неделю;", "pdf_hash": "b4ef8578d1890f9ac2ff2734dcec8b8fb66a4d3677a15e559545a46640a2af98", "evidence_hash": "ea4b2051babcbf0f37d378db47f5c3ba84d33c3f208cc079181500836a6e511e", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сут", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "1. Амоксициллин+клавулановая кислота** в дозе 40 мг/кг/сутки в два приема - ежедневно;", "context_after": "3. Ко-тримоксазол** 5 мг/кг/сут по триметоприму в два/три приема – 3 раза в неделю."}, {"regimen_id": "6092", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Джозамицин", "diagnosis": "Отит средний острый", "age_group": "child", "dose": 40.0, "unit": "mg/kg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Отит средний острый.pdf", "source_page": "24", "source_quote": "Джозамицин**(Код АТХ: J01FA07) ... 40-50 мг/кг/сутки 2-3 приема", "pdf_hash": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a", "evidence_hash": "1eb06a77aae8bfc5060095da38297871f8bc27425378bb817761974e9da315c4", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сутки", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "При аллергии на пенициллины и цефалоспорины", "context_after": "2000 мг/сутки в 2"}, {"regimen_id": "6579", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Амоксициллин + [клавулановая кислота]", "diagnosis": "Инфекция мочевых путей у детей с нормальной функцией почек", "age_group": "child", "dose": 45.0, "unit": "mg/kg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Инфекция мочевых путей.pdf", "source_page": "20", "source_quote": "Дети до 12 лет: 45-60 мг/кг/сутки (по амоксициллину) в 2-3 приема", "pdf_hash": "7db13a28ac5708ffccfc7216d81f4a2c3ffcbb9527be87988207a608713577df", "evidence_hash": "10d8ddc80fa3d0a1171e23accd2701c5ff72c709142612ff6e1f6cef562a3394", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сутки", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "кислота]**", "context_after": "Дети старше 12 лет (или с массой тела > 40 кг): 500/125 мг 3 раза в"}, {"regimen_id": "7644", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "цефтриаксона", "diagnosis": "Обострение хронического синусита", "age_group": "child", "dose": 75.0, "unit": "mg/kg", "frequency": 1.0, "route": "unknown", "duration_recommended": null, "source_pdf": "Хронический синусит.pdf", "source_page": "22", "source_quote": "цефтриаксона ** (Код АТХ: J01DD04) 75-80 мг/кг/сутки 1 раз в день", "pdf_hash": "66aea8082fc74f26b16ee110db611194758847fc13f4cb82969320381ab8f8b0", "evidence_hash": "78a31d24452e4c8cf073fd5d781bd35bc7487473458785c7518a7b9532aaf30e", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сутки", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "массой менее 50 кг - цефиксим (Код АТХ: J01DD08) по 8 мг/кг/сутки 1 раза в день,", "context_after": "(Код АТХ: J01DD01) по 100-200 мг/кг/сутки в 2-4 введения."}, {"regimen_id": "6580", "regimen_version": 1, "stratum": "WEIGHT_PER_DAY", "antibiotic": "Амоксициллин + [клавулановая кислота]", "diagnosis": "Инфекция мочевых путей", "age_group": "child", "dose": 45.0, "unit": "mg/kg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Инфекция мочевых путей.pdf", "source_page": "20", "source_quote": "Дети до 12 лет: 45-60 мг/кг/сутки (по амоксициллину) в 2-3 приема", "pdf_hash": "7db13a28ac5708ffccfc7216d81f4a2c3ffcbb9527be87988207a608713577df", "evidence_hash": "75dc911d7d1e8adb0d5f9ace532e3807aad73997ca3654bf87c30c06d9629c45", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сутки", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "кислота]**", "context_after": "Дети старше 12 лет (или с массой тела > 40 кг): 500/125 мг 3 раза в"}, {"regimen_id": "7325", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Ванкомицин", "diagnosis": "Врожденная пневмония", "age_group": "adult", "dose": 10.0, "unit": "mg/kg", "frequency": 2.0, "route": "iv", "duration_recommended": null, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "- Первая неделя жизни 10 мг/кг каждые 12 часов", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "7c10abe2ee0dede5bc9eaaac904a7cbbf55dca47b80d5145327fc14150372fec", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "каждые 12 часов", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "Стартовая доза – 15 мг/кг", "context_after": "10 мг/кг каждые 12 часов"}, {"regimen_id": "7344", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Ванкомицин", "diagnosis": "Врожденная пневмония", "age_group": "adult", "dose": 10.0, "unit": "mg/kg", "frequency": 2.0, "route": "iv", "duration_recommended": null, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "- Первая неделя жизни 10 мг/кг каждые 12 часов", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "f615b422a2b17ffd88473cb0a9f1f1a59f772921b118598e37ee624c32488de6", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "каждые 12 часов", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "Стартовая доза – 15 мг/кг", "context_after": "10 мг/кг каждые 12 часов"}, {"regimen_id": "7269", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Ванкомицин", "diagnosis": "Врожденная пневмония", "age_group": "adult", "dose": 10.0, "unit": "mg/kg", "frequency": 2.0, "route": "iv", "duration_recommended": null, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "- Первая неделя жизни   \n10 мг/кг каждые 12 часов", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "47be4b7d5f68c86cfa43738df55898690a26861158b8fab7c53027c35f072025", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "каждые 12 часов", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "Стартовая доза – 15 мг/кг", "context_after": "10 мг/кг каждые 12 часов"}, {"regimen_id": "7346", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Линезолид", "diagnosis": "Врожденная пневмония", "age_group": "child", "dose": 10.0, "unit": "mg/kg", "frequency": 3.0, "route": "iv", "duration_recommended": null, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "Новорожденные и дети до 11 лет 10 мг/кг каждые 8 часов", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "8b5fa0002d8a9fb3da44f2a2e09d30d0c33eba551a3ca96afa8bcd1f96b0ee43", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "каждые 8 часов", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "56", "context_after": "до 6 лет"}, {"regimen_id": "7939", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Клиндамицин", "diagnosis": "Хирургическое лечение наружным доступом без риска сообщения операционной раны с полостью рта и без фиксирующих металлоконструкций", "age_group": "child", "dose": 10.0, "unit": "mg/kg", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Комбинированные врожденные и приобретенные дефекты и деформации челюстно-лицевой локализации.pdf", "source_page": "45", "source_quote": "#Клиндамицин** Для детей в разовой дозе 10мг/кг. Путь введения в/в.", "pdf_hash": "5f8b581e13065e2f4f3545365d1c22fdac58a982c3809f66e2c4f8adba59f3a2", "evidence_hash": "f0034cc2762cf57370461b57147d471a6f11d765ffc37eb33c2ed04c7b8dd71d", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "разовой дозе", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "рассчитывается для каждого ребенка индивидуально, в зависимости от его массы тела.", "context_after": ""}, {"regimen_id": "7947", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Клиндамицин", "diagnosis": "Комбинированные врожденные и приобретенные дефекты и деформации челюстно-лицевой локализации; хирургическое лечение наружным доступом без риска сообщения операционной раны с полостью рта и без фиксирующих металлоконструкций", "age_group": "child", "dose": 10.0, "unit": "mg/kg", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Комбинированные врожденные и приобретенные дефекты и деформации челюстно-лицевой локализации.pdf", "source_page": "45", "source_quote": "#Клиндамицин** Для детей в разовой дозе 10мг/кг. Путь введения в/в.", "pdf_hash": "5f8b581e13065e2f4f3545365d1c22fdac58a982c3809f66e2c4f8adba59f3a2", "evidence_hash": "5dc69a1b7a66b0683b6806f95bfe3f759a08d04db9525cae41ff79be017d7ee1", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "разовой дозе", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "рассчитывается для каждого ребенка индивидуально, в зависимости от его массы тела.", "context_after": ""}, {"regimen_id": "5903", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "орнидазол", "diagnosis": "Урогенитальный трихомониаз", "age_group": "child", "dose": 25.0, "unit": "mg/kg", "frequency": 1.0, "route": "oral", "duration_recommended": 5.0, "source_pdf": "Урогенитальный трихомониаз.pdf", "source_page": "15", "source_quote": "орнидазол 25 мг на кг массы тела перорально 1 раз в сутки в течение 5 дней", "pdf_hash": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b", "evidence_hash": "edc4175c6aed9214af997580c6dce7617360ab2e7436d3dcbb2bdaacae522406", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "1 раз в сутки", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "или", "context_after": "Уровень убедительности рекомендаций - С (уровень достоверности доказательств"}, {"regimen_id": "7345", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Ванкомицин", "diagnosis": "Врожденная пневмония", "age_group": "adult", "dose": 10.0, "unit": "mg/kg", "frequency": 3.0, "route": "iv", "duration_recommended": null, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "- Начиная со второй недели жизни до возраста 1 мес 10 мг/кг каждые 8 часов", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "8c807a9fb390cbdb871dc29c7495bb243099ce0994dc294761ff0e8e4427aa22", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "каждые 8 часов", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "10 мг/кг каждые 12 часов", "context_after": "до возраста 1 мес"}, {"regimen_id": "7326", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Ванкомицин", "diagnosis": "Врожденная пневмония", "age_group": "adult", "dose": 10.0, "unit": "mg/kg", "frequency": 3.0, "route": "iv", "duration_recommended": null, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "- Начиная со второй недели жизни до возраста 1 мес 10 мг/кг каждые 8 часов", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "38ba9a5f3d1def2d40480a38da613c0d9acf6b239f586873f7232a1272786cf6", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "каждые 8 часов", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "10 мг/кг каждые 12 часов", "context_after": "до возраста 1 мес"}, {"regimen_id": "5457", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "орнидазол", "diagnosis": "Урогенитальный трихомониаз у детей", "age_group": "child", "dose": 25.0, "unit": "mg/kg", "frequency": 1.0, "route": "oral", "duration_recommended": 5.0, "source_pdf": "Урогенитальный трихомониаз.pdf", "source_page": "15", "source_quote": "орнидазол 25 мг на кг массы тела перорально 1 раз в сутки в течение 5 дней", "pdf_hash": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b", "evidence_hash": "4d46891a44547b1f4165648b5bf4e361707ef79a95e14fd63fe061876e12f7b4", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "1 раз в сутки", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "или", "context_after": "Уровень убедительности рекомендаций - С (уровень достоверности доказательств"}, {"regimen_id": "7270", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Ванкомицин", "diagnosis": "Врожденная пневмония", "age_group": "adult", "dose": 10.0, "unit": "mg/kg", "frequency": 3.0, "route": "iv", "duration_recommended": null, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "- Начиная со второй недели жизни \nдо возраста 1 мес \n10 мг/кг каждые 8 часов", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "6628b0163b0fa8a5997c71f79ab49eb1f288b3de4189c145f27794774cbcbf2a", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "каждые 8 часов", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "10 мг/кг каждые 12 часов", "context_after": "до возраста 1 мес"}, {"regimen_id": "5534", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "этамбутол", "diagnosis": "Нетуберкулезные микобактериозы (M. avium complex, M. genavense, M. kansasii), поддерживающая терапия", "age_group": "adult", "dose": 15.0, "unit": "mg/kg", "frequency": 1.0, "route": "oral", "duration_recommended": 360.0, "source_pdf": "ВИЧ-инфекция у взрослых.pdf", "source_page": "47", "source_quote": "Кларитромицин** 500 мг 2 раза в сутки, этамбутол** 15 – 20 мг/кг 1 раз в сутки", "pdf_hash": "adb96667fccabe844006149b25d1a7ced565944d461b3e8b7ba7b0e2fc7978e1", "evidence_hash": "91451b529dc0e709958b9d8566c11cb2b427e82d65f94c9856d9cf251f166f42", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "2 раза в сутки", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["CROSSES_DRUG_NAME_BOUNDARY"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "-", "context_after": "#рифабутин** 5 мг/кг 1 раз в сутки (Применимо для кодов МКБ-10: В20-24, которые"}, {"regimen_id": "5619", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "орнидазол", "diagnosis": "Урогенитальный трихомониаз", "age_group": "child", "dose": 25.0, "unit": "mg/kg", "frequency": 1.0, "route": "oral", "duration_recommended": 5.0, "source_pdf": "Урогенитальный трихомониаз.pdf", "source_page": "15", "source_quote": "орнидазол 25 мг на кг массы тела перорально 1 раз в сутки в течение 5 дней [15,55]", "pdf_hash": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b", "evidence_hash": "2048719ff5ff88b61ee8a883a2e31f9331050a0129af114b01b6d4bb2892ef2b", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "1 раз в сутки", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "или", "context_after": "Уровень убедительности рекомендаций - С (уровень достоверности доказательств"}, {"regimen_id": "7347", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Эртапенем", "diagnosis": "Врожденная пневмония", "age_group": "child", "dose": 15.0, "unit": "mg/kg", "frequency": 2.0, "route": "iv", "duration_recommended": null, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "Новорожденные 15 мг/кг каждые 12 часов методом внутривенного введения лекарственных препаратов", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "fa116c4da2e28ee84acbaf438b764310de9bf951cc31e57a8c0e6d9f7fdaaff7", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "каждые 12 часов", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "7256", "regimen_version": 1, "stratum": "WEIGHT_PER_DOSE", "antibiotic": "Меропенем", "diagnosis": "Врожденная пневмония", "age_group": "child", "dose": 40.0, "unit": "mg/kg", "frequency": 3.0, "route": "iv", "duration_recommended": 0.16666666666666666, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "При менингите - доза 40 мг/кг каждые 8 ч методом внутривенного введения лекарственных препаратов", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "037c0a447b39ea01ae7d363d9e2300b5c584530fcb89b70486d6cf73c70f061f", "parser_semantic_type": "WEIGHT_PER_DOSE", "parser_rule_fragment": "каждые 8 ч", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "от тяжести инфекции", "context_after": "внутривенного введения лекарственных препаратов"}, {"regimen_id": "6651", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "Цефуроксим", "diagnosis": "Повреждение связок коленного сустава; разрыв ПКС, хирургическая антибиотикопрофилактика", "age_group": "adult", "dose": 1.5, "unit": "g", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Повреждение связок коленного сустава.pdf", "source_page": "26", "source_quote": "цефуроксим** 1,5 г", "pdf_hash": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5", "evidence_hash": "6741bed6973778b5ff8a0311245af7b9e3eb8a0c547e30d2492515e2a7a4bed6", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "вмешательствах в травматологии и ортопедии: цефазолин** 2 г (при весе пациента ≥120", "context_after": "медленной в/в инфузии [85], ципрофлоксацин** 400 мг [85], #левофлоксацин** 500 мг [85]"}, {"regimen_id": "6652", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "Клиндамицин", "diagnosis": "Повреждение связок коленного сустава; разрыв ПКС, хирургическая антибиотикопрофилактика при непереносимости бета-лактамных антибиотиков", "age_group": "adult", "dose": 900.0, "unit": "mg", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Повреждение связок коленного сустава.pdf", "source_page": "26", "source_quote": "#клиндамицин** 900 мг", "pdf_hash": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5", "evidence_hash": "20110b9e45a7d681decb5269b07cfce67399fb031f277a4305e5fdc5adebbac0", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "вмешательствах в травматологии и ортопедии: цефазолин** 2 г (при весе пациента ≥120", "context_after": "медленной в/в инфузии [85], ципрофлоксацин** 400 мг [85], #левофлоксацин** 500 мг [85]"}, {"regimen_id": "6655", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "Левофлоксацин", "diagnosis": "Повреждение связок коленного сустава; разрыв ПКС, хирургическая антибиотикопрофилактика при непереносимости бета-лактамных антибиотиков в комбинации с ванкомицином", "age_group": "adult", "dose": 500.0, "unit": "mg", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Повреждение связок коленного сустава.pdf", "source_page": "26", "source_quote": "#левофлоксацин** 500 мг", "pdf_hash": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5", "evidence_hash": "504cbfa8faf2fb020c22a94b638b5bd48092e7e2780f73cf2b8f285f3296709c", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "кг — 3 г), цефуроксим** 1,5 г, #клиндамицин** 900 мг [85], ванкомицин** по 15 мг/кг в виде", "context_after": "Разовые дозы для детей следует рассчитывать по фактическому весу: цефазолин**"}, {"regimen_id": "6654", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "Ципрофлоксацин", "diagnosis": "Повреждение связок коленного сустава; разрыв ПКС, хирургическая антибиотикопрофилактика при непереносимости бета-лактамных антибиотиков в комбинации с ванкомицином", "age_group": "adult", "dose": 400.0, "unit": "mg", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Повреждение связок коленного сустава.pdf", "source_page": "26", "source_quote": "ципрофлоксацин** 400 мг", "pdf_hash": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5", "evidence_hash": "cc0d1b23c2df5470c6efbd216250bf06905673ab7dc9f0cc28eed5bf7b518357", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "кг — 3 г), цефуроксим** 1,5 г, #клиндамицин** 900 мг [85], ванкомицин** по 15 мг/кг в виде", "context_after": "Разовые дозы для детей следует рассчитывать по фактическому весу: цефазолин**"}, {"regimen_id": "5450", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "тинидазол", "diagnosis": "Урогенитальный трихомониаз нижнего отдела мочеполовой системы", "age_group": "adult", "dose": 2.0, "unit": "g", "frequency": 1.0, "route": "oral", "duration_recommended": 1.0, "source_pdf": "Урогенитальный трихомониаз.pdf", "source_page": "14", "source_quote": "тинидазол 2,0 г однократно", "pdf_hash": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b", "evidence_hash": "8e766acb9cf7e0318ab926a899139f1a23c90739f668570bd22c6e6fd3aa86fc", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "или", "context_after": "Уровень убедительности рекомендаций - А (уровень достоверности доказательств"}, {"regimen_id": "5895", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "тинидазол", "diagnosis": "Урогенитальный трихомониаз", "age_group": "adult", "dose": 2.0, "unit": "g", "frequency": 1.0, "route": "oral", "duration_recommended": 1.0, "source_pdf": "Урогенитальный трихомониаз.pdf", "source_page": "14", "source_quote": "тинидазол 2,0 г однократно", "pdf_hash": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b", "evidence_hash": "fa405404ac2a432353db64b50b704fdbb1aef499ee5e3e475546252c509f588b", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "или", "context_after": "Уровень убедительности рекомендаций - А (уровень достоверности доказательств"}, {"regimen_id": "5913", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "Азитромицин", "diagnosis": "Хламидийная инфекция у беременных и женщин в период лактации", "age_group": "adult|pregnancy", "dose": 1.0, "unit": "g", "frequency": 1.0, "route": "oral", "duration_recommended": 1.0, "source_pdf": "Хламидийная инфекция.pdf", "source_page": "21", "source_quote": "азитромицин** 1,0 г однократно", "pdf_hash": "56123f20d4d50c1442e0d026e4faf87d516e5b483f069dd8713e80888190ac94", "evidence_hash": "cf2c97db0c7ff7798e9fc313ad371bc6ff97db9fb3e1da0c6a4fcf5353bd1916", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "", "context_after": "Уровень"}, {"regimen_id": "6976", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "Ципрофлоксацин", "diagnosis": "Острый неосложненный пиелонефрит нетяжелого течения", "age_group": "adult", "dose": 500.0, "unit": "mg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Острый пиелонефрит.pdf", "source_page": "32", "source_quote": "Ципрофлоксацин**\n500 мг 2 р/сут\n7–10", "pdf_hash": "b46960a144b21cacf97f39435c53489bb8a57f0e775be6d8df9e658f67ce08cf", "evidence_hash": "60a0393ef9613f9275becfe729edf6f5f29b13babc9e4542102be3cedbf87222", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "/сут", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "7025", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "Ципрофлоксацин", "diagnosis": "Острый неосложненный пиелонефрит нетяжелого течения", "age_group": "adult", "dose": 500.0, "unit": "mg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Острый пиелонефрит.pdf", "source_page": "32", "source_quote": "Ципрофлоксацин**\n500 мг 2 р/сут\n7–10", "pdf_hash": "b46960a144b21cacf97f39435c53489bb8a57f0e775be6d8df9e658f67ce08cf", "evidence_hash": "9f7d1dc1a5486e1fd608b59bda2cb6cb65c4287165f835166615dbfe621a01f3", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "/сут", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "5961", "regimen_version": 1, "stratum": "FIXED_PER_DAY", "antibiotic": "Цефазолин", "diagnosis": "Роды одноплодные, родоразрешение путем кесарева сечения", "age_group": "adult|pregnancy", "dose": 1.0, "unit": "g", "frequency": 1.0, "route": "iv", "duration_recommended": 1.0, "source_pdf": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf", "source_page": "54", "source_quote": "Цефазолин**\n1 г\nвнутривенно медленно", "pdf_hash": "c6d06ac1c8ad84b3154d1ea6bfda12aee7603de7e0bdcfcfeb078d57beebe3d2", "evidence_hash": "94f66f89802ffe1255298056557bad78f33787d851b25dbf3758773c1f3e4eba", "parser_semantic_type": "FIXED_PER_DAY", "parser_rule_fragment": "(frequency=1: per-dose and per-day are algebraically identical)", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "6944", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "Цефдиторен", "diagnosis": "Острый бронхит", "age_group": "adult", "dose": 200.0, "unit": "mg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Острый бронхит.pdf", "source_page": "39", "source_quote": "Цефдиторен 200 мг внутрь каждые 12 ч", "pdf_hash": "5d98545b6740cc18d76ee806831a321c985ee3c5a2c0c7ea49f944ffef45e599", "evidence_hash": "09e1d1e134db687a8cebf4753b70550307a5506461139e1916191e3e604270cc", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "каждые 12 ч", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "6939", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "Амоксициллин", "diagnosis": "Острый бронхит", "age_group": "adult", "dose": 1.0, "unit": "g", "frequency": 3.0, "route": "oral", "duration_recommended": null, "source_pdf": "Острый бронхит.pdf", "source_page": "39", "source_quote": "Амоксициллин** 1 г внутрь каждые 8 ч", "pdf_hash": "5d98545b6740cc18d76ee806831a321c985ee3c5a2c0c7ea49f944ffef45e599", "evidence_hash": "258a1cba38c5e562694f34501f481ec464be5dc1b517083e0e68fabe24d58590", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "каждые 8 ч", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "6945", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "Цефподоксим", "diagnosis": "Острый бронхит", "age_group": "adult", "dose": 200.0, "unit": "mg", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Острый бронхит.pdf", "source_page": "39", "source_quote": "Цефподоксим 200 мг внутрь каждые 12 ч", "pdf_hash": "5d98545b6740cc18d76ee806831a321c985ee3c5a2c0c7ea49f944ffef45e599", "evidence_hash": "9a40b4c05970f895574405bd562f6e0b49a611c7fc3121a03f5fc03c844798db", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "каждые 12 ч", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "6946", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "Доксициклин", "diagnosis": "Острый бронхит", "age_group": "adult", "dose": 0.1, "unit": "g", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Острый бронхит.pdf", "source_page": "39", "source_quote": "Доксициклин** 0,1 г внутрь каждые 12 ч", "pdf_hash": "5d98545b6740cc18d76ee806831a321c985ee3c5a2c0c7ea49f944ffef45e599", "evidence_hash": "b339fd89f755db0816a1cb6d3f0245aa9d411fd0a3a99bcedd582cccfec0915b", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "каждые 12 ч", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "6942", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "Азитромицин", "diagnosis": "Острый бронхит", "age_group": "adult", "dose": 0.5, "unit": "g", "frequency": 1.0, "route": "oral", "duration_recommended": null, "source_pdf": "Острый бронхит.pdf", "source_page": "39", "source_quote": "Азитромицин** 0,5 г внутрь каждые 24 ч", "pdf_hash": "5d98545b6740cc18d76ee806831a321c985ee3c5a2c0c7ea49f944ffef45e599", "evidence_hash": "cf9364a2aad50532da4c9d005fa6d0134b57072ef9068339d0ab6ebd7e1afc12", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "каждые 24 ч", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "7730", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "пефлоксацин", "diagnosis": "Брюшной тиф", "age_group": "adult", "dose": 0.4, "unit": "g", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf", "source_page": "27", "source_quote": "пефлоксацин по 0,4 г 2 раза в день внутрь", "pdf_hash": "321039606771470ef4a0d98c2767523cfa723b0e08433ef69c270d399820d6a8", "evidence_hash": "d51306d1f066811580d17b38ef221afff8aeb726629d4eab2d379b4474cf4410", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "2 раза в день", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "тифа: фторхинолоны (ципрофлоксацин** по 0,5 г 2 раза в день после еды; офлоксацин** по", "context_after": "цефалоспорины 3-го поколения (цефтриаксон** - внутримышечно или внутривенно по 1,0–"}, {"regimen_id": "7716", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "пефлоксацин", "diagnosis": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых", "age_group": "adult", "dose": 0.4, "unit": "g", "frequency": 2.0, "route": "oral", "duration_recommended": null, "source_pdf": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf", "source_page": "27", "source_quote": "пефлоксацин по 0,4 г 2 раза в день внутрь", "pdf_hash": "321039606771470ef4a0d98c2767523cfa723b0e08433ef69c270d399820d6a8", "evidence_hash": "738a04eb314836f1eac15cdbea90a2bfa4473f6dbdf5451e22c2dcdd158446ab", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "2 раза в день", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "тифа: фторхинолоны (ципрофлоксацин** по 0,5 г 2 раза в день после еды; офлоксацин** по", "context_after": "цефалоспорины 3-го поколения (цефтриаксон** - внутримышечно или внутривенно по 1,0–"}, {"regimen_id": "5905", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "миноциклин", "diagnosis": "Хламидийные инфекции нижнего отдела мочеполовой системы у взрослых", "age_group": "adult", "dose": 100.0, "unit": "mg", "frequency": 2.0, "route": "oral", "duration_recommended": 7.0, "source_pdf": "Хламидийная инфекция.pdf", "source_page": "19", "source_quote": "миноциклин 100 мг 2 раза в сутки течение 7 дней", "pdf_hash": "56123f20d4d50c1442e0d026e4faf87d516e5b483f069dd8713e80888190ac94", "evidence_hash": "501633bd5273faa887e42a83f38e671ffceaa887dda2cd56ecdd6fc855434de5", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "2 раза в сутки", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "или", "context_after": "Уровень"}, {"regimen_id": "5897", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "орнидазол", "diagnosis": "Урогенитальный трихомониаз", "age_group": "adult", "dose": 500.0, "unit": "mg", "frequency": 2.0, "route": "oral", "duration_recommended": 5.0, "source_pdf": "Урогенитальный трихомониаз.pdf", "source_page": "14", "source_quote": "орнидазол 500 мг 2 раза в сутки в течение 5 дней", "pdf_hash": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b", "evidence_hash": "fdca8c6f49b7f02f85ffc8cbb1cb2396bef267ab05119ee2a490bf112e2e434f", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "2 раза в сутки", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "или", "context_after": "Уровень убедительности рекомендаций - А (уровень достоверности доказательств"}, {"regimen_id": "5452", "regimen_version": 1, "stratum": "FIXED_PER_DOSE", "antibiotic": "орнидазол", "diagnosis": "Урогенитальный трихомониаз нижнего отдела мочеполовой системы", "age_group": "adult", "dose": 500.0, "unit": "mg", "frequency": 2.0, "route": "oral", "duration_recommended": 5.0, "source_pdf": "Урогенитальный трихомониаз.pdf", "source_page": "14", "source_quote": "орнидазол 500 мг 2 раза в сутки в течение 5 дней", "pdf_hash": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b", "evidence_hash": "36ad7baa2bd11a6f4f84a2d88b909bee7526d6767e5321af9a56faf9bd7dedde", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "2 раза в сутки", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "или", "context_after": "Уровень убедительности рекомендаций - А (уровень достоверности доказательств"}, {"regimen_id": "7343", "regimen_version": 1, "stratum": "AMBIGUOUS_CONTROL", "antibiotic": "Ванкомицин", "diagnosis": "Врожденная пневмония", "age_group": "child", "dose": 15.0, "unit": "mg/kg", "frequency": null, "route": "iv", "duration_recommended": null, "source_pdf": "Врожденная пневмония.pdf", "source_page": "57", "source_quote": "Новорожденные дети: Стартовая доза – 15 мг/кг", "pdf_hash": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00", "evidence_hash": "b7a993199e5ae60f2367e73869928f02b8cfd544bba0b68d1c8cbdf0ab5184a5", "parser_semantic_type": "AMBIGUOUS", "parser_rule_fragment": null, "validation_status": "AMBIGUOUS", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "Режим дозирования препарата", "context_after": "Стартовая доза – 15 мг/кг"}, {"regimen_id": "5683", "regimen_version": 1, "stratum": "AMBIGUOUS_CONTROL", "antibiotic": "Цефтриаксон", "diagnosis": "Кистозный фиброз (муковисцидоз)", "age_group": "adult", "dose": 50.0, "unit": "mg/kg", "frequency": null, "route": "iv", "duration_recommended": null, "source_pdf": "Кистозный фиброз (муковисцидоз).pdf", "source_page": "86", "source_quote": "Цефтриаксон**  \n50-80 мг/кг  \n4 г   \nВ/в  \n1-2", "pdf_hash": "baff8509d3c40ceaf9971331740839b7c1d69aa41c75619bea48242c0040b2dc", "evidence_hash": "e58b14f107808fdfbd3781459a759ab02bdfd95db4ecdcaa4d59c942f3d4ed3d", "parser_semantic_type": "AMBIGUOUS", "parser_rule_fragment": null, "validation_status": "AMBIGUOUS", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "7895", "regimen_version": 1, "stratum": "AMBIGUOUS_CONTROL", "antibiotic": "Цефтриаксон", "diagnosis": "Кистозный фиброз; ситуация/возбудитель не указаны во фрагменте", "age_group": "child", "dose": 50.0, "unit": "mg/kg", "frequency": null, "route": "iv", "duration_recommended": null, "source_pdf": "Кистозный фиброз (муковисцидоз).pdf", "source_page": "86", "source_quote": "Цефтриаксон**  \n50-80 мг/кг  \n4 г   \nВ/в  \n1-2", "pdf_hash": "baff8509d3c40ceaf9971331740839b7c1d69aa41c75619bea48242c0040b2dc", "evidence_hash": "de5b95ac7c5c89359d28bab5ed980070685f6a2acb92ce2bc01ee3bd25640102", "parser_semantic_type": "AMBIGUOUS", "parser_rule_fragment": null, "validation_status": "AMBIGUOUS", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "6224", "regimen_version": 1, "stratum": "AMBIGUOUS_CONTROL", "antibiotic": "Метронидазол", "diagnosis": "Лямблиоз", "age_group": "child", "dose": 250.0, "unit": "mg", "frequency": 2.0, "route": "oral", "duration_recommended": 5.0, "source_pdf": "Лямблиоз у детей и взрослых.pdf", "source_page": "21", "source_quote": "детям 2–5 лет в дозе 250 мг (в 2 приема) в течение 5 сут", "pdf_hash": "3381e1b986436cbe8fc2461d1aeaa5435ac143851c861012ea71d366bbfd7260", "evidence_hash": "13e2c28e7aae9578d5b9d83fc449a671b8a702c2101f19dc50b35f049b3983a1", "parser_semantic_type": "AMBIGUOUS", "parser_rule_fragment": null, "validation_status": "AMBIGUOUS", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "7354", "regimen_version": 1, "stratum": "AMBIGUOUS_CONTROL", "antibiotic": "Доксициклин", "diagnosis": "Хламидийная лимфогранулёма (венерическая)", "age_group": "adult", "dose": 100.0, "unit": "mg", "frequency": 2.0, "route": "oral", "duration_recommended": 21.0, "source_pdf": "Хламидийная лимфогранулёма (венерическая).pdf", "source_page": "18", "source_quote": "Доксициклин** 100 мг внутрь дважды в день в течение 21 дня.", "pdf_hash": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381", "evidence_hash": "4041d25b48ba14de278dd1a4d211cabb01ff3ea7af1b7297829fd3ef4aa9a6a3", "parser_semantic_type": "AMBIGUOUS", "parser_rule_fragment": null, "validation_status": "AMBIGUOUS", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "препаратами для системного действия: [48-51,60]:", "context_after": "Уровень убедительности рекомендаций С (уровень достоверности доказательств 4)"}, {"regimen_id": "5670", "regimen_version": 1, "stratum": "TABLE_SOURCE_RECOVERY", "antibiotic": "Амоксициллин + клавулановая кислота", "diagnosis": "Паратонзиллярный абсцесс", "age_group": "adult", "dose": 500.0, "unit": "mg", "frequency": 3.0, "route": "oral", "duration_recommended": 10.0, "source_pdf": "Паратонзиллярный абсцесс.pdf", "source_page": "22", "source_quote": "Амоксициллин+ клавулановая кислота** внутрь 500/125 мг 3 раза в сутки или 875/125 мг 2 раза в сутки* (дозы указаны для пациентов 12 лет и старше или с массой тела 40 кг и более, см. также инструкцию)", "pdf_hash": "e4a62f1ad5567e5af3ab7b028d9a5a40ffd50d04e1d928f6dbc55b306cbebfa3", "evidence_hash": "21bb84d609984d22e6d3d49a390ebb52b51be51fe5fb14eb615e4777577b8d86", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "3 раза в сутки", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": "", "context_after": "или 875/125 мг 2 раза в сутки* (дозы указаны для пациентов 12 лет и"}, {"regimen_id": "6072", "regimen_version": 1, "stratum": "TABLE_SOURCE_RECOVERY", "antibiotic": "Амоксициллин", "diagnosis": "Отит средний острый", "age_group": "adult", "dose": 1000.0, "unit": "mg", "frequency": 3.0, "route": "oral", "duration_recommended": null, "source_pdf": "Отит средний острый.pdf", "source_page": "23", "source_quote": "При высоком риске наличия у пациента штамма пневмококка с повышенной устойчивостью к антибиотикам, рекомендуется использовать повышенные дозировки амоксициллина** (Код АТХ: J01CA04) 80-90 мг/кг/сутки у детей и 1000 мг 3 раза в сутки у взрослых.", "pdf_hash": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a", "evidence_hash": "08c8634d369e24c2ce6589f5b3e43e641230202c7b02402ba0b538c329dc90f6", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "3 раза в сутки", "validation_status": "RULE_VALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": [], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "6073", "regimen_version": 1, "stratum": "TABLE_SOURCE_RECOVERY", "antibiotic": "Амоксициллин", "diagnosis": "Отит средний острый", "age_group": "child", "dose": 80.0, "unit": "mg/kg", "frequency": 1.0, "route": "oral", "duration_recommended": null, "source_pdf": "Отит средний острый.pdf", "source_page": "23", "source_quote": "При высоком риске наличия у пациента штамма пневмококка с повышенной устойчивостью к антибиотикам, рекомендуется использовать повышенные дозировки амоксициллина** (Код АТХ: J01CA04) 80-90 мг/кг/сутки у детей и 1000 мг 3 раза в сутки у взрослых.", "pdf_hash": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a", "evidence_hash": "3cae491d0bfccd578981feb1d5d1347338f8280f30f75a5326c11ba8557c201b", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сутки", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "6074", "regimen_version": 1, "stratum": "TABLE_SOURCE_RECOVERY", "antibiotic": "Амоксициллин", "diagnosis": "Отит средний острый", "age_group": "child", "dose": 500.0, "unit": "mg", "frequency": 3.0, "route": "oral", "duration_recommended": null, "source_pdf": "Отит средний острый.pdf", "source_page": "23", "source_quote": "Однако в большинстве регионов РФ целесообразно назначение амоксициллина** в «стандартной» дозировке: 500- 1000 мг 3 раза в сутки у взрослых и детей с массой более 40 кг и из расчёта 45-60 мг/кг/сутки у детей.", "pdf_hash": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a", "evidence_hash": "acc9d0a12e6a0ecdbd4de1d971ad943a48cf81fe007a4a5da358d5030fee0f44", "parser_semantic_type": "FIXED_PER_DOSE", "parser_rule_fragment": "3 раза в сутки", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}, {"regimen_id": "6075", "regimen_version": 1, "stratum": "TABLE_SOURCE_RECOVERY", "antibiotic": "Амоксициллин", "diagnosis": "Отит средний острый", "age_group": "child", "dose": 45.0, "unit": "mg/kg", "frequency": 1.0, "route": "oral", "duration_recommended": null, "source_pdf": "Отит средний острый.pdf", "source_page": "23", "source_quote": "Однако в большинстве регионов РФ целесообразно назначение амоксициллина** в «стандартной» дозировке: 500- 1000 мг 3 раза в сутки у взрослых и детей с массой более 40 кг и из расчёта 45-60 мг/кг/сутки у детей.", "pdf_hash": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a", "evidence_hash": "acdbd25f208301c74e83b45b8d1cd248c6cf8fc1913674ec5affd0470ce62775", "parser_semantic_type": "WEIGHT_PER_DAY", "parser_rule_fragment": "/сутки", "validation_status": "UNVALIDATED", "calculation_eligibility": "BLOCKED", "risk_factors": ["COMPETING_DOSE_NUMBER_BETWEEN"], "parser_version": "78932988d61670744523f6879f34a35706a9ca3b22193dd5e469d2e3b217277f", "context_before": null, "context_after": null}];
+const MODE = "all"; // "all" | "control" — set at build time, never user-editable
+const STORE_KEY = `rc030_owner_review_c5_events_v1_${MODE}`;
+const CURRENT_IDX_KEY = `rc030_owner_review_c5_session_v1_${MODE}`;
+const OWNER_FIDELITY_SCHEMA_VERSION = 1;
+const INTERFACE_VERSION = `owner-review-interface-c5-v1-${MODE}`;
+const MAX_NOTE_LENGTH = 2000;
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHAR_RE = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/;
+
+// Mirrors dose_verification_sandbox/verdict_taxonomy.py UI_ACTION_TO_CANONICAL —
+// keep these two tables in sync by hand; the Python side has a load-time
+// assertion that catches drift on that end.
+const UI_ACTION_TO_CANONICAL = {
+  "SOURCE_CONFIRMS_PER_DAY": "CORRECT_EXPLICIT_PER_DAY",
+  "SOURCE_CONFIRMS_PER_DOSE": "CORRECT_EXPLICIT_PER_DOSE",
+  "SOURCE_CONFIRMS_FIXED_DAILY": "CORRECT_FIXED_DAILY",
+  "SOURCE_CONFIRMS_FIXED_SINGLE": "CORRECT_FIXED_SINGLE",
+  "SOURCE_CONFIRMS_RANGE_DAILY": "CORRECT_RANGE_DAILY",
+  "SOURCE_CONFIRMS_RANGE_SINGLE": "CORRECT_RANGE_SINGLE",
+  "TABLE_HEADER_CONFIRMS_PER_DAY": "CORRECT_EXPLICIT_PER_DAY",
+  "TABLE_HEADER_CONFIRMS_PER_DOSE": "CORRECT_EXPLICIT_PER_DOSE",
+  "WRONG_DOSE_ANCHOR": "WRONG_DOSE_ANCHOR",
+  "WRONG_FREQUENCY_LINK": "WRONG_FREQUENCY_LINK",
+  "WRONG_ALTERNATIVE": "WRONG_ALTERNATIVE",
+  "SOURCE_INCOMPLETE": "SOURCE_INCOMPLETE",
+  "SOURCE_CORRUPTED": "SOURCE_CORRUPTED",
+  "TABLE_CONTEXT_REQUIRED": "TABLE_CONTEXT_REQUIRED",
+  "REMAINS_AMBIGUOUS": "REMAINS_AMBIGUOUS",
+  "NOT_A_DOSABLE_REGIMEN": "NOT_A_DOSABLE_REGIMEN",
+};
+
+document.getElementById("modeBanner").textContent = MODE === "control"
+  ? "Control-sample mode: a fixed-order curated subset with AI proposals available for comparison after each submission."
+  : "Full review mode: the complete record set. AI comparison is shown after submission only where an AI proposal exists for that record.";
+
+// PDF root is an owner-machine-local setting, entered once via prompt() and
+// kept only in this browser's localStorage — it is NEVER embedded in this
+// HTML file or in the governed dataset it was built from (which stores only
+// `source_pdf`, a bare filename, not an absolute path). This keeps personal
+// filesystem roots out of git entirely.
+const PDF_ROOT_KEY = "rc030_owner_review_c5_pdf_root_v1";
+function getPdfRoot() { return localStorage.getItem(PDF_ROOT_KEY) || ""; }
+function promptForPdfRoot() {
+  const current = getPdfRoot();
+  const value = prompt(
+    "Enter the local folder containing the source PDFs (e.g. C:\\my-pdfs or /home/me/pdfs).\n" +
+    "This is stored only in this browser's local storage, never written to any file.",
+    current
+  );
+  if (value === null) return; // cancelled
+  if (value.trim()) localStorage.setItem(PDF_ROOT_KEY, value.trim());
+  else localStorage.removeItem(PDF_ROOT_KEY);
+  render();
+}
+
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw === null) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) throw new Error("store is not an array");
+    return parsed;
+  } catch (e) {
+    // Fail closed: corrupt localStorage never silently becomes an empty
+    // store that could be overwritten — surface it and refuse to guess.
+    alert("Local event store is corrupted and could not be read: " + e.message +
+          "\n\nExport is disabled until this is resolved manually (inspect localStorage key '" + STORE_KEY + "').");
+    throw e;
+  }
+}
+function saveStore(arr) { localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }
+
+function reviewedRegimenIds() {
+  return new Set(loadStore().map(e => e.regimen_id));
+}
+
+function loadCurrentIdx() {
+  const raw = localStorage.getItem(CURRENT_IDX_KEY);
+  const n = raw === null ? 0 : parseInt(raw, 10);
+  if (Number.isNaN(n) || n < 0 || n >= RECORDS.length) return 0;
+  return n;
+}
+function saveCurrentIdx(i) { localStorage.setItem(CURRENT_IDX_KEY, String(i)); }
+
+let idx = loadCurrentIdx();
+let eventCounter = 0;
+let revealOpen = false;
+
+function renderBadges() {
+  const reviewed = reviewedRegimenIds();
+  const row = document.getElementById("badgeRow");
+  row.innerHTML = "";
+  RECORDS.forEach((r, i) => {
+    const dot = document.createElement("div");
+    dot.className = "badge-dot" + (reviewed.has(r.regimen_id) ? " reviewed" : "") + (i === idx ? " current" : "");
+    dot.textContent = String(i + 1);
+    dot.title = `${i+1}: regimen_id=${r.regimen_id} — ${reviewed.has(r.regimen_id) ? "REVIEWED" : "UNREVIEWED"}`;
+    dot.addEventListener("click", () => { idx = i; saveCurrentIdx(idx); revealOpen = false; render(); });
+    row.appendChild(dot);
+  });
+}
+
+function renderProgress() {
+  const reviewed = reviewedRegimenIds();
+  const count = RECORDS.filter(r => reviewed.has(r.regimen_id)).length;
+  document.getElementById("progressText").textContent = `reviewed ${count} / ${RECORDS.length}`;
+  document.getElementById("progressBarFill").style.width = `${Math.round(100 * count / RECORDS.length)}%`;
+}
+
+function updateSubmitEnabled() {
+  const hasVerdict = !!document.getElementById("verdictSelect").value;
+  document.getElementById("submitBtn").disabled = !hasVerdict;
+  document.getElementById("submitBtn").textContent = hasVerdict
+    ? "Record independent verdict (local only — append-only) — Ctrl+Enter"
+    : "Select a verdict first";
+}
+
+function updateCharCount() {
+  const len = document.getElementById("noteBox").value.length;
+  const el = document.getElementById("noteCharCount");
+  el.textContent = `${len} / ${MAX_NOTE_LENGTH}`;
+  el.className = "charcount" + (len > MAX_NOTE_LENGTH ? " over" : "");
+}
+
+function render() {
+  const r = RECORDS[idx];
+  const reviewed = reviewedRegimenIds();
+  const hasEvent = reviewed.has(r.regimen_id);
+
+  const badgeCurrent = document.getElementById("badgeCurrent");
+  badgeCurrent.textContent =
+    `Record ${idx+1} / ${RECORDS.length} — regimen_id=${r.regimen_id} — ` +
+    (hasEvent ? "REVIEWED" : "UNREVIEWED") + " — CURRENT RECORD";
+  // NOTE: `r.stratum` is intentionally NOT shown here — for this dataset it
+  // is derived from (frequently identical to) parser_semantic_type, so
+  // displaying it before submission would leak the parser's own
+  // classification. Only `workload_category` (a review-ordering label, not
+  // a parser output) is safe to show pre-submission.
+  if (r.workload_category) {
+    const tag = document.createElement("span");
+    tag.className = "cat-tag";
+    tag.textContent = r.workload_category;
+    badgeCurrent.appendChild(tag);
+  }
+  if (r.table_context) {
+    const tbadge = document.createElement("span");
+    tbadge.className = "table-badge";
+    tbadge.textContent = "TABLE CONTEXT";
+    badgeCurrent.appendChild(tbadge);
+  }
+
+  document.getElementById("f_pdf").textContent = r.source_pdf || "(none)";
+  document.getElementById("f_page").textContent = r.source_page || "(none)";
+  document.getElementById("f_context_before").textContent = r.context_before || "";
+  document.getElementById("f_quote").textContent = r.source_quote || "(no source quote)";
+  document.getElementById("f_context_after").textContent = r.context_after || "";
+  document.getElementById("f_antibiotic").textContent = r.antibiotic || "(none)";
+  document.getElementById("f_diagnosis").textContent = r.diagnosis || "(none)";
+  document.getElementById("f_dose").textContent = `${r.dose ?? "?"} ${r.unit ?? ""}`;
+  document.getElementById("f_route").textContent = r.route || "(none)";
+  document.getElementById("f_frequency").textContent = r.frequency ?? "(none)";
+  document.getElementById("f_duration").textContent = r.duration_recommended ?? "(none)";
+  document.getElementById("verdictSelect").value = "";  // never preselect the parser's or AI's own answer
+  document.getElementById("noteBox").value = "";
+  updateCharCount();
+  updateSubmitEnabled();
+
+  const pdfBtn = document.getElementById("openPdfBtn");
+  if (r.source_pdf) {
+    pdfBtn.disabled = false;
+    pdfBtn.onclick = () => {
+      const root = getPdfRoot();
+      if (!root) { promptForPdfRoot(); return; }
+      const sep = root.endsWith("/") || root.endsWith("\\") ? "" : "/";
+      window.open("file:///" + encodeURI(root + sep + r.source_pdf) + "#page=" + r.source_page, "_blank");
+    };
+    document.getElementById("pdfHint").textContent = `Target page: ${r.source_page}. If your PDF viewer does not honor #page= navigation, go to page ${r.source_page} manually. First use will ask you to set your local PDF folder (stored only in this browser's localStorage, never in this file).`;
+  } else {
+    pdfBtn.disabled = true;
+    pdfBtn.onclick = null;
+    document.getElementById("pdfHint").textContent = "BLOCKED: source PDF path not resolved for this record — do not record a confirming verdict without visible source evidence; use SOURCE_INCOMPLETE or SOURCE_CORRUPTED if appropriate.";
+  }
+
+  const events = loadStore().filter(v => v.regimen_id === r.regimen_id);
+  document.getElementById("storeInfo").textContent = events.length
+    ? `${events.length} prior event(s) recorded locally for this record (append-only; every prior event preserved).`
+    : "No verdict recorded yet for this record.";
+
+  // Reveal panel: only becomes available once the owner has submitted at
+  // least one event for THIS record in THIS session's store. Opening it
+  // never modifies the already-submitted event.
+  const revealSection = document.getElementById("revealSection");
+  const hasAi = r.ai_proposed_verdict !== undefined && r.ai_proposed_verdict !== null;
+  if (hasEvent) {
+    revealSection.style.display = "block";
+    const lastEvent = events[events.length - 1];
+    document.getElementById("r_parser").textContent = r.parser_candidate || r.parser_semantic_type || "(none)";
+    document.getElementById("r_owner_verdict").textContent = lastEvent.canonical_verdict;
+    document.getElementById("r_ai_wrap").style.display = hasAi ? "block" : "none";
+    document.getElementById("r_no_ai_wrap").style.display = hasAi ? "none" : "block";
+    if (hasAi) {
+      document.getElementById("r_ai_verdict").textContent = r.ai_proposed_verdict;
+      document.getElementById("r_ai_confidence").textContent = r.ai_confidence ?? "(none)";
+      document.getElementById("r_ai_explanation").textContent = r.ai_evidence_explanation || "(none)";
+      const agree = lastEvent.canonical_verdict === r.ai_proposed_verdict;
+      const agreeEl = document.getElementById("r_agreement");
+      agreeEl.textContent = agree ? "AGREE with AI proposal" : "DISAGREE with AI proposal";
+      agreeEl.className = agree ? "agree" : "disagree";
+      if (r.ai_risk_flags && r.ai_risk_flags.length) {
+        document.getElementById("r_ai_risk_wrap").style.display = "block";
+        document.getElementById("r_ai_risk").textContent = r.ai_risk_flags.join("; ");
+      } else {
+        document.getElementById("r_ai_risk_wrap").style.display = "none";
+      }
+    }
+  } else {
+    revealSection.style.display = "none";
+  }
+  revealOpen = false;
+  document.getElementById("revealBody").style.display = "none";
+  document.getElementById("revealHeader").textContent = "▸ Reveal parser and AI comparison";
+
+  updateExportPreview();
+  renderProgress();
+  renderBadges();
+}
+
+document.getElementById("revealHeader").addEventListener("click", () => {
+  revealOpen = !revealOpen;
+  document.getElementById("revealBody").style.display = revealOpen ? "block" : "none";
+  document.getElementById("revealHeader").textContent = (revealOpen ? "▾" : "▸") + " Reveal parser and AI comparison";
+});
+
+document.getElementById("verdictSelect").addEventListener("change", updateSubmitEnabled);
+document.getElementById("noteBox").addEventListener("input", updateCharCount);
+
+function updateExportPreview() {
+  const store = loadStore();
+  document.getElementById("exportPreview").textContent =
+    `${store.length} event(s) in local store. Schema version ${OWNER_FIDELITY_SCHEMA_VERSION}. Storage key: ${STORE_KEY}. ` +
+    (store.length ? `Most recent: ${JSON.stringify(store[store.length-1], null, 2)}` : "(empty)");
+}
+
+function submitVerdict() {
+  const uiAction = document.getElementById("verdictSelect").value;
+  const rawNote = document.getElementById("noteBox").value;
+  const note = rawNote.trim();
+  if (!uiAction) { alert("Select a verdict first — nothing is preselected."); return; }
+  if (!(uiAction in UI_ACTION_TO_CANONICAL)) { alert("Internal error: unmapped UI action " + uiAction); return; }
+  if (!note) { alert("A note is required for every verdict, including ambiguous ones — whitespace-only notes are rejected."); return; }
+  if (note.length > MAX_NOTE_LENGTH) { alert(`Note exceeds the maximum length of ${MAX_NOTE_LENGTH} characters.`); return; }
+  if (CONTROL_CHAR_RE.test(note)) { alert("Note contains disallowed control characters — please remove them."); return; }
+  const canonicalVerdict = UI_ACTION_TO_CANONICAL[uiAction];
+  const r = RECORDS[idx];
+  eventCounter += 1;
+  const store = loadStore();
+  const priorForRecord = store.filter(e => e.regimen_id === r.regimen_id);
+  const previousEvent = priorForRecord.length ? priorForRecord[priorForRecord.length - 1] : null;
+  const newEventId = `${STORE_KEY}-${Date.now()}-${eventCounter}`;
+  if (store.some(e => e.event_id === newEventId)) {
+    alert("Internal error: generated a duplicate event_id — please try again.");
+    return;
+  }
+  store.push({
+    event_id: newEventId,
+    event_version: OWNER_FIDELITY_SCHEMA_VERSION,
+    created_at: new Date().toISOString(),
+    reviewer_id: "OWNER_LOCAL", // fixed constant — never a user-editable field anywhere in this file
+    unit_id: r.evidence_hash,
+    regimen_id: r.regimen_id,
+    regimen_version: r.regimen_version,
+    ui_action: uiAction,
+    canonical_verdict: canonicalVerdict,
+    note: note,
+    source_packet_hash: r.evidence_hash,
+    pdf_hash: r.pdf_hash,
+    parser_version: r.parser_version || null,
+    parser_semantic_type: r.parser_semantic_type || r.parser_candidate || null,
+    interface_version: INTERFACE_VERSION,
+    previous_event_id: previousEvent ? previousEvent.event_id : null,
+    supersedes_event_id: previousEvent ? previousEvent.event_id : null, // never self: newEventId is freshly generated above
+    test_event: false,
+  });
+  saveStore(store);  // append-only: never removes or overwrites prior entries
+  render();
+}
+document.getElementById("submitBtn").addEventListener("click", submitVerdict);
+
+function goPrev() { idx = (idx - 1 + RECORDS.length) % RECORDS.length; saveCurrentIdx(idx); revealOpen = false; render(); }
+function goNext() { idx = (idx + 1) % RECORDS.length; saveCurrentIdx(idx); revealOpen = false; render(); }
+document.getElementById("setPdfRootBtn").addEventListener("click", promptForPdfRoot);
+document.getElementById("prevBtn").addEventListener("click", goPrev);
+document.getElementById("nextBtn").addEventListener("click", goNext);
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(loadStore(), null, 2)], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `rc030_owner_review_c5_${MODE}_export.json`; a.click();
+  URL.revokeObjectURL(url);
+});
+document.getElementById("resetBtn").addEventListener("click", () => {
+  const store = loadStore();
+  if (!store.length) { alert("Store is already empty."); return; }
+  const confirmed = confirm(
+    `This will permanently delete ${store.length} locally-stored event(s) under key '${STORE_KEY}'.\n\n` +
+    "Export first if you want to keep them. This cannot be undone. Continue?"
+  );
+  if (!confirmed) return;
+  localStorage.removeItem(STORE_KEY);
+  render();
+});
+
+document.addEventListener("keydown", (e) => {
+  const tag = (document.activeElement && document.activeElement.tagName) || "";
+  const typing = tag === "TEXTAREA" || tag === "SELECT" || tag === "INPUT";
+  if (e.ctrlKey && e.key === "Enter") { e.preventDefault(); submitVerdict(); return; }
+  if (typing) return;  // don't hijack arrow keys while typing/selecting
+  if (e.key === "ArrowLeft") { e.preventDefault(); goPrev(); }
+  if (e.key === "ArrowRight") { e.preventDefault(); goNext(); }
+});
+
+function validateImport(text) {
+  const issues = [];
+  let events;
+  try { events = JSON.parse(text); } catch(e) { return ["not valid JSON: " + e.message]; }
+  if (!Array.isArray(events)) return ["top-level value must be an array of events"];
+  const recordsByHash = {};
+  RECORDS.forEach(r => { recordsByHash[r.evidence_hash] = r; });
+  const seenIds = new Set();
+  events.forEach((ev, i) => {
+    const label = `event[${i}] (regimen_id=${ev.regimen_id})`;
+    if (ev.event_version !== OWNER_FIDELITY_SCHEMA_VERSION) {
+      issues.push(`${label}: unsupported schema version ${ev.event_version} (expected ${OWNER_FIDELITY_SCHEMA_VERSION})`);
+    }
+    if (ev.reviewer_id !== "OWNER_LOCAL") {
+      issues.push(`${label}: reviewer_id must be OWNER_LOCAL, got ${JSON.stringify(ev.reviewer_id)}`);
+    }
+    if ("review_origin" in ev || "owner_verified" in ev || "clinically_approved" in ev || "human_validated" in ev) {
+      issues.push(`${label}: contains an AI-provenance field — not a genuine owner event`);
+    }
+    if (typeof ev.test_event !== "boolean") {
+      issues.push(`${label}: test_event must be a JSON boolean, got ${JSON.stringify(ev.test_event)}`);
+    }
+    if (!ev.canonical_verdict) {
+      issues.push(`${label}: missing canonical_verdict`);
+    }
+    if (ev.event_id) {
+      if (seenIds.has(ev.event_id)) issues.push(`${label}: duplicate event_id ${JSON.stringify(ev.event_id)} within this export`);
+      seenIds.add(ev.event_id);
+    }
+    if (ev.supersedes_event_id && ev.supersedes_event_id === ev.event_id) {
+      issues.push(`${label}: self-supersession (supersedes_event_id equals event_id)`);
+    }
+    const known = recordsByHash[ev.source_packet_hash];
+    if (!known) {
+      issues.push(`${label}: source_packet_hash does not match any known record's evidence_hash — evidence mismatch`);
+    } else {
+      if (known.regimen_version !== ev.regimen_version) {
+        issues.push(`${label}: regimen_version stale (event has ${ev.regimen_version}, current is ${known.regimen_version})`);
+      }
+      if (known.pdf_hash !== ev.pdf_hash) {
+        issues.push(`${label}: PDF hash mismatch`);
+      }
+    }
+    if (!ev.note || !ev.note.trim()) {
+      issues.push(`${label}: missing or whitespace-only note`);
+    }
+  });
+  return issues;
+}
+
+document.getElementById("validateImportBtn").addEventListener("click", () => {
+  const issues = validateImport(document.getElementById("importBox").value);
+  document.getElementById("importResult").textContent = issues.length
+    ? `REJECTED — ${issues.length} issue(s):\n` + issues.join("\n")
+    : "VALID — all events pass schema, hash, and note checks. (Validation only — not loaded into this session's store.)";
+});
+
+render();
+</script>
+</body>
+</html>

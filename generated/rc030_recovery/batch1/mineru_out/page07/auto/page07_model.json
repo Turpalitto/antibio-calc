@@ -1,0 +1,248 @@
+[
+    {
+        "layout_dets": [
+            {
+                "cls_id": 22,
+                "label": "text",
+                "score": 0.9705,
+                "bbox": [
+                    41,
+                    2,
+                    1607,
+                    270
+                ],
+                "index": 1
+            },
+            {
+                "cls_id": 22,
+                "label": "text",
+                "score": 0.9828,
+                "bbox": [
+                    41,
+                    318,
+                    1608,
+                    579
+                ],
+                "index": 2
+            },
+            {
+                "cls_id": 22,
+                "label": "text",
+                "score": 0.982,
+                "bbox": [
+                    40,
+                    627,
+                    1608,
+                    888
+                ],
+                "index": 3
+            },
+            {
+                "cls_id": 22,
+                "label": "text",
+                "score": 0.7389,
+                "bbox": [
+                    46,
+                    931,
+                    1185,
+                    977
+                ],
+                "index": 4
+            },
+            {
+                "cls_id": 21,
+                "label": "table",
+                "score": 0.9894,
+                "bbox": [
+                    49,
+                    1013,
+                    1601,
+                    2269
+                ],
+                "index": 5,
+                "html": "<table><tr><td rowspan=2 colspan=1></td><td rowspan=1 colspan=2></td><td rowspan=2 colspan=1>   </td></tr><tr><td rowspan=1 colspan=1></td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4> </td></tr><tr><td rowspan=1 colspan=1>* ( : 104)</td><td rowspan=1 colspan=1>0,5[1] - 1,0[2] r 3  </td><td rowspan=1 colspan=1>50-60¹ /κ/yT B2-3 </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>+[]** ( :0102)</td><td rowspan=1 colspan=1>500/125 Mr 3 pa3aB        875/125 Mr 2 pa3a </td><td rowspan=1 colspan=1>45-60 /κ/cyτ B2-3 </td><td rowspan=1 colspan=1>   </td></tr><tr><td rowspan=1 colspan=1>+[4** ( :0102)</td><td rowspan=1 colspan=1>3,6 /CyT B/B B 3</td><td rowspan=1 colspan=1>90 /κ/ B 3</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>+[][](ATX JÓ1CR01)</td><td rowspan=1 colspan=1>500/500 Mr 3 pa3aB         875/125 Mr 2 pa3a </td><td rowspan=1 colspan=1>2-6  - 250  3  6-12  - 250-500    </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>[4]**      (     ATX:J01DD04)</td><td rowspan=1 colspan=1>2,0-4,0 /cyT B 1</td><td rowspan=1 colspan=1>50-80 M/κr/cyτ B 1</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4>   ( )</td></tr><tr><td rowspan=1 colspan=1>**( : 0102)</td><td rowspan=1 colspan=1>1,0 /cyτ  B  2</td><td rowspan=1 colspan=1>30 /κ/τ B 2</td><td rowspan=1 colspan=1>  </td></tr><tr><td rowspan=1 colspan=1> ( : 0108)</td><td rowspan=1 colspan=1>400M/CyT B1</td><td rowspan=1 colspan=1>8 /κ/cyτ B 1</td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=4>    </td></tr><tr><td rowspan=1 colspan=1>( : 0107)</td><td rowspan=1 colspan=1>2000 /  2</td><td rowspan=1 colspan=1>40-50 //2-3 </td><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>*( : 0109)</td><td rowspan=1 colspan=1>1000 /cyτ B 2 ( -  1 )</td><td rowspan=1 colspan=1>15 /κ/cyτ B 2</td><td rowspan=1 colspan=1></td></tr></table>"
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    48,
+                    9,
+                    1603,
+                    54
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    47,
+                    62,
+                    1605,
+                    110
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    48,
+                    118,
+                    1605,
+                    157
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    48,
+                    166,
+                    1607,
+                    215
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    50,
+                    228,
+                    1031,
+                    266
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    48,
+                    319,
+                    1601,
+                    358
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    48,
+                    373,
+                    1602,
+                    409
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    48,
+                    426,
+                    1601,
+                    467
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    48,
+                    482,
+                    1601,
+                    516
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    48,
+                    537,
+                    666,
+                    573
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    47,
+                    628,
+                    1599,
+                    669
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    47,
+                    682,
+                    1597,
+                    722
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    49,
+                    735,
+                    1599,
+                    773
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    49,
+                    789,
+                    1602,
+                    829
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    54,
+                    852,
+                    485,
+                    878
+                ],
+                "score": 1.0,
+                "text": ""
+            },
+            {
+                "label": "ocr_text",
+                "bbox": [
+                    50,
+                    937,
+                    1180,
+                    976
+                ],
+                "score": 1.0,
+                "text": ""
+            }
+        ],
+        "page_info": {
+            "page_no": 0,
+            "width": 1653,
+            "height": 2339
+        }
+    }
+]

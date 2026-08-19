@@ -1,0 +1,141 @@
+{
+  "task": {
+    "task_id": "crt_49e042e24dcca7f74de3a449",
+    "task_key": "TherapeuticOption|opt_5945|1|THERAPEUTIC_OPTION_VALIDATION",
+    "target_type": "TherapeuticOption",
+    "target_id": "opt_5945",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1487",
+        "page": "20",
+        "pdf": "Выкидыш (самопроизвольный аборт).pdf",
+        "source_quote": "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\nдоксициклин** согласно инструкции к лекарственному препарату"
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "indication",
+        "scope": "regimen",
+        "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+        "source_location": "page 20",
+        "source_object_id": "5945",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "therapeutic_class",
+        "scope": "regimen",
+        "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+        "source_location": "page 20",
+        "source_object_id": "5945",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "alternatives": [],
+    "approved_at": "",
+    "approved_by": "",
+    "contraindications": [],
+    "field_provenance": [
+      [
+        "indication",
+        {
+          "scope": "regimen",
+          "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+          "source_location": "page 20",
+          "source_object_id": "5945",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "therapeutic_class",
+        {
+          "scope": "regimen",
+          "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+          "source_location": "page 20",
+          "source_object_id": "5945",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "guideline_id": "1487",
+    "indication": "Неполный выкидыш или неразвивающаяся беременность, хирургическое лечение",
+    "lifecycle_state": "ASSEMBLED",
+    "option_id": "opt_5945",
+    "origin_category": "A_therapeutic_class_recommendation",
+    "origin_regimen_id": "5945",
+    "review_status": "pending",
+    "selection_conditions": "UNKNOWN",
+    "source": "Выкидыш (самопроизвольный аборт).pdf",
+    "source_page": "20",
+    "source_quote": "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\nдоксициклин** согласно инструкции к лекарственному препарату",
+    "status": "ASSEMBLED",
+    "therapeutic_class": "Доксициклин",
+    "version": 1
+  },
+  "original_source_wording": [
+    "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\nдоксициклин** согласно инструкции к лекарственному препарату"
+  ],
+  "source_references": [
+    {
+      "guideline_id": "1487",
+      "page": "20",
+      "pdf": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_quote": "Пациенткам с неполным выкидышем или НБ, которым выполняется\nхирургическое лечение, рекомендована антибиотикопрофилактика с\nцелью предотвращения инфекционно-воспалительных осложнений [23].\nКомментарий: \nС \nцелью \nантибиотикопрофилактики \nза \n1 \nчас \nдо\nвмешательства \nили \nсразу \nпосле \nвмешательства \nназначаются \nили\nдоксициклин** согласно инструкции к лекарственному препарату"
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "indication",
+      "scope": "regimen",
+      "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_location": "page 20",
+      "source_object_id": "5945",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "therapeutic_class",
+      "scope": "regimen",
+      "source_document": "Выкидыш (самопроизвольный аборт).pdf",
+      "source_location": "page 20",
+      "source_object_id": "5945",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "ad753c75276bc74b17667231a39a94a17d558b41ab8bdbd711cb8fcdc9dc36fb",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

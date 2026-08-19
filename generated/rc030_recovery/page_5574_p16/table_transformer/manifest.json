@@ -1,0 +1,41 @@
+{
+  "tool": "table_transformer(via transformers)",
+  "model": "microsoft/table-transformer-detection",
+  "load_time_sec": 0.31,
+  "infer_time_sec": 0.2,
+  "device": "cpu",
+  "tables_detected": 3,
+  "detections": [
+    {
+      "label": "table",
+      "score": 0.685896098613739,
+      "box": [
+        48.06898498535156,
+        422.5644836425781,
+        858.983642578125,
+        1624.6138916015625
+      ]
+    },
+    {
+      "label": "table",
+      "score": 0.8705366849899292,
+      "box": [
+        44.6033935546875,
+        300.7963562011719,
+        943.5662841796875,
+        1572.763916015625
+      ]
+    },
+    {
+      "label": "table",
+      "score": 0.6343694925308228,
+      "box": [
+        51.307861328125,
+        344.427001953125,
+        849.6619873046875,
+        930.2926025390625
+      ]
+    }
+  ],
+  "exit_status": "OK"
+}

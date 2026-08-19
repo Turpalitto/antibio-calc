@@ -1,5 +1,141 @@
 # DECISIONS
 
+## 2026-08-02 — numeric CR code is unusable without semantic title match
+
+Decision: source synchronization requires both an applicable official registry
+card and semantic compatibility between disease and card title. A numeric code
+alone cannot update source identity. Collisions are changed to an unassigned
+rubricator source and remain calculation-blocked.
+
+Reason: codes `16`, `62`, `75`, `10`, `264`, `215`, and `97` resolved to
+unrelated current cards (for example omphalitis → adult tuberculosis and
+diphtheria → retinal detachment). Numeric-only synchronization would create a
+false clinical provenance chain.
+
+## 2026-08-02 — a dose reference table is not a treatment recommendation
+
+Decision: CAP appendix/reference-table doses remain review candidates until
+each row is linked to the guideline's treatment-selection scenario, severity,
+risk factors, route, population constraints and duration. Hash pinning and
+correct arithmetic do not make a generic table row calculator-ready.
+
+Reason: CR `654_2` and `714_2` contain valid dose tables but also multiple
+therapy pathways and age/weight/route branches. Opening a table row directly
+would lose the causal trace required for physician-visible recommendations.
+
+## 2026-08-02 — a pinned PDF spec does not unblock a calculator record
+
+Decision: generated calculation stays blocked unless both conditions hold:
+the CR ID has a tracked source spec and the disease explicitly declares
+`source_verification_status=CALCULATOR_BOUND_VERIFIED`. A newly added spec is
+labelled `SOURCE_SPEC_PENDING_CALCULATOR_BINDING` until every physician-visible
+regimen is reconciled.
+
+Reason: CR 9_3 extraction proved source identity and produced valid candidates,
+but also exposed a material ceftriaxone frequency/duration disagreement with
+the old calculator. Treating source pinning as automatic compatibility would
+re-open a known mismatch.
+
+## 2026-08-02 — missing source contract blocks generated calculation globally
+
+Decision: `db/build_db.ps1` must apply a fail-closed source gate after merging
+disease files. A record without a tracked guideline candidate spec receives
+`SOURCE_SPEC_MISSING`, `calculation_blocked=true`, and a physician-visible
+reason. Existing explicit blocks are preserved. Adding a source spec does not
+override an explicit disease block.
+
+Reason: the complete inventory found 22 placeholder CR IDs and multiple numeric
+ID/title collisions. A disclaimer alone cannot satisfy traceability when the
+system cannot identify the producing guideline. Keeping old dose data visible
+until eventual review would expose known-unverified recommendations.
+
+The gate changes availability, not source content: no old regimen is deleted,
+approved or silently rewritten. Diseases return only through hash-pinned source
+extraction, exact calculator binding and explicit review.
+
+## 2026-08-02 — heterogeneous tables use pinned row-group contracts
+
+Decision: a visually split guideline table may use declarative row groups in
+the tracked source spec. Each group pins page, table, row span, drug column,
+population dose column, duration column, therapy line, and unresolved safety
+reasons. PDF and complete candidate-payload hashes remain mandatory.
+
+A candidate is calculation-ready only when dose basis, frequency, route and
+duration are structurally unambiguous. Mixed IV/IM routes, multiple strata,
+unresolved footnotes and unstated duration fail closed. A pinned source spec
+may coexist with `calculation_blocked=true`: source identity is not clinical
+approval or calculator compatibility.
+
+Reason: CR 306_3 is vertically fragmented and oral/parenteral tables have
+different columns. Explicit geometry preserves reproducibility without
+guessing across cells.
+
+## 2026-08-02 — stale guideline calculations fail closed immediately
+
+Decision: when the official rubricator confirms a newer clinical-guideline
+revision and the calculator still contains an older revision with materially
+different dosing, the affected disease must be marked `calculation_blocked`
+before waiting for full re-extraction. UI calculation controls and personal
+calculator binding both reject the record.
+
+Official web content may establish that the revision is stale and justify the
+temporary block, but it does not substitute for the complete hash-pinned PDF
+required to rebuild and attest dose candidates. For sinusitis, CR 313/2021 is
+blocked in favour of pending CR 313_3/2024 verification.
+
+Reason: continuing to calculate from a known-stale regimen is less safe than
+temporarily withholding the calculation. A partial PDF or visually available
+web table cannot satisfy the existing PDF-to-candidate traceability contract.
+
+## 2026-08-01 — verified source means pinned PDF and pinned extraction payload
+
+Decision: a guideline counts as covered only when a tracked source spec pins
+the exact official PDF SHA-256 and the canonical SHA-256 of the complete
+extracted candidate payload. The personal API must validate both on every
+candidate read and attestation. A local artifact edit or extraction drift
+fails closed and requires deliberate source-spec regeneration and review.
+
+Coverage is measured per calculator disease and reported explicitly. A
+rubricator page, stale CR number, partial PDF, or successful text extraction
+alone does not count as verified coverage. Current status is 1/72 diseases.
+
+Reason: a PDF hash proves document identity but does not prove that the dose
+object shown to the physician is the same extraction that was reviewed. The
+second hash closes that traceability gap without converting queued candidates
+into approved clinical content.
+
+## 2026-08-01 — calculator doses originate from queued PDF row candidates
+
+Decision: physician-visible personal-mode dose semantics must originate from a
+source-linked extracted candidate, not from manually pasted JSON or an
+untraceable disease record. The accepted path is:
+
+`current PDF -> native table cells -> RegimenCandidate in Versioned KB
+(draft/pending/queued) -> exact calculator compatibility check -> explicit
+owner attestation -> immutable personal bundle -> existing arithmetic/forms`.
+
+PyMuPDF native digital-table extraction is the primary path. Superscript
+footnotes are represented explicitly and excluded from numeric parsing.
+Ambiguous dose strata, frequency, route, population or required formulation
+block calculator binding. The calculator may select a deterministic value and
+frequency only inside the extracted source ranges, and that exact selection is
+hash-bound in the owner attestation.
+
+Reason: this meets source fidelity and traceability requirements while keeping
+the frozen calculation arithmetic and production approval boundary unchanged.
+Extracted content is review input, never automatic medical approval.
+
+## 2026-08-01 — owner recovery is permitted only before clinical ownership exists
+
+Decision: a lost one-time personal token may be reissued only when the local
+owner profile has no attestation ledger, immutable bundle, active pointer, or
+request audit. Recovery atomically replaces only the unactivated profile and
+returns a new raw token once. After any clinical artifact exists, recovery
+fails with `OWNER_RECOVERY_FORBIDDEN`.
+
+Reason: this repairs setup/encoding mistakes without creating a path to replace
+the owner of an existing clinical attestation chain.
+
 ## 2026-08-01 — Accepted personal mode uses a separate local trust domain
 
 Decision: accept and implement `PERSONAL_PHYSICIAN_MODE_RFC.md` through an

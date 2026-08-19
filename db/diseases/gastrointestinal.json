@@ -16,10 +16,10 @@
         "хеликобактер",
         "эрадикация H.pylori"
       ],
-      "cr_id": "388",
+      "cr_id": "388_3",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/388",
+      "cr_updated": "2024-09-30",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/388_3",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённая H.pylori-инфекция"
@@ -119,10 +119,10 @@
         "холецистит",
         "холангит"
       ],
-      "cr_id": "819",
+      "cr_id": "819_1",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/819",
+      "cr_updated": "2024-11-22",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/819_1",
       "antibiotics_indicated": true,
       "indications": [
         "Острый калькулёзный холецистит, острый холангит"
@@ -382,10 +382,10 @@
         "антибиотик-ассоциированная диарея",
         "CDI"
       ],
-      "cr_id": "878",
+      "cr_id": "878_1",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/878",
+      "cr_updated": "2024-12-25",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/878_1",
       "antibiotics_indicated": true,
       "indications": [
         "Отменить причинный антибиотик по возможности. Препараты — ВНУТРЬ (per os)"

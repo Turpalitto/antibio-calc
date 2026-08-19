@@ -1,0 +1,4837 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-07-15T12:27:12.394812+00:00",
+  "source_root": "C:\\clinrec_downloader",
+  "selection_contract": "build_p44_kb.load_contributing_pdfs",
+  "documents": [
+    {
+      "file": "Абсцесс. Фурункул носа. Карбункул носа..pdf",
+      "sha256": "cf7d9a14f915e5f4fd0c71c57ef198157c169cf41066ed35f9a5a9362c4e87dc",
+      "guideline_ids": [
+        "2043"
+      ],
+      "titles": [
+        "Абсцесс. Фурункул носа. Карбункул носа."
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Абсцесс. Фурункул носа. Карбункул носа..pdf"
+      ]
+    },
+    {
+      "file": "Аневризмы брюшной аорты.pdf",
+      "sha256": "530a78e82f9cfd65c003148516c2c27d46af5cb62274248d4e3ae4ac08977266",
+      "guideline_ids": [
+        "1909"
+      ],
+      "titles": [
+        "Аневризмы брюшной аорты"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Аневризмы брюшной аорты.pdf"
+      ]
+    },
+    {
+      "file": "Апластическая анемия.pdf",
+      "sha256": "1d94cefa05c68b44b1e3a3266c3ed85980ac256ec7f525b2a78b4cb455468c95",
+      "guideline_ids": [
+        "1291",
+        "1691",
+        "1848"
+      ],
+      "titles": [
+        "Апластическая анемия"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Апластическая анемия.pdf"
+      ]
+    },
+    {
+      "file": "Атопический дерматит.pdf",
+      "sha256": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8",
+      "guideline_ids": [
+        "1204",
+        "1574"
+      ],
+      "titles": [
+        "Атопический дерматит "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Атопический дерматит.pdf"
+      ]
+    },
+    {
+      "file": "Атрофия и аномалии зрительного нерва.pdf",
+      "sha256": "0c2a76c4f914ccecefc9b6b75804820b46391a072a8efc2179ac91eba5a50559",
+      "guideline_ids": [
+        "2170"
+      ],
+      "titles": [
+        "Атрофия и аномалии зрительного нерва"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Атрофия и аномалии зрительного нерва.pdf"
+      ]
+    },
+    {
+      "file": "Аутоиммунная гемолитическая анемия.pdf",
+      "sha256": "5dd484f6cdd3e9adb1ade2aa62a253a41ac6c9bb59f92040c3855ac88a92b515",
+      "guideline_ids": [
+        "2162"
+      ],
+      "titles": [
+        "Аутоиммунная гемолитическая анемия"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Аутоиммунная гемолитическая анемия.pdf"
+      ]
+    },
+    {
+      "file": "Баланопостит.pdf",
+      "sha256": "8b1e0e2f26ae344472b03525863f0f52a49a8979f66148dd6d7d05636c97d04a",
+      "guideline_ids": [
+        "1936"
+      ],
+      "titles": [
+        "Баланопостит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Баланопостит.pdf"
+      ]
+    },
+    {
+      "file": "Болезни бартолиновой железы.pdf",
+      "sha256": "0e54289220fdfcf510f7e7834408abc818d76fb8654c3bc7d9ea1ae3ef0d0ec0",
+      "guideline_ids": [
+        "1428"
+      ],
+      "titles": [
+        "Болезни бартолиновой железы"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Болезни бартолиновой железы.pdf"
+      ]
+    },
+    {
+      "file": "Болезнь Крона.pdf",
+      "sha256": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8",
+      "guideline_ids": [
+        "1265",
+        "1485",
+        "1806"
+      ],
+      "titles": [
+        "Болезнь Крона"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Болезнь Крона.pdf"
+      ]
+    },
+    {
+      "file": "Болезнь Лайма у взрослых.pdf",
+      "sha256": "4789bbaa5f6b9a0d752648d006c3c7e9e962c938bb9ae2e01b224ddb655d2a42",
+      "guideline_ids": [
+        "2102",
+        "798"
+      ],
+      "titles": [
+        "Болезнь Лайма у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Болезнь Лайма у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Ботулизм у взрослых.pdf",
+      "sha256": "f54e917981609fb218d41621f6c117fc6bd9555ec1ba769cc4ab728791f2571b",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Ботулизм у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Бронхиальная астма.pdf",
+      "sha256": "aba3f58bd97995deef4d2cdfd110f20084f0f974c265cac73bd14c929a75f54d",
+      "guideline_ids": [
+        "1143",
+        "1659"
+      ],
+      "titles": [
+        "Бронхиальная астма"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Бронхиальная астма.pdf"
+      ]
+    },
+    {
+      "file": "Бронхит.pdf",
+      "sha256": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4",
+      "guideline_ids": [
+        "1267",
+        "1760"
+      ],
+      "titles": [
+        "Бронхит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Бронхит.pdf"
+      ]
+    },
+    {
+      "file": "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf",
+      "sha256": "321039606771470ef4a0d98c2767523cfa723b0e08433ef69c270d399820d6a8",
+      "guideline_ids": [
+        "1332",
+        "2053",
+        "343"
+      ],
+      "titles": [
+        "Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Брюшной тиф (инфекция, вызванная Salmonella Typhi) у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Вирусные менингиты у детей.pdf",
+      "sha256": "c697015efc25b2acce999b923f6bd3f6eba02564782804988be11499ef65d99d",
+      "guideline_ids": [
+        "2114"
+      ],
+      "titles": [
+        "Вирусные менингиты у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Вирусные менингиты у детей.pdf"
+      ]
+    },
+    {
+      "file": "ВИЧ-инфекция у взрослых.pdf",
+      "sha256": "adb96667fccabe844006149b25d1a7ced565944d461b3e8b7ba7b0e2fc7978e1",
+      "guideline_ids": [
+        "1496",
+        "899"
+      ],
+      "titles": [
+        "ВИЧ-инфекция у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\ВИЧ-инфекция у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "ВИЧ-инфекция у детей.pdf",
+      "sha256": "6686a042ea05581b32f7fe1ddb0ec7e2f835300d55557343c3e0d191819c092b",
+      "guideline_ids": [
+        "1486",
+        "829"
+      ],
+      "titles": [
+        "ВИЧ-инфекция у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\ВИЧ-инфекция у детей.pdf"
+      ]
+    },
+    {
+      "file": "Внебольничная пневмония у взрослых.pdf",
+      "sha256": "118c45dc9f800fb573108ebe2f1c33730ee285cfae2222af4baf55269904aed5",
+      "guideline_ids": [
+        "1198",
+        "1770"
+      ],
+      "titles": [
+        "Внебольничная пневмония у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Внебольничная пневмония у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Волосатоклеточный лейкоз.pdf",
+      "sha256": "4dae1155605b48194aeae6c512059896361ba4f8af987d6de9dd532346110193",
+      "guideline_ids": [
+        "1692"
+      ],
+      "titles": [
+        "Волосатоклеточный лейкоз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Волосатоклеточный лейкоз.pdf"
+      ]
+    },
+    {
+      "file": "Воспалительные болезни женских тазовых органов.pdf",
+      "sha256": "865c96495fc91e8488b80cf1963ce74eb4c031cfc54373764136d2c25201267f",
+      "guideline_ids": [
+        "1167",
+        "1566"
+      ],
+      "titles": [
+        "Воспалительные болезни женских тазовых органов"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Воспалительные болезни женских тазовых органов.pdf"
+      ]
+    },
+    {
+      "file": "Воспалительные болезни органов мошонки.pdf",
+      "sha256": "07ecbd403e180088fcf6bdb27c7b54c92da5fcfe24c5d8a3f9ade01f4a45fc3c",
+      "guideline_ids": [
+        "2128"
+      ],
+      "titles": [
+        "Воспалительные болезни органов мошонки"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Воспалительные болезни органов мошонки.pdf"
+      ]
+    },
+    {
+      "file": "Воспалительные болезни шейки матки, влагалища и вульвы.pdf",
+      "sha256": "5582adff460e059062fbb549667b4b3a1137597bd12ad0b8a32686e3ab5da18f",
+      "guideline_ids": [
+        "2105"
+      ],
+      "titles": [
+        "Воспалительные болезни шейки матки, влагалища и вульвы"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Воспалительные болезни шейки матки, влагалища и вульвы.pdf"
+      ]
+    },
+    {
+      "file": "Воспалительные заболевания век.pdf",
+      "sha256": "986c0867c997600d4da9b12fa93db2fb7874afa596f3c924eb148f35d21940d6",
+      "guideline_ids": [
+        "2197"
+      ],
+      "titles": [
+        "Воспалительные заболевания век"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Воспалительные заболевания век.pdf"
+      ]
+    },
+    {
+      "file": "Воспалительные заболевания молочных желез.pdf",
+      "sha256": "41c1a7d91dec211f07af087eba023b228e20eb0f879db5418c212e15665a726d",
+      "guideline_ids": [
+        "1759"
+      ],
+      "titles": [
+        "Воспалительные заболевания молочных желез"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Воспалительные заболевания молочных желез.pdf"
+      ]
+    },
+    {
+      "file": "Воспалительные заболевания челюстей. Одонтогенный остеомиелит челюсти..pdf",
+      "sha256": "3b284bc442c87d2db6b423601bec417547011d6e58ef8e09d67f7115bb6fc9b9",
+      "guideline_ids": [
+        "2188"
+      ],
+      "titles": [
+        "Воспалительные заболевания челюстей. Одонтогенный остеомиелит челюсти."
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Воспалительные заболевания челюстей. Одонтогенный остеомиелит челюсти..pdf"
+      ]
+    },
+    {
+      "file": "Воспалительные поражения позвоночника.pdf",
+      "sha256": "558836e13ecb3296f2dd87d62b86fd5a59a1c9ab4efa2135dfde93a414d1cca8",
+      "guideline_ids": [
+        "1702"
+      ],
+      "titles": [
+        "Воспалительные поражения позвоночника"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Воспалительные поражения позвоночника.pdf"
+      ]
+    },
+    {
+      "file": "Врожденная дисфункция коры надпочечников (адреногенитальный синдром).pdf",
+      "sha256": "9ba4a6982d80f8b066c32114995a362435736ed6a9e81896c9661f3b59f5a3f9",
+      "guideline_ids": [
+        "1169",
+        "1938"
+      ],
+      "titles": [
+        "Врожденная дисфункция коры надпочечников (адреногенитальный синдром)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Врожденная дисфункция коры надпочечников (адреногенитальный синдром).pdf"
+      ]
+    },
+    {
+      "file": "Врожденная нейтропения (ВН).pdf",
+      "sha256": "b4ef8578d1890f9ac2ff2734dcec8b8fb66a4d3677a15e559545a46640a2af98",
+      "guideline_ids": [
+        "741"
+      ],
+      "titles": [
+        "Врожденная нейтропения (ВН)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Врожденная нейтропения (ВН).pdf"
+      ]
+    },
+    {
+      "file": "Врожденная патология слёзоотводящей системы у детей.pdf",
+      "sha256": "07158aa5cafab00ef1939a580e12c1a338bc357c7db74fcceee5f4c6549793fc",
+      "guideline_ids": [
+        "2101"
+      ],
+      "titles": [
+        "Врожденная патология слёзоотводящей системы  у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Врожденная патология слёзоотводящей системы у детей.pdf"
+      ]
+    },
+    {
+      "file": "Врожденная пневмония.pdf",
+      "sha256": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00",
+      "guideline_ids": [
+        "1867"
+      ],
+      "titles": [
+        "Врожденная пневмония"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Врожденная пневмония.pdf"
+      ]
+    },
+    {
+      "file": "Врожденный буллезный эпидермолиз.pdf",
+      "sha256": "2170ca4019ac646cdae24123b1903b291b6fe122e63e6114d7ba45bda83175f3",
+      "guideline_ids": [
+        "2183"
+      ],
+      "titles": [
+        "Врожденный буллезный эпидермолиз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Врожденный буллезный эпидермолиз.pdf"
+      ]
+    },
+    {
+      "file": "Врожденный подклапанный стеноз аорты.pdf",
+      "sha256": "0551ddefcdfcbb08921aae84353bee6b8b864c6cee261592636e9dd32b0a005a",
+      "guideline_ids": [
+        "1397",
+        "1935"
+      ],
+      "titles": [
+        "Врожденный подклапанный стеноз аорты"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Врожденный подклапанный стеноз аорты.pdf"
+      ]
+    },
+    {
+      "file": "Врожденный стеноз клапана легочной артерии.pdf",
+      "sha256": "a0b494d1c869cda7c7ac94b07c3ccd029a4c814bc32393852a645015c18b2c41",
+      "guideline_ids": [
+        "1353",
+        "1934"
+      ],
+      "titles": [
+        "Врожденный стеноз клапана легочной артерии"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Врожденный стеноз клапана легочной артерии.pdf"
+      ]
+    },
+    {
+      "file": "Выкидыш (самопроизвольный аборт).pdf",
+      "sha256": "c729b54065ba4bb5b41148847e3dda1db195b1abdc7b860d5edc45d833662e79",
+      "guideline_ids": [
+        "1238",
+        "1487"
+      ],
+      "titles": [
+        "Выкидыш (самопроизвольный аборт)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Выкидыш (самопроизвольный аборт).pdf"
+      ]
+    },
+    {
+      "file": "Гастрит и дуоденит у детей.pdf",
+      "sha256": "3e3e4eb2319b7c841ce97528a54e8a737a7428a1a83ccac5a13b2fc1b6df207c",
+      "guideline_ids": [
+        "1720"
+      ],
+      "titles": [
+        "Гастрит и дуоденит у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гастрит и дуоденит у детей.pdf"
+      ]
+    },
+    {
+      "file": "Гастрит и дуоденит.pdf",
+      "sha256": "320915cc6ce84f82b22cb560561a4028ff39c868ee2a4496d674d6c9f690e0d2",
+      "guideline_ids": [
+        "1315",
+        "1477"
+      ],
+      "titles": [
+        "Гастрит и дуоденит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гастрит и дуоденит.pdf"
+      ]
+    },
+    {
+      "file": "Гемангиома инфантильная.pdf",
+      "sha256": "f2f4a7055448b45ae1fb30c8696146c6d7821756595380bc7037f0e4af389bf7",
+      "guideline_ids": [
+        "1434"
+      ],
+      "titles": [
+        "Гемангиома инфантильная"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Гемангиома инфантильная.pdf"
+      ]
+    },
+    {
+      "file": "Гемолитико-уремический синдром.pdf",
+      "sha256": "6cfdf8e5a1e954f524899c8ea29dc1a3e383f3b9b143530062352337e9d0266b",
+      "guideline_ids": [
+        "1325",
+        "2081"
+      ],
+      "titles": [
+        "Гемолитико-уремический синдром "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гемолитико-уремический синдром.pdf"
+      ]
+    },
+    {
+      "file": "Гепатобластома.pdf",
+      "sha256": "aca5b9864b33e0697e9727d470479625391b28a28e2e992f2adc7a7b691c85c3",
+      "guideline_ids": [
+        "1673"
+      ],
+      "titles": [
+        "Гепатобластома"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Гепатобластома.pdf"
+      ]
+    },
+    {
+      "file": "Гидраденит гнойный.pdf",
+      "sha256": "15c110b4f415387a64ebacfaaadc781cf8e445b5fd82e5dbbca0e70541d54f89",
+      "guideline_ids": [
+        "2061"
+      ],
+      "titles": [
+        "Гидраденит гнойный"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гидраденит гнойный.pdf"
+      ]
+    },
+    {
+      "file": "Гипербилирубинемия недоношенных.pdf",
+      "sha256": "73aeab13ec8345846eaf1af653122a2c07801536d4c664a21354fe2a4019b3c0",
+      "guideline_ids": [
+        "1906"
+      ],
+      "titles": [
+        "Гипербилирубинемия недоношенных"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гипербилирубинемия недоношенных.pdf"
+      ]
+    },
+    {
+      "file": "Гипертрофия аденоидов. Гипертрофия небных миндалин..pdf",
+      "sha256": "ed6815fdabde131ff1be96f3fdd3c7f967d6a621d42a8c3f51c1b05c5b74b7e2",
+      "guideline_ids": [
+        "1219",
+        "1629"
+      ],
+      "titles": [
+        "Гипертрофия аденоидов. Гипертрофия небных миндалин."
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гипертрофия аденоидов. Гипертрофия небных миндалин..pdf"
+      ]
+    },
+    {
+      "file": "Гипоксическая ишемическая энцефалопатия новорожденного вследствие перенесенной асфиксии при родах.pdf",
+      "sha256": "ed693fd784b4362067b7cdda1bdb59b4c4d42edadd328733d8a28fddcdaaa8a9",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гипоксическая ишемическая энцефалопатия новорожденного вследствие перенесенной асфиксии при родах.pdf"
+      ]
+    },
+    {
+      "file": "Гипотиреоз.pdf",
+      "sha256": "1ed543059008d58202c4031d66409cc0b8c18bfef970d720c50ef25dac5ddf8a",
+      "guideline_ids": [
+        "1115",
+        "1116",
+        "1559"
+      ],
+      "titles": [
+        "Гипотиреоз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гипотиреоз.pdf"
+      ]
+    },
+    {
+      "file": "Гонартроз.pdf",
+      "sha256": "c061c24602d729e31c2a28672bdfa68dd975575ef2d14143d3855e080380b1e1",
+      "guideline_ids": [
+        "1231",
+        "1785"
+      ],
+      "titles": [
+        "Гонартроз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гонартроз.pdf"
+      ]
+    },
+    {
+      "file": "Гонококковая инфекция.pdf",
+      "sha256": "b7ffae3a55d3c4d4eb71462fefacb6bdaab55e8c8dfdcb8af21d21e017bc54a1",
+      "guideline_ids": [
+        "1472",
+        "854"
+      ],
+      "titles": [
+        "Гонококковая инфекция"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Гонококковая инфекция.pdf"
+      ]
+    },
+    {
+      "file": "Грипп у взрослых.pdf",
+      "sha256": "7a95e31d1d21fdfc38356b222a53bd82f48acbaa9069441c67562cdce91bc373",
+      "guideline_ids": [
+        "1403",
+        "2048",
+        "909"
+      ],
+      "titles": [
+        "Грипп у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Грипп у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Грыжи передней брюшной стенки.pdf",
+      "sha256": "9a5d3f431e4b3ece876750cf4711d129695417480fac696b99b7a06e170a37e3",
+      "guideline_ids": [
+        "1698"
+      ],
+      "titles": [
+        "Грыжи передней брюшной стенки"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Грыжи передней брюшной стенки.pdf"
+      ]
+    },
+    {
+      "file": "Дефект аортолегочной перегородки.pdf",
+      "sha256": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284",
+      "guideline_ids": [
+        "1352",
+        "1940"
+      ],
+      "titles": [
+        "Дефект аортолегочной перегородки "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Дефект аортолегочной перегородки.pdf"
+      ]
+    },
+    {
+      "file": "Дивертикулярная болезнь.pdf",
+      "sha256": "0ee5e761946e24559f4fd67041d8486948d2aa58a6ab1ff5d63026529aaf834d",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Дивертикулярная болезнь.pdf"
+      ]
+    },
+    {
+      "file": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия _ацидурия).pdf",
+      "sha256": "82314e6eb68c8c20b15a8eff50570d100d6c57a107f461e47bb398c44e04360e",
+      "guideline_ids": [
+        "1288",
+        "1483"
+      ],
+      "titles": [
+        "Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия /ацидурия)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Другие виды нарушения обмена аминокислот с разветвленной цепью (Метилмалоновая ацидемия _ацидурия).pdf"
+      ]
+    },
+    {
+      "file": "Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия _ацидурия).pdf",
+      "sha256": "65cca2e550f21af92b84f3ab02a690f0aa6c2adfdb5a8dbb420a0dff7bb15553",
+      "guideline_ids": [
+        "1264"
+      ],
+      "titles": [
+        "Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия /ацидурия)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Другие виды нарушения обмена аминокислот с разветвленной цепью (Пропионовая ацидемия _ацидурия).pdf"
+      ]
+    },
+    {
+      "file": "Другие уточненные врожденные аномалии органов дыхания (первичная цилиарная дискинезия).pdf",
+      "sha256": "6b86405e97be142be4e3b6793ea7164131dc7b31f9ea1c866c17721ab45edb66",
+      "guideline_ids": [
+        "2165"
+      ],
+      "titles": [
+        "Другие уточненные врожденные аномалии органов дыхания (первичная цилиарная дискинезия)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Другие уточненные врожденные аномалии органов дыхания (первичная цилиарная дискинезия).pdf"
+      ]
+    },
+    {
+      "file": "Желчнокаменная болезнь.pdf",
+      "sha256": "384ffe03ca800089a56d966eeed4a95574b9db445f6ebe3c97369c2beb440705",
+      "guideline_ids": [
+        "1211",
+        "1706",
+        "1794"
+      ],
+      "titles": [
+        "Желчнокаменная болезнь"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Желчнокаменная болезнь.pdf"
+      ]
+    },
+    {
+      "file": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+      "sha256": "e12a712044034206655d6f8c75916d9344bbf8e2f6721d5bbe51c91abbb61db3",
+      "guideline_ids": [
+        "1923"
+      ],
+      "titles": [
+        "Здоровый новорожденный, рожденный в условиях стационара"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Здоровый новорожденный, рожденный в условиях стационара.pdf"
+      ]
+    },
+    {
+      "file": "Идиопатическая подагра.pdf",
+      "sha256": "08c3e3e7013124da1c4610e5355da0926cabb95c9f4df72a5a357257569b9c5b",
+      "guideline_ids": [
+        "1957"
+      ],
+      "titles": [
+        "Идиопатическая подагра"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Идиопатическая подагра.pdf"
+      ]
+    },
+    {
+      "file": "Идиопатическая тромбоцитопеническая пурпура (ИТП) у взрослых.pdf",
+      "sha256": "4cc05727fde0eb3a3b96286265d5cefd62a7dcfe80ac10034445383f8a60a2bd",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Идиопатическая тромбоцитопеническая пурпура (ИТП) у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Идиопатический сколиоз.pdf",
+      "sha256": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8",
+      "guideline_ids": [
+        "1747"
+      ],
+      "titles": [
+        "Идиопатический сколиоз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Идиопатический сколиоз.pdf"
+      ]
+    },
+    {
+      "file": "Инородное тело в пищеварительном тракте.pdf",
+      "sha256": "6ddbb51892242960d6939e5c66c4a4f78873cf7ecbb24761b271597cb8ef2bcc",
+      "guideline_ids": [
+        "1319",
+        "1614"
+      ],
+      "titles": [
+        "Инородное тело в пищеварительном тракте"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Инородное тело в пищеварительном тракте.pdf"
+      ]
+    },
+    {
+      "file": "Инфекции амниотической полости и плодных оболочек (хориоамнионит).pdf",
+      "sha256": "b319e545d544fb51b6ad13e65eeb632ce04f82e36af2495f153ea5adffff3fdc",
+      "guideline_ids": [
+        "1445"
+      ],
+      "titles": [
+        "Инфекции амниотической полости и плодных оболочек (хориоамнионит)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Инфекции амниотической полости и плодных оболочек (хориоамнионит).pdf"
+      ]
+    },
+    {
+      "file": "Инфекционный эндокардит и инфекция внутрисердечных устройств.pdf",
+      "sha256": "67e255a2791d2d6a3534684f74855add001804b71edb958e91de732d53917829",
+      "guideline_ids": [
+        "1341",
+        "2138"
+      ],
+      "titles": [
+        "Инфекционный эндокардит и инфекция внутрисердечных устройств"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Инфекционный эндокардит и инфекция внутрисердечных устройств.pdf"
+      ]
+    },
+    {
+      "file": "Инфекция мочевыводящих путей у детей.pdf",
+      "sha256": "9c351ab6af23ba40be8f5db4987d1c030afc14d304c3f16fefbbdba1fa4810ac",
+      "guideline_ids": [
+        "1298"
+      ],
+      "titles": [
+        " Инфекция мочевыводящих путей у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Инфекция мочевыводящих путей у детей.pdf"
+      ]
+    },
+    {
+      "file": "Инфекция мочевых путей при беременности.pdf",
+      "sha256": "5844866ad33a868d3135a27e0bca1f332c7f075ca2ed687e20bba12980de1492",
+      "guideline_ids": [
+        "1334",
+        "2018"
+      ],
+      "titles": [
+        "Инфекция мочевых путей при беременности"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Инфекция мочевых путей при беременности.pdf"
+      ]
+    },
+    {
+      "file": "Инфекция мочевых путей.pdf",
+      "sha256": "7db13a28ac5708ffccfc7216d81f4a2c3ffcbb9527be87988207a608713577df",
+      "guideline_ids": [
+        "1724"
+      ],
+      "titles": [
+        "Инфекция мочевых путей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Инфекция мочевых путей.pdf"
+      ]
+    },
+    {
+      "file": "Инфекция, ассоциированная с ортопедическими имплантатами.pdf",
+      "sha256": "3997cd6c98ec2f428c2a3a54b005cc19c0593da51612fa06fb5a3dc99496f0bd",
+      "guideline_ids": [
+        "1739"
+      ],
+      "titles": [
+        "Инфекция, ассоциированная с ортопедическими имплантатами"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Инфекция, ассоциированная с ортопедическими имплантатами.pdf"
+      ]
+    },
+    {
+      "file": "Инфекция, специфичная для перинатального периода.pdf",
+      "sha256": "44f8a1dc90d2eddc0c72afb9f006ff28d38629d54028385e3d93ff10c6a04596",
+      "guideline_ids": [
+        "2087"
+      ],
+      "titles": [
+        "Инфекция, специфичная для перинатального периода"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Инфекция, специфичная для перинатального периода.pdf"
+      ]
+    },
+    {
+      "file": "Искусственный аборт (медицинский аборт).pdf",
+      "sha256": "af87d51c3294403c5978a3f64006332578c923edd42909d747b6ec00abaa1c15",
+      "guideline_ids": [
+        "1470"
+      ],
+      "titles": [
+        "Искусственный аборт (медицинский аборт) "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Искусственный аборт (медицинский аборт).pdf"
+      ]
+    },
+    {
+      "file": "Истмико-цервикальная недостаточность.pdf",
+      "sha256": "f7b1fcbd87f4205bc04dae378ebb340143696bf83ac18fbdd702679d96f62a7c",
+      "guideline_ids": [
+        "1239",
+        "1546"
+      ],
+      "titles": [
+        "Истмико-цервикальная недостаточность"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Истмико-цервикальная недостаточность.pdf"
+      ]
+    },
+    {
+      "file": "Ишемический инсульт и транзиторная ишемическая атака у взрослых.pdf",
+      "sha256": "68a5c3a8b0051293b530f43b694d565c711a7d66bd6cd0de393977da0eeda834",
+      "guideline_ids": [
+        "1218"
+      ],
+      "titles": [
+        "Ишемический инсульт и транзиторная ишемическая атака у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Ишемический инсульт и транзиторная ишемическая атака у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Кампилобактериоз у детей.pdf",
+      "sha256": "1498dad8e3c7626a70053c11fc319865dd7007e4605dd5d96df303fc1d5b683f",
+      "guideline_ids": [
+        "804"
+      ],
+      "titles": [
+        "Кампилобактериоз у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Кампилобактериоз у детей.pdf"
+      ]
+    },
+    {
+      "file": "Катаракта старческая.pdf",
+      "sha256": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2",
+      "guideline_ids": [
+        "1679"
+      ],
+      "titles": [
+        "Катаракта старческая"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Катаракта старческая.pdf"
+      ]
+    },
+    {
+      "file": "Кератит.pdf",
+      "sha256": "44b27f986a29f615bb9166f7504cd8b92c7b954f333c4c7a415509c5819396e3",
+      "guideline_ids": [
+        "2132"
+      ],
+      "titles": [
+        "Кератит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Кератит.pdf"
+      ]
+    },
+    {
+      "file": "Кистозный фиброз (муковисцидоз).pdf",
+      "sha256": "baff8509d3c40ceaf9971331740839b7c1d69aa41c75619bea48242c0040b2dc",
+      "guideline_ids": [
+        "1228",
+        "2084"
+      ],
+      "titles": [
+        "Кистозный фиброз (муковисцидоз)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Кистозный фиброз (муковисцидоз).pdf"
+      ]
+    },
+    {
+      "file": "Кисты челюстно-лицевой области и шеи.pdf",
+      "sha256": "21f4c356f1146f6943029f82bfc2a37a8d60204315a3a23bf88d726008178e42",
+      "guideline_ids": [
+        "1140",
+        "1945"
+      ],
+      "titles": [
+        "Кисты челюстно-лицевой области и шеи"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Кисты челюстно-лицевой области и шеи.pdf"
+      ]
+    },
+    {
+      "file": "Клещевой вирусный энцефалит у детей.pdf",
+      "sha256": "804fcfb757e2f768e037a0f426362b627652febddff156fdfce05257ab426dcf",
+      "guideline_ids": [
+        "2169"
+      ],
+      "titles": [
+        "Клещевой вирусный энцефалит у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Клещевой вирусный энцефалит у детей.pdf"
+      ]
+    },
+    {
+      "file": "Коклюш у детей.pdf",
+      "sha256": "44c91dfdbc56ab3c45ab5a735c45643c9381b506b3ee3b617226bc5d63faabb2",
+      "guideline_ids": [
+        "2156"
+      ],
+      "titles": [
+        "Коклюш у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Коклюш у детей.pdf"
+      ]
+    },
+    {
+      "file": "Коксартроз.pdf",
+      "sha256": "a4d2f1f83e2f9858c766ca8ebb25da031bc49a20c285321c1e15615e9c728ae2",
+      "guideline_ids": [
+        "1230",
+        "1783"
+      ],
+      "titles": [
+        "Коксартроз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Коксартроз.pdf"
+      ]
+    },
+    {
+      "file": "Комбинированные врожденные и приобретенные дефекты и деформации челюстно-лицевой локализации.pdf",
+      "sha256": "5f8b581e13065e2f4f3545365d1c22fdac58a982c3809f66e2c4f8adba59f3a2",
+      "guideline_ids": [
+        "2121"
+      ],
+      "titles": [
+        "Комбинированные врожденные и приобретенные дефекты и деформации челюстно-лицевой локализации"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Комбинированные врожденные и приобретенные дефекты и деформации челюстно-лицевой локализации.pdf"
+      ]
+    },
+    {
+      "file": "Конъюнктивиты.pdf",
+      "sha256": "467425dd03dd642f1d5fc4f56c4f342c319837116086c9d23241cc63f56a76af",
+      "guideline_ids": [
+        "1555"
+      ],
+      "titles": [
+        "Конъюнктивиты"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Конъюнктивиты.pdf"
+      ]
+    },
+    {
+      "file": "Коронавирусная инфекция COVID-19.pdf",
+      "sha256": "1cdc332c3a43c5e4727a63582d018902cc755bea0bc77b1f43740a72b1fadc0c",
+      "guideline_ids": [
+        "2157"
+      ],
+      "titles": [
+        "Коронавирусная инфекция COVID-19"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Коронавирусная инфекция COVID-19.pdf"
+      ]
+    },
+    {
+      "file": "Краниальные мононейропатии у взрослых.pdf",
+      "sha256": "71e5179d277a2330492a896b0825845d50a3e2ddbb82f72daec0bd9805f74aba",
+      "guideline_ids": [
+        "1816"
+      ],
+      "titles": [
+        "Краниальные мононейропатии у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Краниальные мононейропатии у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Криопирин-ассоциированные периодические синдромы (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf",
+      "sha256": "8de69951d6a1f4ab3d033a87812b5e79ab071080a90465b6b5b72b8fdc6b7d7a",
+      "guideline_ids": [
+        "1419"
+      ],
+      "titles": [
+        "Криопирин-ассоциированные периодические синдромы (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Криопирин-ассоциированные периодические синдромы (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf"
+      ]
+    },
+    {
+      "file": "Лекарственные поражения печени (ЛПП) у взрослых.pdf",
+      "sha256": "cceb3fa58ad340511ff181f8cbb611c1dbb3d83ed7ff07981deb0e75f3be5d8d",
+      "guideline_ids": [
+        "1399"
+      ],
+      "titles": [
+        "Лекарственные поражения печени (ЛПП) у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Лекарственные поражения печени (ЛПП) у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Лекарственные поражения печени (ЛПП).pdf",
+      "sha256": "463ff9d4b9139393a9c7fb82eea336c4945e3e6d3fa4977cbecbd074b783b51d",
+      "guideline_ids": [
+        "2088"
+      ],
+      "titles": [
+        "Лекарственные поражения печени (ЛПП)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Лекарственные поражения печени (ЛПП).pdf"
+      ]
+    },
+    {
+      "file": "Лепра [болезнь Гансена].pdf",
+      "sha256": "2dbb3c3c6033072ba4eb0c7321cdce54a4ce3ff9e265affbcf15df9a9ded7808",
+      "guideline_ids": [
+        "2062"
+      ],
+      "titles": [
+        "Лепра [болезнь Гансена]"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Лепра [болезнь Гансена].pdf"
+      ]
+    },
+    {
+      "file": "Лимфедема конечностей.pdf",
+      "sha256": "3d71f3d3aac85a50a747458d5f1d9aeb4c68fa80c17c2ba91832502df7478f99",
+      "guideline_ids": [
+        "2071"
+      ],
+      "titles": [
+        "Лимфедема конечностей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Лимфедема конечностей.pdf"
+      ]
+    },
+    {
+      "file": "Лимфома маргинальной зоны.pdf",
+      "sha256": "4a78deeb384cb74d0e288c0369156d1376fc7332bf6042aad763b12490ecf4d3",
+      "guideline_ids": [
+        "1454"
+      ],
+      "titles": [
+        "Лимфома маргинальной зоны"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Лимфома маргинальной зоны.pdf"
+      ]
+    },
+    {
+      "file": "Лимфоотек после мастэктомии.pdf",
+      "sha256": "d4b397bc707b5dce856f323d102199b56de44a0b6b5183ec4871ed9e966db06f",
+      "guideline_ids": [
+        "960"
+      ],
+      "titles": [
+        "Лимфоотек после мастэктомии"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Лимфоотек после мастэктомии.pdf"
+      ]
+    },
+    {
+      "file": "Локализованный гипертрихоз.pdf",
+      "sha256": "f5a4bb6e397bfbb9c5c2023362bbba313d965604370477de9ef781e6af884cb5",
+      "guideline_ids": [
+        "1494"
+      ],
+      "titles": [
+        "Локализованный гипертрихоз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Локализованный гипертрихоз.pdf"
+      ]
+    },
+    {
+      "file": "Лямблиоз у детей и взрослых.pdf",
+      "sha256": "3381e1b986436cbe8fc2461d1aeaa5435ac143851c861012ea71d366bbfd7260",
+      "guideline_ids": [
+        "1722"
+      ],
+      "titles": [
+        "Лямблиоз у детей и взрослых "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Лямблиоз у детей и взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Менингококковая инфекция у детей.pdf",
+      "sha256": "e000ba63516d8bb81c1d0401ca455420f01573d7106ccbbf4cd99fa3962d7fdb",
+      "guideline_ids": [
+        "1416",
+        "892"
+      ],
+      "titles": [
+        "Менингококковая инфекция у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Менингококковая инфекция у детей.pdf"
+      ]
+    },
+    {
+      "file": "Менингококковая инфекция.pdf",
+      "sha256": "22ebe88ae9d3f55ed2fe7abc572e586a3cc277429cf0f7cafc84b1b7a57fcb43",
+      "guideline_ids": [
+        "2150"
+      ],
+      "titles": [
+        "Менингококковая инфекция"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Менингококковая инфекция.pdf"
+      ]
+    },
+    {
+      "file": "Миастения.pdf",
+      "sha256": "07dd58e80ae4831c6432a6655444f74fb9e53e66494a866573ce98a0ce35204e",
+      "guideline_ids": [
+        "2093"
+      ],
+      "titles": [
+        "Миастения"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Миастения.pdf"
+      ]
+    },
+    {
+      "file": "Миелодиспластический синдром. Миелодиспластические_ миелопролиферативные новообразования.pdf",
+      "sha256": "22b2c7e45117aaca76e75ca8809ee4e181c8c6dcf6fec47e71fa814529570b90",
+      "guideline_ids": [
+        "1850"
+      ],
+      "titles": [
+        "Миелодиспластический синдром. Миелодиспластические/ миелопролиферативные новообразования "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Миелодиспластический синдром. Миелодиспластические_ миелопролиферативные новообразования.pdf"
+      ]
+    },
+    {
+      "file": "Миокардиты.pdf",
+      "sha256": "2fd3efc57155ff461479a48e08aa588e29efd8e1fc14b4a495768fd92090d5a5",
+      "guideline_ids": [
+        "1894"
+      ],
+      "titles": [
+        "Миокардиты "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Миокардиты.pdf"
+      ]
+    },
+    {
+      "file": "Миопическая макулярная дегенерация (Миопическая макулопатия).pdf",
+      "sha256": "fabdff06d1c7af22645c8afe4e51b3aef168ec7ff26691cb01baeec267bd726d",
+      "guideline_ids": [
+        "1460"
+      ],
+      "titles": [
+        "Миопическая макулярная дегенерация (Миопическая макулопатия)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Миопическая макулярная дегенерация (Миопическая макулопатия).pdf"
+      ]
+    },
+    {
+      "file": "Митральный стеноз.pdf",
+      "sha256": "c3fc64ec04927ff2b0af37d3faf06923ee8a8f4a972bb9e490e05979ee539509",
+      "guideline_ids": [
+        "2019"
+      ],
+      "titles": [
+        "Митральный стеноз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Митральный стеноз.pdf"
+      ]
+    },
+    {
+      "file": "Множественные переломы мозгового и лицевого отделов черепа.pdf",
+      "sha256": "ea7fde8e612bd65ff1498bbe8df35c85d623764247872ec41abf83e2471e31ae",
+      "guideline_ids": [
+        "1784"
+      ],
+      "titles": [
+        "Множественные переломы мозгового и лицевого отделов черепа"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Множественные переломы мозгового и лицевого отделов черепа.pdf"
+      ]
+    },
+    {
+      "file": "Мочекаменная болезнь.pdf",
+      "sha256": "76b62432f041d55253f2860a626121f0ae55e383b28d24e593c202d339633b08",
+      "guideline_ids": [
+        "1214",
+        "1677",
+        "1776",
+        "690"
+      ],
+      "titles": [
+        "Мочекаменная болезнь"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Мочекаменная болезнь.pdf"
+      ]
+    },
+    {
+      "file": "Наружные отиты.pdf",
+      "sha256": "d19ef3c27555fc07260481a5fa259809144fb037c420d88ff31b78c6d61201ab",
+      "guideline_ids": [
+        "1221",
+        "1656"
+      ],
+      "titles": [
+        "Наружные отиты"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Наружные отиты.pdf"
+      ]
+    },
+    {
+      "file": "Наружный отит.pdf",
+      "sha256": "8f5c9d11e1a3b2b9d105020f7d8464065b91ccac2edbb41cfc8c318dc63585cc",
+      "guideline_ids": [
+        "1227",
+        "1735"
+      ],
+      "titles": [
+        "Наружный отит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Наружный отит.pdf"
+      ]
+    },
+    {
+      "file": "Нарушения липидного обмена.pdf",
+      "sha256": "bcc9a3c975973bd001b12e665d960382756392883600f176a78cb2cd857ce5c4",
+      "guideline_ids": [
+        "1410"
+      ],
+      "titles": [
+        "Нарушения липидного обмена"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Нарушения липидного обмена.pdf"
+      ]
+    },
+    {
+      "file": "Наследственная тирозинемия 1 типа.pdf",
+      "sha256": "55b928c04b155699db1e4391255fda52e5abed256e7da8290e8662048b2be671",
+      "guideline_ids": [
+        "1262",
+        "1540"
+      ],
+      "titles": [
+        "Наследственная тирозинемия 1 типа"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Наследственная тирозинемия 1 типа.pdf"
+      ]
+    },
+    {
+      "file": "Наследственный сфероцитоз.pdf",
+      "sha256": "73569284a264b6e1c55aedc0e06f89551f99acc25770e46efcc20040fe6a1b28",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Наследственный сфероцитоз.pdf"
+      ]
+    },
+    {
+      "file": "Неалкогольная жировая болезнь печени у взрослых.pdf",
+      "sha256": "0a2286bc85824b92ce8e865729d667863b54edcf2413880a44f36f84fc264131",
+      "guideline_ids": [
+        "1400"
+      ],
+      "titles": [
+        "Неалкогольная жировая болезнь печени у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Неалкогольная жировая болезнь печени у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Негонококковый (неспецифический) уретрит у мужчин.pdf",
+      "sha256": "6bb536e9680292807e3a08e7ba0edad0ba53b41f25e36f0b4831f42189aabd95",
+      "guideline_ids": [
+        "1592"
+      ],
+      "titles": [
+        "Негонококковый (неспецифический) уретрит у мужчин"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Негонококковый (неспецифический) уретрит у мужчин.pdf"
+      ]
+    },
+    {
+      "file": "Недостаточность питания (мальнутриция) у пациентов пожилого и старческого возраста.pdf",
+      "sha256": "434eaac5e862b965e435e4840bee4ffd8cf02e95c3b7a543bcfb1746066cff30",
+      "guideline_ids": [
+        "1031",
+        "1032",
+        "1885"
+      ],
+      "titles": [
+        "Недостаточность питания (мальнутриция) у пациентов пожилого и старческого возраста"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Недостаточность питания (мальнутриция) у пациентов пожилого и старческого возраста.pdf"
+      ]
+    },
+    {
+      "file": "Недостаточность питания у детей старше 1 года (Белково-энергетическая недостаточность).pdf",
+      "sha256": "7bafeb990de388e42ef1cefcac8cfd848963d23666473a70081f3252cde265a9",
+      "guideline_ids": [
+        "2179"
+      ],
+      "titles": [
+        "Недостаточность питания у детей старше 1 года (Белково-энергетическая недостаточность)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Недостаточность питания у детей старше 1 года (Белково-энергетическая недостаточность).pdf"
+      ]
+    },
+    {
+      "file": "Нейробластома.pdf",
+      "sha256": "5c428d1c9a4604e892f6e715f696759a56a75431522941bb5ccfd4abe5d452c7",
+      "guideline_ids": [
+        "1852"
+      ],
+      "titles": [
+        "Нейробластома"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Нейробластома.pdf"
+      ]
+    },
+    {
+      "file": "Нейроэндокринные опухоли.pdf",
+      "sha256": "c44048d0ae10c02a24b51e70cb725896002a06b8536d90980559702ca63657ff",
+      "guideline_ids": [
+        "1870",
+        "937"
+      ],
+      "titles": [
+        "Нейроэндокринные опухоли"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Нейроэндокринные опухоли.pdf"
+      ]
+    },
+    {
+      "file": "Неонатальная желтуха.pdf",
+      "sha256": "ab77a30a019596a4adac5a6208302e634186d63914426cf3406a9743dd075a99",
+      "guideline_ids": [
+        "1905"
+      ],
+      "titles": [
+        "Неонатальная желтуха"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Неонатальная желтуха.pdf"
+      ]
+    },
+    {
+      "file": "Неспецифический аортоартериит.pdf",
+      "sha256": "faebe3a760a1987fffae891cf7d549f0287f4739904b45b728ae517ba4dcfff6",
+      "guideline_ids": [
+        "2031"
+      ],
+      "titles": [
+        "Неспецифический аортоартериит "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Неспецифический аортоартериит.pdf"
+      ]
+    },
+    {
+      "file": "Нодальные Т-клеточные лимфомы.pdf",
+      "sha256": "6cb53d0321fab7f3bf93163421424b601c005c51e33097e518c1c7413ce00149",
+      "guideline_ids": [
+        "1855"
+      ],
+      "titles": [
+        "Нодальные Т-клеточные лимфомы"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Нодальные Т-клеточные лимфомы.pdf"
+      ]
+    },
+    {
+      "file": "Нормальные роды (роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании).pdf",
+      "sha256": "4346b9e5f2c56d6525a97bd6668b4155a1a43f9663e4be401f259d02a1dce0b5",
+      "guideline_ids": [
+        "1549"
+      ],
+      "titles": [
+        "Нормальные роды (роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Нормальные роды (роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании).pdf"
+      ]
+    },
+    {
+      "file": "Нормальный послеродовый период (послеродовая помощь и обследование).pdf",
+      "sha256": "dc100eacd3c7ef230e4378e8c330d979347ca5826e451e71771392b3c36f5649",
+      "guideline_ids": [
+        "1618"
+      ],
+      "titles": [
+        "Нормальный послеродовый период (послеродовая помощь и обследование)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Нормальный послеродовый период (послеродовая помощь и обследование).pdf"
+      ]
+    },
+    {
+      "file": "Омфалит у новорожденных.pdf",
+      "sha256": "c73baeea1ef7e0e7e5f762635258d6ed426a09671fc38e36e7fc8dd15b3c4e04",
+      "guideline_ids": [
+        "2168"
+      ],
+      "titles": [
+        "Омфалит у новорожденных"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Омфалит у новорожденных.pdf"
+      ]
+    },
+    {
+      "file": "Оперативные влагалищные роды (Роды одноплодные, родоразрешение с наложением щипцов или с применением вакуум-экстрактора).pdf",
+      "sha256": "a8c527866af9774ad68214a4a253170f790fc6ea1ccd6e0871def90a1500ba80",
+      "guideline_ids": [
+        "1444"
+      ],
+      "titles": [
+        "Оперативные влагалищные роды (Роды одноплодные, родоразрешение с наложением щипцов или с применением вакуум-экстрактора)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Оперативные влагалищные роды (Роды одноплодные, родоразрешение с наложением щипцов или с применением вакуум-экстрактора).pdf"
+      ]
+    },
+    {
+      "file": "Опухоли головного и спинного мозга у детей.pdf",
+      "sha256": "9a0ae5b0c10de39953243a8d652213be18e63bf232a6ac98b81809d81d4c6127",
+      "guideline_ids": [
+        "701"
+      ],
+      "titles": [
+        "Опухоли головного и спинного мозга у детей "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Опухоли головного и спинного мозга у детей.pdf"
+      ]
+    },
+    {
+      "file": "Осложненная катаракта.pdf",
+      "sha256": "35d9d22a20c7917988a1a77161393a1a75a359aa0c6ba1e88dc401b0311dafc6",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Осложненная катаракта.pdf"
+      ]
+    },
+    {
+      "file": "Острая интоксикация психоактивными веществами.pdf",
+      "sha256": "4133b5f9ecb597b54524cd85fbc48eabd1172a314182c6632afd139248aa17a7",
+      "guideline_ids": [
+        "1011",
+        "1012"
+      ],
+      "titles": [
+        "Острая интоксикация психоактивными веществами"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Острая интоксикация психоактивными веществами.pdf"
+      ]
+    },
+    {
+      "file": "Острая кишечная непроходимость опухолевой этиологии.pdf",
+      "sha256": "c8c46a1b84f17e5dc56127680abfc1cc3110aecff29fab00870463956f9d8c72",
+      "guideline_ids": [
+        "1469"
+      ],
+      "titles": [
+        "Острая кишечная непроходимость опухолевой этиологии"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Острая кишечная непроходимость опухолевой этиологии.pdf"
+      ]
+    },
+    {
+      "file": "Острое повреждение почек у новорождённых детей.pdf",
+      "sha256": "4a24eaeca31eba9c1fd0e53ea10f307f9e7f026584388deb99b440bef2df3361",
+      "guideline_ids": [
+        "2181"
+      ],
+      "titles": [
+        "Острое повреждение почек у новорождённых детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острое повреждение почек у новорождённых детей.pdf"
+      ]
+    },
+    {
+      "file": "Острые и хронические тиреоидиты (исключая аутоиммунный и амиодарон-индуцированный тиреоидит).pdf",
+      "sha256": "d1599458855242708f8fe000a5d84dae0de96b2a252ad2661d6d2ed524cd41bb",
+      "guideline_ids": [
+        "1619"
+      ],
+      "titles": [
+        "Острые и хронические тиреоидиты (исключая аутоиммунный и  амиодарон-индуцированный тиреоидит)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Острые и хронические тиреоидиты (исключая аутоиммунный и амиодарон-индуцированный тиреоидит).pdf"
+      ]
+    },
+    {
+      "file": "Острые и хронические тиреоидиты (исключая аутоиммунный тиреоидит).pdf",
+      "sha256": "861664047f667451023e39e4b259e0b8a70fbb4363198daece5c05595c268118",
+      "guideline_ids": [
+        "1056",
+        "1057"
+      ],
+      "titles": [
+        "Острые и хронические тиреоидиты (исключая аутоиммунный тиреоидит)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Острые и хронические тиреоидиты (исключая аутоиммунный тиреоидит).pdf"
+      ]
+    },
+    {
+      "file": "Острые лимфобластные лейкозы.pdf",
+      "sha256": "04d2109e69dc4ecda91de4e9e61783cb7d398c0a6c4879877d103e9b3718b3e2",
+      "guideline_ids": [
+        "1827",
+        "985"
+      ],
+      "titles": [
+        "Острые лимфобластные лейкозы"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Острые лимфобластные лейкозы.pdf"
+      ]
+    },
+    {
+      "file": "Острые миелоидные лейкозы.pdf",
+      "sha256": "488a6f412bd93037ff7451324ecb3ae8c7ce12d545b56fa371c9de60da054f98",
+      "guideline_ids": [
+        "1730",
+        "1858",
+        "993",
+        "994"
+      ],
+      "titles": [
+        "Острые миелоидные лейкозы"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Острые миелоидные лейкозы.pdf"
+      ]
+    },
+    {
+      "file": "Острый аппендицит и перитонит у детей.pdf",
+      "sha256": "a00accc49af175e9ce9a0cb20f42f795afee4aafee2d694cf8d5c17cad756cf6",
+      "guideline_ids": [
+        "2042"
+      ],
+      "titles": [
+        "Острый аппендицит и перитонит у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый аппендицит и перитонит у детей.pdf"
+      ]
+    },
+    {
+      "file": "Острый бронхит.pdf",
+      "sha256": "5d98545b6740cc18d76ee806831a321c985ee3c5a2c0c7ea49f944ffef45e599",
+      "guideline_ids": [
+        "1810"
+      ],
+      "titles": [
+        "Острый бронхит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый бронхит.pdf"
+      ]
+    },
+    {
+      "file": "Острый гепатит A (ГА) у взрослых.pdf",
+      "sha256": "30b8ae0f556eb058c42d1ad8bbad43255bf9f89e5bb66daec92f565762a9c430",
+      "guideline_ids": [
+        "1333",
+        "1946"
+      ],
+      "titles": [
+        "Острый гепатит A (ГА) у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый гепатит A (ГА) у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Острый гепатит В (ГВ) у взрослых.pdf",
+      "sha256": "c779cb14be32fbd7f1c0e221544072ecf83276b9176be41d4883c401b00313e9",
+      "guideline_ids": [
+        "1240",
+        "1610"
+      ],
+      "titles": [
+        "Острый гепатит В (ГВ) у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый гепатит В (ГВ) у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Острый гепатит С (ОГС) у взрослых.pdf",
+      "sha256": "208f64a5c5e24dec69be59b4a51e9244a8d26e94e64200a40d4f73f1f6328d1c",
+      "guideline_ids": [
+        "1437"
+      ],
+      "titles": [
+        "Острый гепатит С (ОГС) у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый гепатит С (ОГС) у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Острый ларингит.pdf",
+      "sha256": "f36f587bda75ba87de850363c7a12cefa7ad091b306bfc2c4952362fd257921a",
+      "guideline_ids": [
+        "1639"
+      ],
+      "titles": [
+        "Острый ларингит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый ларингит.pdf"
+      ]
+    },
+    {
+      "file": "Острый лимфобластный лейкоз.pdf",
+      "sha256": "cec8866d16bfb12cab019d05b9f1e453d73cf86af31675c07fd0098c22b32e58",
+      "guideline_ids": [
+        "1860",
+        "750"
+      ],
+      "titles": [
+        "Острый лимфобластный лейкоз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Острый лимфобластный лейкоз.pdf"
+      ]
+    },
+    {
+      "file": "Острый обструктивный ларингит [круп] и эпиглоттит.pdf",
+      "sha256": "49cda9c9bff326bb6de86148ee06187c9b5174fcc1f66ffbf91ed045870c768d",
+      "guideline_ids": [
+        "1229"
+      ],
+      "titles": [
+        "Острый обструктивный ларингит [круп] и эпиглоттит "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый обструктивный ларингит [круп] и эпиглоттит.pdf"
+      ]
+    },
+    {
+      "file": "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf",
+      "sha256": "4aec9b17a8ed4fe241784727deca520a08e447861276e43b39019f1ddfa092b6",
+      "guideline_ids": [
+        "1832"
+      ],
+      "titles": [
+        "Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани  "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый обструктивный ларингит [круп], эпиглоттит, постинтубационный отек гортани.pdf"
+      ]
+    },
+    {
+      "file": "Острый пиелонефрит.pdf",
+      "sha256": "b46960a144b21cacf97f39435c53489bb8a57f0e775be6d8df9e658f67ce08cf",
+      "guideline_ids": [
+        "1826"
+      ],
+      "titles": [
+        "Острый пиелонефрит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый пиелонефрит.pdf"
+      ]
+    },
+    {
+      "file": "Острый синусит.pdf",
+      "sha256": "a577017d40c68d0168abdb5e5e1797d02956f65d6a79c4f30a530960595dace6",
+      "guideline_ids": [
+        "1220",
+        "1632"
+      ],
+      "titles": [
+        "Острый синусит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый синусит.pdf"
+      ]
+    },
+    {
+      "file": "Острый тонзиллит и фарингит (Острый тонзиллофарингит).pdf",
+      "sha256": "33d3393ae7f5aec31cfe933e186a98e6aef853cc563665399d46d79f803ec337",
+      "guideline_ids": [
+        "1269",
+        "1638"
+      ],
+      "titles": [
+        "Острый тонзиллит и фарингит  (Острый тонзиллофарингит)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый тонзиллит и фарингит (Острый тонзиллофарингит).pdf"
+      ]
+    },
+    {
+      "file": "Острый холецистит.pdf",
+      "sha256": "f2d091d57a2554bcaba52ace8b1efcb76e28f2fe755a57e341e10c2de731b0c6",
+      "guideline_ids": [
+        "1232",
+        "732"
+      ],
+      "titles": [
+        "Острый холецистит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Острый холецистит.pdf"
+      ]
+    },
+    {
+      "file": "Отит средний острый.pdf",
+      "sha256": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a",
+      "guideline_ids": [
+        "1222",
+        "1633"
+      ],
+      "titles": [
+        "Отит средний острый",
+        "Отит средний острый "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Отит средний острый.pdf"
+      ]
+    },
+    {
+      "file": "Открытая рана голени.pdf",
+      "sha256": "5194674fb5f764bdf7199f760a5ce00dcec6edcca06aa73aa60df3a1265c7fe3",
+      "guideline_ids": [
+        "1284",
+        "1766"
+      ],
+      "titles": [
+        "Открытая рана голени"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Открытая рана голени.pdf"
+      ]
+    },
+    {
+      "file": "Открытая рана головы.pdf",
+      "sha256": "fbef4f9bc0bf9dd805b28ef1bb07243db307d33c56b7b17a2adc59cc8a7906c9",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Открытая рана головы.pdf"
+      ]
+    },
+    {
+      "file": "Открытые раны головы.pdf",
+      "sha256": "91fff5f994a7933526887175e17f947a6bbc31006a88dbf1236d16a598d3626a",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Открытые раны головы.pdf"
+      ]
+    },
+    {
+      "file": "Открытый артериальный проток (ОАП).pdf",
+      "sha256": "fe5957276313545becb6afe3baee305a2e3d2ce3a5c4849f61ac8318dbebd691",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Открытый артериальный проток (ОАП).pdf"
+      ]
+    },
+    {
+      "file": "Паратонзиллярный абсцесс.pdf",
+      "sha256": "e4a62f1ad5567e5af3ab7b028d9a5a40ffd50d04e1d928f6dbc55b306cbebfa3",
+      "guideline_ids": [
+        "1223",
+        "1669"
+      ],
+      "titles": [
+        "Паратонзиллярный абсцесс"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Паратонзиллярный абсцесс.pdf"
+      ]
+    },
+    {
+      "file": "Первичная надпочечниковая недостаточность.pdf",
+      "sha256": "4eaa777f294ffec55a13fee9e0c5bccbe36a3af4d7b25cb528a5df1d45434355",
+      "guideline_ids": [
+        "1165",
+        "1873",
+        "788"
+      ],
+      "titles": [
+        "Первичная надпочечниковая недостаточность "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Первичная надпочечниковая недостаточность.pdf"
+      ]
+    },
+    {
+      "file": "Первичные иммунодефициты с преимущественной недостаточностью синтеза антител.pdf",
+      "sha256": "5c4440b85a1b221a297f3c38c3cb250af39e93a514a081e2d17e0b7a52891809",
+      "guideline_ids": [
+        "1361"
+      ],
+      "titles": [
+        "Первичные иммунодефициты с преимущественной недостаточностью синтеза антител"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Первичные иммунодефициты с преимущественной недостаточностью синтеза антител.pdf"
+      ]
+    },
+    {
+      "file": "Первичный билиарный холангит.pdf",
+      "sha256": "2f3a3175aa9b24d112932c1787cd5c9880e87aea7f216427a403de26f482312e",
+      "guideline_ids": [
+        "2171"
+      ],
+      "titles": [
+        "Первичный билиарный холангит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Первичный билиарный холангит.pdf"
+      ]
+    },
+    {
+      "file": "Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf",
+      "sha256": "4bade711541fb1ea277a4794f75dacfdc8ef9a5cf3491b87d6e982faf2990783",
+      "guideline_ids": [
+        "739"
+      ],
+      "titles": [
+        "Первичный иммунодефицит: тяжелая комбинированная иммунная недостаточность"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Первичный иммунодефицит - тяжелая комбинированная иммунная недостаточность.pdf"
+      ]
+    },
+    {
+      "file": "Первичный иммунодефицит- Х-сцепленный лимфопролиферативный синдром.pdf",
+      "sha256": "a20606b76eb5fd63c8142c5c6b538ced7fa317f35a5eaf15180f1075be7421db",
+      "guideline_ids": [
+        "764"
+      ],
+      "titles": [
+        "Первичный иммунодефицит- Х-сцепленный лимфопролиферативный синдром"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Первичный иммунодефицит- Х-сцепленный лимфопролиферативный синдром.pdf"
+      ]
+    },
+    {
+      "file": "Перелом дна глазницы.pdf",
+      "sha256": "03c9637813efb5f6e0f661fa598f38dd545732b54d5c757c5e3b320cf2442534",
+      "guideline_ids": [
+        "1195",
+        "1847"
+      ],
+      "titles": [
+        "Перелом дна глазницы"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Перелом дна глазницы.pdf"
+      ]
+    },
+    {
+      "file": "Перелом нижней челюсти.pdf",
+      "sha256": "7fcf5cd5576d8bb0cb2d05e743c51793135e4f324452b838fdad4a234e009b72",
+      "guideline_ids": [
+        "1196",
+        "1778",
+        "744"
+      ],
+      "titles": [
+        "Перелом нижней челюсти"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Перелом нижней челюсти.pdf"
+      ]
+    },
+    {
+      "file": "Переломы бедренной кости (кроме проксимального отдела бедренной кости).pdf",
+      "sha256": "2774cc171730638ee384d75697e9b9ced08853208f798806300ca594e35cf33f",
+      "guideline_ids": [
+        "1202",
+        "1846"
+      ],
+      "titles": [
+        "Переломы бедренной кости (кроме проксимального отдела бедренной кости)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы бедренной кости (кроме проксимального отдела бедренной кости).pdf"
+      ]
+    },
+    {
+      "file": "Переломы диафиза большеберцовой кости.pdf",
+      "sha256": "68f0a4aa2dd5f347bb86067c7fbf31956dca9edb4bdc61320d2b3a410f2708b8",
+      "guideline_ids": [
+        "1744"
+      ],
+      "titles": [
+        "Переломы диафиза большеберцовой кости"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы диафиза большеберцовой кости.pdf"
+      ]
+    },
+    {
+      "file": "Переломы диафиза костей предплечья.pdf",
+      "sha256": "32f5a346669479ac70bc4affd502a88c35488bc56cbfa739b551a093786c18d6",
+      "guideline_ids": [
+        "1740"
+      ],
+      "titles": [
+        "Переломы диафиза костей предплечья "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы диафиза костей предплечья.pdf"
+      ]
+    },
+    {
+      "file": "Переломы диафиза плечевой кости.pdf",
+      "sha256": "611775226452b6d529a2c7c301d6d7c83c68f35224aa3c2578f8fb66d243eeef",
+      "guideline_ids": [
+        "1743"
+      ],
+      "titles": [
+        "Переломы диафиза плечевой кости "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы диафиза плечевой кости.pdf"
+      ]
+    },
+    {
+      "file": "Переломы дистального отдела костей голени.pdf",
+      "sha256": "298add3c288518fc3ce53a3328f08609f75045b8694d16dd84b43f33367ec937",
+      "guideline_ids": [
+        "1755"
+      ],
+      "titles": [
+        "Переломы дистального отдела костей голени "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы дистального отдела костей голени.pdf"
+      ]
+    },
+    {
+      "file": "Переломы дистального отдела костей предплечья.pdf",
+      "sha256": "41e15f7b34be03b5247ac3cc03c83779e7ed6cc6c7c5aeb7923aaea0c9998130",
+      "guideline_ids": [
+        "1745"
+      ],
+      "titles": [
+        "Переломы дистального отдела костей предплечья "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы дистального отдела костей предплечья.pdf"
+      ]
+    },
+    {
+      "file": "Переломы дистального отдела плечевой кости.pdf",
+      "sha256": "4e6628abafbce5336115c75ae08d358946a04bc472c5cbdb3e46480eb241c568",
+      "guideline_ids": [
+        "1748"
+      ],
+      "titles": [
+        "Переломы дистального отдела плечевой кости"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы дистального отдела плечевой кости.pdf"
+      ]
+    },
+    {
+      "file": "Переломы и ложные суставы костей запястья.pdf",
+      "sha256": "dcb5f3a34b189fb68d50efeb71f9ea625cc1157c43264684095528da271156ed",
+      "guideline_ids": [
+        "2076"
+      ],
+      "titles": [
+        "Переломы и ложные суставы костей запястья"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы и ложные суставы костей запястья.pdf"
+      ]
+    },
+    {
+      "file": "Переломы ключицы и лопатки.pdf",
+      "sha256": "8c7541f3a693a254bbbf41c7510242c918a2d76a1c35ef04f3132a35901c5bee",
+      "guideline_ids": [
+        "1746"
+      ],
+      "titles": [
+        "Переломы ключицы и лопатки"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы ключицы и лопатки.pdf"
+      ]
+    },
+    {
+      "file": "Переломы костей голени.pdf",
+      "sha256": "7b2c74082b003884153fee25ed36ed48fb54cd586cf58adbcfff1c633e415189",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы костей голени.pdf"
+      ]
+    },
+    {
+      "file": "Переломы костей стопы (кроме переломов пяточной кости).pdf",
+      "sha256": "502f989415e5e529dcb03207d8b833b417a6ea98e18906ddb9bee3f3e58c3d9b",
+      "guideline_ids": [
+        "1750"
+      ],
+      "titles": [
+        "Переломы костей стопы (кроме переломов пяточной кости)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы костей стопы (кроме переломов пяточной кости).pdf"
+      ]
+    },
+    {
+      "file": "Переломы лодыжек.pdf",
+      "sha256": "997e8e76604f6f7f332a3925c3ba1960735cbad9a647ec825b7fbe5c8ebce381",
+      "guideline_ids": [
+        "1749"
+      ],
+      "titles": [
+        "Переломы лодыжек"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы лодыжек.pdf"
+      ]
+    },
+    {
+      "file": "Переломы надколенника.pdf",
+      "sha256": "b6d47ffed1c0fe27ce38089ae836044b965b75590702ee9caf837bdf8b2fce14",
+      "guideline_ids": [
+        "2075"
+      ],
+      "titles": [
+        "Переломы надколенника "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы надколенника.pdf"
+      ]
+    },
+    {
+      "file": "Переломы проксимального отдела бедренной кости.pdf",
+      "sha256": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b",
+      "guideline_ids": [
+        "1349",
+        "2090"
+      ],
+      "titles": [
+        "Переломы проксимального отдела бедренной кости"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела бедренной кости.pdf"
+      ]
+    },
+    {
+      "file": "Переломы проксимального отдела голени.pdf",
+      "sha256": "08649b337e4ac0a4a10dc015db86cdfb20da5a9ff7d11cd488c109496de609eb",
+      "guideline_ids": [
+        "1761"
+      ],
+      "titles": [
+        "Переломы проксимального отдела голени "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела голени.pdf"
+      ]
+    },
+    {
+      "file": "Переломы проксимального отдела костей предплечья.pdf",
+      "sha256": "6f3fb1e9633a5ac3a328106b9996c2096f1baa32eb45e090388908c2de1dcfca",
+      "guideline_ids": [
+        "1751"
+      ],
+      "titles": [
+        "Переломы проксимального отдела костей предплечья"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела костей предплечья.pdf"
+      ]
+    },
+    {
+      "file": "Переломы проксимального отдела плечевой кости.pdf",
+      "sha256": "8549381de9fe713f872e6fbc37617d7c79b53e70792dbda7a68c7578f9fe1a51",
+      "guideline_ids": [
+        "1754"
+      ],
+      "titles": [
+        "Переломы проксимального отдела плечевой кости"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Переломы проксимального отдела плечевой кости.pdf"
+      ]
+    },
+    {
+      "file": "Перикардиты.pdf",
+      "sha256": "a702674494c4378ad6adb9e23c941ef35b8015eabed0e5ae9b7b2b7cc7dc9359",
+      "guideline_ids": [
+        "1398",
+        "1952",
+        "1953"
+      ],
+      "titles": [
+        "Перикардиты"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Перикардиты.pdf"
+      ]
+    },
+    {
+      "file": "Периодический синдром, ассоциированный с мутацией гена рецептора фактора некроза опухоли (TRAPS) (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf",
+      "sha256": "c2355cf17709106884247ea86fd5014390333b80ec43c4b0440a94731b853ebf",
+      "guideline_ids": [
+        "1420"
+      ],
+      "titles": [
+        "Периодический синдром, ассоциированный с мутацией гена рецептора фактора некроза опухоли (TRAPS) (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках) "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Периодический синдром, ассоциированный с мутацией гена рецептора фактора некроза опухоли (TRAPS) (Другие уточненные нарушения с вовлечением иммунного механизма, не классифицированные в других рубриках).pdf"
+      ]
+    },
+    {
+      "file": "Периоральный дерматит.pdf",
+      "sha256": "e37d3add5d8ca94d179fd668639a7962f6359efe0717e442de0fb50e011ede64",
+      "guideline_ids": [
+        "1458"
+      ],
+      "titles": [
+        " Периоральный дерматит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Периоральный дерматит.pdf"
+      ]
+    },
+    {
+      "file": "Пиодермия гангренозная.pdf",
+      "sha256": "29c4b89a96ba63a250ccd74e0cfd4872a8050b499174806e4119099097c96023",
+      "guideline_ids": [
+        "2122"
+      ],
+      "titles": [
+        "Пиодермия гангренозная"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Пиодермия гангренозная.pdf"
+      ]
+    },
+    {
+      "file": "Плоскостопие у детей.pdf",
+      "sha256": "766267f9cf7ee4e937ae874c60c1dce9cfda73408879094934941e9e162be6aa",
+      "guideline_ids": [
+        "2146"
+      ],
+      "titles": [
+        "Плоскостопие у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Плоскостопие у детей.pdf"
+      ]
+    },
+    {
+      "file": "Пневмония (внебольничная).pdf",
+      "sha256": "ca0061e8923ebc95afde71f641dc9a70bef1d35debeac1736b1231c917866f62",
+      "guideline_ids": [
+        "1324",
+        "1963"
+      ],
+      "titles": [
+        "Пневмония (внебольничная)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Пневмония (внебольничная).pdf"
+      ]
+    },
+    {
+      "file": "Повреждение мениска коленного сустава.pdf",
+      "sha256": "0aa215b48b2df4390903a450956ca887dcd349fbc3d5b872c9c664becee79792",
+      "guideline_ids": [
+        "1203",
+        "1758"
+      ],
+      "titles": [
+        "Повреждение мениска коленного сустава"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Повреждение мениска коленного сустава.pdf"
+      ]
+    },
+    {
+      "file": "Повреждение связок коленного сустава.pdf",
+      "sha256": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5",
+      "guideline_ids": [
+        "1283",
+        "1767"
+      ],
+      "titles": [
+        "Повреждение связок коленного сустава"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Повреждение связок коленного сустава.pdf"
+      ]
+    },
+    {
+      "file": "Повреждения тазового кольца.pdf",
+      "sha256": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74",
+      "guideline_ids": [
+        "1757"
+      ],
+      "titles": [
+        "Повреждения тазового кольца"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Повреждения тазового кольца.pdf"
+      ]
+    },
+    {
+      "file": "Повреждения хряща коленного сустава.pdf",
+      "sha256": "3acd2748790d9049b0c57a00a9a23fe61bffe14cb94ae2cabb3eb2ea5555f14b",
+      "guideline_ids": [
+        "1282",
+        "1769"
+      ],
+      "titles": [
+        "Повреждения хряща коленного сустава"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Повреждения хряща коленного сустава.pdf"
+      ]
+    },
+    {
+      "file": "Пороки трикуспидального (трехстворчатого) клапана.pdf",
+      "sha256": "67250b81a6ce1a5bd4ba30da240d4dbd202eccd89a4ca085083d9cb05b8f337c",
+      "guideline_ids": [
+        "954"
+      ],
+      "titles": [
+        "Пороки трикуспидального (трехстворчатого) клапана"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Пороки трикуспидального (трехстворчатого) клапана.pdf"
+      ]
+    },
+    {
+      "file": "Послеоперационная вентральная грыжа.pdf",
+      "sha256": "55b211df0dbdbc34e47a66b7b9ce4902f0731d073c168d91a52d9408d5e01f52",
+      "guideline_ids": [
+        "1271",
+        "1611"
+      ],
+      "titles": [
+        "Послеоперационная вентральная грыжа"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Послеоперационная вентральная грыжа.pdf"
+      ]
+    },
+    {
+      "file": "Послеродовые инфекционные осложнения.pdf",
+      "sha256": "a07240bb3c3b0858f7fac5a1a26f841fa4ff9bfc039b365ffe0ca1953f0031b8",
+      "guideline_ids": [
+        "1493"
+      ],
+      "titles": [
+        "Послеродовые инфекционные осложнения"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Послеродовые инфекционные осложнения.pdf"
+      ]
+    },
+    {
+      "file": "Преждевременные роды.pdf",
+      "sha256": "0aa313f028cebbef53e65967db57f8cc344c4d3fced8519fcdb26ac4b8b5ecbb",
+      "guideline_ids": [
+        "1577"
+      ],
+      "titles": [
+        "Преждевременные роды "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Преждевременные роды.pdf"
+      ]
+    },
+    {
+      "file": "Приобретенная чистая красноклеточная аплазия (эритробластопения).pdf",
+      "sha256": "102cc1637b0e288366827a889c1a89d1bc9b191b8eaae552de133b36cd3eb202",
+      "guideline_ids": [
+        "1648"
+      ],
+      "titles": [
+        "Приобретенная чистая красноклеточная аплазия (эритробластопения)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Приобретенная чистая красноклеточная аплазия (эритробластопения).pdf"
+      ]
+    },
+    {
+      "file": "Приобретенные деформации стопы.pdf",
+      "sha256": "63fd27b0eb2ed55db5d1b30124278b5a50524a5c62ed3ff1af041b3e9b5600a5",
+      "guideline_ids": [
+        "2118"
+      ],
+      "titles": [
+        "Приобретенные деформации стопы"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Приобретенные деформации стопы.pdf"
+      ]
+    },
+    {
+      "file": "Приобретенные нейтропении.pdf",
+      "sha256": "98a3f92bacd20de81f871fcdc16b28b403df9ed6bf6f641fd68c4a08e5b8d277",
+      "guideline_ids": [
+        "949"
+      ],
+      "titles": [
+        "Приобретенные нейтропении"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Приобретенные нейтропении.pdf"
+      ]
+    },
+    {
+      "file": "Приобретённая патология слёзоотводящих путей.pdf",
+      "sha256": "abfbfb7ff1ff9f127615c617b9de82311983d922f79243eaad849733c856d1ee",
+      "guideline_ids": [
+        "2109"
+      ],
+      "titles": [
+        "Приобретённая патология слёзоотводящих путей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Приобретённая патология слёзоотводящих путей.pdf"
+      ]
+    },
+    {
+      "file": "Пропионовая ацидемия _ацидурия.pdf",
+      "sha256": "c165ed35023b930dc2aec3037d118b7b2b787bed92173f6eea30da111a45331a",
+      "guideline_ids": [
+        "1604"
+      ],
+      "titles": [
+        "Пропионовая ацидемия /ацидурия"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Пропионовая ацидемия _ацидурия.pdf"
+      ]
+    },
+    {
+      "file": "Прочие первичные грыжи брюшной стенки.pdf",
+      "sha256": "aa330bab9f02c5145e8c07b2e9024f8a7714333d07216338f43e00d5e5cf7190",
+      "guideline_ids": [
+        "1662"
+      ],
+      "titles": [
+        "Прочие первичные грыжи брюшной стенки"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Прочие первичные грыжи брюшной стенки.pdf"
+      ]
+    },
+    {
+      "file": "Психические и поведенческие расстройства, вызванные употреблением алкоголя. Синдром зависимости от алкоголя.pdf",
+      "sha256": "d6df2ae446ad5ae327dbcb78ed74cc230c306a278e0370dc88399ca8cda9cb79",
+      "guideline_ids": [
+        "957"
+      ],
+      "titles": [
+        "Психические и поведенческие расстройства, вызванные употреблением алкоголя.  Синдром зависимости от алкоголя"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Психические и поведенческие расстройства, вызванные употреблением алкоголя. Синдром зависимости от алкоголя.pdf"
+      ]
+    },
+    {
+      "file": "Психические и поведенческие расстройства, вызванные употреблением алкоголя. Синдром отмены алкоголя (алкогольное абстинентное состояние).pdf",
+      "sha256": "a63e448194101de5283e7483c395fb62ef4d30032c357a1989a85c810b21e98f",
+      "guideline_ids": [
+        "938"
+      ],
+      "titles": [
+        "Психические и поведенческие расстройства, вызванные употреблением алкоголя. Синдром отмены алкоголя (алкогольное абстинентное состояние) "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Психические и поведенческие расстройства, вызванные употреблением алкоголя. Синдром отмены алкоголя (алкогольное абстинентное состояние).pdf"
+      ]
+    },
+    {
+      "file": "Рак носоглотки.pdf",
+      "sha256": "88bcaa534648c5a9c8437400f00a7f8d5e59bc6dc87002e58d127940ef7916bc",
+      "guideline_ids": [
+        "1731",
+        "1837",
+        "755"
+      ],
+      "titles": [
+        "Рак носоглотки"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Рак носоглотки.pdf"
+      ]
+    },
+    {
+      "file": "Регматогенная отслойка сетчатки.pdf",
+      "sha256": "b7dd451d8a1631cf1dacedebe9dc1b624ba3514ffb031333a3e896b0f274e7df",
+      "guideline_ids": [
+        "2074",
+        "697"
+      ],
+      "titles": [
+        "Регматогенная отслойка сетчатки"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Регматогенная отслойка сетчатки.pdf"
+      ]
+    },
+    {
+      "file": "Роды одноплодные, родоразрешение путем кесарева сечения.pdf",
+      "sha256": "c6d06ac1c8ad84b3154d1ea6bfda12aee7603de7e0bdcfcfeb078d57beebe3d2",
+      "guideline_ids": [
+        "1148",
+        "1547"
+      ],
+      "titles": [
+        "Роды одноплодные, родоразрешение путем кесарева сечения",
+        "Роды одноплодные, родоразрешение путем кесарева сечения "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Роды одноплодные, родоразрешение путем кесарева сечения.pdf"
+      ]
+    },
+    {
+      "file": "Роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании (нормальные роды).pdf",
+      "sha256": "a22def94648ddb617791ae1a04aa66c152ec4a963f0d0d6e0e2796466b0b48b8",
+      "guideline_ids": [
+        "1145"
+      ],
+      "titles": [
+        "Роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании (нормальные роды)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании (нормальные роды).pdf"
+      ]
+    },
+    {
+      "file": "Сальмонеллез у детей.pdf",
+      "sha256": "10aa020a7b0a588473de23d9a1297047191427fa11b03f084f5de4d332c5a2a4",
+      "guideline_ids": [
+        "1310",
+        "1683"
+      ],
+      "titles": [
+        "Сальмонеллез у детей",
+        "Сальмонеллез у детей "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Сальмонеллез у детей.pdf"
+      ]
+    },
+    {
+      "file": "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз).pdf",
+      "sha256": "cfb5b778182b190884f240fa12316f758116779527b916a83acacb209c2c1c90",
+      "guideline_ids": [
+        "1418"
+      ],
+      "titles": [
+        "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз).pdf"
+      ]
+    },
+    {
+      "file": "Сепсис новорождённых.pdf",
+      "sha256": "43f15ff32c6a638baaefd761fecdcf99a07d978e4b23870b7513c8b8b648a720",
+      "guideline_ids": [
+        "1889"
+      ],
+      "titles": [
+        "Сепсис новорождённых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Сепсис новорождённых.pdf"
+      ]
+    },
+    {
+      "file": "Серповидно-клеточные нарушения.pdf",
+      "sha256": "418b4169c3d917250fad845055fd749ca3a38afc906ecb35bf0e438b94c0ff09",
+      "guideline_ids": [
+        "1261",
+        "1689"
+      ],
+      "titles": [
+        "Серповидно-клеточные нарушения"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Серповидно-клеточные нарушения.pdf"
+      ]
+    },
+    {
+      "file": "Синдром гиперстимуляции яичников.pdf",
+      "sha256": "ef17099cb62f5fe05608ceb034959285e8773f124a6bbf1c553c7eb8af41b38c",
+      "guideline_ids": [
+        "1225",
+        "2029"
+      ],
+      "titles": [
+        "Синдром гиперстимуляции яичников"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Синдром гиперстимуляции яичников.pdf"
+      ]
+    },
+    {
+      "file": "Синдром гипоплазии левых отделов сердца.pdf",
+      "sha256": "5ac61c0bcdc4dcf858377aa2dbdb70ec464be25771a2b947c5d590db3baf0783",
+      "guideline_ids": [
+        "1700",
+        "903"
+      ],
+      "titles": [
+        "Синдром гипоплазии левых отделов сердца "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Синдром гипоплазии левых отделов сердца.pdf"
+      ]
+    },
+    {
+      "file": "Синдром делеции 22 хромосомы (синдром Ди Георга (Ди Джорджи)).pdf",
+      "sha256": "6492c8717a1fbc70761cdc50f7be015d499f2371357c4f30c96d57ea892f6ca1",
+      "guideline_ids": [
+        "740"
+      ],
+      "titles": [
+        "Синдром делеции 22 хромосомы (синдром Ди Георга (Ди Джорджи))"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Синдром делеции 22 хромосомы (синдром Ди Георга (Ди Джорджи)).pdf"
+      ]
+    },
+    {
+      "file": "Синдром раздраженного кишечника.pdf",
+      "sha256": "ac3e9f4f5015089ea60eb0a5f4c709e5c55c7e75ab1141e5a00aaeb3d4c33b42",
+      "guideline_ids": [
+        "1152",
+        "1811"
+      ],
+      "titles": [
+        "Синдром раздраженного кишечника"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Синдром раздраженного кишечника.pdf"
+      ]
+    },
+    {
+      "file": "Системный склероз.pdf",
+      "sha256": "2d98515224a739aaa0361dbfe367e4aa58f0b590e83274ee21a6224b2576f30f",
+      "guideline_ids": [
+        "2126",
+        "912"
+      ],
+      "titles": [
+        "Системный склероз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Системный склероз.pdf"
+      ]
+    },
+    {
+      "file": "Сифилис.pdf",
+      "sha256": "1f2a282c08ecc19b77a8dcdd222448279f5c81474b63e720484dbffb9eaa6cac",
+      "guideline_ids": [
+        "1473",
+        "836",
+        "837"
+      ],
+      "titles": [
+        "Сифилис"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Сифилис.pdf"
+      ]
+    },
+    {
+      "file": "Тиреоидиты у детей.pdf",
+      "sha256": "7fa09993124c5e938f52046343b5126f58628144c376a4c732a4e3707e61270a",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Тиреоидиты у детей.pdf"
+      ]
+    },
+    {
+      "file": "Токсические и метаболические поражения нервной системы.pdf",
+      "sha256": "67fdb3d52d2cb746d6092046f8305ad5c32c0e52dea7e5281a0875346d5a7fcc",
+      "guideline_ids": [
+        "2117"
+      ],
+      "titles": [
+        "Токсические и метаболические поражения нервной системы"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Токсические и метаболические поражения нервной системы.pdf"
+      ]
+    },
+    {
+      "file": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf",
+      "sha256": "96f4f9ed8c8e7049bc58ef08d7ca76c228e59c686239565cfde693c722101a1d",
+      "guideline_ids": [
+        "1929"
+      ],
+      "titles": [
+        "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ])"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ]).pdf"
+      ]
+    },
+    {
+      "file": "Травма глаза закрытая.pdf",
+      "sha256": "3e2e560d46be73e49a917822429059f9a45aa2882fc6ecf662d3a8613732e2f7",
+      "guideline_ids": [
+        "1132",
+        "1607"
+      ],
+      "titles": [
+        "Травма глаза закрытая"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Травма глаза закрытая.pdf"
+      ]
+    },
+    {
+      "file": "Травма гортани.pdf",
+      "sha256": "a916e01c92a7adcdbaae438519b732ee1ccc398ccd512017381bcfe78d63ed03",
+      "guideline_ids": [
+        "1664"
+      ],
+      "titles": [
+        "Травма гортани"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Травма гортани.pdf"
+      ]
+    },
+    {
+      "file": "Травма носа.pdf",
+      "sha256": "d5057ca3a9ed99c19d597e1f3974f7abc589337c90858b7a35311f81c18c24d6",
+      "guideline_ids": [
+        "1667"
+      ],
+      "titles": [
+        "Травма носа"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Травма носа.pdf"
+      ]
+    },
+    {
+      "file": "Трансплантация поджелудочной железы, наличие трансплантированной поджелудочной железы, отмирание и отторжение трансплантата поджелудочной железы.pdf",
+      "sha256": "0aea33725ddf37db52010e9872ea61d0948bf2ea9c032feeba44a99cec1a7050",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Трансплантация поджелудочной железы, наличие трансплантированной поджелудочной железы, отмирание и отторжение трансплантата поджелудочной железы.pdf",
+        "C:\\clinrec_downloader\\downloads_other\\Трансплантация поджелудочной железы, наличие трансплантированной поджелудочной железы, отмирание и отторжение трансплантата поджелудочной железы.pdf"
+      ]
+    },
+    {
+      "file": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf",
+      "sha256": "c76c58fc21a764a3b689c7f05b7d45d5881441da154ad281ecb427ee578f3bb7",
+      "guideline_ids": [
+        "1950"
+      ],
+      "titles": [
+        "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки.pdf"
+      ]
+    },
+    {
+      "file": "Трехпредсердное сердце.pdf",
+      "sha256": "da7dae383c3903a39bf41cc2da3ca76ee684f12175110ab8018ac86e24ddcbda",
+      "guideline_ids": [
+        "1440"
+      ],
+      "titles": [
+        "Трехпредсердное сердце"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Трехпредсердное сердце.pdf"
+      ]
+    },
+    {
+      "file": "Туберкулез у взрослых.pdf",
+      "sha256": "9966142b8844e4c2c748c12a5ca3506a6a34d0df541e961a7b44072878b8c496",
+      "guideline_ids": [
+        "1347",
+        "1464",
+        "2142",
+        "943"
+      ],
+      "titles": [
+        "Туберкулез у взрослых"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Туберкулез у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Туберкулез у детей.pdf",
+      "sha256": "b161a292485acd905c432c4d92e2a5770f0f5101974e302774637dbaa8d9e9b9",
+      "guideline_ids": [
+        "1362",
+        "1556",
+        "359"
+      ],
+      "titles": [
+        "Туберкулез у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Туберкулез у детей.pdf"
+      ]
+    },
+    {
+      "file": "Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf",
+      "sha256": "b8a525c56b01e63620e20e7c07a9899e74ba1d0f5ec1f31dd7215f675228eade",
+      "guideline_ids": [
+        "1126",
+        "1474"
+      ],
+      "titles": [
+        "Урогенитальные заболевания, вызванные Mycoplasma genitalium"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Урогенитальные заболевания, вызванные Mycoplasma genitalium.pdf"
+      ]
+    },
+    {
+      "file": "Урогенитальный трихомониаз.pdf",
+      "sha256": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b",
+      "guideline_ids": [
+        "1175",
+        "1475",
+        "872"
+      ],
+      "titles": [
+        "Урогенитальный трихомониаз"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Урогенитальный трихомониаз.pdf"
+      ]
+    },
+    {
+      "file": "Уропатия, обусловленная пузырно-мочеточниковым рефлюксом.pdf",
+      "sha256": "da8916762190929f8ada367bf7d088390fc2671be71e6451ec01efb7f25934d2",
+      "guideline_ids": [
+        "2182"
+      ],
+      "titles": [
+        "Уропатия, обусловленная пузырно-мочеточниковым рефлюксом"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Уропатия, обусловленная пузырно-мочеточниковым рефлюксом.pdf"
+      ]
+    },
+    {
+      "file": "Фибрилляция и трепетание предсердий.pdf",
+      "sha256": "ce705410f89e2ca0a838df6a30645c8943b84c987c575c887abcd56f02e35040",
+      "guideline_ids": [
+        "2030"
+      ],
+      "titles": [
+        "Фибрилляция и трепетание предсердий"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Фибрилляция и трепетание предсердий.pdf"
+      ]
+    },
+    {
+      "file": "Фибрилляция и трепетание предсердий у взрослых.pdf",
+      "sha256": "fdb97e7b0fbdf90307ae2b83ac44d2f549eb9476da30b8ccaace7096bff2e0cb",
+      "guideline_ids": [
+        "888"
+      ],
+      "titles": [
+        "Фибрилляция и трепетание предсердий у взрослых "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Фибрилляция и трепетание предсердий у взрослых.pdf"
+      ]
+    },
+    {
+      "file": "Фолиеводефицитная анемия.pdf",
+      "sha256": "31d8c30f3a62c3be574dca86f5f2208c046283e808499885f598567d4599d257",
+      "guideline_ids": [
+        "1235",
+        "1696"
+      ],
+      "titles": [
+        "Фолиеводефицитная анемия"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Фолиеводефицитная анемия.pdf"
+      ]
+    },
+    {
+      "file": "Химический ожог пищевода.pdf",
+      "sha256": "24a8f44b5cb361cf45329ec8eae248cd297b0952a94aefb1591b70adc897efc8",
+      "guideline_ids": [
+        "1301",
+        "1682"
+      ],
+      "titles": [
+        "Химический ожог пищевода"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Химический ожог пищевода.pdf"
+      ]
+    },
+    {
+      "file": "Хирургические инфекции кожи и подкожной клетчатки у детей.pdf",
+      "sha256": "60af4f74996e32bc181b66059f65361ff3f5262b6db4ed8a47af60d88808a903",
+      "guideline_ids": [
+        "2173"
+      ],
+      "titles": [
+        "Хирургические инфекции кожи и подкожной клетчатки у детей"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хирургические инфекции кожи и подкожной клетчатки у детей.pdf"
+      ]
+    },
+    {
+      "file": "Хламидийная инфекция.pdf",
+      "sha256": "56123f20d4d50c1442e0d026e4faf87d516e5b483f069dd8713e80888190ac94",
+      "guideline_ids": [
+        "1476",
+        "834"
+      ],
+      "titles": [
+        "Хламидийная инфекция"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хламидийная инфекция.pdf"
+      ]
+    },
+    {
+      "file": "Хламидийная лимфогранулёма (венерическая).pdf",
+      "sha256": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381",
+      "guideline_ids": [
+        "1942"
+      ],
+      "titles": [
+        "Хламидийная лимфогранулёма (венерическая)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хламидийная лимфогранулёма (венерическая).pdf"
+      ]
+    },
+    {
+      "file": "Холецистит.pdf",
+      "sha256": "5e86a50798d70112e71754431975a7d4cfff6020fdc1f9b0d662437bda25eee9",
+      "guideline_ids": [
+        "1678"
+      ],
+      "titles": [
+        "Холецистит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Холецистит.pdf"
+      ]
+    },
+    {
+      "file": "Хроническая болезнь почек (ХБП).pdf",
+      "sha256": "910a6cd75bafaec68f1e1163c9540cd5b4c98fe1bdf4d904f3927332b1a50a36",
+      "guideline_ids": [
+        "1151",
+        "1661"
+      ],
+      "titles": [
+        "Хроническая болезнь почек (ХБП)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хроническая болезнь почек (ХБП).pdf"
+      ]
+    },
+    {
+      "file": "Хроническая болезнь почек.pdf",
+      "sha256": "6b0779acb48e988b8c88d50a62fd0bb728d5c03316a03765af3e4a22115417d0",
+      "guideline_ids": [
+        "1323",
+        "2014",
+        "820"
+      ],
+      "titles": [
+        "Хроническая болезнь почек"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хроническая болезнь почек.pdf"
+      ]
+    },
+    {
+      "file": "Хроническая обструктивная болезнь легких.pdf",
+      "sha256": "17ddc135109b0d22fc1c32a857e3aa346b8fec440d1064a17e3c47bac74cc11e",
+      "guideline_ids": [
+        "1142",
+        "1727",
+        "908"
+      ],
+      "titles": [
+        "Хроническая обструктивная болезнь легких "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хроническая обструктивная болезнь легких.pdf"
+      ]
+    },
+    {
+      "file": "Хроническая сердечная недостаточность.pdf",
+      "sha256": "832528762dd7e0979240fa0ef3efb3c7918e82b43ac3049137f2c38168ca1a84",
+      "guideline_ids": [
+        "1589"
+      ],
+      "titles": [
+        "Хроническая сердечная недостаточность "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "REVIEW_REQUIRED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Non-empty metadata abx_drugs flag, absent from P4.4 builder selection; clinical adjudication required.",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хроническая сердечная недостаточность.pdf"
+      ]
+    },
+    {
+      "file": "Хронический бронхит.pdf",
+      "sha256": "5aaee3339d73a80248ba0221c23cc811299441d320943c91d350891aeaba4473",
+      "guideline_ids": [
+        "1199",
+        "1825"
+      ],
+      "titles": [
+        "Хронический бронхит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хронический бронхит.pdf"
+      ]
+    },
+    {
+      "file": "Хронический вирусный гепатит B.pdf",
+      "sha256": "9124520ba783f143c6434719ad4db73d687e855b6b421d6fa823d3d71c54db9f",
+      "guideline_ids": [
+        "1828"
+      ],
+      "titles": [
+        "Хронический вирусный гепатит B"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хронический вирусный гепатит B.pdf"
+      ]
+    },
+    {
+      "file": "Хронический лимфоцитарный лейкоз _ лимфома из малых лимфоцитов.pdf",
+      "sha256": "ddffdd7baacf19f0a0c3b499979fabf04fecfff4ace319740e15b09ab38805fc",
+      "guideline_ids": [
+        "1859"
+      ],
+      "titles": [
+        "Хронический лимфоцитарный лейкоз /  лимфома из малых лимфоцитов"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Хронический лимфоцитарный лейкоз _ лимфома из малых лимфоцитов.pdf"
+      ]
+    },
+    {
+      "file": "Хронический синусит.pdf",
+      "sha256": "66aea8082fc74f26b16ee110db611194758847fc13f4cb82969320381ab8f8b0",
+      "guideline_ids": [
+        "2041"
+      ],
+      "titles": [
+        "Хронический синусит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хронический синусит.pdf"
+      ]
+    },
+    {
+      "file": "Хронический тонзиллит.pdf",
+      "sha256": "f26fb285017b77db6c7aa46cc66cd4996236b3b70b559f283df974deace63fdc",
+      "guideline_ids": [
+        "1268",
+        "1668"
+      ],
+      "titles": [
+        "Хронический тонзиллит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Хронический тонзиллит.pdf"
+      ]
+    },
+    {
+      "file": "Цирроз и фиброз печени.pdf",
+      "sha256": "5d0e3e7d67fe3be246ce8dd0d36a5dc02695084939bf108d4a46c7c633c42bc9",
+      "guideline_ids": [
+        "1326",
+        "1954"
+      ],
+      "titles": [
+        "Цирроз и фиброз печени"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Цирроз и фиброз печени.pdf"
+      ]
+    },
+    {
+      "file": "Цистит у женщин.pdf",
+      "sha256": "f561b85da4f1efad2336ac61c00713562d139724efd18d5ed24c840e9aa87719",
+      "guideline_ids": [
+        "1127",
+        "1643"
+      ],
+      "titles": [
+        "Цистит у женщин"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Цистит у женщин.pdf"
+      ]
+    },
+    {
+      "file": "Черепно-мозговая травма у детей.pdf",
+      "sha256": "7ff50457c9e6b1907cd1f3aa28a8a7b5a4f61da71f1f3c7a404c81ea43f5fd22",
+      "guideline_ids": [],
+      "titles": [],
+      "antibiotic_relevance": "P4_4_BUILDER_SELECTED_WITHOUT_ABX_DRUGS_FLAG",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Черепно-мозговая травма у детей.pdf"
+      ]
+    },
+    {
+      "file": "Шигеллез.pdf",
+      "sha256": "e636e93b72455caa88089b8a23a63d8c989bbce5112868bd6f6f2c3627794a94",
+      "guideline_ids": [
+        "1782"
+      ],
+      "titles": [
+        "Шигеллез"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Шигеллез.pdf"
+      ]
+    },
+    {
+      "file": "Экзема.pdf",
+      "sha256": "13c5a52f5a18c01083d3069357f91978f2eab0715b91670e494c2fddcc9587a6",
+      "guideline_ids": [
+        "1206",
+        "1508",
+        "877"
+      ],
+      "titles": [
+        "Экзема "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Экзема.pdf"
+      ]
+    },
+    {
+      "file": "Экстракраниальные герминогенные опухоли.pdf",
+      "sha256": "7e90a1106c9db4cc96f7fd6a421ce8fcf6e3711e79011fa914842e8d9b0436d5",
+      "guideline_ids": [
+        "1856"
+      ],
+      "titles": [
+        "Экстракраниальные герминогенные опухоли"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Экстракраниальные герминогенные опухоли.pdf"
+      ]
+    },
+    {
+      "file": "Энтероколит, вызванный Clostridioides difficile (C. difficile).pdf",
+      "sha256": "87e04643ea06c1c9400eadb87ecbaa477736e5dfe4f33a4b5e0985f7f049993c",
+      "guideline_ids": [
+        "1795"
+      ],
+      "titles": [
+        "Энтероколит, вызванный Clostridioides difficile (C. difficile)"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Энтероколит, вызванный Clostridioides difficile (C. difficile).pdf"
+      ]
+    },
+    {
+      "file": "Эритемы.pdf",
+      "sha256": "7145c414b97514822be8879c552a3729b71453dc26652db6496722bee790956a",
+      "guideline_ids": [
+        "1943"
+      ],
+      "titles": [
+        "Эритемы"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Эритемы.pdf"
+      ]
+    },
+    {
+      "file": "Эритразма.pdf",
+      "sha256": "34f842f812126f2bd5d69ce2bb141f7d808e989fc453181d84e0b05b1cf86158",
+      "guideline_ids": [
+        "1368",
+        "2020",
+        "715"
+      ],
+      "titles": [
+        "Эритразма"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Эритразма.pdf"
+      ]
+    },
+    {
+      "file": "Юношеский артрит с системным началом.pdf",
+      "sha256": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314",
+      "guideline_ids": [
+        "1163",
+        "1164",
+        "1861"
+      ],
+      "titles": [
+        "Юношеский артрит с системным началом "
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Юношеский артрит с системным началом.pdf"
+      ]
+    },
+    {
+      "file": "Юношеский артрит.pdf",
+      "sha256": "e892418f96dd2c99203b613645a8d974807d2823eb50a46d119e64376a0e3a85",
+      "guideline_ids": [
+        "1863"
+      ],
+      "titles": [
+        "Юношеский артрит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Юношеский артрит.pdf"
+      ]
+    },
+    {
+      "file": "Язвенная болезнь желудка и_или двенадцатиперстной кишки.pdf",
+      "sha256": "e30b05e350ebd05c7f9b6d6420d81cc9cd2b126a4e2ef313019458648b503952",
+      "guideline_ids": [
+        "1266",
+        "1583"
+      ],
+      "titles": [
+        "Язвенная болезнь желудка и/или двенадцатиперстной кишки"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Язвенная болезнь желудка и_или двенадцатиперстной кишки.pdf"
+      ]
+    },
+    {
+      "file": "Язвенная болезнь.pdf",
+      "sha256": "046f35ed97464c5591b783dbc507a78564db563dbc4d86f8e8a1bbefa3e59bdf",
+      "guideline_ids": [
+        "1831",
+        "794"
+      ],
+      "titles": [
+        "Язвенная болезнь"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\downloads_active\\Язвенная болезнь.pdf"
+      ]
+    },
+    {
+      "file": "Язвенный колит.pdf",
+      "sha256": "5bc39b4a901c4ae087b30b95539116f91fd16d882b11d993be27a8382592d459",
+      "guideline_ids": [
+        "1296",
+        "1466",
+        "1835",
+        "1836"
+      ],
+      "titles": [
+        "Язвенный колит"
+      ],
+      "antibiotic_relevance": "METADATA_ABX_DRUGS_NONEMPTY",
+      "inclusion_state": "INCLUDED",
+      "exclusion_reason": null,
+      "reviewer": null,
+      "evidence": "Present in P4.4 builder selection (downloads_active/archive_review).",
+      "date": "2026-07-15T12:27:12.394812+00:00",
+      "source_locations": [
+        "C:\\clinrec_downloader\\archive_review\\Язвенный колит.pdf"
+      ]
+    }
+  ],
+  "summary": {
+    "total": 250,
+    "included": 192,
+    "review_required": 58,
+    "excluded": 0
+  }
+}

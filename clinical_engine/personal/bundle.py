@@ -193,6 +193,54 @@ def register_owner(
     return load_owner_profile(root / "owner_profile.json"), raw_token
 
 
+def recover_unactivated_owner(
+    local_dir: str | Path,
+    *,
+    owner_id: str,
+    display_name: str,
+    professional_role: str,
+    organisation: str,
+    registered_at: str | None = None,
+) -> tuple[OwnerProfile, str]:
+    """Replace a lost-token profile only before any clinical approval exists."""
+    root = Path(local_dir).resolve()
+    profile_path = root / "owner_profile.json"
+    if not profile_path.is_file():
+        raise PersonalModeError("OWNER_NOT_REGISTERED", "owner profile does not exist")
+    protected = [
+        root / "owner_attestations.jsonl",
+        root / "active_bundle.json",
+        root / "request_audit.jsonl",
+    ]
+    protected.extend(root.glob("personal_physician_bundle_*.json"))
+    if any(path.exists() for path in protected):
+        raise PersonalModeError(
+            "OWNER_RECOVERY_FORBIDDEN",
+            "owner recovery is allowed only before attestations, bundles, or request audit exist",
+        )
+
+    raw_token = secrets.token_urlsafe(32)
+    raw = {
+        "owner_id": _nonempty_argument(owner_id, "owner_id"),
+        "display_name": _nonempty_argument(display_name, "display_name"),
+        "professional_role": _nonempty_argument(professional_role, "professional_role"),
+        "organisation": _nonempty_argument(organisation, "organisation"),
+        "registered_at": registered_at or datetime.now(timezone.utc).isoformat(),
+        "active": True,
+        "mode_token_sha256": sha256_text(raw_token),
+        "request_audit_local": True,
+        "request_audit_append_only": True,
+        "persist_patient_data": False,
+    }
+    temporary = profile_path.with_suffix(".recovery.tmp")
+    temporary.write_text(
+        json.dumps(raw, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    os.replace(temporary, profile_path)
+    return load_owner_profile(profile_path), raw_token
+
+
 def attest(
     local_dir: str | Path,
     *,
@@ -673,5 +721,5 @@ def _strings(raw: Mapping[str, Any], key: str, *, nonempty: bool = False) -> tup
 __all__ = [
     "SCHEMA_VERSION", "attest", "build_personal_bundle", "compute_owner_signature", "compute_payload_sha256",
     "load_owner_profile", "load_personal_bundle", "load_personal_service",
-    "register_owner", "sha256_text",
+    "recover_unactivated_owner", "register_owner", "sha256_text",
 ]

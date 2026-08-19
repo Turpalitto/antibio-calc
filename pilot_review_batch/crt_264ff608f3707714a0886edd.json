@@ -1,0 +1,141 @@
+{
+  "task": {
+    "task_id": "crt_264ff608f3707714a0886edd",
+    "task_key": "TherapeuticOption|opt_5770|1|THERAPEUTIC_OPTION_VALIDATION",
+    "target_type": "TherapeuticOption",
+    "target_id": "opt_5770",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1319",
+        "page": "73",
+        "pdf": "Инородное тело в пищеварительном тракте.pdf",
+        "source_quote": "Цефазолин** (J01DB - другие бета-лактамные антибактериальные препараты,  цефалоспорины 1-го поколения)  Профилактика хирургических инфекций в пред- и послеоперационном периоде. Дозировка согласно инструкии по применению лекарственного препарата для медицинского применения. Противопоказан в периоде новорожденности. Коррекция терапии проводится с учетом конкретной клинической ситуации."
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "indication",
+        "scope": "regimen",
+        "source_document": "Инородное тело в пищеварительном тракте.pdf",
+        "source_location": "page 73",
+        "source_object_id": "5770",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "therapeutic_class",
+        "scope": "regimen",
+        "source_document": "Инородное тело в пищеварительном тракте.pdf",
+        "source_location": "page 73",
+        "source_object_id": "5770",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "alternatives": [],
+    "approved_at": "",
+    "approved_by": "",
+    "contraindications": [],
+    "field_provenance": [
+      [
+        "indication",
+        {
+          "scope": "regimen",
+          "source_document": "Инородное тело в пищеварительном тракте.pdf",
+          "source_location": "page 73",
+          "source_object_id": "5770",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "therapeutic_class",
+        {
+          "scope": "regimen",
+          "source_document": "Инородное тело в пищеварительном тракте.pdf",
+          "source_location": "page 73",
+          "source_object_id": "5770",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "guideline_id": "1319",
+    "indication": "Профилактика хирургических инфекций в пред- и послеоперационном периоде",
+    "lifecycle_state": "ASSEMBLED",
+    "option_id": "opt_5770",
+    "origin_category": "A_therapeutic_class_recommendation",
+    "origin_regimen_id": "5770",
+    "review_status": "pending",
+    "selection_conditions": "UNKNOWN",
+    "source": "Инородное тело в пищеварительном тракте.pdf",
+    "source_page": "73",
+    "source_quote": "Цефазолин** (J01DB - другие бета-лактамные антибактериальные препараты,  цефалоспорины 1-го поколения)  Профилактика хирургических инфекций в пред- и послеоперационном периоде. Дозировка согласно инструкии по применению лекарственного препарата для медицинского применения. Противопоказан в периоде новорожденности. Коррекция терапии проводится с учетом конкретной клинической ситуации.",
+    "status": "ASSEMBLED",
+    "therapeutic_class": "Цефазолин",
+    "version": 1
+  },
+  "original_source_wording": [
+    "Цефазолин** (J01DB - другие бета-лактамные антибактериальные препараты,  цефалоспорины 1-го поколения)  Профилактика хирургических инфекций в пред- и послеоперационном периоде. Дозировка согласно инструкии по применению лекарственного препарата для медицинского применения. Противопоказан в периоде новорожденности. Коррекция терапии проводится с учетом конкретной клинической ситуации."
+  ],
+  "source_references": [
+    {
+      "guideline_id": "1319",
+      "page": "73",
+      "pdf": "Инородное тело в пищеварительном тракте.pdf",
+      "source_quote": "Цефазолин** (J01DB - другие бета-лактамные антибактериальные препараты,  цефалоспорины 1-го поколения)  Профилактика хирургических инфекций в пред- и послеоперационном периоде. Дозировка согласно инструкии по применению лекарственного препарата для медицинского применения. Противопоказан в периоде новорожденности. Коррекция терапии проводится с учетом конкретной клинической ситуации."
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "indication",
+      "scope": "regimen",
+      "source_document": "Инородное тело в пищеварительном тракте.pdf",
+      "source_location": "page 73",
+      "source_object_id": "5770",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "therapeutic_class",
+      "scope": "regimen",
+      "source_document": "Инородное тело в пищеварительном тракте.pdf",
+      "source_location": "page 73",
+      "source_object_id": "5770",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "dc5789ad7205c199d61fa856b113fddda552ad7a6bc2a2da6a8f15c14e25a2bc",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

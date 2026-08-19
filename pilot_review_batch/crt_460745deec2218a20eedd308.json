@@ -1,0 +1,144 @@
+{
+  "task": {
+    "task_id": "crt_460745deec2218a20eedd308",
+    "task_key": "TherapeuticOption|opt_7369|1|THERAPEUTIC_OPTION_VALIDATION",
+    "target_type": "TherapeuticOption",
+    "target_id": "opt_7369",
+    "target_version": 1,
+    "priority_score": 40,
+    "priority": "MEDIUM",
+    "issue_type": "THERAPEUTIC_OPTION_VALIDATION",
+    "severity": "MEDIUM",
+    "safety_axes": [],
+    "source_references": [
+      {
+        "guideline_id": "1923",
+        "page": "15",
+        "pdf": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+        "source_quote": "С целью предотвращения инфекционных заболеваний глаз у новорожденного рекомендуется использование эритромицина в виде глазной мази [39–41]. Комментарии: После протирания каждого века глазная мазь, содержащая эритромицин (в индивидуальной упаковке) помещается в каждый нижний конъюнктивальный мешок в виде полосы длиной 0,5 - 1 см. Препарат следует наносить с легким массажем век, а избыток мази можно стереть спустя одну минуту."
+      }
+    ],
+    "provenance_references": [
+      {
+        "field": "indication",
+        "scope": "regimen",
+        "source_document": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+        "source_location": "page 15",
+        "source_object_id": "7369",
+        "source_store": "normalized_regimens"
+      },
+      {
+        "field": "therapeutic_class",
+        "scope": "regimen",
+        "source_document": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+        "source_location": "page 15",
+        "source_object_id": "7369",
+        "source_store": "normalized_regimens"
+      }
+    ],
+    "lifecycle_state": "PENDING",
+    "assigned_reviewer": "",
+    "second_reviewer": "",
+    "adjudicator": "",
+    "decision": "",
+    "reason_codes": [
+      "missing_metadata:20"
+    ],
+    "comments": "",
+    "created_at": "2026-07-15T13:10:44.290097+00:00",
+    "claimed_at": "",
+    "completed_at": "",
+    "revision": 0,
+    "audit_history": []
+  },
+  "normalized_object": {
+    "alternatives": [],
+    "approved_at": "",
+    "approved_by": "",
+    "contraindications": [
+      "{'pregnancy_re': 'беремен|pregnan|гестаци', 'lactation_re': 'лактаци|грудн\\\\w* вскарм|breastfeed|lactat'}",
+      "{'renal_re': 'почечн|ренальн|crcl|кк|клиренс|gfr|скорость клубочков|creatinine', 'hemodialysis_re': 'гемодиализ|hemodialysis|гд\\\\b', 'peritoneal_re': 'перитонеальн.*диализ|peritoneal.*dialysis|пд\\\\b'}"
+    ],
+    "field_provenance": [
+      [
+        "indication",
+        {
+          "scope": "regimen",
+          "source_document": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+          "source_location": "page 15",
+          "source_object_id": "7369",
+          "source_store": "normalized_regimens"
+        }
+      ],
+      [
+        "therapeutic_class",
+        {
+          "scope": "regimen",
+          "source_document": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+          "source_location": "page 15",
+          "source_object_id": "7369",
+          "source_store": "normalized_regimens"
+        }
+      ]
+    ],
+    "guideline_id": "1923",
+    "indication": "Профилактика инфекционных заболеваний глаз у новорожденного",
+    "lifecycle_state": "ASSEMBLED",
+    "option_id": "opt_7369",
+    "origin_category": "A_therapeutic_class_recommendation",
+    "origin_regimen_id": "7369",
+    "review_status": "pending",
+    "selection_conditions": "UNKNOWN",
+    "source": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+    "source_page": "15",
+    "source_quote": "С целью предотвращения инфекционных заболеваний глаз у новорожденного рекомендуется использование эритромицина в виде глазной мази [39–41]. Комментарии: После протирания каждого века глазная мазь, содержащая эритромицин (в индивидуальной упаковке) помещается в каждый нижний конъюнктивальный мешок в виде полосы длиной 0,5 - 1 см. Препарат следует наносить с легким массажем век, а избыток мази можно стереть спустя одну минуту.",
+    "status": "ASSEMBLED",
+    "therapeutic_class": "эритромицин в виде глазной мази",
+    "version": 1
+  },
+  "original_source_wording": [
+    "С целью предотвращения инфекционных заболеваний глаз у новорожденного рекомендуется использование эритромицина в виде глазной мази [39–41]. Комментарии: После протирания каждого века глазная мазь, содержащая эритромицин (в индивидуальной упаковке) помещается в каждый нижний конъюнктивальный мешок в виде полосы длиной 0,5 - 1 см. Препарат следует наносить с легким массажем век, а избыток мази можно стереть спустя одну минуту."
+  ],
+  "source_references": [
+    {
+      "guideline_id": "1923",
+      "page": "15",
+      "pdf": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+      "source_quote": "С целью предотвращения инфекционных заболеваний глаз у новорожденного рекомендуется использование эритромицина в виде глазной мази [39–41]. Комментарии: После протирания каждого века глазная мазь, содержащая эритромицин (в индивидуальной упаковке) помещается в каждый нижний конъюнктивальный мешок в виде полосы длиной 0,5 - 1 см. Препарат следует наносить с легким массажем век, а избыток мази можно стереть спустя одну минуту."
+    }
+  ],
+  "field_level_provenance": [
+    {
+      "field": "indication",
+      "scope": "regimen",
+      "source_document": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+      "source_location": "page 15",
+      "source_object_id": "7369",
+      "source_store": "normalized_regimens"
+    },
+    {
+      "field": "therapeutic_class",
+      "scope": "regimen",
+      "source_document": "Здоровый новорожденный, рожденный в условиях стационара.pdf",
+      "source_location": "page 15",
+      "source_object_id": "7369",
+      "source_store": "normalized_regimens"
+    }
+  ],
+  "prior_versions": [],
+  "detected_conflicts": [],
+  "validation_failures": [],
+  "decision_options": [
+    "ACCEPT",
+    "ACCEPT_WITH_NOTE",
+    "REJECT_FIDELITY",
+    "REJECT_CLINICAL",
+    "NEEDS_INFO",
+    "ABSTAIN"
+  ],
+  "unsupported_checks": {
+    "drug_interactions": "NOT AVAILABLE / UNSATISFIABLE"
+  },
+  "snapshot_hash": "bbf3188fb6995cec4cda0969eb582721ba58342facf2b54a849cca2eee0e9a42",
+  "_rc027_note": "original_source_wording recovered from normalized_object.source_quote — see RC-027 (ReviewService.packet() defect)"
+}

@@ -17,10 +17,10 @@
         "ВП",
         "community-acquired pneumonia"
       ],
-      "cr_id": "654",
+      "cr_id": "654_2",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/654",
+      "cr_updated": "2024-12-23",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/654_2",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённая или клинически вероятная ВП"
@@ -328,10 +328,10 @@
       "synonyms": [
         "пневмония детская"
       ],
-      "cr_id": "714",
-      "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/714",
+      "cr_id": "714_2",
+      "cr_year": 2025,
+      "cr_updated": "2025-09-08",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/714_2",
       "antibiotics_indicated": true,
       "indications": [
         "ВП с подтверждённой бактериальной этиологией или тяжёлым течением"
@@ -493,10 +493,10 @@
         "ОБОХОБЛ",
         "обострение ХОБЛ"
       ],
-      "cr_id": "603",
+      "cr_id": "603_3",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/603",
+      "cr_updated": "2024-12-17",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/603_3",
       "antibiotics_indicated": true,
       "indications": [
         "Обострение с увеличением гнойности мокроты и/или одышки"
@@ -628,10 +628,13 @@
         "ОРС",
         "риносинусит"
       ],
-      "cr_id": "313",
-      "cr_year": 2021,
-      "cr_updated": "2021",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/313",
+      "cr_id": "313_3",
+      "cr_year": 2024,
+      "cr_updated": "2024-10-28",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/313_3",
+      "source_verification_status": "CURRENT_WEB_CONFIRMED_PDF_PENDING",
+      "calculation_blocked": true,
+      "calculation_block_reason": "Официальная редакция КР 313_3 (2024) подтверждена в рубрикаторе, но полный PDF и точные извлечённые схемы ещё не закреплены SHA-256. Старые схемы КР 313/2021 заблокированы.",
       "antibiotics_indicated": true,
       "indications": [
         "Сохранение симптомов >10 дней",
@@ -738,10 +741,13 @@
         "синусит у детей",
         "ОРС у детей"
       ],
-      "cr_id": "313",
-      "cr_year": 2021,
-      "cr_updated": "2021",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/313",
+      "cr_id": "313_3",
+      "cr_year": 2024,
+      "cr_updated": "2024-10-28",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/313_3",
+      "source_verification_status": "CURRENT_WEB_CONFIRMED_PDF_PENDING",
+      "calculation_blocked": true,
+      "calculation_block_reason": "Официальная редакция КР 313_3 (2024) подтверждена в рубрикаторе, но полный PDF и точные извлечённые схемы ещё не закреплены SHA-256. Старые схемы КР 313/2021 заблокированы.",
       "antibiotics_indicated": true,
       "indications": [
         "Сохранение симптомов >10 дней",
@@ -821,10 +827,13 @@
         "БГСА",
         "стрептококковый тонзиллит"
       ],
-      "cr_id": "306",
+      "cr_id": "306_3",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/306",
+      "cr_updated": "2024-10-31",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/306_3",
+      "source_verification_status": "EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW",
+      "calculation_blocked": true,
+      "calculation_block_reason": "КР 306_3 подтверждена, но текущие схемы калькулятора отличаются от таблиц КР. Расчёт закрыт до привязки и врачебной проверки извлечённых кандидатов.",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённый экспресс-тестом или посевом БГСА-тонзиллит"
@@ -989,10 +998,13 @@
         "ангина у детей",
         "БГСА у детей"
       ],
-      "cr_id": "306",
+      "cr_id": "306_3",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/306",
+      "cr_updated": "2024-10-31",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/306_3",
+      "source_verification_status": "EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW",
+      "calculation_blocked": true,
+      "calculation_block_reason": "КР 306_3 подтверждена, но текущие схемы калькулятора отличаются от таблиц КР. Расчёт закрыт до привязки и врачебной проверки извлечённых кандидатов.",
       "antibiotics_indicated": true,
       "indications": [
         "Подтверждённый БГСА-тонзиллит у детей старше 3 лет"
@@ -1144,11 +1156,11 @@
     },
     {
       "id": "aom_child",
+      "source_verification_status": "CALCULATOR_BOUND_VERIFIED",
       "mkb10": [
-        "H66.0",
-        "H66.1",
-        "H66.4",
-        "H66.9"
+        "H65.0",
+        "H65.1",
+        "H66.0"
       ],
       "name": "Острый средний отит у детей",
       "synonyms": [
@@ -1156,15 +1168,17 @@
         "отит",
         "средний отит"
       ],
-      "cr_id": "314",
+      "cr_id": "314_3",
       "cr_year": 2024,
-      "cr_updated": "2024",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/314",
+      "cr_updated": "2024-10-28",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/314_3",
       "antibiotics_indicated": true,
       "indications": [
-        "Дети <2 лет с двусторонним ОСО",
-        "Дети <2 лет с односторонним ОСО и лихорадкой ≥39°C или выраженным болевым синдромом",
-        "Дети ≥2 лет при тяжёлом течении или отсутствии улучшения в течение 48-72 часов"
+        "Все дети младше 2 лет при наличии клинических признаков ОСО",
+        "Гнойная форма ОСО независимо от возраста",
+        "Сохранение симптомов ОСО 72 часа и более",
+        "Рецидивирующее течение: ≥3 эпизодов за 6 месяцев или ≥4 за 12 месяцев",
+        "Сопутствующая патология высокого риска или невозможность динамического наблюдения"
       ],
       "age_groups": [
         "child"
@@ -1188,73 +1202,93 @@
                   "regimens": [
                     {
                       "age_group": "child",
-                      "dose_mg_kg_day": 90,
-                      "dose_mg_day_fixed": null,
-                      "single_dose_mg": null,
-                      "max_daily_mg": 3000,
-                      "freq_per_day": 2,
-                      "duration_days": "5-7",
-                      "duration_note": "10 дней для детей <2 лет, с факторами риска или рецидивом"
-                    },
-                    {
-                      "age_group": "child",
                       "dose_mg_kg_day": 60,
+                      "dose_range_mg_kg_day": [
+                        50,
+                        60
+                      ],
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
                       "max_daily_mg": 3000,
                       "freq_per_day": 3,
-                      "duration_days": "5-7",
-                      "duration_note": "Стандартная доза, альтернативный режим"
+                      "duration_days": "7-10",
+                      "duration_note": "Расчёт по верхней границе стандартного диапазона 50-60 мг/кг/сут; КР допускает 2-3 приёма. Более длительный курс показан детям <2 лет, при оторее и сопутствующих заболеваниях.",
+                      "regimen_label": "Стандарт: 60 мг/кг/сут в 3 приёма"
+                    },
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 50,
+                      "dose_range_mg_kg_day": [
+                        50,
+                        60
+                      ],
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "Расчёт по нижней границе стандартного диапазона 50-60 мг/кг/сут; КР допускает 2-3 приёма.",
+                      "regimen_label": "Стандарт: 50 мг/кг/сут в 2 приёма"
                     }
                   ]
                 }
               ]
             },
             {
-              "line_number": 1,
-              "line_label": "При недавнем приёме АБ (≤3 мес) или гнойном конъюнктивите",
+              "line_number": 2,
+              "line_label": "Первая линия при высоком риске устойчивого пневмококка",
+              "drugs": [
+                {
+                  "drug_ref": "amoxicillin",
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": "Повышенная доза при высоком риске устойчивости; суточная доза указана в комментарии КР",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 90,
+                      "dose_range_mg_kg_day": [
+                        80,
+                        90
+                      ],
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 3000,
+                      "freq_per_day": 3,
+                      "duration_days": "7-10",
+                      "duration_note": "КР указывает 80-90 мг/кг/сут; деление на 3 приёма выбрано в пределах режима 2-3 приёма из таблицы 4.",
+                      "regimen_label": "Высокий риск: 90 мг/кг/сут в 3 приёма"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 3,
+              "line_label": "Вторая линия: нет эффекта через 3 дня / риск бета-лактамаз",
               "drugs": [
                 {
                   "drug_ref": "amoxiclav",
                   "route": [
                     "per_os"
                   ],
-                  "indication_note": "Покрытие бета-лактамазопродуцирующих H.influenzae, M.catarrhalis",
+                  "indication_note": "Пероральная вторая линия; диапазон из таблицы 4",
                   "regimens": [
                     {
                       "age_group": "child",
-                      "dose_mg_kg_day": 90,
+                      "dose_mg_kg_day": 45,
+                      "dose_range_mg_kg_day": [
+                        40,
+                        45
+                      ],
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
-                      "max_daily_mg": 3000,
-                      "freq_per_day": 2,
-                      "duration_days": "5-10",
-                      "duration_note": "Доза по амоксициллину. Форма 7:1 или 14:1 (ES)"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "line_number": 0,
-              "line_label": "Альтернатива при аллергии к бета-лактамам (не I типа)",
-              "drugs": [
-                {
-                  "drug_ref": "cefdinir",
-                  "route": [
-                    "per_os"
-                  ],
-                  "indication_note": "Цефалоспорин III поколения",
-                  "regimens": [
-                    {
-                      "age_group": "child",
-                      "dose_mg_kg_day": 14,
-                      "dose_mg_day_fixed": null,
-                      "single_dose_mg": null,
-                      "max_daily_mg": 600,
-                      "freq_per_day": 1,
-                      "duration_days": "5-10",
-                      "duration_note": null
+                      "max_daily_mg": null,
+                      "freq_per_day": 3,
+                      "duration_days": "7-10",
+                      "duration_note": "Расчёт по верхней границе диапазона; КР допускает 2-3 приёма. Связь с пищей: в начале приёма пищи.",
+                      "regimen_label": "Амоксициллин/клавуланат: 45 мг/кг/сут в 3 приёма"
                     }
                   ]
                 },
@@ -1263,7 +1297,7 @@
                   "route": [
                     "per_os"
                   ],
-                  "indication_note": null,
+                  "indication_note": "Вторая линия после неэффективности амоксициллина; также при лёгкой непереносимости пенициллинов",
                   "regimens": [
                     {
                       "age_group": "child",
@@ -1272,33 +1306,61 @@
                       "single_dose_mg": null,
                       "max_daily_mg": 400,
                       "freq_per_day": 1,
-                      "duration_days": "5-10",
-                      "duration_note": null
+                      "duration_days": "7-10",
+                      "duration_note": "КР: 8 мг/кг/сут в 1 приём; детям <12 лет и <40 кг — суспензия/диспергируемая форма.",
+                      "regimen_label": "Цефиксим: 8 мг/кг/сут в 1 приём"
                     }
                   ]
                 }
               ]
             },
             {
-              "line_number": 0,
-              "line_label": "Альтернатива при аллергии I типа (анафилаксия)",
+              "line_number": 4,
+              "line_label": "Лёгкая непереносимость пенициллинов (не анафилактическая)",
               "drugs": [
                 {
-                  "drug_ref": "azithromycin",
+                  "drug_ref": "cefuroxime",
                   "route": [
                     "per_os"
                   ],
-                  "indication_note": null,
+                  "indication_note": "Цефуроксим внутрь; детям до 3 лет только гранулы для суспензии",
                   "regimens": [
                     {
                       "age_group": "child",
-                      "dose_mg_kg_day": 10,
+                      "dose_mg_kg_day": 30,
                       "dose_mg_day_fixed": null,
                       "single_dose_mg": null,
                       "max_daily_mg": 500,
-                      "freq_per_day": 1,
-                      "duration_days": "3-5",
-                      "duration_note": null
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "Сразу после еды.",
+                      "regimen_label": "Цефуроксим: 30 мг/кг/сут в 2 приёма"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "line_number": 5,
+              "line_label": "Непереносимость пенициллинов и цефалоспоринов",
+              "drugs": [
+                {
+                  "drug_ref": "clarithromycin",
+                  "route": [
+                    "per_os"
+                  ],
+                  "indication_note": "Третья линия; макролид только при непереносимости обеих групп бета-лактамов",
+                  "regimens": [
+                    {
+                      "age_group": "child",
+                      "dose_mg_kg_day": 15,
+                      "dose_mg_day_fixed": null,
+                      "single_dose_mg": null,
+                      "max_daily_mg": 1000,
+                      "freq_per_day": 2,
+                      "duration_days": "7-10",
+                      "duration_note": "Для ОСО в КР указаны гранулы для суспензии 125 мг/5 мл и 250 мг/5 мл.",
+                      "regimen_label": "Кларитромицин: 15 мг/кг/сут в 2 приёма"
                     }
                   ]
                 }
@@ -1321,10 +1383,10 @@
         "средний отит",
         "otitis media"
       ],
-      "cr_id": "314_2",
+      "cr_id": "314_3",
       "cr_year": 2024,
-      "cr_updated": "2024-10-29",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/314_2",
+      "cr_updated": "2024-10-28",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/314_3",
       "antibiotics_indicated": true,
       "indications": [
         "Антибактериальная терапия по КР"
@@ -1733,9 +1795,9 @@
         "tuberculosis"
       ],
       "cr_id": "16_4",
-      "cr_year": 2024,
-      "cr_updated": "2024-05-14",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/16_4",
+      "cr_year": 2026,
+      "cr_updated": "2026-01-16",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/16_4",
       "antibiotics_indicated": true,
       "indications": [
         "Впервые выявленный лекарственно-чувствительный ТБ. Лечение — ТОЛЬКО под контролем фтизиатра (DOT). Интенсивная фаза 2 мес: H+R+Z+E."

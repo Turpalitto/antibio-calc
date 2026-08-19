@@ -1,0 +1,10 @@
+{
+  "infer_time_sec": 0.18,
+  "detections": [
+    {
+      "label": "table rotated",
+      "score": 0.727
+    }
+  ],
+  "exit_status": "OK"
+}

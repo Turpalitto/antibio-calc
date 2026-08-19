@@ -19,10 +19,10 @@
         "укус кошки",
         "пастереллёз"
       ],
-      "cr_id": "62",
+      "cr_id": "—",
       "cr_year": 2023,
       "cr_updated": "2023-08-25",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/62",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Все укусы кошек (высокий риск инфекции)",
@@ -185,10 +185,10 @@
         "профилактика ИЛО",
         "антибиотикопрофилактика хирургии"
       ],
-      "cr_id": "75",
+      "cr_id": "—",
       "cr_year": 2024,
       "cr_updated": "2024-04-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/75",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Чистые и условно-чистые хирургические вмешательства"
@@ -351,8 +351,8 @@
       ],
       "cr_id": "54_3",
       "cr_year": 2026,
-      "cr_updated": "2026",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/54_3",
+      "cr_updated": "2026-01-14",
+      "source_url": "https://cr.minzdrav.gov.ru/view-cr/54_3",
       "antibiotics_indicated": true,
       "indications": [
         "Стоматологические процедуры у пациентов высокого риска (протезы клапанов, ИЭ в анамнезе, врождённые пороки)",
@@ -489,10 +489,10 @@
         "профилактика при удалённой селезёнке",
         "asplenia"
       ],
-      "cr_id": "326",
+      "cr_id": "—",
       "cr_year": 2023,
       "cr_updated": "2023-07-01",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/326",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "Аспления (после спленэктомии или функциональная)",
@@ -587,10 +587,10 @@
         "профилактика ИМП",
         "рецидивирующий цистит"
       ],
-      "cr_id": "10",
+      "cr_id": "—",
       "cr_year": 2023,
       "cr_updated": "2023-09-15",
-      "source_url": "https://cr.minzdrav.gov.ru/recomend/10",
+      "source_url": "https://cr.minzdrav.gov.ru/rubricator",
       "antibiotics_indicated": true,
       "indications": [
         "≥2 эпизода ИМП в 6 месяцев или ≥3 в год"
