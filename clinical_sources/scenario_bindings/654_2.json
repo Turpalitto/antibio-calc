@@ -1,0 +1,90 @@
+{
+  "artifact_type": "SCENARIO_DOSE_TABLE_BINDINGS",
+  "binding_version": "scenario-dose-row-1",
+  "bindings": [
+    {
+      "drug_ref": "amoxicillin",
+      "line_number": 1,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_out_no_risk",
+      "spec_row_index": 2
+    },
+    {
+      "drug_ref": "azithromycin",
+      "line_number": 2,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_out_no_risk",
+      "spec_row_index": 0
+    },
+    {
+      "drug_ref": "clarithromycin",
+      "line_number": 2,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_out_no_risk",
+      "spec_row_index": 9
+    },
+    {
+      "drug_ref": "amoxiclav",
+      "line_number": 1,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_out_comorbid",
+      "spec_row_index": 3
+    },
+    {
+      "drug_ref": "levofloxacin",
+      "line_number": 2,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_out_comorbid",
+      "spec_row_index": 11
+    },
+    {
+      "drug_ref": "moxifloxacin",
+      "line_number": 2,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_out_comorbid",
+      "spec_row_index": 15
+    },
+    {
+      "drug_ref": "amoxiclav",
+      "line_number": 1,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_in_mild",
+      "spec_row_index": 3
+    },
+    {
+      "drug_ref": "ceftriaxone",
+      "line_number": 1,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_in_mild",
+      "spec_row_index": 28
+    },
+    {
+      "drug_ref": "ceftriaxone",
+      "line_number": 1,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_in_severe",
+      "spec_row_index": 28
+    },
+    {
+      "drug_ref": "azithromycin",
+      "line_number": 1,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_in_severe",
+      "spec_row_index": 0
+    },
+    {
+      "drug_ref": "levofloxacin",
+      "line_number": 2,
+      "regimen_index": 0,
+      "scenario_id": "cap_adult_in_severe",
+      "spec_row_index": 11
+    }
+  ],
+  "calculation_blocked": true,
+  "cr_id": "654_2",
+  "created": "2026-09-02",
+  "disease_id": "cap_adult",
+  "expected_disease_sha256": "sha256:f903edfe6f37c9d96ff047123fc2844d325caaec84f6f05bcc1e1f282fb543d0",
+  "expected_spec_row_groups_sha256": "sha256:8588e96c5c15e43aae6a1e3f2e59a1f5f2bb7694bdcbd4617a08070813b77c0f",
+  "schema_version": "1.0.0"
+}

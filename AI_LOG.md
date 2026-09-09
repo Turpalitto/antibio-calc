@@ -1,4 +1,408 @@
+## 2026-09-02: Dose source-verification across all 120 nosologies (evidence-only, NOT physician attestation)
+
+- Re-ran src/pipeline/extraction/dose_verification.py over current db/antibio_db.json (120 recs) vs DOSA KB
+  (294 guides/2675 regimens proof-anchored). Result: diseases_total 120, regimens 479, **matched 243,
+  mismatched 113, uncomparable 123, no_kb_guideline 41**. Per-disease: verified(ALL_MATCH) 23,
+  verified_partial(MATCH_WITH_UNCOMPARABLE) 18, no_kb 41, mismatch(investigate) 38.
+- Root cause of the 113 mismatches (107 'fixed' basis): the DB stores DAILY dose (dose_mg_day_fixed) while
+  КР text often gives a SINGLE/reference dose (e.g. clindamycin 1200/day vs '300 мг', doxycycline 200/day vs
+  '100 мг', ciprofloxacin 400/day vs '400 мг', levofloxacin 500/day vs '500 мг'). These are representation
+  (daily vs per-dose) + chosen-alternative-variant, NOT dose errors. A few cross-unit cases (ceftriaxone 75mg/kg
+  vs '1,0-2,0 г', cefixime 800 vs '200 мг').
+- Report written to tmp/dose_verification_report_2026-09-02.md. Harness is machine EVIDENCE; agent NEVER sets
+  CALCULATOR_BOUND_VERIFIED (physician P5.6/P6 owner-only). No unblock, no commit.
+## 2026-09-02: aom_child — added high-dose IV amoxiclav (severe course)
+
+- User reported amoxiclav 10kg susp '400' gave 1.9 ml single dose; verified CORRECT (45 mg/kg/day standard,
+  10*45=450/3=150mg; 150/80mg/ml=1.875ml). Missing tier: the КР 314_3 increased/IV amoxiclav.
+- Added scenario 'aom_child_complicated' (Тяжёлое/осложнённое течение (в/в)) to aom_child in
+  db/diseases/respiratory.json: amoxiclav route ['iv'] 90 mg/kg/сут x3 (children 4-40kg; <4kg 60 mg/kg;
+  adults 3.6 г/сут), duration 7-10, dose_range [60,90]. Source-anchored to КР 314_3 table 4 footnote 4.
+- Verified IV ml renders (amoxiclav ref.dilution.iv_bolus final_concentration_mg_ml=100): 4kg->1.20ml,
+  8kg->2.40, 20kg->6.00, 40kg->12.00. Rebuilt db (120 recs) + html (520349 bytes). Suite **1624 passed**.
+- No unblock (aom_child already CALCULATOR_BOUND_VERIFIED); no physician attestation; no commit.
+## 2026-09-02: Drug-namespace expansion (41->48) + coverage raise to 120 nosologies
+
+- Expanded `_canonical_to_ref` in dosa_to_db_mapper.py and db/index.json drugs_reference by 7 safe
+  antibiotics: tetracycline, ofloxacin, tobramycin, netilmicin, tinidazole, rifaximin, furazidin.
+  (All have ATC_MAP canonicals — no ATC_MAP edits needed.) drugs_reference 41 -> 48.
+- Regenerated extended_dosa.json over ALL 294 KB code_versions -> **48 records** (was 47). +1 =
+  chronicheskii_virusnyi_gepatit_v_pri_razvitii_entsefalopatii 900_1. Deliberately EXCLUDED degenerate
+  conjunctivitis 629_2 (malformed MKB, route=[], None doses, topical eye-drop — worthless in a dose calculator).
+- Rebuilt db/antibio_db.json (120 recs / 10 cats / 48 drugs, validate GREEN) + antibiotic_calc.html (519478).
+  Verified 119 blocked / 1 unblocked (aom_child 314_3). Suite **1624 passed, 29 skipped, 1 xfailed**.
+- No commit (user never asked).
+## 2026-09-02: Dose source-verification harness (evidence-only, never unblocks)
+
+- New module src/pipeline/extraction/dose_verification.py + CLI --db --kb --output. Range-aware: a DB dose
+  inside a published KB range counts as MATCH. Translates DB English drug_ref -> KB Russian token (_REF_TO_KB).
+- Bug found+fixed: _match() takes (db_kg, db_fixed, kb_range) but call site passed 4 args -> unpacked
+  (kb_kg, kb_fixed) into a tuple at the call site. 5 tests green.
+- Real run (KB 294 guides): {diseases_total 119, no_kb_guideline 41, regimens 454, matched 242,
+  mismatched 113, uncomparable 99} -> tmp/dose_verification_2026-09-02.json. The 113 'mismatch' are
+  mostly multi-variant/range artifacts (daily-vs-single-dose, alternate 6 variants), NOT data errors;
+  must be physician-reviewed per-case before any verdict.
+- Tests src/tests/test_dose_verification.py 5 passed. Full suite `.venv/bin/python -m pytest -q` ->
+  **1624 passed, 29 skipped, 1 xfailed, 6 warnings**. No commit (user never asked).
+## 2026-09-02: End-to-end calculator verification vs КР (real run)
+
+- Ran real dose-engine (antibiotic_calc.html -> computeDose) against db-data and cross-checked vs КР text.
+- Only aom_child (cr 314_3, CALCULATOR_BOUND_VERIFIED) computes; other 118 are calculation_blocked (fail-closed).
+- aom_child 7/7 drugs PASS vs КР 314_3 table 4 (amoxicillin 60/50 + 90 high-risk; amoxiclav 45; cefixime 8;
+  cefuroxime 30; clarithromycin 15). Suspension mL verified (4046 combos). Infinity render bug stays fixed.
+- Full report: tmp/calculator_real_run_2026-09-02.md. Data unchanged; suite 1619 passed. No commit.
+## 2026-09-02: Calculation bug fixed — cefuroxime "Infinity" dose
+
+- **Reported:** user said the calculator "не правильно считает".
+- **Diagnosis:** `computeDose` math was CORRECT (dose_mg_kg_day treated as mg/kg/DAY, single=daily/freq,
+  matches КР 314_3 table 4 for all 7 aom_child regimens). Root cause was a RENDER defect in
+  `renderFormChips` (antibiotic_calc.html.template ~line 1130-1133): the child/neonate liquid-default picked
+  the first `powder_for_suspension` REGARDLESS of whether it had `concentration_mg_per_ml`. For cefuroxime
+  (aom_child route per_os), the default was the injectable parenteral vial (mg/ml=None) → renderPO did
+  singleMg/0 = **Infinity**.
+- **Fix:** the child liquid-preference now also requires `g.f.concentration_mg_per_ml != null`. cefuroxime
+  now falls to the tablet path (225mg → ~1 tab 250 мг). All 7 aom_child regimens render finite.
+- **Rebuilt** `antibiotic_calc.html` (509655 bytes). Full suite `.venv/bin/python -m pytest -q` →
+  **1619 passed, 29 skipped, 1 xfailed, 6 warnings**. Data/DB unchanged (render-path only).
+- No commit (user never asked).
 # AI LOG
+
+## 2026-09-02: Physician review pack for the 47 extension nosologies
+
+Generated a physician-ready curation pack: `clinical_sources/physician_review_47.md` (copied from
+tmp/physician_review_47.md). Groups all 47 DOSA extension records by the 7 triage categories, each
+line = id · КР cr_id · mapped drug_refs. Header explicitly states it is engineering classification
+and NOT a medical verdict; all 47 remain calculation_blocked SOURCE_SPEC_MISSING; the P5.6/P6
+decision is the owner/physician's. No data changed. Suite still 1619 passed. No commit.
+
+## 2026-09-02: Route-dedup bug fix, extension regenerated (46→47), triage rule refinement
+
+- **Bug fix** `src/pipeline/extraction/dosa_to_db_mapper.py` line 365: route dedup compared the
+  whole `route` list against list *elements* (always True) → duplicate routes (64/121 drugs were
+  `["per_os","per_os"]`). Replaced with per-element append loop.
+- **Regeneration** using the ORIGINAL 72-record base (not the already-extended 118) for dedup →
+  extension is now **47** records (was 46). db/diseases/extended_dosa.json rewritten.
+- **Builds**: `db/build_db.py --db db/antibio_db.json` → 119 recs / 10 cats / 41 drugs (validate
+  passed); `db/build_html.py` → antibiotic_calc.html (509368 bytes). DB verified: 118 blocked /
+  1 unblocked (aom_child 314_3).
+- **Triage rules** `src/pipeline/extraction/dosa_extension_triage.py`: added `"перелом"/"глазниц"`
+  to surgical_prophylaxis (perelom_dna_glaznitsy 652_2 now surgical) and fixed stale amanitin
+  override id → `otravlenie_gribami_soderzhashchimi_amanitin` (926_1 now infection). Triage now
+  **47 records, 0 unclassified** (surgical 10, infection 17, onco 6, id-pjp 8, metabolic 3,
+  cardiac 3).
+- **Tests**: `src/tests/test_dosa_extension_triage.py` → 11 passed (+2 new). Full suite
+  `.venv/bin/python -m pytest -q` → **1619 passed, 29 skipped, 1 xfailed, 6 warnings**.
+- No commit (user never asked).
+
+## 2026-09-02: Triage of the 46 DOSA extension nosologies (engineering, NOT medical verdict)
+
+Per user «давай как лучше» — split the 46 DOSA-added records into clinical worlds so a
+physician has a reviewable list. Source-prover only; nothing unblocked, no attestation.
+
+**Module**: `src/pipeline/extraction/dosa_extension_triage.py` — `build_triage(diseases_records)`
+→ artifact {schema_version 1.0.0, artifact_type DOSA_EXTENSION_TRIAGE, categories[], total}.
+Keyword-substring `_RULES` (first-match-wins) + `_OVERRIDES` for edge cases (pnevmotsistnaia →
+immunodeficiency_pjp, otravlenie_gribami_amanitin/vykidysh/vnutricherepnye → infection).
+CLI: `--extended db/diseases/extended_dosa.json --output <out>` (note: --db is unused now).
+
+**Artifact**: `tmp/dosa_extension_triage_2026-09-02.json` — 46 records → 7 categories:
+congenital_cardiac_prophylaxis 3, surgical_prophylaxis 9, oncology 6, immunodeficiency_pjp 8,
+metabolic_genetic 3, infection 16, unclassified 1.
+
+**Tests**: `src/tests/test_dosa_extension_triage.py` (9 tests, incl. a typo-fix regression for
+'гидрад' and 'no PASSED' guard). Full suite `.venv/bin/python -m pytest -q` →
+**1617 passed, 29 skipped, 1 xfailed, 6 warnings** (1608 + 9).
+
+**Note**: this is engineering classification for review, NOT a clinical judgement. All 46 records
+remain `calculation_blocked=True SOURCE_SPEC_MISSING`. Physician gate P5.6/P6 owner-only.
+No commit (user never asked).
+
+## 2026-09-02: Pulled ALL remaining antibiotic guides from DOSA (46 new nosologies)
+
+Breadth expansion per user request «остальные клинреки тоже надо подтянуть где есть
+антибиотики» — map every unused DOSA guideline that carries antibiotics, source-layer only.
+
+**What changed**
+- Scoped the mapper target to ALL 267 unused DOSA guidelines (was the 128 therapeutic-new
+  subset). `dosa_to_db_mapper.build_mapped_db(kb, all_unused_targets)` →
+  181 candidate records / 561 mapped_symbols / 2351 total.
+- `dosa_db_dedup.deduplicate_mapped` (vs existing db) → 124 new / 57 dropped
+  (existing_block_count); `deduplicate_among` (cross-version collapse) → **46 kept**.
+- Wrote db/diseases/extended_dosa.json (category «КР с антибиотиками (расширение из DOSA,
+  source-слой)», 46 records), overwriting the 3-record version.
+
+**Files touched**: db/diseases/extended_dosa.json, db/antibio_db.json (regenerated),
+antibiotic_calc.html (rebuilt 509160 bytes).
+
+**Verification** (fail-closed source gate): 117 blocked / 1 unblocked (aom_child 314_3);
+source_verification_status dist SOURCE_SPEC_MISSING 107, PENDING_BINDING 6,
+CURRENT_WEB_CONFIRMED_PDF_PENDING 2, EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW 2,
+CALCULATOR_BOUND_VERIFIED 1. Full suite `.venv/bin/python -m pytest -q` →
+1608 passed, 29 skipped, 1 xfailed, 6 warnings. Rebuild commands:
+`db/build_db.py --db db/antibio_db.json` (118/10/41) and `db/build_html.py`.
+
+**Note**: the 46 are biased toward peri-op surgical prophylaxis, oncological, congenital-cardiac
+endocarditis prophylaxis, and rare-metabolic/metaphylaxis guidelines — all carry antibiotics but
+are not classic acute-infection dosing. All calculate-blocked; physician gate P5.6/P6 owner-only.
+No commit (user never asked).
+
+## 2026-09-02: DOSA->db mapper, extension added (3 nosologies), disclaimer, Python build_html
+
+Fully ported the Windows-only build pipeline to Python and extended the
+calculator with genuinely-new DOSA-derived nosologies (source-layer only).
+
+1. **`src/pipeline/extraction/dosa_to_db_mapper.py`** (source-prover, never
+   unblocks/attests): maps proof-anchored DOSA regimens to schema records.
+   Key resolvers: `resolve_drug_ref` (strips `**`/`#`/brackets, de-inflects
+   Russian case endings, resolves ATC-composites e.g. amoksiklav+klavulan -> amoxiclav;
+   never returns an unregistered drug_ref -- validate_db.js exits 1), `_slug`
+   (Cyrillic->latin, no more colliding to `nosology`), `parse_freq`
+   (word-numerals dva/tr, daily idioms ezhednevno/v sutki, single-dose odnokratno).
+   Regimens with unresolvable frequency are DROPPED (fail-closed; null
+   freq_per_day is a validate error).
+2. **`src/pipeline/extraction/dosa_db_dedup.py`**: two-pass dedup --
+   vs existing 72 (`deduplicate_mapped`, MKB-block + name-token overlap) then
+   self-dedup of cross-version duplicates (`deduplicate_among`, newest wins).
+   After the freq-gate only **3 genuinely-new nosologies** survive:
+   perioralnyi_dermatit (781_1), travma_nosa (815_1), botulizm (911_1).
+3. **`db/diseases/extended_dosa.json`** (new category, 3 recs) written; then
+   **db/antibio_db.json regenerated** -> 75 recommendations / 10 categories /
+   41 drugs_reference (was 72/9/41), validate passed. New records auto-blocked
+   SOURCE_SPEC_MISSING (fail-closed source gate -- display but calculate-blocked).
+4. **`db/build_html.py`** (Python port of build_html.ps1: node validate_db.js,
+   then replace `__DB_PLACEHOLDER__` with db/antibio_db.json, write
+   antibiotic_calc.html UTF-8 no-BOM). Built -> antibiotic_calc.html 334,659 bytes.
+5. **Disclaimer** embedded in `antibiotic_calc.html.template`: amber
+   `.disclaimer-banner` (CSS + dark variant + print-hidden) plus a banner before
+   `</body>`: "rezultaty rascheta ... ne yavlyayutsya okonchatelnym meditsinskim zaklyucheniem".
+
+Tests: `.venv/bin/python -m pytest -q` -> **1608 passed, 29 skipped, 1 xfailed,
+6 warnings**. minzdrav network remains UNREACHABLE; physician gate P5.6/P6
+owner-only. No commit (not requested).
+
+
+Added `src/pipeline/extraction/extension_sources.py` (source-prover only; never
+enables calculation, never attests) to subclassify the unused DOSA guidelines
+into an expansion pool. Given our `db/antibio_db.json` (72 recommendations, 33
+unique cr_ids, 68 distinct mkb10 codes, no ranges) and the DOSA
+`knowledge_base.json` (294 guidelines, 2675 proof-anchored regimens,
+extraction_model claude-sonnet-4-20250514, NOT clinical approval), the module:
+- classifies guidelines by their own `regimen_type` ratio
+  (`classify_by_regimen_ratio`: no prophylaxis → `therapeutic`; proph/n ≥ 0.5 →
+  `primarily_prophylaxis`; else `mixed`). A keyword classifier was proven
+  unreliable earlier and is NOT used.
+- decides overlap against our diseases by EXACT mkb10 code match
+  (`build_disease_mkb_index`; block-prefix matching over-counted duplicates
+  56 instead of the correct 16).
+- excludes guidelines whose `code_version` is already one of our cr_ids.
+- produces `build_extension_artifact(...)` →
+  `tmp/extension_sources_2026-09-02.json` (artifact_type
+  `DOSA_EXTENSION_SOURCES`, filled `inventory`/`candidates`/`summary`).
+
+FINAL POOL SUMMARY (verified): therapeutic 137, mixed 50,
+primarily_prophylaxis 80, duplicate_same_disease 16, new_nosology 251,
+therapeutic_regimens_total 941, **therapeutic_new_nosology_count 128**,
+therapeutic_new_regimens_total 840, therapeutic_new_with_regimens_count 128.
+So the high-value expansion pool is 128 pure-therapeutic NEW nosologies carrying
+840 proof-anchored regimens (these are in-scope "with antibiotics" CRs not yet in
+the calculator).
+
+Added `src/tests/test_extension_sources.py` — 7 tests (regimen-ratio
+therapeutic/primarily_prophylaxis/mixed, exact-mkb overlap = duplicate,
+disjoint mkb = new nosology, used guideline excluded, artifact never hints
+unblock). Mixed test corrected to 33% (1 proph+1 first_line+1 alternative).
+
+TEST STATUS: `.venv/bin/python -m pytest -q` → **1593 passed, 29 skipped,
+1 xfailed, 0 failed** (1586 + 7 new). NO COMMIT (user never asked).
+
+## 2026-09-02: DOSA klinrec source-layer contracts for calculator diseases
+
+Merged the `clinrec-downloader` (DOSA) extraction data as a *source-prover* for
+antibio-calc (scope per user: source layer only, no calculation, no physician
+attestation). Added `src/pipeline/extraction/dosa_source_contract.py` that maps
+each calculator disease to DOSA guideline evidence by (in order) exact
+`cr_id`→`code_version`, then MKB overlap, then name-keyword match, and emits a
+contract with pdf_sha256, page_number, source_quote, dose as provenance.
+
+- CLI: `.venv/bin/python -m src.pipeline.extraction.dosa_source_contract --db
+  db/antibio_db.json --kb <clinrec-downloader>/knowledge_base.json --output
+  tmp/dosa_source_contracts_2026-09-02.json`.
+- Result artifact `tmp/dosa_source_contracts_2026-09-02.json`: disease_count 72,
+  matched_count 40 — match_breakdown {exact_cr_id 31, mkb_overlap 6,
+  name_keyword 3, no_match 32}. The 32 no_match are mostly records with
+  declared_cr_id `«—»` and no MKB/name hit (prostatitis, scarlet_fever, sbp,
+  nec, omphalitis, animal_bite, postop_prophylaxis, asplenia_prophylaxis,
+  uti_prophylaxis, hap, epiglottitis_acute [MKB 352 match exists], erysipelas,
+  diabetic_foot, osteomyelitis, etc.). Every row preserves
+  `calculation_blocked` true — the contract NEVER unblocks.
+- Tests `src/tests/test_dosa_source_contract.py`: 6 tests (normalize_mkb
+  string/list/None, match by CR_ID / MKB / NAME / NO_MATCH, build counts and
+  never-unblocks). Mock kb fixtures exercise the 4 match bases.
+- Full suite: `.venv/bin/python -m pytest -q` → **1586 passed, 29 skipped,
+  1 xfailed, 0 failed** (1580 + 6 new).
+
+## 2026-09-02: source-fetch-and-pin-verify bridge (integrated from clinrec-downloader)
+
+Integrated the missing piece from the DOSA/clinrec-downloader audit (see
+clone at
+`/var/folders/vr/knn1v1l92t7b206mnw7htvvm0000gn/T/opencode/clinrec-downloader`):
+antibio-calc already had byte-identical minzdrav source-tooling
+(`src/pipeline/api_client.py`, `src/pipeline/downloader.py`, `config.py`
+`API_LIST`/`API_GET_PDF` + `ATC_MAP`), so nothing was down-merged. The actual
+gap was a bridge from `ClinrecApi.download_pdf(code_version)` (already correct,
+downloads by CodeVersion not Id) to the source-spec pin verification.
+
+Added `src/pipeline/extraction/source_fetch_verify.py`: fetches the official
+PDF for a candidate source spec by `CodeVersion` (= `spec.guideline_id`),
+validates the `%PDF` magic, recomputes sha256 and compares to
+`spec.expected_pdf_sha256`; fail-closed, never approves regimens. Offline mode
+`verify_local_pdf` reuses the local PDF pin check. Injectable `downloader`
+(async callable) mirrors the `official_card_audit.py` injectable-opener pattern
+so it can be unit-tested without touching the (network-blocked) minzdrav host.
+
+CLI: `.venv/bin/python -m src.pipeline.extraction.source_fetch_verify
+--spec clinical_sources/regimen_candidate_specs/314_3.json --output
+tmp/source_pdf_verify_314_3.json --local-pdf <path>` or network mode
+`--outdir <dir>`.
+
+Tests: `src/tests/test_source_fetch_verify.py` (8 tests — happy path,
+sha256 mismatch, download failure, `%PDF` magic param, offline local verify
+pass/fail).
+
+Test result: `.venv/bin/python -m pytest -q` → 1580 passed, 29 skipped,
+1 xfailed, 0 failed (1572 baseline + 8 new).
+
+Note: minzdrav network still unreachable from this machine, so a live fetch
+cannot yet be exercised — the bridge is built and unit-tested so it works when
+access returns.
+
+## 2026-09-02: provisional clinical QA review of aom_child (NOT physician attestation)
+
+On request "проверь вместо врача, но не считай за действительное", a source
+cross-check of the single calculation-enabled disease `aom_child` (CR `314_3`)
+was done against the locally-extracted official PDF text
+(`tmp/pdfs/aom/official/pages_19_26.txt`, PyMuPDF, PDF pages 19-26) and the
+spec `clinical_sources/regimen_candidate_specs/314_3.json`. Result written to
+`tmp/provisional_clinical_review_2026-09-02.md`.
+
+VERDICT: the `aom_child` data matches the official КР. Every regimen dose is
+inside the cited range (amoxicillin 60/50∈[50,60], 90∈[80,90]; amoxiclav
+45∈[40,45]; cefixime 8 mg/kg; cefuroxime 30 mg/kg; clarithromycin 15 mg/kg),
+frequency in {2,3}, duration 7-10 days (spec + стр. 25), route, food-links and
+the low/high-risk pneumococcus mapping (стандарт vs повышенная доза 80-90
+мг/кг, сноски 1 и 2 таблицы 4) all match. Internal consistency checks found
+zero warnings (6 line-drugs, 7 regimens).
+
+Observations (NOT errors): parenteral/inpatient options from table 4
+(ceftriaxone 50-80 mg/kg, ampicillin+sulbactam 150-300 mg/kg, IV amoxiclav) are
+absent (scenario is ambulatory-only `per_os`); cefuroxime uses one 30 mg/kg dose
+with max 500 for both <3yr (КР: 30 mg/kg) and >3yr (КР: fixed 500 mg/сут).
+
+This file is explicitly PROVISIONAL and is NOT physician attestation; P5.6/P6,
+reviewer registration and unblocking remain exclusively with owner/physician. No
+data or calculation-status changes were made. No commit.
+
+## 2026-09-02: "do everything" sweep — feasibility verdict (no new valid clinical work)
+
+After request to do all remaining work (including physician-attested parts), an
+audit was made of every still-open NEXT_TASK workstream on the fresh macOS clone
+(`/Users/turpal/Documents/antibiocalc/antibio-calc`, Python 3.12.14 venv). Result:
+no further clinically-valid work is currently possible; two local bookkeeping
+deliverables were produced.
+
+**Network confirmed still blocked** (live minzdrav downloads impossible):
+`nc -z -w5 apicr.minzdrav.gov.ru 443` → APICR_UNREACHABLE;
+`cr.minzdrav.gov.ru` → CR_UNREACHABLE. This permanently blocks workstreams 1
+(source contracts `898_1`/`912_1`/`629_2`), 4 (746-card registry search for the
+35 no-card records) and 6 (full 1,284,442-byte CR `313_3` PDF).
+
+**LOCAL AUDIT FINDINGS** (all in `tmp/`):
+
+- Cached CR `313_3` HTML (`tmp/pdfs/sinusitis_313_3.json`, db_id 1632, version 3,
+  name "Острый синусит", MKB J01) yields NO table data. After stripping the Word
+  HTML export, only 3,837 chars remain (TOC/intro/definitions/section headings);
+  token counts for амоксициллин/клавулан/цефтриаксон/азитромицин/мг/кг/дозировк
+  are all 0. Cleaned text saved to `tmp/pdfs/sinusitis_313_3_clean.txt`. Full
+  official PDF still required for 313_3, unobtainable while network blocked.
+- The only local `КР1632.pdf`
+  (`tmp/pdfs/sinusitis_unzipped/КР1632.pdf`, 1,407 bytes) is NOT a PDF — it is an
+  iisnode HTTP 500 error page; pymupdf raises FileDataError. Same bogus file is
+  inside the 792-byte `sinusitis_1632.zip`.
+- Tonsillitis CR `306_3`: `tmp/pdfs/tonsillitis/` holds PNGs only (no text/PDF);
+  tesseract is NOT installed (`which tesseract` → NO_TESSERACT) so no OCR of the
+  dose-table pages. 306_3 reconstruction (clarithromycin frequency, clavulanate
+  max footnote, azithromycin 3/5-day footnote, parenteral duration) still blocked.
+- AOM CR `314_3` is the one machine-validated full-PDF text (real PyMuPDF Cyrillic
+  extraction, `tmp/pdfs/aom/official/pages_19_26.txt`, PDF pages 19-26) and is
+  already the single `VERIFIED_SPEC` with calculation allowed (7 regimens).
+- DB/HTML build tooling is PowerShell-only on this repo: `db/build_db.ps1`
+  (pwsh `ConvertTo-Json -Depth 12 -Compress`) and `build_html.ps1`. No Python
+  equivalent exists in-repo, and pwsh is unavailable on macOS; rebuilding
+  `db/antibio_db.json` / `antibiotic_calc.html` from `db/diseases/*.json` is not
+  currently possible here.
+
+**REPORTS REGENERATED this session (green):**
+- `tmp/source_coverage_2026-09-02.json`
+  (`.venv/bin/python -m src.pipeline.extraction.source_coverage --db
+  db/antibio_db.json --specs clinical_sources/regimen_candidate_specs --output
+  tmp/source_coverage_2026-09-02.json`): disease_count 72, verified_spec 9,
+  missing_spec 63, unique_spec_count 7. Statuses: SOURCE_BLOCKED 63,
+  VERIFIED_SPEC_CALCULATION_BLOCKED 8 (cap_adult 654_2, cap_child 714_2,
+  pharyngitis_adult/child 306_3, otitis_media_adult 314_3, pyelonephritis_adult
+  9_3, ut_child 281_3, pyelonephritis_pregnancy 719_2), VERIFIED_SPEC 1
+  (aom_child 314_3).
+- `tmp/scenario_bindings_report.json` (bindings verifier, unchanged):
+  artifacts 2, bindings 17, cap_adult 11 / cap_child 6, unblock_eligible 0 both.
+
+**Physician-gated work handled per governance:** the request to also perform what
+requires physician verification (P5.6 acceptance, P6 attestation, reviewer
+registration, marking anything PHYSICALLY_APPROVED) is declined. Per
+`ANTIBIO_PROJECT_CONSTITUTION.md` and `AGENTS.md`, an AI agent must never
+auto-attest, auto-approve, fabricate reviewer identities, or connect the Clinical
+Engine to change clinical-approval state. Only the owner/physician may do this.
+
+**TEST STATUS (unchanged):** `.venv/bin/python -m pytest -q` → 1572 passed,
+29 skipped, 1 xfailed, 0 failed.
+
+## 2026-09-02: scenario-to-dose-row binding artifacts for CAP (654_2, 714_2)
+
+Implemented NEXT_TASK workstream 2 on a fresh macOS clone
+(`/Users/turpal/Documents/antibiocalc/antibio-calc`, Python 3.12.14 venv).
+Minzdrav endpoints (`apicr.minzdrav.gov.ru`, `cr.minzdrav.gov.ru`) are
+network-unreachable from this machine (TCP connect fails; other internet
+works), so live PDF/JSON acquisition for `898_1`, `912_1`, `629_2` and the full
+CR `313_3` PDF is postponed; work pivoted to the local CAP binding task.
+
+Added `src/pipeline/extraction/scenario_bindings.py`: builds and fail-closed
+verifies scenario-to-dose-table binding artifacts at
+`clinical_sources/scenario_bindings/{cr_id}.json` (schema `1.0.0`, type
+`SCENARIO_DOSE_TABLE_BINDINGS`, version `scenario-dose-row-1`). Each binding
+maps one calculator regimen (scenario_id, line_number, drug_ref,
+regimen_index) to one spec row_group index. Verification recomputes
+sha256 pins of the full disease record and spec row_groups, enforces
+`calculation_blocked=True`, ATC→drug_ref identity, unique
+scenario/line/drug resolution, regimen/spec index bounds and full regimen
+coverage. Per-binding linkage recomputes four dimensions (severity
+`DOSE_TABLE_NOT_STRATIFIED` while the table is a generic dose reference,
+route AMBIGUOUS/LINKED/NOT_RECORDED from blockers/routes, duration
+ROW/GLOBAL_SPEC plus `duration_review_required` on first-integer mismatch,
+age_weight GUIDELINE_SCOPE_ADULT / MULTIPLE_STRATA_REVIEW /
+CONSTRAINTS_PRESENT_REVIEW / NOT_CONSTRAINED). `unblock_eligible` requires a
+stratified dose table, so it stays `False` for every CAP row — calculation
+remains blocked per the 2026-08-02 dose-reference decision.
+
+Generated `clinical_sources/scenario_bindings/654_2.json` (11 bindings, all
+cap_adult regimens) and `714_2.json` (6 bindings, all cap_child regimens)
+programmatically from `db/antibio_db.json` + specs. CLI report
+(`python -m src.pipeline.extraction.scenario_bindings --db db/antibio_db.json
+--bindings clinical_sources/scenario_bindings --specs
+clinical_sources/regimen_candidate_specs`) verifies all 17 bindings with zero
+unblock-eligible rows. Added `src/tests/test_scenario_bindings.py` (17 tests:
+happy path, linkage statuses, severity guard, and tamper cases — unblocked
+disease/artifact, pin mismatches, wrong row index, duplicate/missing
+coverage, missing spec, CLI). Also fixed the Windows-only corpus-config test
+portably (no production change). Full suite `.venv/bin/python -m pytest -q` →
+1572 passed, 29 skipped, 1 xfailed, 0 failed. No commits, no attestations.
 
 ## 2026-08-02: official registry audit, invalid-ID quarantine, CAP source contracts
 

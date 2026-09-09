@@ -71,6 +71,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
 .personal-banner{position:sticky;top:0;z-index:900;background:#7f1d1d;color:#fff;border:2px solid #fca5a5;box-shadow:0 8px 20px rgba(127,29,29,.25)}
 .personal-status[data-state="ready"]{color:#047857}.personal-status[data-state="blocked"],.personal-status[data-state="error"]{color:#b91c1c}.personal-status[data-state="checking"]{color:#b45309}
 .dark .personal-status[data-state="ready"]{color:#6ee7b7}.dark .personal-status[data-state="blocked"],.dark .personal-status[data-state="error"]{color:#fca5a5}.dark .personal-status[data-state="checking"]{color:#fcd34d}
+.disclaimer-banner{margin:0;padding:10px 16px;background:#fffbeb;border-bottom:2px solid #f59e0b;color:#78350f;font-size:13px;line-height:1.5;width:100%;box-sizing:border-box;z-index:900}
+.dark .disclaimer-banner{background:#422006;border-bottom-color:#f59e0b;color:#fef3c7}
+@media print{ .disclaimer-banner{display:none!important} }
 </style>
 </head>
 <body class="antialiased pb-12">
@@ -814,8 +817,8 @@ function resolveCalculatorBinding(binding){
   const routeSupported = routeGroup === 'po'
     ? forms.some(form=>['tablet','capsule','suspension','syrup','granules'].includes(form.form_type) || (form.form_type === 'powder_for_suspension' && form.concentration_mg_per_ml != null))
     : routeGroup === 'im'
-      ? !!(mainRef.dilution && mainRef.dilution.im && forms.some(form=>['powder_for_suspension','solution_im'].includes(form.form_type)))
-      : !!(mainRef.dilution && (mainRef.dilution.iv_bolus || mainRef.dilution.iv_infusion) && forms.some(form=>['powder_for_suspension','solution_iv'].includes(form.form_type)));
+      ? !!(mainRef.dilution && mainRef.dilution.im && forms.some(form=>['powder_for_suspension','powder_for_injection','solution_im'].includes(form.form_type)))
+      : !!(mainRef.dilution && (mainRef.dilution.iv_bolus || mainRef.dilution.iv_infusion) && forms.some(form=>['powder_for_suspension','powder_for_injection','solution_iv'].includes(form.form_type)));
   if(!routeSupported) throw new Error('route не поддержан формами во встроенной БД');
   const line = matches[0].line;
   return {
@@ -1077,11 +1080,11 @@ function renderForms(preferredRoute){
     // Один и тот же инъекционный флакон часто годится и для в/м, и для в/в (просто разное разведение) —
     // проверяем оба пути НЕЗАВИСИМО (не else-if), иначе "в/в" никогда не заполнится, если есть "в/м".
     let matched = false;
-    if(mainRef.dilution && mainRef.dilution.im && ['powder_for_suspension','solution_im'].includes(f.form_type)){
+    if(mainRef.dilution && mainRef.dilution.im && ['powder_for_suspension','powder_for_injection','solution_im'].includes(f.form_type)){
       groups.im.push({f, idx});
       matched = true;
     }
-    if(mainRef.dilution && (mainRef.dilution.iv_bolus || mainRef.dilution.iv_infusion) && ['powder_for_suspension','solution_iv'].includes(f.form_type)){
+    if(mainRef.dilution && (mainRef.dilution.iv_bolus || mainRef.dilution.iv_infusion) && ['powder_for_suspension','powder_for_injection','solution_iv'].includes(f.form_type)){
       groups.iv.push({f, idx});
       matched = true;
     }
@@ -1125,7 +1128,10 @@ function renderFormChips(group){
   // Детям/новорождённым по умолчанию предпочитаем жидкую форму (суспензия/сироп) — не все могут проглотить таблетку
   let defaultIdx = 0;
   if(activeAge === 'child' || activeAge === 'neonate'){
-    const liquidPos = group.findIndex(g=>['suspension','syrup','powder_for_suspension'].includes(g.f.form_type));
+    // Закрепляем жидкую форму ТОЛЬКО если у неё есть готовая концентрация (mg/ml),
+    // иначе можно выбрать парентеральный флакон (powder_for_suspension без mg/ml),
+    // который даст деление на 0 и Infinity (напр. цефуроксим '750 мг флакон').
+    const liquidPos = group.findIndex(g=>['suspension','syrup','powder_for_suspension'].includes(g.f.form_type) && g.f.concentration_mg_per_ml != null);
     if(liquidPos !== -1) defaultIdx = liquidPos;
   }
   group.forEach((entry, i)=>{
@@ -1137,7 +1143,7 @@ function renderFormChips(group){
     if(f.form_type === 'tablet' || f.form_type === 'capsule') routeIcon = 'fa-pills';
     else if(['powder_for_suspension','suspension','syrup'].includes(f.form_type)) routeIcon = 'fa-flask';
     else if(f.form_type === 'solution_iv') routeIcon = 'fa-drip';
-    else if(f.form_type === 'solution_im') routeIcon = 'fa-syringe';
+    else if(f.form_type === 'solution_im' || form.form_type === 'powder_for_injection') routeIcon = 'fa-syringe';
     else if(f.form_type === 'granules') routeIcon = 'fa-prescription-bottle';
     btn.innerHTML = '<i class="fas '+routeIcon+' mr-1"></i><div>'+f.concentration+'</div>'+(f.notes?'<div class="text-[8px] font-bold opacity-70 mt-0.5 normal-case">'+f.notes+'</div>':'');
     btn.onclick = ()=>{
@@ -1188,26 +1194,34 @@ function getActiveRegimen(){
   return regimens[activeRegimenIdx] || regimens[0];
 }
 function computeDose(reg, w, unit){
-  let singleMg = 0, dailyMg = 0, capped = false, needWeight = false;
+  // Источник-истинный приоритет (RC-030/denominator_time): КР чаще пишет РАЗОВУЮ
+  // дозу, поэтому при наличии single_dose_mg считаем от неё (single × freq),
+  // а stored daily (perKg/fixed) используем только для кросс-проверки.
+  let singleMg = 0, dailyMg = 0, capped = false, needWeight = false, inconsistent = false;
   const perKg = reg.dose_mg_kg_day;
   const fixed = reg.dose_mg_day_fixed;
   const single = reg.single_dose_mg;
   const maxDaily = reg.max_daily_mg;
-  if(perKg != null){
+  if(single != null && reg.freq_per_day){
+    singleMg = single;
+    dailyMg = single * reg.freq_per_day;
+    const stored = (perKg != null && w > 0) ? w * perKg : (fixed != null ? fixed : null);
+    if(stored != null && Math.abs(stored - dailyMg) > 0.05 * Math.abs(dailyMg) + 1) inconsistent = true;
+  } else if(perKg != null){
     if(w > 0){ dailyMg = w * perKg; }
     else { needWeight = true; }
   } else if(fixed != null){
     dailyMg = fixed;
   } else if(single != null){
     singleMg = single;
-    dailyMg = single * reg.freq_per_day;
+    dailyMg = single * (reg.freq_per_day || 1);
   }
   if(maxDaily != null && dailyMg > maxDaily){
     dailyMg = maxDaily;
     capped = true;
   }
   if(singleMg === 0 && reg.freq_per_day) singleMg = dailyMg / reg.freq_per_day;
-  return {singleMg, dailyMg, capped, needWeight, unit: unit || 'мг'};
+  return {singleMg, dailyMg, capped, needWeight, inconsistent, unit: unit || 'мг'};
 }
 // Форматирование дозы с учётом единиц (мг или ЕД)
 function fmtDose(val, unit){
@@ -1227,7 +1241,7 @@ function calculate(){
   const reg = getActiveRegimen();
   if(!reg) return;
   const unit = doseUnitOf(mainRef);
-  const {singleMg, dailyMg, capped, needWeight} = computeDose(reg, w, unit);
+  const {singleMg, dailyMg, capped, needWeight, inconsistent} = computeDose(reg, w, unit);
   updateWeightWarn(needWeight);
 
   $('combo-block').classList.add('hidden');
@@ -1240,14 +1254,14 @@ function calculate(){
     $('res-po').classList.remove('hidden');
     $('res-inj').classList.add('hidden');
     $('dilution-block').classList.add('hidden');
-    renderPO(reg, form, mainRef, w, singleMg, dailyMg, capped);
+    renderPO(reg, form, mainRef, w, singleMg, dailyMg, capped, inconsistent);
     renderReconstitution(form);
   } else if(isInj){
     $('res-po').classList.add('hidden');
     $('res-inj').classList.remove('hidden');
     $('dilution-block').classList.remove('hidden');
     $('reconstitution-block').classList.add('hidden');
-    renderInjection(reg, form, mainRef, w, singleMg, dailyMg, capped);
+    renderInjection(reg, form, mainRef, w, singleMg, dailyMg, capped, inconsistent);
   }
 
   if(refs.length > 1){
@@ -1257,7 +1271,7 @@ function calculate(){
   $('res-note').textContent = activeDrug.indication_note || (activeLine && activeLine.line_label) || '';
   renderDrugMeta(mainRef, reg);
 }
-function renderPO(reg, form, ref, w, singleMg, dailyMg, capped){
+function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
   const unit = doseUnitOf(ref);
   const concMgPerMl = form.concentration_mg_per_ml || 0;
   const isSolid = ['tablet','capsule'].includes(form.form_type);
@@ -1266,12 +1280,18 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped){
     $('po-unit').textContent = unit;
     $('po-tabs').textContent = unit === 'ЕД' ? '' : formatTablets(singleMg, form);
     $('po-instruction').innerHTML = '<i class="fas fa-pills mr-2 text-blue-300"></i>Принимать по <b>'+fmtDose(singleMg, unit)+'</b> '+reg.freq_per_day+' р/д '+(form.concentration||'');
-  } else {
-    const ml = concMgPerMl > 0 ? singleMg / concMgPerMl : 0;
+  } else if(concMgPerMl > 0) {
+    const ml = singleMg / concMgPerMl;
     $('po-ml').textContent = ml.toFixed(1);
     $('po-unit').textContent = 'мл';
     $('po-tabs').textContent = '';
     $('po-instruction').innerHTML = '<i class="fas fa-flask mr-2 text-blue-300"></i>Давать по <b>'+ml.toFixed(1)+' мл</b> суспензии ('+form.concentration+') '+reg.freq_per_day+' р/д';
+  } else {
+    // Fail-closed: концентрация неизвестна — объём НЕ выдумываем (был 0.0 мл).
+    $('po-ml').textContent = '—';
+    $('po-unit').textContent = 'мл';
+    $('po-tabs').textContent = '';
+    $('po-instruction').innerHTML = '<i class="fas fa-exclamation-triangle mr-2 text-amber-300"></i>Объём не рассчитан: нет данных о концентрации формы «'+(form.concentration||form.form_type)+'». Дозируйте по массе: <b>'+fmtDose(singleMg, unit)+'</b> '+reg.freq_per_day+' р/д';
   }
   $('po-mg').textContent = fmtDose(singleMg, unit);
   $('po-day').textContent = fmtDose(dailyMg, unit);
@@ -1288,7 +1308,10 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped){
   } else rangeEl.classList.add('hidden');
 
   const warnEl = $('po-max-warn');
-  if(capped){
+  if(inconsistent){
+    warnEl.querySelector('span').textContent = 'Данные БД несогласованы: разовая × кратность ≠ суточной. Расчёт выполнен по разовой дозе из КР — требуется проверка.';
+    warnEl.classList.remove('hidden');
+  } else if(capped){
     warnEl.querySelector('span').textContent = 'Превышена max суточная доза — снижено до '+fmtDose(reg.max_daily_mg, unit)+'/сут';
     warnEl.classList.remove('hidden');
   } else warnEl.classList.add('hidden');
@@ -1321,7 +1344,7 @@ function renderReconstitution(form){
     block.classList.add('hidden');
   }
 }
-function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped){
+function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
   const dil = ref.dilution;
   let availableRoutes = [];
   if(dil.im && currentRouteGroup === 'im') availableRoutes.push('im');
@@ -1399,7 +1422,10 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped){
   } else rangeEl.classList.add('hidden');
 
   const warnEl = $('inj-max-warn');
-  if(capped){
+  if(inconsistent){
+    warnEl.querySelector('span').textContent = 'Данные БД несогласованы: разовая × кратность ≠ суточной. Расчёт выполнен по разовой дозе из КР — требуется проверка.';
+    warnEl.classList.remove('hidden');
+  } else if(capped){
     warnEl.querySelector('span').textContent = 'Превышена max суточная доза — снижено до '+fmtDose(reg.max_daily_mg, unit)+'/сут';
     warnEl.classList.remove('hidden');
   } else warnEl.classList.add('hidden');
@@ -1531,7 +1557,8 @@ const LATIN_INN = {
 };
 const LATIN_FORM = {
   tablet:'tab.', capsule:'caps.', suspension:'susp.', syrup:'sir.',
-  powder_for_suspension:'pulv. pro susp.', solution_iv:'sol. pro inject.', solution_im:'sol. pro inject.',
+  powder_for_suspension:'pulv. pro susp.', powder_for_injection:'pulv. pro inject.',
+  solution_iv:'sol. pro inject.', solution_im:'sol. pro inject.',
   granules:'gran.', topical:'ung.', suppository:'supp.'
 };
 const LATIN_ROUTE = { po:'per os', im:'intramuscularis', iv:'intravenosus' };
@@ -1737,5 +1764,6 @@ function restoreFromHash(){
 }
 init();
 </script>
+<div class="disclaimer-banner"><strong>Предупреждение:</strong> результаты расчёта являются справочным материалом и <strong>не являются окончательным медицинским заключением</strong>. Не заменяет консультацию врача. Дозирование может быть заблокировано для нозологий без закреплённого проверенного источника (status расчёта). Окончательное решение принимает лечащий врач.</div>
 </body>
 </html>

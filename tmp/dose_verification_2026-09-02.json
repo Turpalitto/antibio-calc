@@ -1,0 +1,5580 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "DOSE_SOURCE_VERIFICATION",
+  "note": "Objective machine comparison of calculator doses vs PDF-extracted source doses (nearest same-drug/age/route KB row). NOT a medical verdict; no disease unblocked.",
+  "summary": {
+    "diseases_total": 120,
+    "no_kb_guideline": 41,
+    "regimens_total": 479,
+    "matched": 243,
+    "mismatched": 113,
+    "uncomparable": 123
+  },
+  "diseases": [
+    {
+      "disease_id": "mastitis_puerperal",
+      "name": "Послеродовой мастит",
+      "cr_id": "858_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 4,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 3,
+      "checks": [
+        {
+          "drug": "dicloxacillin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1200,
+          "kb": "300 мг",
+          "page": 25,
+          "sha": "41c1a7d91dec211f07af087eba023b228e20eb0f879db5418c212e15665a726d"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 2400,
+          "kb": "None None",
+          "page": 34,
+          "sha": "41c1a7d91dec211f07af087eba023b228e20eb0f879db5418c212e15665a726d"
+        }
+      ]
+    },
+    {
+      "disease_id": "pid",
+      "name": "Воспалительные заболевания органов таза (ВЗОТ)",
+      "cr_id": "643_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 7,
+      "match": 0,
+      "mismatch": 2,
+      "uncomparable": 5,
+      "checks": [
+        {
+          "drug": "цефтриаксон",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500,
+          "kb": "250 мг",
+          "page": 40,
+          "sha": "865c96495fc91e8488b80cf1963ce74eb4c031cfc54373764136d2c25201267f"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000,
+          "kb": "250 мг",
+          "page": 40,
+          "sha": "865c96495fc91e8488b80cf1963ce74eb4c031cfc54373764136d2c25201267f"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "prostatitis",
+      "name": "Простатит (острый и хронический бактериальный)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "peritonsillar_abscess",
+      "name": "Перитонзиллярный абсцесс (паратонзиллит)",
+      "cr_id": "664_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 4,
+      "match": 2,
+      "mismatch": 2,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1750,
+          "kb": "1 г",
+          "page": 22,
+          "sha": "e4a62f1ad5567e5af3ab7b028d9a5a40ffd50d04e1d928f6dbc55b306cbebfa3"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "cross",
+          "db_kg": 90,
+          "db_fixed": null,
+          "kb": "1 г",
+          "page": 22,
+          "sha": "e4a62f1ad5567e5af3ab7b028d9a5a40ffd50d04e1d928f6dbc55b306cbebfa3"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1200,
+          "kb": "1,2-4,8 г",
+          "page": 22,
+          "sha": "e4a62f1ad5567e5af3ab7b028d9a5a40ffd50d04e1d928f6dbc55b306cbebfa3"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30,
+          "db_fixed": null,
+          "kb": "20-40 мг/кг",
+          "page": 22,
+          "sha": "e4a62f1ad5567e5af3ab7b028d9a5a40ffd50d04e1d928f6dbc55b306cbebfa3"
+        }
+      ]
+    },
+    {
+      "disease_id": "scarlet_fever",
+      "name": "Скарлатина",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "kh_stseplennyi_limfoproliferativnyi_sindrom_khlp_s_otiagoshchennym_infektsionnym_anamnezom",
+      "name": "Первичный иммунодефицит- Х-сцепленный лимфопролиферативный синдром",
+      "cr_id": "544_1",
+      "status": "ALL_MATCH",
+      "regimens_checked": 1,
+      "match": 1,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "азитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 12,
+          "sha": "a20606b76eb5fd63c8142c5c6b538ced7fa317f35a5eaf15180f1075be7421db"
+        }
+      ]
+    },
+    {
+      "disease_id": "ostryi_limfoblastnyi_leikoz_limfoblastnaia_limfoma_ostrye_leikozy_neodnoznachnoi_lineinosti",
+      "name": "Острый лимфобластный лейкоз",
+      "cr_id": "529_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 2,
+      "match": 2,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг по триметоприму или 20 мг/кг по сульфаметоксазолу мг/кг",
+          "page": 66,
+          "sha": "cec8866d16bfb12cab019d05b9f1e453d73cf86af31675c07fd0098c22b32e58"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг по триметоприму или 20 мг/кг по сульфаметоксазолу мг/кг",
+          "page": 66,
+          "sha": "cec8866d16bfb12cab019d05b9f1e453d73cf86af31675c07fd0098c22b32e58"
+        }
+      ]
+    },
+    {
+      "disease_id": "perelom_dna_glaznitsy",
+      "name": "Перелом дна глазницы",
+      "cr_id": "652_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 2,
+      "match": 2,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 1.0,
+          "db_fixed": null,
+          "kb": "детям от 1 месяца до 18 лет и весом менее 50 кг — 25 мг/кг на введение, но не более 1 г; детям более 50 кг — 1-2 г; взрослым при массе тела менее 80 кг — 1 г; при массе от 80 кг до 130 кг — 2 г мг/кг",
+          "page": 19,
+          "sha": "03c9637813efb5f6e0f661fa598f38dd545732b54d5c757c5e3b320cf2442534"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 1.0,
+          "db_fixed": null,
+          "kb": "детям от 1 месяца до 18 лет и весом менее 50 кг — 25 мг/кг на введение, но не более 1 г; детям более 50 кг — 1-2 г; взрослым при массе тела менее 80 кг — 1 г; при массе от 80 кг до 130 кг — 2 г мг/кг",
+          "page": 19,
+          "sha": "03c9637813efb5f6e0f661fa598f38dd545732b54d5c757c5e3b320cf2442534"
+        }
+      ]
+    },
+    {
+      "disease_id": "febrilnaia_neitropeniia_pri_rake_nosoglotki",
+      "name": "Рак носоглотки",
+      "cr_id": "66_4",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 4,
+      "match": 3,
+      "mismatch": 0,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "пиперациллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 4.5,
+          "db_fixed": null,
+          "kb": "4,5; 300 (400); амикацин 15–20 г; мг/кг/сут; мг/кг/сут",
+          "page": 64,
+          "sha": "88bcaa534648c5a9c8437400f00a7f8d5e59bc6dc87002e58d127940ef7916bc"
+        },
+        {
+          "drug": "пиперациллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 4.5,
+          "db_fixed": null,
+          "kb": "4,5; 300 (400); амикацин 15–20 г; мг/кг/сут; мг/кг/сут",
+          "page": 64,
+          "sha": "88bcaa534648c5a9c8437400f00a7f8d5e59bc6dc87002e58d127940ef7916bc"
+        },
+        {
+          "drug": "пиперациллин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "4,5; 300 (400); амикацин 15–20 г; мг/кг/сут; мг/кг/сут",
+          "page": 64,
+          "sha": "88bcaa534648c5a9c8437400f00a7f8d5e59bc6dc87002e58d127940ef7916bc"
+        },
+        {
+          "drug": "пиперациллин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 4500.0,
+          "kb": "4,5; либо 300 (400) мг/кг/сут; амикацин 15–20 мг/кг/сут г",
+          "page": 64,
+          "sha": "88bcaa534648c5a9c8437400f00a7f8d5e59bc6dc87002e58d127940ef7916bc"
+        }
+      ]
+    },
+    {
+      "disease_id": "urogenitalnyi_trikhomoniaz",
+      "name": "Урогенитальный трихомониаз",
+      "cr_id": "241_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 7,
+      "match": 3,
+      "mismatch": 2,
+      "uncomparable": 2,
+      "checks": [
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2,0 г",
+          "page": 13,
+          "sha": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 5000.0,
+          "kb": "5 г",
+          "page": 14,
+          "sha": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2,0 г",
+          "page": 13,
+          "sha": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b"
+        },
+        {
+          "drug": "tinidazole",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "2,0 г",
+          "page": 13,
+          "sha": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "2,0 г",
+          "page": 13,
+          "sha": "ed7162799f23c64c3d7d6323d80c81ee35c58cea1203b919be5d63a96dabe11b"
+        },
+        {
+          "drug": "tinidazole",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "pnevmotsistnaia_pnevmoniia",
+      "name": "ВИЧ-инфекция у взрослых",
+      "cr_id": "79_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 1,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400/80 мг",
+          "page": 45,
+          "sha": "adb96667fccabe844006149b25d1a7ced565944d461b3e8b7ba7b0e2fc7978e1"
+        }
+      ]
+    },
+    {
+      "disease_id": "sistemnyi_skleroz_profilaktika_pnevmotsistnoi_pnevmonii_pri_naznachenii_rituksimaba_i_tsiklofosfamida",
+      "name": "Системный склероз",
+      "cr_id": "607_1",
+      "status": "ALL_MATCH",
+      "regimens_checked": 4,
+      "match": 4,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг",
+          "page": 63,
+          "sha": "2d98515224a739aaa0361dbfe367e4aa58f0b590e83274ee21a6224b2576f30f"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 148,
+          "sha": "2d98515224a739aaa0361dbfe367e4aa58f0b590e83274ee21a6224b2576f30f"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) мг/кг",
+          "page": 149,
+          "sha": "2d98515224a739aaa0361dbfe367e4aa58f0b590e83274ee21a6224b2576f30f"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) мг/кг",
+          "page": 149,
+          "sha": "2d98515224a739aaa0361dbfe367e4aa58f0b590e83274ee21a6224b2576f30f"
+        }
+      ]
+    },
+    {
+      "disease_id": "ostryi_mieloidnyi_leikoz_profilaktika_pnevmotsistnoi_pnevmonii_u_patsientov_poluchivshikh_fludarabin",
+      "name": "Острые миелоидные лейкозы",
+      "cr_id": "586_3",
+      "status": "ALL_MATCH",
+      "regimens_checked": 3,
+      "match": 3,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг",
+          "page": 35,
+          "sha": "488a6f412bd93037ff7451324ecb3ae8c7ce12d545b56fa371c9de60da054f98"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг",
+          "page": 35,
+          "sha": "488a6f412bd93037ff7451324ecb3ae8c7ce12d545b56fa371c9de60da054f98"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг",
+          "page": 35,
+          "sha": "488a6f412bd93037ff7451324ecb3ae8c7ce12d545b56fa371c9de60da054f98"
+        }
+      ]
+    },
+    {
+      "disease_id": "rody_odnoplodnye_rodorazreshenie_putem_kesareva_secheniia",
+      "name": "Роды одноплодные, родоразрешение путем кесарева сечения",
+      "cr_id": "639_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 1,
+      "match": 1,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 54,
+          "sha": "c6d06ac1c8ad84b3154d1ea6bfda12aee7603de7e0bdcfcfeb078d57beebe3d2"
+        }
+      ]
+    },
+    {
+      "disease_id": "profilaktika_pnevmotsistnoi_pnevmonii_pri_terapii_rituksimabom",
+      "name": "Юношеский артрит с системным началом",
+      "cr_id": "26_4",
+      "status": "ALL_MATCH",
+      "regimens_checked": 16,
+      "match": 16,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг",
+          "page": 87,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг",
+          "page": 87,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг",
+          "page": 87,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг",
+          "page": 87,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) по триметоприму мг/кг",
+          "page": 117,
+          "sha": "d048863c0e60b06ac82d7025d1e82a735de72dbbadf325a53ed12d93ef0d4314"
+        }
+      ]
+    },
+    {
+      "disease_id": "povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika",
+      "name": "Повреждение связок коленного сустава",
+      "cr_id": "691_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 43,
+      "match": 31,
+      "mismatch": 12,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2; при весе пациента ≥120 кг — 3 г",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2; при весе пациента ≥120 кг — 3 г",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500.0,
+          "kb": "1,5 г",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500.0,
+          "kb": "1,5 г",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "900 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "900 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "900 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "900 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2; при весе пациента ≥120 кг — 3 г",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 3000.0,
+          "kb": "3 г",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2; при весе пациента ≥120 кг — 3 г",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500.0,
+          "kb": "1,5 г",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500.0,
+          "kb": "1,5 г",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 26,
+          "sha": "f146aedc62918bf5c82ef6787a6ec69279b20d65f14ef660d6f344d47f01eeb5"
+        }
+      ]
+    },
+    {
+      "disease_id": "atopicheskii_dermatit_oslozhnennyi_vtorichnoi_infektsiei",
+      "name": "Атопический дерматит",
+      "cr_id": "265_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 9,
+      "match": 3,
+      "mismatch": 5,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 250.0,
+          "kb": "125/31,25 или 250/62,5; не более 2400/600 в сутки мг",
+          "page": 35,
+          "sha": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8"
+        },
+        {
+          "drug": "эритромицин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "10000 ЕД/г None",
+          "page": 32,
+          "sha": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 875.0,
+          "kb": "125/31,25 или 250/62,5; не более 2400/600 в сутки мг",
+          "page": 35,
+          "sha": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "125/31,25 или 250/62,5; не более 2400/600 в сутки мг",
+          "page": 35,
+          "sha": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 125.0,
+          "kb": "125/31,25 или 250/62,5; не более 2400/600 в сутки мг",
+          "page": 35,
+          "sha": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 250.0,
+          "kb": "250 мг",
+          "page": 35,
+          "sha": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1–2 г",
+          "page": 36,
+          "sha": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20–50 мг/кг",
+          "page": 36,
+          "sha": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20–50 мг/кг",
+          "page": 36,
+          "sha": "9024a3a6a963e5e43619ec6b04508cf2ee098cbc8e5b7e9e733c2ec6eb2f0bd8"
+        }
+      ]
+    },
+    {
+      "disease_id": "perelomy_proksimalnogo_otdela_bedrennoi_kosti_endoprotezirovanie_osteosintez_pri_ppobk",
+      "name": "Переломы проксимального отдела бедренной кости",
+      "cr_id": "980_1",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 15,
+      "match": 14,
+      "mismatch": 0,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2,0 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2,0 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2,0 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1,0 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1,0 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1,0 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1,0 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1,0 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "0,9 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "0,9 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "0,9 г",
+          "page": 50,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "гентамицин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "6 мкг/кг",
+          "page": 51,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 3000.0,
+          "kb": "3,0 г",
+          "page": 51,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 3000.0,
+          "kb": "3,0 г",
+          "page": 51,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 3000.0,
+          "kb": "3,0 г",
+          "page": 51,
+          "sha": "fe933454f05b61718c21a78d9a182a314146e28c7012d1df7b1e8b741d2af77b"
+        }
+      ]
+    },
+    {
+      "disease_id": "kistoznyi_fibroz_situatsiia_vozbuditel_ne_ukazany_vo_fragmente",
+      "name": "Кистозный фиброз (муковисцидоз)",
+      "cr_id": "372_3",
+      "status": "ALL_MATCH",
+      "regimens_checked": 1,
+      "match": 1,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "цефтриаксон",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50-80 мг/кг",
+          "page": 86,
+          "sha": "baff8509d3c40ceaf9971331740839b7c1d69aa41c75619bea48242c0040b2dc"
+        }
+      ]
+    },
+    {
+      "disease_id": "serpovidno_kletochnaia_bolezn_profilaktika_infektsii_u_detei_rannego_vozrasta",
+      "name": "Серповидно-клеточные нарушения",
+      "cr_id": "543_3",
+      "status": "ALL_MATCH",
+      "regimens_checked": 2,
+      "match": 2,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "эритромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 47,
+          "sha": "418b4169c3d917250fad845055fd749ca3a38afc906ecb35bf0e438b94c0ff09"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 75.0,
+          "db_fixed": null,
+          "kb": "75 мг/кг",
+          "page": 35,
+          "sha": "418b4169c3d917250fad845055fd749ca3a38afc906ecb35bf0e438b94c0ff09"
+        }
+      ]
+    },
+    {
+      "disease_id": "bolezn_krona_tonkoi_kishki_krome_terminalnogo_ileita_pri_nalichii_priznakov_sistemnogo_vospaleniia_i_ili_infiltrata",
+      "name": "Болезнь Крона",
+      "cr_id": "682_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 16,
+      "match": 16,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 33,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 33,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 750.0,
+          "kb": "0,75 г",
+          "page": 35,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 33,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 33,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 33,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 33,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 33,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 33,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 35,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 750.0,
+          "kb": "0,75 г",
+          "page": 35,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 750.0,
+          "kb": "0,75 г",
+          "page": 35,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 750.0,
+          "kb": "0,75 г",
+          "page": 35,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 35,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 35,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1 г",
+          "page": 35,
+          "sha": "2b8f8bf8564f62207323e594a3786c64fd4bf508f5ee432a2b11ab78496ddab8"
+        }
+      ]
+    },
+    {
+      "disease_id": "posleoperatsionnaia_ventralnaia_gryzha",
+      "name": "Послеоперационная вентральная грыжа",
+      "cr_id": "685_1",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 1,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "стандартные дозировки None",
+          "page": 25,
+          "sha": "55b211df0dbdbc34e47a66b7b9ce4902f0731d073c168d91a52d9408d5e01f52"
+        }
+      ]
+    },
+    {
+      "disease_id": "rezervuarit_u_detei_s_iak",
+      "name": "Язвенный колит",
+      "cr_id": "391_4",
+      "status": "ALL_MATCH",
+      "regimens_checked": 8,
+      "match": 8,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20-30 мг/кг/день (максимальная доза 500 мг) мг/кг",
+          "page": 52,
+          "sha": "5bc39b4a901c4ae087b30b95539116f91fd16d882b11d993be27a8382592d459"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20-30 мг/кг/день (максимальная доза 500 мг) мг/кг",
+          "page": 52,
+          "sha": "5bc39b4a901c4ae087b30b95539116f91fd16d882b11d993be27a8382592d459"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20-30 мг/кг/день (максимальная доза 500 мг) мг/кг",
+          "page": 52,
+          "sha": "5bc39b4a901c4ae087b30b95539116f91fd16d882b11d993be27a8382592d459"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20-30 мг/кг/день (максимальная доза 500 мг) мг/кг",
+          "page": 52,
+          "sha": "5bc39b4a901c4ae087b30b95539116f91fd16d882b11d993be27a8382592d459"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг/день (максимальная доза 1 г) мг/кг",
+          "page": 52,
+          "sha": "5bc39b4a901c4ae087b30b95539116f91fd16d882b11d993be27a8382592d459"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг/день (максимальная доза 1 г) мг/кг",
+          "page": 52,
+          "sha": "5bc39b4a901c4ae087b30b95539116f91fd16d882b11d993be27a8382592d459"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг/день (максимальная доза 1 г) мг/кг",
+          "page": 52,
+          "sha": "5bc39b4a901c4ae087b30b95539116f91fd16d882b11d993be27a8382592d459"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг/день (максимальная доза 1 г) мг/кг",
+          "page": 52,
+          "sha": "5bc39b4a901c4ae087b30b95539116f91fd16d882b11d993be27a8382592d459"
+        }
+      ]
+    },
+    {
+      "disease_id": "defekt_aortolegochnoi_peregorodki",
+      "name": "Дефект аортолегочной перегородки",
+      "cr_id": "730_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 13,
+      "match": 13,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг, но не более 2 г мг/кг",
+          "page": 35,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг, но не более 2 г мг/кг",
+          "page": 35,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг, но не более 2 г мг/кг",
+          "page": 35,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг, но не более 2 г мг/кг",
+          "page": 35,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг, но не более 2 г мг/кг",
+          "page": 36,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг, но не более 2 г мг/кг",
+          "page": 36,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг, но не более 2 г мг/кг",
+          "page": 36,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг, но не более 2 г мг/кг",
+          "page": 36,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг, но не более 2 г мг/кг",
+          "page": 36,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг, но не более 600 мг мг/кг",
+          "page": 36,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг, но не более 600 мг мг/кг",
+          "page": 36,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг, но не более 600 мг мг/кг",
+          "page": 36,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг, но не более 600 мг мг/кг",
+          "page": 36,
+          "sha": "b283ee1bb31afc12617ef33f0af1e7032bf4d54114bc49477110cbb2c1f98284"
+        }
+      ]
+    },
+    {
+      "disease_id": "pervichnye_immunodefitsity_s_preimushchestvennoi_nedostatochnostiu_sinteza_antitel",
+      "name": "Первичные иммунодефициты с преимущественной недостаточностью синтеза антител",
+      "cr_id": "735_1",
+      "status": "ALL_MATCH",
+      "regimens_checked": 1,
+      "match": 1,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10-20 мг/кг",
+          "page": 35,
+          "sha": "5c4440b85a1b221a297f3c38c3cb250af39e93a514a081e2d17e0b7a52891809"
+        }
+      ]
+    },
+    {
+      "disease_id": "vnutricherepnye_gnoinye_oslozhneniia_meningit_ili_ventrikulit",
+      "name": "Черепно-мозговая травма у детей",
+      "cr_id": "493_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 1,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ванкомицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 5.0,
+          "kb": "5 мг",
+          "page": 44,
+          "sha": "7ff50457c9e6b1907cd1f3aa28a8a7b5a4f61da71f1f3c7a404c81ea43f5fd22"
+        }
+      ]
+    },
+    {
+      "disease_id": "vrozhdennyi_podklapannyi_stenoz_aorty",
+      "name": "Врожденный подклапанный стеноз аорты",
+      "cr_id": "745_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 8,
+      "match": 8,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 28,
+          "sha": "0551ddefcdfcbb08921aae84353bee6b8b864c6cee261592636e9dd32b0a005a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 28,
+          "sha": "0551ddefcdfcbb08921aae84353bee6b8b864c6cee261592636e9dd32b0a005a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 28,
+          "sha": "0551ddefcdfcbb08921aae84353bee6b8b864c6cee261592636e9dd32b0a005a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 28,
+          "sha": "0551ddefcdfcbb08921aae84353bee6b8b864c6cee261592636e9dd32b0a005a"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 28,
+          "sha": "0551ddefcdfcbb08921aae84353bee6b8b864c6cee261592636e9dd32b0a005a"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 28,
+          "sha": "0551ddefcdfcbb08921aae84353bee6b8b864c6cee261592636e9dd32b0a005a"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 28,
+          "sha": "0551ddefcdfcbb08921aae84353bee6b8b864c6cee261592636e9dd32b0a005a"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 28,
+          "sha": "0551ddefcdfcbb08921aae84353bee6b8b864c6cee261592636e9dd32b0a005a"
+        }
+      ]
+    },
+    {
+      "disease_id": "profilaktika_pnevmotsistnoi_pnevmonii_pri_naznachenii_rituksimaba",
+      "name": "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз)",
+      "cr_id": "757_1",
+      "status": "ALL_MATCH",
+      "regimens_checked": 1,
+      "match": 1,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут) по триметоприму мг/кг",
+          "page": 110,
+          "sha": "cfb5b778182b190884f240fa12316f758116779527b916a83acacb209c2c1c90"
+        }
+      ]
+    },
+    {
+      "disease_id": "zabolevaniia_bartolinovoi_zhelezy_abzh_kbzh",
+      "name": "Болезни бартолиновой железы",
+      "cr_id": "765_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 5,
+      "match": 0,
+      "mismatch": 5,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1200.0,
+          "kb": "1200 мг",
+          "page": 22,
+          "sha": "0e54289220fdfcf510f7e7834408abc818d76fb8654c3bc7d9ea1ae3ef0d0ec0"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 625.0,
+          "kb": "1200 мг",
+          "page": 22,
+          "sha": "0e54289220fdfcf510f7e7834408abc818d76fb8654c3bc7d9ea1ae3ef0d0ec0"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1200 мг",
+          "page": 22,
+          "sha": "0e54289220fdfcf510f7e7834408abc818d76fb8654c3bc7d9ea1ae3ef0d0ec0"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 300.0,
+          "kb": "300 мг",
+          "page": 22,
+          "sha": "0e54289220fdfcf510f7e7834408abc818d76fb8654c3bc7d9ea1ae3ef0d0ec0"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 100.0,
+          "kb": "100 мг",
+          "page": 22,
+          "sha": "0e54289220fdfcf510f7e7834408abc818d76fb8654c3bc7d9ea1ae3ef0d0ec0"
+        }
+      ]
+    },
+    {
+      "disease_id": "trekhpredserdnoe_serdtse_profilaktika_infektsionnogo_endokardita_posle_khirurgicheskoi_korrektsii",
+      "name": "Трехпредсердное сердце",
+      "cr_id": "772_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 4,
+      "match": 3,
+      "mismatch": 1,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 24,
+          "sha": "da7dae383c3903a39bf41cc2da3ca76ee684f12175110ab8018ac86e24ddcbda"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2 г",
+          "page": 24,
+          "sha": "da7dae383c3903a39bf41cc2da3ca76ee684f12175110ab8018ac86e24ddcbda"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 24,
+          "sha": "da7dae383c3903a39bf41cc2da3ca76ee684f12175110ab8018ac86e24ddcbda"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 600.0,
+          "kb": "600 мг",
+          "page": 24,
+          "sha": "da7dae383c3903a39bf41cc2da3ca76ee684f12175110ab8018ac86e24ddcbda"
+        }
+      ]
+    },
+    {
+      "disease_id": "infektsii_amnioticheskoi_polosti_i_plodnykh_obolochek_khorioamnionit",
+      "name": "Инфекции амниотической полости и плодных оболочек (хориоамнионит)",
+      "cr_id": "776_1",
+      "status": "ALL_MATCH",
+      "regimens_checked": 1,
+      "match": 1,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2 г",
+          "page": 19,
+          "sha": "b319e545d544fb51b6ad13e65eeb632ce04f82e36af2495f153ea5adffff3fdc"
+        }
+      ]
+    },
+    {
+      "disease_id": "vykidysh_samoproizvolnyi_abort",
+      "name": "Выкидыш (самопроизвольный аборт)",
+      "cr_id": "670_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 2,
+      "match": 0,
+      "mismatch": 2,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "азитромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500-1000 мг",
+          "page": 20,
+          "sha": "c729b54065ba4bb5b41148847e3dda1db195b1abdc7b860d5edc45d833662e79"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 20,
+          "sha": "c729b54065ba4bb5b41148847e3dda1db195b1abdc7b860d5edc45d833662e79"
+        }
+      ]
+    },
+    {
+      "disease_id": "propionovaia_atsidemiia_atsiduriia",
+      "name": "Пропионовая ацидемия /ацидурия",
+      "cr_id": "681_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 1,
+      "match": 1,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "метронидазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10-20 мг/кг",
+          "page": 29,
+          "sha": "c165ed35023b930dc2aec3037d118b7b2b787bed92173f6eea30da111a45331a"
+        }
+      ]
+    },
+    {
+      "disease_id": "gepatoblastoma",
+      "name": "Гепатобластома",
+      "cr_id": "68_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 1,
+      "match": 1,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг",
+          "page": 44,
+          "sha": "aca5b9864b33e0697e9727d470479625391b28a28e2e992f2adc7a7b691c85c3"
+        }
+      ]
+    },
+    {
+      "disease_id": "starcheskaia_katarakta_profilaktika_ostrogo_bakterialnogo_posleoperatsionnogo_endoftalmita_obpe_pri_operatsii_po_udaleniiu_katarakty",
+      "name": "Катаракта старческая",
+      "cr_id": "284_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 10,
+      "match": 2,
+      "mismatch": 4,
+      "uncomparable": 4,
+      "checks": [
+        {
+          "drug": "цефазолин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 23,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 23,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        },
+        {
+          "drug": "моксифлоксацин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "1 капля",
+          "page": 21,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 23,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "0.5-2.0 г",
+          "page": 57,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        },
+        {
+          "drug": "моксифлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 мг",
+          "page": 57,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        },
+        {
+          "drug": "моксифлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 мг",
+          "page": 57,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        },
+        {
+          "drug": "линезолид",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 600.0,
+          "kb": "600 мг",
+          "page": 57,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        },
+        {
+          "drug": "линезолид",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 600.0,
+          "kb": "600 мг",
+          "page": 57,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        },
+        {
+          "drug": "фосфомицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 4000.0,
+          "kb": "4.0 г",
+          "page": 57,
+          "sha": "51013ad59e77c14967a7b3ac0705577a6259aae3cb46bcb02045d015e9b74cb2"
+        }
+      ]
+    },
+    {
+      "disease_id": "neoslozhnennye_gryzhi_perednei_briushnoi_stenki",
+      "name": "Грыжи передней брюшной стенки",
+      "cr_id": "828_1",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 1,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "цефазолин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 24,
+          "sha": "9a5d3f431e4b3ece876750cf4711d129695417480fac696b99b7a06e170a37e3"
+        }
+      ]
+    },
+    {
+      "disease_id": "prisoedinenie_infektsii_pri_tkin",
+      "name": "Первичный иммунодефицит: тяжелая комбинированная иммунная недостаточность",
+      "cr_id": "335_1",
+      "status": "ALL_MATCH",
+      "regimens_checked": 4,
+      "match": 4,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "цефепим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 80.0,
+          "db_fixed": null,
+          "kb": "80-100 мг/кг",
+          "page": 16,
+          "sha": "4bade711541fb1ea277a4794f75dacfdc8ef9a5cf3491b87d6e982faf2990783"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 80.0,
+          "db_fixed": null,
+          "kb": "80-100 мг/кг",
+          "page": 16,
+          "sha": "4bade711541fb1ea277a4794f75dacfdc8ef9a5cf3491b87d6e982faf2990783"
+        },
+        {
+          "drug": "амикацин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 16,
+          "sha": "4bade711541fb1ea277a4794f75dacfdc8ef9a5cf3491b87d6e982faf2990783"
+        },
+        {
+          "drug": "линезолид",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг",
+          "page": 16,
+          "sha": "4bade711541fb1ea277a4794f75dacfdc8ef9a5cf3491b87d6e982faf2990783"
+        }
+      ]
+    },
+    {
+      "disease_id": "profilaktika_pnevmotsistnoi_pnevmonii_u_patsientov_poluchaiushchikh_tsiklofosfamid_i_rituksimab",
+      "name": "Неспецифический аортоартериит",
+      "cr_id": "479_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 4,
+      "match": 4,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг по триметоприму мг/кг",
+          "page": 77,
+          "sha": "faebe3a760a1987fffae891cf7d549f0287f4739904b45b728ae517ba4dcfff6"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 5.0,
+          "db_fixed": null,
+          "kb": "5 мг/кг по триметоприму мг/кг",
+          "page": 77,
+          "sha": "faebe3a760a1987fffae891cf7d549f0287f4739904b45b728ae517ba4dcfff6"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) (по триметоприму) мг/кг",
+          "page": 186,
+          "sha": "faebe3a760a1987fffae891cf7d549f0287f4739904b45b728ae517ba4dcfff6"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 3.75,
+          "db_fixed": null,
+          "kb": "3,75-5,0 мг/кг/массы тела/введение (15-20 мг/кг/сут.) (по триметоприму) мг/кг",
+          "page": 186,
+          "sha": "faebe3a760a1987fffae891cf7d549f0287f4739904b45b728ae517ba4dcfff6"
+        }
+      ]
+    },
+    {
+      "disease_id": "idiopaticheskii_skolioz",
+      "name": "Идиопатический сколиоз",
+      "cr_id": "850_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 11,
+      "match": 8,
+      "mismatch": 3,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2; при весе пациента ≥120 кг — 3 г",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2; при весе пациента ≥120 кг — 3 г",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500.0,
+          "kb": "1,5 г",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "900 мг",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 мг",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 42,
+          "sha": "e3380d3e65fd7913c9fe0c24f32a5045aae291abf3ed119106ef9ac990133ab8"
+        }
+      ]
+    },
+    {
+      "disease_id": "bronkhit_vyzvannyi_m_pneumoniae_ili_c_pneumoniae",
+      "name": "Бронхит",
+      "cr_id": "381_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 25,
+      "match": 17,
+      "mismatch": 8,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "азитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг/сутки, максимально 500 мг/сутки мг/кг",
+          "page": 21,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг/сутки, максимально 500 мг/сутки мг/кг",
+          "page": 21,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг/сутки, максимально 500 мг/сутки мг/кг",
+          "page": 21,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг/сутки, максимально 500 мг/сутки мг/кг",
+          "page": 21,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "кларитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 7.5,
+          "db_fixed": null,
+          "kb": "7,5 мг/кг; 15 мг/кг/сутки, максимально 1000 мг/сутки мг/кг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "кларитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 7.5,
+          "db_fixed": null,
+          "kb": "7,5 мг/кг; 15 мг/кг/сутки, максимально 1000 мг/сутки мг/кг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "кларитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 7.5,
+          "db_fixed": null,
+          "kb": "7,5 мг/кг; 15 мг/кг/сутки, максимально 1000 мг/сутки мг/кг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "кларитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 7.5,
+          "db_fixed": null,
+          "kb": "7,5 мг/кг; 15 мг/кг/сутки, максимально 1000 мг/сутки мг/кг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 4.0,
+          "db_fixed": null,
+          "kb": "4 мг/кг в 1 день, затем 2 мк/кг мг/кг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 200.0,
+          "kb": "1-й день: 200; затем: 100 мг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 4.0,
+          "db_fixed": null,
+          "kb": "4 мг/кг в 1 день, затем 2 мк/кг мг/кг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 200.0,
+          "kb": "1-й день: 200; затем: 100 мг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 1.0,
+          "db_fixed": null,
+          "kb": "1-й день: 4; затем: 2 мг/кг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MATCH",
+          "basis": "cross",
+          "db_kg": null,
+          "db_fixed": 1.0,
+          "kb": "1-й день: 4; затем: 2 мг/кг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 4.0,
+          "db_fixed": null,
+          "kb": "4 мг/кг в 1 день, затем 2 мк/кг мг/кг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 200.0,
+          "kb": "1-й день: 200; затем: 100 мг",
+          "page": 22,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20-60 мг/кг/сут по амоксициллину или 90 мг/кг/сутки мг/кг",
+          "page": 25,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 625.0,
+          "kb": "625 мг (500 мг + 125 мг) или 1000 мг (875 мг + 125 мг) мг",
+          "page": 25,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20-60 мг/кг/сут по амоксициллину или 90 мг/кг/сутки мг/кг",
+          "page": 25,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 625.0,
+          "kb": "625 мг (500 мг + 125 мг) или 1000 мг (875 мг + 125 мг) мг",
+          "page": 25,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20-60 мг/кг/сут по амоксициллину или 90 мг/кг/сутки мг/кг",
+          "page": 25,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 625.0,
+          "kb": "625 мг (500 мг + 125 мг) или 1000 мг (875 мг + 125 мг) мг",
+          "page": 25,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "625 мг (500 мг + 125 мг) или 1000 мг (875 мг + 125 мг) мг",
+          "page": 25,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20-60 мг/кг/сут по амоксициллину или 90 мг/кг/сутки мг/кг",
+          "page": 25,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 625.0,
+          "kb": "625 мг (500 мг + 125 мг) или 1000 мг (875 мг + 125 мг) мг",
+          "page": 25,
+          "sha": "881dd5dcd3510558e29cab91cf0694021e06e69ce5536749b349aba04923a2c4"
+        }
+      ]
+    },
+    {
+      "disease_id": "perelomy_kostei_taza_povrezhdeniia_tazovogo_koltsa",
+      "name": "Повреждения тазового кольца",
+      "cr_id": "857_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 24,
+      "match": 18,
+      "mismatch": 6,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2; при весе пациента ≥120 кг — 3 г",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2; при весе пациента ≥120 кг — 3 г",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "2; при весе пациента ≥120 кг — 3 г",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30.0,
+          "db_fixed": null,
+          "kb": "30 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500.0,
+          "kb": "1,5 г",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500.0,
+          "kb": "1,5 г",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50.0,
+          "db_fixed": null,
+          "kb": "50 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "гентамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 6.0,
+          "db_fixed": null,
+          "kb": "6 мг/кг",
+          "page": 35,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "900 мг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "900 мг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 мг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 мг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 34,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 3000.0,
+          "kb": "3,0 г",
+          "page": 35,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        },
+        {
+          "drug": "ампициллин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 3000.0,
+          "kb": "3,0 г",
+          "page": 35,
+          "sha": "b62ac5000b186ed0873b69df528bae9066d3b0596401725f8c0615c286c9ae74"
+        }
+      ]
+    },
+    {
+      "disease_id": "khronicheskii_virusnyi_gepatit_v_pri_razvitii_entsefalopatii",
+      "name": "Хронический вирусный гепатит B",
+      "cr_id": "900_1",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 6,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 6,
+      "checks": [
+        {
+          "drug": "rifaximin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "rifaximin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "rifaximin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "rifaximin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "rifaximin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "rifaximin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "neiroblastoma_standartnaia_gruppa_riska",
+      "name": "Нейробластома",
+      "cr_id": "78_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 2,
+      "match": 0,
+      "mismatch": 2,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "линезолид",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 600.0,
+          "kb": "600 мг или 10 мг/кг мг",
+          "page": 101,
+          "sha": "5c428d1c9a4604e892f6e715f696759a56a75431522941bb5ccfd4abe5d452c7"
+        },
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 150.0,
+          "kb": "150/750 мг/м2 /день, что эквивалентно 5 мг/кг/день по триметоприму мг",
+          "page": 129,
+          "sha": "5c428d1c9a4604e892f6e715f696759a56a75431522941bb5ccfd4abe5d452c7"
+        }
+      ]
+    },
+    {
+      "disease_id": "febrilnaia_neitropeniia",
+      "name": "Экстракраниальные герминогенные опухоли",
+      "cr_id": "69_2",
+      "status": "ALL_MATCH",
+      "regimens_checked": 2,
+      "match": 2,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "пиперациллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 300.0,
+          "db_fixed": null,
+          "kb": "#Пиперациллин+[Тазобактам] 300 (400) мг/кг/сут; #амикацин** 15–22,5 мг/кг/сут мг/кг",
+          "page": 64,
+          "sha": "7e90a1106c9db4cc96f7fd6a421ce8fcf6e3711e79011fa914842e8d9b0436d5"
+        },
+        {
+          "drug": "пиперациллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 300.0,
+          "db_fixed": null,
+          "kb": "#Пиперациллин+[Тазобактам] 300 (400) мг/кг/сут; #амикацин** 15–22,5 мг/кг/сут мг/кг",
+          "page": 64,
+          "sha": "7e90a1106c9db4cc96f7fd6a421ce8fcf6e3711e79011fa914842e8d9b0436d5"
+        }
+      ]
+    },
+    {
+      "disease_id": "vrozhdennaia_pnevmoniia",
+      "name": "Врожденная пневмония",
+      "cr_id": "905_1",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 31,
+      "match": 23,
+      "mismatch": 0,
+      "uncomparable": 8,
+      "checks": [
+        {
+          "drug": "амикацин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "начальная доза 10; далее 7,5 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "амикацин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "начальная доза 10; далее 7,5 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "амикацин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "начальная доза 10; далее 7,5 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "стартовая доза 15; затем 10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15.0,
+          "db_fixed": null,
+          "kb": "стартовая доза 15; затем 10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "линезолид",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "линезолид",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "линезолид",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "линезолид",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 10.0,
+          "db_fixed": null,
+          "kb": "10 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 40.0,
+          "db_fixed": null,
+          "kb": "40 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 40.0,
+          "db_fixed": null,
+          "kb": "40 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 40.0,
+          "db_fixed": null,
+          "kb": "40 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 20.0,
+          "db_fixed": null,
+          "kb": "20 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        },
+        {
+          "drug": "меропенем",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 40.0,
+          "db_fixed": null,
+          "kb": "40 мг/кг",
+          "page": 57,
+          "sha": "2b9dd195d0be2423ef56bfc097776c5b126dea07f6350a98525ec160a49bdf00"
+        }
+      ]
+    },
+    {
+      "disease_id": "otravlenie_gribami_soderzhashchimi_amanitin",
+      "name": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ])",
+      "cr_id": "926_1",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 4,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 4,
+      "checks": [
+        {
+          "drug": "benzylpenicillin_na",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "benzylpenicillin_na",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "benzylpenicillin_na",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "benzylpenicillin_na",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "anaerobnyi_balanopostit",
+      "name": "Баланопостит",
+      "cr_id": "928_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 8,
+      "match": 0,
+      "mismatch": 8,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "метронидазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400–500 мг",
+          "page": 22,
+          "sha": "8b1e0e2f26ae344472b03525863f0f52a49a8979f66148dd6d7d05636c97d04a"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400–500 мг",
+          "page": 22,
+          "sha": "8b1e0e2f26ae344472b03525863f0f52a49a8979f66148dd6d7d05636c97d04a"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400–500 мг",
+          "page": 22,
+          "sha": "8b1e0e2f26ae344472b03525863f0f52a49a8979f66148dd6d7d05636c97d04a"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400–500 мг",
+          "page": 22,
+          "sha": "8b1e0e2f26ae344472b03525863f0f52a49a8979f66148dd6d7d05636c97d04a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 375.0,
+          "kb": "375 мг",
+          "page": 22,
+          "sha": "8b1e0e2f26ae344472b03525863f0f52a49a8979f66148dd6d7d05636c97d04a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 375.0,
+          "kb": "375 мг",
+          "page": 22,
+          "sha": "8b1e0e2f26ae344472b03525863f0f52a49a8979f66148dd6d7d05636c97d04a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 375.0,
+          "kb": "375 мг",
+          "page": 22,
+          "sha": "8b1e0e2f26ae344472b03525863f0f52a49a8979f66148dd6d7d05636c97d04a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 375.0,
+          "kb": "375 мг",
+          "page": 22,
+          "sha": "8b1e0e2f26ae344472b03525863f0f52a49a8979f66148dd6d7d05636c97d04a"
+        }
+      ]
+    },
+    {
+      "disease_id": "khlamidiinaia_limfogranulema_venericheskaia",
+      "name": "Хламидийная лимфогранулёма (венерическая)",
+      "cr_id": "929_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 10,
+      "match": 3,
+      "mismatch": 7,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 100.0,
+          "kb": "100 мг",
+          "page": 18,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 100.0,
+          "kb": "100 мг",
+          "page": 18,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 100.0,
+          "kb": "100 мг",
+          "page": 18,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 100.0,
+          "kb": "100 мг",
+          "page": 18,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        },
+        {
+          "drug": "эритромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 19,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        },
+        {
+          "drug": "эритромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 19,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        },
+        {
+          "drug": "эритромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500.0,
+          "kb": "500 мг",
+          "page": 19,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1,0 г",
+          "page": 19,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1,0 г",
+          "page": 19,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "1,0 г",
+          "page": 19,
+          "sha": "c8d116b44b58fd50e2701ad844bc41f2a6071e0c2a7c6259367812ce97a12381"
+        }
+      ]
+    },
+    {
+      "disease_id": "idiopaticheskaia_eritema_koltsevidnaia_tsentrobezhnaia_dare",
+      "name": "Эритемы",
+      "cr_id": "930_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 4,
+      "match": 0,
+      "mismatch": 4,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "азитромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 250.0,
+          "kb": "250 мг",
+          "page": 20,
+          "sha": "7145c414b97514822be8879c552a3729b71453dc26652db6496722bee790956a"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 250.0,
+          "kb": "250 мг",
+          "page": 20,
+          "sha": "7145c414b97514822be8879c552a3729b71453dc26652db6496722bee790956a"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 250.0,
+          "kb": "250 мг",
+          "page": 20,
+          "sha": "7145c414b97514822be8879c552a3729b71453dc26652db6496722bee790956a"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 250.0,
+          "kb": "250 мг",
+          "page": 20,
+          "sha": "7145c414b97514822be8879c552a3729b71453dc26652db6496722bee790956a"
+        }
+      ]
+    },
+    {
+      "disease_id": "gidradenit_gnoinyi",
+      "name": "Гидраденит гнойный",
+      "cr_id": "963_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 7,
+      "match": 0,
+      "mismatch": 7,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 100.0,
+          "kb": "100 мг",
+          "page": 22,
+          "sha": "15c110b4f415387a64ebacfaaadc781cf8e445b5fd82e5dbbca0e70541d54f89"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 100.0,
+          "kb": "100 мг",
+          "page": 22,
+          "sha": "15c110b4f415387a64ebacfaaadc781cf8e445b5fd82e5dbbca0e70541d54f89"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 100.0,
+          "kb": "100 мг",
+          "page": 22,
+          "sha": "15c110b4f415387a64ebacfaaadc781cf8e445b5fd82e5dbbca0e70541d54f89"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 100.0,
+          "kb": "100 мг",
+          "page": 22,
+          "sha": "15c110b4f415387a64ebacfaaadc781cf8e445b5fd82e5dbbca0e70541d54f89"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 300.0,
+          "kb": "клиндамицин 300; #рифампицин 300 или 600 мг",
+          "page": 22,
+          "sha": "15c110b4f415387a64ebacfaaadc781cf8e445b5fd82e5dbbca0e70541d54f89"
+        },
+        {
+          "drug": "рифампицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 300.0,
+          "kb": "клиндамицин 300; #рифампицин 300 или 600 мг",
+          "page": 22,
+          "sha": "15c110b4f415387a64ebacfaaadc781cf8e445b5fd82e5dbbca0e70541d54f89"
+        },
+        {
+          "drug": "рифампицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 600.0,
+          "kb": "клиндамицин 300; #рифампицин 300 или 600 мг",
+          "page": 22,
+          "sha": "15c110b4f415387a64ebacfaaadc781cf8e445b5fd82e5dbbca0e70541d54f89"
+        }
+      ]
+    },
+    {
+      "disease_id": "priobretennye_deformatsii_stopy_pap_infektsii_oblasti_khirurgicheskogo_vmeshatelstva_pri_ortopedicheskikh_operatsiiakh_na_stope",
+      "name": "Приобретенные деформации стопы",
+      "cr_id": "999_1",
+      "status": "ALL_MATCH",
+      "regimens_checked": 8,
+      "match": 8,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "средняя дооперационная доза 2,0; разовая 1,0 г",
+          "page": 39,
+          "sha": "63fd27b0eb2ed55db5d1b30124278b5a50524a5c62ed3ff1af041b3e9b5600a5"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000.0,
+          "kb": "средняя дооперационная доза 2,0; разовая 1,0 г",
+          "page": 39,
+          "sha": "63fd27b0eb2ed55db5d1b30124278b5a50524a5c62ed3ff1af041b3e9b5600a5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500.0,
+          "kb": "средняя дооперационная доза 1,5; разовая 0,75 г",
+          "page": 39,
+          "sha": "63fd27b0eb2ed55db5d1b30124278b5a50524a5c62ed3ff1af041b3e9b5600a5"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500.0,
+          "kb": "средняя дооперационная доза 1,5; разовая 0,75 г",
+          "page": 39,
+          "sha": "63fd27b0eb2ed55db5d1b30124278b5a50524a5c62ed3ff1af041b3e9b5600a5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "стартовая доза 0,9 г",
+          "page": 39,
+          "sha": "63fd27b0eb2ed55db5d1b30124278b5a50524a5c62ed3ff1af041b3e9b5600a5"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 900.0,
+          "kb": "стартовая доза 0,9 г",
+          "page": 39,
+          "sha": "63fd27b0eb2ed55db5d1b30124278b5a50524a5c62ed3ff1af041b3e9b5600a5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "стартовая доза 1,0 при массе тела до 80 кг; 1,5 при массе >80 кг г",
+          "page": 39,
+          "sha": "63fd27b0eb2ed55db5d1b30124278b5a50524a5c62ed3ff1af041b3e9b5600a5"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000.0,
+          "kb": "стартовая доза 1,0 при массе тела до 80 кг; 1,5 при массе >80 кг г",
+          "page": 39,
+          "sha": "63fd27b0eb2ed55db5d1b30124278b5a50524a5c62ed3ff1af041b3e9b5600a5"
+        }
+      ]
+    },
+    {
+      "disease_id": "piodermiia_gangrenoznaia",
+      "name": "Пиодермия гангренозная",
+      "cr_id": "1002_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 1,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ко-тримоксазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400.0,
+          "kb": "400 + 80 мг",
+          "page": 38,
+          "sha": "29c4b89a96ba63a250ccd74e0cfd4872a8050b499174806e4119099097c96023"
+        }
+      ]
+    },
+    {
+      "disease_id": "bakterialnyi_keratit_podozrenie_profilaktika_vtorichnoi_bakterialnoi_infektsii_pri_keratite_drugoi_etiologii",
+      "name": "Кератит",
+      "cr_id": "1010_1",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 14,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 14,
+      "checks": [
+        {
+          "drug": "ofloxacin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "ofloxacin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "1-2 капли None",
+          "page": 24,
+          "sha": "44b27f986a29f615bb9166f7504cd8b92c7b954f333c4c7a415509c5819396e3"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "1-2 капли None",
+          "page": 24,
+          "sha": "44b27f986a29f615bb9166f7504cd8b92c7b954f333c4c7a415509c5819396e3"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "1-2 капли None",
+          "page": 24,
+          "sha": "44b27f986a29f615bb9166f7504cd8b92c7b954f333c4c7a415509c5819396e3"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "1-2 капли None",
+          "page": 24,
+          "sha": "44b27f986a29f615bb9166f7504cd8b92c7b954f333c4c7a415509c5819396e3"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "netilmicin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "tobramycin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "tobramycin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "tetracycline",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "tetracycline",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "эритромицин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "0,5-1 см None",
+          "page": 24,
+          "sha": "44b27f986a29f615bb9166f7504cd8b92c7b954f333c4c7a415509c5819396e3"
+        },
+        {
+          "drug": "эритромицин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": null,
+          "kb": "0,5-1 см None",
+          "page": 24,
+          "sha": "44b27f986a29f615bb9166f7504cd8b92c7b954f333c4c7a415509c5819396e3"
+        }
+      ]
+    },
+    {
+      "disease_id": "h_pylori",
+      "name": "Helicobacter pylori-инфекция (язвенная болезнь)",
+      "cr_id": "388_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 3,
+      "match": 0,
+      "mismatch": 3,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000,
+          "kb": "амоксициллин — не указана; кларитромицин: дети весом 15-24 кг – 250 мг 2 раза в сутки; 25-34 кг – 500 мг утро и 250 мг вечер; >35 кг – 500 мг 2 раза в сутки мг",
+          "page": 32,
+          "sha": "e30b05e350ebd05c7f9b6d6420d81cc9cd2b126a4e2ef313019458648b503952"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "амоксициллин — не указана; метронидазол: дети весом 15-24 кг – 250 мг 2 раза в сутки; 25-34 кг – 500 мг утро и 250 мг вечер; >35 кг – по 500 мг 2 раза в сутки мг",
+          "page": 32,
+          "sha": "e30b05e350ebd05c7f9b6d6420d81cc9cd2b126a4e2ef313019458648b503952"
+        },
+        {
+          "drug": "кларитромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "амоксициллин — не указана; кларитромицин: дети весом 15-24 кг – 250 мг 2 раза в сутки; 25-34 кг – 500 мг утро и 250 мг вечер; >35 кг – 500 мг 2 раза в сутки мг",
+          "page": 32,
+          "sha": "e30b05e350ebd05c7f9b6d6420d81cc9cd2b126a4e2ef313019458648b503952"
+        }
+      ]
+    },
+    {
+      "disease_id": "cholecystitis_cholangitis",
+      "name": "Острый холецистит и холангит",
+      "cr_id": "819_1",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 3,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 3,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": null,
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "пиперациллин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 16000,
+          "kb": "None None",
+          "page": 22,
+          "sha": "5e86a50798d70112e71754431975a7d4cfff6020fdc1f9b0d662437bda25eee9"
+        }
+      ]
+    },
+    {
+      "disease_id": "intraabdominal_infection",
+      "name": "Интраабдоминальная инфекция (осложнённый аппендицит, перитонит)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "cdi",
+      "name": "Clostridioides difficile-ассоциированная инфекция (псевдомембранозный колит)",
+      "cr_id": "878_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 3,
+      "match": 0,
+      "mismatch": 3,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "ванкомицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500,
+          "kb": "125 мг",
+          "page": 32,
+          "sha": "87e04643ea06c1c9400eadb87ecbaa477736e5dfe4f33a4b5e0985f7f049993c"
+        },
+        {
+          "drug": "метронидазол",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500,
+          "kb": "500 мг",
+          "page": 32,
+          "sha": "87e04643ea06c1c9400eadb87ecbaa477736e5dfe4f33a4b5e0985f7f049993c"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000,
+          "kb": "125 мг",
+          "page": 32,
+          "sha": "87e04643ea06c1c9400eadb87ecbaa477736e5dfe4f33a4b5e0985f7f049993c"
+        }
+      ]
+    },
+    {
+      "disease_id": "diverticulitis",
+      "name": "Острый дивертикулит толстой кишки",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "sbp",
+      "name": "Спонтанный бактериальный перитонит (СБП)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "neonatal_sepsis",
+      "name": "Неонатальный сепсис (ранний и поздний)",
+      "cr_id": "912_1",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 6,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 6,
+      "checks": [
+        {
+          "drug": "benzylpenicillin_na",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "гентамицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефотаксим",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": 150,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 28,
+          "sha": "43f15ff32c6a638baaefd761fecdcf99a07d978e4b23870b7513c8b8b648a720"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "гентамицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "меропенем",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "nec",
+      "name": "Некротизирующий энтероколит (НЭК)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "neonatal_conjunctivitis",
+      "name": "Конъюнктивит новорождённых",
+      "cr_id": "629_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 2,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "цефтриаксон",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "эритромицин",
+          "status": "MISMATCH",
+          "basis": "cross",
+          "db_kg": 40,
+          "db_fixed": null,
+          "kb": "0,5-1 см None",
+          "page": 14,
+          "sha": "467425dd03dd642f1d5fc4f56c4f342c319837116086c9d23241cc63f56a76af"
+        }
+      ]
+    },
+    {
+      "disease_id": "omphalitis",
+      "name": "Омфалит новорождённых",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "animal_bite",
+      "name": "Укусы животных (профилактика и лечение раневой инфекции)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "postop_prophylaxis",
+      "name": "Послеоперационная антибиотикопрофилактика",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "endocarditis_prophylaxis",
+      "name": "Профилактика инфекционного эндокардита",
+      "cr_id": "54_3",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 6,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 6,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "клиндамицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "asplenia_prophylaxis",
+      "name": "Аспления — антибиотикопрофилактика (пенициллиновая)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "uti_prophylaxis",
+      "name": "Профилактика рецидивирующих ИМП",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "cap_adult",
+      "name": "Внебольничная пневмония у взрослых",
+      "cr_id": "654_2",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 11,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 11,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 500,
+          "kb": "None None",
+          "page": 57,
+          "sha": "118c45dc9f800fb573108ebe2f1c33730ee285cfae2222af4baf55269904aed5"
+        },
+        {
+          "drug": "кларитромицин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "None None",
+          "page": 57,
+          "sha": "118c45dc9f800fb573108ebe2f1c33730ee285cfae2222af4baf55269904aed5"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "моксифлоксацин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 500,
+          "kb": "None None",
+          "page": 57,
+          "sha": "118c45dc9f800fb573108ebe2f1c33730ee285cfae2222af4baf55269904aed5"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "cap_child",
+      "name": "Внебольничная пневмония у детей",
+      "cr_id": "714_2",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 6,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 6,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": 90,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 43,
+          "sha": "ca0061e8923ebc95afde71f641dc9a70bef1d35debeac1736b1231c917866f62"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": 90,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 43,
+          "sha": "ca0061e8923ebc95afde71f641dc9a70bef1d35debeac1736b1231c917866f62"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": 90,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 43,
+          "sha": "ca0061e8923ebc95afde71f641dc9a70bef1d35debeac1736b1231c917866f62"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": 90,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 43,
+          "sha": "ca0061e8923ebc95afde71f641dc9a70bef1d35debeac1736b1231c917866f62"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "copd_exacerbation",
+      "name": "Острое бактериальное обострение ХОБЛ",
+      "cr_id": "603_3",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 4,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 4,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 1500,
+          "kb": "None None",
+          "page": 44,
+          "sha": "17ddc135109b0d22fc1c32a857e3aa346b8fec440d1064a17e3c47bac74cc11e"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 1750,
+          "kb": "None None",
+          "page": 44,
+          "sha": "17ddc135109b0d22fc1c32a857e3aa346b8fec440d1064a17e3c47bac74cc11e"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 500,
+          "kb": "None None",
+          "page": 45,
+          "sha": "17ddc135109b0d22fc1c32a857e3aa346b8fec440d1064a17e3c47bac74cc11e"
+        },
+        {
+          "drug": "моксифлоксацин",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 400,
+          "kb": "None None",
+          "page": 45,
+          "sha": "17ddc135109b0d22fc1c32a857e3aa346b8fec440d1064a17e3c47bac74cc11e"
+        }
+      ]
+    },
+    {
+      "disease_id": "sinusitis_adult",
+      "name": "Острый и рецидивирующий риносинусит у взрослых",
+      "cr_id": "313_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 3,
+      "match": 0,
+      "mismatch": 2,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500,
+          "kb": "500-1000 мг",
+          "page": 24,
+          "sha": "a577017d40c68d0168abdb5e5e1797d02956f65d6a79c4f30a530960595dace6"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1750,
+          "kb": "500-1000 мг",
+          "page": 24,
+          "sha": "a577017d40c68d0168abdb5e5e1797d02956f65d6a79c4f30a530960595dace6"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "sinusitis_child",
+      "name": "Острый и рецидивирующий риносинусит у детей",
+      "cr_id": "313_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 2,
+      "match": 0,
+      "mismatch": 2,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "cross",
+          "db_kg": 90,
+          "db_fixed": null,
+          "kb": "500-1000 мг",
+          "page": 24,
+          "sha": "a577017d40c68d0168abdb5e5e1797d02956f65d6a79c4f30a530960595dace6"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "cross",
+          "db_kg": 90,
+          "db_fixed": null,
+          "kb": "500-1000 мг",
+          "page": 24,
+          "sha": "a577017d40c68d0168abdb5e5e1797d02956f65d6a79c4f30a530960595dace6"
+        }
+      ]
+    },
+    {
+      "disease_id": "pharyngitis_adult",
+      "name": "Острый тонзиллит / фарингит (БГСА) у взрослых",
+      "cr_id": "306_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 6,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 5,
+      "checks": [
+        {
+          "drug": "phenoxymethylpenicillin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "1,5 г/сут в 3 приема или 1,0 г в сут в 2 приема г",
+          "page": 19,
+          "sha": "33d3393ae7f5aec31cfe933e186a98e6aef853cc563665399d46d79f803ec337"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефиксим",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "джозамицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "pharyngitis_child",
+      "name": "Острый тонзиллит / фарингит (БГСА) у детей",
+      "cr_id": "306_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 6,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 5,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "cross",
+          "db_kg": 50,
+          "db_fixed": null,
+          "kb": "1,5 г/сут в 3 приема или 1,0 г в сут в 2 приема г",
+          "page": 19,
+          "sha": "33d3393ae7f5aec31cfe933e186a98e6aef853cc563665399d46d79f803ec337"
+        },
+        {
+          "drug": "phenoxymethylpenicillin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефиксим",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "джозамицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "aom_child",
+      "name": "Острый средний отит у детей",
+      "cr_id": "314_3",
+      "status": "ALL_MATCH",
+      "regimens_checked": 8,
+      "match": 8,
+      "mismatch": 0,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 60,
+          "db_fixed": null,
+          "kb": "50-60 мг/кг",
+          "page": 24,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 50,
+          "db_fixed": null,
+          "kb": "50-60 мг/кг",
+          "page": 24,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 90,
+          "db_fixed": null,
+          "kb": "80-90 мг/кг",
+          "page": 23,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 45,
+          "db_fixed": null,
+          "kb": "45-60 мг/кг",
+          "page": 23,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "цефиксим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 8,
+          "db_fixed": null,
+          "kb": "8 мг/кг",
+          "page": 24,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 30,
+          "db_fixed": null,
+          "kb": "30 мг/кг",
+          "page": 24,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "кларитромицин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 15,
+          "db_fixed": null,
+          "kb": "15 мг/кг",
+          "page": 24,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 90,
+          "db_fixed": null,
+          "kb": "90 мг/кг",
+          "page": 24,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        }
+      ]
+    },
+    {
+      "disease_id": "otitis_media_adult",
+      "name": "Острый средний отит у взрослых",
+      "cr_id": "314_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 5,
+      "match": 1,
+      "mismatch": 3,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1500,
+          "kb": "500-1000 мг",
+          "page": 23,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "цефуроксим",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "1,0 г",
+          "page": 24,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1750,
+          "kb": "500-1000 мг",
+          "page": 23,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "кларитромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "1000 мг",
+          "page": 24,
+          "sha": "a88fc39f832488fc8fdb934a8216db2b94749b8de14e974e622718250d910f9a"
+        }
+      ]
+    },
+    {
+      "disease_id": "hap",
+      "name": "Нозокомиальная (внутрибольничная) пневмония",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "epiglottitis_acute",
+      "name": "Острый эпиглоттит",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "tuberculosis",
+      "name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "cr_id": "16_4",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 1,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": null,
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "aspiration_pneumonia",
+      "name": "Аспирационная пневмония",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "lung_abscess_empyema",
+      "name": "Абсцесс лёгкого / эмпиема плевры",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "erysipelas",
+      "name": "Рожа у взрослых",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "diabetic_foot",
+      "name": "Синдром диабетической стопы (инфекция)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "cellulitis",
+      "name": "Целлюлит / флегмона",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "skin_abscess",
+      "name": "Абсцесс кожи / фурункул / карбункул",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "necrotizing_fasciitis",
+      "name": "Некротизирующий фасциит",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "osteomyelitis",
+      "name": "Остеомиелит",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "impetigo",
+      "name": "Импетиго",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "septic_arthritis",
+      "name": "Септический (гнойный) артрит",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "sepsis_adult",
+      "name": "Сепсис и септический шок у взрослых",
+      "cr_id": "898_1",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "pneumococcal_meningitis",
+      "name": "Пневмококковый менингит",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "meningococcal_disease",
+      "name": "Менингококковая инфекция",
+      "cr_id": "1020_1",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "infective_endocarditis",
+      "name": "Инфекционный эндокардит (лечение)",
+      "cr_id": "54_3",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 3,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 3,
+      "checks": [
+        {
+          "drug": null,
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефазолин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "ванкомицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "bacterial_meningitis_empiric",
+      "name": "Бактериальный менингит — эмпирическая терапия",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "listeriosis",
+      "name": "Листериоз (менингит, бактериемия)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "febrile_neutropenia",
+      "name": "Фебрильная нейтропения (эмпирическая терапия)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "tetanus",
+      "name": "Столбняк",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "cystitis_female",
+      "name": "Острый неосложнённый цистит у женщин",
+      "cr_id": "14_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 3,
+      "match": 1,
+      "mismatch": 2,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "фосфомицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 3000,
+          "kb": "3 г",
+          "page": 14,
+          "sha": "f561b85da4f1efad2336ac61c00713562d139724efd18d5ed24c840e9aa87719"
+        },
+        {
+          "drug": "нитрофурантоин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 200,
+          "kb": "50 мг",
+          "page": 16,
+          "sha": "f561b85da4f1efad2336ac61c00713562d139724efd18d5ed24c840e9aa87719"
+        },
+        {
+          "drug": "цефиксим",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400,
+          "kb": "400 мг",
+          "page": 14,
+          "sha": "f561b85da4f1efad2336ac61c00713562d139724efd18d5ed24c840e9aa87719"
+        }
+      ]
+    },
+    {
+      "disease_id": "pyelonephritis_adult",
+      "name": "Острый пиелонефрит у взрослых (без обструкции)",
+      "cr_id": "9_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 4,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 3,
+      "checks": [
+        {
+          "drug": "цефиксим",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "левофлоксацин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "500 мг",
+          "page": 32,
+          "sha": "b46960a144b21cacf97f39435c53489bb8a57f0e775be6d8df9e658f67ce08cf"
+        }
+      ]
+    },
+    {
+      "disease_id": "ut_child",
+      "name": "Инфекции мочевых путей у детей",
+      "cr_id": "281_3",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 4,
+      "match": 1,
+      "mismatch": 0,
+      "uncomparable": 3,
+      "checks": [
+        {
+          "drug": "цефиксим",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MATCH",
+          "basis": "kg",
+          "db_kg": 45,
+          "db_fixed": null,
+          "kb": "45-60 мг/кг",
+          "page": 20,
+          "sha": "7db13a28ac5708ffccfc7216d81f4a2c3ffcbb9527be87988207a608713577df"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефотаксим",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "urolithiasis_infected",
+      "name": "Мочекаменная болезнь с инфекцией / инфицированный камень",
+      "cr_id": "7_2",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "syphilis",
+      "name": "Сифилис",
+      "cr_id": "197_2",
+      "status": "MATCH_WITH_UNCOMPARABLE",
+      "regimens_checked": 5,
+      "match": 0,
+      "mismatch": 0,
+      "uncomparable": 5,
+      "checks": [
+        {
+          "drug": "benzathine_benzylpenicillin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "benzathine_benzylpenicillin",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "доксициклин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "benzylpenicillin_na",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "gonorrhea",
+      "name": "Гонококковая инфекция",
+      "cr_id": "218_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 2,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "цефтриаксон",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500,
+          "kb": "500 мг",
+          "page": 18,
+          "sha": "b7ffae3a55d3c4d4eb71462fefacb6bdaab55e8c8dfdcb8af21d21e017bc54a1"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "chlamydia_urogenital",
+      "name": "Урогенитальный хламидиоз",
+      "cr_id": "194_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 2,
+      "match": 1,
+      "mismatch": 1,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "доксициклин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 200,
+          "kb": "100 мг",
+          "page": 19,
+          "sha": "56123f20d4d50c1442e0d026e4faf87d516e5b483f069dd8713e80888190ac94"
+        },
+        {
+          "drug": "азитромицин",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "1,0 г",
+          "page": 21,
+          "sha": "56123f20d4d50c1442e0d026e4faf87d516e5b483f069dd8713e80888190ac94"
+        }
+      ]
+    },
+    {
+      "disease_id": "mycoplasma_genitalium",
+      "name": "Mycoplasma genitalium-инфекция (уретрит, цервицит)",
+      "cr_id": "216_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 2,
+      "match": 0,
+      "mismatch": 2,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "азитромицин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 500,
+          "kb": "500 мг – 1-й день, затем по 250 мг мг",
+          "page": 14,
+          "sha": "b8a525c56b01e63620e20e7c07a9899e74ba1d0f5ec1f31dd7215f675228eade"
+        },
+        {
+          "drug": "моксифлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 400,
+          "kb": "400 мг",
+          "page": 14,
+          "sha": "b8a525c56b01e63620e20e7c07a9899e74ba1d0f5ec1f31dd7215f675228eade"
+        }
+      ]
+    },
+    {
+      "disease_id": "bacterial_vaginosis",
+      "name": "Бактериальный вагиноз",
+      "cr_id": "206_2",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "postpartum_endometritis",
+      "name": "Послеродовой эндометрит",
+      "cr_id": "791_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 2,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 1,
+      "checks": [
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 3000,
+          "kb": "500 мг",
+          "page": 30,
+          "sha": "a07240bb3c3b0858f7fac5a1a26f841fa4ff9bfc039b365ffe0ca1953f0031b8"
+        },
+        {
+          "drug": null,
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "pyelonephritis_pregnancy",
+      "name": "Инфекции мочевых путей у беременных (бактериурия, цистит, пиелонефрит)",
+      "cr_id": "719_2",
+      "status": "MISMATCHES",
+      "regimens_checked": 5,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 4,
+      "checks": [
+        {
+          "drug": "фосфомицин",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефиксим",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "амоксициллин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1750,
+          "kb": "1000 мг (875 мг + 125 мг) мг",
+          "page": 43,
+          "sha": "5844866ad33a868d3135a27e0bca1f332c7f075ca2ed687e20bba12980de1492"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        },
+        {
+          "drug": "цефотаксим",
+          "status": "UNCOMPARABLE",
+          "reason": "no_kb_drug"
+        }
+      ]
+    },
+    {
+      "disease_id": "epididymitis",
+      "name": "Острый эпидидимит / эпидидимоорхит",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "lyme_disease",
+      "name": "Болезнь Лайма (боррелиоз)",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "brucellosis",
+      "name": "Бруцеллёз",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "anthrax",
+      "name": "Сибирская язва",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "diphtheria",
+      "name": "Дифтерия",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "pertussis",
+      "name": "Коклюш",
+      "cr_id": "1023_1",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "salmonellosis",
+      "name": "Сальмонеллёз (нетифозный)",
+      "cr_id": "700_3",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "shigellosis",
+      "name": "Шигеллёз (бактериальная дизентерия)",
+      "cr_id": "869_1",
+      "status": "MISMATCHES",
+      "regimens_checked": 3,
+      "match": 0,
+      "mismatch": 1,
+      "uncomparable": 2,
+      "checks": [
+        {
+          "drug": "цефиксим",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": null,
+          "db_fixed": 400,
+          "kb": "None None",
+          "page": 33,
+          "sha": "e636e93b72455caa88089b8a23a63d8c989bbce5112868bd6f6f2c3627794a94"
+        },
+        {
+          "drug": "цефиксим",
+          "status": "UNCOMPARABLE",
+          "basis": "none",
+          "db_kg": 8,
+          "db_fixed": null,
+          "kb": "None None",
+          "page": 33,
+          "sha": "e636e93b72455caa88089b8a23a63d8c989bbce5112868bd6f6f2c3627794a94"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "0,5 г",
+          "page": 32,
+          "sha": "e636e93b72455caa88089b8a23a63d8c989bbce5112868bd6f6f2c3627794a94"
+        }
+      ]
+    },
+    {
+      "disease_id": "typhoid_fever",
+      "name": "Брюшной тиф и паратифы",
+      "cr_id": "494_3",
+      "status": "MISMATCHES",
+      "regimens_checked": 4,
+      "match": 1,
+      "mismatch": 3,
+      "uncomparable": 0,
+      "checks": [
+        {
+          "drug": "цефтриаксон",
+          "status": "MATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 2000,
+          "kb": "1,0–2,0 г",
+          "page": 27,
+          "sha": "321039606771470ef4a0d98c2767523cfa723b0e08433ef69c270d399820d6a8"
+        },
+        {
+          "drug": "цефтриаксон",
+          "status": "MISMATCH",
+          "basis": "cross",
+          "db_kg": 75,
+          "db_fixed": null,
+          "kb": "1,0–2,0 г",
+          "page": 27,
+          "sha": "321039606771470ef4a0d98c2767523cfa723b0e08433ef69c270d399820d6a8"
+        },
+        {
+          "drug": "цефиксим",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 800,
+          "kb": "200 мг",
+          "page": 28,
+          "sha": "321039606771470ef4a0d98c2767523cfa723b0e08433ef69c270d399820d6a8"
+        },
+        {
+          "drug": "ципрофлоксацин",
+          "status": "MISMATCH",
+          "basis": "fixed",
+          "db_kg": null,
+          "db_fixed": 1000,
+          "kb": "0,5 г",
+          "page": 27,
+          "sha": "321039606771470ef4a0d98c2767523cfa723b0e08433ef69c270d399820d6a8"
+        }
+      ]
+    },
+    {
+      "disease_id": "leptospirosis",
+      "name": "Лептоспироз",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    },
+    {
+      "disease_id": "actinomycosis",
+      "name": "Актиномикоз",
+      "cr_id": "—",
+      "status": "NO_KB_GUIDELINE",
+      "regimens_checked": 0
+    }
+  ]
+}

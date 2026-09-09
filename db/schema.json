@@ -90,6 +90,7 @@
         "single_dose_mg": {"type": ["number", "null"]},
         "max_daily_mg": {"type": ["number", "null"]},
         "freq_per_day": {"type": "integer"},
+        "dose_basis": {"type": ["string", "null"], "enum": ["per_dose", "per_day", "weight_per_day", "both_consistent", "inconsistent", "none", null], "description": "RC-030 denominator_time: в каких единицах первоисточник КР пишет дозу. per_dose = разовая (single_dose_mg первична), per_day/weight_per_day = суточная первична, both_consistent = обе формы согласованы (single×freq=daily). Опционально; null = legacy."},
         "duration_days": {"type": ["string", "null"]},
         "duration_note": {"type": ["string", "null"]},
         "regimen_label": {"type": "string", "description": "Подпись режима для выбора юзером (например '90 мг/кг 2 р/д')"}
@@ -117,7 +118,7 @@
       "type": "object",
       "required": ["form_type", "concentration"],
       "properties": {
-        "form_type": {"enum": ["tablet", "capsule", "suspension", "syrup", "solution_iv", "solution_im", "powder_for_suspension", "topical", "suppository", "granules"]},
+        "form_type": {"enum": ["tablet", "capsule", "suspension", "syrup", "solution_iv", "solution_im", "powder_for_suspension", "powder_for_injection", "topical", "suppository", "granules"]},
         "concentration": {"type": "string"},
         "concentration_mg_per_ml": {"type": ["number", "null"]},
         "notes": {"type": ["string", "null"]},

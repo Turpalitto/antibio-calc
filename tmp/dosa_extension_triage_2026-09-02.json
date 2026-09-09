@@ -1,0 +1,292 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "DOSA_EXTENSION_TRIAGE",
+  "generated_by": "dosa_extension_triage.py",
+  "created": "2026-09-02",
+  "scope_note": "Инженерная классификация записей source-слоя по теме КР. НЕ является врачебным решением/аттестацией. Требует повторного врачебного ревью. Все записи остаются calculation_blocked=True до врачебного зерна.",
+  "categories": [
+    {
+      "key": "congenital_cardiac_prophylaxis",
+      "name": "Врождённые пороки сердца — профилактика инфекционного эндокардита",
+      "records": [
+        {
+          "id": "defekt_aortolegochnoi_peregorodki",
+          "cr_id": "730_2",
+          "name": "Дефект аортолегочной перегородки"
+        },
+        {
+          "id": "vrozhdennyi_podklapannyi_stenoz_aorty",
+          "cr_id": "745_2",
+          "name": "Врожденный подклапанный стеноз аорты"
+        },
+        {
+          "id": "trekhpredserdnoe_serdtse_profilaktika_infektsionnogo_endokardita_posle_khirurgicheskoi_korrektsii",
+          "cr_id": "772_1",
+          "name": "Трехпредсердное сердце"
+        }
+      ]
+    },
+    {
+      "key": "surgical_prophylaxis",
+      "name": "Периоперационная антибиотикопрофилактика (хирургическая)",
+      "records": [
+        {
+          "id": "perelom_dna_glaznitsy",
+          "cr_id": "652_2",
+          "name": "Перелом дна глазницы"
+        },
+        {
+          "id": "rody_odnoplodnye_rodorazreshenie_putem_kesareva_secheniia",
+          "cr_id": "639_2",
+          "name": "Роды одноплодные, родоразрешение путем кесарева сечения"
+        },
+        {
+          "id": "povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika",
+          "cr_id": "691_2",
+          "name": "Повреждение связок коленного сустава"
+        },
+        {
+          "id": "perelomy_proksimalnogo_otdela_bedrennoi_kosti_endoprotezirovanie_osteosintez_pri_ppobk",
+          "cr_id": "980_1",
+          "name": "Переломы проксимального отдела бедренной кости"
+        },
+        {
+          "id": "posleoperatsionnaia_ventralnaia_gryzha",
+          "cr_id": "685_1",
+          "name": "Послеоперационная вентральная грыжа"
+        },
+        {
+          "id": "starcheskaia_katarakta_profilaktika_ostrogo_bakterialnogo_posleoperatsionnogo_endoftalmita_obpe_pri_operatsii_po_udaleniiu_katarakty",
+          "cr_id": "284_2",
+          "name": "Катаракта старческая"
+        },
+        {
+          "id": "neoslozhnennye_gryzhi_perednei_briushnoi_stenki",
+          "cr_id": "828_1",
+          "name": "Грыжи передней брюшной стенки"
+        },
+        {
+          "id": "idiopaticheskii_skolioz",
+          "cr_id": "850_1",
+          "name": "Идиопатический сколиоз"
+        },
+        {
+          "id": "perelomy_kostei_taza_povrezhdeniia_tazovogo_koltsa",
+          "cr_id": "857_1",
+          "name": "Повреждения тазового кольца"
+        },
+        {
+          "id": "priobretennye_deformatsii_stopy_pap_infektsii_oblasti_khirurgicheskogo_vmeshatelstva_pri_ortopedicheskikh_operatsiiakh_na_stope",
+          "cr_id": "999_1",
+          "name": "Приобретенные деформации стопы"
+        }
+      ]
+    },
+    {
+      "key": "oncology",
+      "name": "Онкология (фебрильная нейтропения / профилактика ПЖП)",
+      "records": [
+        {
+          "id": "ostryi_limfoblastnyi_leikoz_limfoblastnaia_limfoma_ostrye_leikozy_neodnoznachnoi_lineinosti",
+          "cr_id": "529_2",
+          "name": "Острый лимфобластный лейкоз"
+        },
+        {
+          "id": "febrilnaia_neitropeniia_pri_rake_nosoglotki",
+          "cr_id": "66_4",
+          "name": "Рак носоглотки"
+        },
+        {
+          "id": "ostryi_mieloidnyi_leikoz_profilaktika_pnevmotsistnoi_pnevmonii_u_patsientov_poluchivshikh_fludarabin",
+          "cr_id": "586_3",
+          "name": "Острые миелоидные лейкозы"
+        },
+        {
+          "id": "gepatoblastoma",
+          "cr_id": "68_2",
+          "name": "Гепатобластома"
+        },
+        {
+          "id": "neiroblastoma_standartnaia_gruppa_riska",
+          "cr_id": "78_2",
+          "name": "Нейробластома"
+        },
+        {
+          "id": "febrilnaia_neitropeniia",
+          "cr_id": "69_2",
+          "name": "Экстракраниальные герминогенные опухоли"
+        }
+      ]
+    },
+    {
+      "key": "immunodeficiency_pjp",
+      "name": "Иммунодефицит / профилактика пневмоцистной пневмонии",
+      "records": [
+        {
+          "id": "kh_stseplennyi_limfoproliferativnyi_sindrom_khlp_s_otiagoshchennym_infektsionnym_anamnezom",
+          "cr_id": "544_1",
+          "name": "Первичный иммунодефицит- Х-сцепленный лимфопролиферативный синдром"
+        },
+        {
+          "id": "pnevmotsistnaia_pnevmoniia",
+          "cr_id": "79_2",
+          "name": "ВИЧ-инфекция у взрослых"
+        },
+        {
+          "id": "sistemnyi_skleroz_profilaktika_pnevmotsistnoi_pnevmonii_pri_naznachenii_rituksimaba_i_tsiklofosfamida",
+          "cr_id": "607_1",
+          "name": "Системный склероз"
+        },
+        {
+          "id": "profilaktika_pnevmotsistnoi_pnevmonii_pri_terapii_rituksimabom",
+          "cr_id": "26_4",
+          "name": "Юношеский артрит с системным началом"
+        },
+        {
+          "id": "pervichnye_immunodefitsity_s_preimushchestvennoi_nedostatochnostiu_sinteza_antitel",
+          "cr_id": "735_1",
+          "name": "Первичные иммунодефициты с преимущественной недостаточностью синтеза антител"
+        },
+        {
+          "id": "profilaktika_pnevmotsistnoi_pnevmonii_pri_naznachenii_rituksimaba",
+          "cr_id": "757_1",
+          "name": "Семейная средиземноморская лихорадка (Наследственный семейный амилоидоз)"
+        },
+        {
+          "id": "prisoedinenie_infektsii_pri_tkin",
+          "cr_id": "335_1",
+          "name": "Первичный иммунодефицит: тяжелая комбинированная иммунная недостаточность"
+        },
+        {
+          "id": "profilaktika_pnevmotsistnoi_pnevmonii_u_patsientov_poluchaiushchikh_tsiklofosfamid_i_rituksimab",
+          "cr_id": "479_2",
+          "name": "Неспецифический аортоартериит"
+        }
+      ]
+    },
+    {
+      "key": "metabolic_genetic",
+      "name": "Метаболические / генетические (редкие) — амбулаторная анти-микробная поддержка",
+      "records": [
+        {
+          "id": "kistoznyi_fibroz_situatsiia_vozbuditel_ne_ukazany_vo_fragmente",
+          "cr_id": "372_3",
+          "name": "Кистозный фиброз (муковисцидоз)"
+        },
+        {
+          "id": "serpovidno_kletochnaia_bolezn_profilaktika_infektsii_u_detei_rannego_vozrasta",
+          "cr_id": "543_3",
+          "name": "Серповидно-клеточные нарушения"
+        },
+        {
+          "id": "propionovaia_atsidemiia_atsiduriia",
+          "cr_id": "681_2",
+          "name": "Пропионовая ацидемия /ацидурия"
+        }
+      ]
+    },
+    {
+      "key": "infection",
+      "name": "Инфекции (классическое дозирование)",
+      "records": [
+        {
+          "id": "urogenitalnyi_trikhomoniaz",
+          "cr_id": "241_3",
+          "name": "Урогенитальный трихомониаз"
+        },
+        {
+          "id": "atopicheskii_dermatit_oslozhnennyi_vtorichnoi_infektsiei",
+          "cr_id": "265_3",
+          "name": "Атопический дерматит"
+        },
+        {
+          "id": "bolezn_krona_tonkoi_kishki_krome_terminalnogo_ileita_pri_nalichii_priznakov_sistemnogo_vospaleniia_i_ili_infiltrata",
+          "cr_id": "682_2",
+          "name": "Болезнь Крона"
+        },
+        {
+          "id": "rezervuarit_u_detei_s_iak",
+          "cr_id": "391_4",
+          "name": "Язвенный колит"
+        },
+        {
+          "id": "vnutricherepnye_gnoinye_oslozhneniia_meningit_ili_ventrikulit",
+          "cr_id": "493_3",
+          "name": "Черепно-мозговая травма у детей"
+        },
+        {
+          "id": "zabolevaniia_bartolinovoi_zhelezy_abzh_kbzh",
+          "cr_id": "765_1",
+          "name": "Болезни бартолиновой железы"
+        },
+        {
+          "id": "infektsii_amnioticheskoi_polosti_i_plodnykh_obolochek_khorioamnionit",
+          "cr_id": "776_1",
+          "name": "Инфекции амниотической полости и плодных оболочек (хориоамнионит)"
+        },
+        {
+          "id": "vykidysh_samoproizvolnyi_abort",
+          "cr_id": "670_2",
+          "name": "Выкидыш (самопроизвольный аборт)"
+        },
+        {
+          "id": "bronkhit_vyzvannyi_m_pneumoniae_ili_c_pneumoniae",
+          "cr_id": "381_3",
+          "name": "Бронхит"
+        },
+        {
+          "id": "vrozhdennaia_pnevmoniia",
+          "cr_id": "905_1",
+          "name": "Врожденная пневмония"
+        },
+        {
+          "id": "otravlenie_gribami_soderzhashchimi_amanitin",
+          "cr_id": "926_1",
+          "name": "ТОКСИЧЕСКОЕ ДЕЙСТВИЕ ДРУГИХ ЯДОВИТЫХ ВЕЩЕСТВ, СОДЕРЖАЩИХСЯ В СЪЕДЕННЫХ, ГРИБАХ (НЕ ВКЛЮЧЕНЫ ГРИБЫ ПСИХОДИСЛЕПТИКИ [ГАЛЛЮЦИНОГЕНЫ])"
+        },
+        {
+          "id": "anaerobnyi_balanopostit",
+          "cr_id": "928_1",
+          "name": "Баланопостит"
+        },
+        {
+          "id": "khlamidiinaia_limfogranulema_venericheskaia",
+          "cr_id": "929_1",
+          "name": "Хламидийная лимфогранулёма (венерическая)"
+        },
+        {
+          "id": "idiopaticheskaia_eritema_koltsevidnaia_tsentrobezhnaia_dare",
+          "cr_id": "930_1",
+          "name": "Эритемы"
+        },
+        {
+          "id": "gidradenit_gnoinyi",
+          "cr_id": "963_1",
+          "name": "Гидраденит гнойный"
+        },
+        {
+          "id": "piodermiia_gangrenoznaia",
+          "cr_id": "1002_1",
+          "name": "Пиодермия гангренозная"
+        },
+        {
+          "id": "bakterialnyi_keratit_podozrenie_profilaktika_vtorichnoi_bakterialnoi_infektsii_pri_keratite_drugoi_etiologii",
+          "cr_id": "1010_1",
+          "name": "Кератит"
+        }
+      ]
+    },
+    {
+      "key": "unclassified",
+      "name": "Не классифицировано",
+      "records": [
+        {
+          "id": "khronicheskii_virusnyi_gepatit_v_pri_razvitii_entsefalopatii",
+          "cr_id": "900_1",
+          "name": "Хронический вирусный гепатит B"
+        }
+      ]
+    }
+  ],
+  "total": 48
+}

@@ -1,6 +1,325 @@
+## 2026-09-02: Dose verification completed for all nosologies (38 to review)
+
+- Ran dose_verification harness over the 120-rec DB -> 23 verified, 18 partial, 41 no-KB, 38 mismatch-review.
+  Report: tmp/dose_verification_report_2026-09-02.md.
+- **Open (investigable):** the 38 mismatch diseases — mostly daily-vs-single-dose representation + chosen
+  alternative variants; could be re-verified by normalizing DB-daily/freq to per-dose before comparing, or
+  adjudicated by a physician. The 41 no-KB (cr_id='—' profile protocols) cannot be verified against KB.
+- **Physician-gated (owner/physician only, P5.6/P6):** adjudicate the 38; flip CALCULATOR_BOUND_VERIFIED on the
+  6 originals; curate physician_review_48. Agent NEVER auto-attests.
+- Rebuild: `db/build_db.py --db db/antibio_db.json` then `db/build_html.py`; test `.venv/bin/python -m pytest -q`.
+## 2026-09-02: aom_child severe/IV amoxiclav tier added
+
+- **Done:** added aom_child_complicated scenario (amoxiclav IV 90 mg/kg/day x3, <4kg 60mg/kg, adults 3.6g/day)
+  from КР 314_3 table 4 footnote 4 into db/diseases/respiratory.json; rebuilt db + html (520349); suite 1624.
+- **Still open:** refresh physician_review_48.md if the aom_child addition should be noted as a dose tier
+  example; minzdrav UNREACHABLE (live-verify 48 code_versions, CR 313_3, contracts 898_1/912_1/629_2);
+  physician P5.6/P6 owner-only (flip CALCULATOR_BOUND_VERIFIED on the 6 originals, curate review pack).
+- Rebuild: `db/build_db.py --db db/antibio_db.json` then `db/build_html.py`; test `pytest -q`.
+## 2026-09-02: Coverage raised to 120 nosologies (all-antibiotic-KB pass)
+
+- **Done:** registered-drug namespace 41->48; DOSA extension regenerated over all 294 KB guidelines -> 48 recs
+  (excluded malformed topical conjunctivitis 629_2); db/antibio_db.json = 120 recs/10 cats/48 drugs; HTML rebuilt
+  (519478); suite 1624 passed. Only aom_child(314_3) unblocked.
+- **Stale, refresh on next pass:** clinical_sources/physician_review_47.md + tmp/dosa_extension_triage
+  now reflect 47; regenerating to 48 is a follow-up. All new records calculation_blocked (SOURCE_SPEC_MISSING).
+- **Still open (network-gated):** live-verify the 48 code_versions via source_fetch_verify.py; CR 313_3 PDF;
+  contracts 898_1/912_1/629_2. minzdrav UNREACHABLE.
+- **Physician-gated (owner/physician only, P5.6/P6):** flip CALCULATOR_BOUND_VERIFIED on the 6 originals;
+  curate physician_review_47/48. Agent NEVER auto-attests.
+- Rebuild: `db/build_db.py --db db/antibio_db.json` then `db/build_html.py`; test `.venv/bin/python -m pytest -q`.
+## 2026-09-02: Verification harness done — remaining is physician/adjudication-only
+
+- Done: dose_verification.py harness (range-aware, evidence-only). tmp/dose_verification_2026-09-02.json.
+- **The 113 'mismatched' must be human-reviewed per-case** (many are valid multi-variant/range, NOT errors;
+  e.g. clindamycin 1200mg daily vs KB '300 мг' single-dose granualrity; PID ceftriaxone variants;
+  atopic_dermatitis amoxicillin cross-variants). This is a genuine medical adjudication — physician-only.
+- Still network-gated: live-verify 47 extension code_versions via source_fetch_verify.py; CR 313_3 PDF;
+  contracts 898_1/912_1/629_2. minzdrav UNREACHABLE (nc -z apicr.minzdrav.gov.ru 443).
+- Physician P5.6/P6 (owner-only): curate clinical_sources/physician_review_47.md + the verification
+  mismatch list; flip CALCULATOR_BOUND_VERIFIED on 6 binding-ready origins. Agent never auto-attests.
+- Rebuild after db change: `.venv/bin/python db/build_db.py --db db/antibio_db.json` then
+  `.venv/bin/python db/build_html.py`; verify `.venv/bin/python -m pytest -q`.
+## 2026-09-02: Calculation bug fixed — calculator verified to cefuroxime rendering
+
+- **Done:** fixed renderFormChips child liquid-default to require `concentration_mg_per_ml != null`
+  (was picking the injectable cefuroxime vial → Infinity). antibiotic_calc.html rebuilt (509655 bytes).
+  Verified all 7 aom_child regimens render finite; suite **1619 passed**.
+- **Still open (network-gated):** live-verify the 47 extension code_versions via source_fetch_verify.py;
+  obtain CR 313_3 full PDF; contracts 898_1/912_1/629_2. minzdrav UNREACHABLE (nc -z apicr.minzdrav.gov.ru 443).
+- **Physician-gated (owner/physician only, P5.6/P6):** set CALCULATOR_BOUND_VERIFIED on the 6 originals
+  (cap_adult 654_2, cap_child 714_2, otitis_media_adult 314_3, pyelonephritis_adult 9_3, ut_child 281_3,
+  pyelonephritis_pregnancy 719_2); curate clinical_sources/physician_review_47.md (17 infection-classified
+  are the realistic binding candidates). Agent NEVER auto-attests.
+- **Rebuild after any db change:** `.venv/bin/python db/build_db.py --db db/antibio_db.json` then
+  `.venv/bin/python db/build_html.py`; run `.venv/bin/python -m pytest -q`.
 # NEXT_TASK.md — ANTIBIO
 
+## Route-dedup fix + extension 47 + triage refined — 2026-09-02
+
+Done: fixed duplicate-route bug (64→0), regenerated extension against the original 72 base →
+47 records (with one route-fix the infection/prophylaxis split is now 0 unclassified:
+surgical 10, infection 17, onco 6, id-pjp 8, metabolic 3, cardiac 3). DB 119 recs / 10 cats /
+41 drugs. Suite 1619 passed.
+
+**Remaining (next agent):**
+1. **Physician curation of the triage (P5.6/P6 OWNER-ONLY).** Review pack ready at
+   `clinical_sources/physician_review_47.md` (per-record id · КР cr_id · drug_refs, grouped by
+   the 7 categories) — give this to the owner/physician to adjudicate. The 17 `infection`-classified
+   are the realistic binding candidates (`regimen_candidate_specs` + source check). Prophylactic /
+   onco / cardiac / metabolic ones should be reviewed or hidden by a physician.
+2. **minzdrav network** — recheck `nc -z apicr.minzdrav.gov.ru 443` (UNREACHABLE 2026-09-02).
+   When live: verify the 47 code_versions via `source_fetch_verify.py`, finish CR 313_3,
+   contracts 898_1/912_1/629_2.
+
+**Build/test commands** (macOS, venv .venv/bin/python):
+- `.venv/bin/python db/build_db.py --db db/antibio_db.json`
+- `.venv/bin/python db/build_html.py`
+- `.venv/bin/python -m pytest -q`  (1619 passed baseline)
+- triage: `.venv/bin/python -m src.pipeline.extraction.dosa_extension_triage --extended db/diseases/extended_dosa.json --output tmp/dosa_extension_triage.json`
+
+## DOSA extension triage (46 nosologies) — 2026-09-02
+
+Done: classified the 46 DOSA-added records into 7 categories (congenital_cardiac_prophylaxis 3,
+surgical_prophylaxis 9, oncology 6, immunodeficiency_pjp 8, metabolic_genetic 3, infection 16,
+unclassified 1) via `src/pipeline/extraction/dosa_extension_triage.py` →
+`tmp/dosa_extension_triage_2026-09-02.json`. Engineering triage only (NOT a medical verdict);
+records remain calculation-blocked. Suite 1617 passed.
+
+**Remaining (next agent):**
+1. **Physician curation of the triage** — the `infection`-classified 16 are the candidates worth
+   binding a `regimen_candidate_specs` + source check; the prophylactic/onco/cardiac/metabolic
+   ones are mostly NOT acute-infection dosing and should be reviewed/hidden by a physician.
+   P5.6/P6 = OWNER/PHYSICIAN ONLY.
+2. **minzdrav network** — recheck `nc -z apicr.minzdrav.gov.ru 443` (UNREACHABLE 2026-09-02).
+   When live: verify the 46 code_versions via `source_fetch_verify.py`, finish CR 313_3.
+
+**Build/test commands** (macOS, venv .venv/bin/python):
+- `.venv/bin/python db/build_db.py --db db/antibio_db.json`
+- `.venv/bin/python db/build_html.py`
+- `.venv/bin/python -m pytest -q`  (1617 passed baseline)
+- triage: `.venv/bin/python -m src.pipeline.extraction.dosa_extension_triage --extended db/diseases/extended_dosa.json --output tmp/dosa_extension_triage.json`
+
+## Pulled all remaining antibiotic guides (46 new nosologies) — 2026-09-02
+
+Done: expanded the mapper target to ALL 267 unused DOSA antibiotic guidelines
+(supersedes the earlier 3-nosology, 128-subset scope). DB now 118 recs / 10 categories /
+41 drugs; HTML rebuilt. New records source-layer-only, all calculation-blocked
+(117 blocked / 1 unblocked = aom_child). Suite 1608 passed.
+
+**Remaining (next agent):**
+1. **minzdrav network** — recheck `nc -z apicr.minzdrav.gov.ru 443` (STILL UNREACHABLE as of
+   2026-09-02; geo-block). When reachable: live-verify the 46 new code_versions via
+   `source_fetch_verify.py` (download by code_version + %PDF + sha256), and complete CR 313_3.
+2. **Curate the 46** — triage which are genuinely infection-dosing vs peri-op prophylaxis / onco /
+   congenital-cardiac / rare-metabolic (PJP prophylaxis). Only meaningful ones deserve a
+   `regimen_candidate_specs` + binding later. Most of the 46 likely stay display-blocked.
+3. **Physician gate P5.6/P6** — OWNER/PHYSICIAN ONLY. Never auto-attest.
+
+**Build/test commands** (macOS, venv .venv/bin/python):
+- `.venv/bin/python db/build_db.py --db db/antibio_db.json`  (source gate + node validate)
+- `.venv/bin/python db/build_html.py`                        (validate + embed DB → HTML)
+- `.venv/bin/python -m pytest -q`                            (1608 passed baseline)
+
+## DOSA extension + Python build pipeline — 2026-09-02
+
+Completed the source-layer extension + cross-platform build:
+
+- 3 genuinely-new DOSA nosologies added (perioralnyi_dermatit 781_1,
+  travma_nosa 815_1, botulizm 911_1) per the "only new, drop duplicates"
+  policy; all calculate-blocked (SOURCE_SPEC_MISSING).
+- `db/build_db.py` and `db/build_html.py` replace the Windows-only `build_db.ps1`
+  / `build_html.ps1` (pwsh unavailable on macOS).
+- Disclaimer "not a final medical conclusion" embedded in the template +
+  rebuilt `antibiotic_calc.html`.
+
+Test command: `.venv/bin/python -m pytest -q` -> 1608 passed, 29 skipped,
+1 xfailed. Build commands:
+- `.venv/bin/python db/build_db.py --db db/antibio_db.json` (DB)
+- `.venv/bin/python db/build_html.py` (HTML)
+
+Next (open items): (1) minzdrav network is UNREACHABLE from this machine
+(recheck `nc -z apicr.minzdrav.gov.ru 443`) -- on return, live-verify DOSA
+contracts via `src/pipeline/extraction/source_fetch_verify.py`; (2) finish
+CR 313_3 once the full official PDF is obtained; (3) physician curation
+(P5.6/P6) remains owner/physician only -- never auto-attested.
+
+
+`src/pipeline/extraction/extension_sources.py` (source-prover, never
+unblocks/attests) has subclassified the unused antibiotic-bearing DOSA
+guidelines. Result artifact `tmp/extension_sources_2026-09-02.json`:
+**128 pure-therapeutic NEW nosologies with 840 proof-anchored regimens** are the
+candidate expansion pool (therapeutic 137 / primarily_prophylaxis 80 / mixed 50
+/ duplicate_same_disease 16 / new_nosology 251). Overlap is decided by EXACT
+mkb10 code; prophylaxis guidelines are excluded from the "doses at infection"
+scope. Regenerate with `.venv/bin/python -m
+src.pipeline.extraction.extension_sources --db db/antibio_db.json --kb
+<DOSA knowledge_base.json> --output <out>`. Next step: decide with the owner how
+to promote these 128 nosologies (build source contracts → verify → build doses
+→ physician gate). Full suite green: 1593 passed, 29 skipped, 1 xfailed.
+
+## FINISH-TO-END RUNBOOK (execute on the Windows machine with the corpus) — 2026-09-02
+
+**Context (owner decision):** finish the calculator using the Russian CR base.
+The repo code/pipeline is COMPLETE; the missing input is the external corpus
++ derived DBs, which are NOT committed and absent on this macOS clone. Move this
+work to the Windows machine that has `C:\clinrec_downloader`, `kb_p44.db`,
+`assembled_regimens.sqlite`, `normalized_regimens.sqlite`. The chain is:
+**PDF corpus → kb_p44.db → clinical_engine (assembly + migration + P5.6 review)
+→ curated_knowledge.json → calculator.**
+
+### Step 1 — Prereqs on Windows
+- Python 3.12 via `$env:LOCALAPPDATA\Programs\Python\Python312\python.exe`.
+- `uv sync --python 3.12` (or `pip install -r pyproject.toml`).
+- Ensure `ANTIBIO_CORPUS_DIR` env var or `clinical_engine/corpus/corpus_config.json`
+  points to the corpus root (`C:\clinrec_downloader`) so
+  `clinical_engine.corpus.locator.resolve_corpus_dir()` finds it.
+- LLM API keys set in `.env` / `src/pipeline/config.py` (LLM_PROVIDER_CONFIGS);
+  need a reachable `opencode.ai/zen/go/v1` provider for extraction/validation.
+
+### Step 2 — Health check
+`python main.py doctor` — must be all-pass (checks CR dirs, clinrecs.json,
+dry_run_manifest.json, extraction_progress.json, extraction_raw.json,
+extraction_validated.json, knowledge_base.json, metadata.sqlite, LLM reachability).
+If it's the first run of the extraction pipeline, populate those fixtures first.
+
+### Step 3 — Rebuild the Production KnowledgeBase from the corpus
+`python build_p44_kb.py --full --out p44_kb_build_report.json`
+→ produces `kb_p44.db` (versioned, provenance, dedup, review queue). Resume-safe
+(checkpoint `kb_p44.db.checkpoint.json`); use `--limit N` for a trial, `--resume`
+to keep going. Output report shows open_reviews + conflicts for Step 4.
+
+### Step 4 — Assemble + migrate regimens (clinical_engine)
+`python production_reprocessor.py --full` (or `--resume` / `--limit 20`) — re-runs
+regimen assembly + class-level migration over the corpus. Produces
+`assembled_regimens.sqlite` / `normalized_regimens.sqlite`.
+`python build_review_workbench.py --normalized-db <...> --kb-db kb_p44.db
+--corpus-manifest CORPUS_MANIFEST.json --golden-directory clinical_engine/golden_cases
+--out review_workbench.sqlite --report p56_queue_report.json` → P5.6 review queue.
+
+### Step 5 — PHYICIAN CURATION (P5.6 / P6) — owner/physician ONLY, AI must not do this
+`clinical_engine/tools/`:
+- `build_review_workbench.py` output → physician curates diagnosis decisions
+  (`diagnosis_index_decisions.json`) and regimen review ledger.
+- `python -m clinical_engine.tools.build_curated_regimens` → `curated_regimens.json`.
+- `python -m clinical_engine.tools.build_curated_index` → `diagnosis_index.curated.json`.
+- `python -m clinical_engine.tools.build_curated_knowledge --diagnosis-ledger ... --curated-regimens ... --out clinical_engine/resources/curated_knowledge.json`
+  → the canonical curated artifact (currently has 0 approved; only becomes
+  populated after physician approvals exist).
+- `validate_curation.py` / `validate_curated_knowledge.py` — gate checks.
+- `build_golden_template.py` → golden cases for engine validation.
+
+**Hard rule:** P5.6 acceptance + P6 are ACCEPTANCE/NOT COMPLETE + BLOCKED until a
+real physician approves. The AI must never auto-attest, auto-approve, fabricate
+reviewers, or mark anything approved. These steps need the owner/physician.
+
+### Step 6 — Rebuild DB + HTML (Windows pwsh)
+- `powershell -ExecutionPolicy Bypass -File db/build_db.ps1` → regenerates
+  `db/antibio_db.json` from `db/diseases/*.json` + `db/index.json`.
+- `powershell -ExecutionPolicy Bypass -File build_html.ps1` → regenerates
+  `antibiotic_calc.html` from the template + DB.
+
+### Step 7 — Tests
+`$py -m pytest src/tests/ clinical_engine/tests/ medical_normalizer/tests/ -q`.
+macOS baseline (this clone, no corpus): `.venv/bin/python -m pytest -q` →
+1586 passed, 29 skipped, 1 xfailed, 0 failed.
+
+### Step 8 — Source-domain tasks still open (independent of the above)
+- Live-verify DOSA source contracts when network returns
+  (`src/pipeline/extraction/source_fetch_verify.py`): download by code_version,
+  check `%PDF` + sha256 pin vs `spec.expected_pdf_sha256`.
+- For the 32 DOSA no_match diseases: split HIGH-CONFIDENCE NO_SOURCE (no federal
+  CR — profile protocols only) vs need-registry-search; never reuse quarantined
+  IDs in `invalid_source_mappings_2026-08-02.json`.
+- Finish CR `313_3` (sinusitis) once the full 1,284,442-byte PDF is obtainable.
+
+**Blocked-on-this-machine reminders:** minzdrav network
+APICR_UNREACHABLE/CR_UNREACHABLE (`nc -z apicr.minzdrav.gov.ru 443` fails);
+no local *.db/*.sqlite; pwsh not installed. Hence the move to the corpus machine.
+
+## DOSA source-layer contracts built — 2026-09-02
+
+`src/pipeline/extraction/dosa_source_contract.py` + `tmp/dosa_source_contracts_2026-09-02.json`
+map every calculator disease to DOSA klinrec evidence (source prover, no
+calculation, no attestation). 40/72 matched (31 exact cr_id, 6 MKB, 3 name); 32
+no_match are mostly `declared_cr_id=«—»` records with no MKB/name anchor.
+
+Next, in order:
+1. For the 32 no_match diseases, determine whether a federal CR exists at all.
+   The project meta already flags many as having NO unified federal CR
+   (prostatitis, nec, omphalitis, animal_bite, postop/asplenia/UTI prophylaxis,
+   hap, erysipelas, diabetic_foot, osteomyelitis, cellulitis, etc. — these were
+   built from profile protocols, not КР). Treat these as HIGH-CONFIDENCE
+   NO_SOURCE (do not guess a cr_id); only search the official 746-card registry
+   for the ambiguous ones. Never reuse quarantined IDs in
+   `invalid_source_mappings_2026-08-02.json`.
+2. When network returns, run live verification for matched contracts via
+   `source_fetch_verify.py` (download by code_version, check %PDF + sha256 pin),
+   extending each matched contract into a full `regimen_candidate_specs/*.json`.
+3. Physician gate (P5.6 / P6, reviewer attestation, unblocking) remains
+   exclusively owner/physician — never auto-approve.
+
+The minzdrav source-tooling gap is closed. `src/pipeline/extraction/
+source_fetch_verify.py` now bridges `ClinrecApi.download_pdf(code_version)`
+(network fetch by CodeVersion, already present in `src/pipeline/api_client.py`)
+to spec pin verification. Offline verification is available too. Unit-tested
+(offline) in `src/tests/test_source_fetch_verify.py`; a live fetch still needs
+minzdrav network access. Suite: `.venv/bin/python -m pytest -q` → 1580 passed,
+29 skipped, 1 xfailed, 0 failed.
+
+## Continue after CAP scenario bindings — 2026-09-02
+
+Workstream 2 is done for the local, verifiable scope: every cap_adult (11) and
+cap_child (6) regimen is bound to one verified dose-table row via
+`clinical_sources/scenario_bindings/{654_2,714_2}.json`, verified by
+`src/pipeline/extraction/scenario_bindings.py` (CLI:
+`.venv/bin/python -m src.pipeline.extraction.scenario_bindings --db
+db/antibio_db.json --bindings clinical_sources/scenario_bindings --specs
+clinical_sources/regimen_candidate_specs`). All rows stay
+`unblock_eligible=False`; calculation stays blocked. macOS baseline:
+`.venv/bin/python -m pytest -q` → 1572 passed, 29 skipped, 1 xfailed.
+
+Next (in order):
+
+1. NETWORK BLOCKER (this machine): `apicr.minzdrav.gov.ru` and
+   `cr.minzdrav.gov.ru` are unreachable (TCP connect fails; other internet
+   works — geo/network block). Until access exists, workstreams needing live
+   registry/PDF downloads cannot proceed: source contracts for `898_1`,
+   `912_1`, `629_2` (item 3 below) and the full CR `313_3` PDF. Recheck with
+   `nc -z apicr.minzdrav.gov.ru 443`.
+
+1a. Local-audit do-not-redo (2026-09-02): `tmp/pdfs/sinusitis_313_3.json` (CR
+    `313_3`) contains ZERO dose content — cleaned text is 3,837 chars, only
+    TOC/intro/definitions; counts of dose keywords are 0. `tmp/pdfs/
+    sinusitis_unzipped/КР1632.pdf` and `sinusitis_1632.zip` are an iisnode HTTP
+    500 error page, not a PDF. `tmp/pdfs/tonsillitis/` is PNG-only; tesseract
+    not installed → no OCR. DB/HTML build (`db/build_db.ps1`,
+    `build_html.ps1`) is PowerShell-only; no Python equivalent, pwsh
+    unavailable on macOS. So none of these items are externally derivable now.
+2. If the binding artifacts must be regenerated after any
+   `db/antibio_db.json` or spec change, rebuild them programmatically with
+   `build_binding_artifact()` (see `src/tests/test_scenario_bindings.py` for
+   usage); never hand-edit indexes. Verification fails closed on pin mismatch.
+3. When network allows: build exact source contracts for adult sepsis `898_1`
+   and neonatal sepsis `912_1`, then neonatal conjunctivitis `629_2`;
+   preserve organ dysfunction, gestational/postnatal age and renal/TDM
+   constraints.
+4. Then: continue the 33 verified revisions by clinical priority
+   (CNS/endocarditis, genital infections, GI, skin/soft tissue, zoonotic);
+   for the 35 records without a valid declared card, search the official
+   746-card registry by title, MKB and population — never reuse the
+   quarantined numeric IDs in `invalid_source_mappings_2026-08-02.json`.
+5. Unblocking a CAP row additionally requires a severity/risk-stratified dose
+   table (not the current generic reference tables) plus empty
+   `remaining_blockers` — see the linkage semantics in
+   `src/pipeline/extraction/scenario_bindings.py`.
+6. After every batch: rebuild DB/HTML and run the full suite
+   (`macOS: .venv/bin/python -m pytest -q`).
+
 ## Continue automatically after official-registry/CAP batch — 2026-08-02
+
+Superseded 2026-09-02: item 2 (CAP binding) done in the local verifiable
+scope; items 1/4/6 context moved above. Retained for history.
 
 Do not ask between batches; retain the global source gate.
 

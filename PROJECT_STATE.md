@@ -1,4 +1,171 @@
+## 2026-09-02: Dose source-verification across 120 nosologies
+
+- Run dose_verification.py over db/antibio_db.json (120 recs) vs DOSA KB -> 243 matched / 113 mismatched /
+  123 uncomparable / 41 no-kb. 23 fully verified, 18 partly verified, 38 have discrepancies to adjudicate
+  (mostly daily-vs-single-dose representation, not errors). Report tmp/dose_verification_report_2026-09-02.md.
+  Evidence-only; only aom_child(314_3) unblocked (unchanged). No commit.
+## 2026-09-02: aom_child — added severe/IV amoxiclav tier
+
+- aom_child now has 2 scenarios: aom_child_standard (amoxicillin 60/50/90, amoxiclav 45, cefixime 8,
+  cefuroxime 30, clarithromycin 15 — all mg/kg/day, duration 7-10) + aom_child_complicated (amoxiclav IV
+  90 mg/kg/day x3, children 4-40kg / 60mg/kg <4kg, adults 3.6g/day). Source-anchored to КР 314_3 table 4.
+- Rebuilt db (120 recs/10 cats/48 drugs) + antibiotic_calc.html (520349). Suite 1624 passed. Only
+  aom_child(314_3) unblocked. No commit.
+## 2026-09-02: Coverage raised — 120 nosologies / 48 drugs (all-antibiotic-KB)
+
+- Registered-drug namespace expanded 41 -> 48 (tetracycline, ofloxacin, tobramycin, netilmicin, tinidazole,
+  rifaximin, furazidin). DOSA extension now **48*** records (all 294 KB guidelines processed, degenerate
+  conjunctivitis 629_2 excluded). db = 120 recs / 10 cats / 48 drugs; 119 blocked / 1 unblocked (aom_child 314_3).
+  antibiotic_calc.html rebuilt (519478). Suite 1624 passed. No commit.
+## 2026-09-02: Dose source-verification harness added (evidence-only)
+
+- dose_verification.py compares app doses vs PDF-extracted KB doses; 242/454 matched, 113 mismatch
+  (mostly variants not errors), 99 uncomparable, 41 no-KB-guideline. Never sets verification status.
+- Full suite 1624 passed. Data unchanged (119 recs/10 cats/41 drugs).
+## 2026-09-02: Calculator verified against КР (only aom_child computes)
+
+- Real-run verification: only aom_child (cr 314_3) computes; 118 blocked (fail-closed source gate).
+  aom_child 7/7 PASS vs КР 314_3; suspension mL correct across all forms/weights. Report
+  tmp/calculator_real_run_2026-09-02.md. DB unchanged (119 recs/10 cats/41 drugs). Suite 1619 passed.
+## 2026-09-02: Calculation bug fixed (cefuroxime Infinity) — render-path only
+
+- `computeDose` math verified CORRECT; bug was the child liquid-default form selection in renderFormChips
+  picking a parenteral vial (no concentration_mg_per_ml) for cefuroxime → Infinity.
+- Fix requires concentration_mg_per_ml != null for child liquid default. antibiotic_calc.html rebuilt (509655).
+- DB unchanged (119 recs / 10 cats / 41 drugs; only aom_child 314_3 unblocked). Suite 1619 passed.
 # PROJECT STATE — ANTIBIO (antibio-calc + pipeline)
+
+## 2026-09-02: Route-dedup fix + extension regenerated to 47 + triage refined
+
+- **DB:** db/antibio_db.json = **119 recs / 10 categories / 41 drugs** (72 original + 47 DOSA
+  extension). Verified 118 blocked / 1 unblocked (aom_child 314_3).
+- **Fixes:** duplicate-route bug in dosa_to_db_mapper.py (64→0 duplicates); regenerated extension
+  against the original 72 base → 47 records; triage surgical `"перелом"/"глазниц"` keyword +
+  amanitin override id corrected → 0 unclassified (surgical 10, infection 17, onco 6, id-pjp 8,
+  metabolic 3, cardiac 3). HTML rebuilt 509368 bytes. Suite **1619 passed**.
+- All 47 extension records display-only (calculation_blocked, SOURCE_SPEC_MISSING). No commit.
+
+## 2026-09-02: Triage of the 46 DOSA extension nosologies (engineering classification)
+
+Split the 46 DOSA-added records into 7 clinical categories for physician review. Source-prover
+only; all records stay calculation-blocked. New module
+`src/pipeline/extraction/dosa_extension_triage.py`, artifact
+`tmp/dosa_extension_triage_2026-09-02.json` (46 recs: congenital_cardiac_prophylaxis 3,
+surgical_prophylaxis 9, oncology 6, immunodeficiency_pjp 8, metabolic_genetic 3, infection 16,
+unclassified 1). 9 new tests. Full suite 1617 passed. This is engineering triage, NOT a medical
+verdict; the physician gate P5.6/P6 remains owner-only. No commit.
+
+## 2026-09-02: Pulled ALL remaining antibiotic guidelines (46 new nosologies)
+
+Expanded the calculator to consume every unused DOSA guideline that carries antibiotics,
+staying source-layer-only (all new records are display-only, calculation blocked).
+
+- **DB:** db/antibio_db.json now `{recommendations 118, categories 10, drugs_reference 41}`
+  (was 75/10/41). 118 = 75 prior + 43 newly built (46 new candidates, some overwrote prior 3).
+- **Source of the 46:** scoped target = ALL 267 unused DOSA guidelines (not just the 128
+  therapeutic-new subset). `dosa_to_db_mapper.build_mapped_db` over all 267 → 181 candidate
+  records / 561 mapped_symbols / 2351 total. After `deduplicate_mapped` (vs existing DB) →
+  124 new / 57 dropped. After `deduplicate_among` (collapse cross-version dupes) →
+  **46 kept**.
+- **Written:** db/diseases/extended_dosa.json (category «КР с антибиотиками (расширение из DOSA,
+  source-слой)», recommendations:[46]) overwriting the prior 3-record file.
+- **Verification after build (calculator_source_gate, fail-closed):** 117 blocked /
+  **1 unblocked (aom_child 314_3)** — unchanged governance. source_verification_status dist:
+  SOURCE_SPEC_MISSING 107, SOURCE_SPEC_PENDING_CALCULATOR_BINDING 6,
+  CURRENT_WEB_CONFIRMED_PDF_PENDING 2, EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW 2,
+  CALCULATOR_BOUND_VERIFIED 1.
+- **Rebuild commands run:** `.venv/bin/python db/build_db.py --db db/antibio_db.json`
+  → `{"recommendations": 118, "categories": 10, "drugs_reference": 41}`; then
+  `.venv/bin/python db/build_html.py` → `antibiotic_calc.html (509160 bytes)`.
+- **Full suite:** `.venv/bin/python -m pytest -q` → 1608 passed, 29 skipped, 1 xfailed, 6 warnings.
+- **Content note:** many of the 46 are peri-op surgical prophylaxis, oncological
+  (febrile neutropenia, leukaemia), congenital-cardiac endocarditis-prophylaxis, and rare
+  metabolic/metaphylaxis (PJP prophylaxis) — all legitimately carry antibiotics but are NOT
+  classic acute-infection dosing. They appear in the app but calculate-blocked until a
+  physician/spec binds them. minzdrav network still UNREACHABLE; physician gate P5.6/P6 owner-only.
+- No commit (user never asked).
+
+## 2026-09-02: DOSA extension (3 new nosologies) + Python build pipeline + disclaimer
+
+Extended the calculator DB from the DOSA source-layer (source-prover only,
+calculation stays blocked). Full build pipeline is now cross-platform Python.
+
+- `src/pipeline/extraction/dosa_to_db_mapper.py` + `dosa_db_dedup.py` added;
+  after the frequency gate only 3 genuinely-new nosologies survive
+  (perioralnyi_dermatit 781_1, travma_nosa 815_1, botulizm 911_1).
+- `db/diseases/extended_dosa.json` added; **db/antibio_db.json** regenerated
+  -> 75 recommendations, 10 categories, 41 drugs_reference (validate green).
+- `db/build_db.py` and `db/build_html.py` (Python ports of the deleted
+  .ps1 scripts) build both the DB and the single-page HTML calculator.
+- `antibiotic_calc.html` rebuilt (334,659 bytes) with a "not a final medical
+  conclusion" disclaimer banner.
+- Test command (macOS): `.venv/bin/python -m pytest -q` -> 1608 passed,
+  29 skipped, 1 xfailed, 0 failed.
+
+New DOSA nosologies are display-only (calculation_blocked=True,
+SOURCE_SPEC_MISSING) until a physician binds a verified spec. Physician gate
+P5.6/P6 = owner only; no commit.
+
+
+`src/pipeline/extraction/extension_sources.py` classifies the unused DOSA
+guidelines (those with antibiotics, not yet in the calculator) and identifies
+the high-value expansion pool: **128 pure-therapeutic NEW nosologies with 840
+proof-anchored regimens**. Split: therapeutic 137 / primarily_prophylaxis 80 /
+mixed 50 / duplicate_same_disease 16. All 251 mkb-disjoint guidelines are
+`new_nosology`; 128 of these are pure `therapeutic` (the rest are prophylaxis or
+mixed). `tmp/extension_sources_2026-09-02.json` holds the full
+inventory/candidates/summary. Source-prover only — never enables calculation;
+clinical gate P5.6/P6 stays owner/physician.
+
+TEST STATUS: `.venv/bin/python -m pytest -q` → **1593 passed, 29 skipped,
+1 xfailed, 0 failed** (1586 + 7 new tests in test_extension_sources.py).
+
+## 2026-09-02: DOSA klinrec source-layer contracts for calculator diseases
+
+Merged DOSA `clinrec-downloader` extraction as a source-prover (scope: source
+layer only, calculation stays blocked). New module
+`src/pipeline/extraction/dosa_source_contract.py` maps 72 calculator diseases to
+DOSA guideline evidence (exact cr_id → MKB → name keyword), emitting provenance
+(pdf_sha256, page_number, source_quote, dose) without enabling calculation.
+Artifact `tmp/dosa_source_contracts_2026-09-02.json`: 40 matched
+(31 exact_cr_id / 6 mkb / 3 name), 32 no_match (mostly declared_cr_id `«—»`).
+Match breakdown recorded. Tests `src/tests/test_dosa_source_contract.py` (6).
+Suite `1586 passed, 29 skipped, 1 xfailed, 0 failed`. minzdrav network still
+unreachable (live PDF/registry work blocked); no commit made.
+
+Added `src/pipeline/extraction/source_fetch_verify.py`: bridge to download an
+official minzdrav guideline PDF by `CodeVersion` and pin-verify it against a
+source spec's `expected_pdf_sha256` (fail-closed, never approves regimens).
+Offline mode reuses the local PDF pin check. Injectable `downloader`/opener for
+offline unit tests (network to minzdrav is still unreachable from this
+machine). CLI:
+`.venv/bin/python -m src.pipeline.extraction.source_fetch_verify
+--spec <spec.json> --output <report.json> [--local-pdf <path>] [--outdir <dir>]`.
+
+Tests: `src/tests/test_source_fetch_verify.py` (8). Suite: `.venv/bin/python
+-m pytest -q` → 1580 passed, 29 skipped, 1 xfailed, 0 failed.
+
+## 2026-09-02: CAP scenario-to-dose-row bindings built and verified; calculation stays blocked
+
+On a fresh macOS clone (`/Users/turpal/Documents/antibiocalc/antibio-calc`,
+Python 3.12.14 venv): every cap_adult regimen (11, CR `654_2`) and cap_child
+regimen (6, CR `714_2`) now has a fail-closed binding to one verified
+dose-table row. Artifacts:
+`clinical_sources/scenario_bindings/654_2.json`,
+`clinical_sources/scenario_bindings/714_2.json`; tooling
+`src/pipeline/extraction/scenario_bindings.py`; tests
+`src/tests/test_scenario_bindings.py` (17 tests). Verification recomputes
+sha256 pins (disease record + spec row_groups), enforces blocked status, ATC
+identity and full coverage, and reports route/duration/age_weight/severity
+linkage. `unblock_eligible=0` for all 17 rows: severity linkage requires a
+stratified dose table, which the current generic CAP reference tables are
+not. Calculation remains blocked; no owner attestation.
+
+Environment notes: minzdrav endpoints are unreachable from this machine
+(network-level block), postponing source work for `898_1`, `912_1`, `629_2`
+and the CR `313_3` full PDF. Canonical test command on macOS:
+`.venv/bin/python -m pytest -q` → 1572 passed, 29 skipped, 1 xfailed,
+0 failed (Windows baseline 1584 passed included machine-local corpus tests).
 
 ## 2026-08-02: official registry current; CAP contracts pinned
 

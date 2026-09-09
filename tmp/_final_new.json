@@ -1,0 +1,238 @@
+[
+  {
+    "id": "perioralnyi_dermatit",
+    "mkb10": [
+      "L71.0"
+    ],
+    "name": "Периоральный дерматит",
+    "synonyms": [],
+    "cr_id": "781_1",
+    "cr_year": null,
+    "cr_updated": null,
+    "source_url": "https://cr.minzdrav.gov.ru/view-cr/781_1",
+    "antibiotics_indicated": true,
+    "indications": [],
+    "age_groups": [
+      "adult"
+    ],
+    "scenarios": [
+      {
+        "id": "first_line_line",
+        "name": "first_line",
+        "age_group": "adult",
+        "lines": [
+          {
+            "line_number": 1,
+            "line_label": "Первая линия",
+            "drugs": [
+              {
+                "drug_ref": "metronidazole",
+                "route": [],
+                "regimens": [
+                  {
+                    "age_group": "adult",
+                    "freq_per_day": 2,
+                    "duration_days": "8 недель",
+                    "duration_note": "#метронидазол 0,75-1% гель, крем, 2 раза в день наружно в течение 8 недель [32, 50, 51]."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "travma_nosa_pri_ochevidnom_nalichii_bakterialnogo_vospalitelnogo_protsessa_ili_vysokoi_veroiatnosti_ego_razvitiia",
+    "mkb10": [
+      "S00.3",
+      "S01.2",
+      "S02.2"
+    ],
+    "name": "Травма носа",
+    "synonyms": [],
+    "cr_id": "815_1",
+    "cr_year": null,
+    "cr_updated": null,
+    "source_url": "https://cr.minzdrav.gov.ru/view-cr/815_1",
+    "antibiotics_indicated": true,
+    "indications": [],
+    "age_groups": [
+      "adult",
+      "child",
+      "neonate"
+    ],
+    "scenarios": [
+      {
+        "id": "empiric_line",
+        "name": "empiric",
+        "age_group": "adult",
+        "lines": [
+          {
+            "line_number": 1,
+            "line_label": "Первая линия",
+            "drugs": [
+              {
+                "drug_ref": "ampicillin",
+                "route": [
+                  "im",
+                  "iv",
+                  "im",
+                  "iv",
+                  "im",
+                  "iv"
+                ],
+                "regimens": [
+                  {
+                    "age_group": "adult",
+                    "dose_mg_day_fixed": 3000.0,
+                    "max_daily_mg": 3000.0,
+                    "freq_per_day": 1,
+                    "duration_days": "5-14 дней",
+                    "duration_note": "Ампициллин+[сульбактам]**(ATX: J01CR01) применяется в/м и в/в , у взрослых в зависимости от тяжести инфекции 3-12 г/сутки за 3 введения,  у детей – 150мг/кг/сутки за 3 введения (у новорожденных – за 2 введения) 5-14 дней."
+                  },
+                  {
+                    "age_group": "adult",
+                    "dose_mg_day_fixed": 3000.0,
+                    "max_daily_mg": 3000.0,
+                    "freq_per_day": 1,
+                    "duration_days": "5-14 дней",
+                    "duration_note": "Ампициллин+[сульбактам]**(ATX: J01CR01) применяется в/м и в/в , у взрослых в зависимости от тяжести инфекции 3-12 г/сутки за 3 введения,  у детей – 150мг/кг/сутки за 3 введения (у новорожденных – за 2 введения) 5-14 дней."
+                  },
+                  {
+                    "age_group": "child",
+                    "dose_mg_kg_day": 150.0,
+                    "freq_per_day": 1,
+                    "duration_days": "5-14 дней",
+                    "duration_note": "Ампициллин+[сульбактам]**(ATX: J01CR01) применяется в/м и в/в , у взрослых в зависимости от тяжести инфекции 3-12 г/сутки за 3 введения,  у детей – 150мг/кг/сутки за 3 введения (у новорожденных – за 2 введения) 5-14 дней."
+                  },
+                  {
+                    "age_group": "child",
+                    "dose_mg_kg_day": 150.0,
+                    "freq_per_day": 1,
+                    "duration_days": "5-14 дней",
+                    "duration_note": "Ампициллин+[сульбактам]**(ATX: J01CR01) применяется в/м и в/в , у взрослых в зависимости от тяжести инфекции 3-12 г/сутки за 3 введения,  у детей – 150мг/кг/сутки за 3 введения (у новорожденных – за 2 введения) 5-14 дней."
+                  },
+                  {
+                    "age_group": "neonate",
+                    "dose_mg_kg_day": 150.0,
+                    "freq_per_day": 1,
+                    "duration_days": "5-14 дней",
+                    "duration_note": "Ампициллин+[сульбактам]**(ATX: J01CR01) применяется в/м и в/в , у взрослых в зависимости от тяжести инфекции 3-12 г/сутки за 3 введения,  у детей – 150мг/кг/сутки за 3 введения (у новорожденных – за 2 введения) 5-14 дней."
+                  },
+                  {
+                    "age_group": "neonate",
+                    "dose_mg_kg_day": 150.0,
+                    "freq_per_day": 1,
+                    "duration_days": "5-14 дней",
+                    "duration_note": "Ампициллин+[сульбактам]**(ATX: J01CR01) применяется в/м и в/в , у взрослых в зависимости от тяжести инфекции 3-12 г/сутки за 3 введения,  у детей – 150мг/кг/сутки за 3 введения (у новорожденных – за 2 введения) 5-14 дней."
+                  }
+                ]
+              },
+              {
+                "drug_ref": "amoxiclav",
+                "route": [
+                  "iv",
+                  "iv"
+                ],
+                "regimens": [
+                  {
+                    "age_group": "child",
+                    "dose_mg_day_fixed": 1000.0,
+                    "max_daily_mg": 3000.0,
+                    "freq_per_day": 3,
+                    "duration_days": "5-14 дней",
+                    "duration_note": "Амоксициллин+[Клавулановая кислота]**3 (ATХ J01CR02) применяется в/в у взрослых и детей старше 12 лет по 1 г (по амоксициллину) 3 раза в сутки, у детей младше 12 лет 25 мг/кг 3 раза в сутки 5-14 дней."
+                  },
+                  {
+                    "age_group": "child",
+                    "dose_mg_kg_day": 25.0,
+                    "freq_per_day": 3,
+                    "duration_days": "5-14 дней",
+                    "duration_note": "Амоксициллин+[Клавулановая кислота]**3 (ATХ J01CR02) применяется в/в у взрослых и детей старше 12 лет по 1 г (по амоксициллину) 3 раза в сутки, у детей младше 12 лет 25 мг/кг 3 раза в сутки 5-14 дней."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "botulizm_podozrenie_na_botulizm",
+    "mkb10": [
+      "A05.1"
+    ],
+    "name": "Ботулизм у взрослых",
+    "synonyms": [],
+    "cr_id": "911_1",
+    "cr_year": null,
+    "cr_updated": null,
+    "source_url": "https://cr.minzdrav.gov.ru/view-cr/911_1",
+    "antibiotics_indicated": true,
+    "indications": [],
+    "age_groups": [
+      "adult"
+    ],
+    "scenarios": [
+      {
+        "id": "empiric_line",
+        "name": "empiric",
+        "age_group": "adult",
+        "lines": [
+          {
+            "line_number": 1,
+            "line_label": "Первая линия",
+            "drugs": [
+              {
+                "drug_ref": "benzylpenicillin_na",
+                "route": [],
+                "regimens": [
+                  {
+                    "age_group": "adult",
+                    "freq_per_day": 1,
+                    "duration_days": "",
+                    "duration_note": "В случаях раневого ботулизма показано применение повышенных доз #бензилпенициллина** (до 10-20 млн. ЕД/сут) [60,63]."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "first_line_line",
+        "name": "first_line",
+        "age_group": "adult",
+        "lines": [
+          {
+            "line_number": 1,
+            "line_label": "Первая линия",
+            "drugs": [
+              {
+                "drug_ref": "benzylpenicillin_na",
+                "route": [],
+                "regimens": [
+                  {
+                    "age_group": "adult",
+                    "freq_per_day": 1,
+                    "duration_days": "",
+                    "duration_note": "В случаях раневого ботулизма показано применение повышенных доз #бензилпенициллина** (до 10-20 млн. ЕД/сут) [60,63]."
+                  },
+                  {
+                    "age_group": "adult",
+                    "freq_per_day": 1,
+                    "duration_days": "",
+                    "duration_note": "В случаях \nраневого ботулизма показано применение повышенных доз #бензилпенициллина** \n(до 10-20 млн. ЕД/сут) [60,63]."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

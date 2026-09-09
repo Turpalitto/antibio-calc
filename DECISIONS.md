@@ -1,4 +1,154 @@
+## 2026-09-02: dose_verification harness totals = evidence, not verdict
+
+- Ran source-verification across all 120 nosologies: 23/18/41/38 (verified/partial/no-KB/mismatch-review).
+  The 113 mismatches are predominantly representation granularity (DB daily dose vs КР single-dose text) —
+  the harness compares DB dose to the КР extracted dose and labels out-of-range as MISMATCH. It is a
+  proof-of-source tool; it does NOT attest clinical correctness. 38 nosologies need physician adjudication.
+  Agent never sets CALCULATOR_BOUND_VERIFIED.
+## 2026-09-02: aom_child dose tiers combined (standard + severe IV)
+
+- aom_child_standard keeps the ambulatory tiers (amoxicillin 60/50/90 high-risk; amoxiclav 45; cefixime 8;
+  cefuroxime 30; clarithromycin 15). Added aom_child_complicated for severe/IV (amoxiclav 90 mg/kg/day x3,
+  4-40kg; 60mg/kg <4kg; adults 3.6g/day). Both source-anchored to КР 314_3 table 4. mg/kg for amoxiclav is
+  amoxicillin-component. No unblock (aom_child already verified); no physician attestation.
+## 2026-09-02: Expand registered drug namespace to raise coverage (source-layer only)
+
+- Added 7 safe antibiotics (tetracycline, ofloxacin, tobramycin, netilmicin, tinidazole, rifaximin, furazidin)
+  to drugs_reference + _canonical_to_ref to pull in more KB guidelines. Coverage 119->120 nosologies, all
+  calculation_blocked (SOURCE_SPEC_MISSING). Whole-class groups and multi-drug combos still SKIPPED (cannot map
+  to a single drug_ref). Degenerate topical conjunctivitis 629_2 excluded (not a systemic dose). Never fabricate
+  drug entries; never auto-attest.
+## 2026-09-02: Verification harness is EVIDENCE, not attestation
+
+- dose_verification.py produces machine evidence (does app-computed dose fall in the PDF-extracted range),
+  reported as MATCH/MISMATCH/UNCOMPARABLE. It NEVER sets source_verification_status=CALCULATOR_BOUND_VERIFIED.
+- The computed '113 mismatched' bucket conflates valid variants with real errors -> must not be treated as a
+  data-quality verdict without per-case physician review. Conclusion: the app is objectively verifiable, but
+  'verified' propagation to calculation-enabled state is physician P5.6/P6 only.
+## 2026-09-02: Calculate-bug fix is render-path only, no data semantics change
+
+- The dose math (dose_mg_kg_day = mg/kg/day, single = daily/freq) is CORRECT. The reported
+  "неправильный расчёт" was a RENDER defect: child liquid-default in renderFormChips selected a
+  parenteral vial (mg/ml=None) for cefuroxime → Infinity. Fixed by requiring concentration_mg_per_ml
+  for the child liquid default. DB values unchanged; only display-path corrected. 
 # DECISIONS
+
+## 2026-09-02 — route-dedup + triage refinement keeps extension as source-layer only
+
+Rationale: route-dedup bug (duplicate route lists) fixed and extension regenerated to 47 records
+against the original 72 base. Triage refined so 0 records are unclassified.
+
+Guardrails reaffirmed: (1) engineering triage is keyword classification for a physician's review
+list ONLY — it carries NO clinical judgement; the 17 `infection` vs the prophylaxis/onco/cardiac/
+metabolic split is not a diagnosis. (2) Amanitin mushroom poisoning (926_1) is classified via
+override to infection, but it is an INTOXICATION, not a true infection — the physician should
+decide its fate; the override exists only because the record carries an antibacterial (penicillin)
+regimen. (3) All 47 extension records stay `calculation_blocked=True SOURCE_SPEC_MISSING`.
+(4) P5.6/P6 attestation stays owner/physician only. No commit (user never asked).
+
+## 2026-09-02 — engineering triage of extension nosologies is NOT a medical verdict
+
+Rationale: the 46 DOSA-added records span two worlds (acute infections vs prophylaxis / oncology /
+congenital-cardiac / metabolic). As a doctor-programmer the priority is validation, not quantity,
+so records are split into 7 categories for physician review via `dosa_extension_triage.py`.
+
+Guardrails: (1) This is mechanical keyword classification used ONLY to give a physician a
+reviewable list — it carries NO clinical judgement; outputs must never be read as a diagnosis or
+approval. (2) All 46 remain `calculation_blocked=True SOURCE_SPEC_MISSING`. (3) The two-world UI
+split (acute infections vs prophylaxis settings) should be a follow-up; the `infection`-classified
+16 are the realistic binding candidates, the rest are prophylaxis/onco and should be reviewed or
+hidden by a physician. (4) P5.6/P6 attestation stays owner/physician only. No commit (user never asked).
+
+## 2026-09-02 — scope expansion to ALL antibiotic guidelines (46 nosologies) still source-layer-only
+
+Rationale: user asked to pull in every remaining klinrek that carries antibiotics.
+Decision: broaden the mapper target from the 128 therapeutic-new subset to ALL 267 unused
+DOSA guidelines. Result: 181 candidates → after dual dedup (vs existing + cross-version) →
+**46** buildable new records, written to db/diseases/extended_dosa.json.
+
+Guardrails kept: (1) ALL new records calculation_blocked=True + SOURCE_SPEC_MISSING via the
+fail-closed source gate, only aom_child unblocked. (2) freq-gate still drops regimens with
+unresolvable frequency (validate rejects null). (3) never emit an unregistered drug_ref.
+(4) no physician attestation — P5.6/P6 owner-only. Trade-off accepted: many of the 46 are
+peri-op prophylaxis / onco / congenital-cardiac / rare-metabolic (not classic infection dosing),
+so expect low clinical-utility value until a physician curates; they show in the app but
+calculate-blocked. No commit (user never asked).
+
+## 2026-09-02 — add DOSA-derived nosologies only as source-layer, never unblock
+
+Decision: extend the calculator with DOSA-derived nosologies as a SOURCE-LAYER
+only. The mapper always keeps `calculation_blocked=True` + `SOURCE_SPEC_MISSING`
+for new records (the fail-closed source gate has no pinned spec). Frequency-gate:
+a DOSA regimen whose frequency can't be parsed is DROPPED rather than emitted
+with `freq_per_day=null` (validate_db.js rejects null as ERROR). Yields are
+reported honestly (128 candidates -> 3 buildable). A source-layer record is
+never treated as clinically approved; the physician gate P5.6/P6 stays owner-only.
+
+
+Decision: unused antibiotic-bearing DOSA guidelines are subclassified into the
+expansion pool using the EP ratio of their own regimens
+(`classify_by_regimen_ratio`: no prophylaxis → `therapeutic`; proph/n ≥ 0.5 →
+`primarily_prophylaxis`; else `mixed`). A pill/keyword classifier is NOT used —
+it proved unreliable (miscategorized onco/neutropenia guidelines as therapeutic).
+Overlap with existing calculator diseases is decided by EXACT mkb10 code match
+(not block-prefix, which over-counted 56 false duplicates vs 16 correct).
+
+Reason: prophylaxis regimens are fixed-dose peri-op practice, a different
+scenario from "doses at infection"; mixing them inflates the therapeutic pool.
+Exact-code matching keeps duplicates honest. The pool (128 therapeutic new
+nosologies, 840 regimens) is purely a source-pool identification step; it is a
+source prover and never enables calculation or clinical approval.
+
+## 2026-09-02 — usar la DOSA klinrec extraction solo como prueba de fuente (source prover)
+
+Decision: the `clinrec-downloader` (DOSA) extraction is used as a *source
+contract* only — it binds a calculator disease to a guideline's evidence
+(pdf_sha256, page_number, source_quote, dose) but must NEVER enable calculation
+or count as clinical approval. `src/pipeline/extraction/dosa_source_contract.py`
+matches by exact cr_id → MKB overlap → name keyword, in that precedence, and
+preserves `calculation_blocked=true` for every row.
+
+Reason: the user scoped the merge to "только слои источников" (source layer
+only); the clinical gate (P5.6 acceptance, P6 attestation) stays with the
+owner/physician. The DOSA data is LLM-extraction (~44% REJECT in quality audit)
+and therefore is evidence-of-provenance, not medical authority. This extends the
+existing "a dose reference table is not a treatment recommendation" decision to
+the source layer: an anchored quote is not a verified, physician-attested dose.
+
+Decision: to enable future source checks, do NOT duplicate the DOSA/
+clinrec-downloader downloader into antibio-calc. `src/pipeline/api_client.py`
+already provides `ClinrecApi.download_pdf(code_version)` (fetches by
+CodeVersion, validates `%PDF`, computes sha256, tenacity retry) — identical to
+the other repo. The only missing piece was a bridge to the source-spec pin:
+`src/pipeline/extraction/source_fetch_verify.py` connects the download to
+`spec.expected_pdf_sha256` verification, fail-closed (an empty pin or a
+`%PDF`-less payload never verifies, never approves regimens). `downloader` is
+an injectable async callable so tests run offline without the network-blocked
+host.
+
+## 2026-09-02 — scenario-to-dose-row bindings are pinned, recomputed and never auto-unblock
+
+Decision: CAP scenario bindings live in dedicated artifacts
+(`clinical_sources/scenario_bindings/{cr_id}.json`) that store only the
+mapping (scenario_id, line_number, drug_ref, regimen_index → spec_row_index)
+plus sha256 pins of the full disease record and the spec row_groups. All
+linkage semantics (severity, route, duration, age/weight, remaining blockers,
+`unblock_eligible`) are recomputed at verification time from live db+spec
+data, not stored in the artifact.
+
+Reason: stored mappings cannot drift silently — any db or spec change breaks
+the pin and fails verification; recomputed linkage cannot be forged by
+editing the artifact. `unblock_eligible` additionally requires a
+severity/risk-stratified dose table (`severity == LINKED`), which the current
+generic CAP reference tables never satisfy, so the artifact cannot be used to
+unblock a generic reference-table dose — implementing the 2026-08-02
+"a dose reference table is not a treatment recommendation" decision in code.
+
+Tooling: `src/pipeline/extraction/scenario_bindings.py`
+(`build_binding_artifact`, `verify_scenario_bindings`, CLI); tests
+`src/tests/test_scenario_bindings.py`; verification is fail-closed on
+schema/version mismatch, blocked-status violation, pin mismatch, ATC
+mismatch, duplicate or missing coverage.
 
 ## 2026-08-02 — numeric CR code is unusable without semantic title match
 

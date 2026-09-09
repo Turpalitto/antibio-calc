@@ -37,9 +37,21 @@ def test_env_overrides_config(tmp_path: Path):
 
 def test_config_default_used_when_no_env():
     # No env → falls back to the committed corpus_config.json default.
+    import json
+
+    from clinical_engine.corpus.locator import _CONFIG_PATH
+
     resolved = resolve_corpus_dir({})
     assert str(resolved)  # non-empty path
-    assert resolved.name.lower() == "clinrec_downloader"
+    configured = json.loads(_CONFIG_PATH.read_text(encoding="utf-8"))["corpus_dir"]
+    # The resolver must return exactly the configured default (stripped).
+    assert resolved == Path(str(configured).strip())
+    # …and that default must point at the corpus. Compare the final path
+    # component separator-agnostically: the committed default is a Windows
+    # path (C:\clinrec_downloader), which native Path.name cannot parse on
+    # POSIX (backslash is not a separator there).
+    tail = str(configured).strip().replace("\\", "/").rstrip("/").rsplit("/", 1)[-1]
+    assert tail.lower() == "clinrec_downloader"
 
 
 # ── missing corpus is graceful (no crash) ──────────────────────

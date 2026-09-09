@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "DOSA_EXTENSION_CANDIDATES",
+  "created": "2026-09-02",
+  "source": "DOSA clinrec-downloader knowledge_base.json (294 KP, 2675 regimens, LLM extraction claude-sonnet-4-20250514)",
+  "db_reference": { "disease_count": 72, "unique_cr_ids": 33, "categories": 9 },
+  "scope_note": "Target = KP with antibiotics only. Prophylaxis regimes (regimen_type=prophylaxis) separated from therapeutic regimes. Every regimen carries source_quote+page_number+pdf_sha256 (proof anchor). NOT clinical approval.",
+  "summary": {
+    "unused_kp_total": 267,
+    "unused_kp_mkb_disjoint": 251,
+    "unused_kp_mkb_overlap_same_disease": 16,
+    "total_regimens_in_unused": 2351,
+    "prophylaxis_regimens_in_unused": 0,
+    "removed_from_calc_scope_due_to_prophylaxis": 0,
+    "unique_mkb_in_unused": 414,
+    "unique_mkb_mkb_disjoint": 0
+  },
+  "classification": {
+    "lepra": "rare/neglected - low priority",
+    "surgical_prophylaxis": "peri-op fixed-dose prophylaxis - separate scenario",
+    "chronic_exacerbation": "already partially present (sinusitis)",
+    "new_therapeutic_nosology": "high value"
+  },
+  "candidate_nosologies": [],
+  "duplicates_same_disease_different_version": [
+    { "ours_cr_id": "494_3", "kp_cr_id": "494_1", "name": "Брюшной тиф", "regimens": 11 },
+    { "ours_cr_id": "494_3", "kp_cr_id": "494_2", "name": "Брюшной тиф", "regimens": 10 },
+    { "ours_cr_id": "lyme_disease", "kp_cr_id": "566_1", "name": "Болезнь Лайма у взрослых", "regimens": 17 },
+    { "ours_cr_id": "lyme_disease", "kp_cr_id": "566_2", "name": "Болезнь Лайма у взрослых", "regimens": 38 },
+    { "ours_cr_id": "copd_exacerbation", "kp_cr_id": "603_1", "name": "ХОБЛ", "regimens": 16 },
+    { "ours_cr_id": "copd_exacerbation", "kp_cr_id": "603_2", "name": "ХОБЛ", "regimens": 1 },
+    { "ours_cr_id": "diverticulitis", "kp_cr_id": "179_2", "name": "Дивертикулярная болезнь", "regimens": 3 },
+    { "ours_cr_id": "diverticulitis", "kp_cr_id": "179_3", "name": "Дивертикулярная болезнь", "regimens": 3 },
+    { "ours_cr_id": "peritonsillar_abscess", "kp_cr_id": "664_1", "name": "Паратонзиллярный абсцесс", "regimens": 1 },
+    { "ours_cr_id": "epiglottitis_acute", "kp_cr_id": "352_2", "name": "Ларингит/эпиглоттит", "regimens": 6 },
+    { "ours_cr_id": "epiglottitis_acute", "kp_cr_id": "352_3", "name": "Ларингит/эпиглоттит", "regimens": 27 },
+    { "ours_cr_id": "ut_child", "kp_cr_id": "281_2", "name": "ИМП у детей", "regimens": 1 },
+    { "ours_cr_id": "asthma", "kp_cr_id": "359_3", "name": "Бронхиальная астма", "regimens": 1 },
+    { "ours_cr_id": "h_pylori", "kp_cr_id": "837_1", "name": "Гастрит и дуоденит у детей", "regimens": 21 },
+    { "ours_cr_id": "h_pylori", "kp_cr_id": "277_2", "name": "Язвенная болезнь", "regimens": 22 },
+    { "ours_cr_id": "epididymitis", "kp_cr_id": "1007_1", "name": "Воспалительные болезни органов мошонки", "regimens": 2 }
+  ],
+  "note": "This artifact is the raw candidate list. Further step: classify the 251 MKB-disjoint KPs into (new_therapeutic_nosology / surgical_prophylaxis / rare_neglected) and deduplicate diagnosis rows into nosologies.",
+  "generated_by": "src analysis (see AI_LOG 2026-09-02). No calculation enabled, no physician attestation."
+}

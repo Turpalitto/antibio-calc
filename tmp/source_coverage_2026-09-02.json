@@ -1,0 +1,731 @@
+{
+  "disease_count": 72,
+  "missing_spec_disease_count": 63,
+  "rows": [
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "858_1",
+      "cr_year": 2024,
+      "disease_id": "mastitis_puerperal",
+      "expected_pdf_sha256": null,
+      "name": "Послеродовой мастит",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "643_2",
+      "cr_year": 2024,
+      "disease_id": "pid",
+      "expected_pdf_sha256": null,
+      "name": "Воспалительные заболевания органов таза (ВЗОТ)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "prostatitis",
+      "expected_pdf_sha256": null,
+      "name": "Простатит (острый и хронический бактериальный)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "664_2",
+      "cr_year": 2024,
+      "disease_id": "peritonsillar_abscess",
+      "expected_pdf_sha256": null,
+      "name": "Перитонзиллярный абсцесс (паратонзиллит)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "scarlet_fever",
+      "expected_pdf_sha256": null,
+      "name": "Скарлатина",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "388_3",
+      "cr_year": 2024,
+      "disease_id": "h_pylori",
+      "expected_pdf_sha256": null,
+      "name": "Helicobacter pylori-инфекция (язвенная болезнь)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "819_1",
+      "cr_year": 2024,
+      "disease_id": "cholecystitis_cholangitis",
+      "expected_pdf_sha256": null,
+      "name": "Острый холецистит и холангит",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "intraabdominal_infection",
+      "expected_pdf_sha256": null,
+      "name": "Интраабдоминальная инфекция (осложнённый аппендицит, перитонит)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "878_1",
+      "cr_year": 2024,
+      "disease_id": "cdi",
+      "expected_pdf_sha256": null,
+      "name": "Clostridioides difficile-ассоциированная инфекция (псевдомембранозный колит)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "diverticulitis",
+      "expected_pdf_sha256": null,
+      "name": "Острый дивертикулит толстой кишки",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "sbp",
+      "expected_pdf_sha256": null,
+      "name": "Спонтанный бактериальный перитонит (СБП)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "912_1",
+      "cr_year": 2025,
+      "disease_id": "neonatal_sepsis",
+      "expected_pdf_sha256": null,
+      "name": "Неонатальный сепсис (ранний и поздний)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "nec",
+      "expected_pdf_sha256": null,
+      "name": "Некротизирующий энтероколит (НЭК)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "629_2",
+      "cr_year": 2024,
+      "disease_id": "neonatal_conjunctivitis",
+      "expected_pdf_sha256": null,
+      "name": "Конъюнктивит новорождённых",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2024,
+      "disease_id": "omphalitis",
+      "expected_pdf_sha256": null,
+      "name": "Омфалит новорождённых",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "animal_bite",
+      "expected_pdf_sha256": null,
+      "name": "Укусы животных (профилактика и лечение раневой инфекции)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2024,
+      "disease_id": "postop_prophylaxis",
+      "expected_pdf_sha256": null,
+      "name": "Послеоперационная антибиотикопрофилактика",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "54_3",
+      "cr_year": 2026,
+      "disease_id": "endocarditis_prophylaxis",
+      "expected_pdf_sha256": null,
+      "name": "Профилактика инфекционного эндокардита",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "asplenia_prophylaxis",
+      "expected_pdf_sha256": null,
+      "name": "Аспления — антибиотикопрофилактика (пенициллиновая)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "uti_prophylaxis",
+      "expected_pdf_sha256": null,
+      "name": "Профилактика рецидивирующих ИМП",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "654_2",
+      "cr_year": 2024,
+      "disease_id": "cap_adult",
+      "expected_pdf_sha256": "sha256:118c45dc9f800fb573108ebe2f1c33730ee285cfae2222af4baf55269904aed5",
+      "name": "Внебольничная пневмония у взрослых",
+      "rubricator_revision": "654_2",
+      "source_spec_status": "VERIFIED_SPEC_CALCULATION_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "714_2",
+      "cr_year": 2025,
+      "disease_id": "cap_child",
+      "expected_pdf_sha256": "sha256:ca0061e8923ebc95afde71f641dc9a70bef1d35debeac1736b1231c917866f62",
+      "name": "Внебольничная пневмония у детей",
+      "rubricator_revision": "714_2",
+      "source_spec_status": "VERIFIED_SPEC_CALCULATION_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "603_3",
+      "cr_year": 2024,
+      "disease_id": "copd_exacerbation",
+      "expected_pdf_sha256": null,
+      "name": "Острое бактериальное обострение ХОБЛ",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Официальная редакция КР 313_3 (2024) подтверждена в рубрикаторе, но полный PDF и точные извлечённые схемы ещё не закреплены SHA-256. Старые схемы КР 313/2021 заблокированы.",
+      "cr_id": "313_3",
+      "cr_year": 2024,
+      "disease_id": "sinusitis_adult",
+      "expected_pdf_sha256": null,
+      "name": "Острый и рецидивирующий риносинусит у взрослых",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Официальная редакция КР 313_3 (2024) подтверждена в рубрикаторе, но полный PDF и точные извлечённые схемы ещё не закреплены SHA-256. Старые схемы КР 313/2021 заблокированы.",
+      "cr_id": "313_3",
+      "cr_year": 2024,
+      "disease_id": "sinusitis_child",
+      "expected_pdf_sha256": null,
+      "name": "Острый и рецидивирующий риносинусит у детей",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "КР 306_3 подтверждена, но текущие схемы калькулятора отличаются от таблиц КР. Расчёт закрыт до привязки и врачебной проверки извлечённых кандидатов.",
+      "cr_id": "306_3",
+      "cr_year": 2024,
+      "disease_id": "pharyngitis_adult",
+      "expected_pdf_sha256": "sha256:33d3393ae7f5aec31cfe933e186a98e6aef853cc563665399d46d79f803ec337",
+      "name": "Острый тонзиллит / фарингит (БГСА) у взрослых",
+      "rubricator_revision": "306_3",
+      "source_spec_status": "VERIFIED_SPEC_CALCULATION_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "КР 306_3 подтверждена, но текущие схемы калькулятора отличаются от таблиц КР. Расчёт закрыт до привязки и врачебной проверки извлечённых кандидатов.",
+      "cr_id": "306_3",
+      "cr_year": 2024,
+      "disease_id": "pharyngitis_child",
+      "expected_pdf_sha256": "sha256:33d3393ae7f5aec31cfe933e186a98e6aef853cc563665399d46d79f803ec337",
+      "name": "Острый тонзиллит / фарингит (БГСА) у детей",
+      "rubricator_revision": "306_3",
+      "source_spec_status": "VERIFIED_SPEC_CALCULATION_BLOCKED"
+    },
+    {
+      "calculation_block_reason": null,
+      "cr_id": "314_3",
+      "cr_year": 2024,
+      "disease_id": "aom_child",
+      "expected_pdf_sha256": "sha256:6022928b4138f2a2ab9319c34e2a3b2c13bb53f2d08add5eb3fa83eed296665d",
+      "name": "Острый средний отит у детей",
+      "rubricator_revision": "314_3",
+      "source_spec_status": "VERIFIED_SPEC"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "314_3",
+      "cr_year": 2024,
+      "disease_id": "otitis_media_adult",
+      "expected_pdf_sha256": "sha256:6022928b4138f2a2ab9319c34e2a3b2c13bb53f2d08add5eb3fa83eed296665d",
+      "name": "Острый средний отит у взрослых",
+      "rubricator_revision": "314_3",
+      "source_spec_status": "VERIFIED_SPEC_CALCULATION_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2022,
+      "disease_id": "hap",
+      "expected_pdf_sha256": null,
+      "name": "Нозокомиальная (внутрибольничная) пневмония",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "epiglottitis_acute",
+      "expected_pdf_sha256": null,
+      "name": "Острый эпиглоттит",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "16_4",
+      "cr_year": 2026,
+      "disease_id": "tuberculosis",
+      "expected_pdf_sha256": null,
+      "name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2022,
+      "disease_id": "aspiration_pneumonia",
+      "expected_pdf_sha256": null,
+      "name": "Аспирационная пневмония",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2022,
+      "disease_id": "lung_abscess_empyema",
+      "expected_pdf_sha256": null,
+      "name": "Абсцесс лёгкого / эмпиема плевры",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "erysipelas",
+      "expected_pdf_sha256": null,
+      "name": "Рожа у взрослых",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2015,
+      "disease_id": "diabetic_foot",
+      "expected_pdf_sha256": null,
+      "name": "Синдром диабетической стопы (инфекция)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "cellulitis",
+      "expected_pdf_sha256": null,
+      "name": "Целлюлит / флегмона",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "skin_abscess",
+      "expected_pdf_sha256": null,
+      "name": "Абсцесс кожи / фурункул / карбункул",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "necrotizing_fasciitis",
+      "expected_pdf_sha256": null,
+      "name": "Некротизирующий фасциит",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "osteomyelitis",
+      "expected_pdf_sha256": null,
+      "name": "Остеомиелит",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "impetigo",
+      "expected_pdf_sha256": null,
+      "name": "Импетиго",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "septic_arthritis",
+      "expected_pdf_sha256": null,
+      "name": "Септический (гнойный) артрит",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "898_1",
+      "cr_year": 2024,
+      "disease_id": "sepsis_adult",
+      "expected_pdf_sha256": null,
+      "name": "Сепсис и септический шок у взрослых",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2024,
+      "disease_id": "pneumococcal_meningitis",
+      "expected_pdf_sha256": null,
+      "name": "Пневмококковый менингит",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "1020_1",
+      "cr_year": 2026,
+      "disease_id": "meningococcal_disease",
+      "expected_pdf_sha256": null,
+      "name": "Менингококковая инфекция",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "54_3",
+      "cr_year": 2026,
+      "disease_id": "infective_endocarditis",
+      "expected_pdf_sha256": null,
+      "name": "Инфекционный эндокардит (лечение)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2022,
+      "disease_id": "bacterial_meningitis_empiric",
+      "expected_pdf_sha256": null,
+      "name": "Бактериальный менингит — эмпирическая терапия",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "listeriosis",
+      "expected_pdf_sha256": null,
+      "name": "Листериоз (менингит, бактериемия)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "febrile_neutropenia",
+      "expected_pdf_sha256": null,
+      "name": "Фебрильная нейтропения (эмпирическая терапия)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "tetanus",
+      "expected_pdf_sha256": null,
+      "name": "Столбняк",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "14_3",
+      "cr_year": 2024,
+      "disease_id": "cystitis_female",
+      "expected_pdf_sha256": null,
+      "name": "Острый неосложнённый цистит у женщин",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "9_3",
+      "cr_year": 2024,
+      "disease_id": "pyelonephritis_adult",
+      "expected_pdf_sha256": "sha256:b46960a144b21cacf97f39435c53489bb8a57f0e775be6d8df9e658f67ce08cf",
+      "name": "Острый пиелонефрит у взрослых (без обструкции)",
+      "rubricator_revision": "9_3",
+      "source_spec_status": "VERIFIED_SPEC_CALCULATION_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "281_3",
+      "cr_year": 2024,
+      "disease_id": "ut_child",
+      "expected_pdf_sha256": "sha256:7db13a28ac5708ffccfc7216d81f4a2c3ffcbb9527be87988207a608713577df",
+      "name": "Инфекции мочевых путей у детей",
+      "rubricator_revision": "281_3",
+      "source_spec_status": "VERIFIED_SPEC_CALCULATION_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "7_2",
+      "cr_year": 2024,
+      "disease_id": "urolithiasis_infected",
+      "expected_pdf_sha256": null,
+      "name": "Мочекаменная болезнь с инфекцией / инфицированный камень",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "197_2",
+      "cr_year": 2024,
+      "disease_id": "syphilis",
+      "expected_pdf_sha256": null,
+      "name": "Сифилис",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "218_2",
+      "cr_year": 2024,
+      "disease_id": "gonorrhea",
+      "expected_pdf_sha256": null,
+      "name": "Гонококковая инфекция",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "194_2",
+      "cr_year": 2024,
+      "disease_id": "chlamydia_urogenital",
+      "expected_pdf_sha256": null,
+      "name": "Урогенитальный хламидиоз",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "216_2",
+      "cr_year": 2024,
+      "disease_id": "mycoplasma_genitalium",
+      "expected_pdf_sha256": null,
+      "name": "Mycoplasma genitalium-инфекция (уретрит, цервицит)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "206_2",
+      "cr_year": 2022,
+      "disease_id": "bacterial_vaginosis",
+      "expected_pdf_sha256": null,
+      "name": "Бактериальный вагиноз",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "791_1",
+      "cr_year": 2024,
+      "disease_id": "postpartum_endometritis",
+      "expected_pdf_sha256": null,
+      "name": "Послеродовой эндометрит",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "719_2",
+      "cr_year": 2025,
+      "disease_id": "pyelonephritis_pregnancy",
+      "expected_pdf_sha256": "sha256:5844866ad33a868d3135a27e0bca1f332c7f075ca2ed687e20bba12980de1492",
+      "name": "Инфекции мочевых путей у беременных (бактериурия, цистит, пиелонефрит)",
+      "rubricator_revision": "719_2",
+      "source_spec_status": "VERIFIED_SPEC_CALCULATION_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "epididymitis",
+      "expected_pdf_sha256": null,
+      "name": "Острый эпидидимит / эпидидимоорхит",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "lyme_disease",
+      "expected_pdf_sha256": null,
+      "name": "Болезнь Лайма (боррелиоз)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "brucellosis",
+      "expected_pdf_sha256": null,
+      "name": "Бруцеллёз",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "anthrax",
+      "expected_pdf_sha256": null,
+      "name": "Сибирская язва",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2023,
+      "disease_id": "diphtheria",
+      "expected_pdf_sha256": null,
+      "name": "Дифтерия",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "1023_1",
+      "cr_year": 2026,
+      "disease_id": "pertussis",
+      "expected_pdf_sha256": null,
+      "name": "Коклюш",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "700_3",
+      "cr_year": 2024,
+      "disease_id": "salmonellosis",
+      "expected_pdf_sha256": null,
+      "name": "Сальмонеллёз (нетифозный)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "869_1",
+      "cr_year": 2024,
+      "disease_id": "shigellosis",
+      "expected_pdf_sha256": null,
+      "name": "Шигеллёз (бактериальная дизентерия)",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "494_3",
+      "cr_year": 2025,
+      "disease_id": "typhoid_fever",
+      "expected_pdf_sha256": null,
+      "name": "Брюшной тиф и паратифы",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "leptospirosis",
+      "expected_pdf_sha256": null,
+      "name": "Лептоспироз",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    },
+    {
+      "calculation_block_reason": "Расчёт временно закрыт: для этой нозологии ещё не закреплены актуальная карточка КР, полный PDF и проверенный набор схем дозирования.",
+      "cr_id": "—",
+      "cr_year": 2021,
+      "disease_id": "actinomycosis",
+      "expected_pdf_sha256": null,
+      "name": "Актиномикоз",
+      "rubricator_revision": null,
+      "source_spec_status": "SOURCE_BLOCKED"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "source_blocked_disease_count": 71,
+  "unblocked_missing_spec_disease_count": 0,
+  "unique_spec_count": 7,
+  "verified_spec_disease_count": 9
+}

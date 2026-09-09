@@ -1,0 +1,55 @@
+{
+  "artifact_type": "SCENARIO_DOSE_TABLE_BINDINGS",
+  "binding_version": "scenario-dose-row-1",
+  "bindings": [
+    {
+      "drug_ref": "amoxicillin",
+      "line_number": 1,
+      "regimen_index": 0,
+      "scenario_id": "cap_child_out",
+      "spec_row_index": 1
+    },
+    {
+      "drug_ref": "amoxicillin",
+      "line_number": 1,
+      "regimen_index": 1,
+      "scenario_id": "cap_child_out",
+      "spec_row_index": 1
+    },
+    {
+      "drug_ref": "amoxiclav",
+      "line_number": 2,
+      "regimen_index": 0,
+      "scenario_id": "cap_child_out",
+      "spec_row_index": 2
+    },
+    {
+      "drug_ref": "azithromycin",
+      "line_number": 2,
+      "regimen_index": 0,
+      "scenario_id": "cap_child_out",
+      "spec_row_index": 0
+    },
+    {
+      "drug_ref": "amoxiclav",
+      "line_number": 1,
+      "regimen_index": 0,
+      "scenario_id": "cap_child_in",
+      "spec_row_index": 2
+    },
+    {
+      "drug_ref": "ceftriaxone",
+      "line_number": 1,
+      "regimen_index": 0,
+      "scenario_id": "cap_child_in",
+      "spec_row_index": 17
+    }
+  ],
+  "calculation_blocked": true,
+  "cr_id": "714_2",
+  "created": "2026-09-02",
+  "disease_id": "cap_child",
+  "expected_disease_sha256": "sha256:30e958eee6f924f5ba8bf0433f98e66d6ecfe8e3533d0f5094183174da126ed5",
+  "expected_spec_row_groups_sha256": "sha256:1f2fb806e4b7e26346de5dcab10dd99ad7a81fc883076973725463a093a91e9a",
+  "schema_version": "1.0.0"
+}
