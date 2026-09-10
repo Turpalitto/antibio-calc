@@ -1317,6 +1317,10 @@ function computeDose(reg, w, unit){
   if(maxDaily != null && dailyMg > maxDaily){
     dailyMg = maxDaily;
     capped = true;
+    // Разовая доза обязана пересчитываться вместе с суточной. Иначе рецепт
+    // печатал «1500 мг 4 р/д» при максимуме 4000 мг/сут, то есть инструкцию,
+    // которая на 50% превышает заявленный потолок.
+    if(singleMg > 0) singleMg = dailyMg / (reg.freq_per_day || 1);
   }
   if(singleMg === 0 && reg.freq_per_day) singleMg = dailyMg / reg.freq_per_day;
   return {singleMg, dailyMg, capped, needWeight, inconsistent, unit: unit || 'мг'};

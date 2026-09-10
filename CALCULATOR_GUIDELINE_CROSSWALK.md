@@ -194,6 +194,7 @@ python -m clinical_engine.crosswalk.review_queue     # очередь враче
 | `src/tests/test_regimen_semantics.py` (57) | Разбор длительности, сборка метки, идемпотентность |
 | `src/tests/test_calculator_duration_display.py` (5) | Shipped-JS отображения курса под Node на реальной БД |
 | `src/tests/test_calculator_age_group_safety.py` (6) | Shipped-JS подбора режима: доза чужой возрастной группы недостижима |
+| `src/tests/test_calculator_dose_capping.py` (6) | Shipped-JS усечения по `max_daily_mg`: разовая доза не выше потолка |
 | `src/tests/test_build_db.py` (10) | Встраивание связей, отказ на устаревшем артефакте |
 | `src/tests/test_source_gate_report.py` (8) | Worklist блокировок + fail-closed инварианты |
 

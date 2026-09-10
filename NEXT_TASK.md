@@ -1,3 +1,30 @@
+## 2026-09-11: Потолок суточной дозы закрыт — что дальше
+
+- **Готово:** `computeDose()` пересчитывает разовую дозу при усечении суточной;
+  сплошная проверка 3828 вычислений даёт 0 нарушений. Тесты: **2238 passed**.
+- **Открыто, данные КР (не код):** 59 пар «препарат × возраст» без схемы дозирования —
+  список печатает `node db/validate_db.js` (строки «no regimen for age_group»). Крупнейшие:
+  `anthrax`, `typhoid_fever`, `shigellosis`, `postop_prophylaxis`, `animal_bite`,
+  `lyme_disease`, `diphtheria`, `salmonellosis`, `endocarditis_prophylaxis`,
+  `asplenia_prophylaxis`, `pneumococcal_meningitis`, `meningococcal_disease`.
+- **Открыто, данные КР:** 60 режимов с `age_group` вне возрастного диапазона сценария
+  (13 нозологий) — мёртвые данные, калькулятор их отфильтровывает.
+- **Открыто, требует врача:** 82 блочные связи в очереди
+  `clinical_engine/resources/calculator_crosswalk_review_queue.json`. Первая пятёрка
+  (`HIGH`): `postop_prophylaxis` → КР 1702 через код внешних причин `Y83`;
+  `pid`, `cdi`, `intraabdominal_infection`, `sbp` → детские КР при `age_groups: ["adult"]`.
+- **Открыто, качество данных:** 12 неразбираемых длительностей (4 уникальные строки:
+  `10!`, `хроническая`, `по ситуации`, `за 30-60 минут до процедуры`); 47 пустых
+  `duration_days`; 29 записей без `route`.
+- **Открыто, требует решения владельца:** 95 КР корпуса без нозологии в калькуляторе
+  (`unlinked_guidelines`); 22 нозологии без связи с корпусом; 119/120 без расчёта
+  (`python db/source_gate_report.py`, owner-only P5.6/P6).
+- **Стоит проверить дальше тем же методом (исполнением shipped-JS на реальной БД):**
+  пересчёт единиц (`dose_unit` = ЕД для бензилпенициллина), разведение/`dilution`,
+  печатную форму и историю — там та же архитектура «считаем и печатаем», что и в
+  двух уже найденных багах.
+- Пересборка: `python -m clinical_engine.crosswalk --write` → `python db/build_db.py` →
+  `python db/build_html.py` → `python -m clinical_engine.crosswalk.review_queue --write`.
 ## 2026-09-11: Возрастная безопасность закрыта — что дальше
 
 - **Готово:** `getActiveRegimen()` больше не подставляет дозу чужой возрастной группы;
