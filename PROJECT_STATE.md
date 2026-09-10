@@ -1,3 +1,16 @@
+## 2026-09-11: Очередь врачебной проверки блочных связей
+
+- **Новое:** `clinical_engine/crosswalk/review_queue.py` +
+  `clinical_engine/resources/calculator_crosswalk_review_queue.json` — ранжированная очередь
+  на все **82** связи `ICD10_BLOCK` (38 нозологий / 68 КР). Категории:
+  `EXTERNAL_CAUSE_ONLY 1`, `AGE_DIRECTION_CONFLICT 4`, `BLOCK_ONLY_DISEASE 19`,
+  `COARSE_SHARED_BLOCK 15`, `ROUTINE 43`; `HIGH 5 / MEDIUM 34 / LOW 43`.
+  `purpose: PHYSICIAN_REVIEW_ONLY` — инструмент клиническую релевантность не решает.
+- **Пересборка:** `python -m clinical_engine.crosswalk.review_queue --write`.
+  Импорт в review workbench: `to_issue_records()` → `ReviewStore.import_issue`.
+- **Тесты:** `pytest -q` → **2226 passed, 32 skipped, 1 xfailed**.
+- **Открыто:** 82 блочные связи ждут решения врача; 95 КР корпуса без нозологии;
+  22 нозологии без связи с корпусом; 119/120 нозологий без расчёта.
 ## 2026-09-11: Перепись корпуса КР исправлена, добавлено зеркальное покрытие
 
 - **Кроссволк:** `clinical_engine/resources/calculator_crosswalk.json`,

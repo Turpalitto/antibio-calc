@@ -173,37 +173,87 @@ python -m clinical_engine.crosswalk --write  # пересобрать
 ## 6. Как проверять
 
 ```bash
-pytest -q                                            # 2126 passed, 32 skipped, 1 xfailed
+pytest -q                                            # 2226 passed, 32 skipped, 1 xfailed
 python -m clinical_engine.crosswalk                  # in_sync
 python db/build_db.py                                # 120 recs, 98 со связями
 python db/build_html.py                              # antibiotic_calc.html
-node db/validate_db.js                               # 0 errors, 478 warnings
+node db/validate_db.js                               # 0 errors, 505 warnings
 python db/source_gate_report.py                      # почему закрыт расчёт
+python -m clinical_engine.crosswalk.review_queue     # очередь врачебной проверки
 ```
 
 Ключевые тесты:
 
 | Файл | Что фиксирует |
 |---|---|
-| `clinical_engine/tests/test_calculator_crosswalk.py` (32) | Детерминизм, правила соединения, дрейф-гард, fail-closed reader |
+| `clinical_engine/tests/test_calculator_crosswalk.py` (38) | Детерминизм, правила соединения, дрейф-гард, fail-closed reader, перепись корпуса и зеркало |
+| `clinical_engine/tests/test_crosswalk_review_queue.py` (32) | Категории очереди, порядок, детерминизм, отсутствие клинических вердиктов |
 | `clinical_engine/tests/test_api_crosswalk.py` (8) | `GET /v1/guidelines/{id}`, блокировка передаётся дословно |
 | `tests/test_calculator_guideline_links.py` (11) | Реальный JS панели под Node, воспроизводимость сборки HTML |
 | `src/tests/test_calculator_db_quality.py` (34) | МКБ-10, дубли, дозы, маршруты, навигационный статус |
+| `src/tests/test_regimen_semantics.py` (57) | Разбор длительности, сборка метки, идемпотентность |
+| `src/tests/test_calculator_duration_display.py` (5) | Shipped-JS отображения курса под Node на реальной БД |
 | `src/tests/test_build_db.py` (10) | Встраивание связей, отказ на устаревшем артефакте |
 | `src/tests/test_source_gate_report.py` (8) | Worklist блокировок + fail-closed инварианты |
 
 ---
 
-## 7. Что делать дальше (не сделано намеренно)
+## 7. Очередь врачебной проверки блочных связей
+
+Связь `ICD10_BLOCK` правдоподобна, но не доказана: «Воспалительные поражения
+позвоночника» дотягивается до `pid` через блок `A18`, потому что у нозологии есть
+`A18.2`. Верно это или нет — **решает только врач**.
+
+`clinical_engine/crosswalk/review_queue.py` ранжирует все 82 такие связи.
+Инструмент вычисляет исключительно **структурные** признаки и не выносит
+клинических вердиктов; артефакт помечен `purpose: PHYSICIAN_REVIEW_ONLY`.
+
+| Категория | Признак | Важность | Кол-во |
+|---|---|---|---|
+| `EXTERNAL_CAUSE_ONLY` | единственное совпадение — код внешних причин МКБ-10 (глава XX), а не болезни | HIGH | 1 |
+| `AGE_DIRECTION_CONFLICT` | заголовок КР называет популяцию, которую `age_groups` нозологии исключает | HIGH | 4 |
+| `BLOCK_ONLY_DISEASE` | у нозологии нет ни одной связи по точному коду | MEDIUM | 19 |
+| `COARSE_SHARED_BLOCK` | одна КР блочно связана с несколькими нозологиями — блок их не различает | MEDIUM | 15 |
+| `ROUTINE` | структурных подозрений нет, но проверка всё равно нужна | LOW | 43 |
+
+Побеждает самый громкий сигнал, однако **все** флаги остаются в строке — второй
+признак от врача не прячется. Связь без подозрений тоже попадает в очередь:
+отсутствие структурного сигнала не доказывает корректность.
+
+Первая пятёрка (`HIGH`):
+
+| Нозология | КР | Почему подозрительно |
+|---|---|---|
+| `postop_prophylaxis` | 1702 «Воспалительные поражения позвоночника» | совпадение только по `Y83` — код обстоятельств операции |
+| `pid` | 1556 «Туберкулез у детей» | КР детская, нозология `["adult"]` |
+| `cdi` | 804 «Кампилобактериоз у детей» | КР детская, нозология `["adult"]` |
+| `intraabdominal_infection` | 2042 «Острый аппендицит и перитонит у детей» | КР детская, нозология `["adult"]` |
+| `sbp` | 2042 «Острый аппендицит и перитонит у детей» | КР детская, нозология `["adult"]` |
+
+```bash
+python -m clinical_engine.crosswalk.review_queue            # только отчёт
+python -m clinical_engine.crosswalk.review_queue --write    # записать артефакт
+```
+
+Артефакт: `clinical_engine/resources/calculator_crosswalk_review_queue.json`
+(детерминирован, ссылается на `content_sha256` кроссволка, поэтому рассинхрон
+виден). Записи совместимы с `ReviewStore.import_issue` через `to_issue_records()`
+и идемпотентны по `issue_id = xwblock_{disease_id}_{guideline_id}`.
+
+---
+
+## 8. Что делать дальше (не сделано намеренно)
 
 1. **Наполнение корпуса для 22 нозологий без связи.** Требует извлечения новых КР,
    а не изменения связки.
 2. **Расчёт по-прежнему закрыт для 119/120.** Это работа с первоисточниками
    (PDF + SHA-256), см. `python db/source_gate_report.py`:
    109 × `SOURCE_SPEC`, 6 × `SPEC_PINNED`, 2 × `PDF_HASH`, 2 × `OWNER_REVIEW`.
-3. **Врачебная проверка связей `MEDIUM`/`LOW`.** 82 связи по блоку МКБ-10 могут
-   быть клинически нерелевантны (например, `pid` ↔ «Туберкулез у взрослых» через
-   блок `A18`). Связка честно помечает метод — решение за врачом.
-4. **Унификация пространств имён `guideline_id`.** Сейчас одно имя поля означает
+3. **Решения врача по 82 блочным связям.** Очередь построена и ранжирована (§7),
+   но ACCEPT/REJECT/NEEDS_INFO ставит человек — инструмент не аттестует.
+4. **95 КР корпуса без нозологии в калькуляторе** (`unlinked_guidelines`). Кандидаты
+   на новые нозологии; большинство не про антибактериальную терапию, поэтому
+   добавлять нужно выборочно.
+5. **Унификация пространств имён `guideline_id`.** Сейчас одно имя поля означает
    рубрикатор в `regimen_candidate_specs` и внутренний id в `diagnosis_index`.
    Переименование — миграция с отдельным планом (`KB_VERSIONING_MIGRATION_PLAN.md`).

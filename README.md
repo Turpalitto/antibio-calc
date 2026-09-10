@@ -109,7 +109,9 @@ C:\ANTIBIO/
 - **Калькулятор:** 120 нозологий / 48 препаратов; расчёт открыт для 1 (fail-closed source gate)
 - **Связка КР ⇄ калькулятор:** 263 связи, 98/120 нозологий, 199/294 КР корпуса (`NAVIGATION_ONLY`)
 - **Семантика режимов:** `duration_parsed` на 638/638, `regimen_label` на 611/638 (`db/regimen_semantics.py`)
-- **Тесты:** `pytest -q` → 2194 passed, 32 skipped, 1 xfailed
+- **Очередь врачебной проверки:** 82 блочные связи ранжированы по структурному риску
+  (`clinical_engine/crosswalk/review_queue.py` → `calculator_crosswalk_review_queue.json`)
+- **Тесты:** `pytest -q` → 2226 passed, 32 skipped, 1 xfailed
 - **Фаза:** Medical Data Quality Improvement
 
 ## Источник данных

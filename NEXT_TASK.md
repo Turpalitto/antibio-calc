@@ -1,3 +1,33 @@
+## 2026-09-11: Очередь проверки блочных связей готова — что дальше
+
+- **Готово:** `clinical_engine/crosswalk/review_queue.py` ранжирует все 82 связи
+  `ICD10_BLOCK` по структурным признакам; артефакт
+  `clinical_engine/resources/calculator_crosswalk_review_queue.json`. Тесты: **2226 passed**.
+- **Открыто, требует врача (первая пятёрка очереди, `HIGH`):**
+  `postop_prophylaxis` → КР 1702 «Воспалительные поражения позвоночника» (совпадение только
+  по коду внешних причин `Y83`); `pid` → КР 1556 «Туберкулез у детей»;
+  `cdi` → КР 804 «Кампилобактериоз у детей»; `intraabdominal_infection` и `sbp` →
+  КР 2042 «Острый аппендицит и перитонит у детей» — у всех четырёх нозологий
+  `age_groups: ["adult"]`. Решения ACCEPT/REJECT/NEEDS_INFO принимает врач.
+- **Открыто, требует решения владельца:** 95 КР корпуса без нозологии в калькуляторе —
+  список в `unlinked_guidelines`. Большинство не про антибиотики, добавлять нужно выборочно.
+- **Открыто, качество данных:** 4 уникальные неразбираемые строки длительности — `10!`
+  (6 режимов в `pharyngitis_adult`/`pharyngitis_child`), `хроническая` (3 в
+  `asplenia_prophylaxis`), `по ситуации` (1 в `uti_prophylaxis`), `за 30-60 минут до процедуры`.
+  Правится только по первоисточнику КР.
+- **Открыто, требует новых извлечений:** 22 нозологии без совпадения по МКБ-10 в корпусе —
+  `prostatitis` (N41), `scarlet_fever` (A38), `nec` (P77), `omphalitis` (P38), `animal_bite`
+  (L02), `skin_abscess`, `impetigo` (L01), `sepsis_adult` (A40/A41), `necrotizing_fasciitis`
+  (M72.6), `septic_arthritis` (M00), `listeriosis` (A32), `pneumococcal_meningitis`,
+  `bacterial_meningitis_empiric`, `aspiration_pneumonia` (J69.0), `asplenia_prophylaxis`.
+- **Открыто, заблокировано первоисточниками:** 119/120 нозологий без расчёта.
+  `python db/source_gate_report.py` → 109 × `SOURCE_SPEC`, 6 × `SPEC_PINNED`, 2 × `PDF_HASH`,
+  2 × `OWNER_REVIEW`. Агент это не разблокирует (P5.6/P6 owner-only).
+- **Открыто, отдельная миграция:** поле `guideline_id` означает рубрикатор в
+  `clinical_sources/regimen_candidate_specs/*.json` и внутренний id `metadata.sqlite` в
+  `diagnosis_index.json`. Переименование — по плану `KB_VERSIONING_MIGRATION_PLAN.md`.
+- Пересборка: `python -m clinical_engine.crosswalk --write` → `python db/build_db.py` →
+  `python db/build_html.py` → `python -m clinical_engine.crosswalk.review_queue --write`.
 ## 2026-09-11: Зеркальное покрытие корпуса готово — что дальше
 
 - **Готово:** перепись корпуса переведена на `guideline_id` (294, а не 193 заголовка);

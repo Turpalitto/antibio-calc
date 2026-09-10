@@ -1,0 +1,2707 @@
+{
+  "coverage": {
+    "block_diseases": 38,
+    "block_guidelines": 68,
+    "block_links": 82,
+    "by_category": {
+      "AGE_DIRECTION_CONFLICT": 4,
+      "BLOCK_ONLY_DISEASE": 19,
+      "COARSE_SHARED_BLOCK": 15,
+      "EXTERNAL_CAUSE_ONLY": 1,
+      "ROUTINE": 43
+    },
+    "by_severity": {
+      "HIGH": 5,
+      "LOW": 43,
+      "MEDIUM": 34
+    },
+    "exact_or_title_links_excluded": 181
+  },
+  "meta": {
+    "artifact_type": "CALCULATOR_GUIDELINE_REVIEW_QUEUE",
+    "detected_by": "crosswalk-block-triage-v1",
+    "generated_at": "2026-09-10T21:45:23.329971+00:00",
+    "purpose": "PHYSICIAN_REVIEW_ONLY",
+    "schema_version": "1.0.0",
+    "scope": "links where method == ICD10_BLOCK",
+    "source_artifact_sha256": "sha256:4318bca59cd5feb931744ced33ade3c980ed3538867fe996b375126a5dcd52b7",
+    "warning": "Очередь врачебной проверки блочных связей. Инструмент вычисляет только структурные признаки и НЕ решает клиническую релевантность. Связь остаётся NAVIGATION_ONLY до и после проверки."
+  },
+  "queue": [
+    {
+      "category": "EXTERNAL_CAUSE_ONLY",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "all"
+      ],
+      "disease_id": "postop_prophylaxis",
+      "disease_name": "Послеоперационная антибиотикопрофилактика",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 4 нозологиями — блок их не различает",
+        "EXTERNAL_CAUSE_ONLY": "единственное совпадение — код внешних причин МКБ-10 (Y83), а не код заболевания"
+      },
+      "flags": [
+        "EXTERNAL_CAUSE_ONLY",
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1702",
+      "guideline_title": "Воспалительные поражения позвоночника",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "Y83"
+      ],
+      "matched_icd10": [
+        "Y83"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_postop_prophylaxis_1702",
+      "sample_diagnosis_names": [
+        "Staphylococcus spp., оксациллин-чувствительные",
+        "Эмпирическая терапия воспалительных инфекционных заболеваний позвоночника при сепсисе, гемодинамической нестабильности или прогрессирующих неврологических нарушениях"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "category": "AGE_DIRECTION_CONFLICT",
+      "cr_id": "878_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "cdi",
+      "disease_name": "Clostridioides difficile-ассоциированная инфекция (псевдомембранозный колит)",
+      "flag_notes": {
+        "AGE_DIRECTION_CONFLICT": "КР описывает детей, нозология ограничена ['adult']"
+      },
+      "flags": [
+        "AGE_DIRECTION_CONFLICT"
+      ],
+      "guideline_id": "804",
+      "guideline_title": "Кампилобактериоз у детей",
+      "guideline_years": [],
+      "matched_blocks": [
+        "A04"
+      ],
+      "matched_icd10": [
+        "A04"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_cdi_804",
+      "sample_diagnosis_names": [
+        "Кампилобактериоз у детей"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "category": "AGE_DIRECTION_CONFLICT",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "intraabdominal_infection",
+      "disease_name": "Интраабдоминальная инфекция (осложнённый аппендицит, перитонит)",
+      "flag_notes": {
+        "AGE_DIRECTION_CONFLICT": "КР описывает детей, нозология ограничена ['adult']",
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "AGE_DIRECTION_CONFLICT",
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "2042",
+      "guideline_title": "Острый аппендицит и перитонит у детей",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "K35",
+        "K65"
+      ],
+      "matched_icd10": [
+        "K35",
+        "K65"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_intraabdominal_infection_2042",
+      "sample_diagnosis_names": [
+        "Вторичный аппендицит при воспалительных заболеваниях брюшной полости",
+        "аппендикулярный инфильтрат",
+        "осложнённый аппендицит после аппендэктомии"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "category": "AGE_DIRECTION_CONFLICT",
+      "cr_id": "643_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "pid",
+      "disease_name": "Воспалительные заболевания органов таза (ВЗОТ)",
+      "flag_notes": {
+        "AGE_DIRECTION_CONFLICT": "КР описывает детей, нозология ограничена ['adult']",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "AGE_DIRECTION_CONFLICT",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1556",
+      "guideline_title": "Туберкулез у детей",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A18"
+      ],
+      "matched_icd10": [
+        "A18"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_pid_1556",
+      "sample_diagnosis_names": [
+        "Туберкулез у детей"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "category": "AGE_DIRECTION_CONFLICT",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "sbp",
+      "disease_name": "Спонтанный бактериальный перитонит (СБП)",
+      "flag_notes": {
+        "AGE_DIRECTION_CONFLICT": "КР описывает детей, нозология ограничена ['adult']",
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "AGE_DIRECTION_CONFLICT",
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "2042",
+      "guideline_title": "Острый аппендицит и перитонит у детей",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "K65"
+      ],
+      "matched_icd10": [
+        "K65"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_sbp_2042",
+      "sample_diagnosis_names": [
+        "Вторичный аппендицит при воспалительных заболеваниях брюшной полости",
+        "осложнённый аппендицит после аппендэктомии",
+        "тотальный перитонит с развитием сепсиса"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "brucellosis",
+      "disease_name": "Бруцеллёз",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 4 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1702",
+      "guideline_title": "Воспалительные поражения позвоночника",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A23"
+      ],
+      "matched_icd10": [
+        "A23"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_brucellosis_1702",
+      "sample_diagnosis_names": [
+        "Staphylococcus spp., оксациллин-чувствительные",
+        "Эмпирическая терапия воспалительных инфекционных заболеваний позвоночника при сепсисе, гемодинамической нестабильности или прогрессирующих неврологических нарушениях"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "54_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "all"
+      ],
+      "disease_id": "endocarditis_prophylaxis",
+      "disease_name": "Профилактика инфекционного эндокардита",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "1341",
+      "guideline_title": "Инфекционный эндокардит и инфекция внутрисердечных устройств",
+      "guideline_years": [
+        2022
+      ],
+      "matched_blocks": [
+        "I33"
+      ],
+      "matched_icd10": [
+        "I33"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_endocarditis_prophylaxis_1341",
+      "sample_diagnosis_names": [
+        "Стафилококковый инфекционный эндокардит"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "54_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "all"
+      ],
+      "disease_id": "endocarditis_prophylaxis",
+      "disease_name": "Профилактика инфекционного эндокардита",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "2138",
+      "guideline_title": "Инфекционный эндокардит и инфекция внутрисердечных устройств",
+      "guideline_years": [
+        2026
+      ],
+      "matched_blocks": [
+        "I33"
+      ],
+      "matched_icd10": [
+        "I33"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_endocarditis_prophylaxis_2138",
+      "sample_diagnosis_names": [
+        "стафилококковый инфекционный эндокардит"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "218_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "gonorrhea",
+      "disease_name": "Гонококковая инфекция",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1472",
+      "guideline_title": "Гонококковая инфекция",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A54"
+      ],
+      "matched_icd10": [
+        "A54"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_gonorrhea_1472",
+      "sample_diagnosis_names": [
+        "Гонококковая инфекция нижних отделов мочеполового тракта без абсцедирования парауретральных и придаточных желез"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "218_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "gonorrhea",
+      "disease_name": "Гонококковая инфекция",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "854",
+      "guideline_title": "Гонококковая инфекция",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "A54"
+      ],
+      "matched_icd10": [
+        "A54"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_gonorrhea_854",
+      "sample_diagnosis_names": [
+        "гонококковая инфекция глаз",
+        "гонококковая инфекция нижних отделов мочеполового тракта без абсцедирования парауретральных и придаточных желез",
+        "гонококковая инфекция нижних отделов мочеполового тракта с абсцедированием парауретральных и придаточных желез, гонококковый пельвиоперитонит и другая гонококковая инфекция мочеполовых органов"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "hap",
+      "disease_name": "Нозокомиальная (внутрибольничная) пневмония",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "1198",
+      "guideline_title": "Внебольничная пневмония у взрослых",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "J18"
+      ],
+      "matched_icd10": [
+        "J18"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_hap_1198",
+      "sample_diagnosis_names": [
+        "Внебольничная пневмония у взрослых; пациенты с факторами риска инфицирования энтеробактериями, БЛРС (+)"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "hap",
+      "disease_name": "Нозокомиальная (внутрибольничная) пневмония",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "1324",
+      "guideline_title": "Пневмония (внебольничная)",
+      "guideline_years": [
+        2022
+      ],
+      "matched_blocks": [
+        "J15",
+        "J18"
+      ],
+      "matched_icd10": [
+        "J15",
+        "J18"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_hap_1324",
+      "sample_diagnosis_names": [
+        "Пневмония внебольничная"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "hap",
+      "disease_name": "Нозокомиальная (внутрибольничная) пневмония",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "1770",
+      "guideline_title": "Внебольничная пневмония у взрослых",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "J15",
+        "J18"
+      ],
+      "matched_icd10": [
+        "J15",
+        "J18"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_hap_1770",
+      "sample_diagnosis_names": [
+        "Внебольничная пневмония у взрослых",
+        "Внебольничная пневмония у взрослых; пациенты с факторами риска инфицирования энтеробактериями, БЛРС (+)"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "hap",
+      "disease_name": "Нозокомиальная (внутрибольничная) пневмония",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "1963",
+      "guideline_title": "Пневмония (внебольничная)",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "J15",
+        "J18"
+      ],
+      "matched_icd10": [
+        "J15",
+        "J18"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_hap_1963",
+      "sample_diagnosis_names": [
+        "Внебольничная пневмония",
+        "Пневмония (внебольничная)"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "1020_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "all"
+      ],
+      "disease_id": "meningococcal_disease",
+      "disease_name": "Менингококковая инфекция",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "1416",
+      "guideline_title": "Менингококковая инфекция у детей",
+      "guideline_years": [
+        2023
+      ],
+      "matched_blocks": [
+        "A39"
+      ],
+      "matched_icd10": [
+        "A39"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_meningococcal_disease_1416",
+      "sample_diagnosis_names": [
+        "локализованные формы менингококковой инфекции (назофарингит, носительство менингококка)",
+        "экстренная химиопрофилактика менингококковой инфекции у лиц, находившихся в тесном контакте с больным"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "1020_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "all"
+      ],
+      "disease_id": "meningococcal_disease",
+      "disease_name": "Менингококковая инфекция",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "892",
+      "guideline_title": "Менингококковая инфекция у детей",
+      "guideline_years": [
+        2023
+      ],
+      "matched_blocks": [
+        "A39"
+      ],
+      "matched_icd10": [
+        "A39"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_meningococcal_disease_892",
+      "sample_diagnosis_names": [
+        "локализованные формы менингококковой инфекции (назофарингит, носительство менингококка)"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "osteomyelitis",
+      "disease_name": "Остеомиелит",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 4 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1702",
+      "guideline_title": "Воспалительные поражения позвоночника",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "M86"
+      ],
+      "matched_icd10": [
+        "M86"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_osteomyelitis_1702",
+      "sample_diagnosis_names": [
+        "Staphylococcus spp., оксациллин-чувствительные",
+        "Эмпирическая терапия воспалительных инфекционных заболеваний позвоночника при сепсисе, гемодинамической нестабильности или прогрессирующих неврологических нарушениях"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "16_4",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "tuberculosis",
+      "disease_name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "1347",
+      "guideline_title": "Туберкулез у взрослых",
+      "guideline_years": [
+        2022
+      ],
+      "matched_blocks": [
+        "A15",
+        "A19"
+      ],
+      "matched_icd10": [
+        "A15",
+        "A19"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_tuberculosis_1347",
+      "sample_diagnosis_names": [
+        "лекарственно чувствительный туберкулез",
+        "туберкулез с множественной лекарственной устойчивостью возбудителя"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "16_4",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "tuberculosis",
+      "disease_name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "1362",
+      "guideline_title": "Туберкулез у детей",
+      "guideline_years": [
+        2022
+      ],
+      "matched_blocks": [
+        "A15",
+        "A19"
+      ],
+      "matched_icd10": [
+        "A15",
+        "A19"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_tuberculosis_1362",
+      "sample_diagnosis_names": [
+        "Туберкулез у детей, лекарственно-чувствительный туберкулез"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "16_4",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "tuberculosis",
+      "disease_name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1464",
+      "guideline_title": "Туберкулез у взрослых",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A15",
+        "A16",
+        "A19"
+      ],
+      "matched_icd10": [
+        "A15",
+        "A16",
+        "A19"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_tuberculosis_1464",
+      "sample_diagnosis_names": [
+        "лекарственно чувствительный туберкулез",
+        "туберкулез с МЛУ возбудителя"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "16_4",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "tuberculosis",
+      "disease_name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1556",
+      "guideline_title": "Туберкулез у детей",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A15",
+        "A16",
+        "A19"
+      ],
+      "matched_icd10": [
+        "A15",
+        "A16",
+        "A19"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_tuberculosis_1556",
+      "sample_diagnosis_names": [
+        "Туберкулез у детей"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "16_4",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "tuberculosis",
+      "disease_name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду",
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE",
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "2142",
+      "guideline_title": "Туберкулез у взрослых",
+      "guideline_years": [
+        2026
+      ],
+      "matched_blocks": [
+        "A15",
+        "A16",
+        "A19"
+      ],
+      "matched_icd10": [
+        "A15",
+        "A16",
+        "A19"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_tuberculosis_2142",
+      "sample_diagnosis_names": [
+        "лекарственно чувствительный туберкулез у взрослых",
+        "туберкулез с МЛУ возбудителя у взрослых"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "16_4",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "tuberculosis",
+      "disease_name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "359",
+      "guideline_title": "Туберкулез у детей",
+      "guideline_years": [
+        2020
+      ],
+      "matched_blocks": [
+        "A15",
+        "A19"
+      ],
+      "matched_icd10": [
+        "A15",
+        "A19"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_tuberculosis_359",
+      "sample_diagnosis_names": [
+        "Туберкулез у детей с сохраненной лекарственной чувствительностью возбудителя к противотуберкулезным препаратам"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "BLOCK_ONLY_DISEASE",
+      "cr_id": "16_4",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "tuberculosis",
+      "disease_name": "Туберкулёз органов дыхания (интенсивная фаза, 1-й режим)",
+      "flag_notes": {
+        "BLOCK_ONLY_DISEASE": "у нозологии нет ни одной связи по точному коду"
+      },
+      "flags": [
+        "BLOCK_ONLY_DISEASE"
+      ],
+      "guideline_id": "943",
+      "guideline_title": "Туберкулез у взрослых",
+      "guideline_years": [
+        2020
+      ],
+      "matched_blocks": [
+        "A15",
+        "A19"
+      ],
+      "matched_icd10": [
+        "A15",
+        "A19"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_tuberculosis_943",
+      "sample_diagnosis_names": [
+        "туберкулез с лекарственной чувствительностью",
+        "туберкулез, вызванный M. tuberculosis; режим химиотерапии с карбапенемом"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "194_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "chlamydia_urogenital",
+      "disease_name": "Урогенитальный хламидиоз",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1476",
+      "guideline_title": "Хламидийная инфекция",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A56"
+      ],
+      "matched_icd10": [
+        "A56"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_chlamydia_urogenital_1476",
+      "sample_diagnosis_names": [
+        "Генерализованная форма хламидийной инфекции и неонатальная пневмония",
+        "Хламидийная инфекция верхних отделов мочеполовой системы, органов малого таза и других органов у взрослых",
+        "Хламидийная инфекция у беременных и женщин в период лактации"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "194_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "chlamydia_urogenital",
+      "disease_name": "Урогенитальный хламидиоз",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "834",
+      "guideline_title": "Хламидийная инфекция",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "A56"
+      ],
+      "matched_icd10": [
+        "A56"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_chlamydia_urogenital_834",
+      "sample_diagnosis_names": [
+        "Генерализованная форма хламидийной инфекции и неонатальная пневмония",
+        "Профилактическое лечение новорожденных от матерей с нелеченной хламидийной инфекцией при невозможности проведения обследования",
+        "Хламидийная инфекция верхних отделов мочеполовой системы, органов малого таза и других органов у взрослых"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "629_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "neonate"
+      ],
+      "disease_id": "neonatal_conjunctivitis",
+      "disease_name": "Конъюнктивит новорождённых",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1472",
+      "guideline_title": "Гонококковая инфекция",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A54"
+      ],
+      "matched_icd10": [
+        "A54"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neonatal_conjunctivitis_1472",
+      "sample_diagnosis_names": [
+        "Гонококковая инфекция нижних отделов мочеполового тракта без абсцедирования парауретральных и придаточных желез"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "629_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "neonate"
+      ],
+      "disease_id": "neonatal_conjunctivitis",
+      "disease_name": "Конъюнктивит новорождённых",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1476",
+      "guideline_title": "Хламидийная инфекция",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A74"
+      ],
+      "matched_icd10": [
+        "A74"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neonatal_conjunctivitis_1476",
+      "sample_diagnosis_names": [
+        "Генерализованная форма хламидийной инфекции и неонатальная пневмония",
+        "Хламидийная инфекция верхних отделов мочеполовой системы, органов малого таза и других органов у взрослых",
+        "Хламидийная инфекция у беременных и женщин в период лактации"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "629_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "neonate"
+      ],
+      "disease_id": "neonatal_conjunctivitis",
+      "disease_name": "Конъюнктивит новорождённых",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1759",
+      "guideline_title": "Воспалительные заболевания молочных желез",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "P39"
+      ],
+      "matched_icd10": [
+        "P39"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neonatal_conjunctivitis_1759",
+      "sample_diagnosis_names": [
+        "Мастит у младенцев при наличии септических проявлений",
+        "мастит"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "629_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "neonate"
+      ],
+      "disease_id": "neonatal_conjunctivitis",
+      "disease_name": "Конъюнктивит новорождённых",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "834",
+      "guideline_title": "Хламидийная инфекция",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "A74"
+      ],
+      "matched_icd10": [
+        "A74"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neonatal_conjunctivitis_834",
+      "sample_diagnosis_names": [
+        "Генерализованная форма хламидийной инфекции и неонатальная пневмония",
+        "Профилактическое лечение новорожденных от матерей с нелеченной хламидийной инфекцией при невозможности проведения обследования",
+        "Хламидийная инфекция верхних отделов мочеполовой системы, органов малого таза и других органов у взрослых"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "629_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "neonate"
+      ],
+      "disease_id": "neonatal_conjunctivitis",
+      "disease_name": "Конъюнктивит новорождённых",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "854",
+      "guideline_title": "Гонококковая инфекция",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "A54"
+      ],
+      "matched_icd10": [
+        "A54"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neonatal_conjunctivitis_854",
+      "sample_diagnosis_names": [
+        "гонококковая инфекция глаз",
+        "гонококковая инфекция нижних отделов мочеполового тракта без абсцедирования парауретральных и придаточных желез",
+        "гонококковая инфекция нижних отделов мочеполового тракта с абсцедированием парауретральных и придаточных желез, гонококковый пельвиоперитонит и другая гонококковая инфекция мочеполовых органов"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "912_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "neonate"
+      ],
+      "disease_id": "neonatal_sepsis",
+      "disease_name": "Неонатальный сепсис (ранний и поздний)",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1759",
+      "guideline_title": "Воспалительные заболевания молочных желез",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "P39"
+      ],
+      "matched_icd10": [
+        "P39"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neonatal_sepsis_1759",
+      "sample_diagnosis_names": [
+        "Мастит у младенцев при наличии септических проявлений",
+        "мастит"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "643_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "pid",
+      "disease_name": "Воспалительные заболевания органов таза (ВЗОТ)",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1464",
+      "guideline_title": "Туберкулез у взрослых",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A18"
+      ],
+      "matched_icd10": [
+        "A18"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_pid_1464",
+      "sample_diagnosis_names": [
+        "лекарственно чувствительный туберкулез",
+        "туберкулез с МЛУ возбудителя"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "643_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "pid",
+      "disease_name": "Воспалительные заболевания органов таза (ВЗОТ)",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 4 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1702",
+      "guideline_title": "Воспалительные поражения позвоночника",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A18"
+      ],
+      "matched_icd10": [
+        "A18"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_pid_1702",
+      "sample_diagnosis_names": [
+        "Staphylococcus spp., оксациллин-чувствительные",
+        "Эмпирическая терапия воспалительных инфекционных заболеваний позвоночника при сепсисе, гемодинамической нестабильности или прогрессирующих неврологических нарушениях"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "643_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "pid",
+      "disease_name": "Воспалительные заболевания органов таза (ВЗОТ)",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "2142",
+      "guideline_title": "Туберкулез у взрослых",
+      "guideline_years": [
+        2026
+      ],
+      "matched_blocks": [
+        "A18"
+      ],
+      "matched_icd10": [
+        "A18"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_pid_2142",
+      "sample_diagnosis_names": [
+        "лекарственно чувствительный туберкулез у взрослых",
+        "туберкулез с МЛУ возбудителя у взрослых"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "313_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "sinusitis_adult",
+      "disease_name": "Острый и рецидивирующий риносинусит у взрослых",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1220",
+      "guideline_title": "Острый синусит",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "J01"
+      ],
+      "matched_icd10": [
+        "J01"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_sinusitis_adult_1220",
+      "sample_diagnosis_names": [
+        "Острый бактериальный синусит у взрослых"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "313_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "sinusitis_adult",
+      "disease_name": "Острый и рецидивирующий риносинусит у взрослых",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1632",
+      "guideline_title": "Острый синусит",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "J01"
+      ],
+      "matched_icd10": [
+        "J01"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_sinusitis_adult_1632",
+      "sample_diagnosis_names": [
+        "Острый бактериальный синусит у взрослых"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "313_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child"
+      ],
+      "disease_id": "sinusitis_child",
+      "disease_name": "Острый и рецидивирующий риносинусит у детей",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1220",
+      "guideline_title": "Острый синусит",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "J01"
+      ],
+      "matched_icd10": [
+        "J01"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_sinusitis_child_1220",
+      "sample_diagnosis_names": [
+        "Острый бактериальный синусит у взрослых"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "COARSE_SHARED_BLOCK",
+      "cr_id": "313_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child"
+      ],
+      "disease_id": "sinusitis_child",
+      "disease_name": "Острый и рецидивирующий риносинусит у детей",
+      "flag_notes": {
+        "COARSE_SHARED_BLOCK": "эта КР блочно связана с 2 нозологиями — блок их не различает"
+      },
+      "flags": [
+        "COARSE_SHARED_BLOCK"
+      ],
+      "guideline_id": "1632",
+      "guideline_title": "Острый синусит",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "J01"
+      ],
+      "matched_icd10": [
+        "J01"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_sinusitis_child_1632",
+      "sample_diagnosis_names": [
+        "Острый бактериальный синусит у взрослых"
+      ],
+      "severity": "MEDIUM"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "682_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "bolezn_krona_tonkoi_kishki_krome_terminalnogo_ileita_pri_nalichii_priznakov_sistemnogo_vospaleniia_i_ili_infiltrata",
+      "disease_name": "Болезнь Крона",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1795",
+      "guideline_title": "Энтероколит, вызванный Clostridioides difficile (C. difficile)",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "K52"
+      ],
+      "matched_icd10": [
+        "K52"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_bolezn_krona_tonkoi_kishki_krome_terminalnogo_ileita_pri_nalichii_priznakov_sistemnogo_vospaleniia_i_ili_infiltrata_1795",
+      "sample_diagnosis_names": [
+        "C. difficile-ассоциированная болезнь тяжёлого течения, первый эпизод",
+        "C. difficile-ассоциированная болезнь тяжёлого течения, первый эпизод, при невозможности назначения пероральной формы #Ванкомицина**",
+        "C. difficile-ассоциированная болезнь тяжёлого течения, первый эпизод; при невозможности назначения пероральной формы #Ванкомицина**"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "819_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "cholecystitis_cholangitis",
+      "disease_name": "Острый холецистит и холангит",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1678",
+      "guideline_title": "Холецистит",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "K81"
+      ],
+      "matched_icd10": [
+        "K81"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_cholecystitis_cholangitis_1678",
+      "sample_diagnosis_names": [
+        "Острый акалькулезный холецистит (ОАХ)"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "603_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "copd_exacerbation",
+      "disease_name": "Острое бактериальное обострение ХОБЛ",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1143",
+      "guideline_title": "Бронхиальная астма",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "J45"
+      ],
+      "matched_icd10": [
+        "J45"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_copd_exacerbation_1143",
+      "sample_diagnosis_names": [
+        "Бронхиальная астма"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "diabetic_foot",
+      "disease_name": "Синдром диабетической стопы (инфекция)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1368",
+      "guideline_title": "Эритразма",
+      "guideline_years": [
+        2022
+      ],
+      "matched_blocks": [
+        "L08"
+      ],
+      "matched_icd10": [
+        "L08"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_diabetic_foot_1368",
+      "sample_diagnosis_names": [
+        "Эритразма"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "diabetic_foot",
+      "disease_name": "Синдром диабетической стопы (инфекция)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "2020",
+      "guideline_title": "Эритразма",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "L08"
+      ],
+      "matched_icd10": [
+        "L08"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_diabetic_foot_2020",
+      "sample_diagnosis_names": [
+        "Эритразма"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "—",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "diabetic_foot",
+      "disease_name": "Синдром диабетической стопы (инфекция)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "715",
+      "guideline_title": "Эритразма",
+      "guideline_years": [],
+      "matched_blocks": [
+        "L08"
+      ],
+      "matched_icd10": [
+        "L08"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_diabetic_foot_715",
+      "sample_diagnosis_names": [
+        "Эритразма"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "69_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "febrilnaia_neitropeniia",
+      "disease_name": "Экстракраниальные герминогенные опухоли",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1140",
+      "guideline_title": "Кисты челюстно-лицевой области и шеи",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "D21"
+      ],
+      "matched_icd10": [
+        "D21"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_febrilnaia_neitropeniia_1140",
+      "sample_diagnosis_names": [
+        "Кисты челюстно-лицевой области и шеи"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "388_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "h_pylori",
+      "disease_name": "Helicobacter pylori-инфекция (язвенная болезнь)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1315",
+      "guideline_title": "Гастрит и дуоденит",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "K29"
+      ],
+      "matched_icd10": [
+        "K29"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_h_pylori_1315",
+      "sample_diagnosis_names": [
+        "Гастрит и дуоденит"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "388_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "h_pylori",
+      "disease_name": "Helicobacter pylori-инфекция (язвенная болезнь)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1477",
+      "guideline_title": "Гастрит и дуоденит",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "K29"
+      ],
+      "matched_icd10": [
+        "K29"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_h_pylori_1477",
+      "sample_diagnosis_names": [
+        "Гастрит и дуоденит, инфекция Helicobacter pylori"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "54_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "infective_endocarditis",
+      "disease_name": "Инфекционный эндокардит (лечение)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "2073",
+      "guideline_title": "Осложненная катаракта",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "T85"
+      ],
+      "matched_icd10": [
+        "T85"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_infective_endocarditis_2073",
+      "sample_diagnosis_names": [
+        "Осложненная катаракта",
+        "Осложненная катаракта; профилактика ОБПЭ до оперативного вмешательства"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "544_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "kh_stseplennyi_limfoproliferativnyi_sindrom_khlp_s_otiagoshchennym_infektsionnym_anamnezom",
+      "disease_name": "Первичный иммунодефицит- Х-сцепленный лимфопролиферативный синдром",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "740",
+      "guideline_title": "Синдром делеции 22 хромосомы (синдром Ди Георга (Ди Джорджи))",
+      "guideline_years": [
+        2019
+      ],
+      "matched_blocks": [
+        "D82"
+      ],
+      "matched_icd10": [
+        "D82"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_kh_stseplennyi_limfoproliferativnyi_sindrom_khlp_s_otiagoshchennym_infektsionnym_anamnezom_740",
+      "sample_diagnosis_names": [
+        "Синдром делеции 22 хромосомы (синдром Ди Георга (Ди Джорджи))"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "216_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "mycoplasma_genitalium",
+      "disease_name": "Mycoplasma genitalium-инфекция (уретрит, цервицит)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1126",
+      "guideline_title": "Урогенитальные заболевания, вызванные Mycoplasma genitalium",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "A63"
+      ],
+      "matched_icd10": [
+        "A63"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_mycoplasma_genitalium_1126",
+      "sample_diagnosis_names": [
+        "Неосложненные формы урогенитальных заболеваний, вызванных M. genitalium",
+        "Осложненные формы урогенитальных заболеваний, вызванных M. genitalium",
+        "Урогенитальные заболевания, вызванные M. genitalium, у беременных"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "216_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "mycoplasma_genitalium",
+      "disease_name": "Mycoplasma genitalium-инфекция (уретрит, цервицит)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1474",
+      "guideline_title": "Урогенитальные заболевания, вызванные Mycoplasma genitalium",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A63"
+      ],
+      "matched_icd10": [
+        "A63"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_mycoplasma_genitalium_1474",
+      "sample_diagnosis_names": [
+        "неосложненные формы урогенитальных заболеваний, вызванных M. genitalium",
+        "осложненные формы урогенитальных заболеваний, вызванных M. genitalium",
+        "урогенитальные заболевания, вызванные M. genitalium, у беременных"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "912_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "neonate"
+      ],
+      "disease_id": "neonatal_sepsis",
+      "disease_name": "Неонатальный сепсис (ранний и поздний)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1555",
+      "guideline_title": "Конъюнктивиты",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "P39"
+      ],
+      "matched_icd10": [
+        "P39"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neonatal_sepsis_1555",
+      "sample_diagnosis_names": [
+        "Инфекционный конъюнктивит (бактериальный, хламидийный) или подозрение/профилактика вторичной бактериальной инфекции при конъюнктивите другой этиологии",
+        "Неинфекционный конъюнктивит, сопровождающийся выраженным воспалительным процессом и присоединением или риском присоединения бактериальной флоры",
+        "Неинфекционный конъюнктивит, сопровождающийся выраженным воспалительным процессом и/или присоединением или риском присоединения бактериальной флоры"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "912_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "neonate"
+      ],
+      "disease_id": "neonatal_sepsis",
+      "disease_name": "Неонатальный сепсис (ранний и поздний)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "2087",
+      "guideline_title": "Инфекция, специфичная для перинатального периода",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "P39"
+      ],
+      "matched_icd10": [
+        "P39"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neonatal_sepsis_2087",
+      "sample_diagnosis_names": [
+        "Инфекция, специфичная для перинатального периода"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "912_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "neonate"
+      ],
+      "disease_id": "neonatal_sepsis",
+      "disease_name": "Неонатальный сепсис (ранний и поздний)",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "2101",
+      "guideline_title": "Врожденная патология слёзоотводящей системы  у детей",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "P39"
+      ],
+      "matched_icd10": [
+        "P39"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neonatal_sepsis_2101",
+      "sample_diagnosis_names": [
+        "Гнойные выделения при врожденной патологии слезоотводящей системы / дакриоцистите у детей",
+        "Обострение хронического дакриоцистита при наличии слезных точек и восстановленной проходимости слезных протоков",
+        "Острый гнойный дакриоцистит с признаками абсцедирующего/флегмонозного воспаления"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "828_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child",
+        "adult"
+      ],
+      "disease_id": "neoslozhnennye_gryzhi_perednei_briushnoi_stenki",
+      "disease_name": "Грыжи передней брюшной стенки",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1271",
+      "guideline_title": "Послеоперационная вентральная грыжа",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "K43"
+      ],
+      "matched_icd10": [
+        "K43"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neoslozhnennye_gryzhi_perednei_briushnoi_stenki_1271",
+      "sample_diagnosis_names": [
+        "Послеоперационная вентральная грыжа"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "828_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child",
+        "adult"
+      ],
+      "disease_id": "neoslozhnennye_gryzhi_perednei_briushnoi_stenki",
+      "disease_name": "Грыжи передней брюшной стенки",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1611",
+      "guideline_title": "Послеоперационная вентральная грыжа",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "K43"
+      ],
+      "matched_icd10": [
+        "K43"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_neoslozhnennye_gryzhi_perednei_briushnoi_stenki_1611",
+      "sample_diagnosis_names": [
+        "Послеоперационная вентральная грыжа"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "529_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "ostryi_limfoblastnyi_leikoz_limfoblastnaia_limfoma_ostrye_leikozy_neodnoznachnoi_lineinosti",
+      "disease_name": "Острый лимфобластный лейкоз",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1454",
+      "guideline_title": "Лимфома маргинальной зоны",
+      "guideline_years": [
+        2023
+      ],
+      "matched_blocks": [
+        "C83"
+      ],
+      "matched_icd10": [
+        "C83"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_ostryi_limfoblastnyi_leikoz_limfoblastnaia_limfoma_ostrye_leikozy_neodnoznachnoi_lineinosti_1454",
+      "sample_diagnosis_names": [
+        "Лимфома маргинальной зоны; периоперационная антибактериальная профилактика при спленэктомии"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "529_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "ostryi_limfoblastnyi_leikoz_limfoblastnaia_limfoma_ostrye_leikozy_neodnoznachnoi_lineinosti",
+      "disease_name": "Острый лимфобластный лейкоз",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1692",
+      "guideline_title": "Волосатоклеточный лейкоз",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "C91"
+      ],
+      "matched_icd10": [
+        "C91"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_ostryi_limfoblastnyi_leikoz_limfoblastnaia_limfoma_ostrye_leikozy_neodnoznachnoi_lineinosti_1692",
+      "sample_diagnosis_names": [
+        "Инфекция верхних и нижних дыхательных путей, инфекция мочевыводящих путей",
+        "Инфекция верхних и нижних дыхательных путей, инфекция мочевыводящих путей при фебрильной нейтропении"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "529_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "ostryi_limfoblastnyi_leikoz_limfoblastnaia_limfoma_ostrye_leikozy_neodnoznachnoi_lineinosti",
+      "disease_name": "Острый лимфобластный лейкоз",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1859",
+      "guideline_title": "Хронический лимфоцитарный лейкоз /  лимфома из малых лимфоцитов",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "C91"
+      ],
+      "matched_icd10": [
+        "C91"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_ostryi_limfoblastnyi_leikoz_limfoblastnaia_limfoma_ostrye_leikozy_neodnoznachnoi_lineinosti_1859",
+      "sample_diagnosis_names": [
+        "Хронический лимфоцитарный лейкоз / лимфома из малых лимфоцитов"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "652_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child"
+      ],
+      "disease_id": "perelom_dna_glaznitsy",
+      "disease_name": "Перелом дна глазницы",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1196",
+      "guideline_title": "Перелом нижней челюсти",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "S02"
+      ],
+      "matched_icd10": [
+        "S02"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_perelom_dna_glaznitsy_1196",
+      "sample_diagnosis_names": [
+        "Перелом нижней челюсти"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "652_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child"
+      ],
+      "disease_id": "perelom_dna_glaznitsy",
+      "disease_name": "Перелом дна глазницы",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1667",
+      "guideline_title": "Травма носа",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "S02"
+      ],
+      "matched_icd10": [
+        "S02"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_perelom_dna_glaznitsy_1667",
+      "sample_diagnosis_names": [
+        "Травма носа при очевидном наличии бактериального воспалительного процесса или высокой вероятности его развития"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "652_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child"
+      ],
+      "disease_id": "perelom_dna_glaznitsy",
+      "disease_name": "Перелом дна глазницы",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1778",
+      "guideline_title": "Перелом нижней челюсти",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "S02"
+      ],
+      "matched_icd10": [
+        "S02"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_perelom_dna_glaznitsy_1778",
+      "sample_diagnosis_names": [
+        "Перелом нижней челюсти",
+        "Перелом нижней челюсти, закрытый; хирургическое лечение пациентов с закрытым переломом нижней челюсти наружным доступом без риска сообщения операционной раны с полостью рта",
+        "Перелом нижней челюсти; хирургическое лечение внутриротовым доступом / оперативное лечение пациентов с открытым переломом нижней челюсти, II тип ран «условно чистая рана» или контаминированная рана с сообщением с полостью рта/пищеварительным трактом"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "652_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child"
+      ],
+      "disease_id": "perelom_dna_glaznitsy",
+      "disease_name": "Перелом дна глазницы",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1784",
+      "guideline_title": "Множественные переломы мозгового и лицевого отделов черепа",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "S02"
+      ],
+      "matched_icd10": [
+        "S02"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_perelom_dna_glaznitsy_1784",
+      "sample_diagnosis_names": [
+        "Множественные переломы мозгового и лицевого отделов черепа",
+        "Травмы ЧЛО; выполнение операций с I типом ран «чистая рана»: хирургическое лечение наружным доступом без риска сообщения операционной раны с полостью рта",
+        "Травмы ЧЛО; хирургическое лечение наружным доступом без риска сообщения операционной раны с полостью рта; I тип ран «чистая рана»"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "652_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child"
+      ],
+      "disease_id": "perelom_dna_glaznitsy",
+      "disease_name": "Перелом дна глазницы",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "744",
+      "guideline_title": "Перелом нижней челюсти",
+      "guideline_years": [
+        2019
+      ],
+      "matched_blocks": [
+        "S02"
+      ],
+      "matched_icd10": [
+        "S02"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_perelom_dna_glaznitsy_744",
+      "sample_diagnosis_names": [
+        "Перелом нижней челюсти; хирургическое лечение пациентов с закрытым переломом нижней челюсти; I тип ран «чистая рана»"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "980_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "perelomy_proksimalnogo_otdela_bedrennoi_kosti_endoprotezirovanie_osteosintez_pri_ppobk",
+      "disease_name": "Переломы проксимального отдела бедренной кости",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1202",
+      "guideline_title": "Переломы бедренной кости (кроме проксимального отдела бедренной кости)",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "S72"
+      ],
+      "matched_icd10": [
+        "S72"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_perelomy_proksimalnogo_otdela_bedrennoi_kosti_endoprotezirovanie_osteosintez_pri_ppobk_1202",
+      "sample_diagnosis_names": [
+        "Переломы диафиза или дистального отдела бедренной кости; хирургическая антибиотикопрофилактика при оперативных вмешательствах"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "980_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "perelomy_proksimalnogo_otdela_bedrennoi_kosti_endoprotezirovanie_osteosintez_pri_ppobk",
+      "disease_name": "Переломы проксимального отдела бедренной кости",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1755",
+      "guideline_title": "Переломы дистального отдела костей голени",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "T93"
+      ],
+      "matched_icd10": [
+        "T93"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_perelomy_proksimalnogo_otdela_bedrennoi_kosti_endoprotezirovanie_osteosintez_pri_ppobk_1755",
+      "sample_diagnosis_names": [
+        "Открытые высокоэнергетические переломы дистального отдела костей голени с расхождением и потерей сегмента; повреждением магистральных сосудов; сильно загрязненные раны",
+        "Открытые высокоэнергетические переломы дистального отдела костей голени; риск развития клостридиальной инфекции",
+        "Открытые переломы дистального отдела костей голени"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "685_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "posleoperatsionnaia_ventralnaia_gryzha",
+      "disease_name": "Послеоперационная вентральная грыжа",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1698",
+      "guideline_title": "Грыжи передней брюшной стенки",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "K43"
+      ],
+      "matched_icd10": [
+        "K43"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_posleoperatsionnaia_ventralnaia_gryzha_1698",
+      "sample_diagnosis_names": [
+        "Грыжи передней брюшной стенки",
+        "Неосложненные грыжи передней брюшной стенки"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "691_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika",
+      "disease_name": "Повреждение связок коленного сустава",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1203",
+      "guideline_title": "Повреждение мениска коленного сустава",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "S83"
+      ],
+      "matched_icd10": [
+        "S83"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika_1203",
+      "sample_diagnosis_names": [
+        "Повреждение мениска коленного сустава"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "691_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika",
+      "disease_name": "Повреждение связок коленного сустава",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1282",
+      "guideline_title": "Повреждения хряща коленного сустава",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "S83"
+      ],
+      "matched_icd10": [
+        "S83"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika_1282",
+      "sample_diagnosis_names": [
+        "Повреждения хряща коленного сустава; хирургическая антибиотикопрофилактика при оперативных вмешательствах в травматологии и ортопедии"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "691_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika",
+      "disease_name": "Повреждение связок коленного сустава",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1758",
+      "guideline_title": "Повреждение мениска коленного сустава",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "M23",
+        "S83"
+      ],
+      "matched_icd10": [
+        "M23",
+        "S83"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika_1758",
+      "sample_diagnosis_names": [
+        "Повреждение мениска коленного сустава",
+        "Повреждение мениска коленного сустава; хирургическая антибиотикопрофилактика при выполнении шва мениска"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "691_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika",
+      "disease_name": "Повреждение связок коленного сустава",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1761",
+      "guideline_title": "Переломы проксимального отдела голени",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "S83"
+      ],
+      "matched_icd10": [
+        "S83"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika_1761",
+      "sample_diagnosis_names": [
+        "Закрытые переломы проксимального отдела голени (ПОКГ), хирургическая антибиотикопрофилактика при оперативном лечении",
+        "Открытые высокоэнергетические переломы проксимального отдела голени (ПОКГ) с расхождением и потерей сегмента, повреждением магистральных сосудов или сильно загрязненные раны",
+        "Открытые переломы проксимального отдела голени (ПОКГ)"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "691_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika",
+      "disease_name": "Повреждение связок коленного сустава",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1769",
+      "guideline_title": "Повреждения хряща коленного сустава",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "M23",
+        "S83"
+      ],
+      "matched_icd10": [
+        "M23",
+        "S83"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika_1769",
+      "sample_diagnosis_names": [
+        "Повреждения хряща коленного сустава",
+        "Повреждения хряща коленного сустава при хирургическом лечении",
+        "Повреждения хряща коленного сустава при хирургическом лечении; непереносимость бета-лактамных антибактериальных препаратов"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "26_4",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child",
+        "adult"
+      ],
+      "disease_id": "profilaktika_pnevmotsistnoi_pnevmonii_pri_terapii_rituksimabom",
+      "disease_name": "Юношеский артрит с системным началом",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1863",
+      "guideline_title": "Юношеский артрит",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "M08"
+      ],
+      "matched_icd10": [
+        "M08"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_profilaktika_pnevmotsistnoi_pnevmonii_pri_terapii_rituksimabom_1863",
+      "sample_diagnosis_names": [
+        "Очаговая, долевая или полисегментарная пневмония",
+        "Пневмония у иммунокомпрометированных детей при подтверждении этиологического фактора",
+        "Пневмоцистная пневмония, профилактика при терапии ритуксимабом"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "681_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "propionovaia_atsidemiia_atsiduriia",
+      "disease_name": "Пропионовая ацидемия /ацидурия",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1289",
+      "guideline_title": "Нарушения митохондриального β-окисления жирных кислот",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "E71"
+      ],
+      "matched_icd10": [
+        "E71"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_propionovaia_atsidemiia_atsiduriia_1289",
+      "sample_diagnosis_names": [
+        "Системная недостаточность карнитина; неприятный «рыбный запах» от мочи и тела на фоне приема левокарнитина"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "681_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "propionovaia_atsidemiia_atsiduriia",
+      "disease_name": "Пропионовая ацидемия /ацидурия",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1539",
+      "guideline_title": "Нарушения митохондриального β-окисления жирных кислот",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "E71"
+      ],
+      "matched_icd10": [
+        "E71"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_propionovaia_atsidemiia_atsiduriia_1539",
+      "sample_diagnosis_names": [
+        "Системная (первичная) недостаточность карнитина; неприятный «рыбный запах» на фоне терапии левокарнитином"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "639_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "rody_odnoplodnye_rodorazreshenie_putem_kesareva_secheniia",
+      "disease_name": "Роды одноплодные, родоразрешение путем кесарева сечения",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1239",
+      "guideline_title": "Истмико-цервикальная недостаточность",
+      "guideline_years": [
+        2021
+      ],
+      "matched_blocks": [
+        "O34"
+      ],
+      "matched_icd10": [
+        "O34"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_rody_odnoplodnye_rodorazreshenie_putem_kesareva_secheniia_1239",
+      "sample_diagnosis_names": [
+        "Истмико-цервикальная недостаточность при наложении швов на шейку матки (серкляже)",
+        "Истмико-цервикальная недостаточность при пролабировании плодного пузыря и экстренном наложении швов на шейку матки (серкляже)"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "639_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult"
+      ],
+      "disease_id": "rody_odnoplodnye_rodorazreshenie_putem_kesareva_secheniia",
+      "disease_name": "Роды одноплодные, родоразрешение путем кесарева сечения",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1546",
+      "guideline_title": "Истмико-цервикальная недостаточность",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "O34"
+      ],
+      "matched_icd10": [
+        "O34"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_rody_odnoplodnye_rodorazreshenie_putem_kesareva_secheniia_1546",
+      "sample_diagnosis_names": [
+        "Истмико-цервикальная недостаточность; наложение швов на шейку матки (серкляж)",
+        "Истмико-цервикальная недостаточность; пролабирование плодного пузыря и экстренное наложение швов на шейку матки (серкляж)"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "772_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child",
+        "adult"
+      ],
+      "disease_id": "trekhpredserdnoe_serdtse_profilaktika_infektsionnogo_endokardita_posle_khirurgicheskoi_korrektsii",
+      "disease_name": "Трехпредсердное сердце",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1397",
+      "guideline_title": "Врожденный подклапанный стеноз аорты",
+      "guideline_years": [
+        2022
+      ],
+      "matched_blocks": [
+        "Q24"
+      ],
+      "matched_icd10": [
+        "Q24"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_trekhpredserdnoe_serdtse_profilaktika_infektsionnogo_endokardita_posle_khirurgicheskoi_korrektsii_1397",
+      "sample_diagnosis_names": [
+        "Профилактика инфекционного эндокардита при врождённом подклапанном стенозе аорты после хирургического или чрезкожного вмешательства при стоматологических вмешательствах",
+        "Профилактика инфекционного эндокардита при врождённом подклапанном стенозе аорты после хирургического или чрезкожного вмешательства при стоматологических вмешательствах, при аллергии на бензилпенициллин или ампициллин"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "772_1",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "child",
+        "adult"
+      ],
+      "disease_id": "trekhpredserdnoe_serdtse_profilaktika_infektsionnogo_endokardita_posle_khirurgicheskoi_korrektsii",
+      "disease_name": "Трехпредсердное сердце",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1935",
+      "guideline_title": "Врожденный подклапанный стеноз аорты",
+      "guideline_years": [
+        2025
+      ],
+      "matched_blocks": [
+        "Q24"
+      ],
+      "matched_icd10": [
+        "Q24"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_trekhpredserdnoe_serdtse_profilaktika_infektsionnogo_endokardita_posle_khirurgicheskoi_korrektsii_1935",
+      "sample_diagnosis_names": [
+        "Врожденный подклапанный стеноз аорты",
+        "Врожденный подклапанный стеноз аорты; профилактика инфекционного эндокардита после хирургического или чрезкожного вмешательства",
+        "Врожденный подклапанный стеноз аорты; профилактика инфекционного эндокардита после хирургического или чрезкожного вмешательства при аллергии на бензилпенициллин или ампициллин"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "241_3",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "urogenitalnyi_trikhomoniaz",
+      "disease_name": "Урогенитальный трихомониаз",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1592",
+      "guideline_title": "Негонококковый (неспецифический) уретрит у мужчин",
+      "guideline_years": [
+        2024
+      ],
+      "matched_blocks": [
+        "A59"
+      ],
+      "matched_icd10": [
+        "A59"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_urogenitalnyi_trikhomoniaz_1592",
+      "sample_diagnosis_names": [
+        "Негонококковый (неспецифический) уретрит у мужчин",
+        "Негонококковый (неспецифический) уретрит у мужчин при обнаружении Gardnerella spp. или/и других анаэробных микроорганизмов",
+        "Персистирующий/рецидивирующий негонококковый уретрит у мужчин после первоначального лечения азитромицином"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "category": "ROUTINE",
+      "cr_id": "745_2",
+      "decision_hint": "ACCEPT / REJECT / NEEDS_INFO — решает врач; инструмент не решает.",
+      "disease_age_groups": [
+        "adult",
+        "child"
+      ],
+      "disease_id": "vrozhdennyi_podklapannyi_stenoz_aorty",
+      "disease_name": "Врожденный подклапанный стеноз аорты",
+      "flag_notes": {},
+      "flags": [],
+      "guideline_id": "1440",
+      "guideline_title": "Трехпредсердное сердце",
+      "guideline_years": [
+        2023
+      ],
+      "matched_blocks": [
+        "Q24"
+      ],
+      "matched_icd10": [
+        "Q24"
+      ],
+      "question_for_reviewer": "Клинически ли релевантна эта КР для данной нозологии? Связь выведена по блоку МКБ-10 и не подтверждена точным кодом.",
+      "queue_id": "xwblock_vrozhdennyi_podklapannyi_stenoz_aorty_1440",
+      "sample_diagnosis_names": [
+        "Трехпредсердное сердце; профилактика инфекционного эндокардита после хирургической коррекции",
+        "Трехпредсердное сердце; профилактика инфекционного эндокардита после хирургической коррекции при аллергии на бензилпенициллин** или ампициллин**"
+      ],
+      "severity": "LOW"
+    }
+  ]
+}
