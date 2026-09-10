@@ -37,8 +37,14 @@ class CalculatorCrosswalk:
         links = artifact.get("links")
         if not isinstance(links, list):
             raise CrosswalkBuildError("crosswalk must contain links[]")
+        unlinked = artifact.get("unlinked_guidelines")
+        if unlinked is not None and not isinstance(unlinked, list):
+            raise CrosswalkBuildError("unlinked_guidelines must be a list when present")
         self._meta: dict[str, Any] = dict(meta)
         self._links: tuple[dict[str, Any], ...] = tuple(dict(item) for item in links)
+        self._unlinked_guidelines: tuple[dict[str, Any], ...] = tuple(
+            dict(item) for item in (unlinked or ()) if isinstance(item, Mapping)
+        )
         self._by_disease: dict[str, list[int]] = {}
         self._by_guideline: dict[str, list[int]] = {}
         self._by_title: dict[str, list[int]] = {}
@@ -97,6 +103,11 @@ class CalculatorCrosswalk:
     def links(self) -> tuple[dict[str, Any], ...]:
         return self._links
 
+    @property
+    def unlinked_guidelines(self) -> tuple[dict[str, Any], ...]:
+        """Corpus guidelines no calculator disease reaches (mirror coverage)."""
+        return self._unlinked_guidelines
+
     def __len__(self) -> int:
         return len(self._links)
 
@@ -137,6 +148,8 @@ class CalculatorCrosswalk:
             "linked_diseases": coverage.get("linked_diseases"),
             "calculator_diseases": coverage.get("calculator_diseases"),
             "linked_guidelines": coverage.get("linked_guidelines"),
+            "corpus_guidelines": coverage.get("corpus_guidelines"),
+            "unlinked_guidelines": coverage.get("unlinked_guidelines"),
             "unmatched_diseases": coverage.get("unmatched_diseases"),
             "links_by_method": coverage.get("links_by_method"),
         }

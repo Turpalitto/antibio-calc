@@ -662,7 +662,7 @@
       "ostryi_mieloidnyi_leikoz_profilaktika_pnevmotsistnoi_pnevmonii_u_patsientov_poluchivshikh_fludarabin"
     ]
   },
-  "content_sha256": "sha256:c6fe9aa1a4579b2cddb44656f12f21abe22e8622eddf8979b545ec2fd56e200d",
+  "content_sha256": "sha256:4318bca59cd5feb931744ced33ade3c980ed3538867fe996b375126a5dcd52b7",
   "links": [
     {
       "confidence": "HIGH",
@@ -6349,7 +6349,8 @@
     },
     "coverage": {
       "calculator_diseases": 120,
-      "corpus_guidelines": 193,
+      "corpus_guidelines": 294,
+      "corpus_titles": 193,
       "linked_diseases": 98,
       "linked_guidelines": 199,
       "links": 263,
@@ -6359,6 +6360,8 @@
         "TITLE_EXACT": 0
       },
       "skipped_index_entries": 0,
+      "titles_shared_by_several_guidelines": 81,
+      "unlinked_guidelines": 95,
       "unmatched_diseases": 22
     },
     "diagnosis_index_status": "AUTO_GENERATED_DRAFT",
@@ -6387,6 +6390,756 @@
     },
     "warning": "Навигационная связка калькулятора с корпусом клинических рекомендаций. НЕ одобрение схем, НЕ снятие блокировки расчёта, НЕ вход рекомендательного контура. Каждая связь выведена по МКБ-10/названию и требует врачебной проверки."
   },
+  "unlinked_guidelines": [
+    {
+      "guideline_id": "701",
+      "guideline_title": "Опухоли головного и спинного мозга у детей",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": []
+    },
+    {
+      "guideline_id": "877",
+      "guideline_title": "Экзема",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": []
+    },
+    {
+      "guideline_id": "903",
+      "guideline_title": "Синдром гипоплазии левых отделов сердца",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": []
+    },
+    {
+      "guideline_id": "909",
+      "guideline_title": "Грипп у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": []
+    },
+    {
+      "guideline_id": "960",
+      "guideline_title": "Лимфоотек после мастэктомии",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2019
+      ]
+    },
+    {
+      "guideline_id": "1056",
+      "guideline_title": "Острые и хронические тиреоидиты (исключая аутоиммунный тиреоидит)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": []
+    },
+    {
+      "guideline_id": "1057",
+      "guideline_title": "Острые и хронические тиреоидиты (исключая аутоиммунный тиреоидит)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1132",
+      "guideline_title": "Травма глаза закрытая",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1145",
+      "guideline_title": "Роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании (нормальные роды)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1151",
+      "guideline_title": "Хроническая болезнь почек (ХБП)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1199",
+      "guideline_title": "Хронический бронхит",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1206",
+      "guideline_title": "Экзема",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1219",
+      "guideline_title": "Гипертрофия аденоидов. Гипертрофия небных миндалин.",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1221",
+      "guideline_title": "Наружные отиты",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1226",
+      "guideline_title": "Идиопатическая тромбоцитопеническая пурпура (ИТП) у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1227",
+      "guideline_title": "Наружный отит",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1240",
+      "guideline_title": "Острый гепатит В (ГВ) у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1268",
+      "guideline_title": "Хронический тонзиллит",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1275",
+      "guideline_title": "Тиреоидиты у детей",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1276",
+      "guideline_title": "Тиреоидиты у детей",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": []
+    },
+    {
+      "guideline_id": "1285",
+      "guideline_title": "Переломы костей голени",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1291",
+      "guideline_title": "Апластическая анемия",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1301",
+      "guideline_title": "Химический ожог пищевода",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1319",
+      "guideline_title": "Инородное тело в пищеварительном тракте",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2021
+      ]
+    },
+    {
+      "guideline_id": "1325",
+      "guideline_title": "Гемолитико-уремический синдром",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2022
+      ]
+    },
+    {
+      "guideline_id": "1326",
+      "guideline_title": "Цирроз и фиброз печени",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2022
+      ]
+    },
+    {
+      "guideline_id": "1333",
+      "guideline_title": "Острый гепатит A (ГА) у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2022
+      ]
+    },
+    {
+      "guideline_id": "1353",
+      "guideline_title": "Врожденный стеноз клапана легочной артерии",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2022
+      ]
+    },
+    {
+      "guideline_id": "1358",
+      "guideline_title": "Открытая рана головы",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2022
+      ]
+    },
+    {
+      "guideline_id": "1400",
+      "guideline_title": "Неалкогольная жировая болезнь печени у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2022
+      ]
+    },
+    {
+      "guideline_id": "1403",
+      "guideline_title": "Грипп у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2023
+      ]
+    },
+    {
+      "guideline_id": "1422",
+      "guideline_title": "Трансплантация поджелудочной железы, наличие трансплантированной поджелудочной железы, отмирание и отторжение трансплантата поджелудочной железы",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2023
+      ]
+    },
+    {
+      "guideline_id": "1434",
+      "guideline_title": "Гемангиома инфантильная",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2023
+      ]
+    },
+    {
+      "guideline_id": "1437",
+      "guideline_title": "Острый гепатит С (ОГС) у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2023
+      ]
+    },
+    {
+      "guideline_id": "1444",
+      "guideline_title": "Оперативные влагалищные роды (Роды одноплодные, родоразрешение с наложением щипцов или с применением вакуум-экстрактора)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2023
+      ]
+    },
+    {
+      "guideline_id": "1458",
+      "guideline_title": "Периоральный дерматит",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1469",
+      "guideline_title": "Острая кишечная непроходимость опухолевой этиологии",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1470",
+      "guideline_title": "Искусственный аборт (медицинский аборт)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1503",
+      "guideline_title": "Тиреоидиты у детей",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1508",
+      "guideline_title": "Экзема",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1549",
+      "guideline_title": "Нормальные роды (роды одноплодные, самопроизвольное родоразрешение в затылочном предлежании)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1577",
+      "guideline_title": "Преждевременные роды",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1607",
+      "guideline_title": "Травма глаза закрытая",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1610",
+      "guideline_title": "Острый гепатит В (ГВ) у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1612",
+      "guideline_title": "Идиопатическая тромбоцитопеническая пурпура (ИТП) у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1614",
+      "guideline_title": "Инородное тело в пищеварительном тракте",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1619",
+      "guideline_title": "Острые и хронические тиреоидиты (исключая аутоиммунный и  амиодарон-индуцированный тиреоидит)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1629",
+      "guideline_title": "Гипертрофия аденоидов. Гипертрофия небных миндалин.",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1639",
+      "guideline_title": "Острый ларингит",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1656",
+      "guideline_title": "Наружные отиты",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1661",
+      "guideline_title": "Хроническая болезнь почек (ХБП)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1664",
+      "guideline_title": "Травма гортани",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1668",
+      "guideline_title": "Хронический тонзиллит",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1682",
+      "guideline_title": "Химический ожог пищевода",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1691",
+      "guideline_title": "Апластическая анемия",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1700",
+      "guideline_title": "Синдром гипоплазии левых отделов сердца",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1722",
+      "guideline_title": "Лямблиоз у детей и взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1734",
+      "guideline_title": "Открытый артериальный проток (ОАП)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1735",
+      "guideline_title": "Наружный отит",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1739",
+      "guideline_title": "Инфекция, ассоциированная с ортопедическими имплантатами",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1740",
+      "guideline_title": "Переломы диафиза костей предплечья",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1743",
+      "guideline_title": "Переломы диафиза плечевой кости",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1744",
+      "guideline_title": "Переломы диафиза большеберцовой кости",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1745",
+      "guideline_title": "Переломы дистального отдела костей предплечья",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1746",
+      "guideline_title": "Переломы ключицы и лопатки",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1748",
+      "guideline_title": "Переломы дистального отдела плечевой кости",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1749",
+      "guideline_title": "Переломы лодыжек",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1750",
+      "guideline_title": "Переломы костей стопы (кроме переломов пяточной кости)",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1751",
+      "guideline_title": "Переломы проксимального отдела костей предплечья",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1754",
+      "guideline_title": "Переломы проксимального отдела плечевой кости",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1825",
+      "guideline_title": "Хронический бронхит",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2024
+      ]
+    },
+    {
+      "guideline_id": "1848",
+      "guideline_title": "Апластическая анемия",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "1855",
+      "guideline_title": "Нодальные Т-клеточные лимфомы",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "1882",
+      "guideline_title": "Гипоксическая ишемическая энцефалопатия новорожденного вследствие перенесенной асфиксии при родах",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "1886",
+      "guideline_title": "Ботулизм у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "1923",
+      "guideline_title": "Здоровый новорожденный, рожденный в условиях стационара",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "1934",
+      "guideline_title": "Врожденный стеноз клапана легочной артерии",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "1945",
+      "guideline_title": "Кисты челюстно-лицевой области и шеи",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "1946",
+      "guideline_title": "Острый гепатит A (ГА) у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "1950",
+      "guideline_title": "Трансплантация почки, наличие трансплантированной почки, отмирание и отторжение трансплантата почки",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "1954",
+      "guideline_title": "Цирроз и фиброз печени",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2019",
+      "guideline_title": "Митральный стеноз",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2040",
+      "guideline_title": "Наследственный сфероцитоз",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2043",
+      "guideline_title": "Абсцесс. Фурункул носа. Карбункул носа.",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2048",
+      "guideline_title": "Грипп у взрослых",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2062",
+      "guideline_title": "Лепра [болезнь Гансена]",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2064",
+      "guideline_title": "Открытые раны головы",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2071",
+      "guideline_title": "Лимфедема конечностей",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2075",
+      "guideline_title": "Переломы надколенника",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2076",
+      "guideline_title": "Переломы и ложные суставы костей запястья",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2081",
+      "guideline_title": "Гемолитико-уремический синдром",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2109",
+      "guideline_title": "Приобретённая патология слёзоотводящих путей",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2114",
+      "guideline_title": "Вирусные менингиты у детей",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2121",
+      "guideline_title": "Комбинированные врожденные и приобретенные дефекты и деформации челюстно-лицевой локализации",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2025
+      ]
+    },
+    {
+      "guideline_id": "2188",
+      "guideline_title": "Воспалительные заболевания челюстей. Одонтогенный остеомиелит челюсти.",
+      "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+      "years": [
+        2026
+      ]
+    }
+  ],
   "unmatched_diseases": [
     {
       "cr_id": "—",

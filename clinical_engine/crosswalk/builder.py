@@ -122,6 +122,27 @@ def normalize_text(value: Any) -> str:
     return " ".join(t for t in tokens if t).strip()
 
 
+def _guideline_sort_key(guideline_id: str) -> tuple[int, str]:
+    """Numeric ids sort numerically, anything else falls back to the string."""
+    return (0, guideline_id.zfill(12)) if guideline_id.isdigit() else (1, guideline_id)
+
+
+def _group_guidelines_by_title(records: Sequence[Mapping[str, Any]]) -> dict[str, set[str]]:
+    """Title -> guideline ids sharing it.
+
+    Several ids legitimately share one title: they are different revisions and
+    years of the same document. Counting titles therefore undercounts the
+    corpus, which is why the census is keyed on ``guideline_id``.
+    """
+    grouped: dict[str, set[str]] = {}
+    for record in records:
+        key = normalize_text(record.get("guideline_title"))
+        if not key:
+            continue
+        grouped.setdefault(key, set()).add(str(record.get("guideline_id")))
+    return grouped
+
+
 def canonical_json(payload: Any) -> str:
     """Stable serialization used for hashing."""
     return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
@@ -185,6 +206,7 @@ def build_crosswalk(
     index_by_full: dict[str, list[dict[str, Any]]] = {}
     index_by_block: dict[str, list[dict[str, Any]]] = {}
     index_by_title: dict[str, list[dict[str, Any]]] = {}
+    index_records: list[dict[str, Any]] = []
     skipped_entries = 0
     for entry in entries:
         if not isinstance(entry, Mapping):
@@ -202,6 +224,7 @@ def build_crosswalk(
             skipped_entries += 1
             continue
         normalized["blocks"] = sorted({b for b in (icd_block(c) for c in normalized["codes"]) if b})
+        index_records.append(normalized)
         for code in normalized["codes"]:
             index_by_full.setdefault(code, []).append(normalized)
         for block in normalized["blocks"]:
@@ -298,10 +321,39 @@ def build_crosswalk(
     }
     method_counts = {m: sum(1 for link in links if link["method"] == m) for m in METHOD_PRIORITY}
 
+    # Corpus catalogue keyed by guideline_id — the identity that actually
+    # matters. One title can be shared by several ids (different revisions and
+    # years of the same document), so titles must never be used as the census.
+    corpus: dict[str, dict[str, Any]] = {}
+    for normalized in index_records:
+        gid = normalized["guideline_id"]
+        record = corpus.setdefault(
+            gid,
+            {"guideline_id": gid, "guideline_title": normalized["guideline_title"], "years": set()},
+        )
+        if not record["guideline_title"] and normalized["guideline_title"]:
+            record["guideline_title"] = normalized["guideline_title"]
+        if normalized["guideline_year"] is not None:
+            record["years"].add(normalized["guideline_year"])
+
+    # Mirror coverage: which corpus guidelines no calculator disease reaches.
+    # Deliberately part of the hashed content, so drift detection covers it.
+    unlinked_guidelines = [
+        {
+            "guideline_id": gid,
+            "guideline_title": record["guideline_title"],
+            "years": sorted(y for y in record["years"] if isinstance(y, int)),
+            "reason": "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE",
+        }
+        for gid, record in sorted(corpus.items(), key=lambda kv: _guideline_sort_key(kv[0]))
+        if gid not in by_guideline
+    ]
+
     crosswalk: dict[str, Any] = {
         "links": links,
         "by_guideline": by_guideline,
         "unmatched_diseases": unmatched_diseases,
+        "unlinked_guidelines": unlinked_guidelines,
     }
     digest = content_sha256(crosswalk)
 
@@ -332,8 +384,13 @@ def build_crosswalk(
             "calculator_diseases": len(per_disease),
             "linked_diseases": sum(1 for links_ in per_disease.values() if links_),
             "unmatched_diseases": len(unmatched_diseases),
-            "corpus_guidelines": len(index_by_title),
+            "corpus_guidelines": len(corpus),
+            "corpus_titles": len(index_by_title),
+            "titles_shared_by_several_guidelines": sum(
+                1 for gids in _group_guidelines_by_title(index_records).values() if len(gids) > 1
+            ),
             "linked_guidelines": len(linked_guidelines),
+            "unlinked_guidelines": len(unlinked_guidelines),
             "links": len(links),
             "links_by_method": method_counts,
             "skipped_index_entries": skipped_entries,

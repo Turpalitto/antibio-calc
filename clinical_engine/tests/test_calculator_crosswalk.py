@@ -370,6 +370,97 @@ def test_coverage_counts_are_consistent(tiny_pair):
     assert sum(coverage["links_by_method"].values()) == coverage["links"]
 
 
+def test_corpus_census_counts_guidelines_not_titles(tiny_pair):
+    """Один заголовок могут делить несколько КР (разные ревизии/годы).
+
+    Перепись корпуса обязана вестись по ``guideline_id``; иначе покрытие
+    читается как «199 из 193», то есть больше 100%.
+    """
+    calculator, index = tiny_pair
+    index["entries"].append(
+        {
+            "guideline_id": "1500",
+            "guideline_title": "Острый тонзиллит и фарингит",
+            "guideline_year": 2021,
+            "guideline_revision_date": None,
+            "diagnosis_name": "Острый стрептококковый тонзиллит, ревизия 2021",
+            "icd10_codes": ["J03.9"],
+            "source_url": "",
+        }
+    )
+
+    coverage = build_crosswalk(calculator, index)["meta"]["coverage"]
+
+    assert coverage["corpus_guidelines"] == 3
+    assert coverage["corpus_titles"] == 2
+    assert coverage["titles_shared_by_several_guidelines"] == 1
+    assert coverage["corpus_guidelines"] >= coverage["linked_guidelines"]
+
+
+def test_unlinked_guidelines_are_the_exact_mirror_complement(tiny_pair):
+    calculator, index = tiny_pair
+    crosswalk = build_crosswalk(calculator, index)
+    coverage = crosswalk["meta"]["coverage"]
+
+    linked = {link["guideline_id"] for link in crosswalk["links"]}
+    unlinked = {row["guideline_id"] for row in crosswalk["unlinked_guidelines"]}
+
+    assert linked & unlinked == set()
+    assert linked | unlinked == {str(e["guideline_id"]) for e in index["entries"]}
+    assert coverage["linked_guidelines"] + coverage["unlinked_guidelines"] == coverage["corpus_guidelines"]
+
+
+def test_unlinked_guidelines_carry_title_years_and_reason(tiny_pair):
+    crosswalk = build_crosswalk(*tiny_pair)
+
+    row = next(r for r in crosswalk["unlinked_guidelines"] if r["guideline_id"] == "912")
+
+    assert row["guideline_title"] == "Системный склероз"
+    assert row["years"] == [2021]
+    assert row["reason"] == "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE"
+
+
+def test_unlinked_guidelines_are_part_of_the_hashed_content(tiny_pair):
+    """Зеркальное покрытие — содержимое, поэтому дрейф должен быть заметен."""
+    calculator, index = tiny_pair
+    first = build_crosswalk(calculator, index)
+
+    index["entries"].append(
+        {
+            "guideline_id": "777",
+            "guideline_title": "КР, которой нет в калькуляторе",
+            "guideline_year": 2024,
+            "guideline_revision_date": None,
+            "diagnosis_name": "Несуществующий диагноз",
+            "icd10_codes": ["Q99.8"],
+            "source_url": "",
+        }
+    )
+    second = build_crosswalk(calculator, index)
+
+    assert first["content_sha256"] != second["content_sha256"]
+    assert {r["guideline_id"] for r in second["unlinked_guidelines"]} >= {"777"}
+
+
+def test_reader_exposes_mirror_coverage(tiny_pair, tmp_path):
+    path = write_crosswalk(build_crosswalk(*tiny_pair), tmp_path / "crosswalk.json")
+    crosswalk = CalculatorCrosswalk.load(path)
+
+    assert {row["guideline_id"] for row in crosswalk.unlinked_guidelines} == {"912"}
+    assert crosswalk.summary()["unlinked_guidelines"] == 1
+    assert crosswalk.summary()["corpus_guidelines"] == 2
+
+
+def test_reader_rejects_malformed_unlinked_guidelines(tiny_pair, tmp_path):
+    path = write_crosswalk(build_crosswalk(*tiny_pair), tmp_path / "crosswalk.json")
+    artifact = json.loads(path.read_text(encoding="utf-8"))
+    artifact["unlinked_guidelines"] = {"not": "a list"}
+    path.write_text(json.dumps(artifact, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(CrosswalkBuildError):
+        CalculatorCrosswalk.load(path)
+
+
 def test_committed_artifact_links_real_calculator_diseases_and_guidelines():
     """The shipped artifact must reference ids that actually exist on both sides."""
     db = json.loads(DEFAULT_CALCULATOR_DB.read_text(encoding="utf-8-sig"))
@@ -387,6 +478,18 @@ def test_committed_artifact_links_real_calculator_diseases_and_guidelines():
     coverage = crosswalk.coverage
     assert coverage["calculator_diseases"] == len(disease_ids)
     assert coverage["linked_diseases"] == len({link["disease_id"] for link in crosswalk.links})
+
+    # Mirror side must close exactly: every corpus guideline is either reached
+    # by some calculator disease or listed as unlinked — never silently absent.
+    unlinked_ids = {row["guideline_id"] for row in crosswalk.unlinked_guidelines}
+    linked_ids = {link["guideline_id"] for link in crosswalk.links}
+    assert linked_ids & unlinked_ids == set()
+    assert linked_ids | unlinked_ids == guideline_ids
+    assert coverage["corpus_guidelines"] == len(guideline_ids)
+    assert coverage["linked_guidelines"] + coverage["unlinked_guidelines"] == coverage["corpus_guidelines"]
+    for row in crosswalk.unlinked_guidelines:
+        assert row["guideline_id"] in guideline_ids, row["guideline_id"]
+        assert row["reason"] == "NO_CALCULATOR_DISEASE_MATCHES_ICD10_OR_TITLE"
 
 
 # ── reader ──────────────────────────────────────────────────────────────────

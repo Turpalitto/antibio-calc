@@ -68,7 +68,7 @@ python db/build_db.py                          # собрать БД (встра
 python db/build_html.py                        # собрать HTML
 ```
 
-- Артефакт: `clinical_engine/resources/calculator_crosswalk.json` (263 связи, 98/120 нозологий)
+- Артефакт: `clinical_engine/resources/calculator_crosswalk.json` (263 связи, 98/120 нозологий, 199/294 КР корпуса)
 - Код: `clinical_engine/crosswalk/` (builder + reader)
 - UI: панель «Клинические рекомендации корпуса» в карточке нозологии
 - API: `GET /v1/guidelines/{disease_id}`
@@ -107,9 +107,9 @@ C:\ANTIBIO/
 - **Pipeline:** извлечение завершено (294 guidelines, 2675 regimens)
 - **Medical Normalizer:** COMPLETE (726/726 tests, 99.9% coverage)
 - **Калькулятор:** 120 нозологий / 48 препаратов; расчёт открыт для 1 (fail-closed source gate)
-- **Связка КР ⇄ калькулятор:** 263 связи, 98/120 нозологий (`NAVIGATION_ONLY`)
+- **Связка КР ⇄ калькулятор:** 263 связи, 98/120 нозологий, 199/294 КР корпуса (`NAVIGATION_ONLY`)
 - **Семантика режимов:** `duration_parsed` на 638/638, `regimen_label` на 611/638 (`db/regimen_semantics.py`)
-- **Тесты:** `pytest -q` → 2188 passed, 32 skipped, 1 xfailed
+- **Тесты:** `pytest -q` → 2194 passed, 32 skipped, 1 xfailed
 - **Фаза:** Medical Data Quality Improvement
 
 ## Источник данных
