@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any
 
 from src.pipeline import config as pipeline_config
+from src.pipeline.extraction.icd10 import normalize_mkb as _normalize_mkb
 
 # ---- drug resolution ------------------------------------------------------
 
@@ -245,10 +246,13 @@ def _route_to_schema(raw_route: Any) -> list[str] | None:
 # ---- public mapping ------------------------------------------------------
 
 def normalize_mkb(value: Any) -> list[str]:
-    if value is None:
-        return []
-    codes = value if isinstance(value, list) else [value]
-    return [str(c).strip().upper() for c in codes if c is not None and str(c).strip()]
+    """Delegated to ``extraction.icd10`` — splits comma-joined code lists.
+
+    Was a local copy that returned ``["A00.0, A00.1"]`` for a comma-joined
+    string; that produced single-element ``mkb10`` arrays in
+    ``db/diseases/extended_dosa.json`` and broke every downstream ICD-10 join.
+    """
+    return _normalize_mkb(value)
 
 
 # Cyrillic -> latin transliteration for building stable ascii slugs/id's.

@@ -1,3 +1,20 @@
+## 2026-09-10: Калькулятор связан с корпусом КР (навигационный слой)
+
+- **Кроссволк:** `clinical_engine/resources/calculator_crosswalk.json` — 263 связи, 98/120 нозологий,
+  199 guideline_id корпуса, `content_sha256: sha256:c6fe9aa1a457…`, `purpose: NAVIGATION_ONLY`.
+  Пересборка: `python -m clinical_engine.crosswalk --write`; проверка: без `--write`.
+- **Сборка:** `db/antibio_db.json` = 120 recs / 10 cats / 48 drugs, из них 98 с `guideline_links`,
+  SHA-256 `cec19cb8bc830d0c…`. `antibiotic_calc.html` = 723 381 байт, совпадает с template+db байт-в-байт.
+- **Статус расчёта не изменился:** 1 открыт (`aom_child`, КР 314_3, `CALCULATOR_BOUND_VERIFIED`),
+  119 заблокированы. Worklist: `python db/source_gate_report.py`.
+- **Валидация БД:** `node db/validate_db.js` → 0 errors / 478 warnings
+  (360 free-text длительностей, 60 age_group вне сценария, 29 без route, 27 без дозы под блокировкой,
+  2 × route `topical`).
+- **Тесты:** `pytest -q` → **2126 passed, 32 skipped, 1 xfailed** за ~18 с.
+  Окружение проверки: Python 3.11.2 + pytest 9.1.1, fastapi 0.141.1, pydantic 2.13.5, PyMuPDF 1.24.10,
+  Node v22.22.3.
+- **Открыто:** 22 нозологии без связи с корпусом; 82 связи `ICD10_BLOCK` ждут врачебной проверки
+  на клиническую релевантность; 109 нозологий ждут `SOURCE_SPEC`.
 ## 2026-09-02: Dose source-verification across 120 nosologies
 
 - Run dose_verification.py over db/antibio_db.json (120 recs) vs DOSA KB -> 243 matched / 113 mismatched /

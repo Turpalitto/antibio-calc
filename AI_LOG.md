@@ -1,3 +1,62 @@
+## 2026-09-10: Связка «корпус КР ⇄ калькулятор» + аудит данных МКБ-10 + включение забытых тестов
+
+- **Главное — налажена связь клинреки ↔ калькулятор.** Новый пакет `clinical_engine/crosswalk/`
+  (`builder.py`, `reader.py`, `__main__.py`) детерминированно соединяет `db/antibio_db.json`
+  (120 нозологий) с `clinical_engine/resources/diagnosis_index.json` (895 записей / 294 КР)
+  **по МКБ-10 и точному названию**. Артефакт: `clinical_engine/resources/calculator_crosswalk.json`
+  (263 связи, content_sha256 `sha256:c6fe9aa1a457…`).
+- **Замерено, а не предположено:** из 82 номеров рубрикатора калькулятора в корпусе встречается ровно 1 —
+  `912`, и это **ложное** совпадение (`КР912_1` «Неонатальный сепсис» против корпусного 912 «Системный
+  склероз»). Вывод: пространства имён `cr_id` (рубрикатор) и `guideline_id` (внутренний id
+  `metadata.sqlite`) не пересекаются, соединение по id запрещено. См. `CALCULATOR_GUIDELINE_CROSSWALK.md` §1.
+- **Результат связки:** 98 из 120 нозологий (81.7%) связаны с корпусом; 22 — в `unmatched_diseases`
+  с причиной `NO_CORPUS_ENTRY_FOR_ICD10_OR_TITLE`. Методы: ICD10_EXACT 181 / ICD10_BLOCK 82 / TITLE_EXACT 0.
+- **Исправлен реальный дефект данных.** `normalize_mkb()` был скопирован в трёх модулях
+  (`dosa_to_db_mapper.py`, `dosa_source_contract.py`, `extension_sources.py`) и не разбивал склейки кодов.
+  Создан единый `src/pipeline/extraction/icd10.py` (split по `,`/`;`, раскрытие диапазонов `B20-24`,
+  `is_valid_mkb`, `mkb_prefix`); все три модуля делегируют ему. В `db/diseases/extended_dosa.json`
+  исправлено **16 записей** со склеенными кодами (`["C83.5, C91.0, C95.0"]` → три кода) и **1** диапазон
+  (`"B20-24"` → `B20…B24`). До правки эти коды были невидимы для любого соединения по МКБ-10.
+- **Связка встроена в калькулятор.** `db/build_db.py::attach_guideline_links` пишет
+  `recommendations[].guideline_links` + `meta.guideline_crosswalk` (compact-проекция, ~47 КБ).
+  В шаблон добавлены `renderGuidelineLinks()` / `crCaption()` и панель `#guideline-links`
+  («Клинические рекомендации корпуса», бейдж «навигация», явная пометка «не одобрение схем и не влияет
+  на расчёт»). `antibiotic_calc.html` пересобран: 723 381 байт (было 671 059).
+- **Связка доступна и по API:** `GET /v1/guidelines/{disease_id}`
+  (`clinical_engine/api/service.py::handle_calculator_guidelines` + роут в `api/app.py`).
+  Возвращает `purpose: NAVIGATION_ONLY`, `calculation_blocked` **дословно**, 404 `DIAGNOSIS_NOT_FOUND`,
+  503 `KNOWLEDGE_UNAVAILABLE` при отсутствии/порче артефакта (fail-closed, не «связей нет»).
+- **Усилен `db/validate_db.js`:** дубли id нозологий и сценариев, формат каждого кода МКБ-10,
+  значения route, line_number, age_group, частота/доза, self-consistency
+  `single_dose_mg × freq_per_day` против `max_daily_mg` и `dose_mg_day_fixed` (класс «silent underdose»),
+  целостность `guideline_links`, `purpose` кроссволка. Результат на текущей БД: **0 errors / 478 warnings**
+  (было 46 errors, которые выявил сам новый валидатор). Режим без дозы = ERROR на открытом расчёте и
+  WARNING на заблокированном (таких 27, все под блокировкой).
+- **Новый инструмент прозрачности** `db/source_gate_report.py`: объясняет, почему 119/120 закрыто, и что
+  делать: 109 × `SOURCE_SPEC`, 6 × `SPEC_PINNED`, 2 × `PDF_HASH`, 2 × `OWNER_REVIEW`, 1 × `NONE`.
+  Проверяет fail-closed инварианты (`--strict`). Отчёт gitignored (производный).
+- **Найдено и исправлено: 452 теста никогда не запускались.** В `pyproject.toml::testpaths` не было
+  корневого `tests/`, поэтому `tests/test_personal_calculator_bridge.py`, весь
+  `tests/dose_verification_sandbox/` и `tests/rc030_owner_interface/` не собирались bare-`pytest`.
+  Добавлено `"tests"`. Это вскрыло 2 падения — виндовые пути в
+  `generated/rc030_c7_owner_review/datasets_manifest.json` (`generated\...`): исправлено через
+  `.replace("\\", "/")` в `build_correction_batches.py`, `build_source_repair_6068.py`,
+  `finalize_owner_review.py`.
+- **Тесты:** `clinical_engine/tests/test_calculator_crosswalk.py` (32),
+  `clinical_engine/tests/test_api_crosswalk.py` (8), `tests/test_calculator_guideline_links.py` (11,
+  реальный JS под Node с DOM-стабом), `src/tests/test_calculator_db_quality.py` (34),
+  `src/tests/test_source_gate_report.py` (8), +5 в `src/tests/test_build_db.py`.
+  **Прогон: `.venv/bin/python -m pytest -q` → 2126 passed, 32 skipped, 1 xfailed** (база до работы: 1624 passed).
+- **Детерминизм проверен фактом:** SHA-256 `db/antibio_db.json` = `cec19cb8bc830d0c…` после
+  `--attach-only` и после полной пересборки.
+- **Побочная находка от включения тестов:** `RC030_C7_AI_PRE_REVIEW_EVENTS.json` хранил устаревший
+  провенанс-хеш — закоммиченный `input_sha256: 405653cca9…` не совпадал с фактическим SHA-256
+  закоммиченного входа `generated/rc030_c7/review_tasks_ready.json` = `42680277afc6…` (проверено
+  `sha256sum`). Пересборка через `tests/rc030_owner_interface/test_c7_ai_pre_review.py` исправила хеш.
+  Это класс нарушений INV-02/INV-04; исправление оставлено в рабочем дереве.
+- **Безопасность:** ничего не разблокировано и не одобрено. `attach_guideline_links` трогает только
+  `guideline_links`/`meta.guideline_crosswalk`; `calculation_blocked` и `source_verification_status`
+  остались за `calculator_source_gate.py`. 119/120 по-прежнему закрыты. Коммита не делал до этой записи.
 ## 2026-09-02: Dose source-verification across all 120 nosologies (evidence-only, NOT physician attestation)
 
 - Re-ran src/pipeline/extraction/dose_verification.py over current db/antibio_db.json (120 recs) vs DOSA KB

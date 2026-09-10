@@ -47,9 +47,35 @@ result = MedicalNormalizer.normalize(raw_dict)
 ```
 
 ### 3. HTML-калькулятор
-Single-page приложение для расчёта доз антибиотиков (72 нозологии, 40 препаратов).
+Single-page приложение для расчёта доз антибиотиков (120 нозологий, 48 препаратов).
 
-Открыть `antibiotic_calc.html` в браузере.
+Открыть `antibiotic_calc.html` в браузере, либо `node server.js` → http://localhost:8080.
+
+Расчёт по-прежнему fail-closed: открыта только нозология со закреплённым и
+hash-проверенным источником КР (сейчас 1 из 120). Причины и план разблокировки —
+`python db/source_gate_report.py`.
+
+### 4. Связка «корпус КР ⇄ калькулятор» (навигационный слой)
+
+Калькулятор ключуется по `cr_id` рубрикатора МЗ (`858_1`), корпус клинических
+рекомендаций — по внутреннему `guideline_id` (`1269`). **Пространства имён не
+пересекаются**, поэтому соединение выполняется только по МКБ-10 и точному названию.
+
+```bash
+python -m clinical_engine.crosswalk            # проверить, что артефакт синхронен
+python -m clinical_engine.crosswalk --write    # пересобрать артефакт
+python db/build_db.py                          # собрать БД (встраивает связи, fail-closed на дрейфе)
+python db/build_html.py                        # собрать HTML
+```
+
+- Артефакт: `clinical_engine/resources/calculator_crosswalk.json` (263 связи, 98/120 нозологий)
+- Код: `clinical_engine/crosswalk/` (builder + reader)
+- UI: панель «Клинические рекомендации корпуса» в карточке нозологии
+- API: `GET /v1/guidelines/{disease_id}`
+- Контракт и результаты аудита: `CALCULATOR_GUIDELINE_CROSSWALK.md`
+
+Слой **навигационный** (`NAVIGATION_ONLY`): не одобряет схемы, не возвращает доз
+и не снимает блокировку расчёта.
 
 ## Структура
 
@@ -80,7 +106,9 @@ C:\ANTIBIO/
 
 - **Pipeline:** извлечение завершено (294 guidelines, 2675 regimens)
 - **Medical Normalizer:** COMPLETE (726/726 tests, 99.9% coverage)
-- **Quality Audit:** завершён (PASS 33%, REVIEW 12%, REJECT 55%)
+- **Калькулятор:** 120 нозологий / 48 препаратов; расчёт открыт для 1 (fail-closed source gate)
+- **Связка КР ⇄ калькулятор:** 263 связи, 98/120 нозологий (`NAVIGATION_ONLY`)
+- **Тесты:** `pytest -q` → 2126 passed, 32 skipped, 1 xfailed
 - **Фаза:** Medical Data Quality Improvement
 
 ## Источник данных

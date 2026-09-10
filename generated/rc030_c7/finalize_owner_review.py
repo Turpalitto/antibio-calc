@@ -40,7 +40,7 @@ def _known_records() -> list[dict]:
     manifest = _load_json(DATASET_MANIFEST)
     records: list[dict] = []
     for item in manifest["datasets"]:
-        records.extend(_load_json(ROOT / item["dataset_path"])["records"])
+        records.extend(_load_json(ROOT / item["dataset_path"].replace("\\", "/"))["records"])
     records.extend(_load_json(REPAIRED_DATASET)["records"])
     return records
 

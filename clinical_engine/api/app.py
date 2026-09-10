@@ -70,6 +70,11 @@ def create_app(ctx: "service.ApiContext | None" = None):
     def version() -> Any:
         return _json(service.handle_version(context))
 
+    @app.get("/v1/guidelines/{disease_id}")
+    def calculator_guidelines(disease_id: str) -> Any:
+        """Read-only КР corpus navigation for one calculator nozology."""
+        return _json(service.handle_calculator_guidelines(context, disease_id))
+
     @app.post("/v1/recommend")
     def recommend(payload: dict[str, Any] | None = Body(default=None)) -> Any:
         if payload is None:

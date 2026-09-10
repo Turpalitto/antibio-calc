@@ -18,6 +18,11 @@ from typing import Any
 
 from clinical_engine.api import contract, v2_contract
 from clinical_engine.corpus.locator import CorpusLocator
+from clinical_engine.crosswalk import CalculatorCrosswalk, CrosswalkBuildError
+from clinical_engine.crosswalk.builder import (
+    DEFAULT_CALCULATOR_DB,
+    DEFAULT_OUTPUT as DEFAULT_CROSSWALK_PATH,
+)
 
 _DEFAULT_KNOWLEDGE = "clinical_engine/resources/curated_knowledge.json"
 
@@ -31,6 +36,10 @@ class ApiContext:
     behaviour can be validated without building a real Engine over the upstream
     corpus (which must stay read-only). When ``None``, the recommend endpoint
     returns an explicit review-required state — never a silent recommendation.
+
+    ``crosswalk_path`` / ``calculator_db_path`` back the read-only КР navigation
+    endpoint. They are navigation data only and are never consulted by the
+    recommendation path.
     """
     corpus: CorpusLocator
     curated_knowledge_path: str = _DEFAULT_KNOWLEDGE
@@ -38,6 +47,8 @@ class ApiContext:
     # PERSONAL_PHYSICIAN_MODE_RFC: separate additive service. Never reused by
     # v1 and never interpreted as production physician approval.
     personal_service: Any | None = None
+    crosswalk_path: str = str(DEFAULT_CROSSWALK_PATH)
+    calculator_db_path: str = str(DEFAULT_CALCULATOR_DB)
 
     @classmethod
     def default(cls) -> "ApiContext":
@@ -142,6 +153,70 @@ def _minimal_recommendations(result: Any) -> list[dict[str, Any]]:
             "therapy_line": getattr(c, "therapy_line", None),
         })
     return out
+
+
+def handle_calculator_guidelines(ctx: ApiContext, disease_id: str) -> tuple[int, dict[str, Any]]:
+    """Return the КР corpus links for one calculator nozology (read-only).
+
+    Navigation layer only: the response never approves a regimen, never reports a
+    dose and never lifts ``calculation_blocked``. It answers "which clinical
+    guidelines in the corpus cover this МКБ-10?" so a physician can open the
+    primary source. See CALCULATOR_GUIDELINE_CROSSWALK.md.
+    """
+    disease_id = str(disease_id or "").strip()
+    if not disease_id:
+        return 400, contract.error_response("INVALID_REQUEST", "disease_id is required")
+
+    try:
+        crosswalk = CalculatorCrosswalk.load(ctx.crosswalk_path)
+    except CrosswalkBuildError as exc:
+        # Fail closed: never answer "no guidelines exist" when the artifact is
+        # simply missing or corrupt.
+        return 503, contract.envelope(
+            contract.Status.ERROR,
+            errors=[contract.error_obj("KNOWLEDGE_UNAVAILABLE", str(exc))],
+        )
+
+    db_path = Path(ctx.calculator_db_path)
+    if not db_path.is_file():
+        return 503, contract.envelope(
+            contract.Status.ERROR,
+            errors=[contract.error_obj("KNOWLEDGE_UNAVAILABLE", f"calculator db not found: {db_path}")],
+        )
+    try:
+        db = json.loads(db_path.read_text(encoding="utf-8-sig"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return 503, contract.envelope(
+            contract.Status.ERROR,
+            errors=[contract.error_obj("KNOWLEDGE_UNAVAILABLE", f"calculator db unreadable: {exc}")],
+        )
+
+    disease = next(
+        (rec for rec in db.get("recommendations", []) if rec.get("id") == disease_id),
+        None,
+    )
+    if disease is None:
+        return 404, contract.error_response("DIAGNOSIS_NOT_FOUND", disease_id)
+
+    return 200, {
+        "api_version": contract.API_VERSION,
+        "purpose": crosswalk.purpose,
+        "warning": crosswalk.warning,
+        "disease": {
+            "id": disease_id,
+            "name": disease.get("name"),
+            "cr_id": disease.get("cr_id"),
+            "cr_year": disease.get("cr_year"),
+            "mkb10": disease.get("mkb10") or [],
+            "source_url": disease.get("source_url"),
+            # Reported, never changed: the caller must still see that the
+            # calculator itself refuses to compute for this nozology.
+            "calculation_blocked": bool(disease.get("calculation_blocked")),
+            "source_verification_status": disease.get("source_verification_status"),
+        },
+        "guideline_count": len(crosswalk.for_disease(disease_id)),
+        "guidelines": crosswalk.for_disease(disease_id),
+    }
 
 
 def handle_recommend(ctx: ApiContext, body: dict[str, Any]) -> tuple[int, dict[str, Any]]:

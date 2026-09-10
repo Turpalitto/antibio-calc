@@ -35,9 +35,69 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
+if str(PROJECT_ROOT) not in sys.path:  # allow `python db/build_db.py` from anywhere
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from clinical_engine.crosswalk import (  # noqa: E402
+    CrosswalkBuildError,
+    DEFAULT_OUTPUT as DEFAULT_CROSSWALK_PATH,
+    build_crosswalk_from_paths,
+    compact_links,
+    crosswalk_summary,
+)
+from clinical_engine.crosswalk.builder import DEFAULT_DIAGNOSIS_INDEX  # noqa: E402
+
 
 def _load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+def attach_guideline_links(
+    db: dict[str, Any],
+    *,
+    calculator_db_path: Path,
+    diagnosis_index_path: Path = DEFAULT_DIAGNOSIS_INDEX,
+    crosswalk_path: Path = DEFAULT_CROSSWALK_PATH,
+    check_committed: bool = True,
+) -> dict[str, int]:
+    """Embed the КР corpus crosswalk into the calculator database (in place).
+
+    Fail-closed: the committed ``calculator_crosswalk.json`` must exist and must
+    match a fresh rebuild from the current inputs, otherwise the build aborts
+    rather than embedding stale provenance. Set ``check_committed=False`` only
+    from tests that build throwaway fixture databases.
+
+    Adds ``recommendations[].guideline_links`` and ``meta.guideline_crosswalk``.
+    Neither field is clinical approval and neither unblocks calculation.
+    """
+    rebuilt = build_crosswalk_from_paths(calculator_db_path, diagnosis_index_path)
+    if check_committed:
+        if not Path(crosswalk_path).is_file():
+            raise CrosswalkBuildError(
+                f"crosswalk artifact missing: {crosswalk_path} — run "
+                "`python -m clinical_engine.crosswalk --write`"
+            )
+        expected = json.dumps(rebuilt, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
+        if Path(crosswalk_path).read_text(encoding="utf-8") != expected:
+            raise CrosswalkBuildError(
+                f"crosswalk artifact is stale: {crosswalk_path} — run "
+                "`python -m clinical_engine.crosswalk --write`"
+            )
+
+    links_by_disease = compact_links(rebuilt)
+    attached = 0
+    for disease in db.get("recommendations", []):
+        links = links_by_disease.get(str(disease.get("id")), [])
+        disease["guideline_links"] = links
+        if links:
+            attached += 1
+    meta = db.setdefault("meta", {})
+    meta["guideline_crosswalk"] = crosswalk_summary(rebuilt)
+    return {
+        "diseases": len(db.get("recommendations", [])),
+        "diseases_with_links": attached,
+        "links": len(rebuilt.get("links", [])),
+    }
 
 
 def build_db(
@@ -50,6 +110,10 @@ def build_db(
     run_source_gate: bool = True,
     run_validate: bool = True,
     node_exe: str | None = None,
+    attach_crosswalk: bool = True,
+    crosswalk_check_committed: bool = True,
+    diagnosis_index_path: Path = DEFAULT_DIAGNOSIS_INDEX,
+    crosswalk_path: Path = DEFAULT_CROSSWALK_PATH,
 ) -> dict[str, Any]:
     """Assemble db/antibio_db.json from index + diseases, then run the gates."""
     index = _load_json(index_path)
@@ -83,6 +147,19 @@ def build_db(
         _run_source_gate(output_path, specs_dir, python_exe)
         # re-read because the gate mutated the file in place
         db = _load_json(output_path)
+
+    if attach_crosswalk:
+        # The crosswalk reads the file on disk (post source-gate) so that the
+        # provenance it records matches exactly what ships in the build.
+        attach_guideline_links(
+            db,
+            calculator_db_path=output_path,
+            diagnosis_index_path=diagnosis_index_path,
+            crosswalk_path=crosswalk_path,
+            check_committed=crosswalk_check_committed,
+        )
+        payload = json.dumps(db, ensure_ascii=False, separators=(",", ":"))
+        output_path.write_text(payload, encoding="utf-8")
 
     if run_validate:
         _run_validate(output_path, node_exe)
@@ -126,11 +203,33 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--diseases", default="db/diseases", help="diseases dir")
     parser.add_argument("--index", default="db/index.json", help="index.json path")
     parser.add_argument("--specs", default="clinical_sources/regimen_candidate_specs", help="specs dir for source gate")
+    parser.add_argument("--diagnosis-index", default=str(DEFAULT_DIAGNOSIS_INDEX), help="corpus diagnosis index used for the КР crosswalk")
+    parser.add_argument("--crosswalk", default=str(DEFAULT_CROSSWALK_PATH), help="committed crosswalk artifact")
     parser.add_argument("--skip-source-gate", action="store_true")
     parser.add_argument("--skip-validate", action="store_true")
+    parser.add_argument("--skip-crosswalk", action="store_true", help="do not embed КР corpus links (diagnostics only)")
+    parser.add_argument(
+        "--attach-only",
+        action="store_true",
+        help="do not rebuild: only embed the КР crosswalk into an existing db (used by build_db.ps1)",
+    )
     args = parser.parse_args(argv)
 
     root = Path.cwd() if (Path.cwd() / "db").exists() else PROJECT_ROOT
+
+    if args.attach_only:
+        db_path = root / args.db
+        db = _load_json(db_path)
+        stats = attach_guideline_links(
+            db,
+            calculator_db_path=db_path,
+            diagnosis_index_path=Path(args.diagnosis_index),
+            crosswalk_path=Path(args.crosswalk),
+        )
+        db_path.write_text(json.dumps(db, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        print(json.dumps({"attached": stats}, ensure_ascii=False, sort_keys=True))
+        return 0
+
     db = build_db(
         root / args.index,
         root / args.diseases,
@@ -138,13 +237,18 @@ def main(argv: list[str] | None = None) -> int:
         specs_dir=root / args.specs,
         run_source_gate=not args.skip_source_gate,
         run_validate=not args.skip_validate,
+        attach_crosswalk=not args.skip_crosswalk,
+        diagnosis_index_path=Path(args.diagnosis_index),
+        crosswalk_path=Path(args.crosswalk),
     )
+    linked = sum(1 for r in db["recommendations"] if r.get("guideline_links"))
     print(
         json.dumps(
             {
                 "recommendations": len(db["recommendations"]),
                 "categories": len(db["categories"]),
                 "drugs_reference": len(db["drugs_reference"]),
+                "recommendations_with_guideline_links": linked,
             },
             ensure_ascii=False,
         )

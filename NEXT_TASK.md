@@ -1,3 +1,28 @@
+## 2026-09-10: Кроссволк «КР ⇄ калькулятор» готов — что дальше
+
+- **Готово:** `clinical_engine/crosswalk/` + артефакт + встраивание в сборку + панель в HTML +
+  `GET /v1/guidelines/{disease_id}` + `db/source_gate_report.py`. Всё описано в
+  `CALCULATOR_GUIDELINE_CROSSWALK.md`. Тесты: 2126 passed.
+- **Открыто, требует новых извлечений (не правки связки):** 22 нозологии без совпадения по МКБ-10
+  в корпусе — `prostatitis` (N41), `scarlet_fever` (A38), `nec` (P77), `omphalitis` (P38),
+  `animal_bite` (L02), `skin_abscess`, `impetigo` (L01), `sepsis_adult` (A40/A41),
+  `necrotizing_fasciitis` (M72.6), `septic_arthritis` (M00), `listeriosis` (A32),
+  `pneumococcal_meningitis`, `bacterial_meningitis_empiric`, `aspiration_pneumonia` (J69.0),
+  `asplenia_prophylaxis`. Список полностью: `unmatched_diseases` в артефакте.
+- **Открыто, врачебная проверка:** 82 связи `ICD10_BLOCK` (`MEDIUM`) и 0 `TITLE_EXACT` — связка честно
+  помечает метод, но клиническую релевантность подтверждает врач. Пример сомнительной: `pid` ↔
+  «Туберкулез у взрослых» через блок `A18`.
+- **Открыто, заблокировано первоисточниками:** 119/120 нозологий без расчёта.
+  `python db/source_gate_report.py` → 109 × `SOURCE_SPEC`, 6 × `SPEC_PINNED`, 2 × `PDF_HASH`,
+  2 × `OWNER_REVIEW`. Агент это не разблокирует (P5.6/P6 owner-only).
+- **Открыто, отдельная миграция:** поле `guideline_id` означает рубрикатор в
+  `clinical_sources/regimen_candidate_specs/*.json` и внутренний id `metadata.sqlite` в
+  `diagnosis_index.json`. Переименование — по плану `KB_VERSIONING_MIGRATION_PLAN.md`.
+- **Открыто, качество данных (warnings, не ошибки):** 360 free-text `duration_days`,
+  29 записей без `route`, 260 без `indication_note`, 485 режимов без `regimen_label`,
+  220 без `max_daily_mg`. Всё в заблокированном source-слое.
+- Пересборка: `python -m clinical_engine.crosswalk --write` → `python db/build_db.py` →
+  `python db/build_html.py`. Тесты: `.venv/bin/python -m pytest -q`.
 ## 2026-09-02: Dose verification completed for all nosologies (38 to review)
 
 - Ran dose_verification harness over the 120-rec DB -> 23 verified, 18 partial, 41 no-KB, 38 mismatch-review.

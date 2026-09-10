@@ -77,6 +77,10 @@ testpaths = [
     "clinical_engine/regimen/tests",
     "clinical_engine/review_workbench/tests",
     "src/tests",
+    # Audit 2026-09-10: the root `tests/` tree (calculator ⇄ engine bridge,
+    # dose-verification sandbox, RC030 owner interface) was never collected by a
+    # bare `pytest` run, so 60+ tests silently never executed.
+    "tests",
 ]
 markers = [
     "unit: isolated deterministic unit tests",

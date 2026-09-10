@@ -4,7 +4,10 @@
     {
       "id": "kh_stseplennyi_limfoproliferativnyi_sindrom_khlp_s_otiagoshchennym_infektsionnym_anamnezom",
       "mkb10": [
-        "D82.3, D82.8, D84.8, D89.8"
+        "D82.3",
+        "D82.8",
+        "D84.8",
+        "D89.8"
       ],
       "name": "Первичный иммунодефицит- Х-сцепленный лимфопролиферативный синдром",
       "synonyms": [],
@@ -49,7 +52,9 @@
     {
       "id": "ostryi_limfoblastnyi_leikoz_limfoblastnaia_limfoma_ostrye_leikozy_neodnoznachnoi_lineinosti",
       "mkb10": [
-        "C83.5, C91.0, C95.0"
+        "C83.5",
+        "C91.0",
+        "C95.0"
       ],
       "name": "Острый лимфобластный лейкоз",
       "synonyms": [],
@@ -360,7 +365,11 @@
     {
       "id": "pnevmotsistnaia_pnevmoniia",
       "mkb10": [
-        "B20-24"
+        "B20",
+        "B21",
+        "B22",
+        "B23",
+        "B24"
       ],
       "name": "ВИЧ-инфекция у взрослых",
       "synonyms": [],
@@ -516,7 +525,16 @@
     {
       "id": "ostryi_mieloidnyi_leikoz_profilaktika_pnevmotsistnoi_pnevmonii_u_patsientov_poluchivshikh_fludarabin",
       "mkb10": [
-        "C92.0, C92.3, C92.5, C92.6, C92.7, C92.8, C92.9, C93.0, C94.0, C94.2"
+        "C92.0",
+        "C92.3",
+        "C92.5",
+        "C92.6",
+        "C92.7",
+        "C92.8",
+        "C92.9",
+        "C93.0",
+        "C94.0",
+        "C94.2"
       ],
       "name": "Острые миелоидные лейкозы",
       "synonyms": [],
@@ -577,7 +595,18 @@
     {
       "id": "rody_odnoplodnye_rodorazreshenie_putem_kesareva_secheniia",
       "mkb10": [
-        "O32.0, O32.2, O32.4, O32.8, O34.0, O34.4, O82, O82.0, O82.1, O82.2, O82.8, O82.9"
+        "O32.0",
+        "O32.2",
+        "O32.4",
+        "O32.8",
+        "O34.0",
+        "O34.4",
+        "O82",
+        "O82.0",
+        "O82.1",
+        "O82.2",
+        "O82.8",
+        "O82.9"
       ],
       "name": "Роды одноплодные, родоразрешение путем кесарева сечения",
       "synonyms": [],
@@ -799,7 +828,12 @@
     {
       "id": "povrezhdenie_sviazok_kolennogo_sustava_razryv_pks_khirurgicheskaia_antibiotikoprofilaktika",
       "mkb10": [
-        "M23.5, M23.6, S83.4, S83.5, S83.6, S83.7"
+        "M23.5",
+        "M23.6",
+        "S83.4",
+        "S83.5",
+        "S83.6",
+        "S83.7"
       ],
       "name": "Повреждение связок коленного сустава",
       "synonyms": [],
@@ -1405,7 +1439,10 @@
     {
       "id": "perelomy_proksimalnogo_otdela_bedrennoi_kosti_endoprotezirovanie_osteosintez_pri_ppobk",
       "mkb10": [
-        "S72.0, S72.1, S72.2, T93.1"
+        "S72.0",
+        "S72.1",
+        "S72.2",
+        "T93.1"
       ],
       "name": "Переломы проксимального отдела бедренной кости",
       "synonyms": [],
@@ -1737,7 +1774,9 @@
     {
       "id": "bolezn_krona_tonkoi_kishki_krome_terminalnogo_ileita_pri_nalichii_priznakov_sistemnogo_vospaleniia_i_ili_infiltrata",
       "mkb10": [
-        "K50, K52.3, K52.9"
+        "K50",
+        "K52.3",
+        "K52.9"
       ],
       "name": "Болезнь Крона",
       "synonyms": [],
@@ -2080,7 +2119,8 @@
     {
       "id": "defekt_aortolegochnoi_peregorodki",
       "mkb10": [
-        "I27.8, Q21.4"
+        "I27.8",
+        "Q21.4"
       ],
       "name": "Дефект аортолегочной перегородки",
       "synonyms": [],
@@ -2757,7 +2797,35 @@
     {
       "id": "vykidysh_samoproizvolnyi_abort",
       "mkb10": [
-        "N85.3, N85.7, O02, O02.0, O02.1, O02.8, O02.9, O03, O03.0, O03.1, O03.3, O03.4, O03.5, O03.6, O03.8, O03.9, O05, O05.0, O05.1, O05.3, O05.4, O05.5, O05.6, O05.8, O05.9, O20, O20.0, O20.8, O20.9"
+        "N85.3",
+        "N85.7",
+        "O02",
+        "O02.0",
+        "O02.1",
+        "O02.8",
+        "O02.9",
+        "O03",
+        "O03.0",
+        "O03.1",
+        "O03.3",
+        "O03.4",
+        "O03.5",
+        "O03.6",
+        "O03.8",
+        "O03.9",
+        "O05",
+        "O05.0",
+        "O05.1",
+        "O05.3",
+        "O05.4",
+        "O05.5",
+        "O05.6",
+        "O05.8",
+        "O05.9",
+        "O20",
+        "O20.0",
+        "O20.8",
+        "O20.9"
       ],
       "name": "Выкидыш (самопроизвольный аборт)",
       "synonyms": [],
@@ -2866,7 +2934,8 @@
     {
       "id": "gepatoblastoma",
       "mkb10": [
-        "C22.2, D13.4"
+        "C22.2",
+        "D13.4"
       ],
       "name": "Гепатобластома",
       "synonyms": [],
@@ -2913,7 +2982,11 @@
     {
       "id": "starcheskaia_katarakta_profilaktika_ostrogo_bakterialnogo_posleoperatsionnogo_endoftalmita_obpe_pri_operatsii_po_udaleniiu_katarakty",
       "mkb10": [
-        "H25.0, H25.1, H25.2, H25.8, H25.9"
+        "H25.0",
+        "H25.1",
+        "H25.2",
+        "H25.8",
+        "H25.9"
       ],
       "name": "Катаракта старческая",
       "synonyms": [],
@@ -3338,7 +3411,13 @@
     {
       "id": "idiopaticheskii_skolioz",
       "mkb10": [
-        "M41, M41.0, M41.1, M41.2, M41.3, M41.8, M41.9"
+        "M41",
+        "M41.0",
+        "M41.1",
+        "M41.2",
+        "M41.3",
+        "M41.8",
+        "M41.9"
       ],
       "name": "Идиопатический сколиоз",
       "synonyms": [],
@@ -4196,7 +4275,23 @@
     {
       "id": "neiroblastoma_standartnaia_gruppa_riska",
       "mkb10": [
-        "C38.2, C47.0, C47.3, C47.4, C47.5, C47.6, C47.8, C47.9, C48.0, C74.1, C74.9, C76.0, C76.1, C76.2, C76.7, C76.8, D48.3"
+        "C38.2",
+        "C47.0",
+        "C47.3",
+        "C47.4",
+        "C47.5",
+        "C47.6",
+        "C47.8",
+        "C47.9",
+        "C48.0",
+        "C74.1",
+        "C74.9",
+        "C76.0",
+        "C76.1",
+        "C76.2",
+        "C76.7",
+        "C76.8",
+        "D48.3"
       ],
       "name": "Нейробластома",
       "synonyms": [],
@@ -4274,7 +4369,22 @@
     {
       "id": "febrilnaia_neitropeniia",
       "mkb10": [
-        "C38.1, C48.0, C49.0, C49.5, C49.9, C56, C62, C62.0, C62.1, C62.9, D15, D20, D21, D28, D29, D36"
+        "C38.1",
+        "C48.0",
+        "C49.0",
+        "C49.5",
+        "C49.9",
+        "C56",
+        "C62",
+        "C62.0",
+        "C62.1",
+        "C62.9",
+        "D15",
+        "D20",
+        "D21",
+        "D28",
+        "D29",
+        "D36"
       ],
       "name": "Экстракраниальные герминогенные опухоли",
       "synonyms": [],
@@ -4725,7 +4835,8 @@
     {
       "id": "anaerobnyi_balanopostit",
       "mkb10": [
-        "N48.1, N51.2"
+        "N48.1",
+        "N51.2"
       ],
       "name": "Баланопостит",
       "synonyms": [],
@@ -5195,7 +5306,17 @@
     {
       "id": "priobretennye_deformatsii_stopy_pap_infektsii_oblasti_khirurgicheskogo_vmeshatelstva_pri_ortopedicheskikh_operatsiiakh_na_stope",
       "mkb10": [
-        "M20.1, M20.2, M20.3, M20.4, M20.5, M20.6, M21.3, M21.4, M21.5, M21.6, M21.9"
+        "M20.1",
+        "M20.2",
+        "M20.3",
+        "M20.4",
+        "M20.5",
+        "M20.6",
+        "M21.3",
+        "M21.4",
+        "M21.5",
+        "M21.6",
+        "M21.9"
       ],
       "name": "Приобретенные деформации стопы",
       "synonyms": [],

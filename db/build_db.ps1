@@ -50,6 +50,13 @@ $gateResult = & $python $sourceGate --db $outFile --specs $sourceSpecs 2>&1
 if ($LASTEXITCODE -ne 0) { throw "Source gate failed: $gateResult" }
 Write-Host "Source gate: $gateResult"
 
+# 4b. Встроить связку с корпусом клинических рекомендаций (навигационный слой).
+#     Fail closed: если закоммиченный артефакт рассинхронизирован — сборка падает.
+$buildDb = Join-Path $root 'build_db.py'
+$xwalkResult = & $python $buildDb --attach-only --db $outFile 2>&1
+if ($LASTEXITCODE -ne 0) { throw "Crosswalk attach failed: $xwalkResult" }
+Write-Host "Crosswalk: $xwalkResult"
+
 # 5. Валидация
 $null = Get-Content -LiteralPath $outFile -Raw -Encoding UTF8 | ConvertFrom-Json
 

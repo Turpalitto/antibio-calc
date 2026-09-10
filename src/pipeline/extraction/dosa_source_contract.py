@@ -17,17 +17,23 @@ import re
 from pathlib import Path
 from typing import Any, Sequence
 
+from src.pipeline.extraction.icd10 import normalize_mkb
+
 MATCH_BY_CR_ID = "EXACT_CR_ID"
 MATCH_BY_MKB = "MKB_OVERLAP"
 MATCH_BY_NAME = "NAME_KEYWORD"
 NO_MATCH = "NO_MATCH"
 
-
-def normalize_mkb(value: Any) -> list[str]:
-    if value is None:
-        return []
-    codes = value if isinstance(value, list) else [value]
-    return [str(c).strip().upper() for c in codes if c is not None and str(c).strip()]
+__all__ = [
+    "MATCH_BY_CR_ID",
+    "MATCH_BY_MKB",
+    "MATCH_BY_NAME",
+    "NO_MATCH",
+    "build_dosa_index",
+    "build_source_contract",
+    "match_disease_to_dosa",
+    "normalize_mkb",
+]
 
 
 def _tokenize(text: str) -> list[str]:

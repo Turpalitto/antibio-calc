@@ -99,3 +99,7 @@ weights/
 # PERSONAL_PHYSICIAN mode: local identity, token hash, attestations, bundles,
 # and minimized request audit. These artifacts never enter source control.
 /.local/personal_physician/
+
+# Derived calculator diagnostics — regenerate with:
+#   python db/source_gate_report.py --json generated/source_gate_report.json
+/generated/source_gate_report.json

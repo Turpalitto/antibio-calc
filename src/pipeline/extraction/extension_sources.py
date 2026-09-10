@@ -20,6 +20,9 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from src.pipeline.extraction.icd10 import mkb_prefix as _mkb_prefix
+from src.pipeline.extraction.icd10 import normalize_mkb as _normalize_mkb
+
 # Regimen-type ratio classes (derived from regimen_type, never keywords).
 CLASS_THERAPEUTIC = "therapeutic"
 CLASS_MIXED = "mixed"
@@ -52,15 +55,13 @@ def classify_by_regimen_ratio(guideline: dict[str, Any]) -> str:
 
 
 def normalize_mkb(value: Any) -> list[str]:
-    if value is None:
-        return []
-    codes = value if isinstance(value, list) else [value]
-    return [str(c).strip().upper() for c in codes if c is not None and str(c).strip()]
+    """Delegated to ``extraction.icd10`` (splits comma-joined code lists)."""
+    return _normalize_mkb(value)
 
 
 def mkb_prefix(code: str) -> str:
     """Return the 3-char MKB block prefix (e.g. 'A01', 'A69', 'C70')."""
-    return str(code).replace(".", "").strip().upper()[:3]
+    return _mkb_prefix(code)
 
 
 def build_disease_mkb_index(diseases: list[dict[str, Any]]) -> dict[str, str]:
