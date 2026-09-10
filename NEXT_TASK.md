@@ -1,3 +1,32 @@
+## 2026-09-11: Возрастная безопасность закрыта — что дальше
+
+- **Готово:** `getActiveRegimen()` больше не подставляет дозу чужой возрастной группы;
+  UI объясняет отсутствие расчёта. Валидатор очищен от 360 устаревших предупреждений
+  и получил две новые проверки. Тесты: **2232 passed**.
+- **Открыто, данные КР (не код):** 59 пар «препарат × возраст» без схемы дозирования —
+  список печатает `node db/validate_db.js` (строки «no regimen for age_group»). Крупнейшие:
+  `anthrax` (cefixime/ciprofloxacin/clindamycin только на взрослых), `typhoid_fever`,
+  `shigellosis`, `postop_prophylaxis`, `animal_bite`, `lyme_disease`, `diphtheria`,
+  `salmonellosis`, `endocarditis_prophylaxis`, `asplenia_prophylaxis`,
+  `pneumococcal_meningitis`, `meningococcal_disease`. Сейчас калькулятор честно
+  отказывается считать; чтобы считать — нужны схемы из КР.
+- **Открыто, данные КР:** 60 режимов с `age_group` вне возрастного диапазона сценария
+  (13 нозологий) — мёртвые данные: калькулятор их отфильтровывает. Либо сценарий
+  должен стать `all`, либо режим belongs в другой сценарий.
+- **Открыто, требует врача:** 82 блочные связи в очереди
+  `clinical_engine/resources/calculator_crosswalk_review_queue.json`. Первая пятёрка
+  (`HIGH`): `postop_prophylaxis` → КР 1702 через код внешних причин `Y83`;
+  `pid`, `cdi`, `intraabdominal_infection`, `sbp` → детские КР при `age_groups: ["adult"]`.
+- **Открыто, качество данных:** 12 неразбираемых длительностей (4 уникальные строки:
+  `10!`, `хроническая`, `по ситуации`, `за 30-60 минут до процедуры`); 47 пустых
+  `duration_days`; 29 записей без `route`.
+- **Открыто, требует решения владельца:** 95 КР корпуса без нозологии в калькуляторе
+  (`unlinked_guidelines`); 22 нозологии без связи с корпусом; 119/120 без расчёта
+  (`python db/source_gate_report.py`, owner-only P5.6/P6).
+- **Открыто, отдельная миграция:** `guideline_id` означает рубрикатор в
+  `regimen_candidate_specs` и внутренний id в `diagnosis_index`.
+- Пересборка: `python -m clinical_engine.crosswalk --write` → `python db/build_db.py` →
+  `python db/build_html.py` → `python -m clinical_engine.crosswalk.review_queue --write`.
 ## 2026-09-11: Очередь проверки блочных связей готова — что дальше
 
 - **Готово:** `clinical_engine/crosswalk/review_queue.py` ранжирует все 82 связи

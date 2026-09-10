@@ -177,7 +177,7 @@ pytest -q                                            # 2226 passed, 32 skipped, 
 python -m clinical_engine.crosswalk                  # in_sync
 python db/build_db.py                                # 120 recs, 98 со связями
 python db/build_html.py                              # antibiotic_calc.html
-node db/validate_db.js                               # 0 errors, 505 warnings
+node db/validate_db.js                               # 0 errors, 263 warnings
 python db/source_gate_report.py                      # почему закрыт расчёт
 python -m clinical_engine.crosswalk.review_queue     # очередь врачебной проверки
 ```
@@ -193,6 +193,7 @@ python -m clinical_engine.crosswalk.review_queue     # очередь враче
 | `src/tests/test_calculator_db_quality.py` (34) | МКБ-10, дубли, дозы, маршруты, навигационный статус |
 | `src/tests/test_regimen_semantics.py` (57) | Разбор длительности, сборка метки, идемпотентность |
 | `src/tests/test_calculator_duration_display.py` (5) | Shipped-JS отображения курса под Node на реальной БД |
+| `src/tests/test_calculator_age_group_safety.py` (6) | Shipped-JS подбора режима: доза чужой возрастной группы недостижима |
 | `src/tests/test_build_db.py` (10) | Встраивание связей, отказ на устаревшем артефакте |
 | `src/tests/test_source_gate_report.py` (8) | Worklist блокировок + fail-closed инварианты |
 

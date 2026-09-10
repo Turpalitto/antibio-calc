@@ -151,6 +151,24 @@ const seenDiseaseIds = new Set();
           errors.push(`${dWhere}: no regimens`);
         }
 
+        // The calculator filters regimens by the active age, and a scenario with
+        // age_group "all" is reachable at every age. A drug that is offered in
+        // such a scenario but has no regimen for one of those ages renders as
+        // "no dose available" — a data gap the owner must close, not something
+        // the UI should paper over with another age group's dose.
+        const reachableAges = sc.age_group === 'all' ? AGE_GROUPS.filter(a => a !== 'all') : [sc.age_group];
+        reachableAges.forEach(age => {
+          if (!age) return;
+          const eligible = (drug.regimens || []).filter(
+            reg => reg.age_group === age || reg.age_group === 'all'
+          );
+          if ((drug.regimens || []).length > 0 && eligible.length === 0) {
+            const msg = `${dWhere}: no regimen for age_group "${age}" reachable in this scenario`;
+            if (rec.calculation_blocked === true) warnings.push(`${msg} — disease is calculation_blocked`);
+            else errors.push(msg);
+          }
+        });
+
         const labelSeen = new Map();
         (drug.regimens || []).forEach((reg, regi) => {
           counts.regimens++;
@@ -170,11 +188,19 @@ const seenDiseaseIds = new Set();
             else errors.push(msg);
           }
 
-          if (reg.duration_days == null) warnings.push(`${rWhere}: missing duration_days`);
-          else if (typeof reg.duration_days === 'string') {
-            const value = reg.duration_days.trim();
-            if (!NUMERIC.test(value) && !NUMERIC_RANGE.test(value)) {
-              warnings.push(`${rWhere}: duration_days "${value.slice(0, 48)}" is free text, not a day range`);
+          // An empty string is a missing duration, not "free text" — it used to
+          // fall through the null check and drown the real free-text signal.
+          const rawDuration = typeof reg.duration_days === 'string' ? reg.duration_days.trim() : reg.duration_days;
+          if (rawDuration == null || rawDuration === '') {
+            warnings.push(`${rWhere}: missing duration_days`);
+          } else if (typeof reg.duration_days === 'string') {
+            // "Free text" only matters when db/regimen_semantics.py could not
+            // classify it either. A string like «7-10 дней» is free text by
+            // shape yet fully machine-readable, so warning on it is noise.
+            const kind = (reg.duration_parsed || {}).kind;
+            if (!NUMERIC.test(rawDuration) && !NUMERIC_RANGE.test(rawDuration)
+                && (kind == null || kind === 'NOT_FIXED')) {
+              warnings.push(`${rWhere}: duration_days "${rawDuration.slice(0, 48)}" is unclassifiable free text`);
             }
           } else if (typeof reg.duration_days !== 'number') {
             errors.push(`${rWhere}: duration_days must be a number or a numeric range string`);

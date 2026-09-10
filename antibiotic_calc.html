@@ -276,6 +276,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--slate-50);color
         </button>
       </div>
 
+      <!-- Показывается вместо дозы, когда у препарата нет режима для выбранного
+           возраста. Молчаливый расчёт по чужой возрастной группе недопустим. -->
+      <div id="res-no-regimen" class="hidden rounded-[32px] p-6 md:p-8 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-300 dark:border-amber-700">
+        <p class="text-amber-900 dark:text-amber-200 text-[10px] font-black uppercase tracking-widest mb-2">
+          <i class="fas fa-exclamation-triangle mr-1"></i>Расчёт невозможен
+        </p>
+        <p id="no-regimen-text" class="text-sm md:text-base font-bold text-amber-900 dark:text-amber-100 leading-snug"></p>
+        <p class="mt-3 text-[11px] text-amber-800 dark:text-amber-300 font-semibold">
+          В КР для этой нозологии нет схемы дозирования на выбранную возрастную группу.
+          Доза по другой возрастной группе намеренно не подставляется.
+        </p>
+      </div>
+
       <div id="res-po" class="hidden res-box rounded-[32px] p-6 md:p-8 text-white relative overflow-hidden">
         <p class="text-blue-100 text-[10px] font-black uppercase tracking-widest mb-2">Разовая доза (per os)</p>
         <div class="flex items-baseline gap-2 mb-5 flex-wrap">
@@ -1271,9 +1284,11 @@ function renderRegimens(preferredRegimenIdx){
 function getActiveRegimen(){
   if(!activeDrug) return null;
   const regimens = (activeDrug.regimens || []).filter(r=>r.age_group === activeAge || r.age_group === 'all');
-  if(regimens.length === 0){
-    return (activeDrug.regimens || [])[0];
-  }
+  // Раньше здесь был откат на regimens[0], то есть при отсутствии режима для
+  // выбранного возраста молча возвращался режим ДРУГОЙ возрастной группы —
+  // взрослому доставалась детская доза и наоборот. Лучше отсутствие расчёта,
+  // чем правдоподобное неверное число.
+  if(regimens.length === 0) return null;
   return regimens[activeRegimenIdx] || regimens[0];
 }
 function computeDose(reg, w, unit){
@@ -1322,7 +1337,21 @@ function calculate(){
   if(!mainRef) return;
   const form = mainRef.forms[activeFormIdx];
   const reg = getActiveRegimen();
-  if(!reg) return;
+  if(!reg){
+    // Режимов для выбранного возраста нет: показываем причину и убираем
+    // результаты, чтобы на экране не осталось чужой дозы.
+    $('res-po').classList.add('hidden');
+    $('res-inj').classList.add('hidden');
+    $('dilution-block').classList.add('hidden');
+    $('combo-block').classList.add('hidden');
+    $('res-no-regimen').classList.remove('hidden');
+    const present = Array.from(new Set((activeDrug.regimens||[]).map(r=>r.age_group))).join(', ') || '—';
+    $('no-regimen-text').textContent =
+      'Для препарата '+(mainRef.inn||refs[0])+' нет схемы дозирования на возрастную группу «'
+      +activeAge+'». В КР указаны только: '+present+'.';
+    return;
+  }
+  $('res-no-regimen').classList.add('hidden');
   const unit = doseUnitOf(mainRef);
   const {singleMg, dailyMg, capped, needWeight, inconsistent} = computeDose(reg, w, unit);
   updateWeightWarn(needWeight);
@@ -1699,6 +1728,7 @@ function fillPrescriptionForm(){
   if(!activeDrug || !activeDisease) return;
   const w = parseFloat($('weight').value);
   const reg = getActiveRegimen();
+  if(!reg){ toast('Нет схемы дозирования на выбранную возрастную группу'); return; }
   const {singleMg, dailyMg} = computeDose(reg, w);
   const refs = getDrugRefs(activeDrug);
   const mainRef = DB.drugs_reference[refs[0]];
@@ -1797,6 +1827,7 @@ function copyPrescription(){
   }
   const w = parseFloat($('weight').value);
   const reg = getActiveRegimen();
+  if(!reg){ toast('Нет схемы дозирования на выбранную возрастную группу'); return; }
   const {singleMg, dailyMg} = computeDose(reg, w);
   const ref = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
   const form = ref.forms[activeFormIdx];
@@ -1825,6 +1856,7 @@ function saveToHistory(){
   if(!activeDrug || !activeDisease){ toast('Нет активного расчёта'); return; }
   const w = parseFloat($('weight').value);
   const reg = getActiveRegimen();
+  if(!reg){ toast('Нет схемы дозирования на выбранную возрастную группу'); return; }
   const {singleMg, dailyMg} = computeDose(reg, w);
   const ref = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
   const entry = {

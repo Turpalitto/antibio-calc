@@ -111,7 +111,10 @@ C:\ANTIBIO/
 - **Семантика режимов:** `duration_parsed` на 638/638, `regimen_label` на 611/638 (`db/regimen_semantics.py`)
 - **Очередь врачебной проверки:** 82 блочные связи ранжированы по структурному риску
   (`clinical_engine/crosswalk/review_queue.py` → `calculator_crosswalk_review_queue.json`)
-- **Тесты:** `pytest -q` → 2226 passed, 32 skipped, 1 xfailed
+- **Возрастная безопасность:** доза чужой возрастной группы недостижима — вместо расчёта
+  калькулятор объясняет, что схемы на этот возраст в КР нет
+- **Валидация БД:** `node db/validate_db.js` → 0 errors / 263 warnings
+- **Тесты:** `pytest -q` → 2232 passed, 32 skipped, 1 xfailed
 - **Фаза:** Medical Data Quality Improvement
 
 ## Источник данных
