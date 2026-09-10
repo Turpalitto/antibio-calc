@@ -1,3 +1,22 @@
+## 2026-09-11: Семантика режимов выводится на сборке (`duration_parsed` / `regimen_label`)
+
+- **Новое:** `db/regimen_semantics.py` — build-time вывод семантики курса. `duration_parsed` проставлен
+  на все **638** режимов, `regimen_label` — на **611** (было 153). Прогон: `python db/build_db.py`
+  (отключается флагом `--skip-semantics`).
+- **Классы длительности (13):** `RANGE 232, FIXED 150, SINGLE_DOSE 76, AT_MOST 61, MISSING 47,
+  INFUSION_CONSTRAINT 29, CONDITION_DEPENDENT 12, NOT_FIXED 12, NOT_STATED 9, LIFELONG 6,
+  INTERMITTENT 2, AT_LEAST 1, DOSE_COUNT 1`. Скорость введения и число приёмов больше не путаются
+  с длительностью курса.
+- **Сборка:** `db/antibio_db.json` SHA-256 `a8600ad540081ec2…` (детерминировано, два прогона подряд);
+  `antibiotic_calc.html` = 655 020 байт. 120 recs / 10 cats / 48 drugs / 98 с `guideline_links` — без изменений.
+- **Валидация БД:** `node db/validate_db.js` → EXIT=0, **0 errors / 505 warnings**
+  (360 free-text длительностей, 60 age_group вне сценария, 29 без route, 27 без `regimen_label`
+  под блокировкой, 27 без дозы под блокировкой, 2 × route `topical`). Дублей `regimen_label` — 0.
+- **Тесты:** `pytest -q` → **2188 passed, 32 skipped, 1 xfailed**. Окружение: Python 3.11.2 + pytest 9.1.1,
+  Node v22.22.3.
+- **Открыто:** 27 режимов без дозы и без метки (все в заблокированных нозологиях); 4 уникальные
+  неразбираемые строки длительности; 22 нозологии без связи с корпусом; 82 связи `ICD10_BLOCK`
+  ждут врачебной проверки.
 ## 2026-09-10: Калькулятор связан с корпусом КР (навигационный слой)
 
 - **Кроссволк:** `clinical_engine/resources/calculator_crosswalk.json` — 263 связи, 98/120 нозологий,

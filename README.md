@@ -108,7 +108,8 @@ C:\ANTIBIO/
 - **Medical Normalizer:** COMPLETE (726/726 tests, 99.9% coverage)
 - **Калькулятор:** 120 нозологий / 48 препаратов; расчёт открыт для 1 (fail-closed source gate)
 - **Связка КР ⇄ калькулятор:** 263 связи, 98/120 нозологий (`NAVIGATION_ONLY`)
-- **Тесты:** `pytest -q` → 2126 passed, 32 skipped, 1 xfailed
+- **Семантика режимов:** `duration_parsed` на 638/638, `regimen_label` на 611/638 (`db/regimen_semantics.py`)
+- **Тесты:** `pytest -q` → 2188 passed, 32 skipped, 1 xfailed
 - **Фаза:** Medical Data Quality Improvement
 
 ## Источник данных

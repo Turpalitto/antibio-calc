@@ -29,6 +29,13 @@ const AGE_GROUPS = ['neonate', 'child', 'adult', 'all'];
 const LINK_METHODS = ['ICD10_EXACT', 'ICD10_BLOCK', 'TITLE_EXACT'];
 const NUMERIC_RANGE = /^\d+(\.\d+)?\s*-\s*\d+(\.\d+)?$/;
 const NUMERIC = /^\d+(\.\d+)?$/;
+// Mirrors db/regimen_semantics.py — a duration the builder cannot classify must
+// be visible, not silently rendered as a number of days.
+const DURATION_KINDS = [
+  'FIXED', 'RANGE', 'SINGLE_DOSE', 'AT_LEAST', 'AT_MOST', 'DOSE_COUNT',
+  'INTERMITTENT', 'INFUSION_CONSTRAINT', 'CONDITION_DEPENDENT', 'LIFELONG',
+  'NOT_FIXED', 'NOT_STATED', 'MISSING',
+];
 
 function refOf(drug) {
   return drug.drug_ref || (drug.combo_ref || []).join('+') || '<no ref>';
@@ -144,6 +151,7 @@ const seenDiseaseIds = new Set();
           errors.push(`${dWhere}: no regimens`);
         }
 
+        const labelSeen = new Map();
         (drug.regimens || []).forEach((reg, regi) => {
           counts.regimens++;
           const rWhere = `${dWhere} > regimen[${regi}]`;
@@ -172,6 +180,27 @@ const seenDiseaseIds = new Set();
             errors.push(`${rWhere}: duration_days must be a number or a numeric range string`);
           }
 
+          // duration_parsed is derived at build time by db/regimen_semantics.py
+          // and is what lets the UI tell a course length from an infusion rate.
+          if (reg.duration_parsed == null) {
+            warnings.push(`${rWhere}: no duration_parsed (run db/build_db.py without --skip-semantics)`);
+          } else if (!DURATION_KINDS.includes(reg.duration_parsed.kind)) {
+            errors.push(`${rWhere}: duration_parsed.kind "${reg.duration_parsed.kind}" is not a known duration kind`);
+          }
+
+          // regimen_label is the human-facing key of calculator_binding
+          // (resolve_binding selects a regimen by it), so a missing label means
+          // the regimen cannot be pinned, and a duplicate one means the pin is
+          // ambiguous. Both are hard errors on an open disease.
+          const label = reg.regimen_label;
+          if (typeof label === 'string' && label.trim()) {
+            labelSeen.set(label, (labelSeen.get(label) || 0) + 1);
+          } else {
+            const msg = `${rWhere}: no regimen_label (calculator_binding cannot pin this regimen)`;
+            if (rec.calculation_blocked === true) warnings.push(`${msg} — disease is calculation_blocked`);
+            else errors.push(msg);
+          }
+
           if (reg.age_group && !AGE_GROUPS.includes(reg.age_group)) {
             errors.push(`${rWhere}: unknown age_group "${reg.age_group}"`);
           } else if (reg.age_group && sc.age_group && reg.age_group !== 'all' && sc.age_group !== 'all'
@@ -192,6 +221,14 @@ const seenDiseaseIds = new Set();
                 && Math.abs(computed - reg.dose_mg_day_fixed) > 0.05 * reg.dose_mg_day_fixed + 1) {
               warnings.push(`${rWhere}: single×freq = ${computed} mg/day disagrees with dose_mg_day_fixed ${reg.dose_mg_day_fixed}`);
             }
+          }
+        });
+
+        // resolve_binding() selects a regimen by regimen_label, so within one
+        // drug entry the label must be unique — otherwise the pin is ambiguous.
+        labelSeen.forEach((count, label) => {
+          if (count > 1) {
+            errors.push(`${dWhere}: regimen_label "${label}" repeats ${count}× — calculator_binding cannot disambiguate`);
           }
         });
       });

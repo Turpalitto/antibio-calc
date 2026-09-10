@@ -1,3 +1,30 @@
+## 2026-09-11: Семантика режимов готова — что дальше
+
+- **Готово:** `db/regimen_semantics.py` выводит `duration_parsed` (638/638) и `regimen_label` (611/638);
+  исправлены три бага отображения курса в HTML-калькуляторе; `db/validate_db.js` теперь проверяет
+  `duration_parsed.kind`, наличие и уникальность `regimen_label`. Тесты: **2188 passed**.
+- **Закрыт пункт прошлого списка:** «485 режимов без `regimen_label`» → осталось **27**, и это режимы
+  без дозы вообще (все в заблокированных нозологиях). Метка там не появляется намеренно: дозу
+  выдумывать нельзя.
+- **Открыто, качество данных:** 4 уникальные неразбираемые строки длительности — `10!` (артефакт
+  извлечения, 6 режимов в `pharyngitis_adult`/`pharyngitis_child`), `хроническая` (3 в
+  `asplenia_prophylaxis`), `по ситуации` (1 в `uti_prophylaxis`), `за 30-60 минут до процедуры`.
+  Правится только по первоисточнику КР, не парсером.
+- **Открыто, требует новых извлечений:** 22 нозологии без совпадения по МКБ-10 в корпусе —
+  `prostatitis` (N41), `scarlet_fever` (A38), `nec` (P77), `omphalitis` (P38), `animal_bite` (L02),
+  `skin_abscess`, `impetigo` (L01), `sepsis_adult` (A40/A41), `necrotizing_fasciitis` (M72.6),
+  `septic_arthritis` (M00), `listeriosis` (A32), `pneumococcal_meningitis`, `bacterial_meningitis_empiric`,
+  `aspiration_pneumonia` (J69.0), `asplenia_prophylaxis`. Список полностью: `unmatched_diseases` в артефакте.
+- **Открыто, врачебная проверка:** 82 связи `ICD10_BLOCK` (`MEDIUM`) и 0 `TITLE_EXACT`. Пример
+  сомнительной: `pid` ↔ «Туберкулез у взрослых» через блок `A18`.
+- **Открыто, заблокировано первоисточниками:** 119/120 нозологий без расчёта.
+  `python db/source_gate_report.py` → 109 × `SOURCE_SPEC`, 6 × `SPEC_PINNED`, 2 × `PDF_HASH`,
+  2 × `OWNER_REVIEW`. Агент это не разблокирует (P5.6/P6 owner-only).
+- **Открыто, отдельная миграция:** поле `guideline_id` означает рубрикатор в
+  `clinical_sources/regimen_candidate_specs/*.json` и внутренний id `metadata.sqlite` в
+  `diagnosis_index.json`. Переименование — по плану `KB_VERSIONING_MIGRATION_PLAN.md`.
+- Пересборка: `python -m clinical_engine.crosswalk --write` → `python db/build_db.py` →
+  `python db/build_html.py`. Тесты: `.venv/bin/python -m pytest -q`.
 ## 2026-09-10: Кроссволк «КР ⇄ калькулятор» готов — что дальше
 
 - **Готово:** `clinical_engine/crosswalk/` + артефакт + встраивание в сборку + панель в HTML +

@@ -46,6 +46,7 @@ from clinical_engine.crosswalk import (  # noqa: E402
     crosswalk_summary,
 )
 from clinical_engine.crosswalk.builder import DEFAULT_DIAGNOSIS_INDEX  # noqa: E402
+from db.regimen_semantics import annotate_regimens  # noqa: E402
 
 
 def _load_json(path: Path) -> Any:
@@ -110,6 +111,7 @@ def build_db(
     run_source_gate: bool = True,
     run_validate: bool = True,
     node_exe: str | None = None,
+    derive_semantics: bool = True,
     attach_crosswalk: bool = True,
     crosswalk_check_committed: bool = True,
     diagnosis_index_path: Path = DEFAULT_DIAGNOSIS_INDEX,
@@ -147,6 +149,13 @@ def build_db(
         _run_source_gate(output_path, specs_dir, python_exe)
         # re-read because the gate mutated the file in place
         db = _load_json(output_path)
+
+    if derive_semantics:
+        # Derived-only pass: fills regimen_label where absent and always attaches
+        # duration_parsed. Existing values are never overwritten.
+        annotate_regimens(db)
+        payload = json.dumps(db, ensure_ascii=False, separators=(",", ":"))
+        output_path.write_text(payload, encoding="utf-8")
 
     if attach_crosswalk:
         # The crosswalk reads the file on disk (post source-gate) so that the
@@ -208,6 +217,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--skip-source-gate", action="store_true")
     parser.add_argument("--skip-validate", action="store_true")
     parser.add_argument("--skip-crosswalk", action="store_true", help="do not embed КР corpus links (diagnostics only)")
+    parser.add_argument("--skip-semantics", action="store_true", help="do not derive regimen_label / duration_parsed")
     parser.add_argument(
         "--attach-only",
         action="store_true",
@@ -238,6 +248,7 @@ def main(argv: list[str] | None = None) -> int:
         run_source_gate=not args.skip_source_gate,
         run_validate=not args.skip_validate,
         attach_crosswalk=not args.skip_crosswalk,
+        derive_semantics=not args.skip_semantics,
         diagnosis_index_path=Path(args.diagnosis_index),
         crosswalk_path=Path(args.crosswalk),
     )

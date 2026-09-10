@@ -1354,6 +1354,54 @@ function calculate(){
   $('res-note').textContent = activeDrug.indication_note || (activeLine && activeLine.line_label) || '';
   renderDrugMeta(mainRef, reg);
 }
+// Длительность курса: исходный текст КР никогда не выбрасывается (INV-09), но
+// раньше к нему механически дописывалось «дней», из-за чего «однократно»
+// превращалось в «Курс: однократно дней», а parseInt('10-14') молча давал 10.
+// Теперь фраза строится по разобранному профилю duration_parsed, а неразобранный
+// текст печатается дословно.
+function formatDuration(reg){
+  if(!reg) return '—';
+  const parsed = reg.duration_parsed || null;
+  const raw = reg.duration_days;
+  const has = (v)=>typeof v === 'number' && isFinite(v);
+  if(parsed && parsed.kind === 'SINGLE_DOSE') return 'однократно';
+  if(parsed && parsed.kind === 'LIFELONG') return 'пожизненно';
+  if(parsed && parsed.unit === 'day'){
+    if(parsed.kind === 'FIXED' && has(parsed.value_min)) return parsed.value_min+' дней';
+    if(parsed.kind === 'RANGE' && has(parsed.value_min) && has(parsed.value_max)) return parsed.value_min+'–'+parsed.value_max+' дней';
+    if(parsed.kind === 'AT_LEAST' && has(parsed.value_min)) return 'не менее '+parsed.value_min+' дней';
+    if(parsed.kind === 'AT_MOST' && has(parsed.value_max)) return 'до '+parsed.value_max+' дней';
+  }
+  if(parsed && parsed.unit === 'hour' && parsed.kind === 'AT_MOST' && has(parsed.value_max)) return 'не более '+parsed.value_max+' ч';
+  if(parsed && parsed.unit === 'month' && has(parsed.value_min)){
+    return (parsed.kind === 'AT_LEAST' ? 'не менее ' : '')+parsed.value_min+' мес';
+  }
+  if(parsed && parsed.unit === 'week' && parsed.kind === 'FIXED' && has(parsed.value_min)) return parsed.value_min+' нед';
+  if(parsed && parsed.kind === 'DOSE_COUNT' && has(parsed.value_min)) return parsed.value_min+' приём(а)';
+  if(raw === null || raw === undefined || String(raw).trim() === '') return '—';
+  return String(raw);
+}
+// Количество дней курса — только когда оно действительно известно. Для диапазона
+// возвращает обе границы, чтобы рецептурный блок не печатал одно неверное число.
+function courseDayBounds(reg){
+  const parsed = reg && reg.duration_parsed;
+  if(!parsed || parsed.unit !== 'day') return null;
+  if(parsed.kind === 'FIXED' && typeof parsed.value_min === 'number') return [parsed.value_min, parsed.value_min];
+  if(parsed.kind === 'RANGE' && typeof parsed.value_min === 'number' && typeof parsed.value_max === 'number'){
+    return [parsed.value_min, parsed.value_max];
+  }
+  return null;
+}
+function renderCourseTotals(reg, freqPerDay, tabsPerDose, unitLabel){
+  const bounds = courseDayBounds(reg);
+  if(!bounds || !(freqPerDay > 0) || !(tabsPerDose > 0)) return '';
+  const perDose = Math.ceil(tabsPerDose);
+  const low = bounds[0] * freqPerDay * perDose;
+  const high = bounds[1] * freqPerDay * perDose;
+  const total = low === high ? String(low) : (low+'–'+high);
+  const span = bounds[0] === bounds[1] ? String(bounds[0]) : (bounds[0]+'–'+bounds[1]);
+  return '<div class="rx-dtd">(для курса '+span+' дн: '+total+' '+unitLabel+')</div>';
+}
 function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
   const unit = doseUnitOf(ref);
   const concMgPerMl = form.concentration_mg_per_ml || 0;
@@ -1582,7 +1630,7 @@ function renderComboComponents(refs, reg, w){
       doseTxt = 'Введите вес пациента — доза по '+unit+'/кг';
     } else {
       doseTxt = 'По <b>'+fmtDose(singleMg, unit)+'</b> '+compReg.freq_per_day+' р/д'
-        + (compReg.duration_days ? ' • '+compReg.duration_days+' дн' : '')
+        + (compReg.duration_days ? ' • '+formatDuration(compReg) : '')
         + ' <span class="opacity-70">(сут. '+fmtDose(dailyMg, unit)+')</span>';
     }
     const roleTxt = compReg.component_note ? '<div class="text-[11px] text-slate-500 dark:text-slate-500 mt-1">'+compReg.component_note+'</div>' : '';
@@ -1675,12 +1723,9 @@ function fillPrescriptionForm(){
 
   if(form.form_type === 'tablet' || form.form_type === 'capsule'){
     const tabsPerDose = singleMg / parseFloat(form.concentration);
-    const totalDoses = reg.freq_per_day * (parseInt(reg.duration_days) || 0);
     if(tabsPerDose > 0 && !isNaN(tabsPerDose)){
       drugsHtml += '<div class="rx-dtd">D.t.d. N '+Math.ceil(tabsPerDose)+' in '+latinForm+'</div>';
-    }
-    if(totalDoses > 0 && !isNaN(totalDoses)){
-      drugsHtml += '<div class="rx-dtd">(для курса: '+(totalDoses * Math.ceil(tabsPerDose))+' '+latinForm+')</div>';
+      drugsHtml += renderCourseTotals(reg, reg.freq_per_day, tabsPerDose, latinForm);
     }
   }
 
@@ -1714,7 +1759,7 @@ function fillPrescriptionForm(){
   signaEl.textContent = signa;
 
   // Course
-  $('rx-course').textContent = 'Курс: '+(reg.duration_days || '—')+' дней'+(reg.duration_note?'. '+reg.duration_note:'');
+  $('rx-course').textContent = 'Курс: '+formatDuration(reg)+(reg.duration_note?'. '+reg.duration_note:'');
 
   // Injection preparation
   const injEl = $('rx-injection-details');
