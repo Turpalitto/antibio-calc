@@ -251,3 +251,88 @@ def test_template_explains_the_absence_of_a_numeric_dose() -> None:
     assert "noDose" in source
     assert "не указана числовая доза" in source
     assert "function showNoCalculation(" in source
+
+
+# ── прочность таблетки: один делитель на все пути вывода ──────────────────────
+
+_TABLET_SWEEP = """(() => {
+  let diverged = [];
+  let checked = 0;
+  for (const [key, ref] of Object.entries(DB.drugs_reference)) {
+    if (key === '_note' || !ref || typeof ref !== 'object') continue;
+    for (const f of (ref.forms || [])) {
+      if (!['tablet', 'capsule'].includes(f.form_type)) continue;
+      checked++;
+      const viaHelper = tabletStrengthMg(f);
+      const viaPrint = parseFloat(f.concentration);
+      if (viaHelper !== viaPrint) {
+        diverged.push(key + ' "' + f.concentration + '": helper=' + viaHelper + ' print=' + viaPrint);
+      }
+    }
+  }
+  const amox = DB.drugs_reference.amoxiclav.forms.find(f => f.concentration === '875+125 мг');
+  const cotrim = DB.drugs_reference.cotrimoxazole.forms.find(f => f.concentration === '400+80 мг');
+  return {
+    diverged: diverged,
+    checked: checked,
+    amoxiclavStrength: tabletStrengthMg(amox),
+    amoxiclavFormatted: formatTablets(875, amox),
+    cotrimStrength: tabletStrengthMg(cotrim),
+  };
+})()"""
+
+_NON_TABLET_PROBE = """(() => {
+  const ref = DB.drugs_reference.benzylpenicillin_na;
+  const inj = (ref.forms || []).find(f => f.form_type === 'powder_for_injection');
+  return {
+    strength: tabletStrengthMg(inj),
+    formatted: formatTablets(1000000, inj),
+    nullStrength: tabletStrengthMg(null),
+    nullFormatted: formatTablets(500, null),
+  };
+})()"""
+
+_TABLET_HELPERS = ("tabletStrengthMg", "formatTablets")
+
+
+def test_composite_tablet_strength_uses_the_first_component() -> None:
+    """«875+125 мг» → 875, а не 125: делим на основной компонент.
+
+    Раньше ``formatTablets`` брал ПОСЛЕДНЕЕ число перед «мг» регуляркой
+    ``/(\\d+)\\s*мг/`` — для «875+125 мг» это 125 (клавуланат), и на дозу 875 мг
+    печаталось «7 таб 125 мг», тогда как печатная форма на том же экране считала
+    одну таблетку. Семикратная передозировка в подсказке.
+    """
+    probe = _run(_TABLET_SWEEP, helpers=_TABLET_HELPERS)
+
+    assert probe["checked"] >= 50, probe
+    assert probe["diverged"] == [], probe
+    assert probe["amoxiclavStrength"] == 875, probe
+    assert probe["cotrimStrength"] == 400, probe
+    # Было «(7 таб 125 мг)».
+    assert probe["amoxiclavFormatted"] == "(1 таб 875 мг)", probe
+
+
+def test_non_tablet_forms_are_never_counted_as_tablets() -> None:
+    """Инъекционный флакон и отсутствующая форма не должны давать таблеток."""
+    probe = _run(_NON_TABLET_PROBE, helpers=_TABLET_HELPERS)
+
+    assert probe["strength"] is None, probe
+    assert probe["formatted"] == "", probe
+    assert probe["nullStrength"] is None, probe
+    assert probe["nullFormatted"] == "", probe
+
+
+def test_printed_prescription_uses_the_shared_strength_helper() -> None:
+    """Оба места печати таблеток обязаны идти через tabletStrengthMg.
+
+    Расхождение между точками вывода — тот же источник ошибок, что расхождение
+    между ветками ``computeDose``. Единственное допустимое вхождение
+    ``parseFloat(form.concentration)`` — внутри самого хелпера.
+    """
+    template = TEMPLATE.read_text(encoding="utf-8")
+    offenders = [line.strip() for line in template.splitlines() if "parseFloat(form.concentration)" in line]
+
+    assert len(offenders) == 1, offenders
+    assert offenders[0] == "const strength = parseFloat(form.concentration);"
+    assert "tabletStrengthMg(form)" in template

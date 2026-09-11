@@ -1493,12 +1493,19 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
     warnEl.classList.remove('hidden');
   } else warnEl.classList.add('hidden');
 }
+// Единственный источник «прочности таблетки». Для композитной формы «875+125 мг»
+// parseFloat останавливается на «+» и даёт 875 — основной компонент; регулярка
+// /(\d+)\s*мг/ вместо этого взяла бы последнее число перед «мг» (125, клавуланат)
+// и напечатала бы «7 таб 125 мг» на дозу 875 мг, тогда как печатная форма на том
+// же экране считала 1 таблетку. Оба пути обязаны делить на одно и то же.
+function tabletStrengthMg(form){
+  if(!form || !['tablet','capsule'].includes(form.form_type)) return null;
+  const strength = parseFloat(form.concentration);
+  return (isFinite(strength) && strength > 0) ? strength : null;
+}
 function formatTablets(mg, form){
-  if(!['tablet','capsule'].includes(form.form_type)) return '';
-  const m = form.concentration.match(/(\d+)\s*мг/);
-  if(!m) return '';
-  const strength = parseInt(m[1]);
-  if(strength <= 0) return '';
+  const strength = tabletStrengthMg(form);
+  if(!strength) return '';
   const tabs = mg / strength;
   if(tabs === Math.round(tabs)) return '('+tabs+' таб '+strength+' мг)';
   const half = Math.round(tabs*2)/2;
@@ -1769,7 +1776,8 @@ function fillPrescriptionForm(){
   let drugsHtml = '<div class="rx-drug-name">'+latinName+' '+form.concentration+'</div>';
 
   if(form.form_type === 'tablet' || form.form_type === 'capsule'){
-    const tabsPerDose = singleMg / parseFloat(form.concentration);
+    const strength = tabletStrengthMg(form);
+    const tabsPerDose = strength ? singleMg / strength : NaN;
     if(tabsPerDose > 0 && !isNaN(tabsPerDose)){
       drugsHtml += '<div class="rx-dtd">D.t.d. N '+Math.ceil(tabsPerDose)+' in '+latinForm+'</div>';
       drugsHtml += renderCourseTotals(reg, reg.freq_per_day, tabsPerDose, latinForm);
@@ -1793,8 +1801,11 @@ function fillPrescriptionForm(){
   const signaEl = $('rx-signa-text');
   let signa = '';
   if(form.form_type === 'tablet' || form.form_type === 'capsule'){
-    const tabsPerDose = singleMg / parseFloat(form.concentration);
-    signa = 'По '+tabsPerDose.toFixed(1).replace(/\.0$/,'')+' '+latinForm+' '+reg.freq_per_day+' раза в день, '+routeRu;
+    const strength = tabletStrengthMg(form);
+    const tabsPerDose = strength ? singleMg / strength : NaN;
+    signa = (strength && tabsPerDose > 0)
+      ? 'По '+tabsPerDose.toFixed(1).replace(/\.0$/,'')+' '+latinForm+' '+reg.freq_per_day+' раза в день, '+routeRu
+      : '';
   } else if(form.concentration_mg_per_ml){
     const ml = singleMg / form.concentration_mg_per_ml;
     signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+reg.freq_per_day+' раза в день';
