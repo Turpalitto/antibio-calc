@@ -28,6 +28,7 @@ import argparse
 import json
 import re
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -287,24 +288,32 @@ def parse_duration(raw: Any) -> dict[str, Any]:
     return _result(NOT_FIXED, basis=text)
 
 
-def build_label(regimen: dict[str, Any], parsed: dict[str, Any]) -> str | None:
+def build_label(
+    regimen: dict[str, Any], parsed: dict[str, Any], dose_unit: str | None = None
+) -> str | None:
     """Compose a regimen label from dose + frequency + duration.
 
     Dose precedence mirrors ``computeDose()`` in the calculator: the single dose
     is the source of truth (КР text usually states a per-administration dose),
     then mg/kg/day, then a fixed daily total.
+
+    ``dose_unit`` comes from ``drugs_reference[drug_ref].dose_unit``. The DB
+    field names all say ``_mg``, but for benzylpenicillin they carry **единицы
+    действия**, so hardcoding «мг» produced labels like
+    «4000000 мг 6 р/д» — four kilograms of penicillin.
     """
     single = regimen.get("single_dose_mg")
     per_kg = regimen.get("dose_mg_kg_day")
     fixed = regimen.get("dose_mg_day_fixed")
     freq = regimen.get("freq_per_day")
+    unit = str(dose_unit or "мг")
 
     if isinstance(single, (int, float)):
-        dose_part = f"{_fmt(float(single))} мг"
+        dose_part = f"{_fmt(float(single))} {unit}"
     elif isinstance(per_kg, (int, float)):
-        dose_part = f"{_fmt(float(per_kg))} мг/кг/сут"
+        dose_part = f"{_fmt(float(per_kg))} {unit}/кг/сут"
     elif isinstance(fixed, (int, float)):
-        dose_part = f"{_fmt(float(fixed))} мг/сут"
+        dose_part = f"{_fmt(float(fixed))} {unit}/сут"
     else:
         return None
 
@@ -336,6 +345,17 @@ def annotate_regimens(db: dict[str, Any]) -> dict[str, int]:
     """
     stats = {"regimens": 0, "labels_added": 0, "labels_existing": 0, "durations_parsed": 0, "collisions_renamed": 0}
     kind_counts: dict[str, int] = {}
+    drugs_reference = db.get("drugs_reference") or {}
+
+    def _dose_unit(drug: Mapping[str, Any]) -> str | None:
+        """Единица дозы из справочника. Поля режима называются ``_mg``, но для
+        бензилпенициллина хранят единицы действия — подпись обязана это учитывать."""
+        reference = drugs_reference.get(str(drug.get("drug_ref")))
+        if isinstance(reference, Mapping):
+            unit = reference.get("dose_unit")
+            if isinstance(unit, str) and unit.strip():
+                return unit.strip()
+        return None
 
     for disease in db.get("recommendations", []):
         for scenario in disease.get("scenarios") or []:
@@ -343,6 +363,7 @@ def annotate_regimens(db: dict[str, Any]) -> dict[str, int]:
                 for drug in line.get("drugs") or []:
                     used: set[str] = set()
                     pending: list[tuple[dict[str, Any], int]] = []
+                    dose_unit = _dose_unit(drug)
                     for index, regimen in enumerate(drug.get("regimens") or []):
                         stats["regimens"] += 1
                         parsed = parse_duration(regimen.get("duration_days"))
@@ -359,7 +380,7 @@ def annotate_regimens(db: dict[str, Any]) -> dict[str, int]:
 
                     for regimen, _index in pending:
                         parsed = regimen["duration_parsed"]
-                        label = build_label(regimen, parsed)
+                        label = build_label(regimen, parsed, dose_unit)
                         if label is None:
                             continue
                         if label in used:

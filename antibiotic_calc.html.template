@@ -1323,7 +1323,10 @@ function computeDose(reg, w, unit){
     if(singleMg > 0) singleMg = dailyMg / (reg.freq_per_day || 1);
   }
   if(singleMg === 0 && reg.freq_per_day) singleMg = dailyMg / reg.freq_per_day;
-  return {singleMg, dailyMg, capped, needWeight, inconsistent, unit: unit || 'мг'};
+  // Режим без единого дозового поля: раньше это молча превращалось в «0 мг»
+  // на экране. Ноль выглядит как доза, поэтому absence должен быть явным.
+  const noDose = perKg == null && fixed == null && single == null;
+  return {singleMg, dailyMg, capped, needWeight, inconsistent, noDose, unit: unit || 'мг'};
 }
 // Форматирование дозы с учётом единиц (мг или ЕД)
 function fmtDose(val, unit){
@@ -1332,6 +1335,14 @@ function fmtDose(val, unit){
 }
 function doseUnitOf(ref){
   return (ref && ref.dose_unit) ? ref.dose_unit : 'мг';
+}
+function showNoCalculation(message){
+  $('res-po').classList.add('hidden');
+  $('res-inj').classList.add('hidden');
+  $('dilution-block').classList.add('hidden');
+  $('combo-block').classList.add('hidden');
+  $('res-no-regimen').classList.remove('hidden');
+  $('no-regimen-text').textContent = message;
 }
 function calculate(){
   if(!activeDrug) return;
@@ -1344,20 +1355,22 @@ function calculate(){
   if(!reg){
     // Режимов для выбранного возраста нет: показываем причину и убираем
     // результаты, чтобы на экране не осталось чужой дозы.
-    $('res-po').classList.add('hidden');
-    $('res-inj').classList.add('hidden');
-    $('dilution-block').classList.add('hidden');
-    $('combo-block').classList.add('hidden');
-    $('res-no-regimen').classList.remove('hidden');
     const present = Array.from(new Set((activeDrug.regimens||[]).map(r=>r.age_group))).join(', ') || '—';
-    $('no-regimen-text').textContent =
+    showNoCalculation(
       'Для препарата '+(mainRef.inn||refs[0])+' нет схемы дозирования на возрастную группу «'
-      +activeAge+'». В КР указаны только: '+present+'.';
+      +activeAge+'». В КР указаны только: '+present+'.');
+    return;
+  }
+  const unit = doseUnitOf(mainRef);
+  const {singleMg, dailyMg, capped, needWeight, inconsistent, noDose} = computeDose(reg, w, unit);
+  if(noDose){
+    // Доза есть только в свободном тексте КР — число выводить нельзя.
+    showNoCalculation(
+      'Для препарата '+(mainRef.inn||refs[0])+' в КР не указана числовая доза — только текстовое описание. '
+      +'См. примечание к режиму.');
     return;
   }
   $('res-no-regimen').classList.add('hidden');
-  const unit = doseUnitOf(mainRef);
-  const {singleMg, dailyMg, capped, needWeight, inconsistent} = computeDose(reg, w, unit);
   updateWeightWarn(needWeight);
 
   $('combo-block').classList.add('hidden');
@@ -1786,7 +1799,7 @@ function fillPrescriptionForm(){
     const ml = singleMg / form.concentration_mg_per_ml;
     signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+reg.freq_per_day+' раза в день';
   } else {
-    signa = 'По '+Math.round(singleMg)+' мг '+routeRu+', '+reg.freq_per_day+' раза в день';
+    signa = 'По '+fmtDose(singleMg, doseUnitOf(mainRef))+' '+routeRu+', '+reg.freq_per_day+' раза в день';
   }
   if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_infusion') signa += ', капельно за 30 мин';
   if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_bolus') signa += ', медленно за 5 мин';
@@ -1847,10 +1860,10 @@ function copyPrescription(){
   txt += 'КР МЗ РФ #'+activeDisease.cr_id+', '+activeDisease.cr_year+'\n\n';
   txt += 'Препарат: '+ref.inn+'\n';
   txt += 'Форма: '+form.concentration+'\n';
-  txt += 'Разовая доза: '+Math.round(singleMg)+' мг\n';
-  txt += 'Суточная доза: '+Math.round(dailyMg)+' мг\n';
+  txt += 'Разовая доза: '+fmtDose(singleMg, doseUnitOf(ref))+'\n';
+  txt += 'Суточная доза: '+fmtDose(dailyMg, doseUnitOf(ref))+'\n';
   txt += 'Кратность: '+reg.freq_per_day+' р/д\n';
-  txt += 'Курс: '+(reg.duration_days||'—')+'\n';
+  txt += 'Курс: '+formatDuration(reg)+'\n';
   txt += 'Путь: '+routeKeyLabel(activeRouteKey || 'im')+'\n\n';
   if(activeDrug.indication_note) txt += 'Замечание: '+activeDrug.indication_note+'\n';
   txt += '\n⚠ ЧЕРНОВИК. Требует верификации по первоисточникам КР МЗ РФ.';
@@ -1870,6 +1883,7 @@ function saveToHistory(){
     drug: ref.inn,
     singleMg: Math.round(singleMg),
     dailyMg: Math.round(dailyMg),
+    unit: doseUnitOf(ref),
     freq: reg.freq_per_day,
     duration: reg.duration_days || '—',
     weight: w,
@@ -1893,7 +1907,10 @@ function loadHistory(){
     const div = document.createElement('div');
     div.className = 'premium-card p-3 text-xs cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-700';
     const dt = new Date(e.ts);
-    div.innerHTML = '<div class="flex justify-between"><span class="font-bold text-slate-700 dark:text-slate-200">'+e.drug+'</span><span class="text-slate-400">'+dt.toLocaleDateString('ru-RU')+' '+dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+'</span></div><div class="text-slate-500 dark:text-slate-400 mt-1">'+e.disease+'</div><div class="text-slate-600 dark:text-slate-300 mt-1 font-bold">'+e.singleMg+' мг × '+e.freq+' р/д, курс '+e.duration+(e.patient?' • '+e.patient:'')+'</div>';
+    // Записи, сохранённые до появления поля unit, показываем в мг — иначе
+    // история упала бы на undefined.
+    const eUnit = e.unit || 'мг';
+    div.innerHTML = '<div class="flex justify-between"><span class="font-bold text-slate-700 dark:text-slate-200">'+e.drug+'</span><span class="text-slate-400">'+dt.toLocaleDateString('ru-RU')+' '+dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+'</span></div><div class="text-slate-500 dark:text-slate-400 mt-1">'+e.disease+'</div><div class="text-slate-600 dark:text-slate-300 mt-1 font-bold">'+fmtDose(e.singleMg, eUnit)+' × '+e.freq+' р/д, курс '+e.duration+(e.patient?' • '+e.patient:'')+'</div>';
     list.appendChild(div);
   });
 }

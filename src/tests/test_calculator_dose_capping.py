@@ -153,7 +153,8 @@ def test_uncapped_regimens_are_untouched_by_the_fix() -> None:
     )
 
     assert verdict["perKg"] == {"singleMg": 300, "dailyMg": 900, "capped": False,
-                                "needWeight": False, "inconsistent": False, "unit": "мг"}
+                                "needWeight": False, "inconsistent": False, "noDose": False,
+                                "unit": "мг"}
     assert verdict["fixed"]["singleMg"] == 500 and verdict["fixed"]["dailyMg"] == 1500
     assert verdict["single"]["singleMg"] == 875 and verdict["single"]["dailyMg"] == 1750
     assert all(not v["capped"] for v in verdict.values())
