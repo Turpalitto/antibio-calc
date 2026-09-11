@@ -1,3 +1,27 @@
+## 2026-09-11: Инвариант единиц разведения закреплён — что дальше
+
+- **Готово:** раздел 4 в `db/validate_db.js` проверяет единицы разведения против
+  `dose_unit`; валидатор принимает путь аргументом. Тесты: **2259 passed**.
+  Аудит `dilution` дефекта не дал (0 расхождений на 81 опции) — закрепляли инвариант,
+  а не чинили баг.
+- **Осталось проверить тем же методом (исполнением shipped-JS на реальной БД):**
+  печатную форму (`fillPrescriptionForm`/`renderRx`) и историю — там та же архитектура
+  «считаем и печатаем», что и в четырёх уже найденных багах.
+- **Открыто, данные КР (не код):** 27 режимов без числовой дозы (значение только в
+  `duration_note`, крупнейший — `otravlenie_gribami_soderzhashchimi_amanitin`);
+  59 пар «препарат × возраст» без схемы дозирования (`anthrax`, `typhoid_fever`,
+  `shigellosis`, `postop_prophylaxis`, `animal_bite`, `lyme_disease`, `diphtheria`,
+  `salmonellosis`, `endocarditis_prophylaxis`, `asplenia_prophylaxis`,
+  `pneumococcal_meningitis`, `meningococcal_disease`); 60 режимов с `age_group` вне
+  сценария.
+- **Открыто, требует врача:** 82 блочные связи в
+  `clinical_engine/resources/calculator_crosswalk_review_queue.json`.
+- **Открыто, качество данных:** 12 неразбираемых длительностей; 47 пустых
+  `duration_days`; 29 записей без `route`.
+- **Открыто, требует решения владельца:** 95 КР корпуса без нозологии; 22 нозологии без
+  связи с корпусом; 119/120 без расчёта (owner-only P5.6/P6).
+- Пересборка: `python -m clinical_engine.crosswalk --write` → `python db/build_db.py` →
+  `python db/build_html.py` → `python -m clinical_engine.crosswalk.review_queue --write`.
 ## 2026-09-11: Единицы действия закрыты — что дальше
 
 - **Готово:** `build_label()` учитывает `dose_unit`; четыре места в HTML переведены на

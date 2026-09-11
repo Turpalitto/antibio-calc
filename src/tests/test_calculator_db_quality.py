@@ -257,3 +257,128 @@ def test_validate_db_js_reports_no_errors():
     )
     assert completed.returncode == 0, completed.stdout[-4000:]
     assert "ERROR" not in completed.stdout
+
+
+# ── единицы разведения против dose_unit препарата ────────────────────────────
+
+
+def _node():
+    import shutil
+
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("Node.js is unavailable")
+    return node
+
+
+def _run_validator(db_payload, tmp_path):
+    import subprocess
+
+    candidate = tmp_path / "candidate_db.json"
+    candidate.write_text(json.dumps(db_payload, ensure_ascii=False), encoding="utf-8")
+    return subprocess.run(
+        [_node(), str(ROOT / "db" / "validate_db.js"), str(candidate)],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+    )
+
+
+def _dilution_errors(stdout: str) -> list[str]:
+    return [line.strip() for line in stdout.splitlines() if "final_concentration" in line]
+
+
+def test_shipped_db_keeps_dilution_units_consistent_with_dose_unit():
+    """Инвариант: концентрация флакона выражена в той же единице, что доза препарата.
+
+    Калькулятор считает ``singleMg / final_concentration_*_ml``, беря то поле,
+    которое присутствует, поэтому флакон в мг/мл у препарата в ЕД молча дал бы
+    неверный объём — тот же класс путаницы единиц, из-за которого метки
+    бензилпенициллина читались как «4000000 мг».
+    """
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    refs = db.get("drugs_reference") or {}
+
+    checked = 0
+    for key, ref in refs.items():
+        if not isinstance(ref, dict) or key == "_note":
+            continue
+        dose_unit = ref.get("dose_unit") or "мг"
+        for route, route_data in (ref.get("dilution") or {}).items():
+            if not isinstance(route_data, dict):
+                continue
+            for vial in route_data.get("solvent_options") or []:
+                has_mg = vial.get("final_concentration_mg_ml") is not None
+                has_units = vial.get("final_concentration_units_ml") is not None
+                if not (has_mg or has_units):
+                    continue
+                checked += 1
+                assert not (has_mg and has_units), f"{key}/{route}: указаны оба поля концентрации"
+                if has_mg:
+                    assert dose_unit == "мг", f"{key}/{route}: мг/мл у препарата в {dose_unit}"
+                else:
+                    assert dose_unit != "мг", f"{key}/{route}: ЕД/мл у препарата в мг"
+
+    assert checked >= 80, f"ожидалось не менее 80 опций с концентрацией, получено {checked}"
+
+
+def test_validator_rejects_mg_vial_for_a_unit_dosed_drug(tmp_path):
+    """Проверка обязана быть живой: ловим намеренно испорченные данные."""
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    vial = db["drugs_reference"]["benzylpenicillin_na"]["dilution"]["iv_bolus"]["solvent_options"][0]
+    vial["final_concentration_mg_ml"] = vial.pop("final_concentration_units_ml")
+
+    result = _run_validator(db, tmp_path)
+
+    assert result.returncode == 1, result.stdout[-2000:]
+    errors = _dilution_errors(result.stdout)
+    assert len(errors) == 1
+    assert "dosed in ЕД" in errors[0]
+
+
+def test_validator_rejects_units_vial_for_a_mg_drug(tmp_path):
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    vial = db["drugs_reference"]["amoxiclav"]["dilution"]["iv_infusion"]["solvent_options"][0]
+    vial["final_concentration_units_ml"] = vial.pop("final_concentration_mg_ml")
+
+    result = _run_validator(db, tmp_path)
+
+    assert result.returncode == 1
+    errors = _dilution_errors(result.stdout)
+    assert len(errors) == 1
+    assert "dosed in мг" in errors[0]
+
+
+def test_validator_rejects_both_concentration_fields(tmp_path):
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    vial = db["drugs_reference"]["amoxiclav"]["dilution"]["iv_infusion"]["solvent_options"][0]
+    vial["final_concentration_units_ml"] = 40
+
+    result = _run_validator(db, tmp_path)
+
+    assert result.returncode == 1
+    errors = _dilution_errors(result.stdout)
+    assert len(errors) == 1
+    assert "cannot tell which to divide by" in errors[0]
+
+
+def test_validator_rejects_non_positive_concentration(tmp_path):
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    db["drugs_reference"]["amoxiclav"]["dilution"]["iv_infusion"]["solvent_options"][0][
+        "final_concentration_mg_ml"
+    ] = 0
+
+    result = _run_validator(db, tmp_path)
+
+    assert result.returncode == 1
+    errors = _dilution_errors(result.stdout)
+    assert len(errors) == 1
+    assert "must be positive" in errors[0]
+
+
+def test_validator_accepts_the_shipped_db_via_explicit_path(tmp_path):
+    """Явный путь — не обход проверки, а способ её протестировать."""
+    result = _run_validator(json.loads(DB_PATH.read_text(encoding="utf-8-sig")), tmp_path)
+
+    assert result.returncode == 0, result.stdout[-2000:]
+    assert _dilution_errors(result.stdout) == []

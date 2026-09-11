@@ -10,7 +10,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const dbPath = path.join(__dirname, 'antibio_db.json');
+// Optional path argument so the gate can be pointed at a candidate DB
+// (defaults to the committed one). Without it there is no way to exercise a
+// check against deliberately broken data.
+const dbPath = process.argv[2] ? path.resolve(process.argv[2]) : path.join(__dirname, 'antibio_db.json');
 let raw = fs.readFileSync(dbPath, 'utf-8');
 if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1); // strip BOM
 const db = JSON.parse(raw);
@@ -262,7 +265,44 @@ const seenDiseaseIds = new Set();
   });
 });
 
-// 4. Crosswalk summary must be present once links are embedded
+// 4. Dilution concentrations must be expressed in the drug's own dose unit.
+// The calculator computes `singleMg / final_concentration_*_ml`, picking
+// whichever field is present, so a vial declared in мг/мл for a drug dosed in
+// ЕД would silently produce a wrong volume — the same unit-confusion class that
+// made benzylpenicillin labels read «4000000 мг».
+drugKeys.forEach(key => {
+  const ref = db.drugs_reference[key];
+  if (!ref || typeof ref !== 'object') return;
+  const doseUnit = ref.dose_unit || 'мг';
+  const dilution = ref.dilution || {};
+  Object.keys(dilution).forEach(route => {
+    const routeData = dilution[route];
+    if (!routeData || typeof routeData !== 'object') return;
+    (routeData.solvent_options || []).forEach((vial, vi) => {
+      const hasMg = vial.final_concentration_mg_ml != null;
+      const hasUnits = vial.final_concentration_units_ml != null;
+      const where = `drugs_reference[${key}] > dilution.${route} > solvent_options[${vi}]`;
+      if (hasMg && hasUnits) {
+        errors.push(`${where}: both final_concentration_mg_ml and final_concentration_units_ml set — the calculator cannot tell which to divide by`);
+        return;
+      }
+      if (hasMg && doseUnit !== 'мг') {
+        errors.push(`${where}: final_concentration_mg_ml but the drug is dosed in ${doseUnit}`);
+      }
+      if (hasUnits && doseUnit === 'мг') {
+        errors.push(`${where}: final_concentration_units_ml but the drug is dosed in мг`);
+      }
+      if (hasMg && !(vial.final_concentration_mg_ml > 0)) {
+        errors.push(`${where}: final_concentration_mg_ml must be positive`);
+      }
+      if (hasUnits && !(vial.final_concentration_units_ml > 0)) {
+        errors.push(`${where}: final_concentration_units_ml must be positive`);
+      }
+    });
+  });
+});
+
+// 5. Crosswalk summary must be present once links are embedded
 const xw = (db.meta || {}).guideline_crosswalk;
 const anyLinks = (db.recommendations || []).some(r => Array.isArray(r.guideline_links));
 if (anyLinks && !xw) warnings.push('meta.guideline_crosswalk missing while guideline_links are embedded');
