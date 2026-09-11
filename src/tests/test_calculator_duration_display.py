@@ -149,3 +149,80 @@ def test_template_no_longer_appends_a_hardcoded_day_suffix() -> None:
     assert "reg.duration_days || '—')+' дней'" not in source
     assert "compReg.duration_days+' дн'" not in source
     assert "parseInt(reg.duration_days)" not in source
+
+
+# ── все точки вывода длительности обязаны идти через formatDuration ───────────
+
+
+def test_no_output_site_prints_the_raw_duration_field() -> None:
+    """Панели результата и история печатали ``duration_days`` напрямую.
+
+    Замер по собранному HTML: 459 из 638 режимов (71,9%) выглядели в панелях не
+    так, как в блоке комбинации — «10-14» вместо «10–14 дней», «1» вместо
+    «однократно». Одно и то же поле рендерилось двумя способами.
+    """
+    template = TEMPLATE.read_text(encoding="utf-8")
+
+    for site in ("$('po-dur')", "$('inj-dur')", "duration: "):
+        lines = [line.strip() for line in template.splitlines() if site in line and "duration_days" in line]
+        assert lines == [], f"{site} всё ещё печатает сырое duration_days: {lines}"
+
+    # Все три точки обязаны использовать форматтер.
+    assert "formatDuration(reg)" in template
+    assert "duration: formatDuration(reg)" in template
+
+
+def test_no_regimen_renders_as_a_bare_number(harness: str) -> None:
+    """«10-14», «5», «1» без единицы — прежний симптом панелей результата."""
+    _script, db = _script_and_db()
+    body = """(() => {
+      let total = 0;
+      const bare = [];
+      for (const rec of DB.recommendations) for (const sc of (rec.scenarios || []))
+        for (const ln of (sc.lines || [])) for (const d of (ln.drugs || []))
+          for (const reg of (d.regimens || [])) {
+            total++;
+            const shown = String(formatDuration(reg)).trim();
+            if (/^\\d+(-\\d+)?$/.test(shown)) bare.push(rec.id + ': ' + shown);
+          }
+      return { total: total, bare: bare };
+    })()"""
+
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as handle:
+        handle.write(f"const DB = {json.dumps(db, ensure_ascii=False)};\n")
+        handle.write(harness)
+        handle.write("\nconsole.log(JSON.stringify(")
+        handle.write(body)
+        handle.write("));\n")
+        path = handle.name
+
+    result = subprocess.run([node, path], capture_output=True, text=True, timeout=180, check=True)
+    verdict = json.loads(result.stdout.strip().splitlines()[-1])
+
+    assert verdict["total"] == 638, verdict
+    assert verdict["bare"] == [], verdict
+
+
+def test_history_refuses_to_record_a_missing_dose() -> None:
+    """История — запись расчёта; «0 мг» вместо отсутствующей дозы недопустимо.
+
+    В списке это неотличимо от реальной нулевой дозы, поэтому ``saveToHistory``
+    обязан отказывать так же, как экран отказывается считать.
+    """
+    template = TEMPLATE.read_text(encoding="utf-8")
+    body = template[template.index("function saveToHistory(") :]
+    body = body[: body.index("\n}\n")]
+
+    assert "noDose" in body, "saveToHistory не проверяет отсутствие дозы"
+    assert "computeDose(reg, w, unit)" in body, "история считает дозу без единицы препарата"
+    assert "doseUnitOf(ref)" in body
+
+
+def test_history_stores_the_unit_and_a_fallback_exists() -> None:
+    """Поле ``unit`` версиируется: старые записи показываются в мг, а не ломаются."""
+    template = TEMPLATE.read_text(encoding="utf-8")
+    load = template[template.index("function loadHistory(") :]
+    load = load[: load.index("\n}\n")]
+
+    assert "e.unit || 'мг'" in load, load
+    assert "fmtDose(e.singleMg, eUnit)" in load

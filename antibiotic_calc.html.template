@@ -1472,7 +1472,7 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
   }
   $('po-mg').textContent = fmtDose(singleMg, unit);
   $('po-day').textContent = fmtDose(dailyMg, unit);
-  $('po-dur').textContent = reg.duration_days || '—';
+  $('po-dur').textContent = formatDuration(reg);
 
   const rangeEl = $('po-range');
   const uk = unit + '/кг/сут';
@@ -1593,7 +1593,7 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
 
   $('inj-ml').textContent = computeInjectableMl(singleMg, selectedVial);
   $('inj-day').textContent = fmtDose(dailyMg, unit);
-  $('inj-dur').textContent = reg.duration_days || '—';
+  $('inj-dur').textContent = formatDuration(reg);
   $('inj-instruction').innerHTML = '<i class="fas fa-syringe mr-2 text-orange-300"></i>Ввести <b>'+fmtDose(singleMg, unit)+'</b> '+routeKeyLabel(activeRouteKey)+' • '+reg.freq_per_day+' р/д';
 
   const rangeEl = $('inj-range');
@@ -1910,8 +1910,12 @@ function saveToHistory(){
   const w = parseFloat($('weight').value);
   const reg = getActiveRegimen();
   if(!reg){ toast('Нет схемы дозирования на выбранную возрастную группу'); return; }
-  const {singleMg, dailyMg} = computeDose(reg, w);
   const ref = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
+  const unit = doseUnitOf(ref);
+  const {singleMg, dailyMg, noDose} = computeDose(reg, w, unit);
+  // История — это запись расчёта. Сохранять «0 мг» вместо отсутствующей дозы
+  // нельзя: в списке это неотличимо от реальной нулевой дозы.
+  if(noDose){ toast('В КР не указана числовая доза — сохранять нечего'); return; }
   const entry = {
     ts: Date.now(),
     patient: $('patient-name').value || '',
@@ -1919,9 +1923,9 @@ function saveToHistory(){
     drug: ref.inn,
     singleMg: Math.round(singleMg),
     dailyMg: Math.round(dailyMg),
-    unit: doseUnitOf(ref),
+    unit: unit,
     freq: reg.freq_per_day,
-    duration: reg.duration_days || '—',
+    duration: formatDuration(reg),
     weight: w,
     ageGroup: activeAge
   };

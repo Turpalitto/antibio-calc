@@ -173,7 +173,7 @@ python -m clinical_engine.crosswalk --write  # пересобрать
 ## 6. Как проверять
 
 ```bash
-pytest -q                                            # 2269 passed, 32 skipped, 1 xfailed
+pytest -q                                            # 2273 passed, 32 skipped, 1 xfailed
 python -m clinical_engine.crosswalk                  # in_sync
 python db/build_db.py                                # 120 recs, 98 со связями
 python db/build_html.py                              # antibiotic_calc.html
@@ -192,7 +192,7 @@ python -m clinical_engine.crosswalk.review_queue     # очередь враче
 | `tests/test_calculator_guideline_links.py` (11) | Реальный JS панели под Node, воспроизводимость сборки HTML |
 | `src/tests/test_calculator_db_quality.py` (43) | МКБ-10, дубли, дозы, маршруты, навигационный статус |
 | `src/tests/test_regimen_semantics.py` (57) | Разбор длительности, сборка метки, идемпотентность |
-| `src/tests/test_calculator_duration_display.py` (5) | Shipped-JS отображения курса под Node на реальной БД |
+| `src/tests/test_calculator_duration_display.py` (9) | Shipped-JS отображения курса под Node на реальной БД |
 | `src/tests/test_calculator_age_group_safety.py` (6) | Shipped-JS подбора режима: доза чужой возрастной группы недостижима |
 | `src/tests/test_calculator_dose_capping.py` (6) | Shipped-JS усечения по `max_daily_mg`: разовая доза не выше потолка |
 | `src/tests/test_calculator_dose_units.py` (22) | Shipped-JS единиц действия (ЕД) и явного `noDose` вместо нуля |
