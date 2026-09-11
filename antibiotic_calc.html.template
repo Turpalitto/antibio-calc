@@ -1362,7 +1362,13 @@ function calculate(){
     return;
   }
   const unit = doseUnitOf(mainRef);
-  const {singleMg, dailyMg, capped, needWeight, inconsistent, noDose} = computeDose(reg, w, unit);
+  // У компонента комбинации может быть собственный режим (component_regimens).
+  // Блок компонентов учитывает это для refs[1..], а главный компонент он
+  // пропускает — поэтому здесь режим главного препарата разрешается явно.
+  // Иначе собственная схема главного препарата терялась бы целиком: основной
+  // расчёт брал reg, а блок компонентов до него не доходил.
+  const mainReg = (reg.component_regimens && reg.component_regimens[refs[0]]) || reg;
+  const {singleMg, dailyMg, capped, needWeight, inconsistent, noDose} = computeDose(mainReg, w, unit);
   if(noDose){
     // Доза есть только в свободном тексте КР — число выводить нельзя.
     showNoCalculation(
@@ -1383,14 +1389,14 @@ function calculate(){
     $('res-po').classList.remove('hidden');
     $('res-inj').classList.add('hidden');
     $('dilution-block').classList.add('hidden');
-    renderPO(reg, form, mainRef, w, singleMg, dailyMg, capped, inconsistent);
+    renderPO(mainReg, form, mainRef, w, singleMg, dailyMg, capped, inconsistent);
     renderReconstitution(form);
   } else if(isInj){
     $('res-po').classList.add('hidden');
     $('res-inj').classList.remove('hidden');
     $('dilution-block').classList.remove('hidden');
     $('reconstitution-block').classList.add('hidden');
-    renderInjection(reg, form, mainRef, w, singleMg, dailyMg, capped, inconsistent);
+    renderInjection(mainReg, form, mainRef, w, singleMg, dailyMg, capped, inconsistent);
   }
 
   if(refs.length > 1){
@@ -1398,7 +1404,7 @@ function calculate(){
   }
 
   $('res-note').textContent = activeDrug.indication_note || (activeLine && activeLine.line_label) || '';
-  renderDrugMeta(mainRef, reg);
+  renderDrugMeta(mainRef, mainReg);
 }
 // Длительность курса: исходный текст КР никогда не выбрасывается (INV-09), но
 // раньше к нему механически дописывалось «дней», из-за чего «однократно»

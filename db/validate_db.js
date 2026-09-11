@@ -239,6 +239,22 @@ const seenDiseaseIds = new Set();
             errors.push(`${rWhere}: duration_days must be a number or a numeric range string`);
           }
 
+          // component_regimens carries a per-component regimen, keyed by drug_ref.
+          // A key outside combo_ref names a drug this entry does not contain, and
+          // would be silently ignored by every rendering path. Measured on the
+          // shipped DB: 16 combination entries, 16 regimens with component_regimens,
+          // 0 stray keys.
+          if (reg.component_regimens != null) {
+            const comboRefs = Array.isArray(drug.combo_ref) ? drug.combo_ref : [];
+            for (const crKey of Object.keys(reg.component_regimens)) {
+              if (!comboRefs.includes(crKey)) {
+                errors.push(`${rWhere}: component_regimens key "${crKey}" is not in combo_ref [${comboRefs.join(', ')}]`);
+              }
+            }
+          } else if (Array.isArray(drug.combo_ref) && drug.combo_ref.length > 1) {
+            warnings.push(`${rWhere}: combination with ${drug.combo_ref.length} components but no component_regimens — every component inherits the line regimen`);
+          }
+
           // duration_parsed is derived at build time by db/regimen_semantics.py
           // and is what lets the UI tell a course length from an infusion rate.
           if (reg.duration_parsed == null) {

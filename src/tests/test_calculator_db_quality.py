@@ -494,3 +494,97 @@ def test_validator_rejects_non_positive_oral_concentration(tmp_path):
     hits = [line.strip() for line in result.stdout.splitlines() if "concentration_mg_per_ml" in line]
     assert len(hits) == 1, hits
     assert "must be positive" in hits[0]
+
+
+# ── component_regimens против combo_ref ───────────────────────────────────────
+
+
+def test_component_regimens_keys_are_all_real_components():
+    """Ключ ``component_regimens`` обязан быть компонентом этой записи.
+
+    Ключ вне ``combo_ref`` называет препарат, которого в записи нет, и был бы
+    молча проигнорирован всеми путями отрисовки. Замер: 16 комбинаций,
+    16 режимов с ``component_regimens``, 0 посторонних ключей.
+    """
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+
+    combos = 0
+    with_cr = 0
+    stray: list[str] = []
+    for rec in db["recommendations"]:
+        for scenario in rec.get("scenarios") or []:
+            for line in scenario.get("lines") or []:
+                for drug in line.get("drugs") or []:
+                    refs = drug.get("combo_ref") or ([drug["drug_ref"]] if drug.get("drug_ref") else [])
+                    if drug.get("combo_ref"):
+                        combos += 1
+                    for regimen in drug.get("regimens") or []:
+                        cr = regimen.get("component_regimens")
+                        if not cr:
+                            continue
+                        with_cr += 1
+                        for key in cr:
+                            if key not in refs:
+                                stray.append(f"{rec['id']}: {key} not in {refs}")
+
+    assert combos >= 10, combos
+    assert with_cr >= 10, with_cr
+    assert stray == [], stray
+
+
+def test_validator_rejects_a_stray_component_regimen_key(tmp_path):
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    mutated = False
+    for rec in db["recommendations"]:
+        if mutated:
+            break
+        for scenario in rec.get("scenarios") or []:
+            if mutated:
+                break
+            for line in scenario.get("lines") or []:
+                if mutated:
+                    break
+                for drug in line.get("drugs") or []:
+                    if not drug.get("combo_ref") or not drug.get("regimens"):
+                        continue
+                    drug["regimens"][0].setdefault("component_regimens", {})["azithromycin"] = {
+                        "single_dose_mg": 500
+                    }
+                    mutated = True
+                    break
+    assert mutated, "в БД не нашлось комбинации с режимами"
+
+    result = _run_validator(db, tmp_path)
+
+    assert result.returncode == 1, result.stdout[-2000:]
+    hits = [line.strip() for line in result.stdout.splitlines() if "component_regimens key" in line]
+    assert len(hits) == 1, hits
+    assert "azithromycin" in hits[0]
+
+
+def test_validator_warns_on_a_combination_without_component_regimens(tmp_path):
+    """Без собственных режимов все компоненты наследуют режим линии — это надо видеть."""
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    mutated = False
+    for rec in db["recommendations"]:
+        if mutated:
+            break
+        for scenario in rec.get("scenarios") or []:
+            if mutated:
+                break
+            for line in scenario.get("lines") or []:
+                if mutated:
+                    break
+                for drug in line.get("drugs") or []:
+                    if not drug.get("combo_ref") or len(drug["combo_ref"]) < 2:
+                        continue
+                    for regimen in drug.get("regimens") or []:
+                        regimen.pop("component_regimens", None)
+                    mutated = True
+                    break
+    assert mutated, "в БД не нашлось многокомпонентной комбинации"
+
+    result = _run_validator(db, tmp_path)
+
+    hits = [line.strip() for line in result.stdout.splitlines() if "no component_regimens" in line]
+    assert len(hits) >= 1, result.stdout[-2000:]
