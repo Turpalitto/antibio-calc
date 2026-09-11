@@ -1,3 +1,33 @@
+## 2026-09-11: Копия назначения закрыта — статус аудита
+
+- **Готово:** `copyPrescription` приведена к общим форматтерам (`unit`, `mainReg`,
+  `formatFrequency`, `formatDuration`, отказ при `noDose`). Тесты: **2291 passed**.
+- **Вывод дня подтверждён девятый раз:** все четыре дефекта в одной функции — ровно те,
+  что уже были закрыты в `calculate()`, `saveToHistory`, панелях результата и печатной
+  форме. Причина одна: каждая точка вывода извлекала величины самостоятельно.
+- **Что стоит проверить следующим (последнее из списка):** три формы, попадающие в группу
+  `po` через фолбэк-ветку группировки — `clindamycin/topical` «2% крем»,
+  `tobramycin/solution_iv` «40 мг/мл», `netilmicin/solution_iv` «25 мг/мл». Фолбэк
+  срабатывает, когда у препарата нет соответствующего блока `dilution`; стоит проверить,
+  не должен ли крем вообще быть исключён из пероральной группы.
+- **Наблюдение по данным:** две записи с `freq_per_day: 30` — периоперационная
+  профилактика, где в тексте КР «за 30-60 минут до вмешательства». Кратность 30 раз в
+  сутки выглядит как артефакт извлечения; обе без `regimen_label` и в заблокированных
+  нозологиях. Стоит проверить у владельца.
+- **Открыто, данные КР (не код):** 27 режимов без числовой дозы (крупнейший —
+  `otravlenie_gribami_soderzhashchimi_amanitin`); 59 пар «препарат × возраст» без схемы
+  (`anthrax`, `typhoid_fever`, `shigellosis`, `postop_prophylaxis`, `animal_bite`,
+  `lyme_disease`, `diphtheria`, `salmonellosis`, `endocarditis_prophylaxis`,
+  `asplenia_prophylaxis`, `pneumococcal_meningitis`, `meningococcal_disease`);
+  60 режимов с `age_group` вне сценария.
+- **Открыто, решение по данным:** `uti_prophylaxis` / ко-тримоксазол / `single_dose_mg: 480`
+  против формы «400+80 мг».
+- **Открыто, требует врача:** 82 блочные связи в
+  `clinical_engine/resources/calculator_crosswalk_review_queue.json`.
+- **Открыто, требует решения владельца:** 95 КР корпуса без нозологии; 22 нозологии без
+  связи с корпусом; 119/120 без расчёта (owner-only P5.6/P6).
+- Пересборка: `python -m clinical_engine.crosswalk --write` → `python db/build_db.py` →
+  `python db/build_html.py` → `python -m clinical_engine.crosswalk.review_queue --write`.
 ## 2026-09-11: Ветвление форм закрыто — статус аудита
 
 - **Готово:** `granules` в `isSolid`; одна форма даёт один ответ при любом весе.

@@ -1910,8 +1910,15 @@ function copyPrescription(){
   const w = parseFloat($('weight').value);
   const reg = getActiveRegimen();
   if(!reg){ toast('Нет схемы дозирования на выбранную возрастную группу'); return; }
-  const {singleMg, dailyMg} = computeDose(reg, w);
-  const ref = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
+  const refs = getDrugRefs(activeDrug);
+  const ref = DB.drugs_reference[refs[0]];
+  const unit = doseUnitOf(ref);
+  // Собственный режим главного компонента комбинации — как в calculate().
+  const mainReg = (reg.component_regimens && reg.component_regimens[refs[0]]) || reg;
+  const {singleMg, dailyMg, noDose} = computeDose(mainReg, w, unit);
+  // Копия назначения — такой же документ, как печатная форма. «0 мг» вместо
+  // отсутствующей дозы в буфере обмена неотличимо от реальной нулевой дозы.
+  if(noDose){ toast('В КР не указана числовая доза — копировать нечего'); return; }
   const form = ref.forms[activeFormIdx];
   const patient = $('patient-name').value || '—';
   const date = $('patient-date').value || new Date().toLocaleDateString('ru-RU');
@@ -1925,10 +1932,10 @@ function copyPrescription(){
   txt += 'КР МЗ РФ #'+activeDisease.cr_id+', '+activeDisease.cr_year+'\n\n';
   txt += 'Препарат: '+ref.inn+'\n';
   txt += 'Форма: '+form.concentration+'\n';
-  txt += 'Разовая доза: '+fmtDose(singleMg, doseUnitOf(ref))+'\n';
-  txt += 'Суточная доза: '+fmtDose(dailyMg, doseUnitOf(ref))+'\n';
-  txt += 'Кратность: '+reg.freq_per_day+' р/д\n';
-  txt += 'Курс: '+formatDuration(reg)+'\n';
+  txt += 'Разовая доза: '+fmtDose(singleMg, unit)+'\n';
+  txt += 'Суточная доза: '+fmtDose(dailyMg, unit)+'\n';
+  txt += 'Кратность: '+formatFrequency(mainReg.freq_per_day, 'short')+'\n';
+  txt += 'Курс: '+formatDuration(mainReg)+'\n';
   txt += 'Путь: '+routeKeyLabel(activeRouteKey || 'im')+'\n\n';
   if(activeDrug.indication_note) txt += 'Замечание: '+activeDrug.indication_note+'\n';
   txt += '\n⚠ ЧЕРНОВИК. Требует верификации по первоисточникам КР МЗ РФ.';
