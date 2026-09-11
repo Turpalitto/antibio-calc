@@ -1619,13 +1619,38 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
 function routeKeyLabel(k){
   return k === 'im' ? 'в/м' : (k === 'iv_bolus' ? 'в/в струйно' : 'в/в капельно');
 }
+// Единственный источник концентрации готового раствора. Тот же `||`-фолбэк раньше
+// был продублирован в трёх местах (подсказка «на дозу», блок разведения и латинская
+// форма рецепта) — ровно тот класс расхождений, что дал баги с единицами действия,
+// базисом таблетки и делителем таблетки. Одно извлечение — одна точка правды.
+function vialConcentrationPerMl(vial){
+  if(!vial) return null;
+  if(vial.final_concentration_mg_ml > 0) return {value: vial.final_concentration_mg_ml, unit: 'мг'};
+  if(vial.final_concentration_units_ml > 0) return {value: vial.final_concentration_units_ml, unit: 'ЕД'};
+  return null;
+}
+// Надписи на флаконе. `units` позволяет латинской форме печатать «mg»/«ED».
+// formatUnits применяется ТОЛЬКО к единицам действия: для мг он превратил бы
+// флакон 1000 мг в «1 тыс мг», а в БД есть vial_mg 1000/1500/2000/4000.
+function vialStrengthLabel(vial, units){
+  if(!vial) return '';
+  if(vial.vial_mg) return vial.vial_mg+' '+(units ? 'mg' : 'мг');
+  if(vial.vial_units) return formatUnits(vial.vial_units)+' '+(units ? 'ED' : 'ЕД');
+  return '';
+}
+function vialConcentrationLabel(vial, units){
+  const conc = vialConcentrationPerMl(vial);
+  if(!conc) return '';
+  if(conc.unit === 'ЕД') return formatUnits(conc.value)+' '+(units ? 'ED/ml' : 'ЕД/мл');
+  return conc.value+' '+(units ? 'mg/ml' : 'мг/мл');
+}
+function injectableMlForDose(singleMg, vial, units){
+  const conc = vialConcentrationPerMl(vial);
+  if(!conc || !(singleMg > 0)) return units ? '—' : '';
+  return (singleMg / conc.value).toFixed(2)+' '+(units ? 'ml' : 'мл');
+}
 function computeInjectableMl(singleMg, vial){
-  if(!vial) return '—';
-  const conc = vial.final_concentration_mg_ml || vial.final_concentration_units_ml || 0;
-  if(conc <= 0) return '—';
-  const isUnits = !!vial.final_concentration_units_ml;
-  const ml = singleMg / conc;
-  return ml.toFixed(2)+' мл';
+  return injectableMlForDose(singleMg, vial, false) || '—';
 }
 function renderDilutionBlock(ref, routeKey, singleMg, selectedVial, routeData){
   const warn = $('dilution-warn');
@@ -1644,9 +1669,9 @@ function renderDilutionBlock(ref, routeKey, singleMg, selectedVial, routeData){
   if(selectedVial){
     const div = document.createElement('div');
     div.className = 'dilution-solvent';
-    const vial = selectedVial.vial_mg ? selectedVial.vial_mg+' мг' : (selectedVial.vial_units ? formatUnits(selectedVial.vial_units)+' ЕД' : '');
-    const conc = selectedVial.final_concentration_mg_ml ? selectedVial.final_concentration_mg_ml+' мг/мл' : (selectedVial.final_concentration_units_ml ? formatUnits(selectedVial.final_concentration_units_ml)+' ЕД/мл' : '');
-    const mlForDose = (selectedVial.final_concentration_mg_ml || selectedVial.final_concentration_units_ml) ? (singleMg / (selectedVial.final_concentration_mg_ml || selectedVial.final_concentration_units_ml)).toFixed(2)+' мл' : '';
+    const vial = vialStrengthLabel(selectedVial, false);
+    const conc = vialConcentrationLabel(selectedVial, false);
+    const mlForDose = injectableMlForDose(singleMg, selectedVial, false);
     div.innerHTML = '<div class="font-black text-orange-700 dark:text-orange-400 mb-1">'+selectedVial.solvent+'</div><div>Флакон: '+vial+'</div><div>Растворитель: '+selectedVial.solvent_ml+' мл</div><div>Итог: '+selectedVial.final_volume_ml+' мл, '+conc+'</div>'+(mlForDose?'<div class="mt-1 text-orange-900 dark:text-orange-300 font-black">На дозу: '+mlForDose+'</div>':'')+(selectedVial.notes?'<div class="mt-1 text-[10px] italic opacity-80">'+selectedVial.notes+'</div>':'');
     solBox.appendChild(div);
   }
@@ -1830,9 +1855,9 @@ function fillPrescriptionForm(){
         const v = routeData.solvent_options[activeVialIdx];
         let html = '<div class="rx-inj-block"><b>Solutio pro injectione:</b><br>';
         html += v.solvent+' — '+v.solvent_ml+' ml<br>';
-        html += 'Vial: '+(v.vial_mg?v.vial_mg+' mg':(v.vial_units?formatUnits(v.vial_units)+' ED':''))+'<br>';
-        html += 'Concentratio finalis: '+(v.final_concentration_mg_ml?v.final_concentration_mg_ml+' mg/ml':(v.final_concentration_units_ml?formatUnits(v.final_concentration_units_ml)+' ED/ml':''))+'<br>';
-        const mlForDose = (v.final_concentration_mg_ml||v.final_concentration_units_ml) ? (singleMg/(v.final_concentration_mg_ml||v.final_concentration_units_ml)).toFixed(2)+' ml' : '—';
+        html += 'Vial: '+vialStrengthLabel(v, true)+'<br>';
+        html += 'Concentratio finalis: '+vialConcentrationLabel(v, true)+'<br>';
+        const mlForDose = injectableMlForDose(singleMg, v, true);
         html += 'Volumen pro dosi: '+mlForDose;
         html += '</div>';
         injEl.innerHTML = html;

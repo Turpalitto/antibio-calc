@@ -336,3 +336,148 @@ def test_printed_prescription_uses_the_shared_strength_helper() -> None:
     assert len(offenders) == 1, offenders
     assert offenders[0] == "const strength = parseFloat(form.concentration);"
     assert "tabletStrengthMg(form)" in template
+
+
+# ── концентрация флакона: одно извлечение на три точки вывода ─────────────────
+
+_VIAL_HELPERS = (
+    "formatUnits",
+    "vialConcentrationPerMl",
+    "vialStrengthLabel",
+    "vialConcentrationLabel",
+    "injectableMlForDose",
+    "computeInjectableMl",
+)
+
+# Старые реализации, продублированные в трёх местах до рефакторинга. Сравнение с
+# ними доказывает, что консолидация ничего не изменила в надписях.
+_VIAL_OLD_VS_NEW = """(() => {
+  function OLD_strength(v, units){
+    if(!v) return '';
+    if(units) return v.vial_mg ? v.vial_mg+' mg' : (v.vial_units ? formatUnits(v.vial_units)+' ED' : '');
+    return v.vial_mg ? v.vial_mg+' мг' : (v.vial_units ? formatUnits(v.vial_units)+' ЕД' : '');
+  }
+  function OLD_conc(v, units){
+    if(units) return v.final_concentration_mg_ml ? v.final_concentration_mg_ml+' mg/ml'
+      : (v.final_concentration_units_ml ? formatUnits(v.final_concentration_units_ml)+' ED/ml' : '');
+    return v.final_concentration_mg_ml ? v.final_concentration_mg_ml+' мг/мл'
+      : (v.final_concentration_units_ml ? formatUnits(v.final_concentration_units_ml)+' ЕД/мл' : '');
+  }
+  function OLD_ml(singleMg, v, units){
+    const c = (v.final_concentration_mg_ml || v.final_concentration_units_ml);
+    return c ? (singleMg / c).toFixed(2)+' '+(units ? 'ml' : 'мл') : (units ? '—' : '');
+  }
+  function OLD_injectable(singleMg, v){
+    if(!v) return '—';
+    const conc = v.final_concentration_mg_ml || v.final_concentration_units_ml || 0;
+    if(conc <= 0) return '—';
+    return (singleMg / conc).toFixed(2)+' мл';
+  }
+
+  let diffs = [];
+  let checked = 0;
+  for (const [key, ref] of Object.entries(DB.drugs_reference)) {
+    if (key === '_note' || !ref || typeof ref !== 'object') continue;
+    for (const [route, data] of Object.entries(ref.dilution || {})) {
+      if (!data || typeof data !== 'object') continue;
+      for (const v of (data.solvent_options || [])) {
+        for (const units of [false, true]) {
+          checked++;
+          if (vialStrengthLabel(v, units) !== OLD_strength(v, units)) diffs.push('strength ' + key + '/' + route);
+          if (vialConcentrationLabel(v, units) !== OLD_conc(v, units)) diffs.push('conc ' + key + '/' + route);
+          if (injectableMlForDose(500, v, units) !== OLD_ml(500, v, units)) diffs.push('ml ' + key + '/' + route);
+        }
+        if (computeInjectableMl(500, v) !== OLD_injectable(500, v)) diffs.push('injectable ' + key + '/' + route);
+      }
+    }
+  }
+  return { checked: checked, diffs: diffs };
+})()"""
+
+
+def test_vial_labels_are_unchanged_by_the_consolidation() -> None:
+    """Рефакторинг обязан быть сохраняющим поведение: сверка со старым рендером."""
+    probe = _run(_VIAL_OLD_VS_NEW, helpers=_VIAL_HELPERS)
+
+    assert probe["checked"] >= 150, probe
+    assert probe["diffs"] == [], probe
+
+
+def test_vial_strength_keeps_milligrams_unabbreviated() -> None:
+    """«1000 мг», а не «1 тыс мг»: formatUnits только для единиц действия.
+
+    В БД есть ``vial_mg`` 1000/1500/2000/4000, и ``formatUnits`` превратил бы их
+    в «1 тыс мг» / «1.5 тыс мг». Для единиц действия сокращение, наоборот, нужно:
+    1000000 → «1 млн ЕД».
+    """
+    probe = _run(
+        """(() => {
+          const mg = DB.drugs_reference.amoxiclav.dilution.iv_infusion.solvent_options[0];
+          const dilution = DB.drugs_reference.benzylpenicillin_na.dilution;
+          const ed = dilution[Object.keys(dilution)[0]].solvent_options[0];
+          return {
+            mgLabel: vialStrengthLabel(mg, false),
+            mgLatin: vialStrengthLabel(mg, true),
+            edLabel: vialStrengthLabel(ed, false),
+            edConc: vialConcentrationLabel(ed, false),
+            mgConc: vialConcentrationLabel(mg, false),
+          };
+        })()""",
+        helpers=_VIAL_HELPERS,
+    )
+
+    assert probe["mgLabel"] == "1000 мг", probe
+    assert probe["mgLatin"] == "1000 mg", probe
+    assert probe["edLabel"].endswith(" ЕД"), probe
+    assert "тыс" not in probe["mgLabel"], probe
+    assert probe["edConc"].endswith("ЕД/мл"), probe
+    assert probe["mgConc"].endswith("мг/мл"), probe
+
+
+def test_vial_helpers_degrade_instead_of_printing_nan() -> None:
+    """Отсутствующий флакон или доза — пустая строка / прочерк, но не NaN."""
+    probe = _run(
+        """(() => {
+          const am = DB.drugs_reference.amoxiclav.dilution.iv_infusion.solvent_options[0];
+          return {
+            nullVial: computeInjectableMl(500, null),
+            zeroDose: computeInjectableMl(0, am),
+            zeroDoseRu: injectableMlForDose(0, am, false),
+            zeroDoseLatin: injectableMlForDose(0, am, true),
+            nullStrength: vialStrengthLabel(null, false),
+            emptyConc: vialConcentrationLabel({}, false),
+            emptyMl: injectableMlForDose(500, {}, false),
+          };
+        })()""",
+        helpers=_VIAL_HELPERS,
+    )
+
+    assert probe["nullVial"] == "—", probe
+    assert probe["zeroDose"] == "—", probe
+    assert probe["zeroDoseRu"] == "", probe
+    assert probe["zeroDoseLatin"] == "—", probe
+    assert probe["nullStrength"] == "", probe
+    assert probe["emptyConc"] == "", probe
+    assert probe["emptyMl"] == "", probe
+    assert "NaN" not in json.dumps(probe, ensure_ascii=False), probe
+
+
+def test_no_duplicated_concentration_fallback_remains() -> None:
+    """`||`-фолбэк по двум полям концентрации больше не встречается нигде.
+
+    Именно он был продублирован в трёх местах (подсказка «на дозу», блок
+    разведения, латинская форма). Хелпер выбирает поле явными проверками ``> 0``,
+    поэтому фолбэка в шаблоне не остаётся вовсе — и разойтись больше нечему.
+    """
+    template = TEMPLATE.read_text(encoding="utf-8")
+    offenders = [
+        line.strip()
+        for line in template.splitlines()
+        if ("final_concentration_mg_ml ||" in line or "final_concentration_mg_ml||" in line)
+    ]
+
+    assert offenders == [], offenders
+    assert "function vialConcentrationPerMl" in template
+    # Все три точки вывода обязаны идти через хелперы.
+    for helper in ("vialStrengthLabel", "vialConcentrationLabel", "injectableMlForDose"):
+        assert template.count(helper + "(") >= 3, f"{helper} используется реже, чем в трёх точках"
