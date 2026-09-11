@@ -1773,6 +1773,24 @@ const LATIN_FORM = {
 const LATIN_ROUTE = { po:'per os', im:'intramuscularis', iv:'intravenosus' };
 const LATIN_FREQ = { 1:'semel in die', 2:'bis in die', 3:'ter in die', 4:'quater in die', 6:'sexies in die' };
 
+// Кратность приёма в трёх стилях. Единственный источник: раньше «раза в день»
+// было записано в четырёх местах печатной формы, и все четыре давали «8 раза
+// в день» / «12 раза в день» — по-русски неверно (нужно «8 раз»), и это печаталось
+// в рецепте. В БД 49 таких режимов (freq 8, 12, 30).
+function freqTimesWord(n){
+  const m100 = n % 100, m10 = n % 10;
+  if (m100 >= 11 && m100 <= 14) return 'раз';
+  if (m10 === 1) return 'раз';
+  if (m10 >= 2 && m10 <= 4) return 'раза';
+  return 'раз';
+}
+function formatFrequency(freq, style){
+  if (freq == null || !isFinite(freq) || freq <= 0) return '—';
+  if (style === 'short') return freq+' р/д';
+  if (style === 'latin') return LATIN_FREQ[freq] || (freq+' '+freqTimesWord(freq)+' в день');
+  return freq+' '+freqTimesWord(freq)+' в день';
+}
+
 function fillPrescriptionForm(){
   if(!activeDrug || !activeDisease) return;
   const w = parseFloat($('weight').value);
@@ -1794,7 +1812,7 @@ function fillPrescriptionForm(){
   $('rx-doctor').textContent = $('doctor-name').value || '—';
   const latinName = LATIN_INN[refs[0]] || mainRef.inn;
   const latinForm = LATIN_FORM[form.form_type] || form.form_type;
-  const freqStr = LATIN_FREQ[reg.freq_per_day] || (reg.freq_per_day+' раза в день');
+  const freqStr = formatFrequency(reg.freq_per_day, 'latin');
   const routeLat = LATIN_ROUTE[currentRouteGroup] || '';
   const routeRu = currentRouteGroup === 'po' ? 'внутрь' : (currentRouteGroup === 'im' ? 'внутримышечно' : 'внутривенно');
 
@@ -1829,13 +1847,13 @@ function fillPrescriptionForm(){
     const strength = tabletStrengthMg(form);
     const tabsPerDose = strength ? singleMg / strength : NaN;
     signa = (strength && tabsPerDose > 0)
-      ? 'По '+tabsPerDose.toFixed(1).replace(/\.0$/,'')+' '+latinForm+' '+reg.freq_per_day+' раза в день, '+routeRu
+      ? 'По '+tabsPerDose.toFixed(1).replace(/\.0$/,'')+' '+latinForm+' '+formatFrequency(reg.freq_per_day)+', '+routeRu
       : '';
   } else if(form.concentration_mg_per_ml){
     const ml = singleMg / form.concentration_mg_per_ml;
-    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+reg.freq_per_day+' раза в день';
+    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+formatFrequency(reg.freq_per_day);
   } else {
-    signa = 'По '+fmtDose(singleMg, doseUnitOf(mainRef))+' '+routeRu+', '+reg.freq_per_day+' раза в день';
+    signa = 'По '+fmtDose(singleMg, doseUnitOf(mainRef))+' '+routeRu+', '+formatFrequency(reg.freq_per_day);
   }
   if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_infusion') signa += ', капельно за 30 мин';
   if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_bolus') signa += ', медленно за 5 мин';
