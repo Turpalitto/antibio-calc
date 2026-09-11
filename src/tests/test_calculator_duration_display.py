@@ -226,3 +226,85 @@ def test_history_stores_the_unit_and_a_fallback_exists() -> None:
 
     assert "e.unit || 'мг'" in load, load
     assert "fmtDose(e.singleMg, eUnit)" in load
+
+
+# ── ветвление пероральных форм: одна форма — один ответ независимо от веса ────
+
+
+def test_mass_dosed_forms_do_not_depend_on_weight() -> None:
+    """Пакетик гранул дозируется по массе, а не по объёму — при любом весе.
+
+    До правки ``isSolid`` включал только ``tablet`` и ``capsule``, поэтому гранулы
+    («3000 мг пакет») для ребёнка уходили в ветку «Объём не рассчитан» с
+    предупреждением, а взрослому (``w >= 40``) та же форма показывала обычную
+    инструкцию по массе. Одна лекарственная форма давала разный ответ в
+    зависимости от веса. Замер: 12 случаев «форма × вес», все — фосфомицин.
+    """
+    template = TEMPLATE.read_text(encoding="utf-8")
+    match = re.search(r"const isSolid = \[(.*?)\]\.includes\(form\.form_type\);", template)
+
+    assert match, "не найдено определение isSolid в renderPO"
+    listed = [item.strip().strip("'\"") for item in match.group(1).split(",")]
+    assert "granules" in listed, listed
+    assert "tablet" in listed and "capsule" in listed, listed
+
+
+def test_po_branch_assignment_is_weight_independent_for_mass_forms() -> None:
+    """Сверка веток до и после: расхождение только на гранулах и только к массе."""
+    script, db = _script_and_db()
+    body = """(() => {
+      function poGroup(ref){
+        const out = [];
+        for (const f of (ref.forms || [])) {
+          if (['tablet','capsule','suspension','syrup','granules'].includes(f.form_type)
+              || (f.form_type === 'powder_for_suspension' && f.concentration_mg_per_ml != null)) {
+            out.push(f); continue;
+          }
+          let matched = false;
+          if (ref.dilution && ref.dilution.im
+              && ['powder_for_suspension','powder_for_injection','solution_im'].includes(f.form_type)) matched = true;
+          if (ref.dilution && (ref.dilution.iv_bolus || ref.dilution.iv_infusion)
+              && ['powder_for_suspension','powder_for_injection','solution_iv'].includes(f.form_type)) matched = true;
+          if (!matched) out.push(f);
+        }
+        return out;
+      }
+      const OLD = ['tablet','capsule'], NEW = ['tablet','capsule','granules'];
+      const pick = (f, w, solidList) => {
+        const conc = f.concentration_mg_per_ml || 0;
+        const isSolid = solidList.includes(f.form_type);
+        if (isSolid || (w >= 40 && conc === 0)) return isSolid ? 'solid' : 'adultNoConc';
+        if (conc > 0) return 'ml';
+        return 'failClosed';
+      };
+      const after = { solid: 0, adultNoConc: 0, ml: 0, failClosed: 0 };
+      const changed = [];
+      for (const [key, ref] of Object.entries(DB.drugs_reference)) {
+        if (key === '_note' || !ref || typeof ref !== 'object') continue;
+        for (const f of poGroup(ref)) {
+          for (const w of [3, 7, 10, 20, 40, 70]) {
+            const b = pick(f, w, OLD), a = pick(f, w, NEW);
+            after[a]++;
+            if (b !== a) changed.push({ key: key, type: f.form_type, w: w, from: b, to: a });
+          }
+        }
+      }
+      return { after: after, changed: changed };
+    })()"""
+
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as handle:
+        handle.write(f"const DB = {json.dumps(db, ensure_ascii=False)};\n")
+        handle.write("\nconsole.log(JSON.stringify(")
+        handle.write(body)
+        handle.write("));\n")
+        path = handle.name
+
+    result = subprocess.run([node, path], capture_output=True, text=True, timeout=180, check=True)
+    verdict = json.loads(result.stdout.strip().splitlines()[-1])
+
+    # Измерено: 12 случаев, все — гранулы, все уходят в единую ветку массы.
+    assert len(verdict["changed"]) == 12, verdict["changed"]
+    assert {c["type"] for c in verdict["changed"]} == {"granules"}, verdict["changed"]
+    assert {c["to"] for c in verdict["changed"]} == {"solid"}, verdict["changed"]
+    assert verdict["after"]["failClosed"] == 8, verdict
+    assert verdict["after"]["ml"] == 102, verdict

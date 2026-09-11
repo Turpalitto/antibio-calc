@@ -1457,7 +1457,12 @@ function renderCourseTotals(reg, freqPerDay, tabsPerDose, unitLabel){
 function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
   const unit = doseUnitOf(ref);
   const concMgPerMl = form.concentration_mg_per_ml || 0;
-  const isSolid = ['tablet','capsule'].includes(form.form_type);
+  // Гранулы в пакетике («3000 мг пакет») дозируются по массе, а не по объёму —
+  // измерять миллилитры пакетика нечего. Без них форма уходила в ветку
+  // «Объём не рассчитан» с предупреждением для ребёнка, тогда как взрослому
+  // (w >= 40) та же форма показывала обычную инструкцию по массе: одна и та же
+  // лекарственная форма давала разный ответ в зависимости от веса.
+  const isSolid = ['tablet', 'capsule', 'granules'].includes(form.form_type);
   if(isSolid || (w >= 40 && concMgPerMl === 0)){
     $('po-ml').textContent = unit === 'ЕД' ? formatUnits(Math.round(singleMg)) : Math.round(singleMg);
     $('po-unit').textContent = unit;
