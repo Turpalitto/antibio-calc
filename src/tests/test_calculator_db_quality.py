@@ -433,3 +433,64 @@ def test_validator_does_not_flag_doses_consistent_with_the_first_component(tmp_p
 
     # Единственный найденный случай — 480 мг; режим «800/160 мг 2 р/д» не flagged.
     assert all("800/160" not in h for h in hits), hits
+
+
+# ── концентрация пероральной жидкости против dose_unit ────────────────────────
+
+
+def test_oral_liquid_concentrations_match_the_drug_unit():
+    """Пероральная ветка делит дозу на ``concentration_mg_per_ml`` без проверки.
+
+    Замер по shipped-БД: 26 жидких форм с концентрацией, ни одной у препарата
+    не в мг. Инвариант закрепляется, а не чинится — дефекта сейчас нет.
+    """
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    refs = db.get("drugs_reference") or {}
+
+    checked = 0
+    for key, ref in refs.items():
+        if not isinstance(ref, dict) or key == "_note":
+            continue
+        dose_unit = ref.get("dose_unit") or "мг"
+        for form in ref.get("forms") or []:
+            conc = form.get("concentration_mg_per_ml")
+            if conc is None:
+                continue
+            checked += 1
+            assert conc > 0, f"{key}: concentration_mg_per_ml = {conc}"
+            assert dose_unit == "мг", f"{key}: жидкая форма в мг/мл у препарата в {dose_unit}"
+
+    assert checked >= 20, f"ожидалось не менее 20 жидких форм с концентрацией, получено {checked}"
+
+
+def test_validator_rejects_oral_liquid_on_a_unit_dosed_drug(tmp_path):
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    db["drugs_reference"]["benzylpenicillin_na"]["forms"].append(
+        {
+            "form_type": "suspension",
+            "concentration": "100000 ЕД/5 мл",
+            "concentration_mg_per_ml": 20000,
+        }
+    )
+
+    result = _run_validator(db, tmp_path)
+
+    assert result.returncode == 1, result.stdout[-2000:]
+    hits = [line.strip() for line in result.stdout.splitlines() if "concentration_mg_per_ml" in line]
+    assert len(hits) == 1, hits
+    assert "dosed in ЕД" in hits[0]
+
+
+def test_validator_rejects_non_positive_oral_concentration(tmp_path):
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    for form in db["drugs_reference"]["amoxicillin"]["forms"]:
+        if form.get("concentration_mg_per_ml") is not None:
+            form["concentration_mg_per_ml"] = 0
+            break
+
+    result = _run_validator(db, tmp_path)
+
+    assert result.returncode == 1
+    hits = [line.strip() for line in result.stdout.splitlines() if "concentration_mg_per_ml" in line]
+    assert len(hits) == 1, hits
+    assert "must be positive" in hits[0]

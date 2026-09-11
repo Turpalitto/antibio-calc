@@ -330,6 +330,21 @@ drugKeys.forEach(key => {
       }
     });
   });
+
+  // The same invariant for oral liquids: the PO branch computes
+  // singleMg / form.concentration_mg_per_ml unconditionally, so a liquid form
+  // carrying a мг/мл concentration on a drug dosed in ЕД would print a volume
+  // divided across two different units. Measured on the shipped DB: 26 liquid
+  // forms with a concentration, none of them on a non-мг drug.
+  (ref.forms || []).forEach((form, fi) => {
+    const conc = form.concentration_mg_per_ml;
+    if (conc == null) return;
+    const where = `drugs_reference[${key}] > forms[${fi}] ${form.form_type || ''}`.trim();
+    if (!(conc > 0)) errors.push(`${where}: concentration_mg_per_ml must be positive`);
+    else if (doseUnit !== 'мг') {
+      errors.push(`${where}: concentration_mg_per_ml but the drug is dosed in ${doseUnit}`);
+    }
+  });
 });
 
 // 5. Crosswalk summary must be present once links are embedded
