@@ -191,6 +191,36 @@ const seenDiseaseIds = new Set();
             else errors.push(msg);
           }
 
+          // A composite tablet ("400+80 мг") is divided by its FIRST component
+          // only (parseFloat stops at "+"), so a regimen whose dose is expressed
+          // on the TOTAL basis yields a physically impossible tablet count —
+          // 480 мг against "400+80 мг" prints «1.2 таб», although 480 мг is
+          // exactly one tablet. The two numbers are both real; only their bases
+          // disagree, and nothing else in the chain can catch it.
+          const singleMg = typeof reg.single_dose_mg === 'number'
+            ? reg.single_dose_mg
+            : (typeof reg.dose_mg_day_fixed === 'number' && reg.freq_per_day
+              ? reg.dose_mg_day_fixed / reg.freq_per_day
+              : null);
+          const drugRefEntry = drug.drug_ref ? db.drugs_reference[drug.drug_ref] : null;
+          if (singleMg != null && singleMg > 0 && (drug.route || []).includes('per_os') && drugRefEntry) {
+            for (const form of drugRefEntry.forms || []) {
+              if (!['tablet', 'capsule'].includes(form.form_type)) continue;
+              const composite = /^(\d+(?:\.\d+)?)\+(\d+(?:\.\d+)?)\s*мг/.exec(String(form.concentration || ''));
+              if (!composite) continue;
+              const first = parseFloat(composite[1]);
+              const total = first + parseFloat(composite[2]);
+              const isMultipleOfTotal = Math.abs(singleMg / total - Math.round(singleMg / total)) < 1e-9;
+              const isMultipleOfFirst = Math.abs(singleMg / first - Math.round(singleMg / first)) < 1e-9;
+              if (isMultipleOfTotal && !isMultipleOfFirst) {
+                const msg = `${rWhere}: dose ${singleMg} мг is a whole number of "${form.concentration}" tablets `
+                  + `(by total ${total} мг) but ${singleMg / first} tablets by the first component the calculator divides by`;
+                if (rec.calculation_blocked === true) warnings.push(msg);
+                else errors.push(msg);
+              }
+            }
+          }
+
           // An empty string is a missing duration, not "free text" — it used to
           // fall through the null check and drown the real free-text signal.
           const rawDuration = typeof reg.duration_days === 'string' ? reg.duration_days.trim() : reg.duration_days;

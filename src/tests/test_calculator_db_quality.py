@@ -382,3 +382,54 @@ def test_validator_accepts_the_shipped_db_via_explicit_path(tmp_path):
 
     assert result.returncode == 0, result.stdout[-2000:]
     assert _dilution_errors(result.stdout) == []
+
+
+# ── базис дозы против композитной таблетки ────────────────────────────────────
+
+
+def test_composite_tablet_basis_mismatch_is_found_exactly_once():
+    """Измерено: ровно один режим в БД расходится по базису с формой.
+
+    ``uti_prophylaxis`` / ко-тримоксазол: 480 мг — это ровно одна таблетка
+    «400+80 мг» (400 сульфаметоксазол + 80 триметоприм), но калькулятор делит на
+    первый компонент (``parseFloat`` останавливается на «+»), поэтому печатает
+    «1.2 таб». Оба числа настоящие, расходятся только базисы — и больше в цепочке
+    это некому заметить.
+    """
+    import subprocess
+
+    completed = subprocess.run(
+        [_node(), str(ROOT / "db" / "validate_db.js")], capture_output=True, text=True, cwd=ROOT
+    )
+    hits = [line.strip() for line in completed.stdout.splitlines() if "whole number of" in line]
+
+    assert len(hits) == 1, f"ожидался ровно один случай, получено {len(hits)}: {hits}"
+    assert "uti_prophylaxis" in hits[0]
+    assert "cotrimoxazole" in hits[0]
+    assert "1.2 tablets" in hits[0]
+
+
+def test_validator_escalates_composite_basis_mismatch_to_error_on_an_open_disease(tmp_path):
+    """Тот же дефект на открытой нозологии — уже ERROR, а не предупреждение."""
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    target = next(r for r in db["recommendations"] if r["id"] == "uti_prophylaxis")
+    target["calculation_blocked"] = False
+
+    result = _run_validator(db, tmp_path)
+
+    assert result.returncode == 1, result.stdout[-2000:]
+    errors = [line.strip() for line in result.stdout.splitlines() if "ERROR" in line and "whole number of" in line]
+    assert len(errors) == 1
+
+
+def test_validator_does_not_flag_doses_consistent_with_the_first_component(tmp_path):
+    """800 мг против «800+160 мг» — ровно одна таблетка по первому компоненту."""
+    import subprocess
+
+    completed = subprocess.run(
+        [_node(), str(ROOT / "db" / "validate_db.js")], capture_output=True, text=True, cwd=ROOT
+    )
+    hits = [line.strip() for line in completed.stdout.splitlines() if "whole number of" in line]
+
+    # Единственный найденный случай — 480 мг; режим «800/160 мг 2 р/д» не flagged.
+    assert all("800/160" not in h for h in hits), hits
