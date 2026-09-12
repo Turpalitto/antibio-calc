@@ -103,3 +103,5 @@ weights/
 # Derived calculator diagnostics — regenerate with:
 #   python db/source_gate_report.py --json generated/source_gate_report.json
 /generated/source_gate_report.json
+#   python db/age_group_report.py --json generated/age_group_report.json
+/generated/age_group_report.json
