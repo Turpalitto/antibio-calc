@@ -1164,6 +1164,10 @@ function renderForms(preferredRoute){
   }
 
   const groups = {po:[], im:[], iv:[]};
+  // Формы, которые в принципе можно принять внутрь. Всё остальное — инъекционные
+  // растворы, порошок для инъекций, крем — пероральными не становятся.
+  const ORAL_FORMS = ['tablet','capsule','suspension','syrup','granules','powder_for_suspension'];
+  let skipped = [];
   forms.forEach((f, idx)=>{
     // powder_for_suspension используется и для пероральной суспензии (есть concentration_mg_per_ml),
     // и для инъекционного флакона (готовится через dilution) — различаем по этому полю,
@@ -1185,12 +1189,26 @@ function renderForms(preferredRoute){
       matched = true;
     }
     if(!matched){
-      groups.po.push({f, idx});
+      // Фолбэк больше не кладёт форму в "per os" безусловно. Раньше так получалось,
+      // что «2% крем» клиндамицина предлагался как пероральная суспензия с объёмом в мл
+      // (у него есть concentration_mg_per_ml = 20), а solution_iv тобрамицина и
+      // нетилмицина без блока dilution — как форма для приёма внутрь.
+      if(ORAL_FORMS.includes(f.form_type)) groups.po.push({f, idx});
+      else skipped.push(f.concentration || f.form_type);
     }
   });
 
   const groupKeys = Object.keys(groups).filter(k=>groups[k].length>0);
-  if(groupKeys.length === 0) return;
+  if(groupKeys.length === 0){
+    // Форм нет ни в одной группе — говорим об этом, а не оставляем пустую сетку.
+    if(skipped.length){
+      availNote.querySelector('span').textContent =
+        'Для этого препарата нет лекарственной формы, которую калькулятор умеет рассчитать '
+        +'(в справочнике: '+skipped.join(', ')+'). Расчёт по ней намеренно не выполняется.';
+      availNote.classList.remove('hidden');
+    }
+    return;
+  }
 
   // Показываем только пути введения, указанные в самом сценарии (activeDrug.route) —
   // иначе можно случайно предложить, например, пероральную форму для препарата,

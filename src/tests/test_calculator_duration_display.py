@@ -308,3 +308,93 @@ def test_po_branch_assignment_is_weight_independent_for_mass_forms() -> None:
     assert {c["to"] for c in verdict["changed"]} == {"solid"}, verdict["changed"]
     assert verdict["after"]["failClosed"] == 8, verdict
     assert verdict["after"]["ml"] == 102, verdict
+
+# ── фолбэк группировки форм: непероральная форма не становится пероральной ────
+
+
+def test_no_non_oral_form_is_offered_in_the_po_group() -> None:
+    """Крем и инъекционный раствор больше не предлагаются как формы для приёма внутрь.
+
+    Фолбэк в ``renderForms`` клал форму в группу ``po`` безусловно, если она не
+    попала ни в одну другую. Из-за этого «2% крем» клиндамицина предлагался как
+    пероральная суспензия с объёмом в миллилитрах (у него есть
+    ``concentration_mg_per_ml = 20``, и ``renderPO`` считал ``singleMg / 20``),
+    а ``solution_iv`` тобрамицина и нетилмицина без блока ``dilution`` — как форма
+    для приёма внутрь. Замер до правки: 16 случаев, 3 уникальных «препарат × форма».
+    """
+    script, db = _script_and_db()
+    assert "ORAL_FORMS" in script, "в собранном HTML нет списка пероральных форм"
+
+    body = """(() => {
+      const ORAL_FORMS = ['tablet','capsule','suspension','syrup','granules','powder_for_suspension'];
+      function groupOf(ref){
+        const g = { po: [], im: [], iv: [] };
+        const skipped = [];
+        for (const f of (ref.forms || [])) {
+          if (['tablet','capsule','suspension','syrup','granules'].includes(f.form_type)
+              || (f.form_type === 'powder_for_suspension' && f.concentration_mg_per_ml != null)) {
+            g.po.push(f); continue;
+          }
+          let matched = false;
+          if (ref.dilution && ref.dilution.im
+              && ['powder_for_suspension','powder_for_injection','solution_im'].includes(f.form_type)) {
+            g.im.push(f); matched = true;
+          }
+          if (ref.dilution && (ref.dilution.iv_bolus || ref.dilution.iv_infusion)
+              && ['powder_for_suspension','powder_for_injection','solution_iv'].includes(f.form_type)) {
+            g.iv.push(f); matched = true;
+          }
+          if (!matched) {
+            if (ORAL_FORMS.includes(f.form_type)) g.po.push(f);
+            else skipped.push(f.concentration || f.form_type);
+          }
+        }
+        return { g: g, skipped: skipped };
+      }
+      let bad = 0, emptyAll = 0, skippedTotal = 0;
+      const empty = [];
+      for (const rec of DB.recommendations) for (const sc of (rec.scenarios || []))
+        for (const ln of (sc.lines || [])) for (const d of (ln.drugs || [])) {
+          const refs = d.combo_ref ? d.combo_ref : (d.drug_ref ? [d.drug_ref] : []);
+          for (const key of refs) {
+            const ref = DB.drugs_reference[key];
+            if (!ref) continue;
+            const r = groupOf(ref);
+            skippedTotal += r.skipped.length;
+            for (const f of r.g.po) if (!ORAL_FORMS.includes(f.form_type)) bad++;
+            if (Object.keys(r.g).filter(k => r.g[k].length > 0).length === 0) {
+              emptyAll++;
+              empty.push(rec.id + ' / ' + key);
+            }
+          }
+        }
+      return { bad: bad, emptyAll: emptyAll, skippedTotal: skippedTotal, empty: empty };
+    })()"""
+
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as handle:
+        handle.write(f"const DB = {json.dumps(db, ensure_ascii=False)};\n")
+        handle.write("\nconsole.log(JSON.stringify(")
+        handle.write(body)
+        handle.write("));\n")
+        path = handle.name
+
+    result = subprocess.run([node, path], capture_output=True, text=True, timeout=180, check=True)
+    verdict = json.loads(result.stdout.strip().splitlines()[-1])
+
+    assert verdict["bad"] == 0, verdict
+    # Измерено: 28 исключений и 3 записи, где форм не осталось вовсе.
+    assert verdict["skippedTotal"] == 28, verdict
+    assert verdict["emptyAll"] == 3, verdict
+
+
+def test_template_explains_a_drug_with_no_calculable_form() -> None:
+    """Пустая сетка форм молчит — должно быть пояснение, а не пустота."""
+    template = TEMPLATE.read_text(encoding="utf-8")
+    body = template[template.index("function renderForms(") :]
+    body = body[: body.index("\n}\n")]
+
+    assert "ORAL_FORMS" in body, body
+    assert "нет лекарственной формы, которую калькулятор умеет рассчитать" in body, body
+    # Фолбэк больше не кладёт форму в po безусловно.
+    assert "if(ORAL_FORMS.includes(f.form_type)) groups.po.push({f, idx});" in body, body
+    assert re.search(r"if\(!matched\)\{\s*\n\s*groups\.po\.push", body) is None, body
