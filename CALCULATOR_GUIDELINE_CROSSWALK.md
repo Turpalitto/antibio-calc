@@ -173,7 +173,7 @@ python -m clinical_engine.crosswalk --write  # пересобрать
 ## 6. Как проверять
 
 ```bash
-pytest -q                                            # 2393 passed, 32 skipped, 1 xfailed
+pytest -q                                            # 2409 passed, 32 skipped, 1 xfailed
 python -m clinical_engine.crosswalk                  # in_sync
 python db/build_db.py                                # 120 recs, 98 со связями
 python db/build_html.py                              # antibiotic_calc.html
@@ -207,6 +207,7 @@ python -m clinical_engine.crosswalk.review_queue     # очередь враче
 | `tests/test_pilot_selection_policy.py` (27) | Пилотный отбор: иерархия свидетельств, детерминизм, квоты по ярусам |
 | `tests/test_review_workbench_storage_roundtrip.py` (7) | Round-trip хранилища: 72 комбинации перечислений, кортежные поля, внешний ключ |
 | `tests/test_review_workbench_reporting.py` (12) | Отчётность очереди: полнота плана минут, срезы, подпись «оценка, не замер» |
+| `tests/test_review_workbench_issue_registry.py` (16) | Импорт находок: отказ без происхождения, штамп из документа, разрешения полей |
 
 ---
 
