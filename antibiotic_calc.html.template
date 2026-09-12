@@ -1837,8 +1837,6 @@ const LATIN_FORM = {
   solution_iv:'sol. pro inject.', solution_im:'sol. pro inject.',
   granules:'gran.', topical:'ung.', suppository:'supp.'
 };
-const LATIN_ROUTE = { po:'per os', im:'intramuscularis', iv:'intravenosus' };
-const LATIN_FREQ = { 1:'semel in die', 2:'bis in die', 3:'ter in die', 4:'quater in die', 6:'sexies in die' };
 
 // Кратность приёма в трёх стилях. Единственный источник: раньше «раза в день»
 // было записано в четырёх местах печатной формы, и все четыре давали «8 раза
@@ -1854,7 +1852,6 @@ function freqTimesWord(n){
 function formatFrequency(freq, style){
   if (freq == null || !isFinite(freq) || freq <= 0) return '—';
   if (style === 'short') return freq+' р/д';
-  if (style === 'latin') return LATIN_FREQ[freq] || (freq+' '+freqTimesWord(freq)+' в день');
   return freq+' '+freqTimesWord(freq)+' в день';
 }
 
@@ -1877,10 +1874,14 @@ function fillPrescriptionForm(){
   const drugsEl = $('rx-drugs');
   $('rx-date').textContent = $('patient-date').value || new Date().toLocaleDateString('ru-RU');
   $('rx-doctor').textContent = $('doctor-name').value || '—';
+  // В регулируемой форме латынь живёт только в блоке Rp: (название препарата, форма,
+  // D.t.d.). Кратность и маршрут по правилам идут в русскую строку D.S. — они
+  // собираются ниже через formatFrequency() и routeRu. Латинских вариантов кратности
+  // и маршрута здесь не было и нет: раньше тут вычислялись freqStr и routeLat, которые
+  // никуда не подставлялись, из-за чего карты LATIN_FREQ и LATIN_ROUTE были недостижимы,
+  // а код выглядел так, будто рецепт печатает латинскую кратность.
   const latinName = LATIN_INN[refs[0]] || mainRef.inn;
   const latinForm = LATIN_FORM[form.form_type] || form.form_type;
-  const freqStr = formatFrequency(reg.freq_per_day, 'latin');
-  const routeLat = LATIN_ROUTE[currentRouteGroup] || '';
   const routeRu = currentRouteGroup === 'po' ? 'внутрь' : (currentRouteGroup === 'im' ? 'внутримышечно' : 'внутривенно');
 
   let drugsHtml = '<div class="rx-drug-name">'+latinName+' '+form.concentration+'</div>';

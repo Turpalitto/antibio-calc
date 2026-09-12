@@ -1,9 +1,13 @@
 """Регрессия на отображение кратности приёма в калькуляторе.
 
-``LATIN_FREQ`` покрывает только {1, 2, 3, 4, 6}, а в БД есть кратности 8, 12 и 30.
-Они падали в фолбэк ``reg.freq_per_day + ' раза в день'``, записанный в четырёх
-местах печатной формы, и все четыре давали «8 раза в день» / «12 раза в день» —
-по-русски неверно (нужно «8 раз»), причём прямо в рецепте. Замер: 49 режимов.
+Раньше «раза в день» было записано в четырёх местах печатной формы, и все четыре давали
+«8 раза в день» / «12 раза в день» — по-русски неверно (нужно «8 раз»), причём прямо в
+рецепте. Замер: 49 режимов (кратности 8, 12 и 30).
+
+Отдельно здесь закреплено, что латинской кратности в рецепте нет и быть не должно: в
+регулируемой форме латынь живёт только в блоке ``Rp:``, а кратность и маршрут идут в
+русскую строку ``D.S.``. Карты ``LATIN_FREQ`` и ``LATIN_ROUTE`` были удалены как
+недостижимые — единственные вычислявшие их переменные никуда не подставлялись.
 
 Тест исполняет **именно тот JavaScript, который попадает в собранный
 ``antibiotic_calc.html``**, на реальной БД из этого же файла.
@@ -49,7 +53,6 @@ def _run(body: str) -> dict:
     script, db = _script_and_db()
     harness = "".join(
         [
-            _extract(script, r"\nconst LATIN_FREQ = .*?;\n", "LATIN_FREQ"),
             _extract(script, r"\nfunction freqTimesWord\(.*?\n\}\n", "freqTimesWord()"),
             _extract(script, r"\nfunction formatFrequency\(.*?\n\}\n", "formatFrequency()"),
         ]
@@ -127,24 +130,69 @@ def test_every_frequency_in_the_db_renders_correctly() -> None:
     assert verdict["rendered"]["3"] == "3 раза в день", verdict
 
 
-def test_latin_style_keeps_curated_terms_and_degrades_gracefully() -> None:
-    """Для 1/2/3/4/6 — курируемая латынь; для прочих — корректный русский фолбэк."""
-    verdict = _run(
-        r"""(() => ({
-          one: formatFrequency(1, 'latin'),
-          two: formatFrequency(2, 'latin'),
-          three: formatFrequency(3, 'latin'),
-          six: formatFrequency(6, 'latin'),
-          eight: formatFrequency(8, 'latin'),
-          short: formatFrequency(8, 'short'),
-        }))()"""
-    )
+def test_latin_frequency_style_is_gone_and_not_silently_revived() -> None:
+    """Латинской кратности в рецепте нет — и это намеренно.
 
-    assert verdict["one"] == "semel in die", verdict
-    assert verdict["three"] == "ter in die", verdict
-    assert verdict["six"] == "sexies in die", verdict
-    assert verdict["eight"] == "8 раз в день", verdict
-    assert verdict["short"] == "8 р/д", verdict
+    В регулируемой форме латынь живёт только в блоке ``Rp:`` (название препарата, форма,
+    ``D.t.d.``), а кратность и маршрут идут в русскую строку ``D.S.``. Раньше в
+    ``fillPrescriptionForm`` вычислялись ``freqStr`` (латинская кратность) и ``routeLat``
+    (латинский маршрут), которые никуда не подставлялись: карты ``LATIN_FREQ`` и
+    ``LATIN_ROUTE`` были недостижимы, а код выглядел так, будто рецепт печатает латинскую
+    кратность. Мёртвый код, похожий на фичу, хуже отсутствия кода.
+    """
+    template = TEMPLATE.read_text(encoding="utf-8")
+    script, _db = _script_and_db()
+
+    # Ни карт, ни ветки стиля не осталось. Проверяем по коду, а не по тексту:
+    # пояснительный комментарий вправе называть удалённые константы.
+    assert "const LATIN_FREQ" not in script
+    assert "const LATIN_ROUTE" not in script
+    assert "LATIN_FREQ[" not in script
+    assert "LATIN_ROUTE[" not in script
+    assert "style === 'latin'" not in script
+    assert "formatFrequency(reg.freq_per_day, 'latin')" not in template
+
+    # Латинские названия препарата и формы при этом остались — они часть Rp:.
+    assert "LATIN_INN" in script
+    assert "LATIN_FORM" in script
+    assert "D.t.d. N " in template
+
+    # Кратность и маршрут в русской строке D.S. — на месте.
+    assert "'внутрь'" in template and "'внутримышечно'" in template and "'внутривенно'" in template
+
+
+def test_no_dead_local_variables_in_the_prescription_printer() -> None:
+    """Ни одна локальная переменная печати не должна вычисляться впустую.
+
+    Именно так проявился дефект: ``freqStr`` и ``routeLat`` считались и не читались.
+    Проверка перебирает все объявления в ``fillPrescriptionForm`` и требует, чтобы каждое
+    имя встречалось в теле больше одного раза.
+    """
+    script, _db = _script_and_db()
+    match = re.search(r"\nfunction fillPrescriptionForm\(", script)
+    assert match, "fillPrescriptionForm() not found in the built calculator script"
+    i, depth, started = match.start(), 0, False
+    while i < len(script):
+        if script[i] == "{":
+            depth += 1
+            started = True
+        elif script[i] == "}":
+            depth -= 1
+            if started and depth == 0:
+                i += 1
+                break
+        i += 1
+    body = script[match.start():i]
+
+    declared = re.findall(r"^\s*(?:const|let)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=", body, re.M)
+    assert declared, "в fillPrescriptionForm должны быть локальные переменные"
+
+    dead = [
+        name
+        for name in declared
+        if len(re.findall(r"(?<![.\w])" + re.escape(name) + r"(?![\w])", body)) <= 1
+    ]
+    assert dead == [], f"переменные вычисляются и не используются: {dead}"
 
 
 def test_absent_frequency_renders_as_a_dash_not_a_number() -> None:

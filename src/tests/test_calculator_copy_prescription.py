@@ -86,7 +86,8 @@ def _run(body: str, helpers: tuple[str, ...] = _HELPERS) -> dict:
     db = json.loads(re.search(r'<script id="db-data" type="application/json">(.*?)</script>', html, re.S).group(1))
 
     parts = [f"const DB = {json.dumps(db, ensure_ascii=False)};\n"]
-    parts.append(re.search(r"\nconst LATIN_FREQ = .*?;\n", script, re.S).group(0))
+    # LATIN_FREQ больше не извлекается: карта удалена как недостижимая —
+    # латинской кратности в рецепте нет (см. test_calculator_frequency_display.py).
     for name in helpers:
         match = re.search(rf"\nfunction {re.escape(name)}\(.*?\n\}}\n", script, re.S)
         assert match, f"function {name}() not found in the built calculator script"
