@@ -159,10 +159,6 @@ def _result(kind: str, value_min=None, value_max=None, unit=None, basis=None) ->
     return {"kind": kind, "value_min": value_min, "value_max": value_max, "unit": unit, "basis": basis}
 
 
-_RE_EXACT_MONTH = re.compile(rf"^\s*({_NUM})\s*(мес|месяц|месяца|месяцев)\w*\s*$", re.IGNORECASE)
-_RE_LEADING_MONTH = re.compile(rf"({_NUM})\s*(мес|месяц|месяца|месяцев)\w*", re.IGNORECASE)
-
-
 def parse_duration(raw: Any) -> dict[str, Any]:
     """Classify a ``duration_days`` value. Never invents a number.
 

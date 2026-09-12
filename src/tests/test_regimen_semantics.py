@@ -9,9 +9,13 @@
 
 from __future__ import annotations
 
+import ast
 import json
+from pathlib import Path
 
 import pytest
+
+REGIMEN_SEMANTICS_PATH = Path(__file__).resolve().parents[2] / "db" / "regimen_semantics.py"
 
 from db.regimen_semantics import (
     AT_LEAST,
@@ -330,3 +334,58 @@ def test_annotate_is_idempotent() -> None:
     annotate_regimens(db)
 
     assert db == first
+
+
+# ── повторное присваивание на уровне модуля ──────────────────────────────────
+
+
+def _module_level_assignments(path: Path) -> dict[str, list[int]]:
+    """Имя -> номера строк, где оно присваивается на уровне модуля."""
+    tree = ast.parse(path.read_text(encoding="utf-8-sig"))
+    seen: dict[str, list[int]] = {}
+    for node in tree.body:
+        targets: list[str] = []
+        if isinstance(node, ast.Assign):
+            targets = [t.id for t in node.targets if isinstance(t, ast.Name)]
+        elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+            if isinstance(node.target, ast.Name):
+                targets = [node.target.id]
+        for name in targets:
+            seen.setdefault(name, []).append(node.lineno)
+    return seen
+
+
+def test_no_module_level_name_is_assigned_twice() -> None:
+    """Два присваивания одному имени — первое мертво.
+
+    ``_RE_EXACT_MONTH`` и ``_RE_LEADING_MONTH`` были определены дважды: второе
+    определение перезаписывало первое, и правка первого не давала ничего. Оба
+    варианта совпадали по ``group(1)``, поэтому дефект не проявлялся в данных —
+    он проявился бы в тот день, когда кто-нибудь отредактировал бы «нерабочее»
+    определение.
+    """
+    duplicates = {
+        name: lines
+        for name, lines in _module_level_assignments(REGIMEN_SEMANTICS_PATH).items()
+        if len(lines) > 1
+    }
+    assert duplicates == {}, f"повторные присваивания: {duplicates}"
+
+
+def test_the_month_patterns_use_the_shared_word_constant() -> None:
+    """Месяцы строятся из той же константы, что недели, часы и минуты."""
+    source = REGIMEN_SEMANTICS_PATH.read_text(encoding="utf-8-sig")
+    assert "_MONTH_WORDS" in source
+    # Одно определение на регулярку — иначе часть из них недостижима.
+    assert source.count("_RE_EXACT_MONTH = ") == 1, source.count("_RE_EXACT_MONTH = ")
+    assert source.count("_RE_LEADING_MONTH = ") == 1, source.count("_RE_LEADING_MONTH = ")
+
+
+def test_month_durations_still_parse_after_deduplication() -> None:
+    """Месячные формы разбираются тем единственным определением, что осталось."""
+    assert parse_duration("3 месяца")["kind"] == FIXED
+    assert parse_duration("3 месяца")["unit"] == "month"
+    assert parse_duration("3 месяца")["value_min"] == 3.0
+    assert parse_duration("6 мес")["unit"] == "month"
+    assert parse_duration("курс 3 месяца")["value_min"] == 3.0
+    assert parse_duration("12 месяцев")["value_max"] == 12.0
