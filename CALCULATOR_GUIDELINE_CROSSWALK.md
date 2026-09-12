@@ -173,7 +173,7 @@ python -m clinical_engine.crosswalk --write  # пересобрать
 ## 6. Как проверять
 
 ```bash
-pytest -q                                            # 2325 passed, 32 skipped, 1 xfailed
+pytest -q                                            # 2330 passed, 32 skipped, 1 xfailed
 python -m clinical_engine.crosswalk                  # in_sync
 python db/build_db.py                                # 120 recs, 98 со связями
 python db/build_html.py                              # antibiotic_calc.html
@@ -195,7 +195,7 @@ python -m clinical_engine.crosswalk.review_queue     # очередь враче
 | `src/tests/test_calculator_duration_display.py` (13) | Shipped-JS отображения курса под Node на реальной БД |
 | `src/tests/test_calculator_age_group_safety.py` (11) | Shipped-JS подбора режима: доза чужой возрастной группы недостижима |
 | `src/tests/test_calculator_dose_capping.py` (6) | Shipped-JS усечения по `max_daily_mg`: разовая доза не выше потолка |
-| `src/tests/test_calculator_dose_units.py` (22) | Shipped-JS единиц действия (ЕД) и явного `noDose` вместо нуля |
+| `src/tests/test_calculator_dose_units.py` (27) | Shipped-JS единиц действия (ЕД) и явного `noDose` вместо нуля |
 | `src/tests/test_calculator_copy_prescription.py` (4) | Shipped-JS текста «Скопировать назначение»: единицы, `noDose`, `mainReg` |
 | `src/tests/test_calculator_frequency_display.py` (7) | Shipped-JS кратности приёма: склонение «раз/раза», отсутствие латинского стиля, мёртвые переменные печати |
 | `src/tests/test_build_db.py` (10) | Встраивание связей, отказ на устаревшем артефакте |

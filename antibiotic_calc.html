@@ -676,7 +676,10 @@ function renderExtractedCandidates(candidates){
   const box=$('owner-extracted-candidates'); box.innerHTML='';
   candidates.forEach((candidate,index)=>{
     const card=document.createElement('div'); card.className='rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2';
-    const title=document.createElement('div'); title.className='font-black'; title.textContent=candidate.drug+' · '+candidate.dose.value_min+(candidate.dose.value_max!==candidate.dose.value_min?'–'+candidate.dose.value_max:'')+' мг/кг/сут';
+    const title=document.createElement('div'); title.className='font-black'; // Единица берётся из данных кандидата (в схеме бандла поле unit обязательно),
+    // а не пишется «мг/кг/сут» по месту: доза может быть в ЕД/кг/сут.
+    const doseUnit = candidate.dose.unit || 'мг/кг';
+    title.textContent=candidate.drug+' · '+candidate.dose.value_min+(candidate.dose.value_max!==candidate.dose.value_min?'–'+candidate.dose.value_max:'')+' '+doseUnit+'/сут';
     const source=document.createElement('div'); source.className='text-[11px] whitespace-pre-wrap text-slate-600 dark:text-slate-400'; source.textContent='Стр. '+candidate.source.page+': '+candidate.source.wording;
     const select=document.createElement('select'); select.className='input-field rounded-xl px-3 py-2 w-full';
     (candidate.calculator_options||[]).forEach((option,optionIndex)=>{const el=document.createElement('option');el.value=optionIndex;el.textContent=option.label;select.appendChild(el);});
@@ -931,13 +934,16 @@ function onWeightChange(){
   }
   calculate();
 }
-// Единая логика предупреждения по весу (валидация значения + требование веса для мг/кг режимов)
-function updateWeightWarn(needWeight){
+// Единая логика предупреждения по весу (валидация значения + требование веса для режимов
+// с дозой на кг). Единица передаётся из справочника: у бензилпенициллина доза в ЕД/кг,
+// и сообщение «рассчитывается по мг/кг» было бы неверным для 5 таких режимов в БД.
+function updateWeightWarn(needWeight, unit){
   const warn = $('weight-warn');
   const w = parseFloat($('weight').value);
+  const u = unit || 'мг';
   let msg = '';
   if(!w){
-    if(needWeight) msg = 'Для этого режима нужен вес пациента — доза рассчитывается по мг/кг.';
+    if(needWeight) msg = 'Для этого режима нужен вес пациента — доза рассчитывается по '+u+'/кг.';
   } else {
     if(w < 1) msg = 'Вес <1 кг — вероятно ошибка. Расчёт для новорождённых требует осмотр врача.';
     else if(w > 250) msg = 'Вес >250 кг — проверьте значение.';
@@ -1295,11 +1301,15 @@ function renderFormChips(group){
   activeFormIdx = group[defaultIdx].idx;
 }
 function renderRegimens(preferredRegimenIdx){
-  const refs = getDrugRefs(activeDrug);
-  const mainRef = DB.drugs_reference[refs[0]];
   const regimens = (activeDrug.regimens || []).filter(r=>r.age_group === activeAge || r.age_group === 'all');
   const sel = $('regimen-selector');
   const list = $('regimen-list');
+  // Единица берётся из справочника, а не пишется «мг/кг» по месту: у двух препаратов
+  // (бензатин бензилпенициллин, бензилпенициллин натрий) доза в ЕД. Сегодня сочетание
+  // «несколько режимов на возраст + пустая regimen_label + доза в мг/кг» для них не
+  // встречается, но жёсткая единица в точке вывода — тот же класс дефекта, что уже
+  // закрыт в панелях, печатной форме, истории и буфере обмена.
+  const unit = doseUnitOf(DB.drugs_reference[getDrugRefs(activeDrug)[0]]);
   list.innerHTML = '';
   const selectedIdx = Number.isInteger(preferredRegimenIdx) && preferredRegimenIdx >= 0 && preferredRegimenIdx < regimens.length ? preferredRegimenIdx : 0;
   if(regimens.length > 1){
@@ -1307,7 +1317,7 @@ function renderRegimens(preferredRegimenIdx){
     regimens.forEach((r, idx)=>{
       const btn = document.createElement('button');
       btn.className = 'chip text-[10px] font-black rounded-lg px-3 py-2'+(idx===selectedIdx?' active':'');
-      const label = r.regimen_label || ((r.dose_mg_kg_day?r.dose_mg_kg_day+' мг/кг':'')+' '+(r.freq_per_day?r.freq_per_day+' р/д':''));
+      const label = r.regimen_label || ((r.dose_mg_kg_day?r.dose_mg_kg_day+' '+unit+'/кг':'')+' '+(r.freq_per_day?r.freq_per_day+' р/д':''));
       btn.textContent = label;
       btn.onclick = ()=>{
         activeRegimenIdx = idx;
@@ -1433,7 +1443,7 @@ function calculate(){
     return;
   }
   $('res-no-regimen').classList.add('hidden');
-  updateWeightWarn(needWeight);
+  updateWeightWarn(needWeight, unit);
 
   $('combo-block').classList.add('hidden');
   $('combo-block').innerHTML = '';

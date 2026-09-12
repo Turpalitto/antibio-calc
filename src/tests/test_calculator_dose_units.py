@@ -481,3 +481,159 @@ def test_no_duplicated_concentration_fallback_remains() -> None:
     # Все три точки вывода обязаны идти через хелперы.
     for helper in ("vialStrengthLabel", "vialConcentrationLabel", "injectableMlForDose"):
         assert template.count(helper + "(") >= 3, f"{helper} используется реже, чем в трёх точках"
+
+
+# ── единица в точках вывода, которые раньше писали «мг/кг» по месту ───────────
+
+_DOM_STUB_UNITS = """
+class ClassList{
+  constructor(){ this.set=new Set(); }
+  add(...c){ c.forEach(x=>this.set.add(x)); }
+  remove(...c){ c.forEach(x=>this.set.delete(x)); }
+  toggle(c,f){ const on=f===undefined?!this.set.has(c):!!f; on?this.set.add(c):this.set.delete(c); return on; }
+  contains(c){ return this.set.has(c); }
+}
+class El{
+  constructor(t){ this.tag=t; this.children=[]; this.classList=new ClassList();
+                  this._text=''; this.className=''; this._html=''; this._span=null; }
+  append(...n){ n.forEach(x=>this.children.push(x)); }
+  appendChild(n){ this.children.push(n); return n; }
+  querySelector(sel){ if(!this._span) this._span=new El('span'); return this._span; }
+  querySelectorAll(){ return []; }
+  set innerHTML(v){ this._html=String(v); this.children=[]; }
+  get innerHTML(){ return this._html||''; }
+  set textContent(v){ this._text=String(v); }
+  get textContent(){ return this._text; }
+}
+const _warn=new El('div'), _regList=new El('div'), _regSel=new El('div');
+const _weight=new El('input'); _weight.value='';
+const document={createElement:t=>new El(t), getElementById:id=>new El('div'), querySelectorAll:()=>[]};
+function $(id){
+  if(id==='weight-warn') return _warn;
+  if(id==='weight') return _weight;
+  if(id==='regimen-list') return _regList;
+  if(id==='regimen-selector') return _regSel;
+  return new El('div');
+}
+let activeAge='neonate', activeDrug=null, activeRegimenIdx=0;
+function calculate(){}
+"""
+
+
+def _run_dom(body: str, fns: tuple[str, ...]) -> dict:
+    """Исполняет собранный JS с DOM-заглушкой — для функций, трогающих документ."""
+    script, db = _script_and_db()
+    parts = [f"const DB = {json.dumps(db, ensure_ascii=False)};", _DOM_STUB_UNITS]
+    parts += [_extract(script, name) for name in fns]
+    parts.append("console.log(JSON.stringify(" + body + "));")
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as handle:
+        handle.write("\n".join(parts) + "\n")
+        path = handle.name
+    result = subprocess.run([node, path], capture_output=True, text=True, timeout=300, check=True)
+    return json.loads(result.stdout.strip().splitlines()[-1])
+
+
+def test_weight_warning_names_the_actual_dose_unit() -> None:
+    """Предупреждение о весе называет ту единицу, в которой задана доза.
+
+    У бензилпенициллина доза в ЕД/кг, и в БД 5 таких режимов. Раньше сообщение
+    жёстко говорило «рассчитывается по мг/кг».
+    """
+    verdict = _run_dom(
+        """(() => {
+      const out = {};
+      updateWeightWarn(true, 'ЕД');      out.units = _warn.querySelector('span').textContent;
+      updateWeightWarn(true, 'мг');      out.mg = _warn.querySelector('span').textContent;
+      updateWeightWarn(true, undefined); out.fallback = _warn.querySelector('span').textContent;
+      return out;
+    })()""",
+        ("updateWeightWarn",),
+    )
+    assert "ЕД/кг" in verdict["units"], verdict
+    assert "мг/кг" not in verdict["units"], verdict
+    assert "мг/кг" in verdict["mg"], verdict
+    assert "мг/кг" in verdict["fallback"], verdict
+
+
+def test_calculate_passes_the_unit_into_the_weight_warning() -> None:
+    """Единица должна доходить от справочника до предупреждения."""
+    script, _db = _script_and_db()
+    calc = _extract(script, "calculate")
+    assert "updateWeightWarn(needWeight, unit)" in calc, (
+        "calculate() обязан передавать единицу в updateWeightWarn"
+    )
+
+
+def test_regimen_label_uses_the_reference_unit_not_a_hardcoded_one() -> None:
+    """Метка режима берёт единицу из справочника."""
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    units_drug = next(
+        ref
+        for ref, entry in (db.get("drugs_reference") or {}).items()
+        if isinstance(entry, dict) and entry.get("dose_unit") == "ЕД"
+    )
+    verdict = _run_dom(
+        """(() => {
+      activeDrug = {drug_ref: %s, regimens: [
+        {age_group:'neonate', dose_mg_kg_day: 100000, freq_per_day: 4},
+        {age_group:'neonate', dose_mg_kg_day: 50000,  freq_per_day: 2},
+      ]};
+      activeAge = 'neonate';
+      renderRegimens(0);
+      return { label: _regList.children[0].textContent, drug: %s };
+    })()"""
+        % (json.dumps(units_drug), json.dumps(units_drug)),
+        ("renderRegimens", "getDrugRefs", "doseUnitOf"),
+    )
+    assert verdict["drug"] == units_drug
+    assert "ЕД/кг" in verdict["label"], verdict
+    assert "мг/кг" not in verdict["label"], verdict
+
+
+def test_no_dead_local_variables_anywhere_in_the_shipped_script() -> None:
+    """Ни одна локальная переменная shipped-JS не вычисляется впустую.
+
+    Так были найдены ``freqStr`` и ``routeLat`` в печати рецепта (обе держали
+    недостижимыми карты ``LATIN_FREQ`` и ``LATIN_ROUTE``) и ``mainRef`` в
+    ``renderRegimens``. Проверка перебирает все функции верхнего уровня.
+    """
+    script, _db = _script_and_db()
+    functions = []
+    for match in re.finditer(r"\nfunction ([A-Za-z_][A-Za-z0-9_]*)\(", script):
+        i, depth, started = match.start(), 0, False
+        while i < len(script):
+            if script[i] == "{":
+                depth += 1
+                started = True
+            elif script[i] == "}":
+                depth -= 1
+                if started and depth == 0:
+                    i += 1
+                    break
+            i += 1
+        functions.append((match.group(1), script[match.start():i]))
+
+    assert len(functions) >= 70, f"ожидалось не менее 70 функций, найдено {len(functions)}"
+
+    dead = [
+        (name, decl)
+        for name, body in functions
+        for decl in set(re.findall(r"^\s*(?:const|let)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=", body, re.M))
+        if len(re.findall(r"(?<![.\w])" + re.escape(decl) + r"(?![\w])", body)) <= 1
+    ]
+    assert dead == [], f"переменные вычисляются и не используются: {dead}"
+
+
+def test_no_hardcoded_per_kg_unit_remains_in_display_code() -> None:
+    """«мг/кг» не пишется по месту ни в одной точке вывода."""
+    template = TEMPLATE.read_text(encoding="utf-8")
+    offenders = [
+        line.strip()
+        for line in template.splitlines()
+        if "мг/кг" in line
+        and not line.strip().startswith("//")
+        and "id=\"db-data\"" not in line
+        # документированный фолбэк, когда у кандидата нет unit
+        and "candidate.dose.unit || 'мг/кг'" not in line
+    ]
+    assert offenders == [], offenders
