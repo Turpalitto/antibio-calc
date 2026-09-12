@@ -199,3 +199,91 @@ def test_no_task_is_selected_twice() -> None:
 
 def test_an_empty_queue_selects_nothing() -> None:
     assert select_quota_capped([], 10) == []
+
+
+# ── сквозной словарь осей: queue_builder пишет, pilot_policy читает ───────────
+
+
+@dataclass
+class FakeRegimen:
+    age_group: str = "adult"
+    pregnancy: bool = False
+    renal_adjustment: bool = False
+    dose: object = 500
+    unit: str = "мг"
+    conflicts: tuple = ()
+    source_pdf: str = "kr.pdf"
+    source_page: int = 3
+    source_quote: str = "цитата из КР"
+
+
+# Каждая ось, которую выдаёт queue_builder._regimen_axes, и ярус, куда она обязана попасть
+# по спецификации владельца в PHYSICIAN_PILOT_POLICY.md.
+AXIS_TO_TIER = {
+    "pediatric": (FakeRegimen(age_group="child"), 1),
+    "pregnancy": (FakeRegimen(pregnancy=True), 2),
+    "renal": (FakeRegimen(renal_adjustment=True), 3),
+    "missing_dose": (FakeRegimen(dose=None), 5),
+    "missing_unit": (FakeRegimen(unit=""), 5),
+    "clinical_conflict": (FakeRegimen(conflicts=("c",)), 6),
+    "source_mismatch": (FakeRegimen(source_pdf=""), 7),
+}
+
+
+@pytest.mark.parametrize("axis", sorted(AXIS_TO_TIER))
+def test_every_axis_queue_builder_emits_reaches_its_tier(axis: str) -> None:
+    """Ни одна сохранённая ось не должна теряться между двумя модулями.
+
+    Ярус 5 по спецификации владельца — «missing dose OR unit», но раньше проверялись
+    только ``missing_unit`` и ``issue_type``: режим без дозы, но с единицей получал ось
+    ``missing_dose`` от ``queue_builder`` и уходил в ярус 99 «no_owner_tier_match».
+    """
+    from clinical_engine.review_workbench.queue_builder import _regimen_axes
+
+    regimen, expected_tier = AXIS_TO_TIER[axis]
+    axes = tuple(sorted(set(_regimen_axes(regimen))))
+    assert axis in axes, f"queue_builder не выдал ось {axis}, получено {axes}"
+
+    task = FakeTask("t", safety_axes=axes)
+    tiers = [m.tier for m in match_tiers(task, {})]
+    assert expected_tier in tiers, f"ось {axis} не попала в ярус {expected_tier}: {tiers}"
+    assert all(m.origin == "STORED" for m in match_tiers(task, {}))
+
+
+def test_a_regimen_with_no_dose_but_with_a_unit_is_not_left_unmatched() -> None:
+    """Регрессия на конкретный случай: доза отсутствует, единица есть."""
+    from clinical_engine.review_workbench.queue_builder import _regimen_axes
+
+    axes = tuple(sorted(set(_regimen_axes(FakeRegimen(dose=None, unit="мг")))))
+    assert axes == ("missing_dose",), axes
+
+    task = FakeTask("no-dose", safety_axes=axes)
+    tier, label, origin, _tiebreak, _task_id = primary_rank(task, {})
+    assert (tier, label, origin) == (5, "missing_dose_or_unit", "STORED"), (tier, label, origin)
+
+
+def test_the_only_axis_read_but_never_stored_is_the_documented_allergy_gap() -> None:
+    """`severe_allergy` читается, но не сохраняется — и это задокументировано.
+
+    ``PHYSICIAN_PILOT_POLICY.md``: сохранённых тегов аллергии в системе 0 из 9 153,
+    поэтому ярус 4 опирается на ключевое слово. Любая ДРУГАЯ нечитаемая ось — дефект.
+    """
+    from clinical_engine.review_workbench.queue_builder import _regimen_axes
+
+    emitted = set()
+    for regimen, _tier in AXIS_TO_TIER.values():
+        emitted |= set(_regimen_axes(regimen))
+
+    # Что читает pilot_policy как сохранённые оси (по коду match_tiers).
+    read_as_stored = {
+        "pediatric", "pregnancy", "renal", "missing_unit", "missing_dose",
+        "clinical_conflict", "source_mismatch",
+    }
+    unread = emitted - read_as_stored
+    assert unread == set(), f"оси выдаются, но не читаются: {sorted(unread)}"
+
+    # А ось аллергии queue_builder не выдаёт — ярус 4 живёт на ключевом слове.
+    assert not any("allerg" in a for a in emitted)
+    allergy_task = FakeTask("allergy", safety_axes=())
+    derived = match_tiers(allergy_task, {"indication": "тяжёлая аллергия на пенициллин"})
+    assert [(m.tier, m.origin) for m in derived] == [(4, "DERIVED_REVIEW_SIGNAL")], derived

@@ -68,8 +68,14 @@ def match_tiers(task, payload: dict) -> list[SignalMatch]:
     add(2, "pregnancy", "pregnancy" in task.safety_axes, "pregnancy")
     add(3, "renal", "renal" in task.safety_axes, "renal")
     add(4, "severe_allergy", any("allerg" in a for a in task.safety_axes), "severe_allergy")
+    # Ярус 5 по спецификации владельца — «missing dose OR unit». Раньше здесь
+    # проверялись только missing_unit и issue_type, а ось missing_dose, которую
+    # выдаёт queue_builder._regimen_axes, не читалась вовсе: режим без дозы, но с
+    # единицей уходил в ярус 99 «no_owner_tier_match» вместо яруса 5.
     add(5, "missing_dose_or_unit",
-        "missing_unit" in task.safety_axes or task.issue_type in DOSE_ISSUE_TYPES)
+        "missing_unit" in task.safety_axes
+        or "missing_dose" in task.safety_axes
+        or task.issue_type in DOSE_ISSUE_TYPES)
     add(6, "unresolved_conflict",
         "clinical_conflict" in task.safety_axes or task.issue_type in CONFLICT_ISSUE_TYPES)
     add(7, "source_mismatch", "source_mismatch" in task.safety_axes)

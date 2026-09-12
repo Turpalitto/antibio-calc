@@ -114,7 +114,7 @@ C:\ANTIBIO/
 - **Возрастная безопасность:** доза чужой возрастной группы недостижима — вместо расчёта
   калькулятор объясняет, что схемы на этот возраст в КР нет
 - **Валидация БД:** `node db/validate_db.js` → 0 errors / 263 warnings
-- **Тесты:** `pytest -q` → 2356 passed, 32 skipped, 1 xfailed
+- **Тесты:** `pytest -q` → 2365 passed, 32 skipped, 1 xfailed
 - **Фаза:** Medical Data Quality Improvement
 
 ## Источник данных
