@@ -1185,7 +1185,12 @@ function renderForms(preferredRoute){
   const groups = {po:[], im:[], iv:[]};
   // Формы, которые в принципе можно принять внутрь. Всё остальное — инъекционные
   // растворы, порошок для инъекций, крем — пероральными не становятся.
-  const ORAL_FORMS = ['tablet','capsule','suspension','syrup','granules','powder_for_suspension'];
+  // powder_for_suspension здесь НЕТ намеренно: с concentration_mg_per_ml его уже ловит
+  // основное правило выше, а без концентрации он не дозируется как пероральная
+  // жидкость. resolveCalculatorBinding трактует пероральность точно так же, и список
+  // обязан совпадать — иначе личный режим врача и обычный расходились бы в решении,
+  // можно ли форму принять внутрь.
+  const ORAL_FORMS = ['tablet','capsule','suspension','syrup','granules'];
   let skipped = [];
   forms.forEach((f, idx)=>{
     // powder_for_suspension используется и для пероральной суспензии (есть concentration_mg_per_ml),

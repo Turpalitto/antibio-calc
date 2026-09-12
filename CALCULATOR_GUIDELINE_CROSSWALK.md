@@ -173,7 +173,7 @@ python -m clinical_engine.crosswalk --write  # пересобрать
 ## 6. Как проверять
 
 ```bash
-pytest -q                                            # 2317 passed, 32 skipped, 1 xfailed
+pytest -q                                            # 2318 passed, 32 skipped, 1 xfailed
 python -m clinical_engine.crosswalk                  # in_sync
 python db/build_db.py                                # 120 recs, 98 со связями
 python db/build_html.py                              # antibiotic_calc.html
@@ -190,7 +190,7 @@ python -m clinical_engine.crosswalk.review_queue     # очередь враче
 | `clinical_engine/tests/test_crosswalk_review_queue.py` (32) | Категории очереди, порядок, детерминизм, отсутствие клинических вердиктов |
 | `clinical_engine/tests/test_api_crosswalk.py` (8) | `GET /v1/guidelines/{id}`, блокировка передаётся дословно |
 | `tests/test_calculator_guideline_links.py` (11) | Реальный JS панели под Node, воспроизводимость сборки HTML |
-| `src/tests/test_calculator_db_quality.py` (52) | МКБ-10, дубли, дозы, маршруты, навигационный статус |
+| `src/tests/test_calculator_db_quality.py` (53) | МКБ-10, дубли, дозы, маршруты, навигационный статус |
 | `src/tests/test_regimen_semantics.py` (57) | Разбор длительности, сборка метки, идемпотентность |
 | `src/tests/test_calculator_duration_display.py` (13) | Shipped-JS отображения курса под Node на реальной БД |
 | `src/tests/test_calculator_age_group_safety.py` (11) | Shipped-JS подбора режима: доза чужой возрастной группы недостижима |

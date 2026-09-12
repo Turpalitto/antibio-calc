@@ -773,3 +773,71 @@ def test_the_two_validators_share_exactly_the_expected_categories():
     assert sum(b_counts.values()) == len(browser["warns"]) == 184
     assert sum(bu_counts.values()) == 264
     assert browser["errs"] == []
+
+
+# ── одно понятие «пероральная форма» — одно определение ──────────────────────
+
+def test_all_three_oral_form_definitions_agree():
+    """Пероральность формы определена в трёх местах и обязана совпадать.
+
+    ``resolveCalculatorBinding`` (личный режим врача), основное правило группировки в
+    ``renderForms`` и фолбэк ``ORAL_FORMS`` решают один и тот же вопрос. Раньше фолбэк
+    включал ``powder_for_suspension`` безусловно, тогда как остальные два требуют
+    ``concentration_mg_per_ml`` — личный режим и обычный могли разойтись в решении,
+    можно ли форму принять внутрь. На текущих данных расхождение недостижимо (все 15 форм
+    ``powder_for_suspension`` имеют концентрацию), поэтому это закрепление инварианта.
+    """
+    import subprocess
+    import tempfile
+
+    html = (ROOT / "antibiotic_calc.html").read_text(encoding="utf-8")
+    script = next(
+        body
+        for _a, body in re.findall(r"<script(?P<a>[^>]*)>(?P<body>.*?)</script>", html, re.S)
+        if "function renderForms(" in body
+    )
+    db = json.loads(
+        re.search(r'<script id="db-data" type="application/json">(.*?)</script>', html, re.S).group(1)
+    )
+
+    # Список в фолбэке обязан совпадать со списком основного правила.
+    fallback = re.search(r"const ORAL_FORMS = \[([^\]]*)\]", script)
+    assert fallback, "ORAL_FORMS не найден в renderForms"
+    fallback_forms = re.findall(r"'([a-z_]+)'", fallback.group(1))
+
+    binding = re.search(r"forms\.some\(form=>\[([^\]]*)\]\.includes\(form\.form_type\)", script)
+    assert binding, "список пероральных форм в resolveCalculatorBinding не найден"
+    binding_forms = re.findall(r"'([a-z_]+)'", binding.group(1))
+
+    primary = re.search(r"if\(\[([^\]]*)\]\.includes\(f\.form_type\)", script)
+    assert primary, "основное правило группировки в renderForms не найдено"
+    primary_forms = re.findall(r"'([a-z_]+)'", primary.group(1))
+
+    assert fallback_forms == binding_forms == primary_forms, (
+        fallback_forms, binding_forms, primary_forms
+    )
+    # powder_for_suspension обрабатывается отдельно и только при наличии концентрации —
+    # в обоих местах, где он упоминается как условие.
+    assert "powder_for_suspension" not in fallback_forms
+    assert "f.form_type === 'powder_for_suspension' && f.concentration_mg_per_ml != null" in script
+    assert "form.form_type === 'powder_for_suspension' && form.concentration_mg_per_ml != null" in script
+
+    # Поведенческая сверка на реальной БД: фолбэк не расширяет пероральный набор.
+    body = r"""
+    const ORAL = f => ['tablet','capsule','suspension','syrup','granules'].includes(f.form_type)
+      || (f.form_type==='powder_for_suspension' && f.concentration_mg_per_ml!=null);
+    const FB = f => %s.includes(f.form_type);
+    let wider = [], nonOralInPo = 0;
+    for (const [ref, entry] of Object.entries(DB.drugs_reference||{})) {
+      if (ref==='_note' || !entry || typeof entry!=='object') continue;
+      for (const f of entry.forms||[]) if (FB(f) && !ORAL(f)) wider.push(ref+': '+f.form_type);
+    }
+    console.log(JSON.stringify({wider: wider.slice(0,5), count: wider.length, nonOralInPo: nonOralInPo}));
+    """ % (json.dumps(fallback_forms),)
+    path = Path(tempfile.mkdtemp()) / "t.js"
+    path.write_text(f"const DB = {json.dumps(db, ensure_ascii=False)};\n{body}\n", encoding="utf-8")
+    result = json.loads(
+        subprocess.run([_node(), str(path)], capture_output=True, text=True, timeout=300, check=True)
+        .stdout.strip().splitlines()[-1]
+    )
+    assert result["count"] == 0, f"фолбэк считает пероральными непероральные формы: {result['wider']}"
