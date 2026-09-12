@@ -173,7 +173,7 @@ python -m clinical_engine.crosswalk --write  # пересобрать
 ## 6. Как проверять
 
 ```bash
-pytest -q                                            # 2330 passed, 32 skipped, 1 xfailed
+pytest -q                                            # 2334 passed, 32 skipped, 1 xfailed
 python -m clinical_engine.crosswalk                  # in_sync
 python db/build_db.py                                # 120 recs, 98 со связями
 python db/build_html.py                              # antibiotic_calc.html
@@ -202,6 +202,7 @@ python -m clinical_engine.crosswalk.review_queue     # очередь враче
 | `src/tests/test_source_gate_report.py` (8) | Worklist блокировок + fail-closed инварианты |
 | `src/tests/test_data_quality_report.py` (16) | Worklist качества данных: сверка с валидатором по категориям, контекст, отсутствие вердиктов |
 | `tests/test_calculator_form_chips.py` (6) | Shipped-JS выбора лекарственной формы: ни один тип не роняет отрисовку, иконки, недостижимые ветки |
+| `tests/test_annotation_names_declared.py` (4) | Статический обход: каждое имя в аннотации объявлено в своём модуле |
 
 ---
 

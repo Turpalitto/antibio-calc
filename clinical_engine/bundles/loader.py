@@ -26,9 +26,15 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 from clinical_engine.manifest import BundleManifest, load_manifest, validate_manifest
+
+if TYPE_CHECKING:
+    # Только для проверки типов: conformance.py сам импортирует LoadedBundle из этого
+    # модуля, поэтому обычный импорт создал бы цикл. Без этого объявления аннотация
+    # ConformanceResult не разрешается — typing.get_type_hints падал с NameError.
+    from clinical_engine.conformance import ConformanceResult
 # P2-1: late import to avoid circular (conformance imports LoadedBundle)
 
 

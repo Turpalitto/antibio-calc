@@ -8,7 +8,13 @@ import sqlite3
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    # Только для проверки типов: import_into_store принимает ReviewStore, но сам его
+    # не использует в рантайме. Без объявления аннотация не разрешалась —
+    # typing.get_type_hints падал с NameError.
+    from clinical_engine.review_workbench.storage import ReviewStore
 
 _SIMPLE_UNIT = re.compile(r"(?<![\w/])(мг|mg|г|g|мкг|mcg|µg|мл|ml|ед|ме|iu)(?![\w/])", re.I)
 _COMPOUND_UNIT = re.compile(
