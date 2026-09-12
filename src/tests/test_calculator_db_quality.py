@@ -655,3 +655,121 @@ def test_every_coverage_number_is_backed_by_the_actual_data():
     for method, count in declared.items():
         assert by_method.get(method, 0) == count, f"{method}: {by_method.get(method, 0)} != {count}"
     assert coverage["linked_diseases"] + coverage["unmatched_diseases"] == coverage["calculator_diseases"]
+
+
+# ── граница двух валидаторов ─────────────────────────────────────────────────
+
+_BROWSER_CATS = ("нет cr_year", "нет cr_id", "нет duration_days", "нет route", "вне сценария age_group")
+
+_BUILD_CATS = (
+    ("age_group вне сценария", "outside scenario age_group"),
+    ("нет режима для возраста", "no regimen for age_group"),
+    ("нет duration_days", "missing duration_days"),
+    ("нет route", "no route declared"),
+    ("нет дозы", "no dose at all"),
+    ("нет regimen_label", "no regimen_label"),
+    ("duration_days не разобран", "unclassifiable free text"),
+    ("маршрут вне расчётного контура", "cannot render it"),
+    ("композитная таблетка", "tablets (by total"),
+)
+
+
+def _browser_validator_counts() -> dict[str, int]:
+    """Запускает браузерный ``validateDB()`` из собранного HTML на реальной БД."""
+    import subprocess
+    import tempfile
+
+    html = (ROOT / "antibiotic_calc.html").read_text(encoding="utf-8")
+    script = next(
+        body
+        for _attrs, body in re.findall(r"<script(?P<a>[^>]*)>(?P<body>.*?)</script>", html, re.S)
+        if "function validateDB(" in body
+    )
+    match = re.search(r"function validateDB\(", script)
+    i, depth, started = match.start(), 0, False
+    while i < len(script):
+        if script[i] == "{":
+            depth += 1
+            started = True
+        elif script[i] == "}":
+            depth -= 1
+            if started and depth == 0:
+                i += 1
+                break
+        i += 1
+    fn = script[match.start():i]
+    db = json.loads(
+        re.search(r'<script id="db-data" type="application/json">(.*?)</script>', html, re.S).group(1)
+    )
+    path = Path(tempfile.mkdtemp()) / "v.js"
+    path.write_text(
+        f"const DB = {json.dumps(db, ensure_ascii=False)};\n{fn}\n"
+        "const r = validateDB(); console.log(JSON.stringify(r));\n",
+        encoding="utf-8",
+    )
+    out = subprocess.run([_node(), str(path)], capture_output=True, text=True, timeout=300, check=True).stdout
+    return json.loads(out.strip().splitlines()[-1])
+
+
+def test_the_two_validators_share_exactly_the_expected_categories():
+    """Шапка браузера и сборочный валидатор имеют РАЗНЫЙ объём — и это закреплено.
+
+    Раньше расхождение было молчаливым: шапка показывала «⚠️ 124 пред», а сборка
+    знала о 264, и расхождение по возрастной группе (60) браузер не видел вовсе.
+    Теперь общее покрыто, а остаток разделён осознанно: браузерный валидатор
+    показывает то, что видит пользователь собранным HTML, сборочный — полный
+    гейт данных. Тест фиксирует обе границы, поэтому добавление проверки в один
+    валидатор без другого упадёт, а не пройдёт незамеченным.
+    """
+    import collections
+    import subprocess
+
+    browser = _browser_validator_counts()
+    b_counts = collections.Counter()
+    for warn in browser["warns"]:
+        for cat in _BROWSER_CATS:
+            if cat in warn:
+                b_counts[cat] += 1
+                break
+        else:
+            raise AssertionError(f"браузерный валидатор выдал неучтённую категорию: {warn[:120]}")
+
+    build_out = subprocess.run(
+        [_node(), str(ROOT / "db" / "validate_db.js")],
+        capture_output=True, text=True, cwd=ROOT, timeout=300, check=True,
+    ).stdout
+    bu_counts = collections.Counter()
+    for line in build_out.splitlines():
+        if "WARN:" not in line:
+            continue
+        for cat, needle in _BUILD_CATS:
+            if needle in line:
+                bu_counts[cat] += 1
+                break
+        else:
+            raise AssertionError(f"сборочный валидатор выдал неучтённую категорию: {line[:160]}")
+
+    # Общее покрытие — ровно три категории, числа совпадают.
+    shared = ("age_group вне сценария", "нет duration_days", "нет route")
+    for cat in shared:
+        browser_key = "вне сценария age_group" if "age_group" in cat else cat
+        assert b_counts[browser_key] == bu_counts[cat], (cat, b_counts, bu_counts)
+    assert b_counts["вне сценария age_group"] == 60
+    assert b_counts["нет duration_days"] == 47
+    assert b_counts["нет route"] == 29
+
+    # Только браузер: cr_year сборочный валидатор не проверяет вовсе.
+    assert b_counts["нет cr_year"] == 48
+    assert "нет cr_id" not in b_counts or b_counts["нет cr_id"] == 0
+
+    # Только сборка: полный гейт данных.
+    assert bu_counts["нет режима для возраста"] == 59
+    assert bu_counts["нет дозы"] == 27
+    assert bu_counts["нет regimen_label"] == 27
+    assert bu_counts["duration_days не разобран"] == 12
+    assert bu_counts["маршрут вне расчётного контура"] == 2
+    assert bu_counts["композитная таблетка"] == 1
+
+    assert sum(b_counts.values()) == len(browser["warns"]) == 184
+    assert sum(bu_counts.values()) == 264
+    assert browser["errs"] == []
