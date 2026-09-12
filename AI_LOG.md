@@ -1,3 +1,39 @@
+## 2026-09-12: Связь клинреков с калькулятором проверена end-to-end; API прочитан целиком
+
+- **Основной результат запроса проверен на живых серверах**, а не только тестами.
+  Калькулятор: `GET /antibiotic_calc.html` → **200, 838 260 байт**; в выдаче присутствуют
+  `resolveCalculatorBinding` (4 вхождения) и `guideline_links` (5). API:
+  `/v1/guidelines/aom_child` → **200, guideline_count=2**;
+  `/v1/guidelines/uti_prophylaxis` → **200, guideline_count=5**;
+  `/v1/guidelines/nonexistent_xyz` → **404, DIAGNOSIS_NOT_FOUND**.
+- **Согласованность БД и артефакта:** 120 нозологий, 98 со связями, 263 связи;
+  `content_sha256` в БД и в `clinical_engine/resources/calculator_crosswalk.json`
+  совпадают (`in_sync: True`).
+- **`api/service.py` (356 строк) прочитан целиком** — за пределами уже покрытого роута
+  руководств. Дефектов не найдено, два подозрения проверены и сняты:
+  - `handle_health` читает `st.available` как свойство, а `handle_recommend` вызывает
+    `ctx.corpus.available()` как метод. Если бы `CorpusStatus.available` был методом,
+    `ready` стал бы всегда истинным (связанный метод всегда truthy). Проверено: над
+    `CorpusStatus.available` стоит `@property` (строки 93-96), а `CorpusLocator.available()`
+    возвращает `self.status().available`. Живой `/v1/health` отдаёт
+    `status=degraded, ready=False, corpus.available=False` — корректно, поскольку базы KB
+    в репозитории нет. Существующий тест `test_health_without_corpus` уже закрепляет
+    `ready is False`, поэтому вопрос закрыт тестом, а не только чтением.
+  - В `handle_recommend_v2` условие `status == "APPROVED" or status not in
+    ALLOWED_STATUSES` избыточно в первой части: `ALLOWED_STATUSES` =
+    {OWNER_REVIEWED, REVIEW_REQUIRED, BLOCKED, ERROR}, «APPROVED» там нет. Это намеренная
+    защита в глубину — словарь одобрения v1 не должен протечь в v2; то же условие
+    продублировано в `v2_contract.py:176`.
+- **Поведение v2 fail-closed задокументировано чтением:** для статусов, отличных от
+  `OWNER_REVIEWED`, рекомендации молча обнуляются; пустой список при `OWNER_REVIEWED`
+  даёт `NO_OWNER_REVIEWED_REGIMEN`; любая запись без
+  `governance_status == "OWNER_REVIEWED_EXPERIMENTAL"` даёт
+  `INVALID_RECOMMENDATION_GOVERNANCE`. Исключения личного сервиса преобразуются, а не
+  протекают наружу.
+- **Состояние верстака:** модулей без тестового покрытия не осталось.
+- `pytest -q` → **2409 passed, 32 skipped, 1 xfailed**. `node db/validate_db.js` →
+  EXIT=0, 0 errors / 264 warnings. БД детерминирована (SHA-256 `51d16641760b7046…`).
+
 ## 2026-09-12: Находки импортировались в постоянное хранилище без происхождения
 
 - **Находка 24.** `issue_registry.import_clinical_data_issues` — единственный путь записи
