@@ -173,7 +173,7 @@ python -m clinical_engine.crosswalk --write  # пересобрать
 ## 6. Как проверять
 
 ```bash
-pytest -q                                            # 2369 passed, 32 skipped, 1 xfailed
+pytest -q                                            # 2374 passed, 32 skipped, 1 xfailed
 python -m clinical_engine.crosswalk                  # in_sync
 python db/build_db.py                                # 120 recs, 98 со связями
 python db/build_html.py                              # antibiotic_calc.html

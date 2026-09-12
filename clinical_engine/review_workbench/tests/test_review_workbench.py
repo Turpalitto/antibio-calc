@@ -435,3 +435,96 @@ def test_queue_report_separates_measurement_from_projection(store):
     assert report["measured"]["total"] == 1
     assert report["measured"]["by_safety_axis"] == {"pediatric": 1}
     assert report["workload_projection"]["status"] == "PLANNING_ESTIMATE_NOT_BENCHMARK"
+
+
+# ── стык queue_builder → priority: ось без веса молча исчезает из оценки ──────
+
+
+def _axes_queue_builder_can_emit() -> set[str]:
+    """Все оси, которые способен выдать _regimen_axes."""
+    from dataclasses import dataclass
+
+    from clinical_engine.review_workbench.queue_builder import _regimen_axes
+
+    @dataclass
+    class Regimen:
+        age_group: str = "adult"
+        pregnancy: bool = False
+        renal_adjustment: bool = False
+        dose: object = 500
+        unit: str = "мг"
+        conflicts: tuple = ()
+        source_pdf: str = "kr.pdf"
+        source_page: int = 3
+        source_quote: str = "цитата"
+
+    variants = [
+        Regimen(age_group="child"),
+        Regimen(pregnancy=True),
+        Regimen(renal_adjustment=True),
+        Regimen(dose=None),
+        Regimen(unit=""),
+        Regimen(conflicts=("c",)),
+        Regimen(source_pdf=""),
+        Regimen(source_page=0),
+        Regimen(source_quote=""),
+        Regimen(),
+    ]
+    axes: set[str] = set()
+    for regimen in variants:
+        axes |= set(_regimen_axes(regimen))
+    return axes
+
+
+def test_every_axis_queue_builder_emits_has_a_priority_weight() -> None:
+    """Ось без веса молча не влияет на приоритет.
+
+    ``score_priority`` строит вклады как
+    ``[(reason, _WEIGHTS[reason]) for reason in normalized if reason in _WEIGHTS]`` —
+    неизвестная причина просто отбрасывается, без ошибки и без предупреждения. Если
+    ``_regimen_axes`` начнёт выдавать новую ось, а вес ей не добавят, ось перестанет
+    влиять на порядок очереди, и это будет не видно ни в одном из двух модулей.
+    """
+    from clinical_engine.review_workbench.priority import _WEIGHTS
+
+    axes = _axes_queue_builder_can_emit()
+    assert axes, "предусловие: _regimen_axes должен выдавать оси"
+    unweighted = sorted(axes - set(_WEIGHTS))
+    assert unweighted == [], f"оси без веса в priority._WEIGHTS: {unweighted}"
+
+
+def test_other_reasons_written_by_the_queue_builder_are_weighted_too() -> None:
+    """Не только оси: queue_builder передаёт и отдельные причины."""
+    from clinical_engine.review_workbench.priority import _WEIGHTS
+
+    literal_reasons = {"missing_metadata", "golden_failure", "source_mismatch", "missing_dose"}
+    unweighted = sorted(literal_reasons - set(_WEIGHTS))
+    assert unweighted == [], f"причины без веса: {unweighted}"
+
+
+def test_every_severity_has_a_base_score() -> None:
+    """_SEVERITY_BASE[severity] — обращение по ключу; непокрытое значение даст KeyError."""
+    from clinical_engine.review_workbench.models import Severity
+    from clinical_engine.review_workbench.priority import _SEVERITY_BASE
+
+    missing = [severity for severity in Severity if severity not in _SEVERITY_BASE]
+    assert missing == [], f"значения Severity без базового балла: {missing}"
+    for severity in Severity:
+        assert score_priority(severity=severity).score >= 0, severity
+
+
+def test_high_reasons_are_a_subset_of_weighted_reasons() -> None:
+    """_HIGH_REASONS поднимает оценку до 60; причина без веса там была бы бессмысленна."""
+    from clinical_engine.review_workbench.priority import _HIGH_REASONS, _WEIGHTS
+
+    assert _HIGH_REASONS <= set(_WEIGHTS), sorted(_HIGH_REASONS - set(_WEIGHTS))
+
+
+def test_an_unknown_reason_never_raises_and_never_changes_the_score() -> None:
+    """Неизвестная причина игнорируется молча — это задокументированное поведение стыка."""
+    baseline = score_priority(severity=Severity.MEDIUM, reasons=["pediatric"])
+    with_unknown = score_priority(
+        severity=Severity.MEDIUM, reasons=["pediatric", "reason_from_the_future"]
+    )
+    assert baseline.score == with_unknown.score
+    assert baseline.contributing_reasons == with_unknown.contributing_reasons
