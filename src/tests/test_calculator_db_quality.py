@@ -588,3 +588,70 @@ def test_validator_warns_on_a_combination_without_component_regimens(tmp_path):
 
     hits = [line.strip() for line in result.stdout.splitlines() if "no component_regimens" in line]
     assert len(hits) >= 1, result.stdout[-2000:]
+
+
+# ── проекция кроссволка в БД против артефакта-источника ───────────────────────
+
+_CROSSWALK_ARTIFACT = (
+    ROOT / "clinical_engine" / "resources" / "calculator_crosswalk.json"
+)
+
+
+def test_db_crosswalk_projection_matches_the_source_artifact():
+    """Числа в ``meta.guideline_crosswalk`` обязаны совпадать с артефактом.
+
+    Проекцию в БД и артефакт ``calculator_crosswalk.json`` собирают разные шаги
+    (``db/build_db.py`` и ``python -m clinical_engine.crosswalk``). Если пересобрать
+    одно и забыть другое, панель в HTML станет показывать устаревшие числа, и ни
+    один существующий тест этого не поймает: каждый сверял проекцию саму с собой.
+    """
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    artifact = json.loads(_CROSSWALK_ARTIFACT.read_text(encoding="utf-8-sig"))
+
+    projection = db["meta"]["guideline_crosswalk"]
+    coverage = artifact["meta"]["coverage"]
+
+    for key in (
+        "calculator_diseases",
+        "linked_diseases",
+        "unmatched_diseases",
+        "linked_guidelines",
+        "links",
+        "links_by_method",
+    ):
+        assert projection[key] == coverage[key], f"{key}: {projection[key]} != {coverage[key]}"
+
+    assert projection["content_sha256"] == artifact["content_sha256"]
+    assert projection["purpose"] == artifact["meta"]["purpose"] == "NAVIGATION_ONLY"
+    assert projection["confidence_by_method"] == artifact["meta"]["confidence_by_method"]
+
+
+def test_every_coverage_number_is_backed_by_the_actual_data():
+    """Заявленные числа — не декларация: каждое пересчитывается из данных."""
+    db = json.loads(DB_PATH.read_text(encoding="utf-8-sig"))
+    artifact = json.loads(_CROSSWALK_ARTIFACT.read_text(encoding="utf-8-sig"))
+    coverage = artifact["meta"]["coverage"]
+
+    actual_links = [link for rec in db["recommendations"] for link in rec.get("guideline_links") or []]
+    actual_linked_diseases = {rec["id"] for rec in db["recommendations"] if rec.get("guideline_links")}
+    actual_unmatched = {
+        rec["id"] for rec in db["recommendations"] if not rec.get("guideline_links")
+    }
+    actual_guidelines = {link["guideline_id"] for link in actual_links}
+
+    assert coverage["calculator_diseases"] == len(db["recommendations"])
+    assert coverage["links"] == len(actual_links) == len(artifact["links"])
+    assert coverage["linked_diseases"] == len(actual_linked_diseases)
+    assert coverage["unmatched_diseases"] == len(actual_unmatched)
+    assert coverage["linked_guidelines"] == len(actual_guidelines)
+
+    by_method: dict[str, int] = {}
+    for link in actual_links:
+        by_method[link["method"]] = by_method.get(link["method"], 0) + 1
+    # Артефакт декларирует все методы, включая нулевые (TITLE_EXACT: 0) —
+    # отсутствующий в подсчёте метод означает ноль, а не расхождение.
+    declared = coverage["links_by_method"]
+    assert set(by_method) <= set(declared), (by_method, declared)
+    for method, count in declared.items():
+        assert by_method.get(method, 0) == count, f"{method}: {by_method.get(method, 0)} != {count}"
+    assert coverage["linked_diseases"] + coverage["unmatched_diseases"] == coverage["calculator_diseases"]

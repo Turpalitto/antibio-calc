@@ -1,3 +1,43 @@
+## 2026-09-11: Проекция кроссволка в БД привязана к артефакту-источнику
+
+- **Исправлено моё собственное неверное утверждение.** В прошлом ходе я написал, что ключа
+  `coverage` не существует. Это неправда: `meta.coverage` **есть**, но в артефакте
+  `clinical_engine/resources/calculator_crosswalk.json`, а не в `meta.guideline_crosswalk`
+  внутри `db/antibio_db.json`. Я проверил не тот файл и сделал вывод по нему. Фактическая
+  структура: в БД — `meta.guideline_crosswalk` с ключами `builder_version`,
+  `calculator_diseases`, `confidence_by_method`, `content_sha256`, `diagnosis_index_status`,
+  `linked_diseases`, `linked_guidelines`, `links`, `links_by_method`, `purpose`,
+  `schema_version`, `unmatched_diseases`, `warning`; в артефакте — `meta.coverage`
+  с `calculator_diseases 120`, `corpus_guidelines 294`, `corpus_titles 193`,
+  `linked_diseases 98`, `linked_guidelines 199`, `links 263`,
+  `links_by_method {ICD10_EXACT 181, ICD10_BLOCK 82, TITLE_EXACT 0}`,
+  `skipped_index_entries 0`, `titles_shared_by_several_guidelines 81`,
+  `unlinked_guidelines 95`, `unmatched_diseases 22`.
+- **Найден незакрытый инвариант того же класса.** Проекцию в БД и артефакт собирают разные
+  шаги (`db/build_db.py` и `python -m clinical_engine.crosswalk`). Существующие тесты
+  сверяли проекцию **саму с собой** (`len(links) == summary["links"]`), поэтому устаревшая
+  проекция после пересборки только одного из артефактов прошла бы незамеченной.
+- **Замер согласованности (до добавления теста):** все шесть общих чисел совпадают,
+  `content_sha256` идентичен (`sha256:4318bca59cd5feb9…`), фактическое число связей в
+  рекомендациях = 263 = заявленному в обоих местах.
+- **Добавлено два теста:** (1) проекция против артефакта по шести числам, хешу, `purpose`
+  и `confidence_by_method`; (2) каждое заявленное число пересчитывается из данных —
+  включая разложение по методам и тождество
+  `linked_diseases + unmatched_diseases == calculator_diseases`.
+- **Проверка доказана живой:** при подмене `linked_diseases` на 97 (вместо 98) тест падает;
+  БД восстановлена, хеш совпал с исходным.
+- **Своя ошибка в тесте исправлена до фиксации:** первое сравнение `links_by_method`
+  не учитывало, что артефакт декларирует методы с нулём (`TITLE_EXACT: 0`), и падало на
+  лишнем ключе. Сравнение переведено на «отсутствующий метод = ноль».
+- **Проверен второй канал связи клинреков с калькулятором — API.**
+  `GET /v1/guidelines/aom_child` → 200, `purpose: NAVIGATION_ONLY`, 2 связи
+  (`guideline_id` 1222 и 1633, обе `ICD10_EXACT`, `confidence: HIGH`);
+  `GET /v1/guidelines/pid` → 200, 6 связей; `GET /v1/guidelines/no_such_disease` → 404.
+- **Тесты:** `pytest -q` → **2295 passed, 32 skipped, 1 xfailed** (+2 в
+  `src/tests/test_calculator_db_quality.py`). `node db/validate_db.js` → EXIT=0,
+  0 errors / 264 warnings. БД детерминирована (SHA-256 `51d16641760b7046…` совпал при
+  повторной сборке), кроссволк `in_sync`.
+
 ## 2026-09-11: Фолбэк группировки форм предлагал крем и инъекцию как пероральные
 
 - **Найден дефект в фолбэк-ветке `renderForms`.** Форма, не попавшая ни в одну группу
