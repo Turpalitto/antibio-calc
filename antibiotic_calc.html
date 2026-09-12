@@ -1281,7 +1281,7 @@ function renderFormChips(group){
     if(f.form_type === 'tablet' || f.form_type === 'capsule') routeIcon = 'fa-pills';
     else if(['powder_for_suspension','suspension','syrup'].includes(f.form_type)) routeIcon = 'fa-flask';
     else if(f.form_type === 'solution_iv') routeIcon = 'fa-drip';
-    else if(f.form_type === 'solution_im' || form.form_type === 'powder_for_injection') routeIcon = 'fa-syringe';
+    else if(f.form_type === 'solution_im' || f.form_type === 'powder_for_injection') routeIcon = 'fa-syringe';
     else if(f.form_type === 'granules') routeIcon = 'fa-prescription-bottle';
     btn.innerHTML = '<i class="fas '+routeIcon+' mr-1"></i><div>'+f.concentration+'</div>'+(f.notes?'<div class="text-[8px] font-bold opacity-70 mt-0.5 normal-case">'+f.notes+'</div>':'');
     btn.onclick = ()=>{
