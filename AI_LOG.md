@@ -48,7 +48,7 @@
   638 вместо 60. Причина — `scenario.age_group` это **строка** из
   `['neonate','child','adult','all']`, а `set('child')` даёт набор букв
   `{'c','h','i','l','d'}`. Пересчитано по точному предикату валидатора: 60.
-- **Тесты:** `pytest -q` → **2299 passed, 32 skipped, 1 xfailed** (+4 в
+- **Тесты:** `pytest -q` → **2300 passed, 32 skipped, 1 xfailed** (+4 в
   `src/tests/test_calculator_age_group_safety.py`: сплошной проход по БД с точными
   числами 60/0, порядок отказа до `computeDose`, снимаемый обработчик карточки и
   сверка счётчиков двух валидаторов). `node db/validate_db.js` → EXIT=0, 0 errors /

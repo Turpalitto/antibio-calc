@@ -345,3 +345,34 @@ def test_browser_validator_reports_the_same_age_mismatches_as_the_build_validato
                     if "WARN:" in line and "outside scenario age_group" in line)
 
     assert browser["age"] == build_age == 60, (browser, build_age)
+
+
+def test_no_path_reaches_a_mismatched_scenario() -> None:
+    """Ни один путь выбора сценария не минует проверку возрастной группы.
+
+    Снятие обработчика с карточки — только одна из трёх точек входа. Два других
+    вызова ``selectScenario`` идут из автовыбора, и оба работают с переменными,
+    которые устанавливаются исключительно при ``ageMatch``. Восстановление из
+    URL сценарий не восстанавливает вовсе — только нозологию.
+    """
+    script, _db = _script_and_db()
+    render = _extract_fn(script, "renderScenarios")
+    restore = _extract_fn(script, "restoreFromHash")
+    select_disease = _extract_fn(script, "selectDisease")
+
+    # 1. Обработчик карточки — внутри ветки ageMatch, у чужой снят явно.
+    assert render.index("card.onclick = ()=>selectScenario") > render.index("if(ageMatch){")
+    assert "card.onclick = null" in render
+
+    # 2. Автовыбор использует только совпавшие по возрасту переменные.
+    assert "if(ageMatch && !firstVisible){ firstVisible = s; firstVisibleCard = card; }" in render
+    assert "if(ageMatch && s === preferredScenario) preferredCard = card;" in render
+
+    # 3. Восстановление из URL не выбирает сценарий.
+    assert "selectScenario" not in restore, (
+        "restoreFromHash не должен выбирать сценарий в обход проверки возраста"
+    )
+    assert "selectDisease(" in restore
+
+    # 4. Нозология проходит через ворота источника до показа сценариев.
+    assert select_disease.index("applyDiseaseSourceGate(d)") < select_disease.index("renderScenarios()")
