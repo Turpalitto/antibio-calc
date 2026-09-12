@@ -1,3 +1,44 @@
+## 2026-09-12: Исторический скрипт v1 дублировал политику и унаследовал её дефект
+
+- **Продолжение сквозной сверки словарей.** Проверил `issue_type` между модулями:
+  `queue_builder` выдаёт `CLINICAL_REGIMEN_VALIDATION`, `THERAPEUTIC_OPTION_VALIDATION`,
+  `CORPUS_INCLUSION_UNCERTAINTY`, `GOLDEN_DATASET_FAILURE` и — для задач из реестра
+  находок — сам `issue_code` из внешнего JSON (`str(issue.get("issue_code"))`).
+- **Словарь `DOSE_ISSUE_TYPES` подтверждён реальными данными:** `RC027_ROOT_CAUSE_REPORT.md`
+  и `clinical_data_audit_report.md` фиксируют `DOSE_NOT_EXTRACTED` 638, `DOSE_NOT_PARSED`
+  116, `DOSE_DAILY_MISREAD` 61, `DOSE_UNIT_GROUP` 367. То есть набор в `pilot_policy`
+  соответствует фактическим кодам.
+- **`CONFLICT_*` — коды на вырост, и это не дефект.** Они встречаются только в
+  `pilot_policy`, в v1 и в проектном документе `CLINICAL_DECISION_ENGINE_DESIGN.md`
+  («Flag `CONFLICT_DOSE`», «Flag `CONFLICT_DURATION`»). Данных с такими кодами нет, но
+  ярус 6 живёт через сохранённую ось `clinical_conflict`, которую `queue_builder`
+  действительно выдаёт. Ветка — защита на будущее; закрепил тестом как таковую.
+- **Настоящая находка: `generate_pilot_review_batch.py` (v1) дублировал политику.**
+  У него собственные копии `DOSE_ISSUE_TYPES` и `CONFLICT_ISSUE_TYPES` и собственная
+  таблица ярусов `RANK_ORDER` с лямбдами. И в ней **тот же дефект яруса 5**, что я
+  исправил в `pilot_policy`:
+  ```python
+  (5, "missing_dose_or_unit", lambda t, txt: "missing_unit" in t.safety_axes or t.issue_type in DOSE_ISSUE_TYPES)
+  ```
+  Ось `missing_dose` не проверялась. Запуск v1 дал бы другой отбор, чем канонический v2.
+- **Каноничность v2 подтверждена документом:** `P5.6_RC027_FINAL_REPORT.md` —
+  «`generate_pilot_review_batch_v2.py` (new) | Regenerates the pilot using ONLY the
+  canonical `packet()` + `PHYSICIAN_PILOT_V1`». v2 импортирует из `pilot_policy`, v1 — нет.
+- **Решение: не удалять, а связать.** v1 нужен для воспроизводимости исторической выборки,
+  поэтому: (1) наборы `issue_type` теперь импортируются из канонического модуля —
+  проверка подтверждает, что это буквально тот же объект (`is` → True); (2) ярус 5
+  исправлен; (3) в шапке появилась пометка `SUPERSEDED` с указанием канонического
+  генератора, чтобы читатель не принял v1 за актуальный.
+- **Тесты:** 4 новых (всего 27) — v1 делит канонические наборы (через `is`); таблица
+  ярусов v1 согласована с `match_tiers` на всех семи осях; v1 помечен как заменённый;
+  `CONFLICT_*` — коды на вырост, ярус 6 достижим и через ось, и через `issue_type`.
+- **Проверка доказана живой:** при возвращённом дефекте яруса 5 в v1 падает 1 тест.
+- **Своя ошибка в тесте исправлена до фиксации:** использовал `ROOT`, который в этом
+  файле не был определён (`NameError`) — он объявлен в других тест-файлах, и я перенёс
+  приём без объявления. Добавлен.
+- `pytest -q` → **2369 passed, 32 skipped, 1 xfailed** (+4). `node db/validate_db.js` →
+  EXIT=0, 0 errors / 264 warnings. БД детерминирована (SHA-256 `51d16641760b7046…`).
+
 ## 2026-09-12: Ось `missing_dose` писалась одним модулем и не читалась другим
 
 - **Найдено при сквозной сверке двух модулей.** `queue_builder._regimen_axes` выдаёт семь

@@ -21,8 +21,11 @@ The order is now an explicit ``_ORIGIN_RANK``. These tests pin it.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
 import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
 
 from clinical_engine.review_workbench.pilot_policy import (
     POLICY_NAME,
@@ -287,3 +290,89 @@ def test_the_only_axis_read_but_never_stored_is_the_documented_allergy_gap() -> 
     allergy_task = FakeTask("allergy", safety_axes=())
     derived = match_tiers(allergy_task, {"indication": "тяжёлая аллергия на пенициллин"})
     assert [(m.tier, m.origin) for m in derived] == [(4, "DERIVED_REVIEW_SIGNAL")], derived
+
+
+# ── v1 и каноническая политика не должны разъезжаться ─────────────────────────
+
+
+def _v1_module():
+    import importlib
+
+    return importlib.import_module("generate_pilot_review_batch")
+
+
+def test_v1_script_shares_the_canonical_issue_type_sets() -> None:
+    """Исторический скрипт v1 обязан брать наборы из канонического модуля.
+
+    Раньше он объявлял собственные копии ``DOSE_ISSUE_TYPES`` и
+    ``CONFLICT_ISSUE_TYPES``. Два независимых набора одной политики разъезжаются
+    при первом же изменении — и это уже случилось с ярусом 5.
+    """
+    from clinical_engine.review_workbench.pilot_policy import (
+        CONFLICT_ISSUE_TYPES,
+        DOSE_ISSUE_TYPES,
+    )
+
+    v1 = _v1_module()
+    assert v1.DOSE_ISSUE_TYPES is DOSE_ISSUE_TYPES
+    assert v1.CONFLICT_ISSUE_TYPES is CONFLICT_ISSUE_TYPES
+
+
+def test_v1_tier_table_agrees_with_the_canonical_match_tiers() -> None:
+    """Таблица ярусов v1 даёт тот же результат, что ``match_tiers``.
+
+    Проверяется на тех же семи осях: если одна из реализаций изменится,
+    расхождение станет видимым.
+    """
+    from clinical_engine.review_workbench.queue_builder import _regimen_axes
+
+    v1 = _v1_module()
+
+    @dataclass
+    class V1Task:
+        task_id: str = "t"
+        safety_axes: tuple = ()
+        issue_type: str = ""
+        priority_score: int = 0
+
+    for axis, (regimen, expected_tier) in AXIS_TO_TIER.items():
+        axes = tuple(sorted(set(_regimen_axes(regimen))))
+        task = V1Task(safety_axes=axes)
+        v1_matches = [
+            rank for rank, _label, fn in v1.RANK_ORDER if fn(task, "")
+        ]
+        assert expected_tier in v1_matches, (
+            f"ось {axis}: v1 не дал ярус {expected_tier}, получено {v1_matches}"
+        )
+        assert v1_matches == sorted(v1_matches), v1_matches
+
+
+def test_v1_is_marked_superseded() -> None:
+    """Читатель скрипта v1 должен сразу видеть, что канонический — v2."""
+    source = (ROOT / "generate_pilot_review_batch.py").read_text(encoding="utf-8")
+    header = source.split('"""')[1]
+    assert "SUPERSEDED" in header, "в шапке v1 нет пометки о замене"
+    assert "generate_pilot_review_batch_v2.py" in header
+
+
+def test_the_documented_conflict_issue_types_are_forward_looking() -> None:
+    """`CONFLICT_*` — коды из проектного документа, данных с ними пока нет.
+
+    ``CLINICAL_DECISION_ENGINE_DESIGN.md`` предписывает поднимать ``CONFLICT_DOSE`` и
+    ``CONFLICT_DURATION``; ярус 6 при этом живёт через сохранённую ось
+    ``clinical_conflict``, поэтому отсутствие таких ``issue_type`` в данных не делает
+    ветку мёртвой по сути — она защита на будущее.
+    """
+    from clinical_engine.review_workbench.pilot_policy import CONFLICT_ISSUE_TYPES
+
+    assert CONFLICT_ISSUE_TYPES == {
+        "CONFLICT_FIRST_LINE_DRUG", "CONFLICT_DOSE", "CONFLICT_DURATION",
+    }
+
+    # Ярус 6 достижим через ось, которую queue_builder действительно выдаёт.
+    conflict = FakeTask("c", safety_axes=("clinical_conflict",))
+    assert [(m.tier, m.origin) for m in match_tiers(conflict, {})] == [(6, "STORED")]
+
+    # И через issue_type из проектного документа — тоже.
+    forward = FakeTask("f", issue_type="CONFLICT_DURATION")
+    assert [(m.tier, m.origin) for m in match_tiers(forward, {})] == [(6, "STORED")]

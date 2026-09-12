@@ -12,6 +12,12 @@ STRICT MODE, read-only against the existing review queue:
   wording, provenance, conflicts, validation failures, decision options, and an
   explicit "NOT AVAILABLE / UNSATISFIABLE" for interaction checks — never a fake PASS).
 
+SUPERSEDED: generate_pilot_review_batch_v2.py is the canonical generator — it uses only
+ReviewService.packet() and PHYSICIAN_PILOT_V1 from clinical_engine.review_workbench.pilot_policy.
+This v1 script is kept for reproducibility of the historical batch; its tier table must stay
+in step with pilot_policy.match_tiers, which is why the issue-type sets are imported rather
+than duplicated here.
+
 Owner's exact priority order (rank 1 = highest):
   1. pediatric
   2. pregnancy
@@ -34,8 +40,13 @@ from clinical_engine.review_workbench.models import ReviewState, TargetType
 
 DB_PATH = "review_workbench_p56.sqlite"
 OUT_DIR = Path("pilot_review_batch")
-DOSE_ISSUE_TYPES = {"DOSE_NOT_EXTRACTED", "DOSE_NOT_PARSED", "DOSE_DAILY_MISREAD", "DOSE_UNIT_GROUP"}
-CONFLICT_ISSUE_TYPES = {"CONFLICT_FIRST_LINE_DRUG", "CONFLICT_DOSE", "CONFLICT_DURATION"}
+
+# Импортировано из канонического модуля, а не продублировано: два независимых набора
+# issue_type уже разъехались бы при первом изменении политики.
+from clinical_engine.review_workbench.pilot_policy import (
+    CONFLICT_ISSUE_TYPES,
+    DOSE_ISSUE_TYPES,
+)
 
 # Fallback keyword scan over the target's OWN text fields (indication/therapeutic_class/diagnosis/
 # source_quote), used ONLY when the task carries no queue-level safety_axes/issue_type tag for a
@@ -62,7 +73,10 @@ RANK_ORDER = [
     (2, "pregnancy", lambda t, txt: "pregnancy" in t.safety_axes or _KEYWORD_PATTERNS["pregnancy"].search(txt)),
     (3, "renal", lambda t, txt: "renal" in t.safety_axes or _KEYWORD_PATTERNS["renal"].search(txt)),
     (4, "severe_allergy", lambda t, txt: any("allerg" in a for a in t.safety_axes) or _KEYWORD_PATTERNS["severe_allergy"].search(txt)),
-    (5, "missing_dose_or_unit", lambda t, txt: "missing_unit" in t.safety_axes or t.issue_type in DOSE_ISSUE_TYPES),
+    # Ярус 5 по спецификации владельца — «missing dose OR unit»: ось missing_dose
+    # обязательна, иначе режим без дозы при наличии единицы уходит в ярус 99.
+    (5, "missing_dose_or_unit", lambda t, txt: "missing_unit" in t.safety_axes
+        or "missing_dose" in t.safety_axes or t.issue_type in DOSE_ISSUE_TYPES),
     (6, "unresolved_conflict", lambda t, txt: "clinical_conflict" in t.safety_axes or t.issue_type in CONFLICT_ISSUE_TYPES),
     (7, "source_mismatch", lambda t, txt: "source_mismatch" in t.safety_axes),
 ]
