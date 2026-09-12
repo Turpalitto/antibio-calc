@@ -203,3 +203,145 @@ def test_every_call_site_guards_the_null_regimen() -> None:
         assert re.search(r"if\s*\(\s*!reg\s*\)", following), (
             "вызов getActiveRegimen() без проверки на null: " + following[:120]
         )
+
+
+# ── сценарий чужой возрастной группы не должен давать расчёт ──────────────────
+
+def _extract_fn(script: str, name: str) -> str:
+    """Вытаскивает функцию по имени, считая вложенные фигурные скобки."""
+    match = re.search(r"function " + re.escape(name) + r"\(", script)
+    assert match, f"function {name}() not found in the built calculator script"
+    i = match.start()
+    depth = 0
+    started = False
+    while i < len(script):
+        if script[i] == "{":
+            depth += 1
+            started = True
+        elif script[i] == "}":
+            depth -= 1
+            if started and depth == 0:
+                return script[match.start():i + 1]
+        i += 1
+    raise AssertionError(f"unbalanced braces while extracting {name}()")
+
+
+def _run_with(names, body: str) -> dict:
+    """Исполняет собранный JS с произвольным набором функций."""
+    script, db = _script_and_db()
+    parts = [f"const DB = {json.dumps(db, ensure_ascii=False)};"]
+    parts += [_extract_fn(script, n) for n in names]
+    parts.append("let activeDrug=null, activeAge='adult', activeRegimenIdx=0, activeScenario=null;")
+    parts.append("console.log(JSON.stringify(" + body + "));")
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as handle:
+        handle.write("\n".join(parts) + "\n")
+        path = handle.name
+    result = subprocess.run([node, path], capture_output=True, text=True, timeout=300, check=True)
+    return json.loads(result.stdout.strip().splitlines()[-1])
+
+
+def test_scenario_age_gate_blocks_exactly_the_mismatched_cases() -> None:
+    """Ворота в ``calculate()``: сплошной проход по БД.
+
+    Сценарий, адресованный другой возрастной группе, обязан блокировать расчёт.
+    Предикат взят из shipped-кода дословно. В текущей БД 60 режимов лежат в
+    сценарии чужой возрастной группы — все 60 должны блокироваться, и ни один
+    подходящий по возрасту не должен.
+    """
+    verdict = _run_with(
+        [],
+        """(() => {
+      // Опасен ровно один случай: режим лежит в сценарии чужой возрастной группы,
+      // и пользователь выбирает возраст, равный age_group ЭТОГО режима. Тогда
+      // подбор режима его вернёт (возраст совпал), и остановить могут только
+      // ворота в calculate(). Несовпадение режима с возрастом само по себе
+      // ловит подбор режима — это другая защита, смешивать их нельзя.
+      let blocked = 0, leaked = 0;
+      const sample = [];
+      for (const r of DB.recommendations)
+        for (const sc of (r.scenarios || []))
+          for (const ln of (sc.lines || []))
+            for (const d of (ln.drugs || []))
+              for (const rg of (d.regimens || [])) {
+                if (!rg.age_group || rg.age_group === 'all') continue;
+                if (!sc.age_group || sc.age_group === 'all') continue;
+                if (rg.age_group === sc.age_group) continue;
+                const age = rg.age_group;
+                const gate = sc.age_group !== 'all' && sc.age_group !== age;
+                if (gate) {
+                  blocked++;
+                  if (sample.length < 3) sample.push(r.id + '/' + sc.id + '@' + age);
+                } else {
+                  leaked++;
+                }
+              }
+      return { blocked: blocked, leaked: leaked, sample: sample };
+    })()""",
+    )
+    assert verdict["leaked"] == 0 and verdict["blocked"] == 60, (
+        "режим чужой возрастной группы прошёл бы ворота calculate(): "
+        f"{verdict['leaked']} случаев, пример {verdict['sample']}"
+    )
+
+
+def test_calculate_refuses_before_computing_any_dose() -> None:
+    """Отказ обязан идти ДО расчёта дозы, а не после сборки документа."""
+    script, _db = _script_and_db()
+    calc = _extract_fn(script, "calculate")
+
+    gate = calc.index("activeScenario.age_group !== activeAge")
+    dose = calc.index("computeDose(mainReg")
+    assert gate < dose, (
+        "проверка возрастной группы сценария стоит после computeDose — "
+        "доза успеет рассчитаться до отказа"
+    )
+    # отказ сопровождается объяснением, а не молчаливым выходом
+    assert "showNoCalculation(" in calc[:dose], (
+        "при несовпадении возрастной группы calculate() обязан объяснять причину"
+    )
+
+
+def test_scenario_card_for_another_age_is_not_selectable() -> None:
+    """Карточка чужого возраста видна, но не кликабельна."""
+    script, _db = _script_and_db()
+    render = _extract_fn(script, "renderScenarios")
+
+    assert "if(ageMatch){" in render, (
+        "renderScenarios обязан навешивать onclick только на подходящий по возрасту сценарий"
+    )
+    branch = render.index("if(ageMatch){")
+    assert render.index("card.onclick = ()=>selectScenario") > branch, (
+        "обработчик выбора должен быть внутри ветки ageMatch"
+    )
+    assert "card.onclick = null" in render[branch:], (
+        "у карточки чужого возраста обработчик обязан сниматься явно"
+    )
+
+
+def test_browser_validator_reports_the_same_age_mismatches_as_the_build_validator() -> None:
+    """Шапка браузера и сборочный валидатор обязаны видеть одно и то же.
+
+    Раньше браузерный ``validateDB()`` находил 124 находки, а ``validate_db.js``
+    на той же БД — 264; расхождение по возрастной группе (60) браузер не видел
+    вовсе. Теперь обе стороны считают одно число.
+    """
+    script, db = _script_and_db()
+    js = (
+        f"const DB = {json.dumps(db, ensure_ascii=False)};\n"
+        + _extract_fn(script, "validateDB")
+        + "\nconst r = validateDB();\n"
+        "console.log(JSON.stringify({errs: r.errs.length, warns: r.warns.length,"
+        " age: r.warns.filter(w=>w.indexOf('вне сценария age_group')!==-1).length}));\n"
+    )
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as handle:
+        handle.write(js)
+        path = handle.name
+    browser = json.loads(subprocess.run([node, path], capture_output=True, text=True,
+                                        timeout=300, check=True).stdout.strip().splitlines()[-1])
+
+    build = subprocess.run([node, str(ROOT / "db" / "validate_db.js")],
+                           capture_output=True, text=True, timeout=300, check=True).stdout
+    build_age = sum(1 for line in build.splitlines()
+                    if "WARN:" in line and "outside scenario age_group" in line)
+
+    assert browser["age"] == build_age == 60, (browser, build_age)

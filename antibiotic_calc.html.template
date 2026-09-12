@@ -527,6 +527,12 @@ function validateDB(){
           (d.regimens||[]).forEach((rg,ri)=>{
             if(!rg.freq_per_day) errs.push('rec['+i+'] '+r.id+'>drug '+d.drug_ref+' regimen['+ri+']: нет freq_per_day');
             if(!rg.duration_days) warns.push('rec['+i+'] '+r.id+'>drug '+d.drug_ref+' regimen['+ri+']: нет duration_days');
+            // Режим другой возрастной группы внутри сценария — то же предупреждение,
+            // что и в db/validate_db.js (60 случаев в текущей БД). Без него шапка
+            // показывала 124 находки при 264 известных сборке.
+            if(rg.age_group && s.age_group && rg.age_group !== 'all' && s.age_group !== 'all'
+               && rg.age_group !== s.age_group)
+              warns.push('rec['+i+'] '+r.id+'>scenario['+si+'] '+s.id+': режим age_group "'+rg.age_group+'" вне сценария age_group "'+s.age_group+'"');
           });
         });
       });
@@ -1077,6 +1083,9 @@ function resetDisease(){
   $('empty-state').classList.remove('hidden');
   history.replaceState(null, '', window.location.pathname);
 }
+// Подписи возрастных групп — те же, что на кнопках выбора возраста.
+const AGE_LABEL = {neonate:'Новорождённые (0-28 д)', child:'Дети (1 мес - 17 лет)', adult:'Взрослые (>18 лет)', all:'все возрастные группы'};
+function ageGroupLabel(a){ return AGE_LABEL[a] || a || '—'; }
 function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
   const list = $('scenario-list');
   list.innerHTML = '';
@@ -1087,7 +1096,17 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
     card.className = 'scenario-card drug-card premium-card p-3 md:p-4'+(ageMatch?'':' opacity-50');
     card.dataset.idx = idx;
     card.innerHTML = '<div class="flex justify-between items-center"><div><div class="font-bold text-slate-800 dark:text-slate-200 text-sm">'+s.name+'</div>'+(ageMatch?'':'<div class="text-[10px] text-red-500 font-bold mt-1">Не подходит для выбранной возрастной группы</div>')+'</div><i class="fas fa-chevron-right text-slate-300"></i></div>';
-    card.onclick = ()=>selectScenario(s, card);
+    if(ageMatch){
+      card.onclick = ()=>selectScenario(s, card);
+    } else {
+      // Карточка чужого возраста остаётся видимой, но не выбирается. Внутри такого
+      // сценария может лежать режим ДРУГОЙ возрастной группы (в БД 60 таких
+      // расхождений), и подбор режима отобрал бы его по выбранному возрасту —
+      // взрослая доза отрисовалась бы внутри детского сценария как подходящая.
+      card.classList.add('cursor-not-allowed');
+      card.title = 'Сценарий для возрастной группы «'+ageGroupLabel(s.age_group)+'». Переключите возраст, чтобы открыть его.';
+      card.onclick = null;
+    }
     list.appendChild(card);
     if(ageMatch && !firstVisible){ firstVisible = s; firstVisibleCard = card; }
     if(ageMatch && s === preferredScenario) preferredCard = card;
@@ -1364,6 +1383,20 @@ function showNoCalculation(message){
 }
 function calculate(){
   if(!activeDrug) return;
+  // Сценарий адресован другой возрастной группе — расчёт не выполняем.
+  // В персональном режиме такая проверка уже была (calculateDose бросает
+  // «scenario_id не подходит возрастной группе»), в обычном её не было вовсе,
+  // и calculate() не обращался к activeScenario. Без неё режим чужой возрастной
+  // группы отрисовывался как подходящий выбранному возрасту.
+  if(activeScenario && activeScenario.age_group && activeScenario.age_group !== 'all'
+     && activeScenario.age_group !== activeAge){
+    showNoCalculation(
+      'Сценарий «'+(activeScenario.name||activeScenario.id)+'» рассчитан на возрастную группу «'
+      +ageGroupLabel(activeScenario.age_group)+'», а выбрана «'+ageGroupLabel(activeAge)+'». '
+      +'Расчёт не выполнен: иначе была бы показана доза чужой возрастной группы.'
+    );
+    return;
+  }
   const w = parseFloat($('weight').value);
   const refs = getDrugRefs(activeDrug);
   const mainRef = DB.drugs_reference[refs[0]];
