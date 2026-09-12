@@ -86,11 +86,30 @@ def primary_rank(task, payload: dict) -> tuple[int, str, str, int, str]:
     return (best.tier, best.label, best.origin, -len(matches) - task.priority_score, task.task_id)
 
 
+# Явная сила свидетельства внутри яруса. Раньше порядок задавался строковым сравнением
+# поля origin, и «DERIVED_REVIEW_SIGNAL» < «STORED» просто потому, что D < S — то есть
+# попадание по ключевому слову в свободном тексте обходило кураторскую сохранённую ось
+# безопасности. Это противоречит PHYSICIAN_PILOT_POLICY.md: STORED берётся из реальных
+# структурированных данных, а DERIVED_REVIEW_SIGNAL — регулярка, которая «может дать
+# ложное срабатывание» и «не является клиническим утверждением».
+_ORIGIN_RANK = {"STORED": 0, "DERIVED_REVIEW_SIGNAL": 1, "NONE": 2}
+
+
+def _sort_key(pair: tuple) -> tuple:
+    """Ключ сортировки: ярус, метка, СИЛА СВИДЕТЕЛЬСТВА, тай-брейк, task_id.
+
+    Сила свидетельства подставлена явно, а не взята из строки origin, иначе порядок
+    менялся бы от переименования константы.
+    """
+    rank = pair[0]
+    return (rank[0], rank[1], _ORIGIN_RANK.get(rank[2], 99), rank[3], rank[4])
+
+
 def select_quota_capped(scored: list[tuple], count: int) -> list:
     """scored: list of ((tier, label, origin, tiebreak, task_id), task), pre-sorted or not.
     Fills tier-by-tier with a cap = ceil(count / tiers_present) so one numerous tier cannot
     consume the whole batch (Phase 6 requirement: deterministic quotas)."""
-    scored = sorted(scored, key=lambda pair: pair[0])
+    scored = sorted(scored, key=_sort_key)
     by_tier: dict[int, list] = {}
     for rank, t in scored:
         by_tier.setdefault(rank[0], []).append((rank, t))
