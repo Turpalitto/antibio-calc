@@ -315,7 +315,7 @@
         {
           "id": "ut_child_in",
           "name": "Стационарное лечение (тяжёлая ИМП, дети <3 мес, сепсис)",
-          "age_group": "child",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,

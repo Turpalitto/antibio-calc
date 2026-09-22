@@ -175,7 +175,7 @@
         {
           "id": "empiric_line",
           "name": "empiric",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -643,7 +643,7 @@
         {
           "id": "prophylaxis_line",
           "name": "prophylaxis",
-          "age_group": "child",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -692,7 +692,7 @@
         {
           "id": "first_line_line",
           "name": "first_line",
-          "age_group": "child",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -817,7 +817,7 @@
         {
           "id": "prophylaxis_line",
           "name": "prophylaxis",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -928,7 +928,7 @@
         {
           "id": "alternative_line",
           "name": "alternative",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 2,
@@ -1153,7 +1153,7 @@
         {
           "id": "first_line_line",
           "name": "first_line",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -1271,7 +1271,7 @@
         {
           "id": "first_line_line",
           "name": "first_line",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -1300,7 +1300,7 @@
         {
           "id": "alternative_line",
           "name": "alternative",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 2,
@@ -2490,7 +2490,7 @@
         {
           "id": "first_line_line",
           "name": "first_line",
-          "age_group": "child",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -2635,7 +2635,7 @@
         {
           "id": "prophylaxis_line",
           "name": "prophylaxis",
-          "age_group": "child",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -2671,7 +2671,7 @@
         {
           "id": "alternative_line",
           "name": "alternative",
-          "age_group": "child",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 2,
@@ -3356,7 +3356,7 @@
         {
           "id": "prophylaxis_line",
           "name": "prophylaxis",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -3423,7 +3423,7 @@
         {
           "id": "alternative_line",
           "name": "alternative",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 2,
@@ -3814,7 +3814,7 @@
         {
           "id": "prophylaxis_line",
           "name": "prophylaxis",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
@@ -3926,7 +3926,7 @@
         {
           "id": "alternative_line",
           "name": "alternative",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 2,
@@ -4214,7 +4214,7 @@
         {
           "id": "alternative_line",
           "name": "alternative",
-          "age_group": "adult",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 2,
@@ -4487,42 +4487,42 @@
                       "duration_note": "Начиная со второй недели жизни до возраста 1 мес 10 мг/кг каждые 8 часов"
                     },
                     {
-                      "age_group": "adult",
+                      "age_group": "neonate",
                       "dose_mg_kg_day": 10.0,
                       "freq_per_day": 12,
                       "duration_days": "введение не менее, чем за 60 мин",
                       "duration_note": "- Первая неделя жизни   \n10 мг/кг каждые 12 часов"
                     },
                     {
-                      "age_group": "adult",
+                      "age_group": "neonate",
                       "dose_mg_kg_day": 10.0,
                       "freq_per_day": 8,
                       "duration_days": "введение не менее, чем за 60 мин",
                       "duration_note": "- Начиная со второй недели жизни \nдо возраста 1 мес \n10 мг/кг каждые 8 часов"
                     },
                     {
-                      "age_group": "adult",
+                      "age_group": "neonate",
                       "dose_mg_kg_day": 10.0,
                       "freq_per_day": 12,
                       "duration_days": "введение не менее чем за 60 мин",
                       "duration_note": "- Первая неделя жизни 10 мг/кг каждые 12 часов"
                     },
                     {
-                      "age_group": "adult",
+                      "age_group": "neonate",
                       "dose_mg_kg_day": 10.0,
                       "freq_per_day": 8,
                       "duration_days": "введение не менее чем за 60 мин",
                       "duration_note": "- Начиная со второй недели жизни до возраста 1 мес 10 мг/кг каждые 8 часов"
                     },
                     {
-                      "age_group": "adult",
+                      "age_group": "neonate",
                       "dose_mg_kg_day": 10.0,
                       "freq_per_day": 12,
                       "duration_days": "введение не менее 60 мин",
                       "duration_note": "- Первая неделя жизни 10 мг/кг каждые 12 часов"
                     },
                     {
-                      "age_group": "adult",
+                      "age_group": "neonate",
                       "dose_mg_kg_day": 10.0,
                       "freq_per_day": 8,
                       "duration_days": "введение не менее 60 мин",

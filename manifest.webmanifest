@@ -1,0 +1,18 @@
+{
+  "name": "ANTIBIO — Клинический калькулятор антибиотиков",
+  "short_name": "ANTIBIO",
+  "description": "Клинический калькулятор антибиотикотерапии на основе клинических рекомендаций Минздрава РФ",
+  "start_url": "./antibiotic_calc.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%232563eb'/%3E%3Cpath d='M256 96c-88.4 0-160 71.6-160 160s71.6 160 160 160 160-71.6 160-160-71.6-160-160-160zm0 64c53 0 96 43 96 96s-43 96-96 96-96-43-96-96 43-96 96-96zm-24 48v32h-32v32h32v32h32v-32h32v-32h-32v-32h-32z' fill='white'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

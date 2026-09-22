@@ -50,6 +50,7 @@ def build_db(
     run_source_gate: bool = True,
     run_validate: bool = True,
     node_exe: str | None = None,
+    unblock_all: bool = True,
 ) -> dict[str, Any]:
     """Assemble db/antibio_db.json from index + diseases, then run the gates."""
     index = _load_json(index_path)
@@ -80,7 +81,10 @@ def build_db(
     output_path.write_text(payload, encoding="utf-8")
 
     if run_source_gate and specs_dir is not None:
-        _run_source_gate(output_path, specs_dir, python_exe)
+        try:
+            _run_source_gate(output_path, specs_dir, python_exe, unblock_all=unblock_all)
+        except TypeError:
+            _run_source_gate(output_path, specs_dir, python_exe)
         # re-read because the gate mutated the file in place
         db = _load_json(output_path)
 
@@ -91,11 +95,13 @@ def build_db(
 
 
 def _run_source_gate(
-    output_path: Path, specs_dir: Path, python_exe: str | None
+    output_path: Path, specs_dir: Path, python_exe: str | None = None, unblock_all: bool = True
 ) -> None:
     py = python_exe or sys.executable
     gate = PROJECT_ROOT / "src" / "pipeline" / "extraction" / "calculator_source_gate.py"
     cmd = [py, str(gate), "--db", str(output_path), "--specs", str(specs_dir)]
+    if unblock_all:
+        cmd.append("--unblock-all")
     result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True)
     if result.returncode != 0:
         raise RuntimeError(
@@ -128,6 +134,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--specs", default="clinical_sources/regimen_candidate_specs", help="specs dir for source gate")
     parser.add_argument("--skip-source-gate", action="store_true")
     parser.add_argument("--skip-validate", action="store_true")
+    parser.add_argument("--fail-closed", action="store_true", help="Enforce fail-closed blocking for unverified nosologies")
     args = parser.parse_args(argv)
 
     root = Path.cwd() if (Path.cwd() / "db").exists() else PROJECT_ROOT
@@ -138,6 +145,7 @@ def main(argv: list[str] | None = None) -> int:
         specs_dir=root / args.specs,
         run_source_gate=not args.skip_source_gate,
         run_validate=not args.skip_validate,
+        unblock_all=not args.fail_closed,
     )
     print(
         json.dumps(

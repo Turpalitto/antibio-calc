@@ -684,7 +684,7 @@
         {
           "id": "scarlet_std",
           "name": "Стандартное лечение",
-          "age_group": "child",
+          "age_group": "all",
           "lines": [
             {
               "line_number": 1,
