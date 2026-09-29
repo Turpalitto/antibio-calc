@@ -47,26 +47,56 @@ result = MedicalNormalizer.normalize(raw_dict)
 ```
 
 ### 3. HTML-калькулятор
-Single-page приложение для расчёта доз антибиотиков (72 нозологии, 40 препаратов).
+Single-page приложение для расчёта доз антибиотиков (120 нозологий, 47 препаратов).
 
-Открыть `antibiotic_calc.html` в браузере.
+Клиническая БД встроена в `antibiotic_calc.html` на этапе сборки, поэтому для
+расчёта доз API не нужен. Два поддерживаемых способа открыть калькулятор:
+
+```
+npm run build                    # db/build_html.py: template + db/ → antibiotic_calc.html
+npm start                        # = node server.js → http://127.0.0.1:8080
+```
+
+`server.js` отдаёт оболочку (`/`, `/antibiotic_calc.html`, `/sw.js`,
+`/manifest.webmanifest`, `/icons/*.png`) и проксирует `/v1/`, `/v2/` на
+клинический движок в режиме реального времени (никогда не кэширует). По
+умолчанию слушает только `127.0.0.1:8080`; `HOST=0.0.0.0` открывает LAN.
+
+Альтернатива — сам движок FastAPI, тогда статику PWA отдаёт он:
+
+```
+uvicorn clinical_engine.api.app:app --port 8000   # http://127.0.0.1:8000/personal
+```
+
+Порт 8000 — это и дефолт uvicorn, и `ENGINE_PORT` в `server.js`; обе стороны
+согласованы. `uvicorn` входит в необязательный extra `clinical`
+(`pip install -e '.[clinical]'`) и в `.venv` репозитория **не установлен** —
+`fastapi` установлен, сервер нужен отдельно. Прокси `/v1`, `/v2` из
+`server.js` в этом режиме не используется.
+
+Ни то, ни другое не обязательно: `antibiotic_calc.html` открывается и напрямую
+из файловой системы (file://), но тогда service worker не регистрируется
+(браузер запрещает его для file://) и офлайн-режим недоступен.
 
 ## Структура
 
 ```
-C:\ANTIBIO/
-├── medical_normalizer/     # Medical Normalizer (13 модулей, 726 тестов)
+antibio-calc/
+├── medical_normalizer/     # Medical Normalizer (13 модулей, 1155 тестов)
+├── clinical_engine/        # Clinical Decision Engine (api/, stages/, personal/, tests/)
 ├── src/pipeline/           # Python pipeline (13 модулей)
-├── src/tests/              # 39 тестов pytest (pipeline)
+├── src/tests/              # 409 тестов pytest (pipeline)
 ├── src/llm/                # LLM провайдеры
-├── db/                     # Данные калькулятора (JSON)
-├── antibiotic_calc.html    # Готовое приложение
+├── db/                     # Данные калькулятора (JSON) + build_html.py + validate_db.js
+├── antibiotic_calc.html    # Готовое приложение (артефакт сборки)
 ├── antibiotic_calc.html.template  # Шаблон
-├── build_html.ps1          # Сборка HTML
-├── server.js               # Локальный сервер (http://0.0.0.0:8080)
+├── sw.js                   # Service worker (офлайн-оболочка)
+├── manifest.webmanifest    # PWA-манифест
+├── icons/                  # PWA-иконки 192/512
+├── package.json            # scripts: start / build / validate / test
+├── server.js               # Локальный сервер + прокси движка (http://127.0.0.1:8080)
 ├── quality_report.md       # Quality Audit отчёт
-├── field_statistics.csv    # Статистика по полям
-├── unknown_drugs.csv       # 441 неизвестный препарат
+├── medical_dictionary/unknown_drugs.csv  # 441 неизвестный препарат
 ├── dictionary_expansion.md # Рекомендации по словарю
 ├── production_readiness.md # Оценка готовности
 ├── PROJECT_STATE.md        # Состояние проекта
@@ -79,7 +109,8 @@ C:\ANTIBIO/
 ## Текущее состояние
 
 - **Pipeline:** извлечение завершено (294 guidelines, 2675 regimens)
-- **Medical Normalizer:** COMPLETE (726/726 tests, 99.9% coverage)
+- **Medical Normalizer:** COMPLETE (1155 tests collected, 99.9% coverage)
+- **Clinical Engine:** API v1 + v2 (personal physician, loopback-only), PWA assets
 - **Quality Audit:** завершён (PASS 33%, REVIEW 12%, REJECT 55%)
 - **Фаза:** Medical Data Quality Improvement
 
@@ -101,10 +132,16 @@ API Минздрава РФ: https://apicr.minzdrav.gov.ru
 ## Python
 
 ```
-$py = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"
-& $py -m pytest medical_normalizer/tests/ -q   # 726 tests
-& $py src/pipeline/main.py verify               # Pipeline health check
+.venv/bin/python -m pytest clinical_engine/tests -q   # baseline 2026-09-27: 707 passed, 6 skipped
+.venv/bin/python -m pytest -q                         # testpaths из pyproject.toml
+.venv/bin/python src/pipeline/main.py verify          # Pipeline health check
 ```
+
+Тестовые команды в этом файле и в `AGENTS.md` используют `.venv/bin/python`
+репозитория. `pytest` без путей берёт `testpaths` из `pyproject.toml`
+(`medical_normalizer/tests`, `clinical_engine/tests`,
+`clinical_engine/regimen/tests`, `clinical_engine/review_workbench/tests`,
+`src/tests`).
 
 ## Документация
 

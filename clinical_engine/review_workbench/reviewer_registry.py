@@ -8,18 +8,29 @@ pre-populates a reviewer record.
 This is the single, canonical identity system for the Review Workbench —
 `ReviewService` must depend on it rather than accepting free-text reviewer
 strings (GOV-001).
+
+It also owns reviewer *session tokens* (see :meth:`ReviewerRegistry.issue_session_token`).
+Registration answers "is this reviewer_id string a registered person?";
+it never answered "is the caller that reviewer?", which is why the HTTP surface
+used to trust whatever `reviewer_id` a request body carried. Only the SHA-256
+of a session token is persisted, comparisons are `hmac.compare_digest`, and
+the raw token is returned exactly once and never stored.
 """
 
 from __future__ import annotations
 
+import hmac
 import json
+import secrets
 import sqlite3
 import threading
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .auth import OWNER_SESSION, match_token_digest, sha256_text
 from .models import ReviewRole, TargetType
 
 
@@ -103,6 +114,12 @@ class ReviewerRegistry:
                 credential_expires_at TEXT NOT NULL DEFAULT '',
                 version INTEGER NOT NULL DEFAULT 1
             );
+            CREATE TABLE IF NOT EXISTS reviewer_sessions(
+                session_id TEXT PRIMARY KEY,
+                reviewer_id TEXT NOT NULL UNIQUE,
+                token_sha256 TEXT NOT NULL,
+                issued_at TEXT NOT NULL
+            );
             """
         )
         self.connection.commit()
@@ -177,6 +194,105 @@ class ReviewerRegistry:
             self.connection.commit()
             if cur.rowcount == 0:
                 raise ReviewerRegistrationError(f"Unknown reviewer_id: {reviewer_id}")
+
+    # --- session tokens (authentication) -------------------------------------
+    #
+    # Same shape as PERSONAL_PHYSICIAN owner sessions: a `secrets.token_urlsafe(32)`
+    # raw token, of which only the SHA-256 is persisted, compared with
+    # `hmac.compare_digest`, returned to the caller exactly once and never
+    # written to the review database, the review audit log, or any file.
+
+    def issue_session_token(self, reviewer_id: str) -> str:
+        """Mint (or re-mint) a session token and return the raw value once.
+
+        Re-issuing replaces the previous digest, so a token handed out earlier
+        stops working immediately. Refuses an unknown or deactivated reviewer —
+        registration alone is not what authorises, and neither is possession of
+        a token for a person who was never registered or who has been stood
+        down.
+        """
+        if reviewer_id != OWNER_SESSION:
+            record = self.get(reviewer_id)
+            if not record.active:
+                raise ReviewerRegistrationError(
+                    f"REVIEWER_INACTIVE: cannot issue a session token for {reviewer_id}"
+                )
+        raw_token = secrets.token_urlsafe(32)
+        with self._lock:
+            self.connection.execute(
+                "DELETE FROM reviewer_sessions WHERE reviewer_id=?", (reviewer_id,)
+            )
+            self.connection.execute(
+                "INSERT INTO reviewer_sessions(session_id,reviewer_id,token_sha256,issued_at) "
+                "VALUES(?,?,?,?)",
+                (uuid.uuid4().hex, reviewer_id, sha256_text(raw_token), _now()),
+            )
+            self.connection.commit()
+        return raw_token
+
+    def authenticate_session_token(self, raw_token: Any) -> str | None:
+        """Return the reviewer_id a raw token belongs to, or None.
+
+        The digest comparison itself lives in :mod:`.auth`
+        (:func:`~.auth.match_token_digest`) so all the crypto is in one place;
+        this method only owns the rows. Returns None rather than raising for any
+        malformed input — the caller decides the status code.
+        """
+        with self._lock:
+            rows = self.connection.execute(
+                "SELECT reviewer_id, token_sha256 FROM reviewer_sessions"
+            ).fetchall()
+        return match_token_digest([(row["reviewer_id"], row["token_sha256"]) for row in rows],
+                                  raw_token)
+
+    def revoke_session_token(self, reviewer_id: str) -> None:
+        with self._lock:
+            self.connection.execute(
+                "DELETE FROM reviewer_sessions WHERE reviewer_id=?", (reviewer_id,)
+            )
+            self.connection.commit()
+
+    def owner_token_state(self) -> str:
+        """``"ABSENT"`` or ``"ISSUED"``. Never reveals the token itself."""
+        with self._lock:
+            row = self.connection.execute(
+                "SELECT 1 FROM reviewer_sessions WHERE reviewer_id=?", (OWNER_SESSION,)
+            ).fetchone()
+        return "ISSUED" if row is not None else "ABSENT"
+
+    def ensure_owner_token(self, raw_token: str | None = None) -> str | None:
+        """Persist only the SHA-256 of the owner token; return the raw value.
+
+        With no ``raw_token`` and none stored yet, a fresh one is generated and
+        returned. With no ``raw_token`` and one already stored, returns ``None``:
+        the raw value is not recoverable from disk, and the process simply does
+        not know it. That is deliberately NOT an error — restarting the
+        workbench must not invalidate the operator's saved token. Supplying a
+        ``raw_token`` that does not match the stored digest IS an error: it means
+        the operator believes they are the owner and are not.
+        """
+        if raw_token is not None and (not isinstance(raw_token, str) or not raw_token.strip()):
+            raise ReviewerRegistrationError("owner token must be a non-empty string")
+        with self._lock:
+            row = self.connection.execute(
+                "SELECT token_sha256 FROM reviewer_sessions WHERE reviewer_id=?", (OWNER_SESSION,)
+            ).fetchone()
+            if row is not None:
+                if raw_token is None:
+                    return None
+                if not hmac.compare_digest(sha256_text(raw_token.strip()), row["token_sha256"]):
+                    raise ReviewerRegistrationError(
+                        "OWNER_TOKEN_MISMATCH: supplied owner token does not match the stored digest"
+                    )
+                return raw_token.strip()
+            issued = (raw_token or secrets.token_urlsafe(32)).strip()
+            self.connection.execute(
+                "INSERT INTO reviewer_sessions(session_id,reviewer_id,token_sha256,issued_at) "
+                "VALUES(?,?,?,?)",
+                (uuid.uuid4().hex, OWNER_SESSION, sha256_text(issued), _now()),
+            )
+            self.connection.commit()
+        return issued
 
     def list_active(self, role: ReviewRole | None = None) -> list[ReviewerRecord]:
         rows = self.connection.execute("SELECT * FROM reviewers WHERE active=1").fetchall()

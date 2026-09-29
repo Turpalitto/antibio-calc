@@ -4,6 +4,43 @@ from pathlib import Path
 import pytest
 
 
+@pytest.fixture(scope="session")
+def cyrillic_font() -> str:
+    """A Cyrillic-capable TTF, for the synthetic table-PDF fixtures.
+
+    F-5: the dose-extraction tests used to require a hardcoded Windows corpus PDF.
+    Building a ruled table PDF locally needs a font that renders Cyrillic, because
+    PyMuPDF's base-14 fonts emit filler glyphs.
+    """
+    from src.tests.table_pdf_fixture import resolve_cyrillic_font
+
+    return resolve_cyrillic_font()
+
+
+@pytest.fixture(autouse=True)
+def reset_shared_llm_provider():
+    """H-28: the LLM provider is now long-lived, so it must be reset per test.
+
+    Without this, the first test to construct a provider would leak it into every
+    later test and `patch("extractor_llm.create_provider")` would have no effect.
+    The pipeline modules are importable BOTH as `src.pipeline.extractor_llm` and
+    flat as `extractor_llm` (src/pipeline is on sys.path), so both module objects
+    have to be reset.
+    """
+    import sys
+
+    names = ("src.pipeline.extractor_llm", "extractor_llm")
+    saved = {name: getattr(sys.modules[name], "_shared_provider", None)
+             for name in names if name in sys.modules}
+    for name in names:
+        if name in sys.modules:
+            sys.modules[name]._shared_provider = None
+    yield
+    for name in names:
+        if name in sys.modules:
+            sys.modules[name]._shared_provider = saved.get(name)
+
+
 @pytest.fixture
 def sample_pdf_text():
     return """

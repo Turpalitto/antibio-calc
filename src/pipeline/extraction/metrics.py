@@ -28,14 +28,25 @@ class ExtractionMetrics:
         else:
             self.cache_misses += 1
 
-        if "pymupdf" in src and "mixed" not in src:
-            self.pages_pymupdf += n
-            self.times_pymupdf.append(elapsed)
-        elif "mineru" in src or "mixed" in src:
+        # L-32: classification by substring counted a "mixed" document as BOTH
+        # pymupdf and mineru, and a "mixed" source fell into the `elif` and then
+        # re-tested itself in the body.  An exact, mutually exclusive ladder.
+        if src == "mixed":
             self.pages_mineru += n
             self.times_mineru.append(elapsed)
-            if "mixed" in src or "mineru" in src:
-                self.fallback_count += 1
+            self.fallback_count += 1
+        elif "mineru" in src:
+            self.pages_mineru += n
+            self.times_mineru.append(elapsed)
+            self.fallback_count += 1
+        elif "pymupdf" in src:
+            self.pages_pymupdf += n
+            self.times_pymupdf.append(elapsed)
+        elif "cache" in src:
+            pass  # a cache hit is counted above, not attributed to an engine
+        else:
+            self.pages_mineru += n
+            self.times_mineru.append(elapsed)
 
         if hasattr(doc, "metadata") and "page_provenance" in doc.metadata:
             for p in doc.metadata["page_provenance"]:
@@ -74,6 +85,14 @@ def get_metrics() -> ExtractionMetrics:
     return METRICS
 
 
-def reset_metrics():
-    global METRICS
-    METRICS = ExtractionMetrics()
+def reset_metrics() -> ExtractionMetrics:
+    """Reset the metrics IN PLACE.
+
+    L-33: rebinding the module global left every existing holder pointing at the
+    old object, so a caller that did ``m = get_metrics()`` before the reset kept
+    counting into an object nobody could read.
+    """
+    fresh = ExtractionMetrics()
+    for field_name in vars(fresh):
+        setattr(METRICS, field_name, getattr(fresh, field_name))
+    return METRICS

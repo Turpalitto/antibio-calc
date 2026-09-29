@@ -41,6 +41,7 @@ def content_hash(content: dict[str, Any]) -> str:
 
 
 def clinical_scope(type_: str, source: dict[str, Any], doc: Any, pdf_name: str) -> dict[str, Any]:
+    """WHERE the fact was observed.  Descriptive only -- never part of identity."""
     metadata = getattr(doc, "metadata", {}) or {}
     return {
         "type": type_,
@@ -54,6 +55,22 @@ def clinical_scope(type_: str, source: dict[str, Any], doc: Any, pdf_name: str) 
     }
 
 
+def guideline_scope(type_: str, source: dict[str, Any], doc: Any, pdf_name: str) -> str:
+    """The GUIDELINE a fact belongs to.
+
+    This is the ONLY scope that participates in identity.  A fact is "the same
+    fact" when it means the same thing within the same guideline -- not when it
+    happens to sit at the same page coordinates.
+    """
+    metadata = getattr(doc, "metadata", {}) or {}
+    guideline_id = source.get("guideline_id") or metadata.get("guideline_id")
+    if guideline_id:
+        return str(guideline_id)
+    # No guideline id available: fall back to the document, so two unrelated PDFs
+    # never collapse into one object just because they use the same wording.
+    return f"pdf:{Path(pdf_name).name}"
+
+
 @dataclass(frozen=True, slots=True)
 class ObjectIdentity:
     logical_key: str
@@ -64,13 +81,34 @@ class ObjectIdentity:
 
 def build_identity(type_: str, content: dict[str, Any], source: dict[str, Any], doc: Any, pdf_name: str,
                    explicit_logical_key: str | None = None) -> ObjectIdentity:
+    """Derive the identity of one Knowledge Object.
+
+    The logical key is SEMANTIC + GUIDELINE-SCOPED:
+
+        {"type", "guideline", "semantic_content"}
+
+    Page, paragraph, bounding box and table row/column are recorded in
+    ``clinical_scope`` but are deliberately EXCLUDED from the key.  Location-scoped
+    identity is what made dedup, versioning and conflict detection impossible: a
+    fact restated on a second page became a second object, a fact whose page moved
+    between PDF revisions became a duplicate instead of a supersession, and
+    ``_merge_provenance`` then collapsed every same-page free-text mention onto one
+    row.  Identity must follow the meaning of the fact, not where it was printed.
+
+    ``clinical_scope`` remains location-bearing so provenance can still report the
+    exact cell a version was read from.
+    """
     scope = clinical_scope(type_, source, doc, pdf_name)
     scope_json = canonical_json(scope)
     digest = content_hash(content)
     if explicit_logical_key and explicit_logical_key.strip():
         logical_payload = {"type": type_, "producer_key": explicit_logical_key.strip()}
     else:
-        logical_payload = {"type": type_, "scope": scope, "semantic_content": semantic_content(content)}
+        logical_payload = {
+            "type": type_,
+            "guideline": guideline_scope(type_, source, doc, pdf_name),
+            "semantic_content": semantic_content(content),
+        }
     logical = "lk_" + hashlib.sha256(canonical_json(logical_payload).encode("utf-8")).hexdigest()
     version_id = hashlib.sha256(f"{type_}:{logical}:{digest}".encode("utf-8")).hexdigest()[:24]
     return ObjectIdentity(logical, digest, scope_json, f"{type_[:3].lower()}_{version_id}")

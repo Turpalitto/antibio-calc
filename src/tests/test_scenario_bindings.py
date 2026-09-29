@@ -251,7 +251,13 @@ def test_build_and_verify_happy_path(tmp_path):
     assert report["binding_count"] == 5
     counts = {d["disease_id"]: d["binding_count"] for d in report["diseases"]}
     assert counts == {"cap_adult": 2, "cap_child": 3}
+    # 654_2 amoxicillin has a 1500 mg/day calculator dose against a spec that
+    # declares no dose, so it is NOT eligible; the others are blocked by route,
+    # strata or a declared dose mismatch.  No disease is unblocked here because no
+    # spec row in this fixture declares a dose, so there is never positive evidence.
     assert all(d["unblock_eligible_count"] == 0 for d in report["diseases"])
+    assert all(b["unblock_eligible"] is False
+               for d in report["diseases"] for b in d["bindings"])
 
     amox = _binding(report, "cap_adult", "amoxicillin")
     assert amox["spec_row_index"] == 0
@@ -260,7 +266,11 @@ def test_build_and_verify_happy_path(tmp_path):
     assert amox["route"] == "LINKED"
     assert amox["duration"] == "GLOBAL_SPEC"
     assert amox["age_weight"] == "GUIDELINE_SCOPE_ADULT"
-    assert amox["severity"] == "DOSE_TABLE_NOT_STRATIFIED"
+    assert amox["severity"] == "LINKED", "severity is derived from the row, not hardcoded"
+    # SPEC_654 declares no dose, so there is NO dose evidence -- and that, not a
+    # hardcoded literal, is what withholds eligibility.
+    assert amox["dose_evidence"] == "NOT_COMPARABLE"
+    assert amox["dose_evidence_detail"]["calculator"] == {"dose_mg_day_fixed": 1500}
     assert amox["remaining_blockers"] == []
     assert amox["duration_review_required"] is False
     assert amox["unblock_eligible"] is False
@@ -431,7 +441,16 @@ def test_verify_rejects_coverage_gap(tmp_path):
         verify_scenario_bindings(db_path, bindings_dir, specs_dir)
 
 
-def test_severity_guard_keeps_eligibility_false(tmp_path):
+def test_severity_is_derived_and_eligibility_requires_dose_evidence(tmp_path):
+    """F-7 + H-6: the old test asserted the ALWAYS-FALSE `unblock_eligible` and
+    called it a "guard", so the real intent (why eligibility is withheld) was
+    invisible and a future developer removing the hardcode would think they had
+    broken safety.
+
+    The real intent: eligibility is withheld for want of DOSE EVIDENCE, not because
+    a severity literal is hardcoded.  `severity` is now derived from the row, and a
+    spec row that DOES declare a dose makes a binding eligible.
+    """
     db_path, bindings_dir, specs_dir = _prepare(tmp_path, [_clean_disease()], {"999_1": SPEC_CLEAN})
     _build_and_write(db_path, bindings_dir, specs_dir)
     report = verify_scenario_bindings(db_path, bindings_dir, specs_dir)
@@ -441,10 +460,99 @@ def test_severity_guard_keeps_eligibility_false(tmp_path):
     assert binding["age_weight"] == "GUIDELINE_SCOPE_ADULT"
     assert binding["duration_review_required"] is False
     assert binding["remaining_blockers"] == []
-    assert binding["severity"] == "DOSE_TABLE_NOT_STRATIFIED"
+    # severity is derived, not a constant
+    assert binding["severity"] == "LINKED"
+    # the calculator's regimen carries no dose at all here
+    assert binding["dose_evidence"] == "NO_CALCULATOR_DOSE"
+    assert binding["unblock_eligible"] is False, "no dose evidence -> not eligible"
+    assert report["diseases"][0]["unblock_eligible_count"] == 0
+
+
+def test_unblock_eligibility_is_reachable_with_dose_evidence(tmp_path):
+    """The eligibility gate is a real gate, not a permanently-closed door."""
+    disease = _clean_disease()
+    disease["scenarios"][0]["lines"][0]["drugs"][0]["regimens"] = [
+        {"duration_days": "5", "single_dose_mg": 500, "dose_basis": "per_dose",
+         "freq_per_day": 3},
+    ]
+    spec = json.loads(json.dumps(SPEC_CLEAN))
+    spec["row_groups"][0]["dose"] = {"value_min": 450, "value_max": 550, "unit": "mg/dose"}
+    db_path, bindings_dir, specs_dir = _prepare(tmp_path, [disease], {"999_1": spec})
+    _build_and_write(db_path, bindings_dir, specs_dir)
+    report = verify_scenario_bindings(db_path, bindings_dir, specs_dir)
+
+    binding = _binding(report, "clean_disease", "amoxicillin")
+    assert binding["dose_evidence"] == "MATCH"
+    assert binding["dose_evidence_detail"]["calculator"] == {"single_dose_mg": 500}
+    assert binding["unblock_eligible"] is True, \
+        "a fully linked adult binding with matching dose evidence must be eligible"
+
+
+def test_dose_mismatch_blocks_eligibility(tmp_path):
+    disease = _clean_disease()
+    disease["scenarios"][0]["lines"][0]["drugs"][0]["regimens"] = [
+        {"duration_days": "5", "single_dose_mg": 5000, "dose_basis": "per_dose"},
+    ]
+    spec = json.loads(json.dumps(SPEC_CLEAN))
+    spec["row_groups"][0]["dose"] = {"value_min": 450, "value_max": 550, "unit": "mg/dose"}
+    db_path, bindings_dir, specs_dir = _prepare(tmp_path, [disease], {"999_1": spec})
+    _build_and_write(db_path, bindings_dir, specs_dir)
+    report = verify_scenario_bindings(db_path, bindings_dir, specs_dir)
+
+    binding = _binding(report, "clean_disease", "amoxicillin")
+    assert binding["dose_evidence"] == "MISMATCH"
     assert binding["unblock_eligible"] is False
-    disease = report["diseases"][0]
-    assert disease["unblock_eligible_count"] == 0
+
+
+def test_unstratified_blocker_is_reported_as_such(tmp_path):
+    disease = _adult_disease()
+    spec = json.loads(json.dumps(SPEC_654))
+    spec["row_groups"][0]["blocking_reasons"] = ["MULTIPLE_AGE_WEIGHT_STRATA"]
+    db_path, bindings_dir, specs_dir = _prepare(tmp_path, [disease], {"654_2": spec})
+    _build_and_write(db_path, bindings_dir, specs_dir)
+    report = verify_scenario_bindings(db_path, bindings_dir, specs_dir)
+    assert _binding(report, "cap_adult", "amoxicillin")["severity"] == "DOSE_TABLE_NOT_STRATIFIED"
+
+
+def test_other_blocker_is_reported_as_not_linked(tmp_path):
+    disease = _adult_disease()
+    spec = json.loads(json.dumps(SPEC_654))
+    spec["row_groups"][0]["blocking_reasons"] = ["MAXIMUM_DOSE_NOT_STRUCTURED"]
+    db_path, bindings_dir, specs_dir = _prepare(tmp_path, [disease], {"654_2": spec})
+    _build_and_write(db_path, bindings_dir, specs_dir)
+    report = verify_scenario_bindings(db_path, bindings_dir, specs_dir)
+    assert _binding(report, "cap_adult", "amoxicillin")["severity"] == "NOT_LINKED"
+
+
+# ---------------------------------------------------------------------------
+# M-10 -- duration range disagreements must not be hidden by _first_int
+# ---------------------------------------------------------------------------
+
+def test_m10_duration_range_disagreement_is_detected():
+    from src.pipeline.extraction.scenario_bindings import _linkage
+
+    scenario = {"age_group": "adult"}
+    drug = {"route": ["per_os"]}
+    spec = {"duration": "5-7 days"}
+    row = {"duration": "5-7 days", "blocking_reasons": []}
+
+    # calculator shows the FULL published range -> no review
+    ok = _linkage(scenario, drug, {"duration_days": "5-7"}, row, spec)
+    assert ok["duration_review_required"] is False
+
+    # calculator shows a WIDER range than the guideline -> review
+    wider = _linkage(scenario, drug, {"duration_days": "5-10"}, row, spec)
+    assert wider["duration_review_required"] is True, \
+        "'5-7' vs '5-10' was reported as agreement because only the first int was read"
+
+    # calculator shows a NARROWER range: a conservative subset of the guideline,
+    # which is not a disagreement the guideline contradicts
+    narrower = _linkage(scenario, drug, {"duration_days": "5"}, row, spec)
+    assert narrower["duration_review_required"] is False
+
+    # a genuinely different course -> review
+    assert _linkage(scenario, drug, {"duration_days": "10-14"}, row, spec)["duration_review_required"] is True
+    assert _linkage(scenario, drug, {"duration_days": 5}, row, spec)["duration_review_required"] is False
 
 
 def test_cli_writes_report(tmp_path):

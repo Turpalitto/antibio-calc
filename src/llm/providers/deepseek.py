@@ -46,7 +46,7 @@ class DeepSeekProvider(BaseProvider):
         system_prompt: str,
         user_prompt: str,
         model: str | None = None,
-        max_tokens: int = 8192,
+        max_tokens: int | None = None,
         temperature: float = 0.1,
         **kwargs: Any,
     ) -> dict[str, Any]:
@@ -60,10 +60,15 @@ class DeepSeekProvider(BaseProvider):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            "max_tokens": max_tokens,
+            # L-47: matches the declared base-class default.
+            "max_tokens": max_tokens if max_tokens is not None else self.DEFAULT_MAX_TOKENS,
             "temperature": temperature,
         }
+        # L-47: `**kwargs` was accepted and silently discarded, so a caller's
+        # `response_format=...` had no effect and looked like it did.
+        payload.update({k: v for k, v in kwargs.items() if k not in ("provider", "client")})
 
+        last_exc: BaseException | None = None
         for attempt in range(self._max_retries):
             try:
                 resp = await self._http.post(
@@ -74,18 +79,27 @@ class DeepSeekProvider(BaseProvider):
                 )
                 resp.raise_for_status()
                 return resp.json()
-            except (httpx.HTTPStatusError, httpx.RequestError, Exception) as exc:
-                wait = 2**attempt
+            except Exception as exc:  # noqa: BLE001 - classified below
+                # M-45: `except (HTTPStatusError, RequestError, Exception)` was
+                # decorative -- `Exception` subsumes both -- so a permanent 401
+                # was retried 6 times with 2^5 s of backoff.
+                last_exc = exc
+                if not self.should_retry(exc):
+                    logger.error(
+                        "DeepSeek request failed permanently (status %s): %s",
+                        getattr(getattr(exc, "response", None), "status_code", "n/a"), exc,
+                    )
+                    raise
+                if attempt >= self._max_retries - 1:
+                    raise
+                wait = self.backoff_seconds(attempt)
                 logger.warning(
-                    "DeepSeek attempt %d/%d failed: %s: %s, retry in %ds",
+                    "DeepSeek attempt %d/%d failed: %s: %s, retry in %.1fs",
                     attempt + 1, self._max_retries, type(exc).__name__, exc, wait,
                 )
-                if attempt < self._max_retries - 1:
-                    await asyncio.sleep(wait)
-                else:
-                    raise
+                await asyncio.sleep(wait)
 
-        raise RuntimeError("DeepSeek call failed after all retries")
+        raise RuntimeError("DeepSeek call failed after all retries") from last_exc
 
     async def list_models(self) -> list[str]:
         try:

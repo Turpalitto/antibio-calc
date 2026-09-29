@@ -31,7 +31,14 @@ class Severity(str, Enum):
 
 class ReviewState(str, Enum):
     """Governance (lifecycle) state. Never confuse with ConsensusResult —
-    two-reviewer agreement alone is CONSENSUS_REACHED, not PHYSICIAN_APPROVED."""
+    two-reviewer agreement alone is a consensus, not PHYSICIAN_APPROVED.
+
+    ``CONSENSUS_REACHED`` is part of the published state vocabulary but is never
+    persisted: a completed two-reviewer consensus goes straight to
+    ``MEDICAL_QA_PENDING``, because consensus alone is never an approval. It is
+    retained only so the vocabulary stays complete and the distinction from
+    :class:`ConsensusResult` remains explicit in one place.
+    """
     PENDING = "PENDING"
     CLAIMED = "CLAIMED"
     IN_REVIEW = "IN_REVIEW"
@@ -107,6 +114,32 @@ FINAL_STATES = frozenset({
 
 # States a task must reach before Medical QA sign-off is permitted.
 QA_ELIGIBLE_STATES = frozenset({ReviewState.MEDICAL_QA_PENDING})
+
+
+def consensus_or_blank(value: Any) -> ConsensusResult | str:
+    """Coerce a persisted/inbound consensus value to a real
+    :class:`ConsensusResult`, rejecting anything unrecognised. ``""`` is kept as
+    the "not yet determined" value."""
+    if isinstance(value, ConsensusResult):
+        return value
+    if value in ("", None):
+        return ""
+    try:
+        return ConsensusResult(value)
+    except ValueError as error:
+        raise ValueError(f"unknown consensus_result: {value!r}") from error
+
+
+def close_outcome_or_blank(value: Any) -> CloseOutcome | str:
+    """Coerce a persisted/inbound close outcome to a real :class:`CloseOutcome`."""
+    if isinstance(value, CloseOutcome):
+        return value
+    if value in ("", None):
+        return ""
+    try:
+        return CloseOutcome(value)
+    except ValueError as error:
+        raise ValueError(f"unknown close_outcome: {value!r}") from error
 
 
 def governance_state(target_type: TargetType, state: ReviewState) -> str:
@@ -203,9 +236,12 @@ class ClinicalReviewTask:
     second_decision: str = ""
     second_reason_codes: tuple[str, ...] = ()
     second_comments: str = ""
-    consensus_result: str = ""
+    # Real enums, not free text: a typo used to be accepted silently because
+    # these were compared as plain strings against hardcoded literals. Empty
+    # string means "not yet determined" and is the only non-member value allowed.
+    consensus_result: ConsensusResult | str = ""
     qa_verdict: str = ""
-    close_outcome: str = ""
+    close_outcome: CloseOutcome | str = ""
     created_at: str = ""
     claimed_at: str = ""
     completed_at: str = ""

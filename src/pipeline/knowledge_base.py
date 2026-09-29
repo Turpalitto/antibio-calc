@@ -60,18 +60,33 @@ def _build_provenance(src: Dict, item: Dict, doc, pdf_name: str, now: str) -> "P
     and never reads a field under a different name than the producer wrote (the RC-012/013/014 class
     of bugs). Builder-owned fields (timestamp, doc_version, schema_version) and the document-level
     guideline_id are stamped here.
+
+    H-8: the semantic producer wrote the per-entity extractor under the key `engine`, while
+    this mapper read only `extractor` — so `src.get("extractor")` was ALWAYS None and
+    `Provenance.extractor` silently fell back to the DOCUMENT-level source.  An entity
+    extracted by `pymupdf-native-table` in a `MinerU-OCR` document was recorded as
+    "MinerU-OCR".  `engine` is now read as the legacy spelling of the canonical
+    `extractor` field, and the semantic producer writes `extractor` directly.
+
+    H-9: `int(src.get("page", src.get("page_num", 0)) or 0)` could not distinguish an
+    ABSENT page from a present `page: 0`, and a present `None` defeated the
+    `page_num` fallback.  Absent/None now falls back; an explicit 0 is honoured.
     """
     doc_meta = getattr(doc, "metadata", {}) or {}
     # original_text: canonical key first, then the object's raw wording ("raw" is the key the
     # semantic builder uses — never "text"). Guarantees Clinical Governance "never discard wording".
     original_text = src.get("original_text") or item.get("raw") or item.get("name")
+    page_value = src.get("page")
+    if page_value is None:
+        page_value = src.get("page_num")
+    page = int(page_value) if page_value is not None else 0
     return Provenance(
         pdf=pdf_name,
         guideline_id=src.get("guideline_id") or doc_meta.get("guideline_id"),
-        page=int(src.get("page", src.get("page_num", 0)) or 0),
+        page=page,
         paragraph=src.get("paragraph"),
         bounding_box=src.get("bounding_box") or src.get("bbox"),
-        extractor=src.get("extractor") or getattr(doc, "source", None) or "router",
+        extractor=src.get("extractor") or src.get("engine") or getattr(doc, "source", None) or "router",
         layout_engine=src.get("layout_engine", "none"),
         semantic_engine=src.get("semantic_engine", "semantic.py"),
         table_row=src.get("table_row", src.get("row")),
@@ -135,6 +150,13 @@ def _stable_id(type_: str, content: Dict) -> str:
 def _content_key(type_: str, content: Dict) -> str:
     """Exact semantic-content key retained for audit compatibility."""
     return f"{type_}:{content_hash(content)}"
+
+
+# Objects that are queued FOR REVIEW BY DESIGN and must never be reclassified as
+# 'invalid' by a validation run.  ``_validate_basic`` is an admission check, not a
+# clinical verdict: a RegimenCandidate is always False by policy, so conflating the
+# two turned "awaiting physician review" into "invalid" (H-27).
+REVIEW_QUEUED_TYPES = frozenset({"RegimenCandidate"})
 
 
 class LegacyIdentityError(RuntimeError):
@@ -251,6 +273,13 @@ class KnowledgeBase:
         c.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_identity_content ON objects(type, logical_key, content_hash)")
         c.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_one_active_identity "
                   "ON objects(type, logical_key) WHERE status='active' AND logical_key IS NOT NULL")
+        # H-26/M-26: the hot query paths had no index.  INV-01/02/03 join provenance
+        # by obj_id (M-40), impact_analysis filters objects by content_hash, and both
+        # the review queue and the conflict table are filtered by status/key.
+        c.execute("CREATE INDEX IF NOT EXISTS idx_provenance_obj ON provenance(obj_id)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_reviews_status ON reviews(status)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_conflicts_key ON conflicts(key)")
+        c.execute("CREATE INDEX IF NOT EXISTS idx_objects_content_hash ON objects(content_hash)")
         self.conn.commit()
 
     def _migrate_add_column(self, table: str, column: str, col_type: str):
@@ -275,7 +304,14 @@ class KnowledgeBase:
         return dict(row)
 
     def add_document(self, doc: Document) -> Dict[str, Any]:
-        """Process doc's knowledge_objects with full P4.4 lifecycle."""
+        """Process doc's knowledge_objects with full P4.4 lifecycle.
+
+        H-25: there was no explicit transaction, so a mid-loop exception left some
+        objects uncommitted while ``stats`` was lost — a state indistinguishable
+        from "this PDF legitimately yielded 0 objects".  The whole document is now
+        one transaction: either every object and its provenance is persisted, or
+        nothing is and the exception propagates.
+        """
         if not self._identity_ready:
             raise LegacyIdentityError(
                 "LEGACY_FUZZY_IDENTITY: non-empty database lacks canonical logical keys; "
@@ -288,97 +324,109 @@ class KnowledgeBase:
         now = datetime.now(timezone.utc).isoformat()
         pdf_name = str(getattr(doc, "pdf_path", "unknown"))
 
-        for otype, items in doc.knowledge_objects.items():
-            for item in items:
-                content = {k: v for k, v in item.items() if k not in ("source", "provenance", "logical_key")}
-                confidence = float(item.get("confidence", 0.7))
-
-                # PROVENANCE_SPECIFICATION v2: 1:1 canonical mapping — no inference, no heuristics.
-                # The producer (semantic layer) emits provenance keyed by Provenance field names;
-                # the consumer only maps. guideline_id is a document-level constant (owner: Document
-                # metadata) legitimately stamped by the builder.
-                prov_list: List[Provenance] = []
-                src = item.get("provenance") or item.get("source", {})
-                if not isinstance(src, dict):
-                    src = {}
-                identity = build_identity(
-                    otype, content, src, doc, pdf_name,
-                    explicit_logical_key=item.get("logical_key"),
-                )
-                key = identity.logical_key
-                obj_id = identity.object_id
-                if isinstance(src, dict):
-                    prov = _build_provenance(src, item, doc, pdf_name, now)
-                    prov_list.append(prov)
-
-                existing = self._get_by_key(otype, key)
-
-                if existing:
-                    if existing.get("content_hash") == identity.content_hash:
-                        self._merge_provenance(existing["id"], prov_list)
-                        continue
-                    else:
-                        # Conflict → new version
-                        stats["conflicts"] += 1
-                        self._record_conflict(key, existing["id"], obj_id)
-                        new_ver = int(existing.get("version", 1)) + 1
-
-                        self.conn.execute(
-                            "UPDATE objects SET status='superseded', updated_at=? WHERE id=?",
-                            (now, existing["id"])
-                        )
-                        self._insert_object(
-                            id=obj_id, type=otype, knowledge_type=otype,
-                            clinical_domain="antibiotic_therapy",
-                            logical_key=identity.logical_key,
-                            content_hash=identity.content_hash,
-                            clinical_scope=identity.clinical_scope,
-                            content=content, version=new_ver,
-                            status="active",
-                            created_at=now, updated_at=now,
-                            confidence=confidence,
-                            validation_status="pending",
-                            review_status="queued",
-                            normalization_status=item.get("normalization_status", "raw"),
-                            history=json.dumps([existing["id"]]),
-                            relationships=[]
-                        )
-                        self._add_provenance(obj_id, prov_list)
-                        self._queue_review(obj_id, f"conflict/update from {pdf_name}")
-                        stats["reviews"] += 1
-                        stats["superseded"] += 1
-
-                        stats["added"] += 1
-                        continue
-
-                # New object
-                is_valid = self._validate_basic(content, otype)
-                self._insert_object(
-                    id=obj_id, type=otype, knowledge_type=otype,
-                    clinical_domain="antibiotic_therapy",
-                    logical_key=identity.logical_key,
-                    content_hash=identity.content_hash,
-                    clinical_scope=identity.clinical_scope,
-                    content=content, version=1,
-                    status="active" if is_valid else "draft",
-                    created_at=now, updated_at=now,
-                    confidence=confidence,
-                    validation_status="valid" if is_valid else "pending",
-                    review_status="none" if is_valid else "queued",
-                    normalization_status=item.get("normalization_status", "raw"),
-                    history="[]",
-                    relationships=[]
-                )
-                self._add_provenance(obj_id, prov_list)
-
-                if not is_valid:
-                    self._queue_review(obj_id, "validation or low confidence")
-                    stats["reviews"] += 1
-
-                stats["added"] += 1
-
-        self.conn.commit()
+        try:
+            self.conn.execute("BEGIN")
+            for otype, items in doc.knowledge_objects.items():
+                for item in items:
+                    self._add_one_object(otype, item, doc, pdf_name, now, stats)
+            self.conn.commit()
+        except Exception:
+            self.conn.rollback()
+            raise
         return stats
+
+    def _add_one_object(
+        self,
+        otype: str,
+        item: Dict[str, Any],
+        doc: Document,
+        pdf_name: str,
+        now: str,
+        stats: Dict[str, Any],
+    ) -> None:
+        """Insert/merge one knowledge object and fold its counters into ``stats``."""
+        content = {k: v for k, v in item.items() if k not in ("source", "provenance", "logical_key")}
+        confidence = float(item.get("confidence", 0.7))
+
+        # PROVENANCE_SPECIFICATION v2: 1:1 canonical mapping — no inference, no heuristics.
+        # The producer (semantic layer) emits provenance keyed by Provenance field names;
+        # the consumer only maps. guideline_id is a document-level constant (owner: Document
+        # metadata) legitimately stamped by the builder.
+        prov_list: List[Provenance] = []
+        src = item.get("provenance") or item.get("source", {})
+        if not isinstance(src, dict):
+            src = {}
+        identity = build_identity(
+            otype, content, src, doc, pdf_name,
+            explicit_logical_key=item.get("logical_key"),
+        )
+        key = identity.logical_key
+        obj_id = identity.object_id
+        if isinstance(src, dict):
+            prov_list.append(_build_provenance(src, item, doc, pdf_name, now))
+
+        existing = self._get_by_key(otype, key)
+
+        if existing:
+            if existing.get("content_hash") == identity.content_hash:
+                self._merge_provenance(existing["id"], prov_list)
+                return
+            # Conflict -> new version
+            stats["conflicts"] += 1
+            self._record_conflict(key, existing["id"], obj_id)
+            new_ver = int(existing.get("version", 1)) + 1
+            self.conn.execute(
+                "UPDATE objects SET status='superseded', updated_at=? WHERE id=?",
+                (now, existing["id"])
+            )
+            self._insert_object(
+                id=obj_id, type=otype, knowledge_type=otype,
+                clinical_domain="antibiotic_therapy",
+                logical_key=identity.logical_key,
+                content_hash=identity.content_hash,
+                clinical_scope=identity.clinical_scope,
+                content=content, version=new_ver,
+                status="active",
+                created_at=now, updated_at=now,
+                confidence=confidence,
+                validation_status="pending",
+                review_status="queued",
+                normalization_status=item.get("normalization_status", "raw"),
+                history=json.dumps([existing["id"]]),
+                relationships=[]
+            )
+            self._add_provenance(obj_id, prov_list)
+            self._queue_review(obj_id, f"conflict/update from {pdf_name}")
+            stats["reviews"] += 1
+            stats["superseded"] += 1
+            stats["added"] += 1
+            return
+
+        # New object
+        is_valid = self._validate_basic(content, otype)
+        self._insert_object(
+            id=obj_id, type=otype, knowledge_type=otype,
+            clinical_domain="antibiotic_therapy",
+            logical_key=identity.logical_key,
+            content_hash=identity.content_hash,
+            clinical_scope=identity.clinical_scope,
+            content=content, version=1,
+            status="active" if is_valid else "draft",
+            created_at=now, updated_at=now,
+            confidence=confidence,
+            validation_status="valid" if is_valid else "pending",
+            review_status="none" if is_valid else "queued",
+            normalization_status=item.get("normalization_status", "raw"),
+            history="[]",
+            relationships=[]
+        )
+        self._add_provenance(obj_id, prov_list)
+
+        if not is_valid:
+            self._queue_review(obj_id, "validation or low confidence")
+            stats["reviews"] += 1
+
+        stats["added"] += 1
 
     def _insert_object(self, **kwargs):
         c = self.conn.cursor()
@@ -433,15 +481,26 @@ class KnowledgeBase:
             ))
 
     def _merge_provenance(self, obj_id: str, new_provs: List[Provenance]):
-        # RC-017 fix: dedup by (pdf, page, table_row, table_col) — NOT (pdf, page) alone. The same
-        # object can legitimately appear in several distinct table cells on one page; keying by page
-        # only silently dropped every cell after the first, losing cell-level traceability.
+        """Append only genuinely NEW provenance rows for an existing object.
+
+        The dedup key must distinguish two DIFFERENT occurrences of the same fact
+        from a repeat of one occurrence.  Keying on ``(pdf, page, table_row,
+        table_col)`` alone collapsed every free-text mention on a page onto one
+        key, because free-text entities never set table_row/table_col — so the key
+        was ``(pdf, page, None, None)`` for EVERY occurrence and the second
+        distinct wording was silently discarded.  That is what defeated the
+        ``status<>'superseded'`` model: the second mention looked like the first.
+
+        The key therefore also carries the source wording.  A true repeat (same
+        page, same cell, same words) still dedups; two real mentions both survive.
+        """
         existing = self.conn.execute(
-            "SELECT pdf, page, table_row, table_col FROM provenance WHERE obj_id=?", (obj_id,)
+            "SELECT pdf, page, table_row, table_col, IFNULL(original_text, '') "
+            "FROM provenance WHERE obj_id=?", (obj_id,)
         ).fetchall()
-        seen = {(r[0], r[1], r[2], r[3]) for r in existing}
+        seen = {(r[0], r[1], r[2], r[3], r[4]) for r in existing}
         for p in new_provs:
-            k = (p.pdf, p.page, p.table_row, p.table_col)
+            k = (p.pdf, p.page, p.table_row, p.table_col, p.original_text or "")
             if k not in seen:
                 self._add_provenance(obj_id, [p])
                 seen.add(k)
@@ -471,14 +530,31 @@ class KnowledgeBase:
         return True
 
     def validate_all(self) -> List[str]:
-        """Real validation run (PHASE 10)."""
+        """Real validation run (PHASE 10).
+
+        H-27: this used ``if not _validate_basic(...)`` and stamped
+        ``validation_status='invalid'``.  Because every ``RegimenCandidate`` fails
+        ``_validate_basic`` BY DESIGN, running the validation tool rewrote
+        ``('draft', 'pending', 'queued')`` into ``('draft', 'invalid', 'queued')``:
+        a review-queue state was destroyed by the act of checking the review queue.
+        Only objects that are genuinely malformed are marked invalid; a queued
+        review item keeps its 'pending' status and stays queued.
+        """
         fails = []
-        rows = self.conn.execute("SELECT id, type, content, validation_status FROM objects").fetchall()
+        rows = self.conn.execute(
+            "SELECT id, type, content, validation_status, review_status FROM objects"
+        ).fetchall()
         for r in rows:
             content = json.loads(r["content"])
+            if r["type"] in REVIEW_QUEUED_TYPES:
+                continue
+            if r["validation_status"] == "invalid":
+                continue
             if not self._validate_basic(content, r["type"]):
                 fails.append(r["id"])
-                self.conn.execute("UPDATE objects SET validation_status='invalid' WHERE id=?", (r["id"],))
+                self.conn.execute(
+                    "UPDATE objects SET validation_status='invalid' WHERE id=?", (r["id"],)
+                )
         self.conn.commit()
         return fails
 
@@ -496,10 +572,17 @@ class KnowledgeBase:
         return [dict(r) for r in rows]
 
     def impact_analysis(self, new_doc: Document) -> Dict[str, Any]:
-        """Real impact from new doc."""
-        affected = []
+        """Real impact from new doc.
+
+        M-27: this was N+1 — one SELECT per entity, plus a full identity recompute
+        per entity.  Identities are now computed once and looked up with a single
+        batched IN query.
+        """
         if not new_doc.knowledge_objects:
             return {"affected": 0, "details": []}
+
+        pdf_name = str(getattr(new_doc, "pdf_path", "unknown"))
+        keys_by_type: Dict[str, List[str]] = {}
         for otype, items in new_doc.knowledge_objects.items():
             for item in items:
                 content = {k: v for k, v in item.items() if k not in ("source", "provenance", "logical_key")}
@@ -507,16 +590,25 @@ class KnowledgeBase:
                 if not isinstance(src, dict):
                     src = {}
                 identity = build_identity(
-                    otype, content, src, new_doc, str(getattr(new_doc, "pdf_path", "unknown")),
+                    otype, content, src, new_doc, pdf_name,
                     explicit_logical_key=item.get("logical_key"),
                 )
-                rows = self.conn.execute(
-                    "SELECT id, type, version FROM objects "
-                    "WHERE type=? AND status='active' AND logical_key=?",
-                    (otype, identity.logical_key),
-                ).fetchall()
-                for r in rows:
-                    affected.append({"id": r["id"], "type": r["type"], "version": r["version"], "reason": f"overlaps new {otype}"})
+                keys_by_type.setdefault(otype, []).append(identity.logical_key)
+
+        affected: List[Dict[str, Any]] = []
+        for otype, keys in keys_by_type.items():
+            unique = sorted(set(keys))
+            placeholders = ",".join("?" for _ in unique)
+            rows = self.conn.execute(
+                f"SELECT id, type, version, logical_key FROM objects "
+                f"WHERE type=? AND status='active' AND logical_key IN ({placeholders})",
+                (otype, *unique),
+            ).fetchall()
+            for r in rows:
+                affected.append({
+                    "id": r["id"], "type": r["type"], "version": r["version"],
+                    "reason": f"overlaps new {otype}",
+                })
         return {"affected": len(affected), "details": affected[:10]}
 
     def stats(self) -> Dict[str, Any]:

@@ -1,5 +1,6 @@
 import logging
 import os
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -15,15 +16,24 @@ def _backup_path() -> Path:
 
 
 def _fsync_json(path: Path, data: dict) -> None:
-    """Write JSON with fsync for crash safety."""
+    """Write JSON atomically with fsync for crash safety.
+
+    A truncate-write left a truncated progress file on a crash, which then made
+    every subsequent run believe nothing was done (or that everything was).
+    """
     blob = orjson.dumps(data, option=orjson.OPT_INDENT_2)
-    path.write_bytes(blob)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(dir=str(path.parent), prefix=path.name + ".", suffix=".tmp")
+    tmp = Path(tmp_name)
     try:
-        fd = os.open(str(path), os.O_RDONLY)
-        os.fsync(fd)
-        os.close(fd)
-    except OSError:
-        pass
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(blob)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, path)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
 
 
 def load_progress() -> dict:
@@ -72,6 +82,8 @@ def needs_reprocessing(clinrec_id: int, pdf_sha256: str) -> bool:
         return True
     if data.get("validation_model") != VALIDATION_MODEL:
         return True
+    if item.get("extraction_incomplete"):
+        return True
     return False
 
 
@@ -87,6 +99,33 @@ def mark_extraction_done(clinrec_id: int, sha256: str, count: int) -> None:
         "extraction_regimens_count": count,
         "validation_done": False,
         "needs_reprocess": False,
+    })
+    data["pipeline_version"] = EXTRACTION_VERSION
+    data["extraction_model"] = EXTRACTION_MODEL
+    data["validation_model"] = VALIDATION_MODEL
+    save_progress(data)
+
+
+def mark_extraction_incomplete(clinrec_id: int, sha256: str, reason: str) -> None:
+    """Record a FAILED/INCOMPLETE extraction without claiming success.
+
+    H-3: "no relevant text found" and "the LLM returned zero regimens" used to call
+    ``mark_extraction_done(..., 0)``.  That set ``extraction_done=True``, so
+    ``get_pending_items`` skipped the document forever and the fail-open was never
+    retried.  Here ``extraction_done`` stays False (so the item remains pending) and
+    the reason is recorded for the operator.
+    """
+    data = load_progress()
+    key = str(clinrec_id)
+    if key not in data["items"]:
+        data["items"][key] = {}
+    data["items"][key].update({
+        "pdf_sha256": sha256,
+        "extraction_done": False,
+        "extraction_incomplete": True,
+        "extraction_incomplete_reason": reason,
+        "extraction_incomplete_at": datetime.now(timezone.utc).isoformat(),
+        "needs_reprocess": True,
     })
     data["pipeline_version"] = EXTRACTION_VERSION
     data["extraction_model"] = EXTRACTION_MODEL

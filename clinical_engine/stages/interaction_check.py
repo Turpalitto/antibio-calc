@@ -101,7 +101,11 @@ class InteractionCheck:
         current_meds = state.patient.patient.current_meds
 
         if not current_meds:
-            return StageResult(state=state, metrics={"checked": 0}, elapsed_ms=0.0)
+            # M-3: the early return used to hardcode elapsed_ms=0.0, which
+            # silently corrupted EngineRuntime.pipeline_time_breakdown (a stage
+            # that ran cannot report 0 ms; the timing is the point of the map).
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            return StageResult(state=state, metrics={"checked": 0}, elapsed_ms=elapsed_ms)
 
         updated: list[Recommendation] = []
         excluded = list(state.excluded)

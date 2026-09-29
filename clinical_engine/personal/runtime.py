@@ -8,6 +8,7 @@ then writes a minimized append-only audit event before releasing the result.
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import os
 import secrets
@@ -19,6 +20,7 @@ from typing import Any, Mapping
 from .bundle import (
     attest,
     build_personal_bundle,
+    load_attestation_ledger,
     load_owner_profile,
     recover_unactivated_owner,
     register_owner,
@@ -84,23 +86,43 @@ class PersonalRuntime:
         try:
             service = self._load_service()
         except PersonalModeError as exc:
+            # No bundle is loaded, so there is no bundle version to audit against;
+            # this refusal path is unchanged (no request_audit.jsonl write).
             return self._blocked(exc.code, exc.detail)
 
         result = service.recommend(request=request, host=host, origin=origin)
+        bundle_version = service.bundle_version
         for item in result.get("recommendations", []):
             binding = item.get("calculator_binding") if isinstance(item, dict) else None
             if not isinstance(binding, dict) or verified_binding(binding, self.calculator_db_path).get("calculator_regimen_sha256") != binding.get("calculator_regimen_sha256"):
-                return self._blocked("CALCULATOR_BINDING_DRIFT", "calculator regimen changed after owner attestation", bundle_version=service.bundle_version)
+                # Audit the refusal too: a request refused for calculator drift is
+                # exactly the event an auditor needs, so it must not bypass the
+                # append-only request_audit.jsonl.
+                return self._audit_or_fail(
+                    request,
+                    self._blocked(
+                        "CALCULATOR_BINDING_DRIFT",
+                        "calculator regimen changed after owner attestation",
+                        bundle_version=bundle_version,
+                    ),
+                    bundle_version=bundle_version,
+                )
             item["calculator_binding_verified"] = True
+        return self._audit_or_fail(request, result, bundle_version=bundle_version)
+
+    def _audit_or_fail(
+        self, request: Any, result: Mapping[str, Any], *, bundle_version: str | None
+    ) -> dict[str, Any]:
+        """Write the minimized append-only request audit, or fail closed."""
         try:
             self._append_request_audit(request=request, result=result)
         except (OSError, ValueError, TypeError):
             return self._blocked(
                 "LOCAL_AUDIT_WRITE_FAILED",
                 "local append-only request audit could not be written",
-                bundle_version=service.bundle_version,
+                bundle_version=bundle_version,
             )
-        return result
+        return dict(result)
 
     def register_owner(self, payload: Mapping[str, Any]) -> dict[str, Any]:
         with self._lock:
@@ -222,7 +244,11 @@ class PersonalRuntime:
                 built_at=now.isoformat(),
                 stale_after=(now + timedelta(days=stale_days)).isoformat(),
             )
-            self._write_active_pointer(bundle_path)
+            # Load the freshly built bundle first so the activation record can pin
+            # its digests, then reload through _load_service() so the activated
+            # state is only reported after the pin verifies.
+            built = self._load_service_for(bundle_path)
+            self._write_active_pointer(bundle_path, built)
             service = self._load_service()
         return {
             "status": "ACTIVATED",
@@ -232,19 +258,24 @@ class PersonalRuntime:
         }
 
     def list_attestations(self) -> dict[str, Any]:
-        path = self.state_dir / "owner_attestations.jsonl"
-        events: list[dict[str, Any]] = []
-        if path.is_file():
-            for line in path.read_text(encoding="utf-8").splitlines():
-                raw = json.loads(line)
-                events.append({
+        # Use the same hash-chain-verified loader as attest()/build_bundle().
+        # A raw read_text()+json.loads reported {"status":"ok"} for a tampered
+        # ledger and raised an unhandled JSONDecodeError (HTTP 500) on one corrupt
+        # line; both are now a stable ATTESTATION_LEDGER_INVALID domain error.
+        events = load_attestation_ledger(self.state_dir / "owner_attestations.jsonl")
+        return {
+            "status": "ok",
+            "attestations": [
+                {
                     "event_id": raw.get("event_id"),
                     "sequence": raw.get("sequence"),
                     "regimen_id": (raw.get("regimen_payload") or {}).get("regimen_id"),
                     "attested_at": raw.get("attested_at"),
                     "status": raw.get("status"),
-                })
-        return {"status": "ok", "attestations": events}
+                }
+                for raw in events
+            ],
+        }
 
     def _load_service(self) -> PersonalModeService:
         if not self.profile_path.is_file():
@@ -254,20 +285,44 @@ class PersonalRuntime:
         try:
             pointer = json.loads(self.active_pointer_path.read_text(encoding="utf-8"))
             filename = pointer["filename"]
+            expected_sha256 = pointer["payload_sha256"]
+            expected_signature = pointer["owner_signature"]
         except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
             raise PersonalModeError("ACTIVE_BUNDLE_POINTER_INVALID", "active bundle pointer is invalid") from exc
         if not isinstance(filename, str) or Path(filename).name != filename:
             raise PersonalModeError("ACTIVE_BUNDLE_POINTER_INVALID", "active bundle filename is invalid")
+        if not isinstance(expected_sha256, str) or not isinstance(expected_signature, str):
+            raise PersonalModeError(
+                "ACTIVE_BUNDLE_POINTER_INVALID",
+                "active bundle pointer must record payload_sha256 and owner_signature; re-activate the bundle",
+            )
         bundle_path = (self.state_dir / filename).resolve()
         if bundle_path.parent != self.state_dir or not bundle_path.is_file():
             raise PersonalModeError("PERSONAL_BUNDLE_NOT_FOUND", "active personal bundle is missing")
+        service = self._load_service_for(bundle_path)
+        # The token-scoped HMAC check lives in the guard and only runs on
+        # recommend(). Re-assert the activation digests here so health() and
+        # every other reporting path are gated on the same invariant.
+        digests = service.activation_digests()
+        if not hmac.compare_digest(digests["payload_sha256"], expected_sha256) or not hmac.compare_digest(
+            digests["owner_signature"], expected_signature
+        ):
+            raise PersonalModeError(
+                "BUNDLE_SIGNATURE_INVALID",
+                "active bundle no longer matches the digests recorded at activation",
+            )
+        return service
+
+    def _load_service_for(self, bundle_path: Path) -> PersonalModeService:
         return PersonalModeService.from_paths(self.profile_path, bundle_path)
 
-    def _write_active_pointer(self, bundle_path: Path) -> None:
+    def _write_active_pointer(self, bundle_path: Path, service: PersonalModeService) -> None:
         self.state_dir.mkdir(parents=True, exist_ok=True)
+        document = {"filename": bundle_path.name}
+        document.update(service.activation_digests())
         temporary = self.active_pointer_path.with_suffix(".tmp")
         temporary.write_text(
-            json.dumps({"filename": bundle_path.name}, ensure_ascii=False, indent=2) + "\n",
+            json.dumps(document, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
         os.replace(temporary, self.active_pointer_path)

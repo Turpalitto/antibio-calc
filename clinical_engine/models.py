@@ -10,6 +10,7 @@ clinical logic; it only defines shapes.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
@@ -45,6 +46,24 @@ class PregnancyCategory(Enum):
     CAUTION = "caution"
     ALLOWED = "allowed"
     UNKNOWN = "unknown"
+
+
+class OrganAdjustmentLevel(Enum):
+    """Load-time classification of an organ-adjustment free-text field.
+
+    Invariant #13 forbids parsing clinical prose at query runtime, so the
+    keyword classification happens ONCE at preparation time in
+    DrugReferenceReader (exactly like PregnancyCategory) and the stage only
+    ever reads this enum. Without it, a dose of "Противопоказан при тяжёлой
+    печёночной недостаточности" and "Не требуется" were indistinguishable at
+    runtime and both degraded to the same MONITOR_CLOSELY advisory.
+    """
+
+    PROHIBITED = "prohibited"   # source text states a contraindication
+    CAUTION = "caution"         # source text states caution / mandatory action
+    NONE = "none"               # source text states no adjustment needed
+    UNKNOWN = "unknown"         # text present but not classifiable, or absent
+
 
 
 class RecommendationOutcome(Enum):
@@ -110,6 +129,24 @@ class SafetyAction(Enum):
     INFORM_PATIENT = "inform_patient"
 
 
+# Ordered most severe first. Reduces a set of actions to its worst member.
+SAFETY_ACTION_SEVERITY: tuple[SafetyAction, ...] = (
+    SafetyAction.STOP_IMMEDIATELY,
+    SafetyAction.AVOID_IF_POSSIBLE,
+    SafetyAction.MONITOR_CLOSELY,
+    SafetyAction.INFORM_PATIENT,
+)
+
+
+def most_severe_action(actions: "tuple[SafetyAction, ...] | list[SafetyAction]") -> SafetyAction | None:
+    """Worst action in a collection, or None when empty."""
+    present = set(actions)
+    for action in SAFETY_ACTION_SEVERITY:
+        if action in present:
+            return action
+    return None
+
+
 # ---------------------------------------------------------------------------
 # 8.3 EngineError — infrastructure errors only (clinical no-data is NOT this)
 # ---------------------------------------------------------------------------
@@ -143,16 +180,60 @@ class EngineError(Exception):
 # 5.2 Input dataclasses
 # ---------------------------------------------------------------------------
 
+# A GFR the engine is willing to act on: a plain number, optionally prefixed
+# with an eGFR/CKF label and/or suffixed with a ml/min unit. Deliberately
+# strict -- an inequality, a range or free text yields None so the caller can
+# degrade loudly instead of dosing off a guessed number.
+_GRF_PATTERN = re.compile(
+    r"^\s*(?:e?gfr|скф|kk|кк)?\s*[:=]?\s*(\d+(?:[.,]\d+)?)\s*(?:мл/мин|мл\/мин|ml/min)?\s*$",
+    re.IGNORECASE,
+)
+
+
+def coerce_gfr(value: float | str | None) -> float | None:
+    """Coerce a GFR input (number or string) to ml/min, or None if unusable."""
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    match = _GRF_PATTERN.match(value)
+    if not match:
+        return None
+    return float(match.group(1).replace(",", "."))
+
 
 @dataclass(frozen=True, slots=True)
 class Patient:
     age: float | None = None
     weight_kg: float | None = None
     pregnant: bool = False
-    renal_function: float | None = None  # GFR ml/min
+    # GFR in ml/min. Typed `float | str` on purpose: api/contract.py declares
+    # this field `str | None` and api/service.py assigns that string straight
+    # in, so a plain `float` annotation made the model a loaded trap (a
+    # "45" would silently become truthy-but-unusable). Consumers must read
+    # `gfr_ml_min` (coerced) or `gfr_unparseable`, never the raw field.
+    renal_function: float | str | None = None
     hepatic_impairment: bool = False
     allergies: tuple[str, ...] = ()  # drug classes
     current_meds: tuple[str, ...] = ()  # for InteractionCheck
+
+    @property
+    def gfr_ml_min(self) -> float | None:
+        """renal_function coerced to a GFR in ml/min, or None if unusable.
+
+        Accepts a number, or a string carrying a plain number with an
+        optional ml/min unit ("12", "12.5", "12 мл/мин", "eGFR 30"). Anything
+        else -- a label ("норма"), an inequality (">90", "30-45") or a value
+        with extra prose -- returns None rather than guessing. Callers must
+        treat None + a non-None raw value as degraded data, not as "no renal
+        data" (see `gfr_unparseable`).
+        """
+        return coerce_gfr(self.renal_function)
+
+    @property
+    def gfr_unparseable(self) -> bool:
+        """True when renal data was supplied but could not be read as a GFR."""
+        return self.renal_function is not None and self.gfr_ml_min is None
 
 
 @dataclass(frozen=True, slots=True)
@@ -232,6 +313,15 @@ class DrugInfo:
     forms: tuple[DrugForm, ...]
     dilution: dict[str, DilutionRoute]
     pediatric_dosing: PediatricDosing | None
+    # Load-time classification of the two organ-adjustment free-text fields
+    # (see OrganAdjustmentLevel). Populated by DrugReferenceReader; the
+    # runtime stages read the enum, never the prose.
+    renal_adjustment_level: OrganAdjustmentLevel = OrganAdjustmentLevel.UNKNOWN
+    hepatic_adjustment_level: OrganAdjustmentLevel = OrganAdjustmentLevel.UNKNOWN
+    # Verbatim source text behind `pregnancy_category`. Kept so the safety
+    # filter can show the physician WHY a drug was excluded, including
+    # trimester-conditional wording that a bare enum value would hide.
+    pregnancy_source_text: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -258,10 +348,18 @@ class RecommendationCandidate:
     source_pdf: str
     source_page: str
     source_quote: str
-    source_section: str  # v1: empty (SQLite lacks this column; future schema extension)
+    # Provenance section of the quote. Populated from the source row when it
+    # carries one; otherwise SOURCE_SECTION_UNAVAILABLE -- never a bare "",
+    # which is indistinguishable from "the source section was empty" and
+    # silently breaks the Clinical Traceability Rule (L-5).
+    source_section: str
     diagnosis: str
     mkb: str
     guideline_year: int | None  # from DiagnosisEntry (diagnosis_index), not SQLite
+
+
+# Loud placeholder for provenance the source data does not carry.
+SOURCE_SECTION_UNAVAILABLE = "UNAVAILABLE_IN_SOURCE"
 
 
 # ---------------------------------------------------------------------------
@@ -313,6 +411,13 @@ class DoseDetail:
     adjustment_applied: str | None
     calculation_note: str | None
     adjustment_history: tuple[str, ...] = ()  # ["base: 500mg", "renal: 250mg", "final: 250mg"]
+    # False whenever an adjustment the patient's organ status requires could
+    # not be applied, because the adjustment data is unstructured prose
+    # (RENAL_ADJ_UNPARSED / HEPATIC_ADJ_UNPARSED). A number is still emitted
+    # (degraded mode never silently excludes), but the consumer MUST know it
+    # is not a patient-specific dose. True = the emitted dose reflects the
+    # patient's organ function/impairment.
+    dose_is_patient_specific: bool = True
 
 
 @dataclass(frozen=True, slots=True)
@@ -352,6 +457,67 @@ class EngineNote:
     message: str
     stage: str
     severity: NoteSeverity
+
+
+@dataclass(frozen=True, slots=True)
+class SafetySummary:
+    """Aggregate safety information for a whole result set.
+
+    H-4: the engine computed every one of these signals and the transport
+    layer dropped them, so an answer carrying PREGNANCY_CAUTION or
+    RENAL_ADJ_UNPARSED was indistinguishable from a clean one. The engine
+    therefore publishes its own, transport-independent summary; the API layer
+    must pass it through rather than recompute (or drop) it.
+
+    `status` is the engine's own verdict on the returned set:
+      "CLEARED"         -- no flag, every dose patient-specific
+      "REVIEW_REQUIRED" -- at least one warning / acknowledgement / dose that
+                           is not patient-specific; a physician must review
+                           before the recommendation is used.
+    """
+
+    status: str
+    requires_physician_review: bool
+    total_flags: int
+    flag_counts: dict[str, int]
+    flag_codes: tuple[str, ...]
+    most_severe_action: SafetyAction | None
+    actions: tuple[SafetyAction, ...]  # distinct, most severe first
+    requires_physician_acknowledgement: int
+    absolute_contraindications: int
+    dose_is_patient_specific: bool  # False if ANY accepted dose is not
+
+    @classmethod
+    def from_result(
+        cls,
+        safety_flags: "tuple[SafetyFlag, ...] | list[SafetyFlag]",
+        accepted: "tuple[Recommendation, ...] | list[Recommendation]" = (),
+    ) -> "SafetySummary":
+        flags = tuple(safety_flags)
+        counts: dict[str, int] = {}
+        for f in flags:
+            counts[f.code] = counts.get(f.code, 0) + 1
+        actions = tuple(a for a in SAFETY_ACTION_SEVERITY if any(f.action is a for f in flags))
+        acks = sum(1 for f in flags if f.requires_physician_acknowledgement)
+        absolutes = sum(1 for f in flags if f.level is SafetyLevel.ABSOLUTE_CONTRAINDICATION)
+        dose_ok = all(
+            (getattr(rec, "dose", None) is None)
+            or getattr(getattr(rec, "dose", None), "dose_is_patient_specific", True)
+            for rec in accepted
+        )
+        review = bool(flags) or not dose_ok
+        return cls(
+            status="REVIEW_REQUIRED" if review else "CLEARED",
+            requires_physician_review=review,
+            total_flags=len(flags),
+            flag_counts=counts,
+            flag_codes=tuple(counts),
+            most_severe_action=actions[0] if actions else None,
+            actions=actions,
+            requires_physician_acknowledgement=acks,
+            absolute_contraindications=absolutes,
+            dose_is_patient_specific=dose_ok,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -396,6 +562,10 @@ class RecommendationSet:
     engine_notes: tuple[EngineNote, ...]
     query: PatientQuery
     elapsed_ms: float
+    # H-4: always populated by Engine.recommend(). Kept optional so existing
+    # callers/constructed sets (and the curated wrapper) stay constructible;
+    # a missing summary must never be read as "no safety information".
+    safety_summary: SafetySummary | None = None
 
 
 def _dc_to_primitive(value: Any) -> Any:
@@ -424,6 +594,7 @@ class DecisionReport:
     metadata: EngineMetadata
     runtime: EngineRuntime
     engine_notes: tuple[EngineNote, ...]
+    safety_summary: SafetySummary | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return _dc_to_primitive(self)

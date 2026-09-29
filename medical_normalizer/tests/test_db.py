@@ -61,7 +61,8 @@ def _connect() -> NormalizerDB:
 
 class TestConfig:
     def test_schema_version(self):
-        assert SCHEMA_VERSION == "1.0.0"
+        # 1.1.0 — dose_min / dose_max / dose_is_range were added (M3)
+        assert SCHEMA_VERSION == "1.1.0"
 
     def test_manual_fields_listed(self):
         assert "review_status" in MANUAL_FIELDS
@@ -504,10 +505,12 @@ class TestManualEditPreservation:
         assert db.get_manual_field("g1", "r1", "review_status") is None
         db.close()
 
-    def test_update_nonexistent_record_no_error(self):
+    def test_update_nonexistent_record_raises(self):
+        # M10: a silent success on a non-existent row hid lost review
+        # decisions — the caller believed the edit was stored.
         db = _connect()
-        # Updating non-existent row is a no-op (0 rows affected)
-        db.update_manual_field("g1", "r1", "review_status", "x")
+        with pytest.raises(KeyError):
+            db.update_manual_field("g1", "r1", "review_status", "x")
         assert db.count() == 0
         db.close()
 
@@ -1129,24 +1132,43 @@ class TestEdgeCases:
         assert db._conn is not None
         db.close()
 
-    def test_outer_exception_rolls_back(self):
+    def test_save_many_inside_outer_transaction(self):
+        # M9: the old bare BEGIN raised "cannot start a transaction within a
+        # transaction" whenever the caller had an uncommitted write, and the
+        # except handler's ROLLBACK then discarded the caller's work.
         db = _connect()
-        # Force BEGIN to fail by putting conn in a state where BEGIN raises.
-        # sqlite3 raises if BEGIN called when already in transaction (autocommit off).
-        # Manually start a transaction then call save_many.
         db.conn.execute("BEGIN")
-        try:
-            import sqlite3 as _sq
-            with pytest.raises(_sq.OperationalError):
-                db.save_many([
-                    {"result": _perfect_result(), "guideline_id": "g1", "regimen_id": "r1"},
-                ])
-            # Rollback executed by save_many's outer except
-        finally:
-            try:
-                db.conn.execute("ROLLBACK")
-            except Exception:
-                pass
+        db.conn.execute(
+            "INSERT INTO normalized_regimens "
+            "(regimen_id, guideline_id, created_at, updated_at) "
+            "VALUES ('outer', 'g0', 'x', 'x')"
+        )
+        sr = db.save_many([
+            {"result": _perfect_result(), "guideline_id": "g1", "regimen_id": "r1"},
+        ])
+        assert sr.saved == 1 and sr.errors == []
+        db.conn.commit()
+        # The caller's own row survived — save_many no longer rolled it back
+        assert db.load("g0", "outer") is not None
+        assert db.load("g1", "r1") is not None
+        db.close()
+
+    def test_save_many_failure_inside_outer_transaction_keeps_outer_work(self):
+        db = _connect()
+        db.conn.execute("BEGIN")
+        db.conn.execute(
+            "INSERT INTO normalized_regimens "
+            "(regimen_id, guideline_id, created_at, updated_at) "
+            "VALUES ('outer', 'g0', 'x', 'x')"
+        )
+        items = [
+            {"result": _perfect_result(), "guideline_id": "g1", "regimen_id": "r1"},
+            {"result": _perfect_result(), "guideline_id": "g1"},  # missing regimen_id
+        ]
+        sr = db.save_many(items)
+        assert sr.saved == 0 and sr.skipped == 1
+        db.conn.rollback()
+        # Only the caller's row is gone; the batch left nothing behind
         assert db.count() == 0
         db.close()
 
@@ -1158,3 +1180,513 @@ class TestEdgeCases:
         assert s["pass"] == 0
         assert s["reject"] == 0
         db.close()
+
+
+# ── Regression tests: M3, M7, M8, M11, M19, M20 ────────────────────
+
+
+class TestM3RangePersisted:
+    """M3: the RC-030 dose range was not persisted at all — no dose_min /
+    dose_max / dose_is_range columns existed."""
+
+    def test_columns_exist(self):
+        db = _connect()
+        cols = db.column_names()
+        for c in ("dose_min", "dose_max", "dose_is_range"):
+            assert c in cols, c
+        db.close()
+
+    def test_range_persisted_for_dose_range(self):
+        db = _connect()
+        result = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "20-50", "unit": "мг/кг",
+            "route": "в/в", "frequency": "1 раз в день",
+        })
+        assert result.regimen.dose_min == 20.0
+        assert result.regimen.dose_max == 50.0
+        db.save(result, "g1", "r1")
+        rec = db.load("g1", "r1")
+        assert rec is not None
+        assert rec.dose_min == 20.0
+        assert rec.dose_max == 50.0
+        assert rec.dose_is_range is True
+        db.close()
+
+    def test_scalar_persisted_as_not_range(self):
+        db = _connect()
+        result = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "1 раз в день",
+        })
+        db.save(result, "g1", "r1")
+        rec = db.load("g1", "r1")
+        assert rec is not None
+        assert rec.dose_min == 1.0
+        assert rec.dose_max == 1.0
+        assert rec.dose_is_range is False
+        db.close()
+
+    def test_combination_total_persisted(self):
+        db = _connect()
+        result = MedicalNormalizer.normalize({
+            "antibiotic": "Амоксициллин+клавулановая кислота",
+            "dose": "875/125", "unit": "мг",
+            "route": "внутрь", "frequency": "2 раза в день",
+        })
+        db.save(result, "g1", "r1")
+        rec = db.load("g1", "r1")
+        assert rec is not None
+        assert rec.dose == 1000.0
+        assert rec.dose_min == 1000.0
+        assert rec.dose_max == 1000.0
+        assert rec.dose_is_range is False
+        db.close()
+
+    def test_missing_dose_persisted_as_null(self):
+        db = _connect()
+        result = MedicalNormalizer.normalize({"antibiotic": "Доксициклин"})
+        db.save(result, "g1", "r1")
+        rec = db.load("g1", "r1")
+        assert rec is not None
+        assert rec.dose_min is None
+        assert rec.dose_max is None
+        assert rec.dose_is_range is None
+        db.close()
+
+    def test_range_updated_on_upsert(self):
+        db = _connect()
+        wide = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "20-50", "unit": "мг/кг",
+            "route": "в/в", "frequency": "1 раз в день",
+        })
+        narrow = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "1 раз в день",
+        })
+        db.save(wide, "g1", "r1")
+        db.save(narrow, "g1", "r1")
+        rec = db.load("g1", "r1")
+        assert rec is not None
+        assert rec.dose_min == 1.0
+        assert rec.dose_max == 1.0
+        assert rec.dose_is_range is False
+        db.close()
+
+    def test_regimen_record_range_defaults_are_optional(self):
+        rec = RegimenRecord(
+            regimen_id="r1", guideline_id="g1", drug_normalized="X",
+            dose=1.0, dose_unit="mg", route="iv", frequency=1.0,
+            duration_min=None, duration_max=None, duration_recommended=None,
+            therapy_line="first", adult=True, child=False, pregnancy=None,
+            renal_adjustment=False, atc_code="", overall_confidence=0.9,
+            validation_verdict="PASS", validation_errors=0,
+            validation_reviews=0, validation_warnings=0,
+            source_pdf="", source_page="", diagnosis="", mkb="",
+            normalizer_version="1.0.0", schema_version="1.1.0",
+            review_status="pending", reviewed_by="", review_date="",
+            manual_notes="", manual_override="", approved=False,
+            created_at="2026-01-01T00:00:00Z", updated_at="2026-01-01T00:00:00Z",
+        )
+        assert rec.dose_min is None
+        assert rec.dose_max is None
+        assert rec.dose_is_range is None
+
+
+class TestM7LikeInjection:
+    """M7: LIKE wildcards in the user value were passed through, so
+    search(diagnosis='%') returned every row."""
+
+    def _seed(self, db):
+        db.save(_perfect_result(), "g1", "r1", diagnosis="Брюшной тиф")
+        db.save(_perfect_result(), "g1", "r2", diagnosis="Пневмония")
+        db.save(_perfect_result(), "g1", "r3", diagnosis="100% ожогов")
+
+    def test_percent_does_not_match_everything(self):
+        db = _connect()
+        self._seed(db)
+        assert len(db.search(diagnosis="%")) == 1  # the literal '%' row
+        db.close()
+
+    def test_underscore_is_literal(self):
+        db = _connect()
+        db.save(_perfect_result(), "g1", "r1", diagnosis="брюшной_тиф")
+        db.save(_perfect_result(), "g1", "r2", diagnosis="брюшнойXтиф")
+        assert len(db.search(diagnosis="брюшной_тиф")) == 1
+        db.close()
+
+    def test_escaped_percent_still_finds_literal(self):
+        db = _connect()
+        self._seed(db)
+        recs = db.search(diagnosis="100%")
+        assert len(recs) == 1
+        assert recs[0].diagnosis == "100% ожогов"
+        db.close()
+
+    def test_backslash_is_escaped(self):
+        db = _connect()
+        db.save(_perfect_result(), "g1", "r1", diagnosis=r"a\b")
+        recs = db.search(diagnosis=r"a\b")
+        assert len(recs) == 1
+        db.close()
+
+    def test_normal_substring_still_works(self):
+        db = _connect()
+        self._seed(db)
+        assert len(db.search(diagnosis="тиф")) == 1
+        db.close()
+
+    def test_injection_does_not_bypass_other_filters(self):
+        db = _connect()
+        self._seed(db)
+        assert len(db.search(diagnosis="%", drug="Nonexistent")) == 0
+        db.close()
+
+
+class TestM8NoCreatedAtNPlusOne:
+    """M8: _get_created_at issued a per-row SELECT whose result was never
+    used, because created_at is not in _WRITE_COLUMNS."""
+
+    def test_helper_is_gone(self):
+        assert not hasattr(NormalizerDB, "_get_created_at")
+
+    def test_created_at_preserved_on_upsert(self):
+        db = _connect()
+        db.save(_perfect_result(), "g1", "r1")
+        first = db.load("g1", "r1")
+        assert first is not None
+        # A SELECT against normalized_regimens during a save would prove the
+        # N+1 is gone; only the upsert statement itself should run.
+        with _Tracing(db) as trace:
+            db.save(_perfect_result(), "g1", "r1")
+        assert [s for s in trace if s.upper().lstrip().startswith("SELECT")] == []
+        second = db.load("g1", "r1")
+        assert second is not None
+        assert second.created_at == first.created_at
+        db.close()
+
+    def test_batch_save_issues_no_select_per_row(self):
+        db = _connect()
+        with _Tracing(db) as trace:
+            db.save_many([
+                {"result": _perfect_result(), "guideline_id": f"g{i}", "regimen_id": "r1"}
+                for i in range(5)
+            ])
+        assert [s for s in trace if s.upper().lstrip().startswith("SELECT")] == []
+        assert db.count() == 5
+        db.close()
+
+
+class TestM11ThreadSafety:
+    """M11: sqlite3 defaults to check_same_thread=True, so any use from a
+    worker thread raised ProgrammingError."""
+
+    def test_connection_allows_cross_thread_use(self):
+        import threading
+
+        db = NormalizerDB.connect(":memory:")
+        errors: list[BaseException] = []
+
+        def worker():
+            try:
+                db.save(_perfect_result(), "g1", "r1")
+                assert db.count() == 1
+            except BaseException as exc:  # pragma: no cover - failure path
+                errors.append(exc)
+
+        t = threading.Thread(target=worker)
+        t.start()
+        t.join()
+        assert errors == []
+        db.close()
+
+    def test_concurrent_writes_from_many_threads(self):
+        import threading
+
+        db = NormalizerDB.connect(":memory:")
+        errors: list[BaseException] = []
+
+        def worker(i: int):
+            try:
+                for j in range(5):
+                    db.save(_perfect_result(), f"g{i}", f"r{j}")
+            except BaseException as exc:  # pragma: no cover - failure path
+                errors.append(exc)
+
+        threads = [threading.Thread(target=worker, args=(i,)) for i in range(4)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        assert errors == []
+        assert db.count() == 20
+        db.close()
+
+    def test_wal_journal_mode_enabled(self, tmp_path):
+        p = str(tmp_path / "wal.db")
+        db = NormalizerDB.connect(p)
+        mode = db.conn.execute("PRAGMA journal_mode").fetchone()[0]
+        assert str(mode).lower() == "wal"
+        db.close()
+
+    def test_lock_is_reentrant(self):
+        db = NormalizerDB.connect(":memory:")
+        assert hasattr(db, "_lock")
+        with db._lock:
+            with db._lock:
+                assert db.count() == 0
+        db.close()
+
+
+class TestM19SchemaMigration:
+    """M19: _open() ran no migration — SCHEMA_VERSION was only a column
+    value, so an older database raised "no such column"."""
+
+    _OLD_SCHEMA = """
+    CREATE TABLE normalized_regimens (
+        regimen_id             TEXT    NOT NULL,
+        guideline_id           TEXT    NOT NULL,
+        drug_original          TEXT    DEFAULT '',
+        drug_normalized        TEXT    DEFAULT '',
+        drug_components        TEXT    DEFAULT '[]',
+        dose                   REAL,
+        dose_unit              TEXT    DEFAULT '',
+        route                  TEXT    DEFAULT 'unknown',
+        frequency              REAL,
+        duration_min           REAL,
+        duration_max           REAL,
+        duration_recommended   REAL,
+        therapy_line           TEXT    DEFAULT 'unknown',
+        population             TEXT    DEFAULT '',
+        adult                  INTEGER DEFAULT 1,
+        child                  INTEGER DEFAULT 0,
+        pregnancy              INTEGER,
+        renal_adjustment       INTEGER DEFAULT 0,
+        atc_code               TEXT    DEFAULT '',
+        overall_confidence     REAL    DEFAULT 0.0,
+        field_confidence       TEXT    DEFAULT '{}',
+        parser_confidence      REAL,
+        validation_verdict     TEXT    DEFAULT 'REJECT',
+        validation_issues      TEXT    DEFAULT '[]',
+        validation_errors      INTEGER DEFAULT 0,
+        validation_reviews     INTEGER DEFAULT 0,
+        validation_warnings    INTEGER DEFAULT 0,
+        source_pdf             TEXT    DEFAULT '',
+        source_page            TEXT    DEFAULT '',
+        source_quote           TEXT    DEFAULT '',
+        diagnosis              TEXT    DEFAULT '',
+        mkb                    TEXT    DEFAULT '',
+        normalizer_version     TEXT    DEFAULT '',
+        schema_version         TEXT    DEFAULT '1.0.0',
+        review_status          TEXT    DEFAULT 'pending',
+        reviewed_by            TEXT    DEFAULT '',
+        review_date            TEXT    DEFAULT '',
+        manual_notes           TEXT    DEFAULT '',
+        manual_override        TEXT    DEFAULT '',
+        approved               INTEGER DEFAULT 0,
+        created_at             TEXT    NOT NULL,
+        updated_at             TEXT    NOT NULL,
+        PRIMARY KEY (guideline_id, regimen_id)
+    );
+    """
+
+    def test_old_database_gets_new_columns(self, tmp_path):
+        import sqlite3
+
+        p = str(tmp_path / "old.db")
+        conn = sqlite3.connect(p)
+        conn.executescript(self._OLD_SCHEMA)
+        conn.commit()
+        conn.close()
+
+        db = NormalizerDB.connect(p)
+        cols = db.column_names()
+        for c in ("dose_min", "dose_max", "dose_is_range"):
+            assert c in cols, c
+        db.close()
+
+    def test_old_database_existing_data_survives(self, tmp_path):
+        import sqlite3
+
+        p = str(tmp_path / "old2.db")
+        conn = sqlite3.connect(p)
+        conn.executescript(self._OLD_SCHEMA)
+        conn.execute(
+            "INSERT INTO normalized_regimens "
+            "(regimen_id, guideline_id, drug_normalized, dose, created_at, updated_at) "
+            "VALUES ('r1', 'g1', 'Цефтриаксон', 1.0, 'old', 'old')"
+        )
+        conn.commit()
+        conn.close()
+
+        db = NormalizerDB.connect(p)
+        rec = db.load("g1", "r1")
+        assert rec is not None
+        assert rec.drug_normalized == "Цефтриаксон"
+        assert rec.created_at == "old"
+        assert rec.dose_min is None
+        db.close()
+
+    def test_old_database_accepts_new_writes(self, tmp_path):
+        import sqlite3
+
+        p = str(tmp_path / "old3.db")
+        conn = sqlite3.connect(p)
+        conn.executescript(self._OLD_SCHEMA)
+        conn.commit()
+        conn.close()
+
+        db = NormalizerDB.connect(p)
+        # This raised "no such column: dose_min" before the migration
+        db.save(_perfect_result(), "g1", "r1")
+        rec = db.load("g1", "r1")
+        assert rec is not None
+        assert rec.dose_min == 1.0
+        db.close()
+
+    def test_migration_is_idempotent(self, tmp_path):
+        import sqlite3
+
+        p = str(tmp_path / "old4.db")
+        conn = sqlite3.connect(p)
+        conn.executescript(self._OLD_SCHEMA)
+        conn.commit()
+        conn.close()
+        for _ in range(3):
+            db = NormalizerDB.connect(p)
+            db.close()
+
+    def test_old_row_schema_version_preserved(self, tmp_path):
+        import sqlite3
+
+        p = str(tmp_path / "old5.db")
+        conn = sqlite3.connect(p)
+        conn.executescript(self._OLD_SCHEMA)
+        conn.execute(
+            "INSERT INTO normalized_regimens "
+            "(regimen_id, guideline_id, schema_version, created_at, updated_at) "
+            "VALUES ('r1', 'g1', '1.0.0', 'old', 'old')"
+        )
+        conn.commit()
+        conn.close()
+        db = NormalizerDB.connect(p)
+        rec = db.load("g1", "r1")
+        assert rec is not None
+        assert rec.schema_version == "1.0.0"
+        db.close()
+
+    def test_migration_columns_constant_matches_schema(self):
+        from medical_normalizer.db import MIGRATION_COLUMNS, _WRITE_COLUMNS
+
+        for name, _type in MIGRATION_COLUMNS:
+            assert name in _WRITE_COLUMNS, name
+
+
+class TestM20LimitValidation:
+    """M20: search(limit=-1) silently meant unbounded and limit=2.7
+    truncated."""
+
+    def test_negative_limit_raises_in_search(self):
+        db = _connect()
+        with pytest.raises(ValueError):
+            db.search(limit=-1)
+        db.close()
+
+    def test_zero_limit_raises_in_search(self):
+        db = _connect()
+        with pytest.raises(ValueError):
+            db.search(limit=0)
+        db.close()
+
+    def test_float_limit_raises_in_search(self):
+        db = _connect()
+        with pytest.raises(TypeError):
+            db.search(limit=2.7)
+        db.close()
+
+    def test_bool_limit_raises_in_search(self):
+        db = _connect()
+        with pytest.raises(TypeError):
+            db.search(limit=True)
+        db.close()
+
+    def test_negative_limit_raises_in_load_all(self):
+        db = _connect()
+        with pytest.raises(ValueError):
+            db.load_all(limit=-1)
+        db.close()
+
+    def test_float_limit_raises_in_load_all(self):
+        db = _connect()
+        with pytest.raises(TypeError):
+            db.load_all(limit=2.7)
+        db.close()
+
+    def test_none_limit_means_unbounded(self):
+        db = _connect()
+        for i in range(5):
+            db.save(_perfect_result(), f"g{i}", "r1")
+        assert len(db.load_all(limit=None)) == 5
+        assert len(db.search(limit=None)) == 5
+        db.close()
+
+    def test_positive_limit_still_works(self):
+        db = _connect()
+        for i in range(5):
+            db.save(_perfect_result(), f"g{i}", "r1")
+        assert len(db.load_all(limit=3)) == 3
+        assert len(db.search(limit=3)) == 3
+        db.close()
+
+    def test_limit_is_parameterised_not_interpolated_from_float(self):
+        # int() truncation used to turn 2.7 into 2
+        db = _connect()
+        with pytest.raises(TypeError):
+            db.search(limit=2.7)
+        db.close()
+
+
+class TestL8L9Cleanups:
+    def test_save_does_not_double_commit(self):
+        db = _connect()
+        with _Tracing(db) as trace:
+            db.save(_perfect_result(), "g1", "r1")
+        # L8: _upsert commits, so save() must not commit again.
+        assert sum(1 for s in trace if s.upper().lstrip().startswith("COMMIT")) == 1
+        assert db.count() == 1
+        db.close()
+
+    def test_save_many_commits_once(self):
+        db = _connect()
+        with _Tracing(db) as trace:
+            db.save_many([
+                {"result": _perfect_result(), "guideline_id": f"g{i}", "regimen_id": "r1"}
+                for i in range(5)
+            ])
+        assert sum(1 for s in trace if s.upper().lstrip().startswith("COMMIT")) <= 1
+        assert db.count() == 5
+        db.close()
+
+    def test_write_columns_contain_no_manual_fields(self):
+        from medical_normalizer.db import _WRITE_COLUMNS
+
+        for m in MANUAL_FIELDS:
+            assert m not in _WRITE_COLUMNS, m
+
+
+class _Tracing:
+    """Record every SQL statement executed on a NormalizerDB connection.
+
+    sqlite3.Connection is an immutable C type, so the statements are captured
+    with set_trace_callback rather than by patching execute().
+    """
+
+    def __init__(self, db: NormalizerDB) -> None:
+        self._db = db
+        self.statements: list[str] = []
+
+    def __enter__(self) -> list[str]:
+        self._db.conn.set_trace_callback(self.statements.append)
+        return self.statements
+
+    def __exit__(self, *exc: object) -> None:
+        self._db.conn.set_trace_callback(None)

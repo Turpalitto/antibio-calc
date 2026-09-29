@@ -28,6 +28,7 @@ def _perfect_regimen() -> NormalizedRegimen:
         duration_days_max=10.0,
         adult=True,
         child=False,
+        population_stated=True,
         pregnancy=True,
         renal_adjustment=True,
         therapy_line="first",
@@ -43,6 +44,7 @@ def _perfect_no_optionals() -> NormalizedRegimen:
         frequency_per_day=1.0,
         duration_days_min=7.0,
         adult=True,
+        population_stated=True,
         therapy_line="first",
         atc_code=None,
         pregnancy=None,
@@ -218,19 +220,44 @@ class TestCalculateFieldDuration:
 
 
 class TestCalculateFieldPopulation:
-    def test_adult(self):
-        assert ConfidenceCalculator.calculate_field("population", NormalizedRegimen(adult=True)) == 0.90
+    # M6: `adult` defaults to True for backward compatibility, so `adult or
+    # child` was always True and a regimen with ZERO population evidence
+    # scored 0.90. population_stated is what distinguishes "evidence" from
+    # "default".
+    def test_adult_default_alone_is_not_evidence(self):
+        # adult=True is only the default -> no evidence -> not_found
+        assert ConfidenceCalculator.calculate_field("population", NormalizedRegimen()) == 0.0
+
+    def test_adult_with_population_stated(self):
+        r = NormalizedRegimen(adult=True, population_stated=True)
+        assert ConfidenceCalculator.calculate_field("population", r) == 0.90
 
     def test_child(self):
+        # child defaults to False, so child=True IS explicit evidence
         r = NormalizedRegimen(adult=False, child=True)
         assert ConfidenceCalculator.calculate_field("population", r) == 0.90
 
     def test_both(self):
-        r = NormalizedRegimen(adult=True, child=True)
+        r = NormalizedRegimen(adult=True, child=True, population_stated=True)
         assert ConfidenceCalculator.calculate_field("population", r) == 0.90
 
     def test_neither(self):
         r = NormalizedRegimen(adult=False, child=False)
+        assert ConfidenceCalculator.calculate_field("population", r) == 0.0
+
+    def test_age_parser_sets_population_stated(self):
+        from medical_normalizer.population_parser import AgeParser
+
+        r = AgeParser.parse(NormalizedRegimen(), {"age_group": "взрослые"})
+        assert r.population_stated is True
+        assert ConfidenceCalculator.calculate_field("population", r) == 0.90
+
+    def test_no_age_text_leaves_population_unstated(self):
+        from medical_normalizer.population_parser import AgeParser
+
+        r = AgeParser.parse(NormalizedRegimen(), {})
+        assert r.adult is True          # default preserved
+        assert r.population_stated is False
         assert ConfidenceCalculator.calculate_field("population", r) == 0.0
 
 
@@ -411,13 +438,18 @@ class TestCalculateParserScore:
         cs = ConfidenceScore(overall=0.42, fields={})
         assert ConfidenceCalculator.calculate_parser_score(pr, cs) == 0.42
 
-    def test_confidence_score_zero_overall_falls_back_to_parser(self):
+    def test_confidence_score_explicit_zero_overall_is_respected(self):
+        # M18: an explicitly passed overall=0.0 is a real parser verdict and
+        # must not be indistinguishable from "not supplied".
         pr = ParserResult(field_confidence={"drug": 0.8, "dose": 0.9})
         cs = ConfidenceScore(overall=0.0, fields={})
-        assert ConfidenceCalculator.calculate_parser_score(pr, cs) == 0.85
+        assert cs.overall_was_set is True
+        assert ConfidenceCalculator.calculate_parser_score(pr, cs) == 0.0
 
     def test_confidence_score_only_empty_fields_falls_back(self):
-        cs = ConfidenceScore(overall=0.0, fields={})
+        # No fields and no explicit overall -> nothing to report
+        cs = ConfidenceScore()
+        assert cs.overall_was_set is False
         assert ConfidenceCalculator.calculate_parser_score(None, cs) is None
 
     def test_parser_single_field(self):
@@ -461,9 +493,11 @@ class TestCalculate:
         assert res.overall_confidence > 0.9
 
     def test_empty_regimen_overall(self):
-        # defaults: adult=True -> population 0.90; 1.80 / 18 = 0.1
+        # M6: with the always-true `adult or child` branch an EMPTY regimen
+        # scored 0.10 purely from the adult=True default. With no stated
+        # population there is no evidence at all -> 0.0.
         res = ConfidenceCalculator.calculate(_empty_regimen())
-        assert res.overall_confidence == 0.1
+        assert res.overall_confidence == 0.0
 
     def test_bare_regimen_overall_zero(self):
         res = ConfidenceCalculator.calculate(_bare_regimen())
@@ -482,6 +516,7 @@ class TestCalculate:
             frequency_per_day=1.0,
             duration_days_min=7.0,
             adult=True,
+            population_stated=True,
             therapy_line="first",
         )
         res = ConfidenceCalculator.calculate(r)
@@ -539,16 +574,17 @@ class TestCalculate:
         assert res.overall_confidence == 1.0
 
     def test_dose_only_overall(self):
+        # M6: adult=True without population evidence no longer contributes.
         r = NormalizedRegimen(dose_value=500.0, adult=True)
         res = ConfidenceCalculator.calculate(r)
-        # 4.50 / 18 = 0.25
-        assert res.overall_confidence == 0.25
+        # 2.70 / 18 = 0.15 (required fields with 0.0 still carry weight)
+        assert res.overall_confidence == 0.15
 
     def test_drug_only_known_overall(self):
         r = NormalizedRegimen(drug_normalized="Цефтриаксон", adult=True)
         res = ConfidenceCalculator.calculate(r)
-        # 4.77 / 18 = 0.265
-        assert res.overall_confidence == 0.265
+        # 2.97 / 18 = 0.165
+        assert res.overall_confidence == 0.165
 
 
 # -- calculation_metadata --------------------------------------------
@@ -733,3 +769,145 @@ class TestEdgeCases:
         b = ConfidenceCalculator.calculate(r)
         assert a.overall_confidence == b.overall_confidence
         assert a.field_confidence == b.field_confidence
+
+
+# ── Regression tests: M1, M5, M18, H7 ─────────────────────────────
+
+
+class TestM1NonFiniteClamp:
+    """M1: _clamp let NaN through (nan < 0 and nan > 1 are both False), so a
+    NaN poisoned calculate_overall and was written to overall_confidence."""
+
+    def test_clamp_nan_returns_zero(self):
+        assert ConfidenceCalculator._clamp(float("nan")) == 0.0
+
+    def test_clamp_infinity_returns_zero(self):
+        assert ConfidenceCalculator._clamp(float("inf")) == 0.0
+        assert ConfidenceCalculator._clamp(float("-inf")) == 0.0
+
+    def test_clamp_none_returns_zero(self):
+        assert ConfidenceCalculator._clamp(None) == 0.0  # type: ignore[arg-type]
+
+    def test_clamp_string_returns_zero(self):
+        assert ConfidenceCalculator._clamp("x") == 0.0  # type: ignore[arg-type]
+
+    def test_clamp_bounds_still_work(self):
+        assert ConfidenceCalculator._clamp(1.5) == 1.0
+        assert ConfidenceCalculator._clamp(-0.5) == 0.0
+        assert ConfidenceCalculator._clamp(0.42) == 0.42
+
+    def test_calculate_overall_nan_is_zero(self):
+        assert ConfidenceCalculator.calculate_overall({"drug": float("nan")}) == 0.0
+
+    def test_calculate_overall_mixed_nan_is_finite(self):
+        # the bad field is clamped to 0.0 in isolation; the other two still
+        # contribute (1*3 + 0*3 + 1*3) / 9
+        val = ConfidenceCalculator.calculate_overall(
+            {"drug": 1.0, "dose": float("nan"), "route": 1.0}
+        )
+        assert 0.0 <= val <= 1.0
+        assert val == round(6.0 / 9.0, 4)
+
+    def test_calculate_field_nan_is_zero(self):
+        pr = ParserResult(field_confidence={"drug": float("nan")})
+        assert ConfidenceCalculator.calculate_field(
+            "drug", _empty_regimen(), pr
+        ) == 0.0
+
+    def test_overall_never_nan_end_to_end(self):
+        pr = ParserResult(field_confidence={f: float("nan") for f in ("drug", "dose")})
+        res = ConfidenceCalculator.calculate(_bare_regimen(), pr)
+        assert res.overall_confidence == res.overall_confidence  # not NaN
+        assert 0.0 <= res.overall_confidence <= 1.0
+
+    def test_overall_written_to_db_is_finite(self):
+        import math as _math
+
+        from medical_normalizer.db import NormalizerDB
+        from medical_normalizer.normalizer import MedicalNormalizer
+
+        db = NormalizerDB.connect(":memory:")
+        try:
+            db.save(MedicalNormalizer.normalize({
+                "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+                "route": "в/в", "frequency": "1 раз в день",
+            }), "g1", "r1")
+            rec = db.load("g1", "r1")
+            assert rec is not None
+            assert _math.isfinite(rec.overall_confidence)
+        finally:
+            db.close()
+
+
+class TestM5ParserResultUsesWeightedConfidence:
+    """M5: ParserResult.confidence was an UNWEIGHTED mean while
+    ConfidenceCalculator.calculate_overall is WEIGHTED — the two disagreed
+    for the same data."""
+
+    def test_required_outweighs_important(self):
+        # unweighted mean would be 0.5; weighted is 1.0*3 / (3+2) = 0.6
+        pr = ParserResult(field_confidence={"drug": 1.0, "duration": 0.0})
+        assert pr.confidence == 0.6
+
+    def test_agrees_with_calculator(self):
+        fields = {"drug": 0.8, "dose": 0.6, "duration": 0.4, "atc_code": 0.0}
+        pr = ParserResult(field_confidence=dict(fields))
+        assert pr.confidence == ConfidenceCalculator.calculate_overall(fields)
+
+    def test_equal_weights_agree(self):
+        fields = {"drug": 0.8, "dose": 0.9}
+        pr = ParserResult(field_confidence=dict(fields))
+        assert pr.confidence == 0.85
+
+    def test_empty_is_zero(self):
+        assert ParserResult().confidence == 0.0
+
+    def test_optional_zero_excluded(self):
+        pr = ParserResult(field_confidence={"drug": 1.0, "atc_code": 0.0})
+        assert pr.confidence == 1.0
+
+    def test_unknown_field_ignored(self):
+        pr = ParserResult(field_confidence={"nope": 1.0})
+        assert pr.confidence == 0.0
+
+    def test_nan_field_not_poisoning(self):
+        pr = ParserResult(field_confidence={"drug": float("nan"), "dose": 1.0})
+        assert pr.confidence == 0.5
+
+
+class TestM18ConfidenceScoreSentinel:
+    """M18: an explicitly passed overall=0.0 was indistinguishable from the
+    default and was overwritten by the fields mean."""
+
+    def test_explicit_zero_is_preserved(self):
+        cs = ConfidenceScore(overall=0.0, fields={"drug": 0.9})
+        assert cs.overall == 0.0
+        assert cs.overall_was_set is True
+
+    def test_default_is_overwritten_by_mean(self):
+        cs = ConfidenceScore(fields={"drug": 0.9})
+        assert cs.overall == 0.9
+        assert cs.overall_was_set is False
+
+    def test_explicit_value_beats_fields_mean(self):
+        cs = ConfidenceScore(overall=0.42, fields={"drug": 0.9})
+        assert cs.overall == 0.42
+
+    def test_no_fields_default_is_zero(self):
+        cs = ConfidenceScore()
+        assert cs.overall == 0.0
+        assert cs.overall_was_set is False
+
+    def test_explicit_none_becomes_zero_and_counts_as_set(self):
+        cs = ConfidenceScore(overall=None)
+        assert cs.overall == 0.0
+        assert cs.overall_was_set is True
+
+    def test_explicit_zero_drives_parser_score(self):
+        cs = ConfidenceScore(overall=0.0, fields={})
+        assert ConfidenceCalculator.calculate_parser_score(None, cs) == 0.0
+
+    def test_unset_score_falls_back_to_parser(self):
+        pr = ParserResult(field_confidence={"drug": 0.8, "dose": 0.9})
+        cs = ConfidenceScore()
+        assert ConfidenceCalculator.calculate_parser_score(pr, cs) == 0.85

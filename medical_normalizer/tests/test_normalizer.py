@@ -363,15 +363,30 @@ class TestValidatorPropagation:
         # perfect has no warnings
         assert all("atc" not in w for w in r.warnings)
 
-    def test_atc_warning_appears_in_result(self):
-        raw = _perfect_raw()
-        raw["atc_code"] = "bad_format"
-        r = MedicalNormalizer.normalize(raw)
-        # ATC isn't parsed from raw by any parser, so need to set it manually
-        # Actually atc_code is set by DrugParser only from dictionary lookup
-        # So this test needs a different approach - check that validation
-        # warnings propagate when they exist
-        assert isinstance(r.warnings, tuple)
+    def test_atc_error_appears_in_result(self, monkeypatch):
+        """L1 + L11 end-to-end: the governed DRUG_ATC mapping is consulted by
+        DrugParser, a valid code passes, an unparseable one rejects.
+
+        Replaces a vacuous test whose only assertion was
+        ``isinstance(r.warnings, tuple)``, which is always true.
+        """
+        import medical_normalizer.drug_parser as dp
+
+        monkeypatch.setitem(dp.DRUG_ATC, "цефтриаксон", "J01DD04")
+        ok = MedicalNormalizer.normalize(_perfect_raw())
+        assert ok.regimen.atc_code == "J01DD04"
+        assert ok.validation.verdict == Verdict.PASS
+
+        monkeypatch.setitem(dp.DRUG_ATC, "цефтриаксон", "not-an-atc")
+        bad = MedicalNormalizer.normalize(_perfect_raw())
+        assert bad.regimen.atc_code == "not-an-atc"
+        assert bad.validation.verdict == Verdict.REJECT
+        assert any(i.code == "ATC_FORMAT_INVALID" for i in bad.validation.errors)
+
+    def test_no_atc_means_no_atc_issue(self):
+        r = MedicalNormalizer.normalize(_perfect_raw())
+        assert r.regimen.atc_code is None
+        assert not any(i.field == "atc_code" for i in r.validation.issues)
 
 
 # -- immutable input -------------------------------------------------
@@ -1042,3 +1057,160 @@ def e_type(errors, parser_name):
         if e.parser == parser_name:
             return e.error_type
     return None
+
+
+# ── End-to-end regression tests for the fixed bugs ────────────────
+
+
+class TestC2C3EndToEnd:
+    def test_thousands_comma_no_longer_underdoses(self):
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,000", "unit": "мг",
+            "route": "в/в", "frequency": "1 раз в день",
+        })
+        assert r.regimen.dose_value == 1000.0
+        assert r.regimen.dose_max == 1000.0
+
+    def test_combination_total_not_leading_number(self):
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Амоксициллин+клавулановая кислота",
+            "dose": "875/125", "unit": "мг",
+            "route": "внутрь", "frequency": "2 раза в день",
+        })
+        assert r.regimen.dose_value == 1000.0
+        assert r.regimen.dose_component_count == 2
+        assert r.regimen.dose_range_confidence < 1.0
+        assert "DOSE_COMBINATION_STRENGTH" in r.regimen.warnings
+
+
+class TestC5EndToEnd:
+    def test_both_range_forms_agree(self):
+        a = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "2-3 раза в сутки",
+        })
+        b = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "2–3 р/сут",
+        })
+        assert a.regimen.frequency_per_day == b.regimen.frequency_per_day == 2.0
+        assert a.regimen.frequency_is_range is True
+        assert b.regimen.frequency_is_range is True
+
+
+class TestC1C4EndToEnd:
+    def test_nan_dose_rejects(self):
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "NaN", "unit": "мг",
+            "route": "в/в", "frequency": "1 раз в день",
+            "duration": "7 дней", "age_group": "взрослые",
+            "regimen_type": "first_line",
+        })
+        assert r.validation.verdict == Verdict.REJECT
+        assert r.regimen.dose_value is None
+
+    def test_huge_dose_max_rejects(self):
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1-99999999", "unit": "мг",
+            "route": "в/в", "frequency": "1 раз в день",
+            "duration": "7 дней", "age_group": "взрослые",
+            "regimen_type": "first_line",
+        })
+        assert r.validation.verdict == Verdict.REJECT
+        assert any(i.code == "DOSE_OUT_OF_RANGE" for i in r.validation.errors)
+
+    def test_realistic_regimen_still_passes(self):
+        r = MedicalNormalizer.normalize(_perfect_raw())
+        assert r.validation.verdict == Verdict.PASS
+        assert r.errors == ()
+
+
+class TestH2EndToEnd:
+    def test_every_parser_survives_malformed_inputs(self):
+        raw = {
+            "antibiotic": ["Цефтриаксон"], "dose": {"v": 1}, "unit": 5,
+            "route": 1, "frequency": 2, "duration": 3,
+            "age_group": 4, "pregnancy": 5, "renal_adjustment": 6,
+            "regimen_type": 7, "source_quote": 8,
+        }
+        r = MedicalNormalizer.normalize(raw)
+        # no parser raised
+        assert len(r.errors) > 0
+        assert all(e.error_type != "AttributeError" for e in r.errors)
+        # the pipeline still produced a report
+        assert r.validation.verdict is not None
+        assert "validator" in r.parser_execution_order
+
+    def test_malformed_inputs_record_missing_field(self):
+        from medical_normalizer.models import MISSING_FIELD_INPUT
+
+        r = MedicalNormalizer.normalize({"frequency": 2, "duration": 3, "route": 1})
+        assert MISSING_FIELD_INPUT in {e.error_type for e in r.errors}
+
+
+class TestM6EndToEnd:
+    def test_no_population_evidence_scores_lower(self):
+        without = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "1 раз в день", "duration": "7 дней",
+        })
+        with_evidence = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "1 раз в день", "duration": "7 дней",
+            "age_group": "взрослые",
+        })
+        assert without.regimen.adult is True      # default preserved
+        assert without.regimen.population_stated is False
+        assert with_evidence.regimen.population_stated is True
+        assert with_evidence.confidence.field_confidence["population"] == 0.90
+        assert without.confidence.field_confidence["population"] == 0.0
+        assert (
+            with_evidence.confidence.overall_confidence
+            > without.confidence.overall_confidence
+        )
+
+
+class TestM13EndToEnd:
+    def test_pregnancy_contraindication_not_recorded_as_applicable(self):
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "1 раз в день",
+            "source_quote": "при беременности применение не рекомендовано",
+        })
+        assert r.regimen.pregnancy is False
+
+    def test_pregnancy_population_still_true(self):
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "1 раз в день",
+            "age_group": "беременные женщины",
+        })
+        assert r.regimen.pregnancy is True
+
+
+class TestM2EndToEnd:
+    def test_regimen_round_trip_through_full_dict(self):
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Амоксициллин+клавулановая кислота",
+            "dose": "20-50", "unit": "мг/кг",
+            "route": "внутрь", "frequency": "2-3 раза в сутки",
+            "duration": "7-10 дней", "age_group": "взрослые",
+        })
+        d = r.regimen.to_dict_with_range()
+        restored = type(r.regimen).from_dict(d)
+        assert restored.to_dict_with_range() == d
+
+
+class TestDeterministicAfterFixes:
+    def test_repeated_normalize_identical(self):
+        raw = {
+            "antibiotic": "Амоксициллин+клавулановая кислота",
+            "dose": "875/125", "unit": "мг",
+            "route": "в/в/в/м", "frequency": "qod",
+            "duration": "2 года", "age_group": "взрослые",
+        }
+        a = MedicalNormalizer.normalize(raw)
+        b = MedicalNormalizer.normalize(raw)
+        assert a.regimen.to_dict_with_range() == b.regimen.to_dict_with_range()
+        assert a.validation.verdict == b.validation.verdict
+        assert a.confidence.overall_confidence == b.confidence.overall_confidence

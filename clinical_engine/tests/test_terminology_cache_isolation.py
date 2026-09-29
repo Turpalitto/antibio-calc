@@ -25,10 +25,12 @@ def test_constructing_provider_does_not_mutate_cached_drug_atc() -> None:
     )
     provider = BasicTerminologyProvider(constants)
 
-    # Provider gets its own demo entry...
-    assert provider.get_atc("unmapped_pen") == "J01CA04"
+    # L-6: the provider no longer injects a synthetic demo entry. An unmapped
+    # drug resolves to None so the caller degrades, instead of the engine
+    # answering with a fabricated ATC code.
+    assert provider.get_atc("unmapped_pen") is None
 
-    # ...but the shared, lru_cache'd loader result must remain untouched.
+    # ...and the shared, lru_cache'd loader result must remain untouched.
     after = load_drug_atc()
     assert after == {}, "load_drug_atc() cache was mutated by BasicTerminologyProvider construction"
     assert after is not provider._atc_map, "provider must hold its own copy, not the cached singleton"

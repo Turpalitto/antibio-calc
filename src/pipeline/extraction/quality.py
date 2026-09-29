@@ -38,10 +38,10 @@ def assess_pymupdf_quality(text: str, num_pages: int) -> Tuple[float, list[str]]
             score *= 0.7
             reasons.append("short_lines")
 
-    # empty pages heuristic (caller can pass low_text_count)
-    if num_pages > 0:
-        # caller will adjust
-        pass
+    # L-43: this was `if num_pages > 0: pass` -- a dead branch whose comment said
+    # "caller will adjust".  The empty-page-ratio rule is applied by the extractor
+    # (PyMuPDFExtractor), which is the only place that knows which pages were
+    # empty; this function only sees the concatenated text.
 
     score = max(0.0, min(1.0, score))
     return score, reasons or ["ok"]

@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import ClassVar
 
-from medical_normalizer.models import NormalizedRegimen
+from medical_normalizer.models import MISSING_FIELD_INPUT, NormalizedRegimen
 
 
 class DurationParser:
@@ -35,6 +35,10 @@ class DurationParser:
             (re.compile(r"(\d+)\s*[-–—]\s*(\d+)\s*$"), cls._RANGE),
             # range years: "2 - 3 лет"
             (re.compile(r"(\d+)\s*[-–—]\s*(\d+)\s*лет"), cls._RANGE_YEARS),
+            # "5-дневный курс" — the dash blocks the bare "N дней" pattern
+            (re.compile(r"(\d+)\s*[-‑–—]\s*(?:дневн|дн(?:ый|ой)|суточн)"), cls._SINGLE),
+            (re.compile(r"(\d+)\s*[-‑–—]\s*(?:дн|сут|день|дня|дней)"), cls._SINGLE),
+            (re.compile(r"(\d+)\s*[-‑–—]\s*(?:day|days)"), cls._SINGLE),
 
             # Single-dose markers → 1 day (high-count failing data)
             (re.compile(r"однократн"), cls._STATIC_DOSE),
@@ -56,8 +60,10 @@ class DurationParser:
             # "до N(-х) недель" → max = N*7
             (re.compile(r"до\s+(\d+)\s*[-\u2013]?\s*х?\s*нед"), cls._MAX_WEEKS),
 
-            # Years single: "N лет"
+            # Years single: "N лет" / "N год(а)" — "2 года" was missed because
+            # the pattern only accepted "лет" (M14)
             (re.compile(r"(\d+)\s*лет"), cls._SINGLE_YEARS),
+            (re.compile(r"(\d+)\s*год(?:а|у|ом)?\b"), cls._SINGLE_YEARS),
 
             # SINGLE values (days/сут/нед/мес)
             (re.compile(r"(\d+)\s*(?:дн|сут|день|дня|дней|д)"), cls._SINGLE),
@@ -91,7 +97,20 @@ class DurationParser:
 
     @classmethod
     def parse(cls, regimen: NormalizedRegimen, raw: dict) -> NormalizedRegimen:
-        dur_raw = (raw.get("duration", "") or "").strip().lower()
+        dur_value = raw.get("duration") if isinstance(raw, dict) else None
+        # H2: an int / list / dict duration used to raise AttributeError from
+        # .strip(). It is now recorded as a ParserError (via the
+        # MISSING_FIELD_INPUT marker) and the pipeline continues. An absent
+        # or explicitly null duration is a modelled "no information" state.
+        if dur_value is not None and not isinstance(dur_value, str):
+            if not regimen.warnings:
+                regimen.warnings = []
+            marker = f"{MISSING_FIELD_INPUT}:duration"
+            if marker not in regimen.warnings:
+                regimen.warnings.append(marker)
+            return regimen
+
+        dur_raw = dur_value.strip().lower() if dur_value else ""
         if not dur_raw:
             return regimen
 
@@ -118,7 +137,9 @@ class DurationParser:
                     continue
                 days = hours / 24.0
                 regimen.duration_days_max = days
-                regimen.duration_days_recommended = days
+                # M14: a ceiling is NOT a recommendation. Previously
+                # duration_days_recommended was set to the maximum, which
+                # silently promoted "не более 72 часов" to a 3-day course.
                 return regimen
 
             if tag == cls._HOURS_SINGLE:
@@ -149,7 +170,7 @@ class DurationParser:
                     continue
                 days = w * 7.0
                 regimen.duration_days_max = days
-                regimen.duration_days_recommended = days
+                # M14: ceiling only — see _MAX_HOURS.
                 return regimen
 
             if tag == cls._RANGE_YEARS:

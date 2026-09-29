@@ -26,7 +26,7 @@
 1. **Никогда не полагайся на память чата или контекст сессии** — только на MD-файлы. Считай, что следующий агент стартует с нуля и прочитает только эти файлы.
 2. **Пиши абсолютные факты:** пути к файлам, имена функций/классов, точные команды запуска тестов, номера версий. Не «поправил парсер», а «`clinical_engine/stages/dose_adjustment.py`: убрал dead-код `excluded_here`».
 3. **Конвертируй относительные даты в абсолютные** («сегодня» → `2026-07-10`).
-4. **Всегда указывай, как проверить:** команда прогона тестов + актуальный результат (`pytest medical_normalizer/tests/ clinical_engine/tests/ -q` → 1049 passed).
+4. **Всегда указывай, как проверить:** команда прогона тестов + актуальный результат (`.venv/bin/python -m pytest medical_normalizer/tests/ clinical_engine/tests/ -q` → 1898 passed, 6 skipped).
 5. **Держи тесты зелёными** и фиксируй это в записи.
 6. **Порядок чтения при онбординге:** Start with HANDOFF.md (central index + required reading list). Then follow references. Onboarding complete only after explicitly reporting the 6 items (Frozen Components, Current Milestone, Active Issue, Workflow Stage, Current Test Status, Next Implementation Step). If unclear, stop and ask. Do not code until approved.
 
@@ -153,7 +153,7 @@ No process improvement. Product and clinical quality.
 - ✅ Antibiotic classifier
 - ✅ LLM extraction
 - ✅ Knowledge Base generated
-- ✅ Medical Normalizer (13 модулей, 823 тестов)
+- ✅ Medical Normalizer (13 модулей, 1155 тестов)
 - ✅ SQLite persistence
 - ✅ Quality Audit (2675 regimens)
 - ✅ Root Cause Analysis (per-regimen origin + recoverability)
@@ -192,7 +192,7 @@ No process improvement. Product and clinical quality.
 | Metric | Value |
 |--------|-------|
 | Modules | 13 |
-| Tests | 726/726 (100%) |
+| Tests | 1155 collected (100% pass) |
 | Coverage | 99.9% |
 | Performance | 8800 regimens/s |
 | Confidence mean | 0.6312 |
@@ -222,7 +222,7 @@ No process improvement. Product and clinical quality.
 ## 6. Directory Structure
 
 ```
-C:\ANTIBIO/
+antibio-calc/
 ├── medical_dictionary/            # Medical Dictionary subsystem (terminology DB, source of truth)
 │   ├── __init__.py                # package + rules
 │   ├── loader.py                  # cached JSON loaders (lru_cache), reload_all()
@@ -251,7 +251,7 @@ C:\ANTIBIO/
 │   ├── validator.py             # Validator (PASS/REVIEW/REJECT, 100% coverage)
 │   ├── normalizer.py            # MedicalNormalizer (single entry point, 100% coverage)
 │   ├── db.py                    # NormalizerDB (SQLite UPSERT, 99% coverage)
-│   └── tests/                   # 823 тестов
+│   └── tests/                   # 1155 тестов
 ├── src/pipeline/                # Pipeline (извлечение КР)
 │   ├── main.py, config.py, database.py, prefilter.py
 │   ├── extractor_llm.py, section_detector.py, progress.py
@@ -259,25 +259,31 @@ C:\ANTIBIO/
 ├── src/llm/                     # LLM провайдеры
 │   ├── llm_provider.py
 │   └── providers/deepseek.py
-├── src/tests/                   # Pipeline тесты (39 тестов)
+├── src/tests/                   # Pipeline тесты (409 тестов)
+├── clinical_engine/             # Clinical Decision Engine
+│   ├── api/app.py               # FastAPI-биндинг: /v1, /v2, /personal, PWA-ассеты
+│   └── tests/                   # Clinical Engine tests (pytest clinical_engine/tests -q)
 ├── db/                          # Данные калькулятора
 │   ├── index.json, schema.json
-│   ├── build_db.ps1
+│   ├── build_db.py
+│   ├── build_html.py            # Сборка: template + DB → antibiotic_calc.html
+│   ├── validate_db.js
 │   ├── antibio_db.json
 │   └── diseases/*.json
 ├── antibiotic_calc.html         # Готовое приложение (НЕ РЕДАКТИРОВАТЬ ВРУЧНУЮ)
 ├── antibiotic_calc.html.template # Шаблон (редактировать здесь)
-├── build_html.ps1               # Сборка: template + DB → HTML
-├── server.js                    # Локальный сервер (http://0.0.0.0:8080)
+├── sw.js                        # Service worker: офлайн-кэш только оболочки
+├── manifest.webmanifest         # PWA-манифест (start_url/scope "./")
+├── icons/                       # PWA-иконки icon-192.png / icon-512.png
+├── package.json                 # scripts: start (= node server.js), build, validate, test
+├── server.js                    # Локальный сервер + прокси движка (http://127.0.0.1:8080)
 ├── prefilter_rules.json         # Бизнес-правила prefilter
 ├── quality_report.md            # Quality Audit отчёт
 ├── quality_root_cause.md        # Root Cause Analysis (origin + recoverability)
 ├── quality_audit_after_parsers.md # Quality Audit after Tasks 1-4 (measured comparison)
-├── field_statistics.csv         # Статистика по полям
-├── unknown_drugs.csv            # 441 неизвестный препарат
+├── medical_dictionary/unknown_drugs.csv # 441 неизвестный препарат
 ├── dictionary_expansion.md      # Рекомендации (~160 записей)
 ├── production_readiness.md      # Оценка готовности
-├── quality_audit_data.json      # Raw JSON статистика
 ├── PROJECT_STATE.md             # Состояние проекта
 ├── AI_LOG.md                    # Лог работы AI
 ├── NEXT_TASK.md                 # Следующие задачи
@@ -523,11 +529,37 @@ idx_guideline_id, idx_drug_normalized, idx_drug_original, idx_therapy_line, idx_
 5. `python main.py doctor` — health check
 6. `python -m src.pipeline.prefilter --dry-run` — если изменился clinrecs.json
 
+### Запуск приложения и движка
+```
+npm run build   # db/build_html.py: antibiotic_calc.html.template + db/ → antibiotic_calc.html
+npm start       # = node server.js → http://127.0.0.1:8080 (HOST по умолчанию 127.0.0.1)
+```
+
+`server.js` отдаёт статику оболочки и проксирует `/v1/`, `/v2/` на движок
+(`ENGINE_BASE_URL`, дефолт `http://127.0.0.1:8000`; `ENGINE_HOST`/`ENGINE_PORT`).
+Движок поднимается отдельно:
+
+```
+uvicorn clinical_engine.api.app:app --port 8000   # http://127.0.0.1:8000/personal
+```
+
+Порт 8000 — общий дефолт uvicorn и `ENGINE_PORT` в `server.js`. `uvicorn`
+не входит в `.venv` репозитория (только optional-extra `clinical` в
+`pyproject.toml`), `fastapi` — входит. В режиме `server.js` статику PWA
+отдаёт `server.js`; в режиме `uvicorn` — сам `clinical_engine/api/app.py`
+(`/`, `/personal`, `/antibiotic_calc.html`, `/sw.js`,
+`/manifest.webmanifest`, `/icons/*`).
+
 ### Тесты
 ```
-$py = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"
-& $py -m pytest medical_normalizer/tests/ -q    # 823 tests
-& $py -m pytest src/tests/ -q                     # 39 tests (pipeline)
+.venv/bin/python -m pytest clinical_engine/tests -q   # baseline 2026-09-27: 707 passed, 6 skipped
+.venv/bin/python -m pytest -q                         # все testpaths из pyproject.toml
+```
+
+Полные пути, если нужна именно эта подсистема:
+```
+.venv/bin/python -m pytest medical_normalizer/tests/ -q   # 1155 тестов
+.venv/bin/python -m pytest src/tests/ -q                  # 409 тестов (pipeline)
 ```
 
 ### Для отката
@@ -545,13 +577,13 @@ $py = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"
 5. Принятые entries → `medical_dictionary/drug_synonyms.json` (synonym→canonical)
 6. Принятые ATC → `medical_dictionary/drug_atc.json` (canonical→ATC)
 7. DrugParser ATC lookup (через `_coerce_str` helper)
-8. Запусти `pytest medical_normalizer/tests/ -q` — все 823 должны пройти
+8. Запусти `.venv/bin/python -m pytest medical_normalizer/tests/ -q` — все 1155 должны пройти
 9. Перезапусти quality audit, сравни результаты
 
 ### Если задача — parser improvement:
 1. Прочитай `quality_report.md` Section 14 (root cause analysis)
 2. Добавь patterns в соответствующий parser (additions only)
-3. Запусти тесты — все 823 должны пройти
+3. Запусти тесты — все 1155 должны пройти
 4. Перезапусти quality audit
 
 ### Если задача — extraction improvement:
@@ -566,7 +598,7 @@ $py = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"
 3. Если feature валидна — добавить через composition, не modification
 
 ### General:
-- **Всегда** запускай тесты перед commit: `pytest medical_normalizer/tests/ -q`
+- **Всегда** запускай тесты перед commit: `.venv/bin/python -m pytest -q`
 - **Никогда** не модифицируй FROZEN модули
 - **Всегда** документируй решения в `DECISIONS.md`
 - **Всегда** логируй работу в `AI_LOG.md`

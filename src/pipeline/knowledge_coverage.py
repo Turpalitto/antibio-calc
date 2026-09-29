@@ -28,22 +28,37 @@ import sqlite3
 from pathlib import Path
 
 # Map a coverage dimension to a SQL predicate over objects o (+ provenance p) identifying it.
+#
+# M-39: these predicates were JSON SUBSTRING matches, so `"renal" LIKE '%renal%'`
+# matched a Diagnosis literally named "Renal colic", and the "fine" dimensions
+# depended on json.dumps separator choices.  Now that Frequency/Duration/Route have
+# their own object types (H-10) and Contraindication carries an explicit
+# `subtype`, the safety-relevant dimensions are exact type/subtype matches.  Only
+# the dimensions that genuinely have no dedicated representation remain
+# free-text, and those are marked as such so a substring hit is not mistaken for
+# a typed match.
+_DOSE_UNIT_FILTER = "o.type='Dose'"
+
 DIMENSIONS = {
     "drug":              "o.type='Medication'",
-    "dose":              "o.type='Dose' AND o.content LIKE '%\"subtype\": \"Dose\"%'",
-    "duration":          "o.content LIKE '%\"subtype\": \"Duration\"%'",
-    "frequency":         "o.content LIKE '%\"subtype\": \"Frequency\"%'",
-    "route":             "o.content LIKE '%\"subtype\": \"Route\"%'",
+    "dose":              _DOSE_UNIT_FILTER,
+    "duration":          "o.type='Duration'",
+    "frequency":         "o.type='Frequency'",
+    "route":             "o.type='Route'",
     "contraindications": "o.type='Contraindication'",
     "evidence":          "o.type='Evidence'",
     "diagnosis":         "o.type='Diagnosis'",
-    # Fine safety/therapy dimensions — currently no dedicated KB type (tracked: RC-009).
-    "alternatives":      "o.content LIKE '%alternative%'",
-    "first_line":        "o.content LIKE '%first_line%'",
-    "pediatric":         "o.content LIKE '%pediatric%' OR o.content LIKE '%мг/кг%'",
-    "pregnancy":         "o.content LIKE '%pregnan%' OR o.content LIKE '%беремен%'",
-    "renal":             "o.content LIKE '%renal%' OR o.content LIKE '%почеч%'",
+    # Fine safety/therapy dimensions — no dedicated KB type yet (tracked: RC-009).
+    # These are ADVISORY free-text matches: a hit is a hint, not a typed fact.
+    "alternatives":      "o.type='Recommendation' AND o.content LIKE '%AlternativeTherapy%'",
+    "first_line":        "o.type='Recommendation' AND o.content LIKE '%FirstLineTherapy%'",
+    "pediatric":         "o.content LIKE '%pediatric_weight_based%' OR o.content LIKE '%мг/кг%'",
+    "pregnancy":         "o.type='Contraindication' AND o.content LIKE '%\"subtype\": \"Pregnancy\"%'",
+    "renal":             "o.type='Contraindication' AND o.content LIKE '%\"subtype\": \"RenalAdjustment\"%'",
 }
+
+# Dimensions whose predicate is a free-text hint rather than a typed fact.
+ADVISORY_DIMENSIONS = frozenset({"pediatric"})
 
 
 def coverage(db: Path):
@@ -55,6 +70,7 @@ def coverage(db: Path):
             f"SELECT COUNT(DISTINCT p.pdf) FROM objects o JOIN provenance p ON p.obj_id=o.id "
             f"WHERE {pred}").fetchone()[0]
         rows[dim] = {"pdfs_with_dim": n, "total_pdfs": total_pdfs,
+                     "typed": dim not in ADVISORY_DIMENSIONS,
                      "coverage_pct": round(100 * n / total_pdfs, 1) if total_pdfs else None}
     conn.close()
     return total_pdfs, rows
@@ -76,7 +92,10 @@ def main():
     for dim, v in sorted(rows.items(), key=lambda kv: (kv[1]["coverage_pct"] or 0), reverse=True):
         pct = v["coverage_pct"]
         bar = "#" * int((pct or 0) / 2.5)
-        print(f"  {dim:20s} {str(pct)+'%':>7s}  ({v['pdfs_with_dim']}/{v['total_pdfs']})  {bar}")
+        # M-39: mark free-text dimensions so a substring hit is not read as a typed
+        # fact (e.g. "renal" matching a Diagnosis called "Renal colic").
+        marker = "" if v["typed"] else "  [free-text match, not a typed dimension]"
+        print(f"  {dim:20s} {str(pct)+'%':>7s}  ({v['pdfs_with_dim']}/{v['total_pdfs']})  {bar}{marker}")
     if args.json:
         Path(args.json).write_text(json.dumps(
             {"total_pdfs": total, "dimensions": rows}, ensure_ascii=False, indent=2), encoding="utf-8")

@@ -12,6 +12,11 @@ Degrade: age is None and no preferences.population -> ambiguous, no
 filtering applied (ranking/downstream stages see everyone) -- missing data
 never causes a silent exclude (Invariant #11).
 
+C-3: the target is resolved from the patient's AGE first; a stated
+``preferences.population`` never overrides it. A conflicting preference is
+recorded as a second StageTrace, so the override is auditable. See
+``_population.resolve_population``.
+
 Known schema gap (see DECISIONS.md 2026-07-10): RecommendationCandidate has
 only adult/child booleans, no separate neonate flag -- "neonate" target
 matches on candidate.child, same as "child".
@@ -22,7 +27,7 @@ from __future__ import annotations
 import dataclasses
 import time
 
-from clinical_engine._population import resolve_population_target
+from clinical_engine._population import resolve_population
 from clinical_engine.models import ConfidenceLevel, DecisionCode, StageTrace
 from clinical_engine.pipeline import PipelineState, StageContext, StageResult
 
@@ -40,7 +45,8 @@ class PopulationFilter:
 
     def run(self, state: PipelineState, ctx: StageContext) -> StageResult:
         start = time.perf_counter()
-        target = resolve_population_target(state.patient, ctx.constants)
+        resolution = resolve_population(state.patient, ctx.constants)
+        target = resolution.target
 
         traces = state.traces
         if target is None:
@@ -48,8 +54,24 @@ class PopulationFilter:
                 StageTrace(
                     stage_name=self.name,
                     decision_code=DecisionCode.POPULATION,
-                    reason="Age unknown and no population preference; no population filtering applied",
+                    reason=(
+                        "population target unresolved; no population filtering applied "
+                        f"({resolution.reason})"
+                    ),
                     decision_confidence=ConfidenceLevel.LOW,
+                ),
+            )
+        if resolution.preference_conflict:
+            # C-3: the override must be visible, never silent.
+            traces = traces + (
+                StageTrace(
+                    stage_name=self.name,
+                    decision_code=DecisionCode.POPULATION,
+                    reason=(
+                        f"resolved target {target!r} from patient age; "
+                        f"({resolution.reason})"
+                    ),
+                    decision_confidence=ConfidenceLevel.HIGH,
                 ),
             )
 

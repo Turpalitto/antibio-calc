@@ -44,6 +44,11 @@ def get_extractor(name: str):
 class ExtractorRouter:
     """Config driven. Per-page fallback. Multiple fallbacks. Provenance + metrics ready."""
 
+    # M-38: `add_layout_to_document` was called TWICE on the happy path (once right
+    # after primary extraction, once again before the semantic layer).  The second
+    # run re-did the whole layout pipeline and APPENDED duplicate tables to
+    # `doc.tables` / `doc.structured_tables`.  The shared layout processor is also
+    # now cached, so the models load once per process (M-29).
     def __init__(self, primary: Optional = None, fallbacks: Optional[List] = None):
         cfg = get_config()
         self.primary = primary or get_extractor(cfg.primary)
@@ -54,6 +59,25 @@ class ExtractorRouter:
         self.fallback = self.fallbacks[0] if self.fallbacks else None
         self._last_source = None
         self.cfg = cfg
+
+    def _apply_layout(self, doc: Document, pdf_path: Path) -> None:
+        """Run layout at most once per document, and only if not already applied."""
+        if doc.metadata.get("layout_processed"):
+            return
+        try:
+            add_layout_to_document(doc, pdf_path)
+        except Exception as e:
+            doc.metadata["layout_error"] = str(e)
+            doc.metadata["layout_processed"] = False
+
+    def _apply_semantic(self, doc: Document, engine: str) -> None:
+        if doc.metadata.get("semantic_processed"):
+            return
+        try:
+            add_semantic_to_document(doc, engine or "unknown")
+        except Exception as e:
+            doc.metadata["semantic_error"] = str(e)
+            doc.metadata["semantic_processed"] = False
 
     def extract(self, pdf_path: Path) -> Document:
         t0 = time.time()
@@ -69,27 +93,16 @@ class ExtractorRouter:
             used_cache = True
             elapsed = time.time() - t0
             metrics.record_document(cached, elapsed, used_cache=True)
-            try:
-                if not cached.metadata.get("layout_processed"):
-                    add_layout_to_document(cached, pdf_path)
-            except Exception as e:
-                cached.metadata["layout_error"] = str(e)
-            try:
-                if not cached.metadata.get("semantic_processed"):
-                    add_semantic_to_document(cached, self._last_source or "unknown")
-            except Exception as e:
-                cached.metadata["semantic_error"] = str(e)
-                cached.metadata["semantic_processed"] = False
+            self._apply_layout(cached, pdf_path)
+            self._apply_semantic(cached, self._last_source or "unknown")
             return cached
 
         logger.info(f"Using {self.primary.name}")
         primary_doc = self.primary.extract(pdf_path)
 
         # P4.2 Layout after extraction
-        try:
-            add_layout_to_document(primary_doc, pdf_path)
-        except Exception as e:
-            primary_doc.metadata["layout_error"] = str(e)
+        self._apply_layout(primary_doc, pdf_path)
+
 
         # Per page quality assessment
         page_provenance = []
@@ -122,15 +135,10 @@ class ExtractorRouter:
                 cache.put(pdf_path, primary_doc)
                 elapsed = time.time() - t0
                 metrics.record_document(primary_doc, elapsed)
-                try:
-                    add_layout_to_document(primary_doc, pdf_path)
-                except Exception as e:
-                    primary_doc.metadata["layout_error"] = str(e)
-                try:
-                    add_semantic_to_document(primary_doc, self._last_source or "pymupdf")
-                except Exception as e:
-                    primary_doc.metadata["semantic_error"] = str(e)
-                    primary_doc.metadata["semantic_processed"] = False
+                # M-38: layout was already applied above; running it again here
+                # appended duplicate tables.  The guards are no-ops now.
+                self._apply_layout(primary_doc, pdf_path)
+                self._apply_semantic(primary_doc, self._last_source or "pymupdf")
                 return primary_doc
             # fall to fallback below
 
@@ -147,17 +155,37 @@ class ExtractorRouter:
                 orig_text = (orig_page.text or "").strip()
                 new_text = (getattr(ocr_page, 'text', '') or "").strip()
                 # only replace if OCR clearly better (prevents degrading good pymupdf text for semantic)
-                use_ocr = len(new_text) > max(80, len(orig_text) + 20)
+                use_ocr = len(new_text) > max(80, len(orig_text) + 20) \
+                    and not getattr(ocr_page, "ocr_failed", False)
                 text_to_use = new_text if use_ocr else orig_text
                 final_pages[bad_idx] = Page(page_num=orig_page.page_num, text=text_to_use, tables=orig_page.tables or [])
-                page_provenance[bad_idx]["source"] = (ocr_page.source if hasattr(ocr_page, 'source') else "mineru") if use_ocr else "pymupdf"
+                page_provenance[bad_idx]["source"] = (
+                    (ocr_page.source if hasattr(ocr_page, 'source') else "mineru")
+                    if use_ocr else "pymupdf"
+                )
                 page_provenance[bad_idx]["ocr_time"] = getattr(ocr_page, 'ocr_time', 0.0) if use_ocr else 0.0
+                if getattr(ocr_page, "ocr_failed", False):
+                    # M-42: record the failure instead of presenting it as an OCR result
+                    page_provenance[bad_idx]["fallback_failed"] = "all_ocr_engines_failed"
                 full_texts.append(final_pages[bad_idx].text)
 
             # rebuild full_text
             full_text = "\n".join(p.text for p in final_pages)
+            # M-40: the label was decided by whether the bad-page COUNT was smaller
+            # than the total, not by whether any page was actually replaced.  Count
+            # the real replacements.
+            replaced = sum(
+                1 for prov in page_provenance
+                if prov.get("source", "pymupdf") not in ("pymupdf", "", None)
+            )
+            if replaced == 0:
+                source_name = "pymupdf"
+            elif replaced == len(final_pages):
+                source_name = self.fallbacks[0].name if self.fallbacks else "mineru"
+            else:
+                source_name = "mixed"
             doc = Document(
-                source="mixed" if len(bad_indices) < len(final_pages) else (self.fallbacks[0].name if self.fallbacks else "mineru"),
+                source=source_name,
                 pdf_path=pdf_path,
                 pages=final_pages,
                 full_text=full_text,
@@ -169,15 +197,8 @@ class ExtractorRouter:
             cache.put(pdf_path, doc)
             elapsed = time.time() - t0
             metrics.record_document(doc, elapsed)
-            try:
-                add_layout_to_document(doc, pdf_path)
-            except Exception as e:
-                doc.metadata["layout_error"] = str(e)
-            try:
-                add_semantic_to_document(doc, self._last_source or "mixed")
-            except Exception as e:
-                doc.metadata["semantic_error"] = str(e)
-                doc.metadata["semantic_processed"] = False
+            self._apply_layout(doc, pdf_path)
+            self._apply_semantic(doc, self._last_source or "mixed")
             return doc
         except Exception as e:
             logger.error(f"Per-page fallback failed: {e}. Falling back to full document fallback.")
@@ -198,62 +219,73 @@ class ExtractorRouter:
                 cache.put(pdf_path, fb_doc)
                 elapsed = time.time() - t0
                 metrics.record_document(fb_doc, elapsed)
-                try:
-                    add_layout_to_document(fb_doc, pdf_path)
-                except Exception as e:
-                    fb_doc.metadata["layout_error"] = str(e)
-                try:
-                    add_semantic_to_document(fb_doc, fb.name)
-                except Exception as e:
-                    fb_doc.metadata["semantic_error"] = str(e)
-                    fb_doc.metadata["semantic_processed"] = False
+                self._apply_layout(fb_doc, pdf_path)
+                self._apply_semantic(fb_doc, fb.name)
                 return fb_doc
             except Exception as e:
                 logger.error(f"{fb.name} failed: {e}")
                 continue
 
+        # M-41: this returned the primary document at confidence 0.3 with a
+        # `fallback_error` but WITHOUT attempting layout, so the caller received a
+        # document that had never been through the table pipeline -- and the failure
+        # was easy to mistake for a low-quality-but-usable result.  Layout is now
+        # attempted, and the unusable outcome is recorded explicitly.
         primary_doc.metadata["fallback_error"] = "all fallbacks failed"
+        primary_doc.metadata["extraction_unusable"] = True
         primary_doc.metadata["page_provenance"] = page_provenance
         primary_doc.confidence = 0.3
         self._last_source = self.primary.name + "+failed"
-        try:
-            add_semantic_to_document(primary_doc, self._last_source)
-        except Exception as e:
-            primary_doc.metadata["semantic_error"] = str(e)
-            primary_doc.metadata["semantic_processed"] = False
+        self._apply_layout(primary_doc, pdf_path)
+        self._apply_semantic(primary_doc, self._last_source)
         return primary_doc
 
     def _ocr_selected_pages(self, pdf_path: Path, bad_pages: List[Page]) -> List[Page]:
-        """Run OCR only on bad pages using temp single-page PDFs. Returns list of Page with OCR text."""
-        import fitz
-        results = []
-        for p in bad_pages:
-            t0 = time.time()
-            with tempfile.TemporaryDirectory() as tmp:
-                # create 1-page pdf with only this page
-                src = fitz.open(str(pdf_path))
-                dst = fitz.open()
-                dst.insert_pdf(src, from_page=p.page_num, to_page=p.page_num)
-                single_pdf = Path(tmp) / "bad_page.pdf"
-                dst.save(str(single_pdf))
-                dst.close()
-                src.close()
+        """Run OCR only on bad pages using temp single-page PDFs.
 
-                # run first available fallback on the single page pdf
-                ocr_text = ""
-                for fb in self.fallbacks:
-                    try:
-                        fb_doc = fb.extract(single_pdf)
-                        ocr_text = fb_doc.full_text
-                        break
-                    except Exception:
-                        continue
-                if not ocr_text:
-                    ocr_text = p.text  # keep original if all failed
-            dt = round(time.time() - t0, 3)
-            new_page = Page(page_num=p.page_num, text=ocr_text)
-            # attach temp for provenance
-            setattr(new_page, 'source', 'mineru')
-            setattr(new_page, 'ocr_time', dt)
-            results.append(new_page)
+        M-43: the source PDF was re-opened PER BAD PAGE; it is now opened ONCE and
+        sliced from the shared handle.
+
+        M-42: on total OCR failure the original PyMuPDF text used to be substituted
+        and the page was recorded as a successful ``mineru`` replacement.  The
+        failure is now flagged on the page so the caller can refuse the swap and the
+        provenance says what actually happened.
+        """
+        import fitz
+
+        results: List[Page] = []
+        src = fitz.open(str(pdf_path))
+        try:
+            for page in bad_pages:
+                t0 = time.time()
+                ocr_failed = False
+                with tempfile.TemporaryDirectory() as tmp:
+                    # create a 1-page pdf containing only this page
+                    single = fitz.open()
+                    single.insert_pdf(src, from_page=page.page_num, to_page=page.page_num)
+                    single_pdf = Path(tmp) / "bad_page.pdf"
+                    single.save(str(single_pdf))
+                    single.close()
+
+                    # run the first available fallback on the single-page pdf
+                    ocr_text = ""
+                    for fb in self.fallbacks:
+                        try:
+                            fb_doc = fb.extract(single_pdf)
+                            ocr_text = fb_doc.full_text
+                            break
+                        except Exception:
+                            continue
+                    if not ocr_text:
+                        # keep the original text, but say so
+                        ocr_text = page.text
+                        ocr_failed = True
+                dt = round(time.time() - t0, 3)
+                new_page = Page(page_num=page.page_num, text=ocr_text)
+                setattr(new_page, "source", "ocr_failed" if ocr_failed else "mineru")
+                setattr(new_page, "ocr_time", dt)
+                setattr(new_page, "ocr_failed", ocr_failed)
+                results.append(new_page)
+        finally:
+            src.close()
         return results

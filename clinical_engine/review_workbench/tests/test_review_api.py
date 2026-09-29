@@ -43,20 +43,44 @@ def _app(path, tmp_path):
     return create_app(path, registry_path=tmp_path / "reviewers.sqlite")
 
 
+def _client(app):
+    # base_url must be loopback: the workbench refuses a non-loopback Host.
+    return TestClient(app, base_url="http://127.0.0.1")
+
+
+def _session(registry_path, reviewer_id):
+    """Mint a real reviewer session token for an already-registered reviewer.
+
+    Returns the raw token, which the caller must send as the ``X-Review-Token``
+    header. Tests that drive a clinical endpoint through HTTP use this instead of
+    putting a reviewer_id in the JSON body — the body is no longer, and must
+    never be, the authentication.
+    """
+    with ReviewerRegistry(registry_path) as registry:
+        return registry.issue_session_token(reviewer_id)
+
+
 def test_dashboard_declares_engine_disconnected(tmp_path):
     path = tmp_path / "api.sqlite"
     seed(path)
-    with TestClient(_app(path, tmp_path)) as client:
+    with _client(_app(path, tmp_path)) as client:
         response = client.get("/")
         assert response.status_code == 200
         assert response.json()["clinical_engine_connected"] is False
 
 
 def test_queue_filters(tmp_path):
+    # The queue returns whole task records (including verdicts), so it is an
+    # authenticated, role-blinded surface and the caller must present a session.
     path = tmp_path / "api.sqlite"
     seed(path)
-    with TestClient(_app(path, tmp_path)) as client:
-        response = client.get("/queue", params={"priority": "HIGH", "state": "PENDING"})
+    seed_reviewer(tmp_path / "reviewers.sqlite", "reviewer-a", ReviewRole.REVIEWER_A)
+    token = _session(tmp_path / "reviewers.sqlite", "reviewer-a")
+    with _client(_app(path, tmp_path)) as client:
+        response = client.get(
+            "/queue", params={"priority": "HIGH", "state": "PENDING"},
+            headers={"X-Review-Token": token},
+        )
         assert response.status_code == 200
         assert [item["task_id"] for item in response.json()] == ["task-1"]
 
@@ -65,36 +89,46 @@ def test_task_details_expose_source_and_provenance(tmp_path):
     path = tmp_path / "api.sqlite"
     seed(path)
     seed_reviewer(tmp_path / "reviewers.sqlite", "reviewer-a", ReviewRole.REVIEWER_A)
-    with TestClient(_app(path, tmp_path)) as client:
+    token = _session(tmp_path / "reviewers.sqlite", "reviewer-a")
+    with _client(_app(path, tmp_path)) as client:
         packet = client.get(
-            "/tasks/task-1", params={"reviewer_id": "reviewer-a", "role": "REVIEWER_A"}
+            "/tasks/task-1", params={"role": "REVIEWER_A"},
+            headers={"X-Review-Token": token},
         ).json()
         assert packet["source_references"][0] == {"page": 3, "pdf": "source.pdf"}
         assert packet["field_level_provenance"][0]["original_text"] == "500 мг"
 
 
 def test_administrator_cannot_claim_clinical_review(tmp_path):
+    # Registered ADMINISTRATOR, authenticated as themselves: the refusal is now
+    # the registry's authorisation decision (403), not a missing token (401).
     path = tmp_path / "api.sqlite"
     seed(path)
-    with TestClient(_app(path, tmp_path)) as client:
-        response = client.post("/tasks/task-1/claim", json={
-            "actor": "admin", "role": "ADMINISTRATOR", "expected_revision": 0,
-        })
+    seed_reviewer(tmp_path / "reviewers.sqlite", "admin", ReviewRole.ADMINISTRATOR)
+    token = _session(tmp_path / "reviewers.sqlite", "admin")
+    with _client(_app(path, tmp_path)) as client:
+        response = client.post(
+            "/tasks/task-1/claim",
+            json={"actor": "admin", "role": "ADMINISTRATOR", "expected_revision": 0},
+            headers={"X-Review-Token": token},
+        )
         assert response.status_code == 403
+        assert response.json()["detail"] == "ADMIN_CLINICAL_ACTION_FORBIDDEN"
 
 
 def test_ui_is_local_review_surface(tmp_path):
     path = tmp_path / "api.sqlite"
     seed(path)
-    with TestClient(_app(path, tmp_path)) as client:
+    with _client(_app(path, tmp_path)) as client:
         response = client.get("/ui")
         assert response.status_code == 200
         assert "LOCAL_REVIEW_ONLY" in response.text
+        assert "X-Review-Token" in response.text
 
 
 def test_review_support_views_exist(tmp_path):
     path = tmp_path / "api.sqlite"
     seed(path)
-    with TestClient(_app(path, tmp_path)) as client:
+    with _client(_app(path, tmp_path)) as client:
         for route in ("/ui/metrics", "/ui/issues", "/ui/corpus"):
             assert client.get(route).status_code == 200

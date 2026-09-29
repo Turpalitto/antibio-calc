@@ -7,18 +7,36 @@ import json
 import sqlite3
 import threading
 from contextlib import contextmanager
+from enum import Enum
 from pathlib import Path
 from typing import Any, Iterator
 
 from .models import (
     AuditEvent, ClinicalReviewTask, PriorityBand, ReviewAssignment, ReviewDecisionRecord,
-    ReviewRole, ReviewState, Severity, TargetType,
+    ReviewRole, ReviewState, Severity, TargetType, close_outcome_or_blank, consensus_or_blank,
 )
 
 SCHEMA_VERSION = 2
 
 # Governance states that are NOT terminal for metrics/"pending" purposes.
 _TERMINAL_STATE_VALUES = ("PHYSICIAN_APPROVED", "REJECTED", "CLOSED")
+
+# Identifiers that reach PRAGMA/ALTER DDL. SQLite has no bound parameters for
+# identifiers, so these are checked against explicit allowlists rather than
+# interpolated blindly. Today every call site passes a module literal; this
+# keeps that true mechanically instead of by convention.
+_ALLOWED_TABLE_IDENTIFIERS = frozenset({"review_tasks", "review_decisions", "review_events"})
+_ALLOWED_COLUMN_IDENTIFIERS = frozenset({
+    "qa_reviewer", "first_decision", "first_reason_codes", "first_comments",
+    "second_decision", "second_reason_codes", "second_comments", "consensus_result",
+    "qa_verdict", "close_outcome",
+})
+
+
+def _checked_identifier(value: str, allowed: frozenset[str], kind: str) -> str:
+    if value not in allowed:
+        raise ValueError(f"unrecognised SQL {kind} identifier: {value!r}")
+    return value
 
 
 class ConcurrencyError(RuntimeError):
@@ -31,6 +49,16 @@ class ImmutableRecordError(RuntimeError):
 
 def _json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _state_value(value: Any) -> str:
+    """Persist a lifecycle/derived field as its plain vocabulary value.
+
+    These fields are typed as ``str``-backed enums, so an enum member must be
+    written as its ``.value`` — ``str(member)`` would store
+    ``"ConsensusResult.NEEDS_ADJUDICATION"`` and never read back.
+    """
+    return value.value if isinstance(value, Enum) else str(value)
 
 
 class ReviewStore:
@@ -54,6 +82,7 @@ class ReviewStore:
         self.close()
 
     def _column_names(self, table: str) -> set[str]:
+        table = _checked_identifier(table, _ALLOWED_TABLE_IDENTIFIERS, "table")
         return {row[1] for row in self.connection.execute(f"PRAGMA table_info({table})").fetchall()}
 
     def _migrate(self) -> None:
@@ -167,7 +196,10 @@ class ReviewStore:
         }
         for column, ddl in new_task_columns.items():
             if column not in existing_task_columns:
-                self.connection.execute(f"ALTER TABLE review_tasks ADD COLUMN {column} {ddl}")
+                self.connection.execute(
+                    f"ALTER TABLE review_tasks ADD COLUMN "
+                    f"{_checked_identifier(column, _ALLOWED_COLUMN_IDENTIFIERS, 'column')} {ddl}"
+                )
 
         self.connection.executescript("""
         CREATE TABLE IF NOT EXISTS review_assignments(
@@ -280,7 +312,8 @@ class ReviewStore:
             task.qa_reviewer, task.decision, _json(task.reason_codes), task.comments,
             task.first_decision, _json(task.first_reason_codes), task.first_comments,
             task.second_decision, _json(task.second_reason_codes), task.second_comments,
-            task.consensus_result, task.qa_verdict, task.close_outcome,
+            _state_value(consensus_or_blank(task.consensus_result)), task.qa_verdict,
+            _state_value(close_outcome_or_blank(task.close_outcome)),
             task.created_at, task.claimed_at, task.completed_at, task.revision,
         ))
             self.connection.commit()
@@ -317,8 +350,8 @@ class ReviewStore:
             first_comments=row["first_comments"],
             second_decision=row["second_decision"], second_reason_codes=tuple(json.loads(row["second_reason_codes"])),
             second_comments=row["second_comments"],
-            consensus_result=row["consensus_result"], qa_verdict=row["qa_verdict"],
-            close_outcome=row["close_outcome"],
+            consensus_result=consensus_or_blank(row["consensus_result"]), qa_verdict=row["qa_verdict"],
+            close_outcome=close_outcome_or_blank(row["close_outcome"]),
             created_at=row["created_at"], claimed_at=row["claimed_at"],
             completed_at=row["completed_at"], revision=row["revision"],
             audit_history=self._events(row["task_id"]),
@@ -353,7 +386,18 @@ class ReviewStore:
             ).fetchall()
             return [self._task(row) for row in rows]
 
-    def transition(self, previous: ClinicalReviewTask, current: ClinicalReviewTask, event: AuditEvent) -> ClinicalReviewTask:
+    def transition(self, previous: ClinicalReviewTask, current: ClinicalReviewTask, event: AuditEvent,
+                   *, ledger_record: ReviewDecisionRecord | None = None) -> ClinicalReviewTask:
+        """Advance the task, append its audit event and — when the caller supplies
+        one — append the immutable decision-ledger row, ALL IN ONE TRANSACTION.
+
+        These three writes were previously two separate transactions (transition
+        committed, then record_decision opened its own). An I/O failure between
+        them left a task in its new state with a SUBMIT_* audit event and no
+        ledger row, and nothing reconciled the two. One transaction means the
+        state change, the audit event and the ledger entry commit or roll back
+        together.
+        """
         with self.transaction():
             cursor = self.connection.execute("""
                 UPDATE review_tasks SET lifecycle_state=?,assigned_reviewer=?,second_reviewer=?,adjudicator=?,
@@ -364,12 +408,12 @@ class ReviewStore:
                     claimed_at=?,completed_at=?,revision=revision+1
                 WHERE task_id=? AND revision=?
             """, (
-                current.lifecycle_state.value, current.assigned_reviewer, current.second_reviewer,
+                _state_value(current.lifecycle_state), current.assigned_reviewer, current.second_reviewer,
                 current.adjudicator, current.qa_reviewer, current.decision, _json(current.reason_codes),
                 current.comments,
                 current.first_decision, _json(current.first_reason_codes), current.first_comments,
                 current.second_decision, _json(current.second_reason_codes), current.second_comments,
-                current.consensus_result, current.qa_verdict, current.close_outcome,
+                _state_value(current.consensus_result), current.qa_verdict, _state_value(current.close_outcome),
                 current.claimed_at, current.completed_at, current.task_id, previous.revision,
             ))
             if cursor.rowcount != 1:
@@ -379,9 +423,11 @@ class ReviewStore:
                     decision,reason_codes,comments,timestamp) VALUES(?,?,?,?,?,?,?,?,?,?,?)
             """, (
                 current.task_id, event.sequence, event.actor, event.role.value, event.event_type,
-                event.from_state.value, event.to_state.value, event.decision,
+                _state_value(event.from_state), _state_value(event.to_state), event.decision,
                 _json(event.reason_codes), event.comments, event.timestamp,
             ))
+            if ledger_record is not None:
+                self._insert_decision(ledger_record)
         return self.get_task(current.task_id)
 
     def log_rejected_attempt(self, *, task_id: str, actor: str, role: ReviewRole, action: str,
@@ -447,18 +493,27 @@ class ReviewStore:
 
     # --- Phase 8: immutable decision ledger -----------------------------------
 
+    def _insert_decision(self, decision: ReviewDecisionRecord) -> None:
+        self.connection.execute(
+            "INSERT INTO review_decisions(decision_id,task_id,target_version,reviewer_id,"
+            "reviewer_role,verdict,reason_codes,rationale,source_verified,submitted_at,"
+            "decision_sequence,supersedes_decision_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+            (decision.decision_id, decision.task_id, decision.target_version, decision.reviewer_id,
+             decision.reviewer_role.value, decision.verdict, _json(decision.reason_codes),
+             decision.rationale, 1 if decision.source_verified else 0, decision.submitted_at,
+             decision.decision_sequence, decision.supersedes_decision_id),
+        )
+
     def record_decision(self, decision: ReviewDecisionRecord) -> None:
-        with self._lock:
-            self.connection.execute(
-                "INSERT INTO review_decisions(decision_id,task_id,target_version,reviewer_id,"
-                "reviewer_role,verdict,reason_codes,rationale,source_verified,submitted_at,"
-                "decision_sequence,supersedes_decision_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
-                (decision.decision_id, decision.task_id, decision.target_version, decision.reviewer_id,
-                 decision.reviewer_role.value, decision.verdict, _json(decision.reason_codes),
-                 decision.rationale, 1 if decision.source_verified else 0, decision.submitted_at,
-                 decision.decision_sequence, decision.supersedes_decision_id),
-            )
-            self.connection.commit()
+        """Standalone ledger append.
+
+        ReviewService no longer uses this: every governed write path passes its
+        decision record to :meth:`transition` so the state change, the audit
+        event and the ledger row share one transaction. Kept for tooling that
+        appends a correction/superseding record with no state change.
+        """
+        with self.transaction():
+            self._insert_decision(decision)
 
     def list_decisions(self, task_id: str) -> list[ReviewDecisionRecord]:
         with self._lock:

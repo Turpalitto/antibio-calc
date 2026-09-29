@@ -94,12 +94,46 @@ class TestPregnancyParser:
         )
         assert reg.pregnancy is True
 
-    def test_pregnancy_from_quote(self):
+    def test_pregnancy_contraindication_is_false(self):
+        # M13: the "не рекоменд" branch was unreachable dead code (the
+        # preceding `if` already matched "беремен"), so a CONTRAINDICATION
+        # was recorded as APPLICABILITY. pregnancy=False means "explicitly
+        # not for pregnancy".
         reg = PregnancyParser.parse(
             NormalizedRegimen(),
             {"source_quote": "не рекомендуется при беременности"},
         )
+        assert reg.pregnancy is False
+
+    def test_pregnancy_prohibited_is_false(self):
+        reg = PregnancyParser.parse(
+            NormalizedRegimen(),
+            {"source_quote": "противопоказано при беременности"},
+        )
+        assert reg.pregnancy is False
+
+    def test_pregnancy_not_recommended_application_is_false(self):
+        reg = PregnancyParser.parse(
+            NormalizedRegimen(),
+            {"source_quote": "при беременности применение не рекомендовано"},
+        )
+        assert reg.pregnancy is False
+
+    def test_pregnancy_applicable_is_true(self):
+        reg = PregnancyParser.parse(
+            NormalizedRegimen(),
+            {"source_quote": "разрешено при беременности"},
+        )
         assert reg.pregnancy is True
+
+    def test_population_stated_true_for_adults(self):
+        reg = AgeParser.parse(NormalizedRegimen(), {"age_group": "взрослые"})
+        assert reg.population_stated is True
+
+    def test_population_stated_false_without_evidence(self):
+        reg = AgeParser.parse(NormalizedRegimen(), {"age_group": "непонятный текст"})
+        assert reg.adult is True
+        assert reg.population_stated is False
 
     def test_no_pregnancy_info(self):
         reg = PregnancyParser.parse(NormalizedRegimen(), {"age_group": "взрослые"})
@@ -191,3 +225,68 @@ class TestGFRParser:
             NormalizedRegimen(), {"source_quote": "CrCl below 50"}
         )
         assert reg.renal_adjustment is True
+
+
+# ── Regression tests: H2 ───────────────────────────────────────────
+
+
+class TestH2NonStringInputs:
+    """Every population sub-parser used to raise AttributeError on
+    int / list / dict inputs; now it records a MISSING_FIELD_INPUT
+    ParserError and continues."""
+
+    def test_int_age_group_does_not_raise(self):
+        reg = AgeParser.parse(NormalizedRegimen(), {"age_group": 5})
+        assert reg.adult is True
+        assert reg.child is False
+
+    def test_int_age_group_is_recorded(self):
+        reg = AgeParser.parse(NormalizedRegimen(), {"age_group": 5})
+        assert any(w.startswith("MISSING_FIELD_INPUT:age_group") for w in reg.warnings)
+
+    def test_list_age_group_does_not_raise(self):
+        reg = AgeParser.parse(NormalizedRegimen(), {"age_group": ["взрослые"]})
+        assert reg.adult is True
+
+    def test_int_source_quote_does_not_raise(self):
+        reg = AgeParser.parse(NormalizedRegimen(), {"source_quote": 42})
+        assert reg.adult is True
+
+    def test_int_pregnancy_field_does_not_raise(self):
+        reg = PregnancyParser.parse(NormalizedRegimen(), {"pregnancy": 1})
+        assert reg.pregnancy is None
+
+    def test_int_pregnancy_is_recorded(self):
+        reg = PregnancyParser.parse(NormalizedRegimen(), {"pregnancy": 1})
+        assert any(w.startswith("MISSING_FIELD_INPUT:pregnancy") for w in reg.warnings)
+
+    def test_list_pregnancy_text_does_not_raise(self):
+        reg = PregnancyParser.parse(NormalizedRegimen(), {"source_quote": ["беременные"]})
+        assert reg.pregnancy is None
+
+    def test_int_renal_field_does_not_raise(self):
+        reg = GFRParser.parse(NormalizedRegimen(), {"renal_adjustment": 1})
+        assert reg.renal_adjustment is False
+
+    def test_int_renal_is_recorded(self):
+        reg = GFRParser.parse(NormalizedRegimen(), {"renal_adjustment": 1})
+        assert any(w.startswith("MISSING_FIELD_INPUT:renal_adjustment") for w in reg.warnings)
+
+    def test_dict_renal_text_does_not_raise(self):
+        reg = GFRParser.parse(NormalizedRegimen(), {"source_quote": {"text": "почечная"}})
+        assert reg.renal_adjustment is False
+
+    def test_all_three_markers_reach_normalizer(self):
+        from medical_normalizer.models import MISSING_FIELD_INPUT
+        from medical_normalizer.normalizer import MedicalNormalizer
+
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "1 раз в день",
+            "age_group": 5, "pregnancy": 1, "renal_adjustment": 1,
+        })
+        assert MISSING_FIELD_INPUT in {e.error_type for e in r.errors}
+        # the pipeline still ran every sub-parser
+        assert "population.age" in r.parser_execution_order
+        assert "population.pregnancy" in r.parser_execution_order
+        assert "population.gfr" in r.parser_execution_order

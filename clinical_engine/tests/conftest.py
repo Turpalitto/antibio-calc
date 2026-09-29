@@ -8,6 +8,7 @@ hand-crafting rows, so it reflects actual PASS/REVIEW/REJECT behavior.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -16,6 +17,7 @@ from medical_normalizer.db import NormalizerDB
 from medical_normalizer.normalizer import MedicalNormalizer
 
 from clinical_engine.models import Recommendation, RecommendationCandidate
+from clinical_engine.readers.diagnosis_reader import JsonDiagnosisProvider
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -277,6 +279,148 @@ def p1_engine_config(
         diagnosis_index_path=str(diagnosis_index_path),
         clinical_constants_path=str(clinical_constants_path),
     )
+
+
+def write_drug_reference(tmp_path: Path, drugs_reference: dict) -> Path:
+    """Write a minimal db/index.json-shaped drug reference and return its path.
+
+    Used by tests that need a drug whose safety prose the shipped fixture does
+    not contain (a hepatic contraindication, a pediatric record with/without
+    freq_per_day, a class label that matches no curated family). Keeping this
+    here means no test has to edit the shared fixture JSON.
+    """
+    path = tmp_path / "custom_drugs_reference.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps({"meta": {"version": "test-generated"}, "drugs_reference": drugs_reference},
+                   ensure_ascii=False),
+        encoding="utf-8",
+    )
+    return path
+
+
+@pytest.fixture
+def make_drug_reference_context(
+    sqlite_path: Path,
+    diagnosis_index_path: Path,
+    clinical_constants_path: Path,
+    tmp_path: Path,
+):
+    """Factory: a real StageContext whose drug reference (and optionally the
+    clinical constants) are test-defined.
+
+    Pass ``constants={...}`` to use a family vocabulary the shipped test fixture
+    does not carry (e.g. Цефалоспорины, for cross-reactivity coverage).
+    """
+    from clinical_engine.config import EngineConfig
+    from clinical_engine.engine import _load_clinical_constants
+    from clinical_engine.pipeline import ScoreWeights, StageContext
+    from clinical_engine.readers.drug_reference_reader import (
+        DrugReferenceReader,
+        DrugSafetyProviderAdapter,
+    )
+    from clinical_engine.readers.sqlite_reader import RegimenProviderAdapter, SQLiteReader
+    from clinical_engine.terminology import BasicTerminologyProvider
+
+    reader = SQLiteReader(sqlite_path)
+    counter = {"n": 0}
+
+    def _factory(drugs_reference: dict, constants: dict | None = None) -> StageContext:
+        index = counter["n"]
+        counter["n"] += 1
+        ref_path = write_drug_reference(tmp_path / f"ref{index}", drugs_reference)
+        drug_ref_r = DrugReferenceReader(ref_path)
+        if constants is None:
+            consts = _load_clinical_constants(clinical_constants_path)
+        else:
+            const_path = tmp_path / f"constants{index}.json"
+            const_path.write_text(json.dumps(constants, ensure_ascii=False), encoding="utf-8")
+            consts = _load_clinical_constants(const_path)
+        return StageContext(
+            config=EngineConfig(sqlite_path=str(sqlite_path)),
+            sqlite_reader=reader,
+            drug_ref_reader=drug_ref_r,
+            diagnosis_provider=JsonDiagnosisProvider(diagnosis_index_path),
+            regimen_provider=RegimenProviderAdapter(reader),
+            drug_safety_provider=DrugSafetyProviderAdapter(drug_ref_r),
+            terminology_provider=BasicTerminologyProvider(consts),
+            constants=consts,
+            score_weights=ScoreWeights(),
+        )
+
+    yield _factory
+    reader.close()
+
+
+# Family vocabulary used by the cross-reactivity tests: the shipped test
+# constants carry no cephalosporin family.
+_CEPH_CONSTANTS = {
+    "age_bands": {"neonate": [0.0, 0.076712], "child": [0.0, 18.0]},
+    "renal_thresholds": {},
+    "allergy_class_map": {"amoxicillin": "Пенициллины"},
+    "allergy_class_hierarchy": {
+        "Пенициллины": ["amoxicillin"],
+        "Цефалоспорины": ["cefixime"],
+        "Тетрациклины": ["doxycycline"],
+    },
+}
+
+
+@pytest.fixture
+def make_ceph_context(make_drug_reference_context):
+    def _factory(drugs_reference: dict):
+        return make_drug_reference_context(drugs_reference, constants=_CEPH_CONSTANTS)
+
+    return _factory
+
+
+@pytest.fixture
+def production_context(sqlite_path: Path, diagnosis_index_path: Path, tmp_path: Path):
+    """A real StageContext over the PRODUCTION drug reference + constants.
+
+    db/index.json and resources/clinical_constants.json are the shipped
+    clinical data; the bugs this suite guards (unclassified drugs, hepatic
+    prose, trimester wording) are only visible there, not in the small test
+    fixture. The SQLite fixture is irrelevant to the stages that use this.
+    """
+    import pytest as _pytest
+
+    from clinical_engine.config import EngineConfig
+    from clinical_engine.engine import _load_clinical_constants
+    from clinical_engine.pipeline import ScoreWeights, StageContext
+    from clinical_engine.readers.drug_reference_reader import (
+        DrugReferenceReader,
+        DrugSafetyProviderAdapter,
+    )
+    from clinical_engine.readers.sqlite_reader import RegimenProviderAdapter, SQLiteReader
+    from clinical_engine.terminology import BasicTerminologyProvider
+
+    index_path = FIXTURES_DIR.parents[2] / "db" / "index.json"
+    constants_path = FIXTURES_DIR.parents[1] / "resources" / "clinical_constants.json"
+    if not index_path.exists() or not constants_path.exists():
+        _pytest.skip("db/index.json or clinical_constants.json not present in this checkout")
+
+    constants = _load_clinical_constants(constants_path)
+    drug_ref_r = DrugReferenceReader(index_path)
+    reader = SQLiteReader(sqlite_path)
+    try:
+        yield StageContext(
+            config=EngineConfig(
+                sqlite_path=str(sqlite_path),
+                drug_reference_path=str(index_path),
+                clinical_constants_path=str(constants_path),
+            ),
+            sqlite_reader=reader,
+            drug_ref_reader=drug_ref_r,
+            diagnosis_provider=JsonDiagnosisProvider(diagnosis_index_path),
+            regimen_provider=RegimenProviderAdapter(reader),
+            drug_safety_provider=DrugSafetyProviderAdapter(drug_ref_r),
+            terminology_provider=BasicTerminologyProvider(constants),
+            constants=constants,
+            score_weights=ScoreWeights(),
+        )
+    finally:
+        reader.close()
 
 
 @pytest.fixture

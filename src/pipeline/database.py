@@ -3,15 +3,18 @@
 import hashlib
 import json
 import logging
+import math
+import os
 import sqlite3
+import tempfile
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import orjson
 
 from config import ABX_JSON, DB_PATH, DOWNLOADS_ABX, DOWNLOADS_ALL, DOWNLOADS_OTHER
-from downloader import sanitize_filename
+from downloader import sanitize_filename, unique_destination
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +51,11 @@ CREATE TABLE IF NOT EXISTS stats (
 
 def init_db() -> sqlite3.Connection:
     db = sqlite3.connect(str(DB_PATH))
+    # H-24: the FK on antibiotic_regimens.clinrec_id was DECLARED but never
+    # enforced, because SQLite ignores foreign keys unless the pragma is set per
+    # connection.  Every new connection must turn it on or the declared contract
+    # is a no-op.
+    db.execute("PRAGMA foreign_keys = ON")
     db.executescript(SCHEMA)
     return db
 
@@ -142,7 +150,14 @@ def save_metadata(items: list[dict[str, Any]]) -> None:
 
 
 def split_by_category(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Перемещает PDF: antibiotics → downloads_antibiotics, остальные → downloads_other."""
+    """MOVE PDF files: antibiotics -> downloads_antibiotics, остальные -> downloads_other.
+
+    L-55: this used ``shutil.copy2`` while the docstring promised a move, so the
+    corpus was duplicated and both copies competed for the prefilter.  It now
+    moves, and M-19/H-20: a target filename already owned by a DIFFERENT clinrec
+    is disambiguated with the clinrec Id, so a second document never inherits the
+    first one's path (and therefore its sha256).
+    """
     import shutil
 
     DOWNLOADS_ABX.mkdir(parents=True, exist_ok=True)
@@ -159,10 +174,10 @@ def split_by_category(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
         target_dir = DOWNLOADS_ABX if item.get("has_antibiotics") else DOWNLOADS_OTHER
         target_name = f"{sanitize_filename(item.get('Name', 'unnamed'))}.pdf"
-        dst = target_dir / target_name
+        dst = unique_destination(target_dir, target_name, item.get("Id"))
 
         if src != dst:
-            shutil.copy2(src, dst)
+            shutil.move(str(src), str(dst))
             item["pdf_path"] = str(dst)
             item["category"] = "antibiotics" if item.get("has_antibiotics") else "other"
 
@@ -251,15 +266,27 @@ CREATE INDEX IF NOT EXISTS idx_regimens_antibiotic_norm ON antibiotic_regimens(a
 CREATE INDEX IF NOT EXISTS idx_regimens_age ON antibiotic_regimens(age_group);
 CREATE INDEX IF NOT EXISTS idx_regimens_code_version ON antibiotic_regimens(code_version);
 CREATE INDEX IF NOT EXISTS idx_regimens_validated ON antibiotic_regimens(validated);
+-- H-24: clinrec_id is the declared FK AND the natural join key from
+-- antibiotic_regimens back to clinrecs; it had no index at all.
+CREATE INDEX IF NOT EXISTS idx_regimens_clinrec_id ON antibiotic_regimens(clinrec_id);
 """
 
 
 def init_regimens_table(db: sqlite3.Connection) -> None:
+    db.execute("PRAGMA foreign_keys = ON")
     db.executescript(REGIMENS_SCHEMA)
 
 
 def _sanitize(v: Any) -> Any:
-    """Convert non-basic types to string for SQLite compatibility."""
+    """Convert non-basic types to string for SQLite compatibility.
+
+    NaN/±inf are rejected: SQLite silently stores them as NULL, so a NaN dose
+    became a NULL dose with no warning at all.  A NULL dose in a validated
+    regimen is worse than an obviously invalid one.
+    """
+    if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
+        logger.warning("Rejected non-finite numeric value %r for SQLite storage", v)
+        return None
     if v is None or isinstance(v, (int, float, str, bool)):
         return v
     if isinstance(v, bytes):
@@ -269,43 +296,50 @@ def _sanitize(v: Any) -> Any:
 
 def save_regimens(db: sqlite3.Connection, regimens: list[dict]) -> None:
     init_regimens_table(db)
-    # Clear before re-insert to avoid duplicates on re-run
-    db.execute("DELETE FROM antibiotic_regimens")
     cur = db.cursor()
-    for r in regimens:
-        cur.execute(
-            """INSERT INTO antibiotic_regimens (
-                clinrec_id, clinrec_name, diagnosis, mkb, regimen_type,
-                antibiotic, antibiotic_normalized, atc_code,
-                dose, dose_confidence, unit, unit_confidence,
-                frequency, frequency_confidence, route, route_confidence,
-                duration, duration_confidence, age_group, age_group_confidence,
-                weight_based, renal_adjustment, renal_confidence,
-                pregnancy, pregnancy_confidence,
-                guideline_name, code_version, pdf_file, pdf_sha256,
-                page_number, section_name, source_quote,
-                extraction_confidence, validation_confidence, validation_issues,
-                validated, publication_date, extraction_version,
-                extraction_model, validation_model, extracted_at, validated_at
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-            (
-                _sanitize(r.get("clinrec_id")), _sanitize(r.get("clinrec_name")), _sanitize(r.get("diagnosis")), _sanitize(r.get("mkb")), _sanitize(r.get("regimen_type")),
-                _sanitize(r.get("antibiotic")), _sanitize(r.get("antibiotic_normalized")), _sanitize(r.get("atc_code")),
-                _sanitize(r.get("dose")), _sanitize(r.get("dose_confidence")), _sanitize(r.get("unit")), _sanitize(r.get("unit_confidence")),
-                _sanitize(r.get("frequency")), _sanitize(r.get("frequency_confidence")), _sanitize(r.get("route")), _sanitize(r.get("route_confidence")),
-                _sanitize(r.get("duration")), _sanitize(r.get("duration_confidence")), _sanitize(r.get("age_group")), _sanitize(r.get("age_group_confidence")),
-                _sanitize(r.get("weight_based")), _sanitize(r.get("renal_adjustment")), _sanitize(r.get("renal_confidence")),
-                _sanitize(r.get("pregnancy")), _sanitize(r.get("pregnancy_confidence")),
-                _sanitize(r.get("guideline_name")), _sanitize(r.get("code_version")), _sanitize(r.get("pdf_file")), _sanitize(r.get("pdf_sha256")),
-                _sanitize(r.get("page_number")), _sanitize(r.get("section_name")), _sanitize(r.get("source_quote")),
-                _sanitize(r.get("extraction_confidence")), _sanitize(r.get("validation_confidence")),
-                _sanitize(r.get("validation_issues")),
-                _sanitize(r.get("validated", 0)), _sanitize(r.get("publication_date")), _sanitize(r.get("extraction_version")),
-                _sanitize(r.get("extraction_model")), _sanitize(r.get("validation_model")),
-                _sanitize(r.get("extracted_at")), _sanitize(r.get("validated_at")),
-            ),
-        )
-    db.commit()
+    # H-24: single transaction for delete+insert.  The old autocommit-per-statement
+    # shape could leave the table half-rebuilt after a mid-loop exception, with no
+    # way to tell that state apart from a legitimate small corpus.
+    try:
+        db.execute("BEGIN")
+        db.execute("DELETE FROM antibiotic_regimens")
+        for r in regimens:
+            cur.execute(
+                """INSERT INTO antibiotic_regimens (
+                    clinrec_id, clinrec_name, diagnosis, mkb, regimen_type,
+                    antibiotic, antibiotic_normalized, atc_code,
+                    dose, dose_confidence, unit, unit_confidence,
+                    frequency, frequency_confidence, route, route_confidence,
+                    duration, duration_confidence, age_group, age_group_confidence,
+                    weight_based, renal_adjustment, renal_confidence,
+                    pregnancy, pregnancy_confidence,
+                    guideline_name, code_version, pdf_file, pdf_sha256,
+                    page_number, section_name, source_quote,
+                    extraction_confidence, validation_confidence, validation_issues,
+                    validated, publication_date, extraction_version,
+                    extraction_model, validation_model, extracted_at, validated_at
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (
+                    _sanitize(r.get("clinrec_id")), _sanitize(r.get("clinrec_name")), _sanitize(r.get("diagnosis")), _sanitize(r.get("mkb")), _sanitize(r.get("regimen_type")),
+                    _sanitize(r.get("antibiotic")), _sanitize(r.get("antibiotic_normalized")), _sanitize(r.get("atc_code")),
+                    _sanitize(r.get("dose")), _sanitize(r.get("dose_confidence")), _sanitize(r.get("unit")), _sanitize(r.get("unit_confidence")),
+                    _sanitize(r.get("frequency")), _sanitize(r.get("frequency_confidence")), _sanitize(r.get("route")), _sanitize(r.get("route_confidence")),
+                    _sanitize(r.get("duration")), _sanitize(r.get("duration_confidence")), _sanitize(r.get("age_group")), _sanitize(r.get("age_group_confidence")),
+                    _sanitize(r.get("weight_based")), _sanitize(r.get("renal_adjustment")), _sanitize(r.get("renal_confidence")),
+                    _sanitize(r.get("pregnancy")), _sanitize(r.get("pregnancy_confidence")),
+                    _sanitize(r.get("guideline_name")), _sanitize(r.get("code_version")), _sanitize(r.get("pdf_file")), _sanitize(r.get("pdf_sha256")),
+                    _sanitize(r.get("page_number")), _sanitize(r.get("section_name")), _sanitize(r.get("source_quote")),
+                    _sanitize(r.get("extraction_confidence")), _sanitize(r.get("validation_confidence")),
+                    _sanitize(r.get("validation_issues")),
+                    _sanitize(r.get("validated", 0)), _sanitize(r.get("publication_date")), _sanitize(r.get("extraction_version")),
+                    _sanitize(r.get("extraction_model")), _sanitize(r.get("validation_model")),
+                    _sanitize(r.get("extracted_at")), _sanitize(r.get("validated_at")),
+                ),
+            )
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
 
 
 def load_validated_regimens(db: sqlite3.Connection) -> list[dict]:
@@ -315,9 +349,60 @@ def load_validated_regimens(db: sqlite3.Connection) -> list[dict]:
     return [dict(zip(columns, row)) for row in rows]
 
 
-def save_review_required(items: list[dict], path: Path = None) -> None:
+def save_review_required(items: list[dict], path: Optional[Path] = None) -> list[dict]:
+    """Write the physician-review queue, DEDUPED and atomically.
+
+    H-1 / H-2 / M-41: callers do ``save_review_required(existing + new)``, so a
+    re-run of ``validate`` on a partially-completed corpus appended a fresh copy of
+    every already-queued item and the file grew without bound.  Two entries are the
+    same review request when they name the same clinrec, page, section, reason and
+    carry the same extracted data; the newest occurrence wins so a re-review that
+    resolved an issue replaces the stale one.
+    """
     if path is None:
         from config import REVIEW_REQUIRED_JSON
         path = REVIEW_REQUIRED_JSON
-    path.write_text(json.dumps(items, ensure_ascii=False, indent=2), encoding="utf-8")
-    logger.info(f"  {path}: {len(items)} review items")
+
+    deduped: dict[str, dict] = {}
+    for item in items:
+        deduped[_review_identity(item)] = item
+
+    payload = list(deduped.values())
+    _atomic_write_json(path, payload)
+    logger.info(
+        f"  {path}: {len(payload)} review items "
+        f"({len(items) - len(payload)} duplicate(s) collapsed)"
+    )
+    return payload
+
+
+_REVIEW_IDENTITY_FIELDS = (
+    "clinrec_id", "pdf_file", "page_number", "section_name", "reason",
+)
+
+
+def _review_identity(item: dict) -> str:
+    """Stable identity for one review request.
+
+    Deliberately EXCLUDES ``extracted_data``: a re-run that produced a different
+    payload for the same (guideline, page, section, reason) is the SAME pending
+    review, and the newer payload must replace the older one rather than sit next
+    to it as a duplicate.
+    """
+    return "|".join(str(item.get(field)) for field in _REVIEW_IDENTITY_FIELDS)
+
+
+def _atomic_write_json(path: Path, payload: Any) -> None:
+    """Write JSON via a staged temp file + os.replace (never truncate in place)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(dir=str(path.parent), prefix=path.name + ".", suffix=".tmp")
+    tmp = Path(tmp_name)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, ensure_ascii=False, indent=2)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, path)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise

@@ -140,19 +140,95 @@ class TestPediatricDosing:
         rec = result.state.candidates[0]
         assert any(f.code == "ABOVE_WEIGHT_BAND" for f in rec.safety_flags)
 
-    def test_frequency_none_computes_daily_but_not_single_dose(
-        self, stage_context: StageContext
+    def test_pediatric_frequency_wins_over_the_adult_regimen_frequency(
+        self, make_drug_reference_context
     ) -> None:
+        """H-6: the daily total is split by PediatricDosing.freq_per_day, not by
+        the ADULT SQLite frequency. The old code divided by c.frequency and
+        read freq_per_day nowhere (it was dead), which is wrong in both
+        directions (ceftriaxone adult freq=1 -> one enormous injection; adult
+        freq=3 against a q12h schedule -> 1/3 of the 12-hour dose)."""
+        ctx = make_drug_reference_context(
+            {
+                "q12_drug": {
+                    "inn": "Q12", "class": "Тестовый класс",
+                    "renal_adjustment": None, "hepatic_adjustment": None,
+                    "pregnancy_category": None, "age_restriction_min": None,
+                    "pediatric_dosing": {"mg_per_kg_day": 50.0, "freq_per_day": 2},
+                }
+            }
+        )
+        query = PatientQuery(patient=Patient(age=10, weight_kg=20))
+        # Adult regimen row says once daily; the pediatric record says q12h.
+        c = make_candidate("r1", adult=False, child=True, drug_ref="q12_drug", frequency=1.0)
+        result = DoseCalculation().run(_state(query, c), ctx)
+        dose = result.state.candidates[0].dose
+        assert dose.calculation_method is DoseCalculationMethod.MG_PER_KG
+        assert dose.calculated_dose_mg == 1000.0 / 2  # NOT 1000/1
+        assert dose.frequency_per_day == 2.0
+        assert "pediatric freq_per_day=2/day" in dose.calculation_note
+        codes = {f.code for f in result.state.candidates[0].safety_flags}
+        assert "PEDS_FREQ_ASSUMED_ADULT" not in codes
+
+    def test_missing_pediatric_frequency_falls_back_to_adult_with_a_loud_flag(
+        self, make_drug_reference_context
+    ) -> None:
+        ctx = make_drug_reference_context(
+            {
+                "no_freq_drug": {
+                    "inn": "NoFreq", "class": "Тестовый класс",
+                    "renal_adjustment": None, "hepatic_adjustment": None,
+                    "pregnancy_category": None, "age_restriction_min": None,
+                    "pediatric_dosing": {"mg_per_kg_day": 40.0},
+                }
+            }
+        )
+        query = PatientQuery(patient=Patient(age=10, weight_kg=20))
+        c = make_candidate("r1", adult=False, child=True, drug_ref="no_freq_drug", frequency=3.0)
+        result = DoseCalculation().run(_state(query, c), ctx)
+        rec = result.state.candidates[0]
+        assert rec.dose.calculated_dose_mg == 800.0 / 3.0
+        flag = [f for f in rec.safety_flags if f.code == "PEDS_FREQ_ASSUMED_ADULT"]
+        assert len(flag) == 1
+        assert "ADULT" in flag[0].message
+        assert any("adult frequency assumed" in t.reason for t in result.state.traces)
+
+    def test_no_frequency_anywhere_computes_daily_but_not_single_dose(
+        self, make_drug_reference_context
+    ) -> None:
+        ctx = make_drug_reference_context(
+            {
+                "no_freq_drug": {
+                    "inn": "NoFreq", "class": "Тестовый класс",
+                    "renal_adjustment": None, "hepatic_adjustment": None,
+                    "pregnancy_category": None, "age_restriction_min": None,
+                    "pediatric_dosing": {"mg_per_kg_day": 40.0},
+                }
+            }
+        )
         query = PatientQuery(patient=Patient(age=10, weight_kg=20))
         c = make_candidate(
-            "r1", adult=False, child=True, drug_ref="peds_test_drug", frequency=None
+            "r1", adult=False, child=True, drug_ref="no_freq_drug", frequency=None
         )
-        state = _state(query, c)
-        result = DoseCalculation().run(state, stage_context)
+        result = DoseCalculation().run(_state(query, c), ctx)
         dose = result.state.candidates[0].dose
         assert dose.calculation_method is DoseCalculationMethod.MG_PER_KG
         assert dose.calculated_dose_mg is None
+        assert dose.frequency_per_day is None
         assert "800.0 mg/day" in dose.calculation_note
+        assert "cannot split" in dose.calculation_note
+
+    def test_shipped_pediatric_fixture_uses_its_own_frequency(
+        self, stage_context: StageContext
+    ) -> None:
+        # peds_test_drug declares freq_per_day=3; the candidate row also says 3,
+        # so the numbers agree — but the value now comes from the pediatric
+        # record (asserted via the note), not from the adult row.
+        query = PatientQuery(patient=Patient(age=10, weight_kg=20))
+        c = make_candidate("r1", adult=False, child=True, drug_ref="peds_test_drug", frequency=3.0)
+        result = DoseCalculation().run(_state(query, c), stage_context)
+        assert "pediatric freq_per_day=3/day" in result.state.candidates[0].dose.calculation_note
+
 
     def test_neonate_target_uses_peds_branch(self, stage_context: StageContext) -> None:
         query = PatientQuery(

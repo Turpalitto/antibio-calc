@@ -542,11 +542,23 @@ class TestCheckAtcFormat:
         r = NormalizedRegimen(atc_code="")
         assert Validator.check_atc_format(r) == []
 
-    def test_lowercase_atc_warning(self):
+    def test_lowercase_atc_error(self):
+        # L11: ATC_FORMAT_INVALID was WARNING, so a garbage ATC code could
+        # still yield verdict=PASS. An unparseable code must not pass.
         r = NormalizedRegimen(atc_code="j01dd04")
         iss = Validator.check_atc_format(r)
         assert len(iss) == 1 and iss[0].code == "ATC_FORMAT_INVALID"
-        assert iss[0].severity == Severity.WARNING
+        assert iss[0].severity == Severity.ERROR
+
+    def test_trailing_newline_rejected(self):
+        # L12: re.match + "$" accepted "J01DD04\n"
+        r = NormalizedRegimen(atc_code="J01DD04\n")
+        iss = Validator.check_atc_format(r)
+        assert len(iss) == 1 and iss[0].code == "ATC_FORMAT_INVALID"
+
+    def test_trailing_space_rejected(self):
+        r = NormalizedRegimen(atc_code="J01DD04 ")
+        assert len(Validator.check_atc_format(r)) == 1
 
     def test_too_short_warning(self):
         r = NormalizedRegimen(atc_code="J01DD")
@@ -691,30 +703,29 @@ class TestValidate:
         assert rep.verdict == Verdict.REJECT
         assert len(rep.errors) >= 4
 
-    def test_atc_warning_does_not_block_pass(self):
-        # atc warning + otherwise perfect -> still PASS (warnings don't block)
+    def test_atc_error_rejects(self):
+        # L11: a garbage ATC code used to be a WARNING and still passed.
         r = _perfect_regimen()
         r.atc_code = "bad"
         rep = Validator.validate(r)
-        assert rep.warnings
-        assert rep.verdict == Verdict.PASS
+        assert rep.errors
+        assert rep.verdict == Verdict.REJECT
 
-    def test_atc_warning_with_review_is_review(self):
+    def test_atc_error_with_review_is_reject(self):
         r = _perfect_regimen()
         r.atc_code = "bad"
         r.drug_normalized = "Неизвестный"
         rep = Validator.validate(r)
-        assert rep.verdict == Verdict.REVIEW
+        assert rep.verdict == Verdict.REJECT
+        assert rep.errors and rep.reviews
 
     def test_review_with_warning_still_review(self):
-        r = NormalizedRegimen(
-            drug_normalized="Неизвестный",
-            dose_value=1.0, route="iv", frequency_per_day=1.0,
-        )
-        r.atc_code = "bad"
-        rep = Validator.validate(r)
-        assert rep.verdict == Verdict.REVIEW
-        assert rep.reviews and rep.warnings
+        # Verdict ladder: REVIEW + WARNING -> REVIEW. Exercised directly on
+        # the derivation because no check produces a WARNING any more
+        # (L11 promoted ATC_FORMAT_INVALID to ERROR).
+        w = ValidationIssue("W", Severity.WARNING, "m", "dose")
+        rv = ValidationIssue("R", Severity.REVIEW, "m", "drug")
+        assert Validator._derive_verdict([rv, w]) == Verdict.REVIEW
 
     def test_error_overrides_review(self):
         # unknown drug (review) + missing dose (error) -> REJECT
@@ -784,10 +795,12 @@ class TestIsValid:
         )
         assert Validator.is_valid(r) is False
 
-    def test_warning_only_true(self):
+    def test_atc_error_is_not_valid(self):
+        # L11: was `test_warning_only_true` — a bad ATC code used to leave
+        # the regimen "valid". An unparseable ATC code is now an ERROR.
         r = _perfect_regimen()
         r.atc_code = "bad"
-        assert Validator.is_valid(r) is True
+        assert Validator.is_valid(r) is False
 
 
 # -- verdict derivation ----------------------------------------------
@@ -1041,3 +1054,398 @@ class TestEdgeCases:
 
     def test_check_registry_count(self):
         assert len(Validator._checks()) == 10
+
+
+# ── Regression tests: C1, C4, H3, H6, H7, L6, L7, M17 ────────────
+
+
+class TestC1NonFiniteDose:
+    """C1: every bound check compared against a value that could be NaN, and
+    every NaN comparison is False — so NaN produced NO issue and PASS."""
+
+    def test_nan_dose_rejected(self):
+        r = NormalizedRegimen(dose_value=float("nan"))
+        iss = Validator.check_dose_positive(r)
+        assert len(iss) == 1 and iss[0].code == "DOSE_NOT_FINITE"
+        assert iss[0].severity == Severity.ERROR
+
+    def test_nan_dose_min_rejected(self):
+        r = NormalizedRegimen(dose_min=float("nan"))
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_NOT_FINITE" in codes
+
+    def test_nan_dose_max_rejected(self):
+        r = NormalizedRegimen(dose_max=float("nan"))
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_NOT_FINITE" in codes
+
+    def test_positive_infinity_dose_rejected(self):
+        r = NormalizedRegimen(dose_value=float("inf"))
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_NOT_FINITE" in codes
+
+    def test_negative_infinity_dose_rejected(self):
+        r = NormalizedRegimen(dose_value=float("-inf"))
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_NOT_FINITE" in codes
+
+    def test_nan_dose_verdict_reject(self):
+        r = Validator.validate(NormalizedRegimen(dose_value=float("nan")))
+        assert r.verdict == Verdict.REJECT
+
+    def test_nan_dose_never_yields_null_dose_pass(self):
+        # the original failure mode: dose=NULL, range_confidence=1.0, PASS
+        from medical_normalizer.normalizer import MedicalNormalizer
+
+        res = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "NaN", "unit": "мг",
+            "route": "в/в", "frequency": "1 раз в день",
+            "duration": "7 дней", "age_group": "взрослые",
+        })
+        assert res.validation.verdict == Verdict.REJECT
+        assert res.regimen.dose_range_confidence is None
+
+    def test_non_numeric_dose_rejected(self):
+        r = NormalizedRegimen(dose_value="500")  # type: ignore[arg-type]
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_NOT_NUMERIC" in codes
+
+    def test_bool_dose_rejected(self):
+        r = NormalizedRegimen(dose_value=True)  # type: ignore[arg-type]
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_NOT_NUMERIC" in codes
+
+
+class TestC4DoseBoundsValidated:
+    """C4: check_dose_positive only inspected dose_value, so
+    dose="1-99999999" -> dose_max=99999999 -> PASS."""
+
+    def test_dose_max_above_bound_rejected(self):
+        r = NormalizedRegimen(
+            dose_value=1.0, dose_min=1.0, dose_max=99_999_999.0
+        )
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_OUT_OF_RANGE" in codes
+
+    def test_dose_max_above_bound_is_error(self):
+        r = NormalizedRegimen(dose_value=1.0, dose_max=99_999_999.0)
+        out_of_range = [i for i in Validator.check_dose_positive(r)
+                        if i.code == "DOSE_OUT_OF_RANGE"]
+        assert out_of_range and out_of_range[0].severity == Severity.ERROR
+
+    def test_dose_min_above_bound_rejected(self):
+        r = NormalizedRegimen(dose_value=2_000_000.0, dose_min=2_000_000.0)
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_OUT_OF_RANGE" in codes
+
+    def test_dose_min_not_positive_rejected(self):
+        r = NormalizedRegimen(dose_value=0.5, dose_min=0.0)
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_NOT_POSITIVE" in codes
+
+    def test_valid_range_no_issue(self):
+        r = NormalizedRegimen(dose_value=20.0, dose_min=20.0, dose_max=50.0)
+        assert Validator.check_dose_positive(r) == []
+
+    def test_dose_range_inverted_error(self):
+        r = NormalizedRegimen(dose_value=1.0, dose_min=50.0, dose_max=10.0)
+        iss = [i for i in Validator.check_dose_positive(r)
+               if i.code == "DOSE_RANGE_INVERTED"]
+        assert len(iss) == 1
+        assert iss[0].severity == Severity.ERROR
+
+    def test_dose_range_inverted_verdict_reject(self):
+        r = Validator.validate(NormalizedRegimen(
+            drug_normalized="Цефтриаксон", dose_value=1.0, dose_min=50.0,
+            dose_max=10.0, route="iv", frequency_per_day=1.0,
+        ))
+        assert r.verdict == Verdict.REJECT
+
+    def test_dose_range_equal_bounds_ok(self):
+        r = NormalizedRegimen(dose_value=7.0, dose_min=7.0, dose_max=7.0)
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_RANGE_INVERTED" not in codes
+
+    def test_huge_range_reaches_reject_end_to_end(self):
+        from medical_normalizer.normalizer import MedicalNormalizer
+
+        res = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1-99999999", "unit": "мг",
+            "route": "в/в", "frequency": "1 раз в день",
+            "duration": "7 дней", "age_group": "взрослые",
+        })
+        assert res.validation.verdict == Verdict.REJECT
+        assert any(i.code == "DOSE_OUT_OF_RANGE" for i in res.validation.errors)
+
+    def test_normal_range_end_to_end_still_passes(self):
+        from medical_normalizer.normalizer import MedicalNormalizer
+
+        res = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1-2", "unit": "г",
+            "route": "в/в", "frequency": "1 раз в день",
+            "duration": "7 дней", "age_group": "взрослые",
+            "regimen_type": "first_line",
+        })
+        assert res.validation.verdict == Verdict.PASS
+
+
+class TestH3UnitUnknownNotSuppressed:
+    """H3: an unknown unit used to be reported as DOSE_NOT_POSITIVE (ERROR),
+    hiding the real problem."""
+
+    def test_zero_dose_with_unknown_unit_is_review(self):
+        r = NormalizedRegimen(dose_value=0.0, dose_unit="бларг")
+        iss = Validator.check_dose_positive(r)
+        by_code = {i.code: i for i in iss}
+        assert by_code["DOSE_NOT_POSITIVE"].severity == Severity.WARNING
+        assert by_code["DOSE_UNIT_UNKNOWN"].severity == Severity.REVIEW
+
+    def test_unknown_unit_and_zero_dose_is_review_verdict(self):
+        r = NormalizedRegimen(
+            drug_normalized="Цефтриаксон", dose_value=0.0, dose_unit="бларг",
+            route="iv", frequency_per_day=1.0,
+        )
+        rep = Validator.validate(r)
+        assert rep.verdict == Verdict.REVIEW
+        codes = {i.code for i in rep.issues}
+        assert "DOSE_UNIT_UNKNOWN" in codes
+
+    def test_huge_dose_with_unknown_unit_is_review_not_reject(self):
+        r = NormalizedRegimen(dose_value=5_000_000.0, dose_unit="бларг")
+        by_code = {i.code: i for i in Validator.check_dose_positive(r)}
+        assert by_code["DOSE_OUT_OF_RANGE"].severity == Severity.WARNING
+        assert by_code["DOSE_UNIT_UNKNOWN"].severity == Severity.REVIEW
+
+    def test_known_unit_keeps_error(self):
+        r = NormalizedRegimen(dose_value=0.0, dose_unit="mg")
+        by_code = {i.code: i for i in Validator.check_dose_positive(r)}
+        assert by_code["DOSE_NOT_POSITIVE"].severity == Severity.ERROR
+
+    def test_non_finite_stays_error_even_with_unknown_unit(self):
+        r = NormalizedRegimen(dose_value=float("nan"), dose_unit="бларг")
+        by_code = {i.code: i for i in Validator.check_dose_positive(r)}
+        assert by_code["DOSE_NOT_FINITE"].severity == Severity.ERROR
+
+    def test_inverted_range_stays_error_with_unknown_unit(self):
+        r = NormalizedRegimen(
+            dose_value=1.0, dose_min=50.0, dose_max=10.0, dose_unit="бларг"
+        )
+        by_code = {i.code: i for i in Validator.check_dose_positive(r)}
+        assert by_code["DOSE_RANGE_INVERTED"].severity == Severity.ERROR
+
+
+class TestH6NoShortCircuit:
+    """H6: the module contract says validation is additive, but
+    check_dose_positive had three `return`s."""
+
+    def test_all_dose_issues_collected(self):
+        # One attribute yields at most one finding (same convention as
+        # check_duration_valid), but the call no longer STOPS at the first
+        # one: four independent findings come back in a single call.
+        r = NormalizedRegimen(
+            dose_value=0.0, dose_min=0.0, dose_max=-1.0, dose_unit="бларг"
+        )
+        iss = Validator.check_dose_positive(r)
+        codes = {i.code for i in iss}
+        assert codes == {
+            "DOSE_NOT_POSITIVE",       # dose_value and dose_min both 0
+            "DOSE_RANGE_INVERTED",     # dose_min 0 > dose_max -1
+            "DOSE_UNIT_UNKNOWN",
+        }
+        assert len(iss) == 5  # value + min + max all non-positive, + inverted + unit
+
+    def test_numeric_and_unit_issues_in_one_call(self):
+        r = NormalizedRegimen(
+            dose_value=2_000_000.0, dose_min=3_000_000.0,
+            dose_unit="бларг",
+        )
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert codes == {"DOSE_OUT_OF_RANGE", "DOSE_UNIT_UNKNOWN"}
+        assert len(Validator.check_dose_positive(r)) == 3
+
+    def test_unit_issue_present_alongside_numeric_issue(self):
+        r = NormalizedRegimen(dose_value=2_000_000.0, dose_unit="бларг")
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_OUT_OF_RANGE" in codes and "DOSE_UNIT_UNKNOWN" in codes
+
+    def test_module_contract_mentions_additive(self):
+        import medical_normalizer.validator as v
+
+        assert "additive" in (v.__doc__ or "").lower()
+
+
+class TestL6ValidUnitsSynced:
+    """L6: valid_units was out of sync with unit_dictionary.json and a
+    legitimate BSA dose in мг/м2 was reported DOSE_UNIT_UNKNOWN."""
+
+    def test_every_canonical_unit_is_valid(self):
+        from medical_normalizer.dictionary import UNIT_NORMALIZATION
+
+        valid = set(ValidatorConfig().valid_units)
+        for canonical in set(UNIT_NORMALIZATION.values()):
+            assert canonical in valid, canonical
+
+    def test_dictionary_canonical_set_unchanged(self):
+        from medical_normalizer.dictionary import UNIT_NORMALIZATION
+
+        assert set(UNIT_NORMALIZATION.values()) == {
+            "g", "mg", "mcg", "ml", "mg/kg", "mg/kg/day", "IU", "thousand_IU",
+        }
+
+    def test_bsa_unit_mg_per_m2_is_valid(self):
+        assert "mg/m2" in ValidatorConfig().valid_units
+
+    def test_bsa_dose_in_cyrillic_is_not_reviewed(self):
+        r = NormalizedRegimen(dose_value=1500.0, dose_unit="мг/м2")
+        assert Validator.check_dose_positive(r) == []
+
+    def test_bsa_dose_english_is_not_reviewed(self):
+        r = NormalizedRegimen(dose_value=1500.0, dose_unit="mg/m2")
+        assert Validator.check_dose_positive(r) == []
+
+    def test_weight_based_alias_accepted(self):
+        r = NormalizedRegimen(dose_value=15.0, dose_unit="мг/кг/сут")
+        assert Validator.check_dose_positive(r) == []
+
+    def test_kg_accepted(self):
+        assert "kg" in ValidatorConfig().valid_units
+        r = NormalizedRegimen(dose_value=70.0, dose_unit="кг")
+        assert Validator.check_dose_positive(r) == []
+
+    def test_genuinely_unknown_unit_still_reviewed(self):
+        r = NormalizedRegimen(dose_value=500.0, dose_unit="бларг")
+        codes = {i.code for i in Validator.check_dose_positive(r)}
+        assert "DOSE_UNIT_UNKNOWN" in codes
+
+    def test_alias_matching_is_case_insensitive(self):
+        r = NormalizedRegimen(dose_value=1500.0, dose_unit="МГ/М2")
+        assert Validator.check_dose_positive(r) == []
+
+
+class TestL7ChecksCached:
+    """L7: _build_metadata rebuilt the check registry on every validate."""
+
+    def test_registry_identity_is_stable(self):
+        assert Validator._checks() is Validator._checks()
+
+    def test_registry_contents_unchanged(self):
+        assert len(Validator._checks()) == 10
+
+    def test_metadata_still_reports_checks_run(self):
+        m = Validator.validate(_perfect_regimen()).metadata
+        assert m["checks_run"] == 10
+
+    def test_subclass_can_build_its_own_registry(self):
+        class Sub(Validator):
+            pass
+
+        # Each class gets its own cache slot, so a subclass is not poisoned
+        # by the parent's cached list.
+        assert Sub._checks_cache is None or isinstance(Sub._checks_cache, list)
+
+
+class TestH7CacheInvalidation:
+    """H7: the derived known-drug caches had no invalidation hook while
+    medical_dictionary.loader exposes reload_all()."""
+
+    def test_validator_cache_populated(self):
+        Validator._known_drugs()
+        assert Validator._known_drugs_cache is not None
+
+    def test_validator_invalidate_clears_cache(self):
+        Validator._known_drugs()
+        Validator.invalidate_cache()
+        assert Validator._known_drugs_cache is None
+
+    def test_confidence_invalidate_clears_cache(self):
+        from medical_normalizer.confidence import ConfidenceCalculator
+
+        ConfidenceCalculator._get_known_drugs()
+        assert ConfidenceCalculator._known_drugs_cache is not None
+        ConfidenceCalculator.invalidate_cache()
+        assert ConfidenceCalculator._known_drugs_cache is None
+
+    def test_module_level_invalidate_caches_clears_both(self):
+        from medical_normalizer.confidence import (
+            ConfidenceCalculator,
+            invalidate_caches,
+        )
+
+        Validator._known_drugs()
+        ConfidenceCalculator._get_known_drugs()
+        invalidate_caches()
+        assert Validator._known_drugs_cache is None
+        assert ConfidenceCalculator._known_drugs_cache is None
+
+    def test_invalidate_caches_picks_up_dictionary_change(self, monkeypatch):
+        # Workflow: edit medical_dictionary/*.json -> loader.reload_all() ->
+        # invalidate_caches() -> the derived caches are rebuilt and the newly
+        # mapped drug is no longer DRUG_UNKNOWN.
+        import medical_normalizer.confidence as conf_mod
+        import medical_normalizer.validator as val_mod
+        from medical_normalizer.confidence import invalidate_caches
+
+        # prime both caches
+        assert Validator.check_drug_exists(
+            NormalizedRegimen(drug_normalized="тестновыйпрепарат")
+        ) != []
+        conf_mod.ConfidenceCalculator._get_known_drugs()
+
+        monkeypatch.setitem(
+            val_mod.DRUG_SYNONYMS, "тестновыйпрепарат", "Цефтриаксон"
+        )
+        monkeypatch.setitem(
+            conf_mod.DRUG_SYNONYMS, "тестновыйпрепарат", "Цефтриаксон"
+        )
+        # without invalidation the stale cache still says unknown
+        assert Validator.check_drug_exists(
+            NormalizedRegimen(drug_normalized="тестновыйпрепарат")
+        ) != []
+        invalidate_caches()
+        assert Validator.check_drug_exists(
+            NormalizedRegimen(drug_normalized="тестновыйпрепарат")
+        ) == []
+
+    def test_no_import_cycle(self):
+        # invalidate_caches imports validator lazily; importing confidence
+        # alone must not require validator to be loaded first.
+        import subprocess
+        import sys
+
+        code = (
+            "import medical_normalizer.confidence as c;"
+            "assert c.ConfidenceCalculator is not None;"
+            "print('ok')"
+        )
+        out = subprocess.run(
+            [sys.executable, "-c", code], capture_output=True, text=True
+        )
+        assert out.returncode == 0, out.stderr
+        assert "ok" in out.stdout
+
+
+class TestM17SlashCombinationConsistency:
+    """M17: is_combination only checked for "+", so a slash-separated
+    combination was reported COMPONENTS_WITHOUT_COMBINATION."""
+
+    def test_slash_combination_with_components_ok(self):
+        r = NormalizedRegimen(drug_normalized="амоксициллин/клавулановая кислота")
+        r.drug_components = [
+            DrugComponent(name="Амоксициллин"),
+            DrugComponent(name="Клавулановая кислота"),
+        ]
+        assert Validator.check_component_consistency(r) == []
+
+    def test_slash_combination_without_components_reviewed(self):
+        r = NormalizedRegimen(drug_normalized="амоксициллин/клавулановая кислота")
+        codes = {i.code for i in Validator.check_component_consistency(r)}
+        assert "COMBINATION_MISSING_COMPONENTS" in codes
+
+    def test_plus_still_recognised(self):
+        r = NormalizedRegimen(drug_normalized="Амоксициллин + клавулановая кислота")
+        codes = {i.code for i in Validator.check_component_consistency(r)}
+        assert "COMBINATION_MISSING_COMPONENTS" in codes
+
+    def test_single_drug_unchanged(self):
+        r = NormalizedRegimen(drug_normalized="Цефтриаксон")
+        assert Validator.check_component_consistency(r) == []

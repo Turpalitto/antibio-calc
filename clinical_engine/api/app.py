@@ -2,8 +2,20 @@
 
 FastAPI is an OPTIONAL dependency: the engine core never imports this module.
 ``create_app()`` wires routes to ``service`` handlers. Run with any ASGI server
-(e.g. ``uvicorn clinical_engine.api.app:app``) — but the platform can also be
-driven in-process via the handlers directly (CLI/desktop) without a server.
+(``uvicorn clinical_engine.api.app:app --port 8000``; port 8000 is also
+``server.js``'s ``ENGINE_PORT`` default) — but the platform can also be driven
+in-process via the handlers directly (CLI/desktop) without a server.
+
+Two serving shapes are supported, and both need this app to answer the PWA
+asset requests the shell makes relative to its own origin:
+
+* ``npm start`` — ``server.js`` (default ``http://127.0.0.1:8080``) serves the
+  shell and proxies ``/v1/``, ``/v2/`` to this app. The assets never reach
+  this process.
+* this app alone — the physician opens ``http://127.0.0.1:8000/personal``, so
+  ``/sw.js``, ``/manifest.webmanifest``, ``/antibiotic_calc.html`` and
+  ``/icons/*`` must be served here or the service worker silently fails to
+  register and the app is not installable/offline-capable.
 """
 
 from __future__ import annotations
@@ -14,10 +26,46 @@ from urllib.parse import urlsplit
 
 from clinical_engine.api import contract, service
 
+# Repository root: ``clinical_engine/api/app.py`` -> parents[2].
+APP_ROOT = Path(__file__).resolve().parents[2]
+ICON_DIR = APP_ROOT / "icons"
+
+# The only static files the PWA shell may fetch, mapped to the content type the
+# browser insists on (a service worker with the wrong MIME type is rejected at
+# registration time). Deliberately an ALLOW-LIST of names rather than a
+# ``StaticFiles`` mount of the repository root: the root also holds ``.git/``,
+# ``.env`` and the gitignored ``.local/personal_physician/`` owner-token store,
+# and Starlette's StaticFiles applies no dot-path filtering.
+PWA_ASSETS: dict[str, str] = {
+    "sw.js": "text/javascript; charset=utf-8",
+    "manifest.webmanifest": "application/manifest+json; charset=utf-8",
+    "antibiotic_calc.html": "text/html; charset=utf-8",
+}
+
+
+def _asset(name: str) -> Any:
+    """Resolve an allow-listed PWA asset, or None when it is not there.
+
+    ``name`` must be a key of :data:`PWA_ASSETS`. The containment check is on
+    the *resolved* path and requires the file to sit directly in the app root,
+    so neither a ``..`` name nor a symlink pointing out of the root can be
+    served. ``Cache-Control: no-cache`` keeps the browser (and the service
+    worker) revalidating a rebuilt shell instead of pinning a stale artifact.
+    """
+    if name not in PWA_ASSETS:
+        return None
+    from fastapi.responses import FileResponse  # optional dependency, imported lazily
+
+    path = (APP_ROOT / name).resolve()
+    if path.parent != APP_ROOT or not path.is_file():
+        return None
+    return FileResponse(path, media_type=PWA_ASSETS[name], headers={"Cache-Control": "no-cache"})
+
 
 def create_app(ctx: "service.ApiContext | None" = None):
     from fastapi import Body, FastAPI, Request  # imported lazily; optional dependency
-    from fastapi.responses import FileResponse, JSONResponse
+    from fastapi.responses import JSONResponse
+    from fastapi.staticfiles import StaticFiles
 
     # ``from __future__ import annotations`` stores route annotations as strings.
     # FastAPI resolves them in module globals, so expose the lazily imported
@@ -185,19 +233,64 @@ def create_app(ctx: "service.ApiContext | None" = None):
                 "ATTESTATION_LEDGER_INVALID", "local attestation ledger is unavailable"
             )))
 
-    @app.get("/personal", response_class=FileResponse)
-    def personal_calculator(request: Request) -> Any:
+    def _calculator(request: Request) -> Any:
+        """Serve the built shell, loopback-only like every owner route.
+
+        The static shell embeds the clinical DB but no owner state; it is still
+        withheld off-loopback so that widening ``--host`` cannot expose the
+        calculator without also exposing the token-gated workflows.
+        """
         host = request.url.hostname or ""
         if host not in {"127.0.0.1", "localhost", "::1"}:
             return _json((403, service.v2_contract.blocked(
                 "NON_LOOPBACK_HOST", "personal mode is loopback-only"
             )))
-        calculator = Path(__file__).resolve().parents[2] / "antibiotic_calc.html"
-        if not calculator.is_file():
+        shell = _asset("antibiotic_calc.html")
+        if shell is None:
             return _json((503, service.v2_contract.blocked(
-                "CALCULATOR_BUILD_MISSING", "run build_html.ps1 first"
+                "CALCULATOR_BUILD_MISSING",
+                "run `npm run build` (db/build_html.py) first"
             )))
-        return FileResponse(calculator, media_type="text/html")
+        return shell
+
+    @app.get("/personal")
+    def personal_calculator(request: Request) -> Any:
+        return _calculator(request)
+
+    # The manifest declares start_url/scope "./", i.e. the origin root, so the
+    # root must serve the shell too: without it an installed app launched from
+    # this origin would 404. Same loopback policy as /personal.
+    @app.get("/")
+    def calculator_root(request: Request) -> Any:
+        return _calculator(request)
+
+    @app.get("/antibiotic_calc.html")
+    def calculator_document(request: Request) -> Any:
+        return _calculator(request)
+
+    def _pwa_asset(name: str) -> Any:
+        asset = _asset(name)
+        if asset is None:
+            return _json((404, service.v2_contract.blocked(
+                "ASSET_NOT_FOUND", f"{name} is not available; run `npm run build`"
+            )))
+        return asset
+
+    @app.get("/sw.js")
+    def service_worker() -> Any:
+        return _pwa_asset("sw.js")
+
+    @app.get("/manifest.webmanifest")
+    def web_manifest() -> Any:
+        return _pwa_asset("manifest.webmanifest")
+
+    # Only icons/ is mounted, and only after every /v1, /v2 and /personal route
+    # is registered, so no engine path can be shadowed by a static file.
+    # Mounted conditionally: StaticFiles raises at request time (HTTP 500) for a
+    # directory that does not exist, even with check_dir=False, and a checkout
+    # without icons/ must degrade to a plain 404 instead.
+    if ICON_DIR.is_dir():
+        app.mount("/icons", StaticFiles(directory=str(ICON_DIR)), name="icons")
 
     return app
 

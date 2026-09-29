@@ -24,6 +24,7 @@ class _Patient:
     weight_kg: float | None = 70
     renal_function: str | None = "normal"
     pregnant: bool | None = False
+    hepatic_impairment: bool | None = None
     allergies: tuple[str, ...] = ()
     contraindications_cleared: bool | None = True
     interactions_reviewed: bool | None = True
@@ -245,3 +246,141 @@ def test_malformed_bundle_raises_stable_personal_mode_error(tmp_path):
     with pytest.raises(PersonalModeError) as caught:
         PersonalModeService.from_paths(tmp_path / "owner_profile.json", bundle_path)
     assert caught.value.code == "BUNDLE_SCHEMA_INVALID"
+
+
+# --- C4: population eligibility must use exact membership, not substrings -----
+# ``population.pregnancy``/``hepatic``/``renal`` are free-text owner-attested
+# content. The old check was ``any(term in text for term in ("разреш", "eligible",
+# "allowed"))``: "разреш" is a bare prefix of BOTH "разрешено" and "не разрешено",
+# and "allowed" is a substring of "not allowed", so a field that said the regimen
+# is NOT permitted in pregnancy was read as a permission.
+
+
+def _pregnancy_reasons(tmp_path, stated: str) -> list[str]:
+    service, token = _service(tmp_path)
+    payload = _payload()
+    payload["population"]["pregnancy"] = stated
+    return _reasons_for(tmp_path, token, payload)
+
+
+def _reasons_for(tmp_path, token, payload) -> list[str]:
+    from clinical_engine.personal import attest as append_attestation, build_personal_bundle as build
+
+    event = append_attestation(
+        tmp_path, raw_token=token, regimen_payload=payload, source_page=4,
+        source_quote="Амоксициллин 500–1000 мг 3 раза в сутки.",
+        pdf_sha256="sha256:" + "c" * 64,
+        calculator_binding={"disease_id": "d", "scenario_id": "s", "line_number": 1,
+                            "route": "per_os", "drug_ref": "amoxicillin",
+                            "regimen_index": 0, "binding_version": "1",
+                            "calculator_regimen_sha256": "sha256:" + "d" * 64},
+        rationale="reviewed",
+    )
+    bundle = build(tmp_path, raw_token=token, attestation_event_ids=[event["event_id"]],
+                   bundle_version="v-c4", build_version="b", built_at="2026-08-01T10:00:00+00:00",
+                   stale_after="2026-09-01T00:00:00+00:00")
+    service = PersonalModeService.from_paths(
+        tmp_path / "owner_profile.json", bundle,
+        clock=lambda: datetime(2026, 8, 2, tzinfo=timezone.utc),
+    )
+    request = _V2RecommendRequest(
+        "PERSONAL_PHYSICIAN", _PersonalContext("owner-1", token),
+        _Query(patient=_Patient(pregnant=True, contraindications_cleared=True,
+                                interactions_reviewed=True)),
+    )
+    result = service.recommend(request=request, host="localhost", origin="http://localhost")
+    return result["trace"]["considered_regimens"][0]["rejection_reasons"]
+
+
+@pytest.mark.parametrize(
+    ("stated", "review_required"),
+    [
+        # the reported bug: an explicit refusal read as a permission
+        ("не разрешено при беременности", True),
+        ("не разрешено", True),
+        ("нельзя", True),
+        ("противопоказано", True),
+        ("not allowed in pregnancy", True),
+        ("contraindicated", True),
+        # exact permissions (ё and е must behave identically)
+        ("разрешено", False),
+        ("разрешён", False),
+        ("eligible", False),
+        ("allowed", False),
+        ("Разрешено", False),
+        # unstated / ambiguous wording is NOT a permission (fail-closed)
+        ("individual assessment", True),
+        ("NOT_STATED", True),
+        ("беременным не рекомендуется", True),
+    ],
+)
+def test_c4_pregnancy_eligibility_is_exact_membership_not_substring(tmp_path, stated, review_required):
+    reasons = _pregnancy_reasons(tmp_path, stated)
+    assert ("PREGNANCY_REVIEW_REQUIRED" in reasons) is review_required, (stated, reasons)
+
+
+def test_c4_empty_pregnancy_wording_cannot_even_be_attested(tmp_path):
+    """Empty population wording is rejected at bundle validation, so the
+    eligibility check never has to reason about it."""
+    _service_token = _service(tmp_path)[1]
+    payload = _payload()
+    payload["population"]["pregnancy"] = ""
+    with pytest.raises(PersonalModeError) as caught:
+        _reasons_for(tmp_path, _service_token, payload)
+    assert caught.value.code == "BUNDLE_SCHEMA_INVALID"
+
+
+def test_c4_hepatic_and_renal_use_the_same_fail_closed_helper(tmp_path):
+    """The same field, opposite direction: hepatic was already exact-membership
+    and fail-closed. Both now share one helper, so ё/е spelling can no longer
+    make the two disagree."""
+    service, token = _service(tmp_path)
+    payload = _payload()
+    payload["population"]["hepatic"] = "разрешено"      # not in the old allow-list
+    payload["population"]["renal"] = "разрешён"        # ditto
+    reasons = _reasons_for(tmp_path, token, payload)
+    assert "HEPATIC_REVIEW_REQUIRED" not in reasons
+    # a normal renal function skips the renal gate entirely
+    assert "RENAL_REVIEW_REQUIRED" not in reasons
+
+    payload2 = _payload()
+    payload2["population"]["hepatic"] = "не разрешено"
+    payload2["population"]["renal"] = "не разрешено"
+    from clinical_engine.personal import attest as append_attestation, build_personal_bundle as build
+    event = append_attestation(
+        tmp_path, raw_token=token, regimen_payload=payload2, source_page=4,
+        source_quote="q", pdf_sha256="sha256:" + "c" * 64,
+        calculator_binding={"disease_id": "d", "scenario_id": "s", "line_number": 1,
+                            "route": "per_os", "drug_ref": "amoxicillin",
+                            "regimen_index": 0, "binding_version": "1",
+                            "calculator_regimen_sha256": "sha256:" + "d" * 64},
+        rationale="reviewed",
+    )
+    bundle = build(tmp_path, raw_token=token, attestation_event_ids=[event["event_id"]],
+                   bundle_version="v-c4b", build_version="b", built_at="2026-08-01T10:00:00+00:00",
+                   stale_after="2026-09-01T00:00:00+00:00")
+    service = PersonalModeService.from_paths(
+        tmp_path / "owner_profile.json", bundle,
+        clock=lambda: datetime(2026, 8, 2, tzinfo=timezone.utc),
+    )
+    request = _V2RecommendRequest(
+        "PERSONAL_PHYSICIAN", _PersonalContext("owner-1", token),
+        _Query(patient=_Patient(pregnant=False, renal_function="decreased",
+                                hepatic_impairment=True)),
+    )
+    reasons = service.recommend(
+        request=request, host="localhost", origin="http://localhost"
+    )["trace"]["considered_regimens"][0]["rejection_reasons"]
+    assert "HEPATIC_REVIEW_REQUIRED" in reasons
+    assert "RENAL_REVIEW_REQUIRED" in reasons
+
+
+def test_c4_permission_helper_rejects_everything_it_does_not_allow():
+    from clinical_engine.personal.recommender import _population_permits
+
+    for value in ("разрешено", "Разрешён", "allowed", "eligible", "ALLOWED"):
+        assert _population_permits(value) is True, value
+    for value in ("", "   ", None, "не разрешено", "not allowed", "нельзя",
+                  "противопоказано", "contraindicated", "requires review",
+                  "not allowed and not eligible"):
+        assert _population_permits(value) is False, value

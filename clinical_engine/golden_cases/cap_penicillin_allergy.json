@@ -1,6 +1,6 @@
 {
   "id": "cap_penicillin_allergy",
-  "description": "CAP (vnebolnichnaya pnevmoniya, J18) in adult with stated penicillin allergy. TerminologyProvider enables ATC hierarchy (J01C*) for broader exclusion vs manual map. Before: partial (only mapped drugs). After: full class exclusion including unmapped via ATC. Measurable physician benefit: prevents contraindicated beta-lactams reliably, reduces UNVERIFIABLE warnings, full traceability of terminology mapping.",
+  "description": "CAP (vnebolnichnaya pnevmoniya, J18) in adult with stated penicillin allergy. The allergy class is resolved through the curated allergy_class_hierarchy: amoxicillin via the class map, unmapped_pen via its own class label ('Полусинтетические пенициллины широкого спектра' -> family 'Пенициллины'). Both are excluded, and no ALLERGY_UNVERIFIABLE is emitted, because the class IS verifiable. Measurable physician benefit: prevents contraindicated beta-lactams reliably, reduces UNVERIFIABLE warnings, full traceability of the terminology mapping (the resolving source is recorded in the exclusion trace).",
   "query": {
     "diagnosis": "vnebolnichnaya pnevmoniya",
     "icd10": "J18",

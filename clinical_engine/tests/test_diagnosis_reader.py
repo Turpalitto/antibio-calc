@@ -104,7 +104,7 @@ class TestLookup:
         assert provider.lookup(None, "Z99") == []
         assert provider.lookup(None, None) == []
 
-    def test_diagnosis_and_icd10_both_given_merges_without_duplicates(
+    def test_diagnosis_and_icd10_both_given_agreeing_signals_merge_without_duplicates(
         self, diagnosis_index_path: Path
     ) -> None:
         provider = JsonDiagnosisProvider(diagnosis_index_path)
@@ -119,3 +119,90 @@ class TestLookup:
         assert entry.guideline_title == "Acute sinusitis"
         assert entry.guideline_revision_date is None
         assert entry.source_url == "https://cr.minzdrav.gov.ru/recomend/200"
+
+
+class TestLookupAgreement:
+    """M-1: name and ICD-10 matches used to be OR-ed into one anonymous list."""
+
+    def _index(self, tmp_path: Path) -> Path:
+        doc = [
+            {"guideline_id": "g_cap", "diagnosis_name": "внебольничная пневмония",
+             "icd10_codes": ["J18"], "guideline_title": "CAP", "guideline_year": 2024,
+             "guideline_revision_date": None, "source_url": ""},
+            {"guideline_id": "g_hap", "diagnosis_name": "больничная пневмония",
+             "icd10_codes": ["J18.9"], "guideline_title": "HAP", "guideline_year": 2024,
+             "guideline_revision_date": None, "source_url": ""},
+            {"guideline_id": "g_uti", "diagnosis_name": "острый цистит",
+             "icd10_codes": ["N30"], "guideline_title": "Cystitis", "guideline_year": 2021,
+             "guideline_revision_date": None, "source_url": ""},
+        ]
+        p = tmp_path / "idx.json"
+        p.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+        return p
+
+    def test_name_and_icd_resolving_to_different_guidelines_conflict(
+        self, tmp_path: Path
+    ) -> None:
+        provider = JsonDiagnosisProvider(self._index(tmp_path))
+        # A cystitis name carrying a pneumonia code: the signals are disjoint.
+        result = provider.lookup_ex("острый цистит", "J18.9")
+        assert result.conflict is True
+        assert result.entries == ()
+        # Provenance of both signals is preserved for the trace.
+        assert [e.guideline_id for e in result.by_diagnosis] == ["g_uti"]
+        assert {e.guideline_id for e in result.by_icd10} == {"g_cap", "g_hap"}
+
+    def test_cap_query_with_j189_does_not_pull_in_hospital_acquired_pneumonia(
+        self, tmp_path: Path
+    ) -> None:
+        """The verified harm: a CAP query carrying J18.9 used to return the
+        hospital-acquired pneumonia guideline too (terminology reduces J18.9 to
+        J18), and both were merged into one accepted list."""
+        provider = JsonDiagnosisProvider(self._index(tmp_path))
+        result = provider.lookup_ex("внебольничная пневмония", "J18.9")
+        assert result.guideline_ids == ("g_cap",)  # only the agreeing guideline
+        assert result.conflict is False
+        assert {e.guideline_id for e in result.by_icd10} == {"g_cap", "g_hap"}
+
+    def test_agreeing_signals_intersect(self, tmp_path: Path) -> None:
+        provider = JsonDiagnosisProvider(self._index(tmp_path))
+        result = provider.lookup_ex("внебольничная пневмония", "J18")
+        assert result.conflict is False
+        assert result.guideline_ids == ("g_cap",)
+        assert result.mixed_provenance is False
+
+    def test_one_matching_signal_does_not_conflict(self, tmp_path: Path) -> None:
+        provider = JsonDiagnosisProvider(self._index(tmp_path))
+        # Name matches, ICD matches nothing: degraded, not contradictory.
+        result = provider.lookup_ex("внебольничная пневмония", "Z99")
+        assert result.conflict is False
+        assert result.guideline_ids == ("g_cap",)
+
+    def test_stored_base_code_matches_a_specific_query(self, tmp_path: Path) -> None:
+        provider = JsonDiagnosisProvider(self._index(tmp_path))
+        # "J18" is stored; querying the more specific "J18.1" must still find it.
+        assert provider.lookup(None, "J18.1")[0].guideline_id == "g_cap"
+
+    def test_specific_code_does_not_match_a_bare_prefix_query(
+        self, tmp_path: Path
+    ) -> None:
+        provider = JsonDiagnosisProvider(self._index(tmp_path))
+        # Reverse direction is too loose: a bare "J18" must not claim J18.9.
+        assert [e.guideline_id for e in provider.lookup(None, "J18")] == ["g_cap"]
+
+    def test_multiple_guidelines_are_reported_as_mixed_provenance(
+        self, tmp_path: Path
+    ) -> None:
+        doc = [
+            {"guideline_id": "g1", "diagnosis_name": "пневмония", "icd10_codes": ["J18"],
+             "guideline_title": "a", "guideline_year": 2024, "guideline_revision_date": None,
+             "source_url": ""},
+            {"guideline_id": "g2", "diagnosis_name": "пневмония", "icd10_codes": ["J18"],
+             "guideline_title": "b", "guideline_year": 2023, "guideline_revision_date": None,
+             "source_url": ""},
+        ]
+        p = tmp_path / "multi.json"
+        p.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+        result = JsonDiagnosisProvider(p).lookup_ex("пневмония", None)
+        assert result.mixed_provenance is True
+        assert set(result.guideline_ids) == {"g1", "g2"}

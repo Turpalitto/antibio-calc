@@ -23,51 +23,22 @@ import json
 import re
 from pathlib import Path
 
-KB_DEFAULT = "/var/folders/vr/knn1v1l92t7b206mnw7htvvm0000gn/T/opencode/clinrec-downloader/knowledge_base.json"
-
-_DRUG_TOKENS = {
-    "амоксициллин+[клавулановая кислота]": "amoxiclav",
-    "амоксициллина клавуланат": "amoxiclav",
-    "амоксициллин": "amoxicillin",
-    "ампициллин+[сульбактам]": "ampicillin_sulbactam",
-    "ампициллин": "ampicillin",
-    "цефтриаксон": "ceftriaxone",
-    "цефуроксим": "cefuroxime",
-    "цефиксим": "cefixime",
-    "цефотаксим": "cefotaxime",
-    "цефазолин": "cefazolin",
-    "цефтазидим": "ceftazidime",
-    "кларитромицин": "clarithromycin",
-    "азитромицин": "azithromycin",
-    "джозамицин": "josamycin",
-    "эритромицин": "erythromycin",
-    "ванкомицин": "vancomycin",
-    "метронидазол": "metronidazole",
-    "ципрофлоксацин": "ciprofloxacin",
-    "левофлоксацин": "levofloxacin",
-    "моксифлоксацин": "moxifloxacin",
-    "доксициклин": "doxycycline",
-    "гентамицин": "gentamicin",
-    "амикацин": "amikacin",
-    "меропенем": "meropenem",
-    "линезолид": "linezolid",
-    "клиндамицин": "clindamycin",
-    "пиперациллин": "piperacillin_tazobactam",
-    "ко-тримоксазол": "cotrimoxazole",
-    "нитрофурантоин": "nitrofurantoin",
-    "фосфомицин": "fosfomycin",
-    "изониазид": "isoniazid",
-    "рифампицин": "rifampicin",
-    "пиразинамид": "pyrazinamide",
-    "этамбутол": "ethambutol",
-}
+KB_DEFAULT = str(
+    Path(__file__).resolve().parents[3]
+    / "tmp" / "clinrec_downloader" / "knowledge_base.json"
+)
 
 
 def _clean_antibiotic(raw: str) -> str:
     s = (raw or "").lower()
-    for ch in ["**", "#", "[", "]", ", ", ")"]:
-        s = s.replace(ch, ch if ch == ", " else "")
-    s = re.sub(r"\s*\[\d+\]\s*", "", s)
+    # L-8: the old loop body was `s.replace(ch, ch if ch == ", " else "")`, i.e.
+    # "replace every marker with nothing EXCEPT keep ', ' verbatim" -- a no-op for
+    # ', ' that looked like it was doing work.
+    # The bracketed citation marker must go BEFORE the brackets themselves,
+    # otherwise "[1]" degrades into a stray " 1" glued onto the drug name.
+    s = re.sub(r"\s*\[\d+\]\s*", " ", s)
+    for ch in ("**", "#", "[", "]", ")"):
+        s = s.replace(ch, "")
     s = re.sub(r"\s+", " ", s).strip()
     return s
 
@@ -128,14 +99,6 @@ def _kb_matches_ref(kb_r, ref):
         if ru in low:
             return True
     return False
-
-def _drug_token(raw: str) -> str | None:
-    c = _clean_antibiotic(raw)
-    for k, v in _DRUG_TOKENS.items():
-        if k in c:
-            return v
-    return None
-
 
 def _norm_mg(s: str) -> float | None:
     s = (s or "").replace(",", ".").strip()
@@ -200,28 +163,45 @@ def _dose_basis(reg: dict) -> str:
     разовую, БД хранит обе формы согласованно), 'per_dose_only',
     'per_day_only', 'weight_per_day_only', 'inconsistent' (single*freq !=
     daily beyond 5%+1мг — требует разбора), 'none'.
+
+    C-2 made the mapper basis-explicit: a per-dose amount now lands in
+    ``single_dose_mg`` and a per-day amount in ``dose_mg_day_fixed``, so this
+    cross-check can actually fire.  Previously a per-dose value sat in the daily
+    field, so ``single*freq == daily`` could never hold and the inconsistency was
+    structurally invisible.
     """
     single = reg.get("single_dose_mg")
+    single_max = reg.get("single_dose_mg_max")
     fixed = reg.get("dose_mg_day_fixed")
+    fixed_max = reg.get("dose_mg_day_fixed_max")
     per_kg = reg.get("dose_mg_kg_day")
+    per_kg_dose = reg.get("dose_mg_kg_per_dose")
     freq = reg.get("freq_per_day")
-    has_single = single is not None
-    has_daily = fixed is not None or per_kg is not None
+    declared = reg.get("dose_basis")
+
+    has_single = isinstance(single, (int, float))
+    has_daily = isinstance(fixed, (int, float)) or isinstance(per_kg, (int, float))
     if has_single and has_daily and freq:
-        daily = fixed if fixed is not None else None
-        if daily is not None:
-            lo = single * freq
-            tol = 0.05 * abs(lo) + 1
-            if abs(daily - lo) <= tol:
+        if isinstance(fixed, (int, float)):
+            tol = 0.05 * abs(single * freq) + 1
+            if abs(fixed - single * freq) <= tol:
+                return "both_consistent"
+            if isinstance(fixed_max, (int, float)) and single_max is not None \
+                    and abs(fixed_max - single_max * freq) <= tol:
                 return "both_consistent"
             return "inconsistent"
-        return "both_consistent"  # per-kg daily + single cannot be cross-checked w/o weight
+        # per-kg daily + a per-dose fixed amount cannot be cross-checked without a weight
+        return "both_consistent"
     if has_single:
         return "per_dose_only"
-    if fixed is not None:
+    if isinstance(fixed, (int, float)):
         return "per_day_only"
-    if per_kg is not None:
+    if isinstance(per_kg, (int, float)):
         return "weight_per_day_only"
+    if isinstance(per_kg_dose, (int, float)):
+        return "weight_per_dose_only"
+    if declared:
+        return str(declared)
     return "none"
 
 
@@ -297,7 +277,7 @@ def _match(db_kg, db_fixed, kb_range, db_single=None, freq=None, kb_freq=None) -
                 continue
             kb_txt = f"{kv[0]}-{kv[1]}"
             basis = basis + "_cross" if basis in ("single", "fixed", "kg") else basis
-        st = _match_range(v, kb_txt)
+        st = _match_range(v, kb_txt, weight_scale=basis in ("kg", "kg_per_dose", "kg_cross"))
         if st == "MATCH":
             return st, 0.0, basis
         d = _dist(v, _norm_range(kb_txt)[0])
@@ -308,22 +288,44 @@ def _match(db_kg, db_fixed, kb_range, db_single=None, freq=None, kb_freq=None) -
     return "UNCOMPARABLE", float("inf"), "none"
 
 
-def _match_val(db_v, kb_v) -> str:
-    if db_v is None or kb_v is None:
-        return "UNCOMPARABLE"
-    if _dist(db_v, kb_v) <= 0.05:
-        return "MATCH"
-    return "MISMATCH"
+def _dose_tolerance(reference: float, *, weight_scale: bool) -> float:
+    """Scale-appropriate comparison band for a published dose value.
+
+    A weight-based dose lives on a scale where an absolute floor would swamp it
+    (1 mg is a 300% error against "0,3 мг/кг"), so it is compared RELATIVELY.
+
+    An absolute mg dose may absorb a 1 mg rounding difference, but that allowance
+    must itself be bounded proportionally -- otherwise a 0.3 mg absolute dose
+    gains a free +/-1 mg, which is a 333% error.  The absolute allowance is
+    therefore ``min(1 mg, 2% of the value)``.
+    """
+    magnitude = abs(float(reference))
+    relative = 0.05 * magnitude
+    if weight_scale:
+        return relative
+    return max(relative, min(1.0, 0.02 * magnitude))
 
 
-def _match_range(db_v, kb_text) -> str:
-    """Compare a DB dose against a published range string like '50-60' mg/kg."""
+def _match_range(db_v, kb_text, *, weight_scale: bool = False) -> str:
+    """Compare a DB dose against a published range string like '50-60' mg/kg.
+
+    The tolerance must be SCALE-APPROPRIATE.  The previous form was
+    ``5% * |lo| + 1`` on an ABSOLUTE mg scale: for "0,3 мг/кг" the band was
+    ``0.015 + 1 = 1.015 mg``, so a database value of 0.5 -- a 67% relative
+    error -- fell inside and was reported MATCH.
+    """
     if db_v is None or kb_text is None:
         return "UNCOMPARABLE"
     lo, hi = _norm_range(kb_text)
     if lo is None:
         return "UNCOMPARABLE"
-    return "MATCH" if lo - 0.05 * abs(lo) - 1 <= db_v <= hi + 0.05 * abs(lo) + 1 else "MISMATCH"
+    low, high = min(lo, hi), max(lo, hi)
+    # the tolerance is anchored to the band, so a two-sided range is not judged
+    # against its lower edge alone
+    tol = _dose_tolerance(max(abs(low), abs(high)), weight_scale=weight_scale)
+    return "MATCH" if (low - tol) <= db_v <= (high + tol) else "MISMATCH"
+
+
 
 
 def _select_best(db_kg, db_fixed, cands_by_drug, age_tok, route_tok, db_single=None, freq=None):
@@ -349,23 +351,33 @@ def _select_best(db_kg, db_fixed, cands_by_drug, age_tok, route_tok, db_single=N
 def verify(db_path: str, kb_path: str) -> dict:
     db = json.loads(Path(db_path).read_text(encoding="utf-8-sig"))
     kb = json.loads(Path(kb_path).read_text(encoding="utf-8-sig"))
-    kb_by_cv = {}
+    # M-11: only the FIRST guideline per code_version was kept, so when the corpus
+    # carried several rows for one code_version the rest were invisible and the
+    # comparison silently reported NO_KB_GUIDELINE for a guideline that WAS in the
+    # KB.  All rows for a code_version are now considered.
+    kb_by_cv: dict[str, list[dict]] = {}
     for g in kb:
         cv = g.get("code_version")
-        if cv and cv not in kb_by_cv:
-            kb_by_cv[cv] = g
+        if cv:
+            kb_by_cv.setdefault(str(cv), []).append(g)
 
     diseases = []
     total_regs = matched = mismatched = uncomparable = no_kb = 0
     for rec in db["recommendations"]:
         cr_id = rec.get("cr_id")
-        kb_g = kb_by_cv.get(str(cr_id))
-        if not kb_g:
+        kb_guides = kb_by_cv.get(str(cr_id), [])
+        if not kb_guides:
             no_kb += 1
             diseases.append({"disease_id": rec["id"], "name": rec["name"], "cr_id": cr_id, "status": "NO_KB_GUIDELINE", "regimens_checked": 0})
             continue
 
-        kb_regs = kb_g.get("regimens", [])
+        kb_regs: list[dict] = []
+        kb_sha = None
+        for guide in kb_guides:
+            kb_regs.extend(guide.get("regimens", []))
+            if kb_sha is None:
+                kb_sha = guide.get("pdf_sha256")
+
         checks = []
         d_total = d_match = d_mismatch = d_uncomp = 0
         for sc in rec.get("scenarios", []):
@@ -376,7 +388,7 @@ def verify(db_path: str, kb_path: str) -> dict:
                     route_tok = _route_key(dr.get("route", []))
                     for reg in dr.get("regimens", []):
                         d_total += 1
-                        db_kg = reg.get("dose_mg_kg_day")
+                        db_kg = reg.get("dose_mg_kg_day") or reg.get("dose_mg_kg_per_dose")
                         db_fixed = reg.get("dose_mg_day_fixed")
                         db_single = reg.get("single_dose_mg")
                         freq = reg.get("freq_per_day")
@@ -397,7 +409,7 @@ def verify(db_path: str, kb_path: str) -> dict:
                             "db_single": db_single, "freq_per_day": freq,
                             "kb": f"{kb_r.get('dose')} {kb_r.get('unit')}",
                             "kb_frequency": kb_r.get("frequency"),
-                            "page": kb_r.get("page_number"), "sha": kb_g.get("pdf_sha256"),
+                            "page": kb_r.get("page_number"), "sha": kb_sha,
                         })
                         if st == "MATCH":
                             d_match += 1

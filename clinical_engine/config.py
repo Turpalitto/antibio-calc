@@ -11,6 +11,14 @@ from pathlib import Path
 
 from clinical_engine.models import ValidationPolicy
 
+# M-2: profiles whose "no verdict filter" behaviour loads REJECT rows. A REJECT
+# row is one the normalizer itself could not accept, so anything built from it
+# is a research artifact, never a clinical recommendation. Defined here (not in
+# the reader) so config.py stays the single place a caller inspects.
+NON_CLINICAL_POLICIES: frozenset[ValidationPolicy] = frozenset(
+    {ValidationPolicy.DEBUG, ValidationPolicy.AUDIT}
+)
+
 # Audit fix M3 (Milestone 9): default resource paths are anchored to the
 # package location, not the process CWD, so Profiles.production(...) etc.
 # work regardless of where the engine is launched from. Callers can still
@@ -55,9 +63,26 @@ class EngineConfig:
     # Additive, fallback preserved. Clinical value: better standardization.
     use_terminology_binding: bool = False
 
+    @property
+    def is_non_clinical_profile(self) -> bool:
+        """True for profiles that load non-clinical data (M-2).
+
+        DEBUG/AUDIT load REJECT-verdict regimens, so a result built under them
+        is a research artifact. Every consumer of such a config must record
+        that fact (Engine.recommend attaches a WARN EngineNote).
+        """
+        return self.validation_policy in NON_CLINICAL_POLICIES
+
 
 class Profiles:
-    """Named EngineConfig presets (§3.6 ValidationPolicy table)."""
+    """Named EngineConfig presets (§3.6 ValidationPolicy table).
+
+    M-2: research/development/audit must keep strict_mode=False (they exist to
+    run against an uncurated index at all) but they are NOT clinical modes.
+    They are therefore marked via the derived `is_non_clinical_profile`, and
+    Engine.recommend() records a WARN EngineNote in the result so a
+    non-clinical run can never be mistaken for a clinical one.
+    """
 
     @staticmethod
     def production(sqlite_path: str) -> EngineConfig:
@@ -75,10 +100,10 @@ class Profiles:
     def development(sqlite_path: str) -> EngineConfig:
         return EngineConfig(
             sqlite_path=sqlite_path, validation_policy=ValidationPolicy.DEBUG, debug=True,
-            strict_mode=False,
+            strict_mode=False,  # M-2: non-clinical profile; result carries a WARN note
         )
 
     @staticmethod
     def audit(sqlite_path: str) -> EngineConfig:
         return EngineConfig(sqlite_path=sqlite_path, validation_policy=ValidationPolicy.AUDIT,
-                            strict_mode=False)
+                            strict_mode=False)  # M-2: non-clinical profile

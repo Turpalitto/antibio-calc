@@ -74,12 +74,49 @@ class TestPregnancyClassification:
         reader = DrugReferenceReader(drug_reference_path)
         assert reader.get_pregnancy_category("doxycycline") is PregnancyCategory.PROHIBITED
 
-    def test_trimester_conditional_is_caution_not_prohibited_or_allowed(
+    def test_trimester_conditional_contraindication_is_prohibited(
         self, drug_reference_path: Path
     ) -> None:
         reader = DrugReferenceReader(drug_reference_path)
-        # raw text: "Противопоказан в I и III триместрах" -- conditional, not absolute
-        assert reader.get_pregnancy_category("levofloxacin") is PregnancyCategory.CAUTION
+        # raw text: "Противопоказан в I и III триместрах". C-1: the "триместр"
+        # test used to run FIRST, silently downgrading two teratogens from
+        # PROHIBITED to CAUTION -- and CAUTION does not exclude.
+        assert reader.get_pregnancy_category("levofloxacin") is PregnancyCategory.PROHIBITED
+
+    def test_conditional_permission_stays_caution(self, tmp_path: Path) -> None:
+        # "Разрешён во II-III триместрах" asserts safety only for some
+        # trimesters, so neither ALLOWED nor PROHIBITED may be claimed.
+        from clinical_engine.tests.conftest import write_drug_reference
+
+        path = write_drug_reference(
+            tmp_path, {"x_drug": {"inn": "X", "class": "Тестовый класс",
+                                   "pregnancy_category": "Разрешён во II-III триместрах"}}
+        )
+        reader = DrugReferenceReader(path)
+        assert reader.get_pregnancy_category("x_drug") is PregnancyCategory.CAUTION
+
+    def test_contraindication_beats_trimester_in_production_data(self) -> None:
+        """Both production drugs whose text is 'Противопоказан ... триместр'."""
+        import json as _json
+        from pathlib import Path as _P
+
+        path = _P("db/index.json")
+        if not path.exists():
+            pytest.skip("db/index.json not present in this checkout")
+        doc = _json.loads(path.read_text(encoding="utf-8"))["drugs_reference"]
+        offenders = [
+            key for key, entry in doc.items()
+            if not key.startswith("_")
+            and isinstance(entry.get("pregnancy_category"), str)
+            and entry["pregnancy_category"].strip().lower().startswith("противопоказан")
+            and "триместр" in entry["pregnancy_category"].lower()
+        ]
+        assert len(offenders) == 2, offenders
+        reader = DrugReferenceReader(path)
+        for key in offenders:
+            assert reader.get_pregnancy_category(key) is PregnancyCategory.PROHIBITED, key
+            # The verbatim text is retained for the exclusion message.
+            assert "триместр" in reader.get_drug_info(key).pregnancy_source_text
 
     def test_caution_with_parenthetical(self, drug_reference_path: Path) -> None:
         reader = DrugReferenceReader(drug_reference_path)

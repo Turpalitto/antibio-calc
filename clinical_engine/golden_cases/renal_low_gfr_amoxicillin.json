@@ -1,0 +1,39 @@
+{
+  "id": "renal_low_gfr_amoxicillin",
+  "description": "Adult CAP (J18) with reduced renal function (GFR 12 ml/min). Amoxicillin carries unstructured renal_adjustment guidance, so the engine MUST flag RENAL_ADJ_UNPARSED, mark the dose as NOT patient-specific, and keep the recommendation as WARNING rather than silently presenting an adult fixed dose as renally adjusted.",
+  "query": {
+    "diagnosis": "vnebolnichnaya pnevmoniya",
+    "icd10": "J18",
+    "patient": {
+      "age": 62,
+      "weight_kg": 78,
+      "pregnant": false,
+      "renal_function": 12,
+      "hepatic_impairment": false,
+      "allergies": [],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": null
+    }
+  },
+  "expect": {
+    "min_accepted": 1,
+    "first_drug_ref": "amoxicillin",
+    "guideline_id": "g_cap_adult",
+    "safety_flag_codes": ["RENAL_ADJ_UNPARSED"],
+    "safety_flag_actions": {
+      "RENAL_ADJ_UNPARSED": "avoid_if_possible"
+    },
+    "dose_is_patient_specific": false,
+    "first_outcome": "warning",
+    "trace_code": "RENAL"
+  },
+  "provenance": {
+    "author": "clinical safety audit (renal pathway coverage)",
+    "verified_at": "2026-09-27T00:00:00Z",
+    "source": "Fixture data: amoxicillin.renal_adjustment='КК<30: удлинить интервал'. GFR 12 < 30, so an adjustment is required but the source data is unstructured — degraded WARNING, never a silent full adult dose."
+  }
+}

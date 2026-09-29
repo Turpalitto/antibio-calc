@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -30,7 +31,11 @@ from medical_normalizer.normalizer import NORMALIZER_VERSION, NormalizedResult
 # ── Configuration ───────────────────────────────────────────
 
 
-SCHEMA_VERSION: str = "1.0.0"
+#: Bumped to 1.1.0 when dose_min / dose_max / dose_is_range were added (M3).
+#: Existing rows keep their original schema_version value; new rows record
+#: this one. Schema migration itself is driven by PRAGMA inspection, not by
+#: this string, so pointing the layer at an older file still migrates it (M19).
+SCHEMA_VERSION: str = "1.1.0"
 
 
 # Manual-edit fields that must survive re-normalization (UPSERT must NOT overwrite)
@@ -44,6 +49,16 @@ MANUAL_FIELDS: tuple[str, ...] = (
 )
 
 
+# Columns added after the initial 1.0.0 release. Applied with
+# ALTER TABLE ... ADD COLUMN when an existing database is opened (M19), so an
+# older file never fails with "no such column".
+MIGRATION_COLUMNS: tuple[tuple[str, str], ...] = (
+    ("dose_min", "REAL"),
+    ("dose_max", "REAL"),
+    ("dose_is_range", "INTEGER"),
+)
+
+
 _SCHEMA: str = f"""
 CREATE TABLE IF NOT EXISTS normalized_regimens (
     regimen_id             TEXT    NOT NULL,
@@ -52,6 +67,9 @@ CREATE TABLE IF NOT EXISTS normalized_regimens (
     drug_normalized        TEXT    DEFAULT '',
     drug_components        TEXT    DEFAULT '[]',
     dose                   REAL,
+    dose_min               REAL,
+    dose_max               REAL,
+    dose_is_range          INTEGER,
     dose_unit              TEXT    DEFAULT '',
     route                  TEXT    DEFAULT 'unknown',
     frequency              REAL,
@@ -109,7 +127,8 @@ CREATE INDEX IF NOT EXISTS idx_review_status    ON normalized_regimens (review_s
 # Columns written by normalization (excludes manual fields + PKs + timestamps handled separately)
 _WRITE_COLUMNS: tuple[str, ...] = (
     "drug_original", "drug_normalized", "drug_components",
-    "dose", "dose_unit", "route", "frequency",
+    "dose", "dose_min", "dose_max", "dose_is_range", "dose_unit",
+    "route", "frequency",
     "duration_min", "duration_max", "duration_recommended",
     "therapy_line", "population", "adult", "child",
     "pregnancy", "renal_adjustment", "atc_code",
@@ -120,6 +139,42 @@ _WRITE_COLUMNS: tuple[str, ...] = (
     "diagnosis", "mkb",
     "normalizer_version", "schema_version",
 )
+
+
+def _validate_limit(limit: int | None) -> int | None:
+    """Validate a LIMIT argument (M20).
+
+    ``limit=-1`` used to mean "no limit" silently in SQLite (a negative LIMIT
+    disables the limit), and ``limit=2.7`` truncated via int(). Both are now
+    explicit errors: a caller that thinks it is bounding a query must not
+    silently get an unbounded or differently-sized result.
+    """
+    if limit is None:
+        return None
+    if isinstance(limit, bool) or not isinstance(limit, int):
+        raise TypeError(
+            f"limit must be a positive int or None, got {limit!r}."
+        )
+    if limit <= 0:
+        raise ValueError(
+            f"limit must be a positive int or None, got {limit!r}. "
+            f"Pass None for an unbounded query."
+        )
+    return limit
+
+
+def _escape_like(value: str) -> str:
+    """Escape LIKE wildcards in a user-supplied value (M7).
+
+    Without this, ``search(diagnosis='%')`` returned every row and
+    ``search(diagnosis='a_b')`` matched 'aXb'. The ESCAPE clause in the query
+    makes '\\' the escape character.
+    """
+    return (
+        value.replace("\\", "\\\\")
+        .replace("%", "\\%")
+        .replace("_", "\\_")
+    )
 
 
 # ── Result container ────────────────────────────────────────
@@ -177,6 +232,11 @@ class RegimenRecord:
     created_at: str
     updated_at: str
     raw: dict[str, Any] = field(default_factory=dict)
+    # RC-030 dose range (M3). Optional with defaults so existing positional
+    # and keyword construction of RegimenRecord keeps working.
+    dose_min: float | None = None
+    dose_max: float | None = None
+    dose_is_range: bool | None = None
 
 
 # ── NormalizerDB ────────────────────────────────────────────
@@ -188,6 +248,12 @@ class NormalizerDB:
     No ORM, no business logic. Only store/retrieve.
     Uses parameterized queries (no SQL injection).
     UPSERT preserves manual-edit fields.
+
+    Thread safety (M11): sqlite3 connections default to
+    ``check_same_thread=True``, so any use from a worker thread raised
+    ProgrammingError. The connection is created with
+    ``check_same_thread=False`` and every statement is serialized by an
+    RLock; WAL journaling lets readers proceed during writes.
     """
 
     schema_version: str = SCHEMA_VERSION
@@ -197,6 +263,8 @@ class NormalizerDB:
     def __init__(self, db_path: str | Path = ":memory:") -> None:
         self.db_path: str = str(db_path)
         self._conn: sqlite3.Connection | None = None
+        # Serializes access to the shared connection (M11).
+        self._lock = threading.RLock()
 
     @classmethod
     def connect(cls, db_path: str | Path = ":memory:") -> "NormalizerDB":
@@ -207,10 +275,39 @@ class NormalizerDB:
     def _open(self) -> None:
         if self._conn is not None:
             return
-        self._conn = sqlite3.connect(self.db_path)
+        self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self._conn.row_factory = sqlite3.Row
+        try:
+            self._conn.execute("PRAGMA journal_mode=WAL")
+        except sqlite3.DatabaseError:  # pragma: no cover - e.g. read-only file
+            pass
         self._conn.executescript(_SCHEMA)
+        self._migrate()
         self._conn.commit()
+
+    def _migrate(self) -> None:
+        """Add any missing columns to an existing table (M19).
+
+        ``CREATE TABLE IF NOT EXISTS`` is a no-op against a database created
+        by an older version, so opening such a file and inserting failed with
+        "no such column: dose_min". The migration is driven by PRAGMA
+        inspection (not by the SCHEMA_VERSION string) and is therefore
+        idempotent and independent of which version wrote the file.
+        """
+        assert self._conn is not None
+        if not self.table_exists():
+            return
+        existing = set(self.column_names())
+        for column, sql_type in MIGRATION_COLUMNS:
+            if column in existing:
+                continue
+            try:
+                self._conn.execute(
+                    f"ALTER TABLE normalized_regimens ADD COLUMN {column} {sql_type}"
+                )
+            except sqlite3.OperationalError:
+                # Column added concurrently by another connection.
+                pass
 
     @property
     def conn(self) -> sqlite3.Connection:
@@ -220,9 +317,10 @@ class NormalizerDB:
         return self._conn
 
     def close(self) -> None:
-        if self._conn is not None:
-            self._conn.close()
-            self._conn = None
+        with self._lock:
+            if self._conn is not None:
+                self._conn.close()
+                self._conn = None
 
     def __enter__(self) -> "NormalizerDB":
         self._open()
@@ -271,8 +369,9 @@ class NormalizerDB:
         """UPSERT a single normalized result. Manual fields preserved."""
         row = self._to_row(result, guideline_id, regimen_id,
                            source_pdf, source_page, source_quote, diagnosis, mkb)
+        # L8: _upsert already commits; the extra commit() here was a
+        # duplicate. One commit per save.
         self._upsert(row)
-        self.conn.commit()
 
     def save_many(
         self,
@@ -283,43 +382,57 @@ class NormalizerDB:
         Each item is a dict with keys:
             result, guideline_id, regimen_id,
             source_pdf?, source_page?, source_quote?, diagnosis?, mkb?
+
+        M9: the old code issued a bare ``BEGIN``, which raises "cannot start a
+        transaction within a transaction" whenever the caller had an
+        uncommitted write outstanding, and the outer ``except`` then issued a
+        ROLLBACK that discarded the caller's work while masking the original
+        error. A SAVEPOINT is used instead: it nests safely inside an existing
+        transaction, rolls back only this batch, and commits when it is the
+        outermost savepoint.
         """
         saved = 0
         skipped = 0
         errors: list[str] = []
         conn = self.conn
-        try:
-            conn.execute("BEGIN")
-            for item in items:
+        with self._lock:
+            conn.execute("SAVEPOINT normalizer_save_many")
+            try:
+                for item in items:
+                    try:
+                        result = item["result"]
+                        guideline_id = item["guideline_id"]
+                        regimen_id = item["regimen_id"]
+                        row = self._to_row(
+                            result, guideline_id, regimen_id,
+                            item.get("source_pdf", ""),
+                            item.get("source_page", ""),
+                            item.get("source_quote", ""),
+                            item.get("diagnosis", ""),
+                            item.get("mkb", ""),
+                        )
+                        self._upsert(row, commit=False)
+                        saved += 1
+                    except KeyError as exc:
+                        skipped += 1
+                        errors.append(f"Missing key {exc} in item")
+                    except Exception as exc:
+                        skipped += 1
+                        errors.append(str(exc))
+                # No partial commits: if any item failed, undo the whole batch
+                if errors:
+                    conn.execute("ROLLBACK TO normalizer_save_many")
+                    saved = 0
+                conn.execute("RELEASE normalizer_save_many")
+            except Exception:
                 try:
-                    result = item["result"]
-                    guideline_id = item["guideline_id"]
-                    regimen_id = item["regimen_id"]
-                    row = self._to_row(
-                        result, guideline_id, regimen_id,
-                        item.get("source_pdf", ""),
-                        item.get("source_page", ""),
-                        item.get("source_quote", ""),
-                        item.get("diagnosis", ""),
-                        item.get("mkb", ""),
-                    )
-                    self._upsert(row, commit=False)
-                    saved += 1
-                except KeyError as exc:
-                    skipped += 1
-                    errors.append(f"Missing key {exc} in item")
-                except Exception as exc:
-                    skipped += 1
-                    errors.append(str(exc))
-            # No partial commits: if any item failed, rollback the whole batch
-            if errors:
-                conn.execute("ROLLBACK")
-                saved = 0
-            else:
-                conn.execute("COMMIT")
-        except Exception:
-            conn.execute("ROLLBACK")
-            raise
+                    conn.execute("ROLLBACK TO normalizer_save_many")
+                    conn.execute("RELEASE normalizer_save_many")
+                except sqlite3.Error:
+                    pass
+                # The original error propagates; the caller's own transaction
+                # is left intact.
+                raise
         return SaveResult(saved=saved, skipped=skipped, errors=errors)
 
     def _upsert(self, row: dict[str, Any], commit: bool = True) -> None:
@@ -327,9 +440,11 @@ class NormalizerDB:
         cols = list(_WRITE_COLUMNS)
         placeholders = ", ".join("?" for _ in cols)
         col_list = ", ".join(cols)
-        # UPDATE only non-manual columns + updated_at
-        update_cols = [c for c in cols if c not in MANUAL_FIELDS]
-        update_set = ", ".join(f"{c}=excluded.{c}" for c in update_cols)
+        # L9: _WRITE_COLUMNS contains no MANUAL_FIELDS by construction, so
+        # filtering them out here was a no-op. update_set covers every written
+        # column plus updated_at; created_at is deliberately NOT updated and
+        # is preserved by SQLite on conflict.
+        update_set = ", ".join(f"{c}=excluded.{c}" for c in cols)
         update_set += ", updated_at=excluded.updated_at"
         sql = (
             f"INSERT INTO normalized_regimens (regimen_id, guideline_id, "
@@ -342,9 +457,10 @@ class NormalizerDB:
             *[row[c] for c in cols],
             row["created_at"], row["updated_at"],
         )
-        self.conn.execute(sql, params)
-        if commit:
-            self.conn.commit()
+        with self._lock:
+            self.conn.execute(sql, params)
+            if commit:
+                self.conn.commit()
 
     def _to_row(
         self,
@@ -362,7 +478,6 @@ class NormalizerDB:
         conf = result.confidence
         val = result.validation
         now = self._now()
-        existing_created = self._get_created_at(guideline_id, regimen_id)
         return {
             "regimen_id": regimen_id,
             "guideline_id": guideline_id,
@@ -372,6 +487,13 @@ class NormalizerDB:
                 [c.__dict__ for c in reg.drug_components], ensure_ascii=False
             ),
             "dose": reg.dose_value,
+            # M3: persist the RC-030 range so a scalar-only column no longer
+            # erases the information.
+            "dose_min": reg.dose_min,
+            "dose_max": reg.dose_max,
+            "dose_is_range": (
+                None if reg.dose_is_range is None else (1 if reg.dose_is_range else 0)
+            ),
             "dose_unit": reg.dose_unit or "",
             "route": reg.route,
             "frequency": reg.frequency_per_day,
@@ -402,19 +524,14 @@ class NormalizerDB:
             "mkb": mkb,
             "normalizer_version": result.normalizer_version,
             "schema_version": self.schema_version,
-            "created_at": existing_created or now,
+            # M8: the previous implementation issued a per-row
+            # "SELECT created_at ..." whose result was never used —
+            # created_at is not in _WRITE_COLUMNS, so ON CONFLICT DO UPDATE
+            # never touches it and SQLite preserves the original value. The
+            # N+1 SELECT is removed; for a new row `now` is the insert value.
+            "created_at": now,
             "updated_at": now,
         }
-
-    def _get_created_at(self, guideline_id: str, regimen_id: str) -> str | None:
-        """Fetch created_at for existing record (preserved on UPSERT)."""
-        cur = self.conn.execute(
-            "SELECT created_at FROM normalized_regimens "
-            "WHERE guideline_id=? AND regimen_id=?",
-            (guideline_id, regimen_id),
-        )
-        row = cur.fetchone()
-        return row["created_at"] if row else None
 
     # ── Load ──────────────────────────────────────────────
 
@@ -469,9 +586,10 @@ class NormalizerDB:
 
     def load_all(self, limit: int | None = None) -> list[RegimenRecord]:
         """Load all records (optionally limited)."""
+        limit = _validate_limit(limit)  # M20
         sql = "SELECT * FROM normalized_regimens ORDER BY guideline_id, regimen_id"
         if limit is not None:
-            sql += f" LIMIT {int(limit)}"
+            sql += f" LIMIT {limit}"
         cur = self.conn.execute(sql)
         return [self._row_to_record(r) for r in cur.fetchall()]
 
@@ -491,6 +609,7 @@ class NormalizerDB:
         limit: int | None = None,
     ) -> list[RegimenRecord]:
         """Multi-criteria search. All filters optional (AND logic)."""
+        limit = _validate_limit(limit)  # M20
         clauses: list[str] = []
         params: list[Any] = []
         if drug is not None:
@@ -500,8 +619,11 @@ class NormalizerDB:
             clauses.append("atc_code = ?")
             params.append(atc_code)
         if diagnosis is not None:
-            clauses.append("diagnosis LIKE ?")
-            params.append(f"%{diagnosis}%")
+            # M7: LIKE wildcards in the user value are escaped and the query
+            # declares ESCAPE, so search(diagnosis='%') no longer returns the
+            # whole table and '_' is a literal.
+            clauses.append("diagnosis LIKE ? ESCAPE '\\'")
+            params.append(f"%{_escape_like(diagnosis)}%")
         if therapy_line is not None:
             clauses.append("therapy_line = ?")
             params.append(therapy_line)
@@ -523,7 +645,7 @@ class NormalizerDB:
         where = " WHERE " + " AND ".join(clauses) if clauses else ""
         sql = f"SELECT * FROM normalized_regimens{where} ORDER BY guideline_id, regimen_id"
         if limit is not None:
-            sql += f" LIMIT {int(limit)}"
+            sql += f" LIMIT {limit}"
         cur = self.conn.execute(sql, params)
         return [self._row_to_record(r) for r in cur.fetchall()]
 
@@ -536,7 +658,11 @@ class NormalizerDB:
         field_name: str,
         value: Any,
     ) -> None:
-        """Update a manual-edit field. Only allows fields in MANUAL_FIELDS."""
+        """Update a manual-edit field. Only allows fields in MANUAL_FIELDS.
+
+        M10: raises KeyError when no row matched. Silently succeeding on a
+        non-existent regimen hid lost review decisions.
+        """
         if field_name not in MANUAL_FIELDS:
             raise ValueError(
                 f"Field '{field_name}' is not a manual-edit field. "
@@ -548,8 +674,16 @@ class NormalizerDB:
             f"UPDATE normalized_regimens SET {field_name}=?, updated_at=? "
             f"WHERE guideline_id=? AND regimen_id=?"
         )
-        self.conn.execute(sql, (value, self._now(), guideline_id, regimen_id))
-        self.conn.commit()
+        with self._lock:
+            cur = self.conn.execute(
+                sql, (value, self._now(), guideline_id, regimen_id)
+            )
+            self.conn.commit()
+            if cur.rowcount == 0:
+                raise KeyError(
+                    f"No regimen {guideline_id}/{regimen_id} — "
+                    f"'{field_name}' was not updated."
+                )
 
     def get_manual_field(
         self,
@@ -657,5 +791,10 @@ class NormalizerDB:
             approved=bool(d["approved"]),
             created_at=d["created_at"],
             updated_at=d["updated_at"],
+            dose_min=d.get("dose_min"),
+            dose_max=d.get("dose_max"),
+            dose_is_range=(
+                None if d.get("dose_is_range") is None else bool(d["dose_is_range"])
+            ),
             raw=d,
         )

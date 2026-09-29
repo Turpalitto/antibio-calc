@@ -19,6 +19,7 @@ Verdicts:
 
 from __future__ import annotations
 
+import math
 import re
 from dataclasses import dataclass, field
 from enum import Enum
@@ -45,11 +46,27 @@ class ValidatorConfig:
     valid_therapy_lines: tuple[str, ...] = (
         "first", "alternative", "reserve", "unknown",
     )
+    # Canonical units produced by UnitNormalizer from
+    # medical_dictionary/unit_dictionary.json (L6: this tuple must stay in
+    # sync with that file — every canonical value in the dictionary is
+    # listed here, plus the additional clinical units below).
     valid_units: tuple[str, ...] = (
         "g", "mg", "mcg", "ml", "mg/kg", "mg/kg/day", "IU", "thousand_IU",
+        # additional clinically legitimate units that the dictionary does not
+        # canonicalize (BSA dosing, weight, activity, counts)
+        "mg/m2", "mcg/kg", "kg", "mmol", "tablet", "vial", "ng",
+    )
+    # Unmapped-but-legitimate raw unit forms. UnitNormalizer returns the
+    # cleaned (lowercased) input when it has no mapping, so a Russian BSA
+    # dose arrives as "мг/м2". Accepting these exact forms keeps a legitimate
+    # dose out of DOSE_UNIT_UNKNOWN without rewriting anything here — the
+    # Validator never normalizes data, it only recognises the vocabulary.
+    valid_unit_aliases: tuple[str, ...] = (
+        "мг/м2", "мг/м²", "мг/кг/сут", "мг/кг/сутки", "кг",
+        "мкг/кг", "мг/кг/сут.",
     )
 
-    # Numeric bounds
+    # Numeric bounds — applied to dose_value AND to dose_min / dose_max (C4)
     dose_min: float = 0.0
     dose_max: float = 1_000_000.0
     frequency_min: float = 0.0
@@ -227,20 +244,31 @@ class Validator:
 
     # ── Check registry ───────────────────────────────────
 
+    _checks_cache: list[Callable[[NormalizedRegimen], list[ValidationIssue]]] | None = None
+
     @classmethod
     def _checks(cls) -> list[Callable[[NormalizedRegimen], list[ValidationIssue]]]:
-        return [
-            cls.check_required_fields,
-            cls.check_drug_exists,
-            cls.check_dose_positive,
-            cls.check_frequency_valid,
-            cls.check_duration_valid,
-            cls.check_route_valid,
-            cls.check_component_consistency,
-            cls.check_atc_format,
-            cls.check_pregnancy_consistency,
-            cls.check_renal_adjustment_consistency,
-        ]
+        """The check registry. Built once and cached (L7).
+
+        The registry is a fixed list of bound classmethods, so rebuilding it
+        on every validate() call was pure overhead; tests that swap
+        Validator.config still work because the checks read cls.config at
+        call time.
+        """
+        if cls._checks_cache is None:
+            cls._checks_cache = [
+                cls.check_required_fields,
+                cls.check_drug_exists,
+                cls.check_dose_positive,
+                cls.check_frequency_valid,
+                cls.check_duration_valid,
+                cls.check_route_valid,
+                cls.check_component_consistency,
+                cls.check_atc_format,
+                cls.check_pregnancy_consistency,
+                cls.check_renal_adjustment_consistency,
+            ]
+        return cls._checks_cache
 
     # ── Individual checks ────────────────────────────────
 
@@ -287,31 +315,95 @@ class Validator:
     def check_dose_positive(
         cls, regimen: NormalizedRegimen
     ) -> list[ValidationIssue]:
-        """dose_value must be > 0 and within sane bounds."""
+        """All dose checks: value, range bounds and unit.
+
+        Additive by contract (H6): the three early `return`s previously made
+        the function short-circuit, so DOSE_UNIT_UNKNOWN was silently
+        suppressed whenever a numeric check fired.
+
+        H3: an unknown unit is a REVIEW, so it must no longer hide a
+        DOSE_NOT_POSITIVE ERROR. When the unit is not in the controlled
+        vocabulary the dose NUMBERS cannot be judged against unit-specific
+        limits, so the numeric finding is downgraded to WARNING — the
+        pipeline still surfaces the problem and the verdict still moves away
+        from PASS.
+        """
         cfg = cls.config
-        if regimen.dose_value is None:
-            return []
-        if regimen.dose_value <= cfg.dose_min:
-            return [ValidationIssue(
-                code="DOSE_NOT_POSITIVE",
-                severity=Severity.ERROR,
-                message=f"Dose value {regimen.dose_value} must be > 0.",
-                field="dose",
-                suggested_fix=None,
-            )]
-        if regimen.dose_value > cfg.dose_max:
-            return [ValidationIssue(
-                code="DOSE_OUT_OF_RANGE",
+        issues: list[ValidationIssue] = []
+
+        unit_known = cls._unit_in_vocabulary(regimen.dose_unit)
+        numeric_trustworthy = unit_known
+
+        for attr in ("dose_value", "dose_min", "dose_max"):
+            val = getattr(regimen, attr, None)
+            if val is None:
+                continue
+            field_label = attr if attr != "dose_value" else "dose"
+            if not isinstance(val, (int, float)) or isinstance(val, bool):
+                issues.append(ValidationIssue(
+                    code="DOSE_NOT_NUMERIC",
+                    severity=Severity.ERROR,
+                    message=f"{field_label} value {val!r} is not a number.",
+                    field="dose",
+                    suggested_fix=None,
+                ))
+                continue
+            if not math.isfinite(float(val)):
+                # C1 defence-in-depth: every comparison against NaN is False,
+                # so an unguarded NaN produced NO issue at all and a clean
+                # PASS with dose=NULL. DoseNormalizer already refuses
+                # non-finite input at parse time.
+                issues.append(ValidationIssue(
+                    code="DOSE_NOT_FINITE",
+                    severity=Severity.ERROR,
+                    message=f"{field_label} value {val!r} is not finite.",
+                    field="dose",
+                    suggested_fix=None,
+                ))
+                continue
+            if val <= cfg.dose_min:
+                issues.append(ValidationIssue(
+                    code="DOSE_NOT_POSITIVE",
+                    severity=Severity.ERROR if numeric_trustworthy else Severity.WARNING,
+                    message=f"Dose value {field_label}={val} must be > 0.",
+                    field="dose",
+                    suggested_fix=None,
+                ))
+                continue
+            if val > cfg.dose_max:
+                issues.append(ValidationIssue(
+                    code="DOSE_OUT_OF_RANGE",
+                    severity=Severity.ERROR if numeric_trustworthy else Severity.WARNING,
+                    message=(
+                        f"Dose value {field_label}={val} exceeds maximum "
+                        f"{cfg.dose_max}."
+                    ),
+                    field="dose",
+                    suggested_fix=None,
+                ))
+
+        # C4: dose_max >= dose_min when both are present.
+        mn = regimen.dose_min
+        mx = regimen.dose_max
+        if (
+            isinstance(mn, (int, float))
+            and isinstance(mx, (int, float))
+            and math.isfinite(float(mn))
+            and math.isfinite(float(mx))
+            and mn > mx
+        ):
+            issues.append(ValidationIssue(
+                code="DOSE_RANGE_INVERTED",
                 severity=Severity.ERROR,
                 message=(
-                    f"Dose value {regimen.dose_value} exceeds maximum "
-                    f"{cfg.dose_max}."
+                    f"dose_min {mn} is greater than dose_max {mx}."
                 ),
                 field="dose",
                 suggested_fix=None,
-            )]
-        if regimen.dose_unit and regimen.dose_unit not in cfg.valid_units:
-            return [ValidationIssue(
+            ))
+
+        if regimen.dose_unit and not unit_known:
+            issues.append(ValidationIssue(
                 code="DOSE_UNIT_UNKNOWN",
                 severity=Severity.REVIEW,
                 message=(
@@ -320,8 +412,19 @@ class Validator:
                 ),
                 field="dose",
                 suggested_fix=None,
-            )]
-        return []
+            ))
+
+        return issues
+
+    @classmethod
+    def _unit_in_vocabulary(cls, unit: str | None) -> bool:
+        """True when the unit is recognised (empty/None counts as known)."""
+        if not unit:
+            return True
+        cfg = cls.config
+        if unit in cfg.valid_units:
+            return True
+        return unit.strip().lower() in cfg.valid_unit_aliases
 
     @classmethod
     def check_frequency_valid(
@@ -433,7 +536,9 @@ class Validator:
         issues: list[ValidationIssue] = []
         drug = regimen.drug_normalized or ""
         has_components = bool(regimen.drug_components)
-        is_combination = "+" in drug
+        # M17: "/" is a component separator as well as "+" — Russian
+        # combination strengths are written both ways.
+        is_combination = "+" in drug or "/" in drug
 
         if is_combination and not has_components:
             issues.append(ValidationIssue(
@@ -476,10 +581,14 @@ class Validator:
         cfg = cls.config
         if not regimen.atc_code:
             return []
-        if not re.match(cfg.atc_pattern, regimen.atc_code):
+        # L12: re.match + "$" accepts a trailing newline ("J01DD04\n"
+        # validated). fullmatch requires the whole string to be consumed.
+        if not re.fullmatch(cfg.atc_pattern, regimen.atc_code):
             return [ValidationIssue(
                 code="ATC_FORMAT_INVALID",
-                severity=Severity.WARNING,
+                # L11: WARNING let a garbage ATC code still yield PASS. A code
+                # that cannot be parsed must not be silently accepted.
+                severity=Severity.ERROR,
                 message=(
                     f"ATC code '{regimen.atc_code}' does not match the "
                     f"expected format (e.g. J01DD04)."
@@ -566,3 +675,14 @@ class Validator:
                 cache.add(v.lower())
             cls._known_drugs_cache = cache
         return cls._known_drugs_cache
+
+    @classmethod
+    def invalidate_cache(cls) -> None:
+        """Drop the cached known-drug set (H7).
+
+        The cache mirrors medical_dictionary JSON, which can be reloaded at
+        runtime via ``medical_dictionary.loader.reload_all()``; without this
+        hook the cached set stayed stale for the life of the process. See
+        ``medical_normalizer.confidence.invalidate_caches``.
+        """
+        cls._known_drugs_cache = None

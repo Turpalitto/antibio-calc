@@ -93,6 +93,8 @@ def _run_binding(binding: dict) -> dict:
             f"const DB = {json.dumps(fixture)};",
             "let activeAge = 'child';",
             _js_function(source, "getDrugRefs"),
+            _js_function(source, "ageGroupLabel"),
+            _js_function(source, "ageEligibleRegimens"),
             _js_function(source, "sameStringArray"),
             _js_function(source, "resolveCalculatorBinding"),
             f"const binding = {json.dumps(binding)};",
@@ -114,7 +116,18 @@ def test_personal_mode_is_explicit_local_and_non_dismissible() -> None:
     assert "window.location.hostname === '127.0.0.1'" in source
     assert "window.location.hostname === 'localhost'" in source
     assert "localStorage.setItem('personal" not in source
-    assert "sessionStorage" not in source
+    # Owner tokens and patient identities must never reach localStorage. The
+    # patient's own calculation history is session-only and strictly opt-in
+    # (#history-persist), so sessionStorage is allowed for exactly that payload.
+    assert "localStorage.setItem('antibio_history'" not in source
+    assert "localStorage.getItem('antibio_history'" not in source
+    for fn in ("saveToHistory", "loadHistory", "writeSessionHistory", "readHistoryEntries"):
+        body = _js_function(source, fn)
+        assert "localStorage" not in body, f"{fn} must not touch localStorage"
+    for token_field in ("owner_id", "session_token"):
+        for fn in ("buildPersonalRequest", "registerPersonalOwner", "attestPersonalRegimen", "buildPersonalBundle"):
+            body = _js_function(source, fn)
+            assert "sessionStorage" not in body, f"{fn} must not persist {token_field} anywhere"
 
 
 def test_template_main_javascript_has_valid_syntax() -> None:

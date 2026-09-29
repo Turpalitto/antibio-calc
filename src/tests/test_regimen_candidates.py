@@ -7,13 +7,15 @@ from pathlib import Path
 import pytest
 
 from src.pipeline.extraction.regimen_candidates import (
+    CandidateRowGroup,
     GuidelineCandidateSpec,
+    _frequency_interval_is_exact,
+    _frequency_values,
     candidate_spec_from_mapping,
     extract_regimen_candidates,
     load_candidate_spec,
     persist_candidate_artifact,
     write_candidate_artifact,
-    _frequency_values,
 )
 
 
@@ -21,9 +23,38 @@ from src.pipeline.extraction.regimen_candidates import (
     ("500 мг каждые 12 ч", (2, 2)),
     ("2 г каждые 6-8 ч", (3, 4)),
     ("1 г каждые 24 часа", (1, 1)),
+    ("1 г каждые 8 ч", (3, 3)),
+    # F-6: every pre-existing case was an exact divisor of 24, so the `24 // hours`
+    # floor-rounding bug (M-2) was untestable by construction.  These are not.
+    ("1 г каждые 7 ч", (3, 4)),
+    ("1 г каждые 5 ч", (4, 5)),
+    ("1 г каждые 9 ч", (2, 3)),
+    ("1 г каждые 11 ч", (2, 3)),
+    ("1 г каждые 13 ч", (1, 2)),
 ])
 def test_frequency_values_supports_hour_abbreviation_and_range(wording, expected):
     assert _frequency_values(wording) == expected
+
+
+@pytest.mark.parametrize(("wording", "exact"), [
+    ("500 мг каждые 12 ч", True),
+    ("1 г каждые 8 ч", True),
+    ("1 г каждые 24 часа", True),
+    ("2 г каждые 6-8 ч", True),          # a genuine 6..8 range is still exact per end
+    ("1 г каждые 7 ч", False),           # M-2: no whole number of doses per day
+    ("1 г каждые 5 ч", False),
+    ("1 г каждые 9 ч", False),
+    ("3 раза в день", True),             # not an hour interval at all
+    ("1 раз в сутки", True),
+])
+def test_frequency_interval_is_exact(wording, exact):
+    assert _frequency_interval_is_exact(wording) is exact
+
+
+def test_m2_non_divisor_interval_is_flagged_not_silently_floored():
+    """M-2: 'каждые 7 ч' must never be reported as exactly 3/day."""
+    assert _frequency_values("1 г каждые 7 ч") == (3, 4)
+    assert _frequency_interval_is_exact("1 г каждые 7 ч") is False
 
 
 def _aom_spec() -> GuidelineCandidateSpec:
@@ -275,3 +306,217 @@ def test_candidate_artifact_rejects_unexpected_pdf_hash(tmp_path):
     )
     with pytest.raises(ValueError, match="source PDF hash mismatch"):
         write_candidate_artifact(tmp_path / "artifact.json", pdf_path=pdf, spec=spec)
+
+
+# ---------------------------------------------------------------------------
+# F-5 -- the dose-extraction test surface must not depend on a Windows-only corpus.
+# These tests build a ruled table PDF in tmp_path and exercise the same pure
+# extraction logic the corpus tests above cover against real guidelines.
+# ---------------------------------------------------------------------------
+
+def _spec(rows_spec, *, guideline_id="999_1", duration="NOT_STATED_IN_ROW"):
+    return GuidelineCandidateSpec(
+        guideline_id=guideline_id,
+        guideline_title="Синтетическая таблица",
+        approval_year=2024,
+        source_url="https://example.test/cr",
+        diagnosis="Тестовая инфекция",
+        icd10=("J18.9",),
+        table_pages=(1,),
+        duration=duration,
+        duration_page=1,
+        duration_wording="Длительность указана в строке таблицы.",
+        row_groups=rows_spec,
+    )
+
+
+def _extract(tmp_path, cyrillic_font, rows, row_group, *, name="table.pdf"):
+    from src.tests.table_pdf_fixture import build_table_pdf
+
+    pdf = build_table_pdf(tmp_path / name, rows, cyrillic_font)
+    return extract_regimen_candidates(pdf, _spec(row_group))
+
+
+def _normalize_chars(items):
+    """Undo PDF glyph substitutions the synthetic font introduces.
+
+    The renderer emits U+00A0 for spaces and U+00AD for hyphens; both are real
+    characters that occur in genuine guidelines, so the fixture normalises them
+    rather than making the parsers untestable.
+    """
+    import json
+    blob = json.dumps(items, ensure_ascii=False)
+    blob = blob.replace("\\u00a0", " ").replace("\\u00ad", "-")
+    return json.loads(blob)
+
+
+def test_f5_weight_per_day_dose_is_extracted(tmp_path, cyrillic_font):
+    rows = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Амоксициллин (АТХ: J01CA04)", "50-60 мг/кг/сут в 2-3 приема", "7-10 дней"],
+    ]
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=1, row_end=1, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01CA04", drug="Амоксициллин",
+    ),)
+    candidates = _normalize_chars(_extract(tmp_path, cyrillic_font, rows, group))
+    assert len(candidates) == 1
+    dose = candidates[0]["dose"]
+    assert dose["basis"] == "MG_KG_PER_DAY"
+    assert dose["unit"] == "mg/kg/day"
+    assert (dose["value_min"], dose["value_max"]) == (50.0, 60.0)
+    assert (dose["frequency_min_per_day"], dose["frequency_max_per_day"]) == (2, 3)
+    assert dose["duration"] == "7-10 дней"
+    assert candidates[0]["atc"] == "J01CA04"
+
+
+def test_f5_weight_per_dose_dose_is_distinguished(tmp_path, cyrillic_font):
+    rows = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Амоксициллин (АТХ: J01CA04)", "3-5 мг/кг в 1 введение", "10 дней"],
+    ]
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=1, row_end=1, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01CA04", drug="Амоксициллин",
+    ),)
+    candidates = _normalize_chars(_extract(tmp_path, cyrillic_font, rows, group))
+    assert len(candidates) == 1
+    assert candidates[0]["dose"]["basis"] == "MG_KG_PER_DOSE"
+    assert candidates[0]["dose"]["unit"] == "mg/kg/dose"
+    assert candidates[0]["dose"]["frequency_min_per_day"] == 1
+
+
+def test_f5_fixed_dose_in_grams_is_converted_to_milligrams(tmp_path, cyrillic_font):
+    rows = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Амоксициллин (АТХ: J01CA04)", "0,5 г 3 раза в сутки", "7 дней"],
+    ]
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=1, row_end=1, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01CA04", drug="Амоксициллин",
+    ),)
+    candidates = _normalize_chars(_extract(tmp_path, cyrillic_font, rows, group))
+    assert len(candidates) == 1
+    dose = candidates[0]["dose"]
+    assert dose["basis"] == "FIXED_PER_DOSE"
+    assert dose["value_min"] == 500.0
+    assert dose["frequency_min_per_day"] == 3
+
+
+def test_f5_row_without_a_dose_is_skipped(tmp_path, cyrillic_font):
+    rows = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Амоксициллин (АТХ: J01CA04)", "по клинической ситуации", "7 дней"],
+    ]
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=1, row_end=1, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01CA04", drug="Амоксициллин",
+    ),)
+    assert _extract(tmp_path, cyrillic_font, rows, group) == []
+
+
+def test_c7_unresolved_route_fails_closed_instead_of_defaulting_to_oral(tmp_path, cyrillic_font):
+    """C-7: the fallback branch used to set route='oral' with NO blocking reason."""
+    rows = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Амоксициллин (АТХ: J01CA04)", "50 мг/кг/сут в 2 приема", "7 дней"],
+    ]
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=1, row_end=1, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01CA04", drug="Амоксициллин",
+    ),)
+    candidates = _extract(tmp_path, cyrillic_font, rows, group)
+    assert len(candidates) == 1
+    candidate = candidates[0]
+    assert candidate["dose"]["route"] == "unknown"
+    assert "ROUTE_NOT_EXTRACTED" in candidate["blocking_reasons"]
+    assert candidate["calculation_ready"] is False, \
+        "an unresolved route must never be calculation-ready"
+
+
+def test_c7_oral_route_still_resolves(tmp_path, cyrillic_font):
+    rows = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Амоксициллин (АТХ: J01CA04), внутрь", "50 мг/кг/сут в 2 приема", "7 дней"],
+    ]
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=1, row_end=1, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01CA04", drug="Амоксициллин",
+    ),)
+    candidates = _extract(tmp_path, cyrillic_font, rows, group)
+    assert len(candidates) == 1
+    assert candidates[0]["dose"]["route"] == "oral"
+    assert "ROUTE_NOT_EXTRACTED" not in candidates[0]["blocking_reasons"]
+
+
+def test_c7_iv_route_resolves_and_ambiguous_routes_block(tmp_path, cyrillic_font):
+    iv_rows = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Цефтриаксон (АТХ: J01DD04) в/в", "50 мг/кг/сут в 1 введение", "10 дней"],
+    ]
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=1, row_end=1, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01DD04", drug="Цефтриаксон",
+    ),)
+    candidates = _normalize_chars(_extract(tmp_path, cyrillic_font, iv_rows, group, name="iv.pdf"))
+    assert candidates[0]["dose"]["route"] == "intravenous"
+
+    ambiguous = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Цефтриаксон (АТХ: J01DD04) в/в или внутрь", "50 мг/кг/сут в 1 введение", "10 дней"],
+    ]
+    candidates = _normalize_chars(
+        _extract(tmp_path, cyrillic_font, ambiguous, group, name="amb.pdf")
+    )
+    assert candidates[0]["dose"]["route"] == "multiple_routes"
+    assert "ROUTE_NOT_EXACT" in candidates[0]["blocking_reasons"]
+    assert candidates[0]["calculation_ready"] is False
+
+
+def test_m2_non_divisor_interval_blocks_the_candidate(tmp_path, cyrillic_font):
+    """M-2 end to end: 'каждые 7 ч' must not become a ready 3/day regimen."""
+    rows = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Амоксициллин (АТХ: J01CA04)", "50 мг/кг/сут каждые 7 ч", "7 дней"],
+    ]
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=1, row_end=1, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01CA04", drug="Амоксициллин",
+    ),)
+    candidates = _normalize_chars(_extract(tmp_path, cyrillic_font, rows, group))
+    assert len(candidates) == 1
+    dose = candidates[0]["dose"]
+    assert (dose["frequency_min_per_day"], dose["frequency_max_per_day"]) == (3, 4)
+    assert "FREQUENCY_INTERVAL_NOT_DIVISIBLE" in candidates[0]["blocking_reasons"]
+    assert candidates[0]["calculation_ready"] is False
+
+
+def test_l31_footnote_marker_does_not_corrupt_the_dose(tmp_path, cyrillic_font):
+    """L-31: '1x10^9' style superscripts must not swallow the dose into a footnote."""
+    rows = [
+        ["Препарат", "Доза (дети)", "Длительность"],
+        ["Амоксициллин (АТХ: J01CA04)", "50 мг/кг/сут¹ в 2 приема", "7 дней"],
+    ]
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=1, row_end=1, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01CA04", drug="Амоксициллин",
+    ),)
+    candidates = _normalize_chars(_extract(tmp_path, cyrillic_font, rows, group))
+    assert len(candidates) == 1
+    assert candidates[0]["dose"]["value_min"] == 50.0
+    assert "501" not in candidates[0]["source"]["wording"]
+
+
+def test_missing_row_group_fails_closed(tmp_path, cyrillic_font):
+    """A hash-pinned row span that is not in the PDF must raise, not silently pass."""
+    from src.tests.table_pdf_fixture import build_table_pdf
+
+    rows = [["Препарат", "Доза (дети)", "Длительность"],
+            ["Амоксициллин (АТХ: J01CA04)", "50 мг/кг/сут в 2 приема", "7 дней"]]
+    pdf = build_table_pdf(tmp_path / "t.pdf", rows, cyrillic_font)
+    group = (CandidateRowGroup(
+        page=1, table_index=0, row_start=99, row_end=99, drug_col=0, dose_col=1,
+        duration_col=2, therapy_line="first", atc="J01CA04", drug="Амоксициллин",
+    ),)
+    with pytest.raises(ValueError, match="source row group missing"):
+        extract_regimen_candidates(pdf, _spec(group))

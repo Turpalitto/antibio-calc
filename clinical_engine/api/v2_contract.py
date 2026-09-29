@@ -6,6 +6,7 @@ additive and deliberately cannot serialize a personal result as ``APPROVED``.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Any
 
@@ -74,6 +75,10 @@ def _optional_number(value: Any, field: str, *, allow_zero: bool = False) -> flo
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise RequestError("INVALID_REQUEST", f"{field} must be numeric")
     number = float(value)
+    # json.loads accepts NaN/Infinity by default, and every comparison against
+    # them is False — so a non-finite age would otherwise pass range validation.
+    if not math.isfinite(number):
+        raise RequestError("INVALID_REQUEST", f"{field} must be a finite number")
     if number < 0 or (number == 0 and not allow_zero):
         relation = "zero or greater" if allow_zero else "greater than zero"
         raise RequestError("INVALID_REQUEST", f"{field} must be {relation}")

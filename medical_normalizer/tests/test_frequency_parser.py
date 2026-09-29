@@ -288,3 +288,227 @@ class TestFrequencyParser:
     def test_po_sheme_still_none(self):
         reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "в соответствии с инструкцией к препарату"})
         assert reg.frequency_per_day is None
+
+
+# ── Regression tests: C5, H1, H2, H5 ──────────────────────────────
+
+
+class TestC5RangeConsistency:
+    """C5: "2-3 раза в сутки" collapsed to 3.0 (matching started at the "3"),
+    while "2–3 р/сут" gave 2.0. Same text, opposite answers, and nothing
+    recorded that a range had been seen."""
+
+    def test_word_form_takes_lower_bound(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "2-3 раза в сутки"})
+        assert reg.frequency_per_day == 2.0
+
+    def test_word_form_flags_range(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "2-3 раза в сутки"})
+        assert reg.frequency_is_range is True
+
+    def test_en_dash_form_takes_lower_bound(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "2–3 р/сут"})
+        assert reg.frequency_per_day == 2.0
+
+    def test_en_dash_form_flags_range(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "2–3 р/сут"})
+        assert reg.frequency_is_range is True
+
+    def test_both_forms_agree(self):
+        word = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "2-3 раза в сутки"})
+        slash = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "2–3 р/сут"})
+        assert word.frequency_per_day == slash.frequency_per_day
+        assert word.frequency_is_range == slash.frequency_is_range
+
+    def test_em_dash_word_form(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "2—3 раза в сутки"})
+        assert reg.frequency_per_day == 2.0
+        assert reg.frequency_is_range is True
+
+    def test_word_range_v_day(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "3-4 раза в день"})
+        assert reg.frequency_per_day == 3.0
+        assert reg.frequency_is_range is True
+
+    def test_word_range_slash_sut(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "2-3 раза/сут"})
+        assert reg.frequency_per_day == 2.0
+        assert reg.frequency_is_range is True
+
+    def test_hours_range_flags_range(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "каждые 6-8 часов"})
+        assert reg.frequency_per_day == 4.0
+        assert reg.frequency_is_range is True
+
+    def test_raz_v_hours_range_flags_range(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "раз в 4-6 часов"})
+        assert reg.frequency_per_day == 6.0
+        assert reg.frequency_is_range is True
+
+    def test_doses_range_flags_range(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "в 2-3 приема"})
+        assert reg.frequency_per_day == 2.0
+        assert reg.frequency_is_range is True
+
+    def test_scalar_does_not_flag_range(self):
+        for text in ("2 раза в день", "1 раз в день", "каждые 8 часов", "bid", "через день"):
+            reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": text})
+            assert reg.frequency_is_range is False, text
+
+    def test_default_is_range_false(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "в сутки"})
+        assert reg.frequency_is_range is False
+
+    def test_unparsed_clears_range_flag(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "по схеме"})
+        assert reg.frequency_per_day is None
+        assert reg.frequency_is_range is False
+
+    def test_range_flag_survives_round_trip(self):
+        from medical_normalizer.models import NormalizedRegimen as R
+
+        reg = FrequencyParser.parse(R(), {"frequency": "2-3 раза в сутки"})
+        restored = R.from_dict(reg.to_dict_with_range())
+        assert restored.frequency_is_range is True
+        assert restored.frequency_per_day == 2.0
+
+
+class TestH1Qod:
+    """H1: `(?:qd|od|s.i.d.)` matched the "od" inside "qod" and was checked
+    first, so qod (every other day) was reported as once-daily."""
+
+    def test_qod_is_half_daily(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "qod"})
+        assert reg.frequency_per_day == 0.5
+
+    def test_Qod_case_insensitive(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "QOD"})
+        assert reg.frequency_per_day == 0.5
+
+    def test_q_od_spaced(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "q od"})
+        assert reg.frequency_per_day == 0.5
+
+    def test_qd_still_once_daily(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "qd"})
+        assert reg.frequency_per_day == 1.0
+
+    def test_od_still_once_daily(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "od"})
+        assert reg.frequency_per_day == 1.0
+
+    def test_sid_still_once_daily(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "s.i.d."})
+        assert reg.frequency_per_day == 1.0
+
+    def test_bid_still_twice(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "bid"})
+        assert reg.frequency_per_day == 2.0
+
+    def test_tid_still_thrice(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "tid"})
+        assert reg.frequency_per_day == 3.0
+
+    def test_qid_still_four(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "qid"})
+        assert reg.frequency_per_day == 4.0
+
+
+class TestH5EveryNDays:
+    """H5: the every-N-days patterns required a literal leading "1", so
+    "каждые 3 дня" parsed to None and the regimen was REJECTed."""
+
+    def test_every_three_days(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "каждые 3 дня"})
+        assert reg.frequency_per_day == 1.0 / 3.0
+
+    def test_every_two_days(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "каждые 2 дня"})
+        assert reg.frequency_per_day == 0.5
+
+    def test_every_ten_days(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "каждые 10 дней"})
+        assert reg.frequency_per_day == 0.1
+
+    def test_every_14_days(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "каждые 14 дней"})
+        assert reg.frequency_per_day == 1.0 / 14.0
+
+    def test_every_one_day(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "каждые 1 день"})
+        assert reg.frequency_per_day == 1.0
+
+    def test_every_six_sutki(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "каждые 6 суток"})
+        assert reg.frequency_per_day == 1.0 / 6.0
+
+    def test_every_three_days_not_flagged_as_range(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "каждые 3 дня"})
+        assert reg.frequency_is_range is False
+
+    def test_every_three_days_no_longer_rejects(self):
+        from medical_normalizer.normalizer import MedicalNormalizer
+        from medical_normalizer.validator import Verdict
+
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": "каждые 3 дня", "duration": "10 дней",
+            "age_group": "взрослые", "regimen_type": "first_line",
+        })
+        assert r.validation.verdict == Verdict.PASS
+
+    def test_one_raz_v_arbitrary_n_days(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "1 раз в 7 дней"})
+        assert reg.frequency_per_day == 1.0 / 7.0
+
+    def test_one_raz_cherez_arbitrary_n_days(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "1 раз через 21 день"})
+        assert reg.frequency_per_day == 1.0 / 21.0
+
+    def test_weeks_pattern_still_wins_for_weeks(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": "каждые 3 недели"})
+        assert reg.frequency_per_day == 1.0 / 21.0
+
+
+class TestH2NonStringInputs:
+    """H2: every parser raised AttributeError on int / list / dict inputs."""
+
+    def test_int_frequency_does_not_raise(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": 3})
+        assert reg.frequency_per_day is None
+
+    def test_int_frequency_is_recorded(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": 3})
+        assert any(w.startswith("MISSING_FIELD_INPUT:frequency") for w in reg.warnings)
+
+    def test_list_frequency_does_not_raise(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": ["2 раза"]})
+        assert reg.frequency_per_day is None
+
+    def test_dict_frequency_does_not_raise(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": {"n": 2}})
+        assert reg.frequency_per_day is None
+
+    def test_none_frequency_is_not_an_error(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {"frequency": None})
+        assert reg.frequency_per_day is None
+        assert reg.warnings == []
+
+    def test_absent_frequency_is_not_an_error(self):
+        reg = FrequencyParser.parse(NormalizedRegimen(), {})
+        assert reg.frequency_per_day is None
+        assert reg.warnings == []
+
+    def test_marker_reaches_parser_error(self):
+        from medical_normalizer.models import MISSING_FIELD_INPUT
+        from medical_normalizer.normalizer import MedicalNormalizer
+
+        r = MedicalNormalizer.normalize({
+            "antibiotic": "Цефтриаксон", "dose": "1,0", "unit": "г",
+            "route": "в/в", "frequency": 3, "duration": "7 дней",
+        })
+        codes = {e.error_type for e in r.errors}
+        assert MISSING_FIELD_INPUT in codes
+        # the pipeline still completed
+        assert "validator" in r.parser_execution_order
+        assert "frequency" in r.parser_execution_order

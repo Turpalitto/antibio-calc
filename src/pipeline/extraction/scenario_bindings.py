@@ -87,11 +87,58 @@ def build_binding_artifact(db: dict[str, Any], spec: dict[str, Any], disease_id:
     }
 
 
-def _first_int(value: Any) -> int | None:
-    if value is None:
+def _duration_interval(value: Any) -> tuple[int, int] | None:
+    """Return the (min, max) day range a duration expression asserts."""
+    numbers = [int(n) for n in re.findall(r"\d+", str(value or ""))]
+    if not numbers:
         return None
-    match = re.search(r"\d+", str(value))
-    return int(match.group()) if match else None
+    return min(numbers), max(numbers)
+
+
+def _dose_evidence(regimen: dict[str, Any], row: dict[str, Any]) -> dict[str, Any]:
+    """Compare the calculator's dose with the dose declared by the spec row.
+
+    H-6: ``build_binding_artifact`` linked regimen indices to spec row indices by
+    ATC ONLY, so a "LINKED" binding carried no evidence at all that the calculator's
+    dose matches the guideline's.  A spec row may declare its dose as
+    ``{"value_min": .., "value_max": .., "unit": ..}``; when it does, the
+    comparison happens and is reported.  When it does not, the comparison is
+    UNCOMPARABLE and, because unblocking requires positive evidence, a binding
+    without dose evidence can never be declared unblock-eligible.
+    """
+    declared = row.get("dose")
+    calculator = {
+        key: regimen.get(key)
+        for key in ("single_dose_mg", "single_dose_mg_max", "dose_mg_day_fixed",
+                    "dose_mg_day_fixed_max", "dose_mg_kg_day", "dose_mg_kg_day_max",
+                    "dose_mg_kg_per_dose", "dose_mg_kg_per_dose_max")
+        if isinstance(regimen.get(key), (int, float))
+    }
+    basis = "per_dose" if any(k.startswith("single_") for k in calculator) else (
+        "per_day_per_kg" if any("kg" in k for k in calculator) else (
+            "per_day" if calculator else "none"
+        )
+    )
+    if not calculator:
+        return {"status": "NO_CALCULATOR_DOSE", "basis": "none", "declared": None,
+                "calculator": {}, "detail": "the linked regimen carries no dose field"}
+    if not isinstance(declared, dict):
+        return {"status": "NOT_COMPARABLE", "basis": basis, "declared": None,
+                "calculator": calculator,
+                "detail": "spec row declares no dose, so no dose evidence exists"}
+    lo, hi = declared.get("value_min"), declared.get("value_max", declared.get("value_min"))
+    unit = declared.get("unit")
+    for value in calculator.values():
+        if lo is None or hi is None:
+            return {"status": "NOT_COMPARABLE", "basis": basis, "declared": declared,
+                    "calculator": calculator, "detail": "spec row dose has no numeric bound"}
+        if float(lo) <= float(value) <= float(hi):
+            return {"status": "MATCH", "basis": basis, "declared": declared,
+                    "calculator": calculator, "detail": "calculator dose inside the published range",
+                    "spec_unit": unit}
+    return {"status": "MISMATCH", "basis": basis, "declared": declared,
+            "calculator": calculator, "spec_unit": unit,
+            "detail": "no calculator dose field falls inside the published range"}
 
 
 def _linkage(scenario: dict[str, Any], drug: dict[str, Any], regimen: dict[str, Any], row: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
@@ -112,10 +159,19 @@ def _linkage(scenario: dict[str, Any], drug: dict[str, Any], regimen: dict[str, 
         duration_status = "GLOBAL_SPEC"
     else:
         duration_status = "NOT_SPECIFIED"
+    # M-10: compare the whole asserted INTERVAL, not just its first number.
+    # `_first_int("5-7") == _first_int("5-10") == 5`, so a calculator advertising a
+    # 5-10 day course against a guideline that says 5-7 was reported as agreement.
+    # The calculator's interval must lie INSIDE the guideline's: a wider calculator
+    # range permits a course the guideline does not support, which is exactly the
+    # disagreement a physician must see.
+    calc_interval = _duration_interval(calc_duration)
+    ref_interval = _duration_interval(row_duration) or _duration_interval(spec_duration)
     duration_review = (
         row_duration is not None
-        and calc_duration is not None
-        and _first_int(calc_duration) != _first_int(row_duration)
+        and calc_interval is not None
+        and ref_interval is not None
+        and not (ref_interval[0] <= calc_interval[0] and calc_interval[1] <= ref_interval[1])
     )
     if scenario.get("age_group") == "adult":
         age_weight_status = "GUIDELINE_SCOPE_ADULT"
@@ -128,13 +184,25 @@ def _linkage(scenario: dict[str, Any], drug: dict[str, Any], regimen: dict[str, 
         else:
             age_weight_status = "NOT_CONSTRAINED"
     remaining = [b for b in blockers if b != SCENARIO_LINKAGE_BLOCKER]
-    severity_status = "DOSE_TABLE_NOT_STRATIFIED"
+    # H-6: `severity_status` was a hardcoded literal "DOSE_TABLE_NOT_STRATIFIED", so
+    # `unblock_eligible` (which requires severity_status == "LINKED") was STRUCTURALLY
+    # always False and the value carried no information.  It is now derived from the
+    # row's own state.
+    if not remaining:
+        severity_status = "LINKED"
+    elif all(str(b).startswith("MULTIPLE_") and str(b).endswith("_STRATA") for b in remaining):
+        severity_status = "DOSE_TABLE_NOT_STRATIFIED"
+    else:
+        severity_status = "NOT_LINKED"
+    dose_evidence = _dose_evidence(regimen, row)
     unblock_eligible = (
         not remaining
         and severity_status == "LINKED"
         and route_status == "LINKED"
         and age_weight_status == "GUIDELINE_SCOPE_ADULT"
         and not duration_review
+        # H-6: a binding may only be unblock-eligible on POSITIVE dose evidence.
+        and dose_evidence["status"] == "MATCH"
     )
     return {
         "severity": severity_status,
@@ -143,6 +211,8 @@ def _linkage(scenario: dict[str, Any], drug: dict[str, Any], regimen: dict[str, 
         "age_weight": age_weight_status,
         "duration_review_required": duration_review,
         "remaining_blockers": remaining,
+        "dose_evidence": dose_evidence["status"],
+        "dose_evidence_detail": dose_evidence,
         "unblock_eligible": unblock_eligible,
     }
 

@@ -249,6 +249,9 @@ def extract_regimen_candidates(
             reasons.append("MULTIPLE_DOSE_STRATA")
         if frequency_values is None:
             reasons.append("FREQUENCY_NOT_EXTRACTED")
+        elif not _frequency_interval_is_exact(parse_child_cell):
+            # M-2: a 7-hour interval is not a whole number of doses per day.
+            reasons.append("FREQUENCY_INTERVAL_NOT_DIVISIBLE")
         route_text = " ".join(cells).lower()
         has_iv = "в/в" in route_text or "внутривенно" in route_text
         has_im = "в/м" in route_text or "в/мышечно" in route_text or "внутримышечно" in route_text
@@ -263,11 +266,18 @@ def extract_regimen_candidates(
             route = "intravenous"
         elif has_im:
             route = "intramuscular"
+        elif has_oral:
+            # C-7: there was no explicit oral branch at all -- the `else` below was
+            # silently standing in for one, which is how an UNRESOLVED route became
+            # 'oral' with no blocking reason.  Oral is now a positive detection.
+            route = "oral"
         elif "введени" in parse_child_cell.lower():
             route = "parenteral_unspecified"
             reasons.append("ROUTE_NOT_EXACT")
         else:
-            route = "oral"
+            # Unresolved route: fail closed with a recorded reason.
+            route = "unknown"
+            reasons.append("ROUTE_NOT_EXTRACTED")
         dose = clauses[0]
         multiplier = 1000.0 if basis == "FIXED_PER_DOSE" and dose.groupdict().get("unit", "").lower() == "г" else 1.0
         value_min = _number(dose.group("low")) * multiplier
@@ -607,10 +617,40 @@ def _frequency_values(value: str) -> tuple[int, int] | None:
     if hours:
         low_hours = int(hours.group(1))
         high_hours = int(hours.group(2) or low_hours)
-        return 24 // max(low_hours, high_hours), 24 // min(low_hours, high_hours)
+        # M-2: this was `24 // hours`, which silently floor-rounded.  "каждые 7 ч"
+        # became exactly 3/day, i.e. a 21-hour dosing interval presented as a true
+        # 24-hour one.  The honest answer is the bracket: floor gives the largest
+        # number of administrations that still covers >= 24 h, ceil the smallest
+        # that fits inside it.  A non-divisor therefore returns (3, 4) and
+        # `_frequency_interval_is_exact` flags it, so the row can never be marked
+        # calculation-ready on the strength of an invented number.
+        return 24 // max(low_hours, high_hours), -(-24 // min(low_hours, high_hours))
     if re.search(r"однократно", value, re.IGNORECASE):
         return 1, 1
     return None
+
+
+def _frequency_interval_is_exact(value: str) -> bool:
+    """M-2: is an hour-interval frequency an exact whole number per day?
+
+    "каждые 6 ч" (24 % 6 == 0) is exact.  "каждые 7 ч" is not: no whole number of
+    doses per day reproduces a 7-hour interval, so the candidate must stay under
+    review instead of being pinned to `24 // 7 == 3`.
+    """
+    hours = re.search(
+        r"каждые\s*(\d+)\s*(?:[-–—]\s*(\d+))?\s*(?:час(?:а|ов)?|ч\b)",
+        value,
+        re.IGNORECASE,
+    )
+    if not hours:
+        return True
+    for raw in hours.groups():
+        if raw is None:
+            continue
+        interval = int(raw)
+        if interval > 0 and 24 % interval != 0:
+            return False
+    return True
 
 
 def _main(argv: Sequence[str] | None = None) -> int:

@@ -70,6 +70,21 @@ class PersonalModeService:
     def bundle_version(self) -> str:
         return self._bundle.bundle_version
 
+    def activation_digests(self) -> dict[str, str]:
+        """The digests the local activation record must still match on every load.
+
+        ``recommend()`` re-verifies the owner HMAC against the session token, but
+        the read-only ``health()`` reporting path has no token and therefore could
+        report ``recommendation_eligible: True`` for a bundle file whose
+        ``owner_signature`` had been edited on disk. Persisting these two digests
+        in the activation record lets every reporting path enforce the same
+        invariant.
+        """
+        return {
+            "payload_sha256": self._bundle.payload_sha256,
+            "owner_signature": self._bundle.owner_signature,
+        }
+
     def health(self) -> dict[str, Any]:
         """Read-only local health summary; never changes approval or bundle state."""
         try:
@@ -225,6 +240,44 @@ def _matches(regimen: PersonalRegimen, diagnosis: str | None, icd10: str | None)
     return diagnosis_match or icd_match
 
 
+# Free-text owner-attested population wording. Anything that is not an exact
+# member of the allow-list below is treated as "not established" and raises a
+# review reason — fail-CLOSED, in one direction only, for pregnancy, hepatic and
+# renal alike.
+#
+# Membership (never substring) matching is mandatory here: "разреш" is a prefix
+# of "разрешено" AND of "не разрешено", and "allowed" is a substring of
+# "not allowed", so a substring test reads an explicit refusal as a permission.
+# Values are listed in FOLDED form (ё->е), so one spelling cannot be accepted by
+# one field and rejected by another.
+_PERMITTED_POPULATION_VALUES = frozenset({
+    "eligible", "allowed", "permitted", "yes", "true",
+    "разрешено", "разрешен", "допустимо", "можно",
+})
+_DENIED_POPULATION_MARKERS = (
+    "не разреш", "не разрешён", "нельзя", "противопоказ", "не допущ",
+    "not allowed", "not permitted", "contraindicated", "forbidden", "prohibited",
+)
+_NORMAL_RENAL = frozenset({"normal", "норма", "нет"})
+
+
+def _population_permits(stated: str | None) -> bool:
+    """True only when owner-attested population wording is an exact, explicit
+    permission. Any denial marker wins; anything unrecognised is not permitted."""
+    if not isinstance(stated, str):
+        return False
+    value = _fold(stated)
+    if not value:
+        return False
+    if any(marker in value for marker in _DENIED_POPULATION_MARKERS):
+        return False
+    return value in _PERMITTED_POPULATION_VALUES
+
+
+def _fold(value: str) -> str:
+    return value.strip().casefold().replace("ё", "е")
+
+
 def _patient_rejection_reasons(regimen: PersonalRegimen, patient: Any, preferences: Any = None) -> list[str]:
     reasons: list[str] = []
     if patient is None:
@@ -254,17 +307,17 @@ def _patient_rejection_reasons(regimen: PersonalRegimen, patient: Any, preferenc
         reasons.append("RENAL_FUNCTION_REQUIRED")
     if safety.requires_pregnancy_status and _request_value(patient, "pregnant") is None:
         reasons.append("PREGNANCY_STATUS_REQUIRED")
-    if _request_value(patient, "pregnant") is True and not any(term in regimen.population.pregnancy.casefold() for term in ("разреш", "eligible", "allowed")):
+    if _request_value(patient, "pregnant") is True and not _population_permits(regimen.population.pregnancy):
         reasons.append("PREGNANCY_REVIEW_REQUIRED")
     if safety.requires_hepatic_function and _request_value(patient, "hepatic_impairment") is None:
         reasons.append("HEPATIC_STATUS_REQUIRED")
-    if _request_value(patient, "hepatic_impairment") is True and regimen.population.hepatic.casefold() not in {"eligible", "allowed", "разрешён"}:
+    if _request_value(patient, "hepatic_impairment") is True and not _population_permits(regimen.population.hepatic):
         reasons.append("HEPATIC_REVIEW_REQUIRED")
     if safety.contraindications and _request_value(patient, "contraindications_cleared") is not True:
         reasons.append("CONTRAINDICATION_SCREEN_REQUIRED")
     if safety.interactions and _request_value(patient, "interactions_reviewed") is not True:
         reasons.append("INTERACTION_SCREEN_REQUIRED")
-    if renal and renal.casefold() not in {"normal", "норма", "нет"} and regimen.population.renal.casefold() not in {"eligible", "allowed", "разрешён"}:
+    if renal and renal.casefold() not in _NORMAL_RENAL and not _population_permits(regimen.population.renal):
         reasons.append("RENAL_REVIEW_REQUIRED")
 
     allergy_terms = {

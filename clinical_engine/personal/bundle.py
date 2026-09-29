@@ -594,6 +594,17 @@ def _append_json_line(path: Path, value: Mapping[str, Any]) -> None:
         os.close(fd)
 
 
+def load_attestation_ledger(path: str | Path) -> list[dict[str, Any]]:
+    """Public, verified read of the append-only owner attestation ledger.
+
+    Verifies every line's ``event_sha256``, its ``previous_event_sha256`` chain
+    link, and its sequence number, exactly as :func:`attest` and
+    :func:`build_personal_bundle` do. Any tampering or corruption raises
+    ``ATTESTATION_LEDGER_INVALID`` instead of being reported as a healthy ledger.
+    """
+    return _load_ledger(Path(path))
+
+
 def _load_ledger(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
@@ -720,6 +731,6 @@ def _strings(raw: Mapping[str, Any], key: str, *, nonempty: bool = False) -> tup
 
 __all__ = [
     "SCHEMA_VERSION", "attest", "build_personal_bundle", "compute_owner_signature", "compute_payload_sha256",
-    "load_owner_profile", "load_personal_bundle", "load_personal_service",
+    "load_attestation_ledger", "load_owner_profile", "load_personal_bundle", "load_personal_service",
     "recover_unactivated_owner", "register_owner", "sha256_text",
 ]

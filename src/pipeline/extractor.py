@@ -7,7 +7,15 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from .extraction.router import ExtractorRouter
+# Dual-mode import: the rest of `src/pipeline` uses FLAT imports (`from config
+# import ...`) because `src/pipeline` is on sys.path, but `extractor.py` used a
+# relative one, which made it the single module in the directory impossible to
+# import as part of the `src.pipeline` package.  That broke `src.pipeline.main`
+# (and therefore any test of cmd_validate) at import time.
+try:  # package import: `python -m src.pipeline.main`, pytest
+    from .extraction.router import ExtractorRouter
+except ImportError:  # legacy flat import: `cd src/pipeline && python main.py`
+    from extraction.router import ExtractorRouter
 
 logger = logging.getLogger(__name__)
 

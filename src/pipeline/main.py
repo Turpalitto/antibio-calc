@@ -11,6 +11,7 @@ import time
 from datetime import datetime, timezone
 from hashlib import sha256 as _sha256
 from pathlib import Path
+from typing import Any
 
 import httpx
 import orjson
@@ -18,61 +19,191 @@ from rich.console import Console
 from rich.logging import RichHandler
 
 
-_write_lock = asyncio.Lock()
+# L-5: there were TWO locks for the same file -- a module-level ``_write_lock`` and
+# the ``save_lock`` created inside cmd_extract_raw -- and only one of them was ever
+# used.  A module-level asyncio.Lock is additionally bound to the first event loop
+# that awaits it, so it is unsafe across successive asyncio.run() invocations.  The
+# single per-command lock below is the only one, and _safe_write no longer needs one
+# because os.replace makes the publish step atomic.
 
 
 async def _safe_write(path: Path, data: list) -> None:
-    """Thread-safe JSON write with integrity check. No atomic rename (too fragile on Windows)."""
-    async with _write_lock:
-        blob = orjson.dumps(data, option=orjson.OPT_INDENT_2)
-        path.write_bytes(blob)
-        # Verify immediately
-        back = orjson.loads(path.read_bytes())
+    """Atomic, crash-safe JSON list write with an integrity check.
+
+    H-4: the old implementation truncate-wrote the authoritative file in place, so
+    a crash mid-write left a truncated ``extraction_raw.json``.  The payload is now
+    staged next to the target and moved into place with :func:`os.replace`, which is
+    atomic on POSIX and Windows, then re-read and verified.  The docstring's
+    "no atomic rename (too fragile on Windows)" claim was the bug, not the fix.
+    """
+    blob = orjson.dumps(data, option=orjson.OPT_INDENT_2)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(dir=str(path.parent), prefix=path.name + ".", suffix=".tmp")
+    tmp = Path(tmp_name)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(blob)
+            handle.flush()
+            os.fsync(handle.fileno())
+        # Verify the staged bytes BEFORE they become authoritative.
+        back = orjson.loads(tmp.read_bytes())
         if not isinstance(back, list):
             raise RuntimeError("Write corruption: not a list")
         if len(back) < len(data):
             raise RuntimeError(f"Write corruption: expected >= {len(data)}, got {len(back)}")
+        os.replace(tmp, path)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
 
 
 
-from api_client import ClinrecApi
-from analyzer import analyze_one
-from antibiotic_gate import gate_one
-from classifier import classify_one
-from config import (
-    BASE_DIR,
-    CLINRECS_JSON,
-    DOWNLOADS_ACTIVE,
-    EXTRACTION_MODEL,
-    EXTRACTION_RAW_JSON,
-    EXTRACTION_VALIDATED_JSON,
-    EXTRACTION_VERSION,
-    KNOWLEDGE_BASE_JSON,
-    LLM_CONCURRENCY,
-    LLM_DELAY,
-    LLM_PROVIDER_CHAIN,
-    REVIEW_REQUIRED_JSON,
-    VALIDATION_MODEL,
-)
-from database import (
-    init_regimens_table,
-    load_validated_regimens,
-    save_antibiotic_json,
-    save_metadata,
-    save_regimens,
-    split_by_category,
-)
-from downloader import download_all_pdfs
-from extractor_llm import extract_regimens, check_source_fields, validate_regimens
-from progress import (
-    get_pending_items,
-    load_progress,
-    mark_extraction_done,
-    mark_validation_done,
-    needs_reprocessing,
-    save_progress,
-)
-from reporter import generate_report
+
+# C-4/C-5: `main.py` used only flat (`from config import ...`) imports, so the
+# module could not be imported as part of the `src.pipeline` package at all --
+# which is precisely why the positional-pairs bug in cmd_validate had no test.
+# Relative imports are canonical; the flat form is kept for the legacy
+# `cd src/pipeline && python main.py <cmd>` invocation.
+try:  # package import: `python -m src.pipeline.main`, pytest
+    from .api_client import ClinrecApi
+    from .analyzer import analyze_one
+    from .antibiotic_gate import gate_one
+    from .classifier import classify_one
+    from .config import (
+        BASE_DIR,
+        CLINRECS_JSON,
+        DOWNLOADS_ACTIVE,
+        EXTRACTION_MODEL,
+        EXTRACTION_RAW_JSON,
+        EXTRACTION_VALIDATED_JSON,
+        EXTRACTION_VERSION,
+        KNOWLEDGE_BASE_JSON,
+        LLM_CONCURRENCY,
+        LLM_DELAY,
+        LLM_PROVIDER_CHAIN,
+        REVIEW_REQUIRED_JSON,
+        VALIDATION_MODEL,
+    )
+    from .database import (
+        init_regimens_table,
+        save_antibiotic_json,
+        save_metadata,
+        save_regimens,
+        split_by_category,
+    )
+    from .downloader import download_all_pdfs
+    from .extractor_llm import (
+        check_source_fields,
+        extract_regimens,
+        source_quote_supported,
+        validate_regimens,
+    )
+    from .progress import (
+        get_pending_items,
+        load_progress,
+        mark_extraction_done,
+        mark_extraction_incomplete,
+        mark_validation_done,
+        needs_reprocessing,
+        save_progress,
+    )
+    from .reporter import generate_report
+    from .section_detector import detect_sections
+except ImportError:  # pragma: no cover - legacy `cd src/pipeline && python main.py`
+    from api_client import ClinrecApi
+    from analyzer import analyze_one
+    from antibiotic_gate import gate_one
+    from classifier import classify_one
+    from config import (
+        BASE_DIR,
+        CLINRECS_JSON,
+        DOWNLOADS_ACTIVE,
+        EXTRACTION_MODEL,
+        EXTRACTION_RAW_JSON,
+        EXTRACTION_VALIDATED_JSON,
+        EXTRACTION_VERSION,
+        KNOWLEDGE_BASE_JSON,
+        LLM_CONCURRENCY,
+        LLM_DELAY,
+        LLM_PROVIDER_CHAIN,
+        REVIEW_REQUIRED_JSON,
+        VALIDATION_MODEL,
+    )
+    from database import (
+        init_regimens_table,
+        save_antibiotic_json,
+        save_metadata,
+        save_regimens,
+        split_by_category,
+    )
+    from downloader import download_all_pdfs
+    from extractor_llm import (
+        check_source_fields,
+        extract_regimens,
+        source_quote_supported,
+        validate_regimens,
+    )
+    from progress import (
+        get_pending_items,
+        load_progress,
+        mark_extraction_done,
+        mark_extraction_incomplete,
+        mark_validation_done,
+        needs_reprocessing,
+        save_progress,
+    )
+    from reporter import generate_report
+    from section_detector import detect_sections
+except ModuleNotFoundError as _exc:  # legacy flat import
+    if _exc.name not in ("config", "api_client", "analyzer", "antibiotic_gate",
+                         "classifier", "database", "downloader", "extractor_llm",
+                         "progress", "reporter", "section_detector"):
+        # A MISSING transitive dependency is a real error, not "we are being
+        # imported flat".  B025: swallowing it here would mask a broken install.
+        raise
+    from api_client import ClinrecApi
+    from analyzer import analyze_one
+    from antibiotic_gate import gate_one
+    from classifier import classify_one
+    from config import (
+        BASE_DIR,
+        CLINRECS_JSON,
+        DOWNLOADS_ACTIVE,
+        EXTRACTION_MODEL,
+        EXTRACTION_RAW_JSON,
+        EXTRACTION_VALIDATED_JSON,
+        EXTRACTION_VERSION,
+        KNOWLEDGE_BASE_JSON,
+        LLM_CONCURRENCY,
+        LLM_DELAY,
+        LLM_PROVIDER_CHAIN,
+        REVIEW_REQUIRED_JSON,
+        VALIDATION_MODEL,
+    )
+    from database import (
+        init_regimens_table,
+        save_antibiotic_json,
+        save_metadata,
+        save_regimens,
+        split_by_category,
+    )
+    from downloader import download_all_pdfs
+    from extractor_llm import (
+        check_source_fields,
+        extract_regimens,
+        source_quote_supported,
+        validate_regimens,
+    )
+    from progress import (
+        get_pending_items,
+        load_progress,
+        mark_extraction_done,
+        mark_extraction_incomplete,
+        mark_validation_done,
+        needs_reprocessing,
+        save_progress,
+    )
+    from reporter import generate_report
 from section_detector import detect_sections
 
 console = Console()
@@ -85,17 +216,6 @@ logging.basicConfig(
     datefmt="[%H:%M:%S]",
     handlers=[RichHandler(console=console, rich_tracebacks=True)],
 )
-
-
-def _resolve_pdf_path(item: dict) -> str | None:
-    pp = item.get("pdf_path", "")
-    if not pp:
-        return None
-    p = Path(pp)
-    if p.is_absolute():
-        return pp
-    resolved = Path(BASE_DIR) / pp
-    return str(resolved) if resolved.exists() else pp
 
 
 def _load_items() -> list[dict]:
@@ -308,15 +428,26 @@ async def cmd_extract_raw(args: argparse.Namespace) -> None:
     semaphore = asyncio.Semaphore(LLM_CONCURRENCY)
     save_lock = asyncio.Lock()
     failed: list[dict] = []
+    # H-4: keep the accumulated payload in memory and flush in batches instead of
+    # re-reading, re-parsing, re-serialising and truncate-writing the whole file on
+    # EVERY completed PDF (O(n^2) over the corpus).  The file still holds the last
+    # flushed checkpoint on a hard crash, and every flush is now an atomic
+    # os.replace, so the authoritative file is never truncated.
+    pending: list[dict] = []
+    flushed = 0
+    FLUSH_EVERY = 10
     t0 = time.monotonic()
     processed_count = 0
     regimen_count = 0
     checkpoint_counter = 0
     checkpoint_t0 = time.monotonic()
 
-    async def _save_incremental(regimens: list[dict]) -> None:
-        """Thread-safe incremental save with integrity check + fsync."""
+    async def _flush(force: bool = False) -> None:
+        nonlocal flushed
+        if not pending or (not force and len(pending) < FLUSH_EVERY):
+            return
         async with save_lock:
+            batch, pending[:] = list(pending), []
             existing = []
             if EXTRACTION_RAW_JSON.exists():
                 try:
@@ -326,18 +457,20 @@ async def cmd_extract_raw(args: argparse.Namespace) -> None:
                 except Exception:
                     logger.error("Corrupted extraction_raw.json — recovery needed")
                     raise
-            existing.extend(regimens)
+            existing.extend(batch)
             await _safe_write(EXTRACTION_RAW_JSON, existing)
-            # Additional fsync for crash safety
-            try:
-                fd = os.open(str(EXTRACTION_RAW_JSON), os.O_RDONLY)
-                os.fsync(fd)
-                os.close(fd)
-            except OSError:
-                pass
+            flushed += len(batch)
+
+    async def _save_incremental(regimens: list[dict]) -> None:
+        """Stage extracted regimens; the file is rewritten atomically per batch."""
+        pending.extend(regimens)
+        await _flush()
 
     async def process_one(item: dict) -> None:
-        nonlocal failed, processed_count, regimen_count, checkpoint_counter
+        # `checkpoint_t0` must be non-local: assigning it here without `nonlocal`
+        # made it a LOCAL of process_one, so the read a few lines above raised
+        # UnboundLocalError on the 10th completed document.
+        nonlocal failed, processed_count, regimen_count, checkpoint_counter, checkpoint_t0
         async with semaphore:
             pdf_path = item.get("pdf_path", "")
             if not pdf_path or not Path(pdf_path).exists():
@@ -351,17 +484,20 @@ async def cmd_extract_raw(args: argparse.Namespace) -> None:
 
             section_data = detect_sections(Path(pdf_path), clinrec_id=clinrec_id)
             if not section_data.get("relevant_text"):
-                mark_extraction_done(clinrec_id, pdf_sha256, 0)
+                # H-3: recorded as an explicit incomplete outcome, never as success.
+                mark_extraction_incomplete(clinrec_id, pdf_sha256, "no_relevant_text")
                 processed_count += 1
-                console.print(f"  [{clinrec_id}] no relevant text — skipped")
+                console.print(f"  [{clinrec_id}] no relevant text — NOT marked done (retryable)")
                 return
 
             try:
                 regimens = await extract_regimens(item, section_data)
                 if not regimens:
-                    mark_extraction_done(clinrec_id, pdf_sha256, 0)
+                    # Same reasoning as above: an empty LLM answer is a failed
+                    # extraction, not a document that contains no antibiotics.
+                    mark_extraction_incomplete(clinrec_id, pdf_sha256, "zero_regimens")
                     processed_count += 1
-                    console.print(f"  [{clinrec_id}] {item.get('Name', '')[:40]}: 0 regimens")
+                    console.print(f"  [{clinrec_id}] {item.get('Name', '')[:40]}: 0 regimens — NOT marked done")
                     return
 
                 for r in regimens:
@@ -399,14 +535,17 @@ async def cmd_extract_raw(args: argparse.Namespace) -> None:
     tasks = [process_one(item) for item in pending]
     await asyncio.gather(*tasks)
 
+    # Final flush so a partial batch is never left only in memory.
+    await _flush(force=True)
+
     elapsed = time.monotonic() - t0
     console.print(f"\n  Processed {processed_count} PDFs, extracted {regimen_count} regimens in {elapsed:.1f}s")
     if checkpoint_counter >= 10:
         console.print(f"  Final checkpoint: {checkpoint_counter} checkpoints written")
     if failed:
         console.print(f"  [red]Failed: {len(failed)}[/]")
-    console.print(f"  Saved to {EXTRACTION_RAW_JSON} (incremental, UNVALIDATED)")
-    console.print(f"  Progress: {EXTRACTION_RAW_JSON.with_name('extraction_progress.json')} (fsync after every PDF)")
+    console.print(f"  Saved to {EXTRACTION_RAW_JSON} (incremental, UNVALIDATED) — {flushed} regimens flushed")
+    console.print(f"  Progress: {EXTRACTION_RAW_JSON.with_name('extraction_progress.json')} (atomic fsync per checkpoint)")
 
 
 async def cmd_validate(args: argparse.Namespace) -> None:
@@ -451,47 +590,76 @@ async def cmd_validate(args: argparse.Namespace) -> None:
         except Exception as exc:
             logger.warning(f"  Validation failed for {clinrec_id}: {exc}")
             for idx, r in enumerate(regimens):
-                review_items.append({
-                    "clinrec_id": clinrec_id,
-                    "guideline_name": r.get("guideline_name"),
-                    "code_version": r.get("code_version"),
-                    "pdf_file": r.get("pdf_file"),
-                    "abx_level": item.get("abx_level"),
-                    "reason": "validation_api_error",
-                    "confidence": 0.0,
-                    "page_number": r.get("page_number", ""),
-                    "section_name": r.get("section_name", ""),
-                    "extracted_data": r,
-                    "expected_fix": f"Validation API error: {exc}",
-                    "validation_issues": [str(exc)],
-                })
+                review_items.append(_review_item(
+                    clinrec_id, item, r, r,
+                    reason="validation_api_error", confidence=0.0,
+                    issues=[str(exc)],
+                    expected_fix=f"Validation API error: {exc}",
+                ))
             continue
 
+        # H-5: an EMPTY result list must never be recorded as "validated done".
+        # It means nothing was processed, so the guideline stays pending and the
+        # next run retries it.  The old code marked it done, permanently dropping
+        # every regimen for that guideline.
+        if not results:
+            review_items.extend(
+                _review_item(
+                    clinrec_id, item, r, r,
+                    reason="validation_returned_no_results", confidence=0.0,
+                    issues=["LLM returned no validation results"],
+                    expected_fix="Re-run validation: the validator returned no verdicts for this guideline",
+                )
+                for r in regimens
+            )
+            console.print(
+                f"  [yellow][{clinrec_id}] validator returned 0 results — not marked done "
+                f"({len(regimens)} regimens queued for review)[/]"
+            )
+            continue
+
+        # C-4: pair each verdict with the regimen it names via result["index"].
+        # Pairing POSITIONALLY (enumerate) silently attached a verdict -- and its
+        # `corrected` payload -- to the wrong regimen whenever the model reordered,
+        # omitted or inserted a result.  Pairing by index also means a surplus
+        # regimen keeps its own data instead of landing in review as {}.
         for idx, result in enumerate(results):
-            regimen = regimens[idx] if idx < len(regimens) else {}
+            position, pairing_problem = _resolve_result_index(result, idx, len(regimens))
+            if position is None:
+                review_items.append(_review_item(
+                    clinrec_id, item, regimens[idx], regimens[idx],
+                    reason="validation_result_index_invalid",
+                    confidence=float(result.get("confidence", 0.0) or 0.0),
+                    issues=list(result.get("issues") or []) + [pairing_problem],
+                    expected_fix=pairing_problem,
+                ))
+                continue
+            regimen = regimens[position]
             confidence = result.get("confidence", 0.0)
             valid = result.get("valid", False)
             issues = result.get("issues", [])
-            corrected = result.get("corrected")
+            corrected, correction_problem = _validated_correction(
+                result.get("corrected"), regimen, section_data,
+            )
+            if correction_problem:
+                # C-5: a correction the validator could not justify means the whole
+                # verdict is untrustworthy.  Promoting it to validated=1 anyway would
+                # launder a rejected edit into the trusted output file.
+                issues = list(issues) + [correction_problem]
+                corrected = None
+                valid = False
+                confidence = min(float(confidence or 0.0), 0.0)
 
             if corrected and valid:
                 regimen = {**regimen, **corrected}
 
             if regimen.get("_missing_source"):
-                review_items.append({
-                    "clinrec_id": clinrec_id,
-                    "guideline_name": regimen.get("guideline_name"),
-                    "code_version": regimen.get("code_version"),
-                    "pdf_file": regimen.get("pdf_file"),
-                    "abx_level": item.get("abx_level"),
-                    "reason": "missing_source_evidence",
-                    "confidence": confidence,
-                    "page_number": regimen.get("page_number", ""),
-                    "section_name": regimen.get("section_name", ""),
-                    "extracted_data": regimen,
-                    "expected_fix": "Add missing source fields (guideline_name, code_version, pdf_file, page_number, section_name, source_quote)",
-                    "validation_issues": issues,
-                })
+                review_items.append(_review_item(
+                    clinrec_id, item, regimen, regimen,
+                    reason="missing_source_evidence", confidence=confidence,
+                    issues=issues,
+                    expected_fix="Add missing source fields (guideline_name, code_version, pdf_file, page_number, section_name, source_quote)",
+                ))
             elif valid and confidence >= 0.9:
                 regimen["validation_confidence"] = confidence
                 regimen["validation_issues"] = issues
@@ -500,20 +668,25 @@ async def cmd_validate(args: argparse.Namespace) -> None:
                 regimen["validated_at"] = datetime.now(timezone.utc).isoformat()
                 validated.append(regimen)
             else:
-                review_items.append({
-                    "clinrec_id": clinrec_id,
-                    "guideline_name": regimen.get("guideline_name"),
-                    "code_version": regimen.get("code_version"),
-                    "pdf_file": regimen.get("pdf_file"),
-                    "abx_level": item.get("abx_level"),
-                    "reason": "validation_failed",
-                    "confidence": confidence,
-                    "page_number": regimen.get("page_number", ""),
-                    "section_name": regimen.get("section_name", ""),
-                    "extracted_data": regimen,
-                    "expected_fix": "; ".join(issues) if issues else "Confidence below 0.9",
-                    "validation_issues": issues,
-                })
+                review_items.append(_review_item(
+                    clinrec_id, item, regimen, regimen,
+                    reason="validation_failed", confidence=confidence,
+                    issues=issues,
+                    expected_fix="; ".join(str(i) for i in issues) if issues else "Confidence below 0.9",
+                ))
+
+        # C-4: any regimen the validator never mentioned keeps its own data and goes
+        # to review -- it is never silently dropped and never mis-paired.
+        covered = {r for r in _result_indices(results, len(regimens)) if r is not None}
+        for position, orphan in enumerate(regimens):
+            if position in covered:
+                continue
+            review_items.append(_review_item(
+                clinrec_id, item, orphan, orphan,
+                reason="validation_result_missing", confidence=0.0,
+                issues=[f"no validation result carried index {position}"],
+                expected_fix=f"Re-validate: the validator returned no verdict for regimen #{position}",
+            ))
 
         mark_validation_done(clinrec_id, min((r.get("confidence", 0) for r in results), default=0.0))
 
@@ -522,7 +695,6 @@ async def cmd_validate(args: argparse.Namespace) -> None:
     console.print(f"  Review required: {len(review_items)} regimens")
     console.print(f"  Time: {elapsed:.1f}s")
 
-    from config import EXTRACTION_VALIDATED_JSON
     EXTRACTION_VALIDATED_JSON.write_bytes(orjson.dumps(validated, option=orjson.OPT_INDENT_2))
     console.print(f"  Saved to {EXTRACTION_VALIDATED_JSON}")
 
@@ -530,8 +702,116 @@ async def cmd_validate(args: argparse.Namespace) -> None:
     if REVIEW_REQUIRED_JSON.exists():
         existing_review = orjson.loads(REVIEW_REQUIRED_JSON.read_bytes())
     from database import save_review_required
+    # H-2 / M-41: save_review_required dedups, so re-running `validate` on a
+    # partially-completed corpus no longer appends a fresh copy of every item.
     save_review_required(existing_review + review_items, REVIEW_REQUIRED_JSON)
-    console.print(f"  Updated {REVIEW_REQUIRED_JSON} ({len(existing_review) + len(review_items)} total)")
+    console.print(f"  Updated {REVIEW_REQUIRED_JSON} ({len(existing_review) + len(review_items)} submitted, deduped on write)")
+
+
+def _result_indices(results: list, n_regimens: int) -> list[int | None]:
+    """Map every result onto the regimen index it names (None when unusable)."""
+    return [_resolve_result_index(r, i, n_regimens)[0] for i, r in enumerate(results)]
+
+
+def _resolve_result_index(result: dict, position: int, n_regimens: int) -> tuple[int | None, str]:
+    """Resolve the regimen index a validation result refers to.
+
+    C-4: the prompt asks the model for an explicit ``index`` and the code never
+    read it.  Anything missing, non-integer, or out of range is reported as a
+    problem instead of being paired with `regimens[position]`, which silently
+    stamped a verdict (and its `corrected` payload) onto the wrong regimen.
+    """
+    if not isinstance(result, dict):
+        return None, f"validation result #{position} is not an object"
+    if "index" not in result:
+        return None, (
+            f"validation result #{position} has no 'index'; refusing to guess which "
+            f"regimen it refers to"
+        )
+    raw = result.get("index")
+    if isinstance(raw, bool) or not isinstance(raw, int):
+        try:
+            raw = int(str(raw).strip())
+        except (TypeError, ValueError):
+            return None, f"validation result #{position} has a non-integer index {raw!r}"
+    if raw < 0 or raw >= n_regimens:
+        return None, f"validation result #{position} has out-of-range index {raw} (regimens: {n_regimens})"
+    return raw, ""
+
+
+# C-5: fields the validator is never allowed to invent, whatever `valid` says.
+_FORBIDDEN_CORRECTION_FIELDS = frozenset({
+    # identity + provenance locators: nothing can verify these against the source,
+    # so the validator is never allowed to rewrite them
+    "pdf_sha256", "clinrec_id", "pdf_file", "guideline_name", "code_version",
+    "page_number", "section_name",
+    # validation stamping: the validator must not be able to mark itself correct
+    "validated", "validation_confidence", "validation_model", "validated_at",
+    "extraction_model", "extraction_version", "extracted_at",
+})
+
+
+def _validated_correction(corrected: Any, regimen: dict, section_data: dict) -> tuple[dict | None, str]:
+    """Validate an LLM ``corrected`` payload before it is merged over a regimen.
+
+    C-5: the old code did ``regimen = {**regimen, **corrected}`` and then
+    ``regimen["validated"] = 1`` on the strength of a boolean the same LLM
+    supplied.  A hallucinated quote or dose was therefore promoted straight into
+    ``extraction_validated.json`` -- the file every downstream stage trusts.
+
+    A correction is accepted only when it is a dict of plain scalar/JSON values
+    that touches no identity or provenance field, and (M-22) when the
+    ``source_quote`` it carries is actually present in the source text.
+    """
+    if corrected in (None, {}, []):
+        return None, ""
+    if not isinstance(corrected, dict):
+        return None, f"corrected payload is {type(corrected).__name__}, not an object"
+    touched = sorted(_FORBIDDEN_CORRECTION_FIELDS.intersection(corrected))
+    if touched:
+        return None, f"corrected payload rewrites protected fields {touched}"
+    if "source_quote" in corrected:
+        if not source_quote_supported(corrected["source_quote"], section_data):
+            return None, "corrected source_quote is not present in the source text"
+    for key, value in corrected.items():
+        if not isinstance(key, str) or not key.strip():
+            return None, f"corrected payload has a non-string key {key!r}"
+        if isinstance(value, (dict, list, set, tuple)):
+            return None, f"corrected payload field {key!r} is a container, expected a scalar"
+    return dict(corrected), ""
+
+
+def _review_item(
+    clinrec_id,
+    item: dict,
+    regimen: dict,
+    extracted: dict,
+    *,
+    reason: str,
+    confidence: float,
+    issues: list,
+    expected_fix: str,
+) -> dict:
+    """Build one review entry, ALWAYS carrying the extracted data intact.
+
+    The old code substituted ``regimen = {}`` for a surplus regimen, so
+    ``"extracted_data": {}`` -- the extracted record destroyed -- reached the
+    physician review queue.
+    """
+    return {
+        "clinrec_id": clinrec_id,
+        "guideline_name": regimen.get("guideline_name") if regimen else None,
+        "code_version": regimen.get("code_version") if regimen else None,
+        "pdf_file": regimen.get("pdf_file") if regimen else None,
+        "abx_level": item.get("abx_level"),
+        "reason": reason,
+        "confidence": confidence,
+        "page_number": regimen.get("page_number", "") if regimen else "",
+        "section_name": regimen.get("section_name", "") if regimen else "",
+        "extracted_data": extracted,
+        "expected_fix": expected_fix,
+        "validation_issues": [str(i) for i in (issues or [])],
+    }
 
 
 async def cmd_knowledge(args: argparse.Namespace) -> None:
@@ -613,9 +893,6 @@ async def cmd_verify(args: argparse.Namespace) -> None:
     console.print(f"  ABX:     {abx}")
     console.print(f"  No ABX:  {no_abx}")
 
-    # validate a few random PDFs
-    import hashlib
-
     corrupted = 0
     for item in items:
         path_str = item.get("pdf_path", "")
@@ -636,7 +913,12 @@ async def cmd_verify(args: argparse.Namespace) -> None:
     report = generate_report(items)
     console.print("\n" + report)
 
-    report_path = Path("report.txt")
+    # L-4: the report was written to the CWD, so where it landed depended on
+    # where the operator happened to be standing.  It now lands next to the
+    # pipeline's own data directory, and the resolved path is printed.
+    report_dir = EXTRACTION_RAW_JSON.parent
+    report_dir.mkdir(parents=True, exist_ok=True)
+    report_path = report_dir / "report.txt"
     report_path.write_text(report, encoding="utf-8")
     console.print(f"\n  Report saved to {report_path}")
 

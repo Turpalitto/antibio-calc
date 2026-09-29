@@ -27,6 +27,7 @@ from clinical_engine.models import (
     Evidence,
     InteractionSeverity,
     NoteSeverity,
+    OrganAdjustmentLevel,
     Patient,
     PatientQuery,
     PediatricDosing,
@@ -39,6 +40,7 @@ from clinical_engine.models import (
     SafetyAction,
     SafetyFlag,
     SafetyLevel,
+    SafetySummary,
     StageTrace,
     ValidationPolicy,
 )
@@ -208,9 +210,124 @@ class TestDrugInfo:
 
 class TestDilutionRoute:
     def test_defaults(self) -> None:
-        route = DilutionRoute(solvent_options=({"name": "saline"},))
+        route = DilutionRoute(solvent_options=({"name": "saline"},),)
         assert route.steps == ()
         assert route.concentration_standard_mg_ml is None
+
+
+class TestRenalFunctionInputShape:
+    """L-4: api/contract.py declares renal_function `str | None` and
+    api/service.py assigns the string straight into Patient."""
+
+    @pytest.mark.parametrize(
+        "raw,expected",
+        [
+            (12, 12.0),
+            (12.5, 12.5),
+            ("12", 12.0),
+            ("12.5", 12.5),
+            ("12,5", 12.5),
+            ("  12  ", 12.0),
+            ("12 мл/мин", 12.0),
+            ("СКФ 30", 30.0),
+            ("eGFR 45", 45.0),
+            ("КК<30: 25", None),      # prose, not a value
+            (">90", None),            # an inequality is not a GFR
+            ("30-45", None),          # a range is ambiguous
+            ("норма", None),          # a label
+            (None, None),
+        ],
+    )
+    def test_gfr_coercion(self, raw, expected) -> None:
+        assert Patient(renal_function=raw).gfr_ml_min == expected
+
+    def test_unparseable_value_is_flagged_not_silently_dropped(self) -> None:
+        assert Patient(renal_function="норма").gfr_unparseable is True
+        assert Patient(renal_function=45).gfr_unparseable is False
+        assert Patient().gfr_unparseable is False
+        assert Patient().gfr_ml_min is None
+
+
+class TestOrganAdjustmentLevel:
+    def test_members(self) -> None:
+        assert {m.name for m in OrganAdjustmentLevel} == {
+            "PROHIBITED", "CAUTION", "NONE", "UNKNOWN",
+        }
+
+    def test_drug_info_defaults_to_unknown(self) -> None:
+        assert DrugInfo(
+            drug_ref="x", inn="x", drug_class="x", renal_adjustment=None,
+            hepatic_adjustment=None, pregnancy_category=PregnancyCategory.UNKNOWN,
+            age_restriction_min=None, age_restriction_max=None, contraindications=None,
+            interactions=None, monitoring=None, forms=(), dilution={},
+            pediatric_dosing=None,
+        ).hepatic_adjustment_level is OrganAdjustmentLevel.UNKNOWN
+
+
+class TestDosePatientSpecificity:
+    def test_defaults_to_patient_specific(self) -> None:
+        dose = DoseDetail(
+            calculated_dose_mg=500.0, dose_unit="mg", frequency_per_day=3.0,
+            duration_days=5.0, max_daily_mg=None,
+            calculation_method=DoseCalculationMethod.FIXED,
+            adjustment_applied=None, calculation_note=None,
+        )
+        assert dose.dose_is_patient_specific is True
+
+
+class TestSafetySummary:
+    """H-4: the engine's own aggregate verdict, so the transport layer has
+    something authoritative to pass through."""
+
+    def _flag(self, code, action, level=SafetyLevel.WARNING, ack=False):
+        return SafetyFlag(
+            level=level, code=code, message=code, drug_ref="amoxicillin",
+            stage="HardSafetyFilter", action=action,
+            requires_physician_acknowledgement=ack,
+        )
+
+    def test_empty_is_cleared(self) -> None:
+        s = SafetySummary.from_result((), ())
+        assert s.status == "CLEARED"
+        assert s.requires_physician_review is False
+        assert s.total_flags == 0
+        assert s.most_severe_action is None
+        assert s.dose_is_patient_specific is True
+
+    def test_flags_are_counted_and_ranked_by_severity(self) -> None:
+        flags = (
+            self._flag("RENAL_ADJ_UNPARSED", SafetyAction.AVOID_IF_POSSIBLE, ack=True),
+            self._flag("PREGNANCY_UNKNOWN", SafetyAction.MONITOR_CLOSELY),
+            self._flag("ALLERGY", SafetyAction.STOP_IMMEDIATELY,
+                       level=SafetyLevel.ABSOLUTE_CONTRAINDICATION, ack=True),
+        )
+        s = SafetySummary.from_result(flags, ())
+        assert s.status == "REVIEW_REQUIRED"
+        assert s.total_flags == 3
+        assert s.flag_counts == {"RENAL_ADJ_UNPARSED": 1, "PREGNANCY_UNKNOWN": 1, "ALLERGY": 1}
+        assert s.most_severe_action is SafetyAction.STOP_IMMEDIATELY
+        assert s.actions[0] is SafetyAction.STOP_IMMEDIATELY
+        assert s.absolute_contraindications == 1
+        assert s.requires_physician_acknowledgement == 2
+
+    def test_non_patient_specific_dose_forces_review(self) -> None:
+        dose = DoseDetail(
+            calculated_dose_mg=500.0, dose_unit="mg", frequency_per_day=3.0,
+            duration_days=None, max_daily_mg=None,
+            calculation_method=DoseCalculationMethod.FIXED,
+            adjustment_applied=None, calculation_note=None,
+            dose_is_patient_specific=False,
+        )
+        rec = Recommendation(
+            candidate=_candidate(), dose=dose, safety_flags=(),
+            interaction_severity=None,
+        )
+        s = SafetySummary.from_result((), (rec,))
+        assert s.dose_is_patient_specific is False
+        assert s.status == "REVIEW_REQUIRED"
+        assert s.requires_physician_review is True
+        assert s.total_flags == 0  # the dose alone is enough
+
 
 
 class TestRecommendationAndSet:

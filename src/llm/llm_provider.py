@@ -77,26 +77,35 @@ class LLMProvider:
         user_prompt: str,
         model: str | None = None,
         temperature: float = 0.1,
+        *,
+        validator: Any = None,
         **extra_kwargs: Any,
     ) -> dict | list:
-        text = await self.generate(system_prompt, user_prompt, model, temperature=temperature, **extra_kwargs)
-        return self._parse_json(text)
+        """Generate and parse JSON, optionally validating the shape.
 
-    @staticmethod
+        M-48: this was the ONLY LLM-output contract in the codebase and it applied
+        none, so a `dict` where a `list` was expected -- or a result missing the
+        fields the caller is about to index -- propagated straight into the
+        pipeline.  Pass ``validator`` (a callable raising on a bad shape).
+        """
+        text = await self.generate(system_prompt, user_prompt, model, temperature=temperature, **extra_kwargs)
+        payload = self._parse_json(text)
+        if validator is not None:
+            validator(payload)
+        return payload
+
     def _parse_json(content: str) -> dict | list:
-        content = content.strip()
-        fence_match = re.search(r"```(?:json)?\s*\n?(.*?)\n?```", content, re.DOTALL)
-        if fence_match:
-            content = fence_match.group(1).strip()
-        try:
-            return json.loads(content)
-        except json.JSONDecodeError:
-            for start, end in [("[", "]"), ("{", "}")]:
-                s = content.find(start)
-                e = content.rfind(end)
-                if s != -1 and e != -1 and e > s:
-                    return json.loads(content[s : e + 1])
-            raise
+        """Parse the single JSON payload out of an LLM reply.
+
+        Delegates to :func:`llm.json_payload.parse_json_payload` so ONE
+        implementation of "recover the payload or raise" exists across the
+        codebase.  The old ``find("[")/rfind("]")`` slicing returned a ``[1]``
+        fragment for ``Список: [1] и ещё текст. {"dose": ...}`` and could slice
+        two unrelated fragments together into invalid JSON.
+        """
+        from .json_payload import parse_json_payload  # noqa: PLC0415
+
+        return parse_json_payload(content)
 
     async def chat(
         self,
@@ -106,7 +115,14 @@ class LLMProvider:
         temperature: float = 0.1,
         **extra_kwargs: Any,
     ) -> dict[str, Any]:
-        cache_key = self._cache.make_key(system_prompt, user_prompt, model or "")
+        cache_key = self._cache.make_key(
+            system_prompt,
+            user_prompt,
+            model or "",
+            temperature=temperature,
+            provider_chain=self._provider_chain,
+            **extra_kwargs,
+        )
         cached = self._cache.get(cache_key)
         if cached is not None:
             logger.debug("Cache hit for prompt (key=%s)", cache_key[:12])
@@ -222,11 +238,48 @@ class LLMProvider:
         }
 
     async def close(self) -> None:
+        """Close every provider, reporting (not hiding) a leaked httpx client.
+
+        L-51: the bare ``except Exception: pass`` made a leaked AsyncClient -- and
+        a failed flush of its connection pool -- completely invisible.
+        """
         for name, provider in self._providers.items():
             try:
                 await provider.close()
-            except Exception:
-                pass
+            except Exception as exc:  # noqa: BLE001
+                logger.error("closing provider %s failed: %s: %s",
+                             name, type(exc).__name__, exc)
+        self._providers.clear()
+
+
+def _optional_config(name: str, default: Any) -> Any:
+    """Read a pipeline config value, tolerating a missing pipeline config module.
+
+    L-50: this used a RELATIVE ``from config import ...`` (which only works when
+    ``src/pipeline`` happens to be on sys.path) and caught only ``ImportError``, so
+    a ``ModuleNotFoundError`` from a TRANSITIVE import of the same flat module name
+    was misread as "no config" and silently fell back to ``["anthropic"]``.  The
+    name is resolved against the pipeline directory explicitly, and every import
+    problem -- not just a missing top-level module -- is reported in the log.
+    """
+    import importlib
+    import logging as _logging
+
+    for module_name in ("config", "src.pipeline.config"):
+        try:
+            module = importlib.import_module(module_name)
+        except Exception as exc:  # noqa: BLE001
+            _logging.getLogger(__name__).debug(
+                "config module %r unavailable (%s: %s)", module_name, type(exc).__name__, exc
+            )
+            continue
+        value = getattr(module, name, None)
+        if value is not None:
+            return value
+    _logging.getLogger(__name__).warning(
+        "pipeline config %s not found; using %r", name, default
+    )
+    return default
 
 
 def create_provider(
@@ -235,17 +288,9 @@ def create_provider(
 ) -> LLMProvider:
     """Factory: creates LLMProvider from pipeline config."""
     if chain is None:
-        try:
-            from config import LLM_PROVIDER_CHAIN  # noqa: PLC0415
-            chain = LLM_PROVIDER_CHAIN
-        except ImportError:
-            chain = ["anthropic"]
+        chain = _optional_config("LLM_PROVIDER_CHAIN", ["anthropic"])
     if configs is None:
-        try:
-            from config import LLM_PROVIDER_CONFIGS  # noqa: PLC0415
-            configs = LLM_PROVIDER_CONFIGS
-        except ImportError:
-            configs = {}
+        configs = _optional_config("LLM_PROVIDER_CONFIGS", {})
     remote_providers = {"anthropic", "deepseek", "gemini", "openai", "openrouter"}
     missing = [
         name

@@ -9,13 +9,17 @@ drug safety metadata — this reader creates no duplicate reference file.
 Degraded-mode note (see DECISIONS.md 2026-07-10): most of drugs_reference's
 renal_adjustment / interactions / contraindications fields are free text,
 not structured data. This reader passes that text through unchanged on
-DrugInfo — it does NOT parse it. The one exception is pregnancy_category,
-whose enum type is fixed by the DrugInfo dataclass; it gets a narrow,
-auditable keyword classification done once here at load time (preparation
-time, not per-query runtime — same pattern the spec sanctions for
-InteractionSeverity keywords in §6.4). contraindications and
-pediatric_dosing are not present anywhere in db/index.json today, so they
-are always None — degraded WARNING mode is expected downstream.
+DrugInfo — it does NOT parse it at runtime. The one exception is
+pregnancy_category, whose enum type is fixed by the DrugInfo dataclass; it
+gets a narrow, auditable keyword classification done once here at load time
+(preparation time, not per-query runtime — same pattern the spec sanctions for
+InteractionSeverity keywords in §6.4). renal_adjustment_level and
+hepatic_adjustment_level follow the identical pattern (OrganAdjustmentLevel):
+the stages need to tell "не требуется" from "с осторожностью" from
+"противопоказан", and they must not do it by parsing prose per query.
+contraindications and pediatric_dosing are not present anywhere in
+db/index.json today, so they are always None — degraded WARNING mode is
+expected downstream.
 """
 
 from __future__ import annotations
@@ -30,6 +34,7 @@ from clinical_engine.models import (
     DrugInfo,
     EngineError,
     EngineErrorCode,
+    OrganAdjustmentLevel,
     PediatricDosing,
     PregnancyCategory,
 )
@@ -49,22 +54,100 @@ _DILUTION_FIELDS = {
 
 
 def _classify_pregnancy(raw_text: str | None) -> PregnancyCategory:
-    """Narrow keyword classification — see DECISIONS.md 2026-07-10."""
+    """Narrow keyword classification — see DECISIONS.md 2026-07-10.
+
+    Order is load-bearing (C-1). An explicit contraindication is tested
+    BEFORE the trimester test: "Противопоказан в I и III триместрах" and
+    "Противопоказан в III триместре (риск гемолитической анемии у плода)"
+    both state a contraindication, and testing "триместр" first silently
+    downgraded two teratogens from PROHIBITED to CAUTION — the single most
+    dangerous outcome this classifier can produce, because a CAUTION flag
+    does not exclude. Patient has no trimester field, so a
+    contraindication-conditional-on-trimester cannot be proven safe either;
+    the conservative direction (exclude, with the source text shown to the
+    physician) is the safe one.
+
+    The trimester test still owns "Разрешён во II-III триместрах" — allowed
+    only in some trimesters is NOT an assertion of safety, so it stays
+    CAUTION.
+    """
     if not raw_text:
         return PregnancyCategory.UNKNOWN
     text = raw_text.strip()
     lowered = text.lower()
-    if "триместр" in lowered:
-        # Trimester-conditional (either direction) — Patient has no trimester
-        # field, so neither PROHIBITED nor ALLOWED can be asserted safely.
-        return PregnancyCategory.CAUTION
     if lowered.startswith("противопоказан"):
         return PregnancyCategory.PROHIBITED
+    if "триместр" in lowered:
+        # Trimester-conditional permission (either direction) — Patient has no
+        # trimester field, so ALLOWED cannot be asserted safely.
+        return PregnancyCategory.CAUTION
     if lowered.startswith("разреш"):
         return PregnancyCategory.ALLOWED
     if lowered.startswith("с осторожностью"):
         return PregnancyCategory.CAUTION
     return PregnancyCategory.UNKNOWN
+
+
+# "no adjustment needed" phrasings, matched case/punctuation-tolerantly
+# against a normalized prefix (L-3). Exact-string matching made
+# "Не требуется.", "НЕ ТРЕБУЕТСЯ" and "Не требуется при ХБП" all raise a
+# spurious RENAL_ADJ_UNPARSED.
+_NO_ADJUSTMENT_SENTINELS: tuple[str, ...] = (
+    "не требуется",
+    "не нужна",
+    "не требуется коррекция",
+    "без коррекции",
+    "коррекция не требуется",
+    "not required",
+    "no adjustment",
+    "none",
+)
+
+
+def _is_no_adjustment_text(raw_text: str | None) -> bool:
+    """True when the text asserts that no organ adjustment is needed."""
+    if not raw_text:
+        return False
+    normalized = " ".join(
+        raw_text.replace("ё", "е").strip().casefold().strip(".!…;,:")
+        .split()
+    ).strip()
+    if not normalized:
+        return False
+    return any(
+        normalized == sentinel or normalized.startswith(sentinel + " ")
+        or normalized.startswith(sentinel + "(")
+        for sentinel in _NO_ADJUSTMENT_SENTINELS
+    )
+
+
+def _classify_organ_adjustment(raw_text: str | None) -> OrganAdjustmentLevel:
+    """Load-time classification of an organ-adjustment free-text field.
+
+    Same preparation-time pattern as _classify_pregnancy, so the runtime stage
+    reads a structured level instead of parsing prose (Invariant #13) and can
+    tell "не требуется" (H-5/L-3) from "с осторожностью" from
+    "противопоказан".
+    """
+    if raw_text is None or not str(raw_text).strip():
+        return OrganAdjustmentLevel.UNKNOWN
+    if _is_no_adjustment_text(raw_text):
+        return OrganAdjustmentLevel.NONE
+    lowered = " ".join(str(raw_text).strip().casefold().split())
+    if "противопоказан" in lowered:
+        return OrganAdjustmentLevel.PROHIBITED
+    if (
+        "с осторожностью" in lowered
+        or "коррекц" in lowered
+        or "снизить дозу" in lowered
+        or "увеличить интервал" in lowered
+        or "удлинить интервал" in lowered
+        or "гепатотоксич" in lowered
+        or "контроль печёночных проб" in lowered
+        or "тлм" in lowered
+    ):
+        return OrganAdjustmentLevel.CAUTION
+    return OrganAdjustmentLevel.UNKNOWN
 
 
 def _build_forms(raw_forms: Any) -> tuple[DrugForm, ...]:
@@ -146,13 +229,23 @@ class DrugReferenceReader:
         for key, entry in drugs_reference.items():
             if key.startswith("_") or not isinstance(entry, dict):
                 continue  # e.g. "_note" metadata key, not a drug
+            raw_pregnancy = entry.get("pregnancy_category")
             info = DrugInfo(
                 drug_ref=key,
                 inn=str(entry.get("inn") or ""),
                 drug_class=str(entry.get("class") or ""),
                 renal_adjustment=entry.get("renal_adjustment"),
                 hepatic_adjustment=entry.get("hepatic_adjustment"),
-                pregnancy_category=_classify_pregnancy(entry.get("pregnancy_category")),
+                pregnancy_category=_classify_pregnancy(raw_pregnancy),
+                pregnancy_source_text=(
+                    str(raw_pregnancy) if raw_pregnancy is not None else None
+                ),
+                renal_adjustment_level=_classify_organ_adjustment(
+                    entry.get("renal_adjustment")
+                ),
+                hepatic_adjustment_level=_classify_organ_adjustment(
+                    entry.get("hepatic_adjustment")
+                ),
                 age_restriction_min=entry.get("age_restriction_min"),
                 age_restriction_max=entry.get("age_restriction_max"),
                 contraindications=entry.get("contraindications"),

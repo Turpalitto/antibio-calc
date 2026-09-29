@@ -73,11 +73,22 @@ class AnthropicProvider(BaseProvider):
                 )
                 resp.raise_for_status()
                 data = resp.json()
-                # Validate response has content
+                # Validate response has content.
+                # L-46: `not msg["content"]` treated a legitimate `""` as a failure
+                # AND misread a LIST-valued content (Anthropic content blocks) as
+                # empty, because `not []` is True.  Only a genuinely absent or
+                # whitespace-only STRING is a failure; a non-empty list is content.
                 try:
                     msg = data["choices"][0]["message"]
-                    if "content" not in msg or not msg["content"]:
-                        raise ValueError("Empty response content")
+                    if "content" not in msg:
+                        raise ValueError("missing content field")
+                    content = msg["content"]
+                    if isinstance(content, str) and not content.strip():
+                        raise ValueError("empty string content")
+                    if isinstance(content, (list, tuple)) and len(content) == 0:
+                        raise ValueError("empty content block list")
+                    if content is None:
+                        raise ValueError("null content")
                 except (KeyError, IndexError, TypeError, ValueError) as exc:
                     logger.warning(
                         "Anthropic attempt %d/%d: empty/invalid response body, retry in %ds",
@@ -88,10 +99,16 @@ class AnthropicProvider(BaseProvider):
                         continue
                     raise RuntimeError(f"Empty response after {self._max_retries} retries") from exc
                 return data
-            except (httpx.HTTPStatusError, httpx.RequestError, Exception) as exc:
-                wait = 2**attempt
+            except Exception as exc:  # noqa: BLE001 - classified below (M-45)
+                if not self.should_retry(exc):
+                    logger.error(
+                        "Anthropic request failed permanently (status %s): %s",
+                        getattr(getattr(exc, "response", None), "status_code", "n/a"), exc,
+                    )
+                    raise
+                wait = self.backoff_seconds(attempt)
                 logger.warning(
-                    "Anthropic attempt %d/%d failed: %s: %s, retry in %ds",
+                    "Anthropic attempt %d/%d failed: %s: %s, retry in %.1fs",
                     attempt + 1, self._max_retries, type(exc).__name__, exc, wait,
                 )
                 if attempt < self._max_retries - 1:

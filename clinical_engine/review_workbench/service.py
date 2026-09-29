@@ -17,9 +17,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from . import permissions
 from .models import (
-    AuditEvent, ClinicalReviewTask, FINAL_STATES, QAVerdict, ReviewAssignment, ReviewDecision,
-    ReviewDecisionRecord, ReviewRole, ReviewState, TargetType,
+    AuditEvent, ClinicalReviewTask, CloseOutcome, ConsensusResult, FINAL_STATES, QAVerdict,
+    QA_ELIGIBLE_STATES, ReviewAssignment, ReviewDecision, ReviewDecisionRecord, ReviewRole,
+    ReviewState, TargetType, consensus_or_blank,
 )
 from .reviewer_registry import ReviewerRegistry
 from .storage import ReviewStore
@@ -98,22 +100,14 @@ class ReviewService:
 
     # --- identity validation (Phase 1-2) --------------------------------------
 
-    # Actions with exactly one legitimate acting role, regardless of which role a
-    # caller might otherwise be registered for on their own account. Prevents a
-    # reviewer's OWN authorised role from being reused to bypass an action that
-    # requires a different, specific role (e.g. Reviewer A calling adjudicate()
-    # while quoting role=REVIEWER_A, a role they are legitimately registered for).
-    _SINGLE_ROLE_ACTIONS = {
-        "submit_first": ReviewRole.REVIEWER_A,
-        "submit_second": ReviewRole.REVIEWER_B,
-        "adjudicate": ReviewRole.ADJUDICATOR,
-        "qa_signoff": ReviewRole.MEDICAL_QA_LEAD,
-        "close": ReviewRole.MEDICAL_QA_LEAD,
-        "waive": ReviewRole.MEDICAL_QA_LEAD,
-    }
-
     def _validate(self, task_id: str, reviewer_id: str, role: ReviewRole,
                   target_type: TargetType, action: str) -> None:
+        """Registry check first, then the single role-permission matrix.
+
+        ``permissions`` is the ONLY role matrix; this method must not grow a
+        second copy of the role rules (that duplication is what let the two
+        sources of truth drift apart).
+        """
         result = self.registry.validate_reviewer_action(reviewer_id, role, target_type, action)
         if not result.allowed:
             self.store.log_rejected_attempt(
@@ -121,13 +115,14 @@ class ReviewService:
                 reason_code=result.reason_code, timestamp=_now(),
             )
             raise ReviewerValidationError(result.reason_code)
-        required_role = self._SINGLE_ROLE_ACTIONS.get(action)
-        if required_role is not None and role is not required_role:
+        try:
+            permissions.require(action, role)
+        except permissions.PermissionDenied as denied:
             self.store.log_rejected_attempt(
                 task_id=task_id, actor=reviewer_id, role=role, action=action,
                 reason_code="ROLE_NOT_AUTHORISED", timestamp=_now(),
             )
-            raise ReviewerValidationError("ROLE_NOT_AUTHORISED")
+            raise ReviewerValidationError("ROLE_NOT_AUTHORISED") from denied
 
     def list_queue(self, **filters: Any) -> list[ClinicalReviewTask]:
         return self.store.list_tasks(**filters)
@@ -137,13 +132,14 @@ class ReviewService:
 
     def _apply(self, task: ClinicalReviewTask, updated: ClinicalReviewTask, *, actor: str,
                role: ReviewRole, event_type: str, decision: str = "",
-               reason_codes: tuple[str, ...] = (), comments: str = "") -> ClinicalReviewTask:
+               reason_codes: tuple[str, ...] = (), comments: str = "",
+               ledger_record: ReviewDecisionRecord | None = None) -> ClinicalReviewTask:
         event = AuditEvent(
             sequence=len(task.audit_history) + 1, actor=actor, role=role, event_type=event_type,
             from_state=task.lifecycle_state, to_state=updated.lifecycle_state, decision=decision,
             reason_codes=reason_codes, comments=comments, timestamp=_now(),
         )
-        return self.store.transition(task, updated, event)
+        return self.store.transition(task, updated, event, ledger_record=ledger_record)
 
     # --- Phase 3: governed assignment -----------------------------------------
 
@@ -174,10 +170,52 @@ class ReviewService:
         self.store.add_assignment(assignment)
         return assignment
 
-    def revoke_assignment(self, assignment_id: str, *, reason: str) -> None:
+    def revoke_assignment(self, assignment_id: str, *, reason: str,
+                          actor: str | None = None, role: ReviewRole | None = None,
+                          expected_task_id: str | None = None) -> ReviewAssignment:
+        """Deactivate a task-level assignment; return the revoked record.
+
+        When ``actor``/``role`` are supplied — which is always the case from the
+        HTTP surface, where the actor is the authenticated session and never the
+        request body — the revocation is governed: the caller must be a
+        registered, active reviewer holding ``role``, and must be either the
+        person who made the assignment or a registered ADMINISTRATOR. Both
+        denials are audit-logged as rejected attempts.
+
+        ``expected_task_id`` pins the revocation to a task, so a caller holding a
+        valid assignment id for one task cannot revoke it through another task's
+        URL.
+
+        Omitting ``actor`` is the in-process administrative form used by
+        maintenance tooling; it carries no registry check, so it must never be
+        reachable from a request.
+        """
         if not reason.strip():
             raise ValueError("Revocation requires a reason")
+        assignment = self.find_assignment(assignment_id)
+        if expected_task_id is not None and assignment.task_id != expected_task_id:
+            raise InvalidTransition(
+                f"assignment {assignment_id} is not on task {expected_task_id}"
+            )
+        if actor is not None and role is not None:
+            self._validate(assignment.task_id, actor, role,
+                           self.get_task(assignment.task_id).target_type, "revoke_assignment")
+            if role is not ReviewRole.ADMINISTRATOR and assignment.assigned_by != actor:
+                self.store.log_rejected_attempt(
+                    task_id=assignment.task_id, actor=actor, role=role, action="revoke_assignment",
+                    reason_code="ASSIGNMENT_REVOCATION_FORBIDDEN", timestamp=_now(),
+                )
+                raise ReviewerValidationError("ASSIGNMENT_REVOCATION_FORBIDDEN")
         self.store.revoke_assignment(assignment_id, revoked_at=_now(), reason=reason.strip())
+        return assignment
+
+    def find_assignment(self, assignment_id: str) -> ReviewAssignment:
+        """Look up one assignment by id across tasks."""
+        for task in self.store.list_tasks(limit=1_000_000):
+            for assignment in self.store.list_assignments(task.task_id):
+                if assignment.assignment_id == assignment_id:
+                    return assignment
+        raise InvalidTransition(f"Unknown assignment_id: {assignment_id}")
 
     def _require_active_assignment(self, task_id: str, reviewer_id: str, role: ReviewRole) -> None:
         assignment = self.store.active_assignment_for_role(task_id, role)
@@ -271,15 +309,16 @@ class ReviewService:
                           reason_codes=reason_codes, comments=comments,
                           first_decision=decision.value, first_reason_codes=reason_codes,
                           first_comments=comments)
-        result = self._apply(task, updated, actor=reviewer, role=role, event_type="SUBMIT_FIRST",
-                             decision=decision.value, reason_codes=reason_codes, comments=comments)
-        self.store.record_decision(ReviewDecisionRecord(
-            decision_id=_new_id("dec"), task_id=task_id, target_version=target_version,
-            reviewer_id=reviewer, reviewer_role=role, verdict=decision.value,
-            reason_codes=reason_codes, rationale=comments, source_verified=source_verified,
-            submitted_at=_now(), decision_sequence=1,
-        ))
-        return result
+        return self._apply(
+            task, updated, actor=reviewer, role=role, event_type="SUBMIT_FIRST",
+            decision=decision.value, reason_codes=reason_codes, comments=comments,
+            ledger_record=ReviewDecisionRecord(
+                decision_id=_new_id("dec"), task_id=task_id, target_version=target_version,
+                reviewer_id=reviewer, reviewer_role=role, verdict=decision.value,
+                reason_codes=reason_codes, rationale=comments, source_verified=source_verified,
+                submitted_at=_now(), decision_sequence=1,
+            ),
+        )
 
     def submit_second_review(self, task_id: str, *, reviewer: str, role: ReviewRole,
                              decision: ReviewDecision, reason_codes: tuple[str, ...], comments: str,
@@ -301,12 +340,15 @@ class ReviewService:
 
         if decision in {ReviewDecision.NEEDS_INFO, ReviewDecision.ABSTAIN}:
             state = ReviewState.NEEDS_INFO if decision is ReviewDecision.NEEDS_INFO else ReviewState.ABSTAINED
-            consensus_result = "NEEDS_INFO" if decision is ReviewDecision.NEEDS_INFO else "ABSTENTION_PENDING"
+            consensus_result: ConsensusResult | str = (
+                ConsensusResult.NEEDS_INFO if decision is ReviewDecision.NEEDS_INFO
+                else ConsensusResult.ABSTENTION_PENDING
+            )
         elif first_decision is not None and (first_decision, decision) in _CONSENSUS_MATCH:
-            consensus_result = _CONSENSUS_MATCH[(first_decision, decision)]
+            consensus_result = ConsensusResult(_CONSENSUS_MATCH[(first_decision, decision)])
             state = ReviewState.MEDICAL_QA_PENDING
         else:
-            consensus_result = "NEEDS_ADJUDICATION"
+            consensus_result = ConsensusResult.NEEDS_ADJUDICATION
             state = ReviewState.NEEDS_ADJUDICATION
 
         completed_at = _now() if state in FINAL_STATES else ""
@@ -314,15 +356,16 @@ class ReviewService:
                           reason_codes=reason_codes, comments=comments, completed_at=completed_at,
                           second_decision=decision.value, second_reason_codes=reason_codes,
                           second_comments=comments, consensus_result=consensus_result)
-        result = self._apply(task, updated, actor=reviewer, role=role, event_type="SUBMIT_SECOND",
-                             decision=decision.value, reason_codes=reason_codes, comments=comments)
-        self.store.record_decision(ReviewDecisionRecord(
-            decision_id=_new_id("dec"), task_id=task_id, target_version=target_version,
-            reviewer_id=reviewer, reviewer_role=role, verdict=decision.value,
-            reason_codes=reason_codes, rationale=comments, source_verified=source_verified,
-            submitted_at=_now(), decision_sequence=2,
-        ))
-        return result
+        return self._apply(
+            task, updated, actor=reviewer, role=role, event_type="SUBMIT_SECOND",
+            decision=decision.value, reason_codes=reason_codes, comments=comments,
+            ledger_record=ReviewDecisionRecord(
+                decision_id=_new_id("dec"), task_id=task_id, target_version=target_version,
+                reviewer_id=reviewer, reviewer_role=role, verdict=decision.value,
+                reason_codes=reason_codes, rationale=comments, source_verified=source_verified,
+                submitted_at=_now(), decision_sequence=2,
+            ),
+        )
 
     def adjudicate(self, task_id: str, *, adjudicator: str, role: ReviewRole,
                    decision: ReviewDecision, reason_codes: tuple[str, ...], comments: str,
@@ -337,28 +380,32 @@ class ReviewService:
             raise InvalidTransition("SELF_REVIEW_FORBIDDEN: adjudicator cannot be a reviewer on this task")
         if decision in {ReviewDecision.NEEDS_INFO, ReviewDecision.ABSTAIN}:
             state = ReviewState.NEEDS_INFO if decision is ReviewDecision.NEEDS_INFO else ReviewState.ABSTAINED
-            consensus_result = "NEEDS_INFO" if decision is ReviewDecision.NEEDS_INFO else "ABSTENTION_PENDING"
+            consensus_result: ConsensusResult | str = (
+                ConsensusResult.NEEDS_INFO if decision is ReviewDecision.NEEDS_INFO
+                else ConsensusResult.ABSTENTION_PENDING
+            )
         else:
             state = ReviewState.MEDICAL_QA_PENDING
             consensus_result = (
-                "CONSENSUS_ACCEPT" if decision is ReviewDecision.ACCEPT
-                else "CONSENSUS_ACCEPT_WITH_NOTE" if decision is ReviewDecision.ACCEPT_WITH_NOTE
-                else "CONSENSUS_REJECT_FIDELITY" if decision is ReviewDecision.REJECT_FIDELITY
-                else "CONSENSUS_REJECT_CLINICAL"
+                ConsensusResult.CONSENSUS_ACCEPT if decision is ReviewDecision.ACCEPT
+                else ConsensusResult.CONSENSUS_ACCEPT_WITH_NOTE if decision is ReviewDecision.ACCEPT_WITH_NOTE
+                else ConsensusResult.CONSENSUS_REJECT_FIDELITY if decision is ReviewDecision.REJECT_FIDELITY
+                else ConsensusResult.CONSENSUS_REJECT_CLINICAL
             )
         updated = replace(task, lifecycle_state=state, adjudicator=adjudicator,
                           decision=decision.value, reason_codes=reason_codes, comments=comments,
                           consensus_result=consensus_result,
                           completed_at=_now() if state in FINAL_STATES else "")
-        result = self._apply(task, updated, actor=adjudicator, role=role, event_type="ADJUDICATE",
-                             decision=decision.value, reason_codes=reason_codes, comments=comments)
-        self.store.record_decision(ReviewDecisionRecord(
-            decision_id=_new_id("dec"), task_id=task_id, target_version=target_version,
-            reviewer_id=adjudicator, reviewer_role=role, verdict=decision.value,
-            reason_codes=reason_codes, rationale=comments, source_verified=True,
-            submitted_at=_now(), decision_sequence=3,
-        ))
-        return result
+        return self._apply(
+            task, updated, actor=adjudicator, role=role, event_type="ADJUDICATE",
+            decision=decision.value, reason_codes=reason_codes, comments=comments,
+            ledger_record=ReviewDecisionRecord(
+                decision_id=_new_id("dec"), task_id=task_id, target_version=target_version,
+                reviewer_id=adjudicator, reviewer_role=role, verdict=decision.value,
+                reason_codes=reason_codes, rationale=comments, source_verified=True,
+                submitted_at=_now(), decision_sequence=3,
+            ),
+        )
 
     # --- Phase 6: Medical QA sign-off ------------------------------------------
 
@@ -369,7 +416,7 @@ class ReviewService:
         self._validate(task_id, medical_qa_reviewer_id, role, task.target_type, "qa_signoff")
         if task.revision != expected_revision or task.target_version != target_version:
             raise InvalidTransition("Stale task or target version")
-        if task.lifecycle_state is not ReviewState.MEDICAL_QA_PENDING:
+        if task.lifecycle_state not in QA_ELIGIBLE_STATES:
             raise InvalidTransition("Task is not awaiting Medical QA sign-off")
         if medical_qa_reviewer_id in {task.assigned_reviewer, task.second_reviewer, task.adjudicator}:
             raise InvalidTransition(
@@ -398,7 +445,14 @@ class ReviewService:
             if packet["unsupported_checks"]["drug_interactions"] != "NOT AVAILABLE / UNSATISFIABLE":
                 raise InvalidTransition("Cannot approve: interaction-check status has been tampered with")
 
-        direction_reject = task.consensus_result in {"CONSENSUS_REJECT_FIDELITY", "CONSENSUS_REJECT_CLINICAL"}
+        # QA-direction gate. A Medical QA Lead can never approve a target whose
+        # two-reviewer (or adjudicated) direction was a REJECT: an APPROVE
+        # verdict on a reject-direction consensus resolves to REJECTED.
+        # This is the ONLY QA-direction check — the pre-approval checklist above
+        # governs *readiness*, not direction.
+        direction_reject = consensus_or_blank(task.consensus_result) in {
+            ConsensusResult.CONSENSUS_REJECT_FIDELITY, ConsensusResult.CONSENSUS_REJECT_CLINICAL,
+        }
 
         if verdict is QAVerdict.APPROVE or verdict is QAVerdict.APPROVE_WITH_NOTE:
             state = ReviewState.REJECTED if direction_reject else ReviewState.PHYSICIAN_APPROVED
@@ -416,15 +470,16 @@ class ReviewService:
         completed_at = _now() if state in FINAL_STATES else ""
         updated = replace(task, lifecycle_state=state, qa_reviewer=medical_qa_reviewer_id,
                           qa_verdict=verdict.value, completed_at=completed_at)
-        result = self._apply(task, updated, actor=medical_qa_reviewer_id, role=role,
-                             event_type="MEDICAL_QA_SIGNOFF", decision=verdict.value, comments=rationale)
-        self.store.record_decision(ReviewDecisionRecord(
-            decision_id=_new_id("dec"), task_id=task_id, target_version=target_version,
-            reviewer_id=medical_qa_reviewer_id, reviewer_role=role, verdict=verdict.value,
-            reason_codes=(), rationale=rationale, source_verified=True,
-            submitted_at=_now(), decision_sequence=4,
-        ))
-        return result
+        return self._apply(
+            task, updated, actor=medical_qa_reviewer_id, role=role,
+            event_type="MEDICAL_QA_SIGNOFF", decision=verdict.value, comments=rationale,
+            ledger_record=ReviewDecisionRecord(
+                decision_id=_new_id("dec"), task_id=task_id, target_version=target_version,
+                reviewer_id=medical_qa_reviewer_id, reviewer_role=role, verdict=verdict.value,
+                reason_codes=(), rationale=rationale, source_verified=True,
+                submitted_at=_now(), decision_sequence=4,
+            ),
+        )
 
     def request_adjudication(self, task_id: str, *, actor: str, role: ReviewRole, reason: str,
                              expected_revision: int) -> ClinicalReviewTask:
@@ -453,19 +508,19 @@ class ReviewService:
               expected_revision: int) -> ClinicalReviewTask:
         task = self.get_task(task_id)
         self._validate(task_id, actor, role, task.target_type, "close")
-        allowed_states = {
-            ReviewState.PHYSICIAN_APPROVED: "CLOSED_APPROVED",
-            ReviewState.REJECTED: "CLOSED_REJECTED",
-            ReviewState.NEEDS_INFO: "CLOSED_NEEDS_INFO",
-            ReviewState.ABSTAINED: "CLOSED_ABSTAINED",
+        allowed_states: dict[ReviewState, CloseOutcome] = {
+            ReviewState.PHYSICIAN_APPROVED: CloseOutcome.CLOSED_APPROVED,
+            ReviewState.REJECTED: CloseOutcome.CLOSED_REJECTED,
+            ReviewState.NEEDS_INFO: CloseOutcome.CLOSED_NEEDS_INFO,
+            ReviewState.ABSTAINED: CloseOutcome.CLOSED_ABSTAINED,
         }
         if task.revision != expected_revision or task.lifecycle_state not in allowed_states:
             raise InvalidTransition(
                 "Cannot close: task must have completed second review, adjudication (if required), "
                 "and Medical QA sign-off first"
             )
-        close_outcome = allowed_states[task.lifecycle_state]
-        updated = replace(task, lifecycle_state=ReviewState.CLOSED, close_outcome=close_outcome)
+        updated = replace(task, lifecycle_state=ReviewState.CLOSED,
+                          close_outcome=allowed_states[task.lifecycle_state])
         return self._apply(task, updated, actor=actor, role=role, event_type="CLOSE")
 
     def add_note(self, task_id: str, *, actor: str, role: ReviewRole, comments: str,
@@ -525,43 +580,107 @@ class ReviewService:
         }
 
     @staticmethod
-    def _redact_first_reviewer_verdict(packet: dict[str, Any]) -> dict[str, Any]:
+    def _redact_task_view(task: dict[str, Any]) -> dict[str, Any]:
         """Phase 4: strip Reviewer A's decision/rationale/reason codes and any
-        derived consensus indicator, entirely — not merely hidden in a UI."""
-        redacted = copy.deepcopy(packet)
-        task = redacted["task"]
+        derived consensus indicator from ONE task record, entirely — not merely
+        hidden in a UI."""
+        redacted = copy.deepcopy(task)
         for field_name in ("decision", "first_decision", "first_comments", "comments", "consensus_result"):
-            if field_name in task:
-                task[field_name] = ""
+            if field_name in redacted:
+                redacted[field_name] = ""
         for field_name in ("reason_codes", "first_reason_codes"):
-            if field_name in task:
-                task[field_name] = []
+            if field_name in redacted:
+                redacted[field_name] = []
         redacted_history = []
-        for event in task.get("audit_history", []):
+        for event in redacted.get("audit_history", []):
             if event.get("event_type") == "SUBMIT_FIRST":
                 event = dict(event)
                 event["decision"] = ""
                 event["reason_codes"] = []
                 event["comments"] = ""
             redacted_history.append(event)
-        task["audit_history"] = redacted_history
+        redacted["audit_history"] = redacted_history
         return redacted
 
+    @classmethod
+    def _redact_first_reviewer_verdict(cls, packet: dict[str, Any]) -> dict[str, Any]:
+        redacted = copy.deepcopy(packet)
+        redacted["task"] = cls._redact_task_view(redacted["task"])
+        return redacted
+
+    # Roles whose entire job is to review BOTH decisions, so they are exempt
+    # from second-reviewer blinding. Keyed on the registry-validated quoted role,
+    # not on anything the caller can invent: validate_reviewer_action() has
+    # already refused any reviewer_id not authorised for that role.
+    _BLINDING_EXEMPT_ROLES = frozenset({ReviewRole.MEDICAL_QA_LEAD, ReviewRole.ADJUDICATOR})
+
+    def _effective_reviewer_role(self, task: ClinicalReviewTask, reviewer_id: str,
+                                 claimed_role: ReviewRole) -> ReviewRole:
+        """The role a packet request must be *judged* as — derived from the task's
+        OWN persisted assignments, never from the role the caller quotes.
+
+        Quoting is self-asserted: the HTTP surface takes ``reviewer_id`` and
+        ``role`` as query parameters, so keying redaction on ``claimed_role``
+        let anyone simply quote REVIEWER_A (or anything else not in
+        _BLINDING_EXEMPT_ROLES) to receive Reviewer A's unredacted verdict,
+        comments, consensus indicator and SUBMIT_FIRST audit body. The task
+        records who its reviewers are; that record is the only trustworthy input
+        to a blinding decision.
+        """
+        if reviewer_id:
+            if reviewer_id == task.assigned_reviewer:
+                return ReviewRole.REVIEWER_A
+            if reviewer_id == task.second_reviewer:
+                return ReviewRole.REVIEWER_B
+            for candidate in (ReviewRole.REVIEWER_A, ReviewRole.REVIEWER_B):
+                assignment = self.store.active_assignment_for_role(task.task_id, candidate)
+                if assignment is not None and assignment.reviewer_id == reviewer_id:
+                    return candidate
+        return claimed_role
+
+    def is_blinded_for(self, task: ClinicalReviewTask, reviewer_id: str, role: ReviewRole) -> bool:
+        """The one place the blinding decision is made, for every surface.
+
+        Packet reads and queue projections must agree, so both ask here.
+        """
+        effective_role = self._effective_reviewer_role(task, reviewer_id, role)
+        if effective_role in self._BLINDING_EXEMPT_ROLES:
+            return False
+        if effective_role is ReviewRole.REVIEWER_A and reviewer_id == task.assigned_reviewer:
+            # Reviewer A's own prior submission: nothing is hidden from them.
+            return False
+        return True
+
+    def task_view_for_reviewer(self, task: ClinicalReviewTask, reviewer_id: str,
+                               role: ReviewRole) -> dict[str, Any]:
+        """Single-task projection for list surfaces, blinded exactly as a packet is.
+
+        ``list_queue`` returns whole :class:`ClinicalReviewTask` records, so an
+        unredacted queue listing leaks Reviewer A's verdict to every caller while
+        the task sits in SECOND_REVIEW — the very leak Phase 4 closed for
+        ``packet_for_reviewer``, reachable through a cheaper endpoint.
+        """
+        view = asdict(task)
+        return self._redact_task_view(view) if self.is_blinded_for(task, reviewer_id, role) else view
+
     def packet_for_reviewer(self, task_id: str, reviewer_id: str, role: ReviewRole) -> dict[str, Any]:
-        """Role-aware packet rendering (Phase 4). Reviewer B pre-submission
-        view omits Reviewer A's verdict, rationale, reason codes, and any
-        derived consensus indicator entirely from the response — not just the
-        UI. Reviewer A never sees a prior verdict (there is none before they
-        submit). Medical QA Lead / Adjudicator always see the full picture,
-        because their role is exactly to review both decisions."""
+        """Role-aware packet rendering (Phase 4). While a task sits in
+        SECOND_REVIEW, Reviewer A's verdict, rationale, reason codes, consensus
+        indicator and SUBMIT_FIRST audit body are omitted entirely from the
+        response — not just the UI.
+
+        Whether a response is blinded is decided by the task's own stored
+        assignments (:meth:`_effective_reviewer_role`), not by the role the caller
+        quotes. Medical QA Lead / Adjudicator see the full picture because their
+        role is exactly to review both decisions. Reviewer A never sees a *prior*
+        verdict, and a caller who is neither an exempt role nor the task's own
+        first reviewer is treated as a second reviewer and blinded.
+        """
         task = self.get_task(task_id)
         self._validate(task_id, reviewer_id, role, task.target_type, "view_packet")
         full = self.packet(task_id)
-        if role in (ReviewRole.MEDICAL_QA_LEAD, ReviewRole.ADJUDICATOR):
-            return full
-        if role is ReviewRole.REVIEWER_B and task.lifecycle_state is ReviewState.SECOND_REVIEW:
-            return self._redact_first_reviewer_verdict(full)
-        return full
+        return self._redact_first_reviewer_verdict(full) if self.is_blinded_for(
+            task, reviewer_id, role) else full
 
     def export_packet(self, task_id: str, path: str | Path,
                       *, reviewer_id: str | None = None, role: ReviewRole | None = None) -> Path:

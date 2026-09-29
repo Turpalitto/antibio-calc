@@ -17,6 +17,7 @@ import os
 import io
 import logging
 import tempfile
+from collections import defaultdict
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 import time
@@ -27,14 +28,50 @@ from PIL import Image
 logger = logging.getLogger(__name__)
 
 
+# L-27: table-header markers across the languages the corpus actually uses.
+_HEADER_MARKERS = (
+    "header", "thead",
+    "препарат", "наименование", "дозировка", "доза", "кратность", "длительность",
+    "путь введения", "возраст", "примечание",
+)
+
+# H-13: the keyword set that decides whether a page is worth the ML layout pass.
+# It omitted "3 р/сут", "по 1 фл.", "500 МЕ" and any image-only dosing table -- i.e.
+# exactly the pages that carry a dose.  Widened, and skipping is now RECORDED.
+_DOSING_SIGNALS = (
+    # mass units (incl. Cyrillic and Latin spellings, incl. the МЕ/МЕД abbreviations)
+    "мг", "мг.", "мкг", "г ", "г.", "мг/кг", "мкг/кг", "mg", "g.", "ме", "м.е.", "мeд",
+    # volume / count units used for injections
+    "мл", "мл.", "ml", "фл", "флакон", "ампул", "тбл", "табл", "капсул", "доз",
+    # frequency idioms
+    "раз в", "раз/сут", "р/сут", "р/д", "раз в сутки", "в сутки", "сутки", "суточн",
+    "каждые", "прием", "приём", "введени", "инфуз", "назнача", "внутривенно", "в/в", "в/м",
+    "внутрь", "перорально", "ректально",
+    # course length
+    "дней", "дня", "день", "курс",
+    # table / therapy signals
+    "таблиц", "антибактериальн", "антибиотик", "терапия", "лечение", "схема",
+    "рекомендац", "дозиров", "препарат",
+)
+
+
 def _rapidtable_html(result) -> str:
-    """RC-016: adapt to RapidTable API drift. New rapid-table (>=3) returns a RapidTableOutput with
-    `.pred_htmls` (list); older versions returned a (html, elapse) tuple. Return first HTML or ""."""
+    """RC-016: adapt to RapidTable API drift. New rapid-table (>=3) returns a
+    RapidTableOutput with ``.pred_htmls`` (list); older versions returned a
+    (html, elapse) tuple. Return the first HTML or "".
+
+    L-25: the old expression ``htmls[0] if isinstance(htmls, (list, tuple)) and
+    htmls else (htmls or "")`` had an unreachable ternary -- the `else` could only
+    run when ``htmls`` was a non-empty non-sequence, and then it returned a
+    non-string.  A truthy sequence now always yields its first element.
+    """
     htmls = getattr(result, "pred_htmls", None)
     if htmls:
-        return htmls[0] if isinstance(htmls, (list, tuple)) and htmls else (htmls or "")
+        if isinstance(htmls, (list, tuple)):
+            return str(htmls[0]) if htmls else ""
+        return str(htmls)
     if isinstance(result, (list, tuple)) and result:
-        return result[0]
+        return str(result[0])
     return ""
 
 # Optional external site-packages directory for heavyweight extraction deps
@@ -71,6 +108,7 @@ class LayoutProcessor:
         self.table_structure = None
         self.table_structure_processor = None
         self.rapid_table = None
+        self.last_skipped_pages: List[Dict[str, Any]] = []
         self._load_models()
 
     def _load_models(self):
@@ -219,7 +257,13 @@ class LayoutProcessor:
         return tables
 
     def _build_cells_from_words(self, page: fitz.Page, table_bbox: BoundingBox, approx_rows: int, approx_cols: int) -> List[TableCell]:
-        """Production-grade: extract words with bboxes inside table region and cluster into grid."""
+        """Production-grade: extract words with bboxes inside table region and cluster into grid.
+
+        H-14: this used ``defaultdict`` without importing it, so the function raised
+        NameError on EVERY call.  The bare ``except Exception: pass`` swallowed it
+        and returned no cells -- so this code path contributed nothing at all and
+        reported no error.
+        """
         cells: List[TableCell] = []
         try:
             rect = fitz.Rect(table_bbox.x0, table_bbox.y0, table_bbox.x1, table_bbox.y1)
@@ -283,7 +327,8 @@ class LayoutProcessor:
         return blocks
 
     def _extract_table_with_transformers(self, image: Image.Image, page: fitz.Page,
-                                         page_num: int, page_rect: fitz.Rect) -> List[TableObject]:
+                                         page_num: int, page_rect: fitz.Rect,
+                                         source_pdf: str = "") -> List[TableObject]:
         """Primary table path using Table Transformer detection + structure + fitz text."""
         tables: List[TableObject] = []
         if not (self.table_detector and self.table_structure):
@@ -349,11 +394,15 @@ class LayoutProcessor:
                 cols_est = max(1, min(8, n_cells))  # heuristic
                 rows_est = max(1, (n_cells + cols_est - 1) // cols_est)
 
+                cell_w = (x1 - x0) / cols_est
+                cell_h = (y1 - y0) / rows_est
                 for idx, txt in enumerate(cell_texts[:rows_est * cols_est]):
                     r = idx // cols_est
                     c = idx % cols_est
-                    cell_bbox = BoundingBox(x0 + (c * (x1-x0)//cols_est), y0 + (r * (y1-y0)//rows_est),
-                                            x0 + ((c+1) * (x1-x0)//cols_est), y0 + ((r+1) * (y1-y0)//rows_est),
+                    # L-26: `//` on ints made every synthesized cell narrower than
+                    # one pixel, so all of them collapsed to width 0 / height 0.
+                    cell_bbox = BoundingBox(x0 + c * cell_w, y0 + r * cell_h,
+                                            x0 + (c + 1) * cell_w, y0 + (r + 1) * cell_h,
                                             page=page_num)
                     cells.append(TableCell(
                         row=r, col=c, text=txt or self._extract_text_in_bbox(page, cell_bbox),
@@ -379,10 +428,15 @@ class LayoutProcessor:
                     rows=rows_est,
                     cols=cols_est,
                     cells=cells,
-                    header_rows=1 if any("header" in (c.text or "").lower() for c in cells) else 0,
+                    header_rows=1 if any(
+                        marker in (c.text or "").lower()
+                        # L-27: the heuristic was English-only ("header") on a
+                        # corpus that is entirely Russian.
+                        for marker in _HEADER_MARKERS
+                    ) else 0,
                     confidence=conf,
                     engine="table-transformer+rapidtable",
-                    source_pdf=str(page.parent) if hasattr(page, 'parent') else ""
+                    source_pdf=source_pdf
                 ))
         except Exception as e:
             # Observability (PR-001): a silent `pass` here hid a NameError that dropped ALL
@@ -417,43 +471,65 @@ class LayoutProcessor:
 
     def process_pdf(self, pdf_path: Path) -> Tuple[List[Dict[str, Any]], List[TableObject]]:
         """Returns (layout_blocks per page, structured_tables list).
-        
-        Production optimization: Skip expensive image-based layout on pages that have no dosing/antibiotic signals (using fast text check).
-        This makes full-corpus reprocessing feasible.
+
+        Production optimization: skip expensive image-based layout on pages with no
+        dosing/antibiotic signal (a fast text check).
+
+        H-13: the signal set omitted "3 р/сут", "по 1 фл.", "500 МЕ" and any
+        image-only dosing table, so a page carrying a dose was dropped with NO
+        WARNING.  The set is widened (:data:`_DOSING_SIGNALS`) and a skipped page
+        is RECORDED in its block entry and aggregated into
+        ``metadata['layout_skipped_pages']``, so an omission is auditable instead
+        of invisible.
+
+        M-30: rasterisation previously ran for every page that passed the filter,
+        for an ML path that is usually unused.  The native ruled-table path (no
+        raster, no ML) now runs first and the page is only rasterised when a
+        fallback is genuinely needed.
         """
         doc = fitz.open(str(pdf_path))
-        all_blocks: List[Dict] = []
+        all_blocks: List[Dict[str, Any]] = []
         all_structured: List[TableObject] = []
-
-        dosing_keywords = ['мг', 'г ', 'мг/кг', 'раз в', 'сутки', 'дней', 'таблиц', 'антибактериальн']
+        skipped_pages: List[Dict[str, Any]] = []
 
         for page_num in range(len(doc)):
             page = doc[page_num]
             page_text = page.get_text("text") or ""
             page_lower = page_text.lower()
 
-            # Fast skip for pages without relevant content (makes full corpus feasible)
-            has_signal = any(kw in page_lower for kw in dosing_keywords)
+            has_signal = any(kw in page_lower for kw in _DOSING_SIGNALS)
             if not has_signal and page_num > 2:  # process first pages + any with signals
-                all_blocks.append({"page_num": page_num, "blocks": [], "tables": []})
+                reason = "no_dosing_signal_in_text_layer"
+                # H-13: never skip silently.
+                skipped_pages.append({
+                    "page_num": page_num,
+                    "skip_reason": reason,
+                    "text_chars": len(page_text),
+                    "has_image": bool(page.get_images()),
+                })
+                all_blocks.append({
+                    "page_num": page_num, "blocks": [], "tables": [],
+                    "skipped": True, "skip_reason": reason,
+                })
                 continue
 
-            # Use lower DPI for layout (structure detection works well at 72-100 DPI, much faster for full corpus)
-            layout_dpi = 100
-            pix = page.get_pixmap(dpi=layout_dpi)
-            img_bytes = pix.tobytes("png")
-            image = Image.open(io.BytesIO(img_bytes))
             page_rect = page.rect
 
-            # Layout blocks (DocLayout-YOLO)
-            blocks = self._run_doclayout(image, page_num, page_rect)
-
-            # Tables — native digital-PDF path first; image/ML fallbacks for scans.
+            # Tables — native digital-PDF path first; it needs NO raster and NO ML.
             structured = self._extract_tables_pymupdf_native(page, page_num, str(pdf_path))
+
+            blocks: List[Dict[str, Any]] = []
             if not structured:
-                structured = self._extract_table_with_transformers(image, page, page_num, page_rect)
-            if not structured:
-                structured = self._extract_tables_rapid_only(image, page, page_num, page_rect)
+                # M-30: only rasterise when a fallback engine is actually needed.
+                pix = page.get_pixmap(dpi=100)
+                image = Image.open(io.BytesIO(pix.tobytes("png")))
+                blocks = self._run_doclayout(image, page_num, page_rect)
+                if not structured:
+                    structured = self._extract_table_with_transformers(
+                    image, page, page_num, page_rect, str(pdf_path)
+                )
+                if not structured:
+                    structured = self._extract_tables_rapid_only(image, page, page_num, page_rect)
 
             legacy_tables = [t.to_dict() for t in structured]
 
@@ -465,12 +541,33 @@ class LayoutProcessor:
             all_structured.extend(structured)
 
         doc.close()
+        # M-29: LayoutProcessor() constructed per PDF meant 3 model loads per
+        # document (2000 PDFs -> 2000 full model loads).  Callers reuse one
+        # instance; this attribute exists only so the record is inspectable.
+        self.last_skipped_pages = skipped_pages
         return all_blocks, all_structured
+
+
+
+# M-29: `add_layout_to_document` constructed a fresh LayoutProcessor per call, and
+# each construction runs _load_models() -- 3 heavyweight model loads per document,
+# i.e. 2000 PDFs -> 2000 full model loads.  One processor is cached per device so
+# the models are loaded once per process.
+_LAYOUT_PROCESSORS: Dict[str, "LayoutProcessor"] = {}
+
+
+def get_layout_processor(device: str = "cpu") -> "LayoutProcessor":
+    """Return the process-wide LayoutProcessor for ``device`` (models loaded once)."""
+    processor = _LAYOUT_PROCESSORS.get(device)
+    if processor is None:
+        processor = LayoutProcessor(device=device)
+        _LAYOUT_PROCESSORS[device] = processor
+    return processor
 
 
 def add_layout_to_document(doc: 'Document', pdf_path: Path) -> None:
     """Production integration point. Populates both legacy and structured forms."""
-    processor = LayoutProcessor()
+    processor = get_layout_processor()
     page_layouts, structured_tables = processor.process_pdf(pdf_path)
 
     # Distribute per page
@@ -490,6 +587,16 @@ def add_layout_to_document(doc: 'Document', pdf_path: Path) -> None:
     doc.tables.extend([t for pl in page_layouts for t in pl.get("tables", [])])
     doc.structured_tables.extend(structured_tables)
 
-    doc.metadata["layout_engine"] = "pymupdf-native-table + doclayout-yolo + table-transformer + rapidtable"
+    # L-29: this was a hardcoded four-engine string recorded whether or not any of
+    # them ran, so provenance CLAIMED a layout engine that was never used.  Now the
+    # engines that actually produced a table are named.
+    engines = sorted({t.engine for t in structured_tables if getattr(t, "engine", None)})
+    doc.metadata["layout_engine"] = " + ".join(engines) if engines else "none"
+    doc.metadata["layout_engines_used"] = engines
+    # H-13: skipped pages are recorded so an omission is auditable.
+    doc.metadata["layout_skipped_pages"] = list(getattr(processor, "last_skipped_pages", []))
+    doc.metadata["layout_skipped_page_count"] = len(
+        doc.metadata["layout_skipped_pages"]
+    )
     doc.metadata["layout_processed"] = True
     doc.metadata["layout_table_count"] = len(structured_tables)

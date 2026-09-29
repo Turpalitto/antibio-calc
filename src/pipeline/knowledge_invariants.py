@@ -24,6 +24,13 @@ ALLOWED_STATUSES = {
     "superseded", "deprecated", "archived", "active",
 }
 
+# H-10: Frequency/Duration/Route used to be stored under type='Dose' with
+# unit=NULL, so a "Every Dose has a unit" check either had to be advisory (and so
+# could never block CI) or it fired on rows that were never doses.  They now have
+# their own types, which makes the check meaningful AND enforceable for real doses.
+# Only a genuine Dose is subject to it.
+NON_DOSE_TYPES = ("Frequency", "Duration", "Route")
+
 
 @dataclass
 class Result:
@@ -65,11 +72,15 @@ def check(conn: sqlite3.Connection) -> List[Result]:
         "WHERE (semantic_engine LIKE '%table%' OR (layout_engine IS NOT NULL AND layout_engine != 'none')) "
         "AND table_row IS NULL")
 
-    # INV-05 — Dose has a unit (advisory until RC-008)
+    # INV-05 — a genuine Dose has a unit.  NON-ADVISORY: with Frequency/Duration/
+    # Route no longer stored as unit-less Doses (H-10), any violation here is a real
+    # dose missing its unit, and that must be able to block CI.
+    non_dose_sql = ",".join("'%s'" % t for t in NON_DOSE_TYPES)
     add("INV-05", "Every Dose has a unit", True,
-        "SELECT id FROM objects WHERE type='Dose' "
-        "AND (content NOT LIKE '%\"unit\"%' OR content LIKE '%\"unit\": null%' OR content LIKE '%\"unit\": \"\"%')",
-        note="advisory until RC-008 normalization pass", advisory_ok=True)
+        f"SELECT id FROM objects WHERE type='Dose' AND type NOT IN ({non_dose_sql}) "
+        f"AND (content NOT LIKE '%\"unit\"%' OR content LIKE '%\"unit\": null%' "
+        f"OR content LIKE '%\"unit\": \"\"%')",
+        note="blocking: a dose without a unit cannot be calculated")
 
     # INV-08 — version >= 1
     add("INV-08", "Every object has version >= 1", True,

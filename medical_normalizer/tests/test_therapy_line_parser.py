@@ -102,3 +102,109 @@ class TestTherapyLineParser:
     def test_russian_empiricheskiy_therapy(self):
         reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "эмпирическая терапия"})
         assert reg.therapy_line == "first"
+
+
+# ── Regression tests: M12, H2 ─────────────────────────────────────
+
+
+class TestM12FuzzyMatch:
+    """M12: the fuzzy loop was a bidirectional substring test, so a 1-char
+    input such as "а" matched "первая", and the FIRST key in dict insertion
+    order won rather than the best match."""
+
+    def test_single_char_does_not_match(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "а"})
+        assert reg.therapy_line == "unknown"
+
+    def test_two_char_input_does_not_match(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "ли"})
+        assert reg.therapy_line == "unknown"
+
+    def test_three_char_input_does_not_match(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "пер"})
+        assert reg.therapy_line == "unknown"
+
+    def test_min_length_constant(self):
+        assert TherapyLineParser.MIN_FUZZY_LENGTH == 4
+
+    def test_vtoraya_liniya(self):
+        # "вторая линия" previously fell through to "unknown"
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "вторая линия"})
+        assert reg.therapy_line == "reserve"
+
+    def test_pervaya_liniya(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "первая линия"})
+        assert reg.therapy_line == "first"
+
+    def test_vtoraya_liniya_uppercase(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "ВТОРАЯ ЛИНИЯ"})
+        assert reg.therapy_line == "reserve"
+
+    def test_alternativnaya_feminine(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "альтернативная"})
+        assert reg.therapy_line == "alternative"
+
+    def test_longest_match_wins(self):
+        # "препарат первой линии" (len 21) must beat "первая" (len 6);
+        # both map to "first", so use a discriminating pair instead:
+        # "препарат резерва" -> reserve must not be captured by an earlier
+        # shorter "first" key.
+        reg = TherapyLineParser.parse(
+            NormalizedRegimen(), {"regimen_type": "препарат резерва"}
+        )
+        assert reg.therapy_line == "reserve"
+
+    def test_profilaktika_therapy_sentence(self):
+        reg = TherapyLineParser.parse(
+            NormalizedRegimen(), {"regimen_type": "профилактика терапии"}
+        )
+        assert reg.therapy_line == "prophylaxis"
+
+    def test_embedded_key_still_matches(self):
+        reg = TherapyLineParser.parse(
+            NormalizedRegimen(), {"regimen_type": "эмпирическая терапия тяжелой пневмонии"}
+        )
+        assert reg.therapy_line == "first"
+
+    def test_longest_first_ordering_is_enforced(self):
+        # The registry is pre-sorted longest-key-first, which is what makes the
+        # match "best" rather than "first in dict insertion order".
+        lengths = [len(k) for k, _ in TherapyLineParser._MAPPING_LONGEST_FIRST]
+        assert lengths == sorted(lengths, reverse=True)
+        assert lengths[0] == max(len(k) for k in TherapyLineParser._MAPPING)
+
+    def test_gibberish_still_unknown(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "непонятно"})
+        assert reg.therapy_line == "unknown"
+
+    def test_direct_mapping_still_wins_over_fuzzy(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": "reserve"})
+        assert reg.therapy_line == "reserve"
+
+
+class TestH2NonStringInputs:
+    def test_int_regimen_type_does_not_raise(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": 5})
+        assert reg.therapy_line == "unknown"
+
+    def test_int_regimen_type_is_recorded(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": 5})
+        assert any(w.startswith("MISSING_FIELD_INPUT:regimen_type") for w in reg.warnings)
+
+    def test_list_regimen_type_does_not_raise(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": ["first_line"]})
+        assert reg.therapy_line == "unknown"
+
+    def test_dict_regimen_type_does_not_raise(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": {"line": 1}})
+        assert reg.therapy_line == "unknown"
+
+    def test_null_regimen_type_is_not_an_error(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {"regimen_type": None})
+        assert reg.therapy_line == "unknown"
+        assert reg.warnings == []
+
+    def test_absent_regimen_type_is_not_an_error(self):
+        reg = TherapyLineParser.parse(NormalizedRegimen(), {})
+        assert reg.therapy_line == "unknown"
+        assert reg.warnings == []

@@ -16,12 +16,15 @@ dataclasses.replace() once DiagnosisMatch has run.
 
 from __future__ import annotations
 
+import warnings
 from pathlib import Path
 from typing import Protocol
 
 from medical_normalizer.db import NormalizerDB, RegimenRecord
 
+from clinical_engine.config import NON_CLINICAL_POLICIES
 from clinical_engine.models import (
+    SOURCE_SECTION_UNAVAILABLE,
     EngineError,
     EngineErrorCode,
     RecommendationCandidate,
@@ -35,6 +38,20 @@ _VERDICTS_BY_POLICY: dict[ValidationPolicy, frozenset[str] | None] = {
     ValidationPolicy.DEBUG: None,  # None == no filter, all verdicts
     ValidationPolicy.AUDIT: None,
 }
+
+# M-2: profiles that are not clinically meaningful live in config.py
+# (NON_CLINICAL_POLICIES) so a caller can ask the config, not the reader.
+
+# Source-row keys that may carry the section/table the quote came from, in
+# priority order (L-5). Checked in order, first non-empty wins.
+_SECTION_KEYS = (
+    "source_section",
+    "section",
+    "section_title",
+    "table_section",
+    "table_title",
+    "table_id",
+)
 
 
 class SQLiteReader:
@@ -79,9 +96,21 @@ class SQLiteReader:
 
         AUDIT and DEBUG both load every verdict here — AUDIT's "no clinical
         filters" behavior (bypassing safety stages) is a RegimenLoad-and-later
-        concern for the engine orchestrator, not this reader.
+        concern for the engine orchestrator, not this reader. Neither is a
+        clinical mode, so both emit a loud warning (M-2): REJECT-verdict
+        regimens reach the candidate list, and Engine.recommend() additionally
+        records a WARN EngineNote in the result so the signal travels with the
+        data instead of only appearing in a console.
         """
         allowed_verdicts = _VERDICTS_BY_POLICY[policy]
+        if policy in NON_CLINICAL_POLICIES:
+            warnings.warn(
+                f"ValidationPolicy.{policy.name} loads REJECT-verdict regimens: "
+                "these are not clinically valid and must not be presented as "
+                "recommendations.",
+                UserWarning,
+                stacklevel=2,
+            )
         candidates: list[RecommendationCandidate] = []
         for guideline_id in guideline_ids:
             records = self._db.load_by_guideline(guideline_id)
@@ -122,11 +151,23 @@ class SQLiteReader:
             source_pdf=record.source_pdf or "",
             source_page=record.source_page or "",
             source_quote=str(raw.get("source_quote") or ""),
-            source_section="",  # v1: SQLite lacks this column (see §5.3)
+            # L-5: real value when the source row carries one, else a loud
+            # placeholder. The normalized_regimens schema has no section
+            # column, so today every row lands on the placeholder — which is
+            # the honest answer, and distinguishable from "empty section".
+            source_section=_source_section_of(raw),
             diagnosis=record.diagnosis or "",
             mkb=record.mkb or "",
             guideline_year=None,  # filled from DiagnosisEntry by RegimenLoad stage
         )
+
+
+def _source_section_of(raw: dict) -> str:
+    for key in _SECTION_KEYS:
+        value = raw.get(key)
+        if value:
+            return str(value)
+    return SOURCE_SECTION_UNAVAILABLE
 
 
 # P0-2: RegimenProvider Protocol (public contract)

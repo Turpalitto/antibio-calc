@@ -15,6 +15,7 @@ import argparse
 import json
 import logging
 import random
+import re
 import shutil
 import sys
 import time
@@ -25,15 +26,15 @@ from typing import Any
 import orjson
 
 from config import BASE_DIR, CLINRECS_JSON
+from downloader import unique_destination
 
 logger = logging.getLogger(__name__)
 
-# Paths
-RULES_FILE = BASE_DIR / ".." / "prefilter_rules.json"
-# Actually, prefilter_rules.json is in the ANTIBIO root. Let me resolve it properly.
-# BASE_DIR = C:\clinrec_downloader, so C:\clinrec_downloader/../prefilter_rules.json = C:\prefilter_rules.json? No.
-# The ANTIBIO root is C:\ANTIBIO. prefilter_rules.json lives there.
-ANTIBIO_ROOT = Path(__file__).resolve().parent.parent.parent
+# Paths.  prefilter_rules.json lives at the repository root, which is two levels
+# above this module (src/pipeline/prefilter.py).  L-18: RULES_FILE was assigned
+# TWICE, the first from BASE_DIR (which resolves to the data directory, not the
+# repo root) under a comment that openly admitted it was wrong.
+ANTIBIO_ROOT = Path(__file__).resolve().parents[2]
 RULES_FILE = ANTIBIO_ROOT / "prefilter_rules.json"
 DRY_RUN_MANIFEST = BASE_DIR / "dry_run_manifest.json"
 MOVEMENT_MANIFEST = BASE_DIR / "movement_manifest.json"
@@ -43,9 +44,15 @@ ARCHIVE_REVIEW = BASE_DIR / "archive_review"
 
 
 def load_rules() -> dict:
+    """Load the business rules.
+
+    L-19: this called ``sys.exit(1)``, so importing module-level code or calling
+    the function from a test or another tool killed the whole process instead of
+    reporting a missing file.  It now raises, and ``main`` turns that into an
+    exit code.
+    """
     if not RULES_FILE.exists():
-        logger.error("prefilter_rules.json not found at %s", RULES_FILE)
-        sys.exit(1)
+        raise FileNotFoundError(f"prefilter_rules.json not found at {RULES_FILE}")
     return orjson.loads(RULES_FILE.read_bytes())
 
 
@@ -68,6 +75,17 @@ def _get_mkb_codes(item: dict) -> list[str]:
     return codes
 
 
+def _as_bool(value: Any) -> bool:
+    """Coerce a JSON boolean that may have been written as a string."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    if isinstance(value, str):
+        return value.strip().lower() in ("true", "1", "yes", "y", "да")
+    return False
+
+
 def _get_name(item: dict) -> str:
     return (item.get("Name") or "").lower()
 
@@ -76,20 +94,23 @@ def _default_decision(item: dict, rules: dict) -> tuple[str, str]:
     """Compute default decision from has_antibiotics + abx_level + abx_score."""
     has_abx = item.get("has_antibiotics", False)
     abx_level = (item.get("abx_level") or "D").upper()
-    abx_score = item.get("abx_score")
-    if abx_score is None:
-        abx_score = 0
+    # M-32: `abx_score` was coerced None->0 immediately below, so the
+    # `abx_score_null` rule could never fire and a rule intended to route a
+    # score-less item to review silently sent it to no_antibiotics.  The None
+    # case is now decided BEFORE any coercion.
+    raw_score = item.get("abx_score")
+    abx_score = 0 if raw_score is None else raw_score
 
     defaults = rules.get("defaults", {})
     if has_abx and abx_level in ("A", "B"):
         return defaults.get("has_antibiotics_True_abx_level_AB", "need_llm"), "default"
     if has_abx and abx_level in ("C", "D"):
         return defaults.get("has_antibiotics_True_abx_level_CD", "need_llm"), "default"
-    if not has_abx and abx_score is not None and abx_score >= 10:
+    if not has_abx and raw_score is None:
+        return defaults.get("has_antibiotics_False_abx_score_null", "review"), "default"
+    if abx_score >= 10:
         return defaults.get("has_antibiotics_False_abx_score_gte_10", "review"), "default"
-    if not has_abx and abx_score is not None and abx_score < 10:
-        return defaults.get("has_antibiotics_False_abx_score_lt_10", "no_antibiotics"), "default"
-    return defaults.get("has_antibiotics_False_abx_score_null", "no_antibiotics"), "default"
+    return defaults.get("has_antibiotics_False_abx_score_lt_10", "no_antibiotics"), "default"
 
 
 def _match_keywords(name: str, keywords: list[str]) -> list[str]:
@@ -114,15 +135,17 @@ def _match_mkb_prefix(mkb_codes: list[str], prefixes: list[str]) -> list[str]:
 
 def _check_conditions(conditions: dict, item: dict) -> bool:
     """Check if conditions are met. Returns True if item satisfies all conditions."""
-    has_abx = item.get("has_antibiotics", False)
+    # M-42: `has_antibiotics` was compared as a strict bool, so a JSON rule with
+    # the string "false" never matched anything and the rule was silently inert.
+    has_abx = _as_bool(item.get("has_antibiotics", False))
     abx_score = item.get("abx_score") or 0
     abx_level = (item.get("abx_level") or "D").upper()
 
     if "has_antibiotics" in conditions:
-        if conditions["has_antibiotics"] != has_abx:
+        if _as_bool(conditions["has_antibiotics"]) != has_abx:
             return False
     if "has_antibiotics_not" in conditions:
-        if conditions["has_antibiotics_not"] == has_abx:
+        if _as_bool(conditions["has_antibiotics_not"]) == has_abx:
             return False
     if "abx_score_lt" in conditions:
         if abx_score >= conditions["abx_score_lt"]:
@@ -195,6 +218,16 @@ def _check_rule(rule: dict, item: dict) -> dict | None:
         if kw_list:
             match_info["matched_keyword"] = kw_list[:3]
 
+    # M-33: a rule carrying neither match_any nor match_all (e.g. a typo that
+    # dropped `match_any`) returned matched=True, turning it into a BLANKET
+    # OVERRIDE for the whole corpus.  A rule must state at least one criterion.
+    if not match_any and not match_all:
+        logger.error(
+            "rule %r has no match criteria (no match_any, no match_all) -- "
+            "ignoring it instead of matching every item", rule.get("name", "<unnamed>"),
+        )
+        return None
+
     match_info["matched"] = True
     return match_info
 
@@ -207,6 +240,13 @@ def classify_item(item: dict, rules: dict) -> dict:
     matched_detail = None
     override = False
     priority = 0
+    # M-34: the deciding rule (the one that actually changed the outcome), tracked
+    # separately from the highest-priority match.  With the `>=` comparison the old
+    # code let a LATER rule of equal priority overwrite the report, so `matched_rule`
+    # named the last rule seen rather than the one that decided.
+    deciding_rule = None
+    deciding_priority = 0
+    deciding_detail = None
 
     # Sort rules by priority (highest first)
     rule_list = []
@@ -247,18 +287,32 @@ def classify_item(item: dict, rules: dict) -> dict:
                     final_decision = new_decision
                     override = True
                 if rule_name.startswith("force_"):
-                    force_override = True  # Lock: no lower-priority rule can override
+                    # The lock is intentional and load-bearing: a matching force_
+                    # rule is the operator's explicit decision, and a lower-priority
+                    # force_ rule must not be able to overturn it -- even when the
+                    # higher-priority one merely confirmed the default
+                    # (see test_force_include_confirms_default).
+                    force_override = True
 
-            # Track highest-priority matched rule (even if it confirms default)
-            if matched_rule is None or rule_body.get("priority", 0) >= priority:
+            if new_decision and new_decision != default_decision:
+                deciding_rule = rule_name
+                deciding_priority = rule_body.get("priority", 0)
+                deciding_detail = match_info
+                if matched_rule is None:
+                    matched_rule = rule_name
+                    priority = deciding_priority
+                    matched_detail = match_info
+            elif matched_rule is None:
                 matched_rule = rule_name
                 priority = rule_body.get("priority", 0)
                 matched_detail = match_info
 
-    # Ensure no_antibiotics only if absolutely sure
-    if final_decision == "no_antibiotics" and not override:
-        # Only default no_antibiotics without override is allowed
-        pass
+    # The DECIDING rule is what an operator needs to audit a decision; fall back to
+    # the highest-priority match when the default stood (no rule overrode it).
+    if deciding_rule is not None:
+        matched_rule = deciding_rule
+        priority = deciding_priority
+        matched_detail = deciding_detail
 
     return {
         "Id": item.get("Id"),
@@ -280,12 +334,50 @@ def classify_item(item: dict, rules: dict) -> dict:
     }
 
 
+def _append_movement_manifest(entries: list) -> None:
+    """Merge new movements into the manifest INSTEAD of overwriting it.
+
+    M-37: ``MOVEMENT_MANIFEST.write_bytes(...)`` replaced the file on every batch,
+    so a second partial run destroyed the record of the first -- and `--restore`
+    could then only put back the last batch, leaving earlier PDFs stranded in the
+    archive directories.  Entries are keyed by (source, destination) so a re-run
+    that moves the same file twice is idempotent.
+    """
+    if not entries:
+        return
+    existing: list[dict] = []
+    if MOVEMENT_MANIFEST.exists():
+        try:
+            loaded = orjson.loads(MOVEMENT_MANIFEST.read_bytes())
+            if isinstance(loaded, list):
+                existing = loaded
+        except Exception:
+            logger.error("movement_manifest.json is unreadable; starting a fresh one")
+    merged: dict[tuple[str, str], dict] = {
+        (e.get("source_path", ""), e.get("destination_path", "")): e for e in existing
+    }
+    for entry in entries:
+        merged[(entry.get("source_path", ""), entry.get("destination_path", ""))] = entry
+    MOVEMENT_MANIFEST.write_bytes(
+        orjson.dumps(list(merged.values()), option=orjson.OPT_INDENT_2)
+    )
+
+
 def create_directories():
     for d in [ACTIVE_DIR, ARCHIVE_NO_ABX, ARCHIVE_REVIEW]:
         d.mkdir(parents=True, exist_ok=True)
 
 
 def move_pdf(decision: dict, target_dir: Path, manifest: list):
+    """Move one PDF into ``target_dir`` and record it in ``manifest``.
+
+    H-24 / M-37: the destination was built from the guideline NAME alone, so two
+    distinct guidelines whose names sanitize to the same string collided and the
+    second was either skipped or INHERITED the first document's path -- and
+    therefore its pdf_sha256, anchoring every downstream artifact to the wrong
+    PDF.  ``unique_destination`` disambiguates with the rubricator Id, which also
+    makes re-running the move idempotent instead of appending ``_2`` forever.
+    """
     pp = decision.get("pdf_path")
     if not pp:
         return False
@@ -293,25 +385,24 @@ def move_pdf(decision: dict, target_dir: Path, manifest: list):
     if not src.exists():
         logger.warning("PDF not found: %s", src)
         return False
-    filename = src.name
-    dest = target_dir / filename
-    # Handle name collisions
-    if dest.exists():
-        stem = src.stem
-        suffix = src.suffix
-        dest = target_dir / f"{stem}_{decision['Id']}{suffix}"
+    # H-24: `decision['Id']` raised TypeError/KeyError on a None or missing Id,
+    # and a NULL primary key is worse than a collision.
+    doc_id = decision.get("Id")
+    if doc_id in (None, ""):
+        raise ValueError(f"cannot move {src}: decision carries no rubricator Id")
+    dest = unique_destination(target_dir, src.name, doc_id, source=src)
 
     shutil.move(str(src), str(dest))
     manifest.append({
         "source_path": str(src),
         "destination_path": str(dest),
-        "Id": decision["Id"],
-        "Name": decision["Name"],
-        "final_decision": decision["final_decision"],
-        "default_decision": decision["default_decision"],
-        "matched_rule": decision["matched_rule"],
-        "override": decision["override"],
-        "reason": decision["reason"],
+        "Id": decision.get("Id"),
+        "Name": decision.get("Name"),
+        "final_decision": decision.get("final_decision"),
+        "default_decision": decision.get("default_decision"),
+        "matched_rule": decision.get("matched_rule"),
+        "override": decision.get("override", False),
+        "reason": decision.get("reason", ""),
         "timestamp": datetime.now(timezone.utc).isoformat(),
     })
     return True
@@ -341,17 +432,23 @@ def print_stats(results: list[dict], elapsed: float):
     rule_counter = Counter(r["matched_rule"] for r in results if r["matched_rule"])
     all_rules = ["force_include", "force_exclude", "force_review", "upgrade_to_active", "downgrade_to_review"]
 
+    # M-35: every percentage below divided by `total`, which is ZeroDivisionError
+    # on an empty corpus -- so `--dry-run` on an empty manifest crashed instead of
+    # reporting "0 PDFs".
+    def pct(n: int) -> float:
+        return (n / total * 100) if total else 0.0
+
     print(f"\n{'='*60}")
     print(f"  PREFILTER DRY RUN — STATISTICS")
     print(f"{'='*60}")
     print(f"  Total PDFs analyzed:     {total}")
     print(f"  Time:                    {elapsed:.2f}s")
     print()
-    print(f"  {'downloads_active/':<35} {active:>5}  ({active/total*100:.1f}%)")
-    print(f"  {'archive_no_antibiotics/':<35} {no_abx:>5}  ({no_abx/total*100:.1f}%)")
-    print(f"  {'archive_review/':<35} {review:>5}  ({review/total*100:.1f}%)")
+    print(f"  {'downloads_active/':<35} {active:>5}  ({pct(active):.1f}%)")
+    print(f"  {'archive_no_antibiotics/':<35} {no_abx:>5}  ({pct(no_abx):.1f}%)")
+    print(f"  {'archive_review/':<35} {review:>5}  ({pct(review):.1f}%)")
     print()
-    print(f"  {'Decisions overridden by rules:':<35} {overrides:>5}  ({overrides/total*100:.1f}%)")
+    print(f"  {'Decisions overridden by rules:':<35} {overrides:>5}  ({pct(overrides):.1f}%)")
     print()
     print(f"  {'A-level (known ABX):':<35} {ab_A:>5}")
     print(f"  {'B-level (likely ABX):':<35} {ab_B:>5}")
@@ -362,35 +459,47 @@ def print_stats(results: list[dict], elapsed: float):
     print(f"  {'Rule usage statistics:':<35}")
     for rule_name in all_rules:
         count = rule_counter.get(rule_name, 0)
-        pct = count / total * 100 if total > 0 else 0
+        share = pct(count)
         unused = " [UNUSED]" if count == 0 else ""
-        print(f"    {rule_name:<32} {count:>5} ({pct:>5.1f}%){unused}")
+        print(f"    {rule_name:<32} {count:>5} ({share:>5.1f}%){unused}")
     print()
 
     # Savings estimate
     llm_savings = no_abx + review
     time_per_pdf = 60  # seconds (average LLM call time)
     saved_time = llm_savings * time_per_pdf
-    print(f"  {'Estimated LLM call savings:':<35} {llm_savings:>5}  (-{llm_savings/total*100:.1f}%)")
+    print(f"  {'Estimated LLM call savings:':<35} {llm_savings:>5}  (-{pct(llm_savings):.1f}%)")
     print(f"  {'Estimated time saved:':<35} {saved_time:.0f}s  ({saved_time/60:.1f}min / {saved_time/3600:.2f}h)")
     print(f"{'='*60}\n")
 
 
 def _safe(text: Any, maxlen: int = 80) -> str:
-    """Convert to string, replace unencodable chars."""
+    """Normalise to a printable, length-capped string.
+
+    L-20: this round-tripped through cp1251, which cannot represent the corpus's
+    own Cyrillic (Ё, ё, —, ≤ all became '?') and was used for BOTH the --audit
+    output AND the `reason` field written into the manifests.
+    """
     s = str(text) if text is not None else "?"
-    return s.encode("cp1251", errors="replace").decode("cp1251")[:maxlen]
+    return re.sub(r"\s+", " ", s).strip()[:maxlen]
 
 
-def audit_no_antibiotics(results: list[dict], sample_size: int = 100):
-    """Audit random sample of items destined for archive_no_antibiotics."""
+def audit_no_antibiotics(results: list[dict], sample_size: int = 100, seed: int = 0):
+    """Audit a random sample of items destined for archive_no_antibiotics.
+
+    L-21: the sample was drawn with an unseeded ``random.sample``, so two runs
+    over the same manifest audited DIFFERENT items and an audit could not be
+    reproduced or challenged.  The default seed is fixed.
+    """
     no_abx_items = [r for r in results if r["final_decision"] == "no_antibiotics"]
 
     if not no_abx_items:
         print("  No items destined for archive_no_antibiotics. Nothing to audit.")
         return True
 
-    sample = random.sample(no_abx_items, min(sample_size, len(no_abx_items)))
+    sample = random.Random(seed).sample(
+        no_abx_items, min(sample_size, len(no_abx_items))
+    )
 
     print(f"\n{'='*60}")
     print(f"  AUDIT: {len(sample)} random items from archive_no_antibiotics")
@@ -463,8 +572,13 @@ def _is_suspicious(item: dict) -> bool:
     return matched
 
 
-def cmd_full_audit():
-    """Full scan of all archive_no_antibiotics items. Auto-move suspicious to review."""
+def cmd_full_audit(move_files: bool = False) -> bool:
+    """Full scan of all archive_no_antibiotics items.
+
+    Returns True when nothing suspicious was found, False otherwise, so the CLI can
+    exit non-zero.  M-36: the old docstring promised "Auto-move suspicious to
+    review" while the body never moved a file; movement is now an explicit opt-in.
+    """
     if not DRY_RUN_MANIFEST.exists():
         print("  Dry run manifest not found. Run --dry-run first.")
         return
@@ -485,8 +599,18 @@ def cmd_full_audit():
         print(f"\n  [OK] All {len(no_abx_items)} items in archive_no_antibiotics appear safe.")
         return True
 
+
     print(f"\n  Found {len(suspicious)} potentially infectious items in archive_no_antibiotics.")
-    print(f"  These will be moved to archive_review/ for manual inspection.")
+    print(f"  These are being RE-CLASSIFIED to review in the dry-run manifest."
+          if not move_files else
+          f"  These are being MOVED to archive_review/.")
+    if not move_files:
+        # M-36: this function used to print "These will be moved to
+        # archive_review/" while only rewriting `final_decision` in the dry-run
+        # manifest.  NO FILE WAS EVER MOVED, so an operator who read the message
+        # believed the corpus had been reclassified when it had not.
+        print(f"  NOTE: --full-audit only updates dry_run_manifest.json; no PDF is moved.")
+        print(f"        Run `python -m src.pipeline.prefilter --batch N` to actually move them.")
 
     # Update final_decision to review
     ids_to_move = {r["Id"] for r in suspicious}
@@ -501,19 +625,29 @@ def cmd_full_audit():
 
     # Re-save manifest
     DRY_RUN_MANIFEST.write_bytes(orjson.dumps(results, option=orjson.OPT_INDENT_2))
-    print(f"\n  Updated dry_run_manifest.json: {updated} items moved to review.")
+    print(f"\n  Updated dry_run_manifest.json: {updated} items re-classified to review.")
 
-    print(f"\n  Action required: review these items manually after mass move")
+    moved = 0
+    if move_files:
+        create_directories()
+        manifest: list[dict] = []
+        for r in results:
+            if r["Id"] in ids_to_move:
+                moved += int(move_pdf(r, ARCHIVE_REVIEW, manifest))
+        _append_movement_manifest(manifest)
+        print(f"  Moved {moved} PDFs to archive_review/")
+
+    print(f"\n  Action required: review these {len(suspicious)} items manually.")
     print(f"  After review, you can: python -m src.pipeline.prefilter --restore")
-    return True
+    return False
 
 
-def cmd_audit():
+def cmd_audit(seed: int = 0) -> bool:
     if not DRY_RUN_MANIFEST.exists():
         print("  Dry run manifest not found. Run --dry-run first.")
-        return
+        return True
     results = orjson.loads(DRY_RUN_MANIFEST.read_bytes())
-    audit_no_antibiotics(results)
+    return audit_no_antibiotics(results, seed=seed)
 
 
 def cmd_move_batch(batch_size: int = 50):
@@ -548,8 +682,8 @@ def cmd_move_batch(batch_size: int = 50):
     remaining -= _do_move(review, ARCHIVE_REVIEW, "archive_review", remaining)
     remaining -= _do_move(active, ACTIVE_DIR, "downloads_active", remaining)
 
-    MOVEMENT_MANIFEST.write_bytes(orjson.dumps(manifest, option=orjson.OPT_INDENT_2))
-    print(f"\n  Movement manifest saved: {MOVEMENT_MANIFEST}")
+    _append_movement_manifest(manifest)
+    print(f"\n  Movement manifest appended: {MOVEMENT_MANIFEST}")
     print(f"  Total moved this batch: {len(manifest)}")
 
     return len(manifest)
@@ -583,8 +717,8 @@ def cmd_move_all():
         move_pdf(r, ACTIVE_DIR, manifest)
     print(f"  Moved {len(active)} PDFs to downloads_active/")
 
-    MOVEMENT_MANIFEST.write_bytes(orjson.dumps(manifest, option=orjson.OPT_INDENT_2))
-    print(f"\n  Movement manifest saved: {MOVEMENT_MANIFEST}")
+    _append_movement_manifest(manifest)
+    print(f"\n  Movement manifest appended: {MOVEMENT_MANIFEST}")
     print(f"  Total moved: {len(manifest)}")
 
     if len(manifest) != len(results):
@@ -619,6 +753,17 @@ def cmd_restore():
     print(f"  Restored: {restored} PDFs")
     print(f"  Errors:   {errors}")
 
+    # M-37: drop the entries we just undone, so a later --restore does not try to
+    # move files back from a location they no longer occupy.
+    if restored and MOVEMENT_MANIFEST.exists():
+        try:
+            remaining = orjson.loads(MOVEMENT_MANIFEST.read_bytes())
+        except Exception:
+            remaining = []
+        restored_sources = {str(Path(e["source_path"])) for e in manifest[:restored]}
+        kept = [e for e in remaining if str(Path(e.get("source_path", ""))) not in restored_sources]
+        MOVEMENT_MANIFEST.write_bytes(orjson.dumps(kept, option=orjson.OPT_INDENT_2))
+
     # Clean up empty directories
     for d in [ACTIVE_DIR, ARCHIVE_NO_ABX, ARCHIVE_REVIEW]:
         if d.exists():
@@ -632,18 +777,25 @@ def main():
     parser = argparse.ArgumentParser(description="ANTIBIO PDF Prefilter")
     parser.add_argument("--dry-run", action="store_true", help="Run analysis without moving files")
     parser.add_argument("--audit", action="store_true", help="Audit random sample of archive_no_antibiotics")
-    parser.add_argument("--full-audit", action="store_true", help="Full scan all no_antibiotics items, auto-move suspicious to review")
+    parser.add_argument("--full-audit", action="store_true",
+                        help="Full scan all no_antibiotics items and re-classify suspicious to review")
+    parser.add_argument("--move-suspicious", action="store_true",
+                        help="with --full-audit: actually MOVE the suspicious PDFs to archive_review/")
     parser.add_argument("--batch", type=int, default=0, help="Move N PDFs as test batch")
     parser.add_argument("--all", action="store_true", help="Move all PDFs")
     parser.add_argument("--restore", action="store_true", help="Restore all PDFs from manifest")
     args = parser.parse_args()
 
+    exit_code = 0
     if args.dry_run:
         cmd_dry_run()
     elif args.full_audit:
-        cmd_full_audit()
+        # M-36: the verdict was discarded and the process always exited 0.
+        ok = cmd_full_audit(move_files=args.move_suspicious)
+        exit_code = 0 if ok else 1
     elif args.audit:
-        cmd_audit()
+        ok = cmd_audit()
+        exit_code = 0 if ok else 1
     elif args.batch > 0:
         cmd_move_batch(args.batch)
     elif args.all:
@@ -652,7 +804,8 @@ def main():
         cmd_restore()
     else:
         parser.print_help()
+    return exit_code
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

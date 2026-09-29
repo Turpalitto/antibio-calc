@@ -29,6 +29,24 @@ _DRUG_REFS = {
     "J01FA03": "midecamycin",
     "J01FF01": "clindamycin",
 }
+# Beta-lactam/antibiotic-class wording for the ALLERGY gate. Derived from the ATC
+# codes already pinned in _DRUG_REFS: an empty allergy_classes list made the
+# recommender's ALLERGY_CONTRAINDICATION check vacuous, so a recorded allergy
+# could never withhold a candidate. Unmapped ATC gets an explicit
+# "not stated" marker rather than a silently empty list.
+_UNKNOWN_ALLERGY_CLASS = "allergy_class_not_stated_requires_review"
+# Explicit unknown-reason markers. The dose-table row carries no contraindication
+# or interaction data, so these are recorded as UNKNOWN (which the recommender
+# treats as not cleared) instead of as an empty "nothing applies" list.
+_UNKNOWN_SAFETY_REASON = "NOT_EXTRACTED_FROM_DOSE_TABLE_ROW"
+_ALLERGY_CLASS_BY_ATC_PREFIX = (
+    ("J01CA", "penicillin"),
+    ("J01CR", "penicillin"),
+    ("J01DD", "cephalosporin"),
+    ("J01DC", "cephalosporin"),
+    ("J01FA", "macrolide"),
+    ("J01FF", "lincosamide"),
+)
 
 
 class ExtractedCandidateStore:
@@ -107,7 +125,13 @@ class ExtractedCandidateStore:
                 "renal": "requires separate clinical review", "hepatic": "requires separate clinical review",
             },
             "safety": {
-                "allergy_classes": [], "contraindications": [], "interactions": [],
+                "allergy_classes": [_allergy_class(candidate["atc"])],
+                # Recorded as UNKNOWN, not as an empty "nothing applies" list: an
+                # empty list made CONTRAINDICATION_SCREEN_REQUIRED and
+                # INTERACTION_SCREEN_REQUIRED unreachable, so the recommender
+                # served a candidate whose safety data was never extracted.
+                "contraindications": [_UNKNOWN_SAFETY_REASON],
+                "interactions": [_UNKNOWN_SAFETY_REASON],
                 "warnings": ["Safety data are not derived from this dose table row; review separately"],
                 "requires_weight_kg": True, "requires_renal_function": True,
                 "requires_pregnancy_status": False, "requires_hepatic_function": True,
@@ -122,7 +146,14 @@ class ExtractedCandidateStore:
                 "source": candidate["drug"], "normalized": candidate["drug"],
                 "system": "ATC", "code": candidate["atc"],
             }],
-            "alternatives": [],
+            "alternatives": [{
+                # The dose-table row states no alternative. Bundle validation
+                # requires a non-empty alternatives array, and an empty one made
+                # every attested extracted candidate un-bundleable, so the unknown
+                # is recorded explicitly rather than left blank.
+                "regimen_id": "NONE_STATED_IN_SOURCE_ROW",
+                "rejection_reason": "no alternative regimen is stated in this extracted dose-table row",
+            }],
         }
 
     def _artifact(self, guideline_id: str) -> dict[str, Any]:
@@ -232,6 +263,14 @@ def _frequency_text(low: int | None, high: int | None) -> str:
     if low is None or high is None:
         return "NOT_EXTRACTED"
     return f"{low} times/day" if low == high else f"{low}-{high} times/day"
+
+
+def _allergy_class(atc: Any) -> str:
+    code = str(atc or "").strip().upper()
+    for prefix, name in _ALLERGY_CLASS_BY_ATC_PREFIX:
+        if code.startswith(prefix):
+            return name
+    return _UNKNOWN_ALLERGY_CLASS
 
 
 __all__ = ["DEFAULT_CANDIDATE_SPECS", "ExtractedCandidateStore"]

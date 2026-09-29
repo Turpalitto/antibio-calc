@@ -23,6 +23,12 @@ Every assertion evaluates against the ranked, accepted recommendations
 Note: `first_candidate_confidence_*` reads `accepted[0].candidate.confidence`
 (the real SQLite normalization confidence). Recommendation.confidence (§7.3)
 is NOT asserted — it is a documented not-yet-populated field.
+
+M-8: the runner no longer disables the Milestone-13 production guard by
+default. Against an AUTO_GENERATED_DRAFT / PARTIALLY_CURATED index the Engine
+refuses to start (each case then reports ERROR, which is visible), and a run
+against uncurated routing requires an explicit ``--allow-uncurated-index``,
+which stamps a warning into the report.
 """
 
 from __future__ import annotations
@@ -236,6 +242,42 @@ def _assert_first_candidate_confidence_range(r, e):
     return _a("first_candidate_confidence_range", lo <= val <= hi, f"[{lo}, {hi}]", val)
 
 
+def _assert_first_outcome(r, e):
+    """Rank-1 outcome as labelled by the Trace stage (ACCEPTED/WARNING/EXCLUDED)."""
+    first = _first(r)
+    if first is None:
+        return _a("first_outcome", False, e, None, "accepted is empty")
+    actual = first.outcome.value if first.outcome is not None else None
+    return _a("first_outcome", actual == e, e, actual)
+
+
+def _assert_dose_is_patient_specific(r, e):
+    """Whether rank-1's dose reflects this patient's organ function.
+
+    C-2/H-5: a dose emitted next to a *_ADJ_UNPARSED flag is not a
+    patient-specific dose, and the golden set must be able to say so.
+    """
+    first = _first(r)
+    if first is None or first.dose is None:
+        return _a("dose_is_patient_specific", False, e, None, "no dose on accepted[0]")
+    actual = first.dose.dose_is_patient_specific
+    return _a("dose_is_patient_specific", actual == bool(e), e, actual)
+
+
+def _assert_safety_flag_actions(r, e):
+    """{flag_code: action} for the codes named, e.g. {"RENAL_ADJ_UNPARSED": "avoid_if_possible"}."""
+    actual = {f.code: f.action.value for f in r.safety_flags}
+    missing = [c for c in e if c not in actual]
+    wrong = {c: (e[c], actual[c]) for c in e if c in actual and actual[c] != e[c]}
+    ok = not missing and not wrong
+    detail = ""
+    if missing:
+        detail = f"missing flags: {missing}"
+    elif wrong:
+        detail = f"action mismatch (expected, actual): {wrong}"
+    return _a("safety_flag_actions", ok, e, actual, detail)
+
+
 ASSERTIONS: dict[str, Callable[[RecommendationSet, Any], AssertionResult]] = {
     "first_drug_normalized": _assert_first_drug_normalized,
     "first_drug_ref": _assert_first_drug_ref,
@@ -252,7 +294,10 @@ ASSERTIONS: dict[str, Callable[[RecommendationSet, Any], AssertionResult]] = {
     "not_guideline_id": _assert_not_guideline_id,
     "trace_code": _assert_trace_code,
     "safety_flag_codes": _assert_safety_flag_codes,
+    "safety_flag_actions": _assert_safety_flag_actions,
     "first_candidate_confidence_range": _assert_first_candidate_confidence_range,
+    "first_outcome": _assert_first_outcome,
+    "dose_is_patient_specific": _assert_dose_is_patient_specific,
 }
 
 
@@ -310,13 +355,17 @@ def summary(results: list[CaseResult]) -> dict[str, int]:
     }
 
 
-def render_markdown(results: list[CaseResult]) -> str:
+def render_markdown(results: list[CaseResult], *, header_notes: tuple[str, ...] = ()) -> str:
     s = summary(results)
     lines = [
         "# Golden Clinical Cases — Report",
         "",
         f"- Total: **{s['total']}** · ✅ PASS **{s['pass']}** · ❌ FAIL **{s['fail']}** · ⚠️ ERROR **{s['error']}**",
         "",
+    ]
+    if header_notes:
+        lines += ["> " + note for note in header_notes] + [""]
+    lines += [
         "| Case | Status | Failing assertions |",
         "|---|---|---|",
     ]
@@ -336,6 +385,32 @@ def render_markdown(results: list[CaseResult]) -> str:
     return "\n".join(lines) + "\n"
 
 
+# M-8: the golden suite used to hardcode strict_mode=False, which silently ran
+# every golden case against an AUTO_GENERATED_DRAFT diagnosis_index — the exact
+# condition the Milestone-13 production guard exists to block. A golden case is a
+# clinical assertion, so it must not be validated on uncurated routing by
+# default; running against one now requires an explicit, recorded opt-in.
+_UNCURATED_INDEX_WARNING = (
+    "golden cases are running against a NOT physician-curated diagnosis_index "
+    "(strict_mode disabled via --allow-uncurated-index): routing in this report "
+    "is not clinically validated"
+)
+
+
+def build_config(
+    sqlite_path: str,
+    *,
+    allow_uncurated_index: bool = False,
+    use_terminology_binding: bool = True,
+) -> EngineConfig:
+    """EngineConfig for a golden run. strict_mode defaults to the guard."""
+    return EngineConfig(
+        sqlite_path=sqlite_path,
+        strict_mode=not allow_uncurated_index,
+        use_terminology_binding=use_terminology_binding,
+    )
+
+
 def main() -> None:  # pragma: no cover - CLI wrapper
     import argparse
 
@@ -343,13 +418,22 @@ def main() -> None:  # pragma: no cover - CLI wrapper
     ap.add_argument("--sqlite", required=True, help="normalized_regimens sqlite path")
     ap.add_argument("--cases", default="clinical_engine/golden_cases")
     ap.add_argument("--report", default="golden_cases_report.md")
+    ap.add_argument(
+        "--allow-uncurated-index", action="store_true",
+        help="run even when the diagnosis_index is not physician-curated "
+             "(records a warning in the report; use only for routing experiments)",
+    )
     args = ap.parse_args()
 
-    # strict_mode=False: golden cases may run against a not-yet-curated index
-    # during validation — warn (Production Guard), don't hard-stop the run.
-    # P1-B: use_terminology_binding=True to enable diagnosis normalization (synonyms/ICD/trace)
-    results = run_directory(EngineConfig(sqlite_path=args.sqlite, strict_mode=False, use_terminology_binding=True), args.cases)
-    Path(args.report).write_text(render_markdown(results), encoding="utf-8")
+    notes: tuple[str, ...] = ()
+    if args.allow_uncurated_index:
+        notes = (_UNCURATED_INDEX_WARNING,)
+        print(f"WARNING: {_UNCURATED_INDEX_WARNING}")
+    config = build_config(args.sqlite, allow_uncurated_index=args.allow_uncurated_index)
+    results = run_directory(config, args.cases)
+    Path(args.report).write_text(
+        render_markdown(results, header_notes=notes), encoding="utf-8"
+    )
     s = summary(results)
     print(f"Golden cases: total {s['total']} | PASS {s['pass']} | FAIL {s['fail']} | ERROR {s['error']}")
     print(f"report: {args.report}")

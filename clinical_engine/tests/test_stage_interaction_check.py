@@ -38,6 +38,16 @@ class TestNoCurrentMeds:
         assert result.state.safety_flags == ()
         assert result.state.traces == ()
 
+    def test_early_return_still_reports_a_real_duration(
+        self, stage_context: StageContext
+    ) -> None:
+        """M-3: the early return hardcoded elapsed_ms=0.0, which wrote a false
+        zero into EngineRuntime.pipeline_time_breakdown for every query without
+        current medications."""
+        result = InteractionCheck().run(_state((), "amoxicillin"), stage_context)
+        assert result.elapsed_ms > 0.0
+        assert result.metrics == {"checked": 0}
+
 
 class TestFreeTextMatch:
     def test_no_interactions_data_is_silent(self, stage_context: StageContext) -> None:

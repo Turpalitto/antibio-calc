@@ -35,6 +35,22 @@ class TestEngineConfig:
         with pytest.raises(dataclasses.FrozenInstanceError):
             setattr(cfg, "debug", True)
 
+    def test_is_non_clinical_profile(self) -> None:
+        """M-2: DEBUG/AUDIT load REJECT-verdict regimens, so a result built
+        under them must be identifiable as non-clinical."""
+        from clinical_engine.config import NON_CLINICAL_POLICIES
+
+        assert EngineConfig(sqlite_path="x").is_non_clinical_profile is False
+        assert EngineConfig(
+            sqlite_path="x", validation_policy=ValidationPolicy.STRICT
+        ).is_non_clinical_profile is False
+        assert EngineConfig(
+            sqlite_path="x", validation_policy=ValidationPolicy.ALLOW_REVIEW
+        ).is_non_clinical_profile is False
+        for policy in (ValidationPolicy.DEBUG, ValidationPolicy.AUDIT):
+            assert EngineConfig(sqlite_path="x", validation_policy=policy).is_non_clinical_profile
+        assert NON_CLINICAL_POLICIES == {ValidationPolicy.DEBUG, ValidationPolicy.AUDIT}
+
 
 class TestProfiles:
     def test_production_is_strict(self) -> None:
@@ -64,3 +80,11 @@ class TestProfiles:
         for factory in (Profiles.production, Profiles.research, Profiles.development, Profiles.audit):
             cfg = factory("shared_path.sqlite")
             assert cfg.sqlite_path == "shared_path.sqlite"
+
+    def test_non_clinical_profiles_are_marked(self) -> None:
+        """M-2: research is ALLOW_REVIEW (clinical verdicts only), development
+        and audit are not — and say so through the config."""
+        assert Profiles.production("x").is_non_clinical_profile is False
+        assert Profiles.research("x").is_non_clinical_profile is False
+        assert Profiles.development("x").is_non_clinical_profile is True
+        assert Profiles.audit("x").is_non_clinical_profile is True

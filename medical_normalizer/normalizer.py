@@ -31,7 +31,7 @@ from medical_normalizer.confidence import ConfidenceCalculator, ConfidenceResult
 from medical_normalizer.drug_parser import DoseNormalizer, DrugParser
 from medical_normalizer.duration_parser import DurationParser
 from medical_normalizer.frequency_parser import FrequencyParser
-from medical_normalizer.models import NormalizedRegimen
+from medical_normalizer.models import MISSING_FIELD_INPUT, NormalizedRegimen
 from medical_normalizer.population_parser import AgeParser, GFRParser, PregnancyParser
 from medical_normalizer.route_parser import RouteParser
 from medical_normalizer.therapy_line_parser import TherapyLineParser
@@ -291,6 +291,7 @@ class MedicalNormalizer:
     ) -> ParserError | None:
         """Run a single parser by canonical name. Returns error or None."""
         try:
+            before = len(regimen.warnings)
             if name == "drug":
                 DrugParser.parse(regimen, raw)
             elif name == "dose":
@@ -312,13 +313,41 @@ class MedicalNormalizer:
                     error_message=f"No parser registered for '{name}'.",
                 )
             executed.append(name)
-            return None
         except Exception as exc:
             return ParserError(
                 parser=name,
                 error_type=type(exc).__name__,
                 error_message=str(exc),
             )
+        # H2: a parser that received an absent / non-string input records a
+        # MISSING_FIELD_INPUT marker instead of crashing. Promote those
+        # markers into real ParserError entries so the failure is visible in
+        # NormalizedResult.errors while the pipeline keeps going.
+        return cls._promote_missing_input_markers(name, regimen, before)
+
+    @classmethod
+    def _promote_missing_input_markers(
+        cls,
+        name: str,
+        regimen: NormalizedRegimen,
+        before: int,
+    ) -> ParserError | None:
+        """Return a ParserError if this parser recorded missing-field markers.
+
+        Only one ParserError is returned per parser (the signature allows a
+        single one); the full marker list stays on regimen.warnings.
+        """
+        new_markers = [
+            w for w in regimen.warnings[before:]
+            if isinstance(w, str) and w.startswith(f"{MISSING_FIELD_INPUT}:")
+        ]
+        if not new_markers:
+            return None
+        return ParserError(
+            parser=name,
+            error_type=MISSING_FIELD_INPUT,
+            error_message="; ".join(new_markers),
+        )
 
     @classmethod
     def _run_population(

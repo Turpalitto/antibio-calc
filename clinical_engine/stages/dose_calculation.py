@@ -4,15 +4,18 @@ Source: docs/superpowers/specs/clinical-decision-engine-v1.md §6.2.
 
 Adult: fixed dose straight from SQLite (candidate.dose/frequency). Pediatric:
 mg/kg/day from drugs_reference.pediatric_dosing x weight_kg, clamped to
-max_daily_mg. Renal/hepatic adjustment is Stage 7's job (DoseAdjustment) —
+max_daily_mg, split into a single dose by the PEDIATRIC frequency
+(PediatricDosing.freq_per_day); the adult regimen frequency is a flagged
+last resort. Renal/hepatic adjustment is Stage 7's job (DoseAdjustment) —
 this stage never touches renal_function/hepatic_impairment, and never
 excludes (only WARNING + DoseCalculationMethod.UNCALCULATED on failure,
 per Invariant #11).
 
 Known data gap (see PROJECT_STATE.md): pediatric_dosing is absent for all
-40 drugs in db/index.json today, so the pediatric branch always ends in
+48 drugs in db/index.json today, so the pediatric branch always ends in
 WARNING "PEDS_DOSING_UNKNOWN" against production data. The branch is fully
-implemented so it activates automatically once that field is populated.
+implemented so it activates automatically once that field is populated —
+including the freq_per_day path (H-6), which no production drug exercises yet.
 """
 
 from __future__ import annotations
@@ -150,33 +153,79 @@ class DoseCalculation:
                 if peds.max_daily_mg is not None:
                     daily_dose_mg = min(daily_dose_mg, peds.max_daily_mg)
 
-                if c.frequency:
-                    single_dose_mg = daily_dose_mg / c.frequency
+                # H-6: the mg/kg/DAY total must be split by the PEDIATRIC
+                # administration frequency. The old code divided by
+                # `c.frequency`, i.e. the ADULT SQLite regimen row's
+                # frequency, and PediatricDosing.freq_per_day (populated by
+                # DrugReferenceReader) was read nowhere. That is wrong in both
+                # directions: ceftriaxone (adult freq=1) became one enormous
+                # injection, and an adult freq=3 applied to a q12h schedule
+                # underdosed every 12-hour dose by 3x. The adult frequency is
+                # still used as a last resort, but only with an explicit flag
+                # and trace saying the adult value was assumed.
+                assumed_adult_frequency = False
+                if peds.freq_per_day:
+                    freq_per_day: float | None = float(peds.freq_per_day)
+                    freq_source = f"pediatric freq_per_day={peds.freq_per_day}/day"
+                elif c.frequency:
+                    freq_per_day = c.frequency
+                    freq_source = f"ADULT regimen frequency={c.frequency}/day"
+                    assumed_adult_frequency = True
+                    extra_flags.append(
+                        self._flag(
+                            c.drug_ref,
+                            "PEDS_FREQ_ASSUMED_ADULT",
+                            f"{c.drug_normalized}: pediatric dosing has no freq_per_day; "
+                            f"splitting the daily total by the ADULT frequency "
+                            f"{c.frequency}/day — verify the administration schedule",
+                        )
+                    )
+                    traces.append(
+                        self._trace(
+                            c,
+                            "pediatric freq_per_day missing, adult frequency assumed "
+                            f"({c.frequency}/day) — single dose is not verified",
+                            ConfidenceLevel.LOW,
+                        )
+                    )
+                else:
+                    freq_per_day = None
+                    freq_source = "frequency unknown"
+
+                if freq_per_day:
+                    single_dose_mg = daily_dose_mg / freq_per_day
                     note = (
                         f"{peds.mg_per_kg_day} mg/kg/day x {patient.weight_kg} kg "
-                        f"= {daily_dose_mg} mg/day"
+                        f"= {daily_dose_mg} mg/day; single dose = daily / "
+                        f"{freq_per_day} ({freq_source})"
                     )
-                    # No trace here: a successful calculation isn't a
-                    # DecisionCode.DOSE_UNCALCULABLE moment, and no other
-                    # DecisionCode fits "dose calculated OK" -- same
-                    # precedent as RegimenLoad/HardSafetyFilter's silent
-                    # success path (see their module docstrings).
                 else:
-                    # Edge case (§6.2 table): frequency is None -> daily dose
+                    # Edge case (§6.2 table): no frequency anywhere -> daily dose
                     # known, but it can't be split into a single dose.
                     single_dose_mg = None
-                    note = f"{daily_dose_mg} mg/day total; frequency unknown, cannot split into single dose"
+                    note = (
+                        f"{daily_dose_mg} mg/day total; frequency unknown "
+                        "(no pediatric freq_per_day and no regimen frequency), "
+                        "cannot split into single dose"
+                    )
 
                 dose = DoseDetail(
                     calculated_dose_mg=single_dose_mg,
                     dose_unit="mg",
-                    frequency_per_day=c.frequency,
+                    frequency_per_day=freq_per_day,
                     duration_days=c.duration_recommended,
                     max_daily_mg=peds.max_daily_mg,
                     calculation_method=DoseCalculationMethod.MG_PER_KG,
-                    adjustment_applied=None,
+                    adjustment_applied=(
+                        "pediatric frequency assumed from adult regimen"
+                        if assumed_adult_frequency else None
+                    ),
                     calculation_note=note,
-                    adjustment_history=(f"base: {daily_dose_mg}mg/day",),
+                    adjustment_history=(
+                        f"base: {daily_dose_mg}mg/day",
+                        f"split: /{freq_per_day} per day ({freq_source})"
+                        if freq_per_day else f"split: unavailable ({freq_source})",
+                    ),
                 )
                 safety_flags.extend(extra_flags)
                 updated.append(

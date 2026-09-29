@@ -1,0 +1,34 @@
+{
+  "id": "hepatic_impairment_amoxicillin",
+  "description": "Adult CAP (J18) with hepatic impairment. The fixture drug carries NO hepatic adjustment data, so the engine MUST raise HEPATIC_NO_DATA and downgrade the outcome to WARNING — hepatic impairment may never yield a silently clean recommendation. (A drug that DOES carry hepatic guidance is covered by the HEPATIC_ADJ_UNPARSED escalation regression tests: AVOID_IF_POSSIBLE + dose_is_patient_specific=false.)",
+  "query": {
+    "diagnosis": "vnebolnichnaya pnevmoniya",
+    "icd10": "J18",
+    "patient": {
+      "age": 44,
+      "weight_kg": 70,
+      "pregnant": false,
+      "renal_function": null,
+      "hepatic_impairment": true,
+      "allergies": [],
+      "current_meds": []
+    },
+    "preferences": {
+      "therapy_line": null,
+      "route_preference": null,
+      "population": null
+    }
+  },
+  "expect": {
+    "min_accepted": 1,
+    "first_drug_ref": "amoxicillin",
+    "guideline_id": "g_cap_adult",
+    "safety_flag_codes": ["HEPATIC_NO_DATA"],
+    "first_outcome": "warning"
+  },
+  "provenance": {
+    "author": "clinical safety audit (hepatic pathway coverage)",
+    "verified_at": "2026-09-27T00:00:00Z",
+    "source": "Fixture data: amoxicillin.hepatic_adjustment=null. Missing hepatic data is a WARNING (Invariant #11), never a silent exclusion and never a silent clean result."
+  }
+}

@@ -99,3 +99,13 @@ weights/
 # PERSONAL_PHYSICIAN mode: local identity, token hash, attestations, bundles,
 # and minimized request audit. These artifacts never enter source control.
 /.local/personal_physician/
+
+# --- Repo hygiene (2026-09-27) ---
+# Scratch/working directory for pipeline intermediates. Never source of truth;
+# every file here is regenerable. Was tracked by mistake (65 files, ~10 MB).
+/tmp/
+
+# Agent/editor tool config, same policy as /node_modules/ and /.venv/:
+# machine-local, not reviewable project state.
+/.claude/
+/.serena/

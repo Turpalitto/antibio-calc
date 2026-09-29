@@ -5,7 +5,37 @@ from __future__ import annotations
 import re
 from typing import ClassVar
 
-from medical_normalizer.models import NormalizedRegimen
+from medical_normalizer.models import MISSING_FIELD_INPUT, NormalizedRegimen
+
+
+def _coerce_text(val) -> tuple[str, bool]:
+    """Coerce a raw text value to a lowered, stripped string.
+
+    Returns (text, ok). ok is False when the field is absent, empty or not a
+    string (H2: int / None / list inputs must not crash the parser).
+    """
+    if val is None or not isinstance(val, str):
+        return "", False
+    text = val.strip().lower()
+    return text, bool(text)
+
+
+def _is_malformed(val) -> bool:
+    """True when a field was supplied but is not usable text (H2).
+
+    A genuinely ABSENT field is a modelled state (adult=True default,
+    renal_adjustment=False, ...), not an input error. A field that arrives as
+    an int / list / dict is a real extraction defect and is recorded.
+    """
+    return val is not None and not isinstance(val, str)
+
+
+def _record_missing_input(regimen: NormalizedRegimen, field_name: str) -> None:
+    if not regimen.warnings:
+        regimen.warnings = []
+    marker = f"{MISSING_FIELD_INPUT}:{field_name}"
+    if marker not in regimen.warnings:
+        regimen.warnings.append(marker)
 
 
 class AgeParser:
@@ -29,16 +59,27 @@ class AgeParser:
 
     @classmethod
     def parse(cls, regimen: NormalizedRegimen, raw: dict) -> NormalizedRegimen:
-        age_raw = (raw.get("age_group", "") or "").strip()
-        quote_text = (raw.get("source_quote", "") or "").lower()
-        combined = f"{age_raw} {quote_text}".lower()
+        age_value = raw.get("age_group") if isinstance(raw, dict) else None
+        age_raw, age_ok = _coerce_text(age_value)
+        quote_raw, _ = _coerce_text(
+            raw.get("source_quote") if isinstance(raw, dict) else None
+        )
 
-        if not age_raw and not quote_text:
+        if not age_raw and not quote_raw:
             regimen.adult = True
             regimen.child = False
+            # M6: adult=True is only a default, not evidence. Keep
+            # population_stated False so confidence does not score an
+            # unstated population as inferred.
+            regimen.population_stated = False
+            if _is_malformed(age_value) or _is_malformed(
+                raw.get("source_quote") if isinstance(raw, dict) else None
+            ):
+                _record_missing_input(regimen, "age_group")
             return regimen
 
-        text = combined
+        text = f"{age_raw} {quote_raw}".lower()
+
         is_child = bool(cls._child_re.search(text))
         is_newborn = bool(cls._newborn_re.search(text))
         is_premature = bool(cls._premature_re.search(text))
@@ -69,11 +110,25 @@ class AgeParser:
             regimen.adult = True
             regimen.child = False
 
+        # M6: population_stated is True only when some age/population keyword
+        # was actually found in age_group or source_quote.
+        regimen.population_stated = bool(
+            peds_evidence or adult_evidence
+        )
+        if _is_malformed(age_value):
+            _record_missing_input(regimen, "age_group")
         return regimen
 
 
 class PregnancyParser:
-    """Detect pregnancy and lactation from extraction fields and text."""
+    """Detect pregnancy and lactation from extraction fields and text.
+
+    Semantics of ``regimen.pregnancy``:
+        True  — the regimen is stated as applicable to pregnant patients
+        False — pregnancy is mentioned AND the text contraindicates /
+                 does not recommend use in pregnancy
+        None  — no information
+    """
 
     _pregnancy_re: ClassVar[re.Pattern] = re.compile(
         r"беремен|pregnan|гестаци", re.IGNORECASE
@@ -81,28 +136,60 @@ class PregnancyParser:
     _lactation_re: ClassVar[re.Pattern] = re.compile(
         r"лактаци|грудн\w* вскарм|breastfeed|lactat", re.IGNORECASE
     )
+    # M13: a contraindication / non-recommendation in pregnancy. Checked
+    # BEFORE the plain "беремен" match, otherwise "при беременности применение
+    # не рекомендовано" was recorded as pregnancy=True — a contraindication
+    # recorded as applicability.
+    _contraindication_re: ClassVar[re.Pattern] = re.compile(
+        r"не\s+рекоменд|противопоказ|не\s+допущ|не\s+примен|запрещ",
+        re.IGNORECASE,
+    )
+    _applicable_re: ClassVar[re.Pattern] = re.compile(
+        r"разреш|допустим|применени\w*\s+допущ|можно\s+примен",
+        re.IGNORECASE,
+    )
 
     @classmethod
     def parse(cls, regimen: NormalizedRegimen, raw: dict) -> NormalizedRegimen:
         # Check extraction field first (may already be boolean)
-        preg_field = raw.get("pregnancy", None)
+        preg_field = raw.get("pregnancy", None) if isinstance(raw, dict) else None
         if isinstance(preg_field, bool):
             regimen.pregnancy = preg_field
             return regimen
 
         # Check age_group and source_quote for pregnancy mentions
-        age_text = (raw.get("age_group", "") or "").lower()
-        quote_text = (raw.get("source_quote", "") or "").lower()
+        age_text, _ = _coerce_text(
+            raw.get("age_group") if isinstance(raw, dict) else None
+        )
+        quote_text, _ = _coerce_text(
+            raw.get("source_quote") if isinstance(raw, dict) else None
+        )
 
         combined = f"{age_text} {quote_text}"
 
-        if cls._pregnancy_re.search(combined):
-            regimen.pregnancy = True
-        elif "не рекоменд" in combined and "беремен" in combined:
-            regimen.pregnancy = False
-        else:
+        if not combined.strip():
             regimen.pregnancy = None
+            if _is_malformed(preg_field) or _is_malformed(
+                raw.get("age_group") if isinstance(raw, dict) else None
+            ) or _is_malformed(
+                raw.get("source_quote") if isinstance(raw, dict) else None
+            ):
+                _record_missing_input(regimen, "pregnancy")
+            return regimen
 
+        if not cls._pregnancy_re.search(combined):
+            regimen.pregnancy = None
+            return regimen
+
+        # M13: negation wins over plain mention.
+        if cls._contraindication_re.search(combined):
+            regimen.pregnancy = False
+            return regimen
+        if cls._applicable_re.search(combined) and not cls._contraindication_re.search(combined):
+            regimen.pregnancy = True
+            return regimen
+
+        regimen.pregnancy = True
         return regimen
 
 
@@ -123,15 +210,29 @@ class GFRParser:
     @classmethod
     def parse(cls, regimen: NormalizedRegimen, raw: dict) -> NormalizedRegimen:
         # Check extraction field first
-        renal_field = raw.get("renal_adjustment", None)
+        renal_field = raw.get("renal_adjustment", None) if isinstance(raw, dict) else None
         if isinstance(renal_field, bool):
             regimen.renal_adjustment = renal_field
             return regimen
 
         # Check source_quote and age_group for renal mentions
-        quote_text = (raw.get("source_quote", "") or "").lower()
-        age_text = (raw.get("age_group", "") or "").lower()
+        quote_text, _ = _coerce_text(
+            raw.get("source_quote") if isinstance(raw, dict) else None
+        )
+        age_text, _ = _coerce_text(
+            raw.get("age_group") if isinstance(raw, dict) else None
+        )
         combined = f"{age_text} {quote_text}"
+
+        if not combined.strip():
+            regimen.renal_adjustment = False
+            if _is_malformed(renal_field) or _is_malformed(
+                raw.get("age_group") if isinstance(raw, dict) else None
+            ) or _is_malformed(
+                raw.get("source_quote") if isinstance(raw, dict) else None
+            ):
+                _record_missing_input(regimen, "renal_adjustment")
+            return regimen
 
         has_hemo = bool(cls._hemodialysis_re.search(combined))
         has_peritoneal = bool(cls._peritoneal_re.search(combined))

@@ -18,6 +18,7 @@ Rules:
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
@@ -160,10 +161,14 @@ class ConfidenceCalculator:
         total_weight = 0
         weighted_sum = 0.0
 
-        for fname, conf in field_confidence.items():
+        for fname, raw_conf in field_confidence.items():
             weight = cfg.weights.get(fname, 0)
             if weight == 0:
                 continue
+            # M1: clamp per field, not only on the total. A single NaN would
+            # otherwise turn the whole weighted sum into NaN and zero out
+            # every other field's contribution.
+            conf = cls._clamp(raw_conf)
             # Missing optional field → no penalty
             if weight == cfg.weight_optional and conf <= cfg.not_found:
                 continue
@@ -187,9 +192,8 @@ class ConfidenceCalculator:
         """
         cfg = cls.config
 
-        has_score = (
-            confidence_score is not None
-            and (bool(confidence_score.fields) or confidence_score.overall != 0.0)
+        has_score = confidence_score is not None and (
+            bool(confidence_score.fields) or confidence_score.overall_was_set
         )
         if has_score:
             return round(cls._clamp(confidence_score.overall), cfg.round_digits)
@@ -246,12 +250,23 @@ class ConfidenceCalculator:
 
     @staticmethod
     def _clamp(value: float) -> float:
-        """Clamp a confidence value to [0.0, 1.0]."""
-        if value < 0.0:
+        """Clamp a confidence value to [0.0, 1.0].
+
+        Non-finite input (NaN / ±inf) returns 0.0 (M1). A NaN passes both
+        ``< 0.0`` and ``> 1.0`` unchanged, which used to poison
+        calculate_overall and be written into ``overall_confidence REAL``.
+        """
+        try:
+            as_float = float(value)
+        except (TypeError, ValueError):
             return 0.0
-        if value > 1.0:
+        if not math.isfinite(as_float):
+            return 0.0
+        if as_float < 0.0:
+            return 0.0
+        if as_float > 1.0:
             return 1.0
-        return float(value)
+        return as_float
 
     # ── Per-field inference functions ────────────────────
 
@@ -266,6 +281,15 @@ class ConfidenceCalculator:
                 cache.add(v.lower())
             cls._known_drugs_cache = cache
         return cls._known_drugs_cache
+
+    @classmethod
+    def invalidate_cache(cls) -> None:
+        """Drop the cached known-drug set (H7).
+
+        Must be called whenever the terminology JSON changes, e.g. after
+        ``medical_dictionary.loader.reload_all()``.
+        """
+        cls._known_drugs_cache = None
 
     @classmethod
     def _infer_drug(cls, r: NormalizedRegimen) -> float:
@@ -307,7 +331,12 @@ class ConfidenceCalculator:
     @classmethod
     def _infer_population(cls, r: NormalizedRegimen) -> float:
         cfg = cls.config
-        if r.adult or r.child:
+        # M6: `adult` defaults to True for backward compatibility, so
+        # `r.adult or r.child` was always True and a regimen with ZERO
+        # population evidence scored 0.90. population_stated records whether
+        # AgeParser actually found a population keyword; child defaults to
+        # False so an explicit child=True still counts as evidence.
+        if r.population_stated or r.child:
             return cfg.inferred
         return cfg.not_found
 
@@ -353,3 +382,30 @@ class ConfidenceCalculator:
             "pregnancy": cls._infer_pregnancy,
             "renal_adjustment": cls._infer_renal,
         }
+
+
+# ── Cache invalidation (H7) ──────────────────────────────────────
+
+
+def invalidate_caches() -> None:
+    """Clear every cache that mirrors the terminology JSON files.
+
+    ``medical_dictionary.loader`` caches its JSON with lru_cache and exposes
+    ``reload_all()``; ConfidenceCalculator/Validator additionally cache a
+    derived "known drugs" set at class level with no invalidation hook, so a
+    dictionary edit stayed invisible until the process restarted.
+
+    Call this after any terminology change:
+
+        from medical_dictionary import loader
+        from medical_normalizer.confidence import invalidate_caches
+
+        loader.reload_all()
+        invalidate_caches()
+
+    The medical_dictionary import is local to avoid an import cycle.
+    """
+    from medical_normalizer import validator as _validator
+
+    ConfidenceCalculator.invalidate_cache()
+    _validator.Validator.invalidate_cache()

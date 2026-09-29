@@ -50,7 +50,8 @@ class TestLoadRegimens:
 
     def test_debug_policy_loads_everything(self, sqlite_path: Path) -> None:
         reader = SQLiteReader(sqlite_path)
-        candidates = reader.load_regimens(("g_cap_adult",), policy=ValidationPolicy.DEBUG)
+        with pytest.warns(UserWarning, match="REJECT-verdict"):
+            candidates = reader.load_regimens(("g_cap_adult",), policy=ValidationPolicy.DEBUG)
         verdicts = {c.validation_verdict for c in candidates}
         assert verdicts == {"PASS", "REVIEW", "REJECT"}
         assert len(candidates) == 3
@@ -58,8 +59,21 @@ class TestLoadRegimens:
 
     def test_audit_policy_also_loads_everything(self, sqlite_path: Path) -> None:
         reader = SQLiteReader(sqlite_path)
-        candidates = reader.load_regimens(("g_cap_adult",), policy=ValidationPolicy.AUDIT)
+        with pytest.warns(UserWarning, match="not clinically valid"):
+            candidates = reader.load_regimens(("g_cap_adult",), policy=ValidationPolicy.AUDIT)
         assert len(candidates) == 3
+        reader.close()
+
+    def test_clinical_policies_do_not_warn(self, sqlite_path: Path) -> None:
+        """M-2: the warning is for non-clinical profiles only — a STRICT run is
+        the normal clinical path and must stay quiet."""
+        import warnings
+
+        reader = SQLiteReader(sqlite_path)
+        for policy in (ValidationPolicy.STRICT, ValidationPolicy.ALLOW_REVIEW):
+            with warnings.catch_warnings():
+                warnings.simplefilter("error", UserWarning)
+                reader.load_regimens(("g_cap_adult",), policy=policy)
         reader.close()
 
     def test_multiple_guideline_ids(self, sqlite_path: Path) -> None:
@@ -113,3 +127,38 @@ class TestCandidateShape:
     def test_context_manager_closes(self, sqlite_path: Path) -> None:
         with SQLiteReader(sqlite_path) as reader:
             assert reader.load_regimens(("g_cap_adult",), policy=ValidationPolicy.STRICT)
+
+
+class TestSourceSection:
+    """L-5: source_section was hardcoded to "", which is indistinguishable from
+    "the source section is empty" and breaks the Clinical Traceability Rule."""
+
+    def test_missing_section_is_a_loud_placeholder(self, sqlite_path: Path) -> None:
+        from clinical_engine.models import SOURCE_SECTION_UNAVAILABLE
+
+        reader = SQLiteReader(sqlite_path)
+        candidate = reader.load_regimens(("g_cap_adult",), policy=ValidationPolicy.STRICT)[0]
+        assert candidate.source_section == SOURCE_SECTION_UNAVAILABLE
+        assert candidate.source_section != ""
+        reader.close()
+
+    def test_section_is_read_when_the_source_row_carries_one(self) -> None:
+        """The current normalized_regimens schema has no section column, so the
+        lookup is exercised directly: the moment the column lands, the real
+        value flows through instead of the placeholder."""
+        from clinical_engine.models import SOURCE_SECTION_UNAVAILABLE
+        from clinical_engine.readers.sqlite_reader import _source_section_of
+
+        assert _source_section_of({"section": "Таблица 3"}) == "Таблица 3"
+        assert _source_section_of({"section_title": "Antibacterial therapy"}) == (
+            "Antibacterial therapy"
+        )
+        assert _source_section_of({"table_id": "T-12"}) == "T-12"
+        # Priority: the most explicit key wins.
+        assert _source_section_of(
+            {"section": "S", "section_title": "ST", "table_id": "T"}
+        ) == "S"
+        # Empty / missing -> the loud placeholder, never "".
+        assert _source_section_of({}) == SOURCE_SECTION_UNAVAILABLE
+        assert _source_section_of({"section": ""}) == SOURCE_SECTION_UNAVAILABLE
+        assert _source_section_of({"section": None}) == SOURCE_SECTION_UNAVAILABLE

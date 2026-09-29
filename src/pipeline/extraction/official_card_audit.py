@@ -14,10 +14,37 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.request import urlopen
+
+# L-16: one API, two HTTP stacks.  `httpx` was imported INSIDE two functions while
+# `fetch_card` used `urllib.request`, so there was no shared retry policy, no
+# shared timeout default and no shared connection pool.  httpx is now imported once
+# at module level; the single `fetch_card` urlopen call is kept explicit for
+# callers that inject their own `opener` (tests do).
+import httpx
 
 
 API_ROOT = "https://apicr.minzdrav.gov.ru/api.ashx"
+
+# M-15: `while len(records) < total` with no page guard is an unbounded loop if
+# TotalRecords is wrong, and returned page 1 only when TotalRecords was absent.
+MAX_REGISTRY_PAGES = 200
+
+
+def _card_sort_key(value: str) -> tuple:
+    """Numeric-aware sort key that never raises on a non-numeric id.
+
+    M-14: ``tuple(int(p) for p in value.split("_"))`` raised ValueError on ids like
+    "КР-314_3" -- and it did so INSIDE the sort, i.e. after every HTTP request had
+    already been paid for, discarding the whole artifact.
+    """
+    parts = []
+    for chunk in str(value).replace("-", "_").split("_"):
+        try:
+            parts.append((0, int(chunk), ""))
+        except ValueError:
+            parts.append((1, 0, chunk))
+    return tuple(parts)
 
 
 def candidate_card_ids(inventory: Mapping[str, Any]) -> list[str]:
@@ -27,9 +54,9 @@ def candidate_card_ids(inventory: Mapping[str, Any]) -> list[str]:
         metadata = row.get("latest_local_metadata") or {}
         card_id = metadata.get("CodeVersion") or row.get("declared_cr_id")
         card_id = str(card_id or "").strip()
-        if card_id and card_id != "—":
+        if card_id and card_id != "\u2014":
             result.add(card_id)
-    return sorted(result, key=lambda value: tuple(int(p) for p in value.split("_")))
+    return sorted(result, key=_card_sort_key)
 
 
 def fetch_card(card_id: str, *, opener: Callable[..., Any] = urlopen) -> dict[str, Any]:
@@ -43,8 +70,6 @@ def fetch_card(card_id: str, *, opener: Callable[..., Any] = urlopen) -> dict[st
 
 def fetch_current_registry(*, opener: Callable[..., Any] = urlopen) -> list[dict[str, Any]]:
     """Fetch the official list of all currently published rubricator cards."""
-    import httpx
-
     body: dict[str, Any] = {
         "filters": [{
             "fieldName": "status", "filterType": 1, "filterValueType": 2,
@@ -57,8 +82,9 @@ def fetch_current_registry(*, opener: Callable[..., Any] = urlopen) -> list[dict
         "columns": [],
     }
     records: list[dict[str, Any]] = []
-    total = 1
-    while len(records) < total:
+    total: int | None = None
+    page_number = 1
+    while page_number <= MAX_REGISTRY_PAGES:
         response = httpx.post(
             f"{API_ROOT}?op=GetJsonClinrecsFilterV2", json=body, timeout=30
         )
@@ -67,11 +93,23 @@ def fetch_current_registry(*, opener: Callable[..., Any] = urlopen) -> list[dict
         page = payload.get("Data")
         if not isinstance(page, list):
             raise ValueError("rubricator registry response has no Data list")
-        total = int(payload.get("TotalRecords") or len(page))
+        if total is None:
+            # M-15: `TotalRecords` was coerced with `or len(page)`, so an ABSENT
+            # count made the loop exit after page 1 and the audit silently covered
+            # 100 of ~2000 guidelines.  When it is absent we page until a short
+            # page proves we reached the end.
+            raw_total = payload.get("TotalRecords")
+            total = int(raw_total) if raw_total not in (None, "") else None
         records.extend(page)
-        if not page:
+        if not page or (total is not None and len(records) >= total):
             break
-        body["currentPage"] += 1
+        if total is None and len(page) < int(body["pageSize"]):
+            break
+        body["currentPage"] = page_number = page_number + 1
+    if page_number > MAX_REGISTRY_PAGES:
+        raise RuntimeError(
+            f"rubricator registry did not terminate within {MAX_REGISTRY_PAGES} pages"
+        )
     return records
 
 
@@ -84,6 +122,10 @@ def compact_registry_card(payload: Mapping[str, Any]) -> dict[str, Any]:
         "name": payload.get("Name"),
         "status": payload.get("Status"),
         "apply_status_calculated": payload.get("ApplyStatusCalculated"),
+        # L-17: `applicable_count` reads this key, but the registry payload may not
+        # carry it -- the count came out 0 with nothing to explain it.  Absence is
+        # now explicit in the artifact.
+        "apply_status_calculated_present": "ApplyStatusCalculated" in payload,
         "publish_date": payload.get("PublishDateStr"),
         "created": payload.get("CreatedStr"),
         "age_category": payload.get("AgeCategoryStr"),
@@ -99,8 +141,6 @@ def compact_registry_card(payload: Mapping[str, Any]) -> dict[str, Any]:
 
 def fetch_current_registry_card(card_id: str) -> dict[str, Any]:
     """Fetch one exact current card from the compact official registry API."""
-    import httpx
-
     body = {
         "filters": [
             {"fieldName": "status", "filterType": 1, "filterValueType": 2,
@@ -146,8 +186,8 @@ def build_exact_registry_audit(
                 cards.append(card)
             except Exception as exc:
                 failures.append({"requested_id": card_id, "error": str(exc)})
-    cards.sort(key=lambda card: tuple(int(p) for p in card["id"].split("_")))
-    failures.sort(key=lambda item: tuple(int(p) for p in item["requested_id"].split("_")))
+    cards.sort(key=lambda card: _card_sort_key(card["id"]))
+    failures.sort(key=lambda item: _card_sort_key(item["requested_id"]))
     return {
         "artifact_type": "OFFICIAL_RUBRICATOR_CARD_AUDIT",
         "schema_version": "1.2.0",
@@ -157,6 +197,9 @@ def build_exact_registry_audit(
         "requested_count": len(requested_ids),
         "verified_count": len(cards),
         "applicable_count": sum(card.get("apply_status_calculated") == 1 for card in cards),
+        "applicable_count_computable": all(
+            card.get("apply_status_calculated_present") for card in cards
+        ) if cards else False,
         "revision_change_count": 0,
         "cards": cards,
         "failures": failures,
@@ -176,7 +219,16 @@ def build_registry_audit(
     cards: list[dict[str, Any]] = []
     failures: list[dict[str, str]] = []
     for requested_id in requested_ids:
-        code = int(requested_id.split("_", 1)[0])
+        try:
+            code = int(requested_id.split("_", 1)[0])
+        except (TypeError, ValueError):
+            # M-14: a non-numeric code prefix must become a recorded failure, not
+            # an exception that discards every card already fetched.
+            failures.append({
+                "requested_id": requested_id,
+                "error": f"non-numeric code prefix in {requested_id!r}",
+            })
+            continue
         payload = by_code.get(code)
         if payload is None:
             failures.append({"requested_id": requested_id, "error": "code absent from current registry"})
@@ -185,7 +237,7 @@ def build_registry_audit(
         card["requested_id"] = requested_id
         card["revision_changed"] = card["id"] != requested_id
         cards.append(card)
-    cards.sort(key=lambda card: tuple(int(p) for p in card["id"].split("_")))
+    cards.sort(key=lambda card: _card_sort_key(card["id"]))
     return {
         "artifact_type": "OFFICIAL_RUBRICATOR_CARD_AUDIT",
         "schema_version": "1.1.0",
@@ -195,6 +247,9 @@ def build_registry_audit(
         "requested_count": len(requested_ids),
         "verified_count": len(cards),
         "applicable_count": sum(card.get("apply_status_calculated") == 1 for card in cards),
+        "applicable_count_computable": all(
+            card.get("apply_status_calculated_present") for card in cards
+        ) if cards else False,
         "revision_change_count": sum(bool(card["revision_changed"]) for card in cards),
         "cards": cards,
         "failures": failures,
@@ -242,8 +297,8 @@ def build_audit(
                 cards.append(compact_card(future.result()))
             except Exception as exc:  # network/source failures belong in artifact
                 failures.append({"requested_id": card_id, "error": str(exc)})
-    cards.sort(key=lambda card: tuple(int(p) for p in card["id"].split("_")))
-    failures.sort(key=lambda item: tuple(int(p) for p in item["requested_id"].split("_")))
+    cards.sort(key=lambda card: _card_sort_key(card["id"]))
+    failures.sort(key=lambda item: _card_sort_key(item["requested_id"]))
     return {
         "artifact_type": "OFFICIAL_RUBRICATOR_CARD_AUDIT",
         "schema_version": "1.0.0",
@@ -255,6 +310,9 @@ def build_audit(
             card.get("apply_status") == "Применяется" and card.get("apply_status_calculated") == 1
             for card in cards
         ),
+        "applicable_count_computable": all(
+            card.get("apply_status") is not None for card in cards
+        ) if cards else False,
         "cards": cards,
         "failures": failures,
         "warning": "Card status is source identity evidence, not clinical dose approval.",
@@ -269,6 +327,8 @@ def main() -> int:
     args = parser.parse_args()
     inventory = json.loads(Path(args.inventory).read_text(encoding="utf-8"))
     if args.registry_stdin:
+        # The offline path is necessarily the weaker code-only matcher, so the
+        # artifact must SAY that rather than looking equivalent.
         registry = json.load(sys.stdin)
         if isinstance(registry, dict):
             registry = registry.get("Data")
@@ -276,7 +336,13 @@ def main() -> int:
             raise ValueError("registry stdin must be a JSON list or a response with Data")
         artifact = build_registry_audit(inventory, registry_fetcher=lambda: registry)
     else:
-        artifact = build_registry_audit(inventory)
+        # M-13: main() used build_registry_audit, which matches on `code` ONLY and
+        # ignores the version.  A guideline revised v3 -> v4 was therefore bound to
+        # the v4 card while the local PDF was still v3, and the artifact recorded
+        # `revision_changed: True` without anything acting on it.  The default is
+        # now the EXACT matcher, which fetches the card for the precise code_version
+        # and raises when it is not uniquely present.
+        artifact = build_exact_registry_audit(inventory)
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(artifact, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

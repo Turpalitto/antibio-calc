@@ -9,6 +9,15 @@ WARNING and the candidate survives; only *positive* evidence of a
 contraindication excludes. Unknown is never treated as safe, and never
 treated as contraindicated.
 
+Allergy classes are resolved through the curated ``allergy_class_hierarchy``
+(``AllergyClassResolver``, M-4) rather than the per-drug ``allergy_class_map``
+alone, so a drug absent from that map but present in db/index.json is still
+classifiable instead of producing ALLERGY_UNVERIFIABLE for every allergic
+patient, and so a detailed class label ("Полусинтетические пенициллины
+широкого спектра") compares equal to the family the physician stated
+("Пенициллины"). Documented cross-reactivity (penicillin <-> cephalosporin)
+raises a WARNING, never an exclusion.
+
 Trace note: like RegimenLoad (Milestone 3), this stage does not emit a
 StageTrace for the boring "survived every check" case — DecisionCode has no
 member for "no decision", and the spec's own pseudocode literally writes
@@ -34,6 +43,7 @@ from clinical_engine.models import (
     StageTrace,
 )
 from clinical_engine.pipeline import PipelineState, StageContext, StageResult
+from clinical_engine.terminology import AllergyClassResolver
 
 # "N мес(яц...)" / "N лет|год(а)" -- the spec's own algorithm names a
 # parse_age_restriction() helper (distinct from the free-text interactions/
@@ -56,12 +66,27 @@ def _parse_age_restriction(raw: str | None) -> float | None:
     return value  # лет/год* -> years
 
 
+def _norm(class_name: str) -> str:
+    """Comparison key for allergy class names (case/whitespace tolerant)."""
+    return " ".join(class_name.split()).casefold()
+
+
 class HardSafetyFilter:
     name = "HardSafetyFilter"
 
     def run(self, state: PipelineState, ctx: StageContext) -> StageResult:
         start = time.perf_counter()
         patient = state.patient.patient
+        # M-4: the class vocabulary is the curated allergy_class_hierarchy
+        # (allergy_class_map is its reverse index in production). Built once per
+        # run from the frozen constants — no I/O, no state.
+        resolver = AllergyClassResolver(ctx.constants)
+        # P1 terminology binding additionally contributes the ATC-derived
+        # fallback (J01C* -> Пенициллины) when the curated sources are silent.
+        atc_fallback = (
+            getattr(ctx.terminology_provider, "get_atc", None)
+            if ctx.config.use_terminology_binding else None
+        )
 
         kept: list[Recommendation] = []
         excluded = list(state.excluded)
@@ -99,18 +124,26 @@ class HardSafetyFilter:
             excluded_here = False
             exclusion_reason = ""
 
-            # 1. Allergy check (ABSOLUTE) -- class hierarchy via allergy_class_map.
-            # Audit fix M1 (Milestone 9): case-insensitive comparison, and a
-            # WARNING when the patient states allergies but the drug's class
-            # cannot be resolved (Unknown != Safe -- never silently include an
-            # unverifiable drug for an allergic patient).
+            # 1. Allergy check (ABSOLUTE) -- canonical family via the curated
+            # class hierarchy. Audit fix M1 (Milestone 9): case-insensitive
+            # comparison, and a WARNING when the patient states allergies but
+            # the drug's class cannot be resolved (Unknown != Safe -- never
+            # silently include an unverifiable drug for an allergic patient).
             if patient.allergies:
-                allergies_lower = {a.strip().lower() for a in patient.allergies}
-                # P1: via terminology_provider if flag, else legacy (additive, supports traceability)
-                if ctx.config.use_terminology_binding:
-                    drug_class = ctx.terminology_provider.get_allergy_class(c.drug_ref)
-                else:
-                    drug_class = ctx.constants.allergy_class_map.get(c.drug_ref)
+                atc = None
+                if atc_fallback is not None and c.drug_ref:
+                    atc = atc_fallback(c.drug_ref)
+                resolution = resolver.resolve(
+                    c.drug_ref, drug_info.drug_class or None, atc=atc
+                )
+                drug_class = resolution.class_name
+                # The patient's stated allergies are normalized onto the same
+                # family vocabulary, so "пенициллины" and the detailed class
+                # label "Полусинтетические пенициллины широкого спектра" both
+                # compare equal to the family "Пенициллины".
+                allergies_lower = {
+                    _norm(resolver.canonical_family(a)) for a in patient.allergies if a.strip()
+                }
                 if drug_class is None:
                     rec_flags.append(
                         SafetyFlag(
@@ -126,7 +159,7 @@ class HardSafetyFilter:
                             requires_physician_acknowledgement=True,
                         )
                     )
-                elif drug_class.strip().lower() in allergies_lower:
+                elif _norm(drug_class) in allergies_lower:
                     flag = SafetyFlag(
                         level=SafetyLevel.ABSOLUTE_CONTRAINDICATION,
                         code="ALLERGY",
@@ -141,21 +174,66 @@ class HardSafetyFilter:
                         StageTrace(
                             stage_name=self.name,
                             decision_code=DecisionCode.ALLERGY,
-                            reason=f"{c.drug_normalized} (regimen {c.regimen_id}): patient allergic to {drug_class}",
+                            reason=(
+                                f"{c.drug_normalized} (regimen {c.regimen_id}): "
+                                f"patient allergic to {drug_class} "
+                                f"(class resolved via {resolution.source})"
+                            ),
                             decision_confidence=ConfidenceLevel.FULL,
                         )
                     )
                     excluded_here = True
                     exclusion_reason = f"allergy: {drug_class}"
+                else:
+                    # M-4: documented, non-absolute cross-reactivity. Warns,
+                    # never excludes -- the real-world risk is a minority of
+                    # patients and depends on the side chain, which is not in
+                    # the data.
+                    for related in resolver.cross_reactive_with(drug_class):
+                        if _norm(related) in allergies_lower:
+                            flag = SafetyFlag(
+                                level=SafetyLevel.WARNING,
+                                code="ALLERGY_CROSS_REACTIVITY",
+                                message=(
+                                    f"{c.drug_normalized} is {drug_class}, cross-reactive with "
+                                    f"the stated {related} allergy — avoid if an alternative "
+                                    "exists, acknowledge before use"
+                                ),
+                                drug_ref=c.drug_ref,
+                                stage=self.name,
+                                action=SafetyAction.AVOID_IF_POSSIBLE,
+                                requires_physician_acknowledgement=True,
+                            )
+                            rec_flags.append(flag)
+                            traces.append(
+                                StageTrace(
+                                    stage_name=self.name,
+                                    decision_code=DecisionCode.ALLERGY,
+                                    reason=(
+                                        f"{c.drug_normalized} (regimen {c.regimen_id}): "
+                                        f"{drug_class} cross-reacts with stated {related} allergy"
+                                    ),
+                                    decision_confidence=ConfidenceLevel.MEDIUM,
+                                )
+                            )
+                            break
 
             # 2. Pregnancy check (ABSOLUTE / CAUTION / UNKNOWN)
             if not excluded_here and patient.pregnant:
                 category = drug_info.pregnancy_category
+                source_text = drug_info.pregnancy_source_text
+                # C-1: keep the verbatim source text next to the enum, so a
+                # trimester-conditional contraindication ("противопоказан в I и
+                # III триместрах") is visible to the physician instead of being
+                # flattened into an opaque category.
+                suffix = f" (source: {source_text!r})" if source_text else ""
                 if category is PregnancyCategory.PROHIBITED:
                     flag = SafetyFlag(
                         level=SafetyLevel.ABSOLUTE_CONTRAINDICATION,
                         code="PREGNANCY_CI",
-                        message=f"{c.drug_normalized} is contraindicated in pregnancy",
+                        message=(
+                            f"{c.drug_normalized} is contraindicated in pregnancy{suffix}"
+                        ),
                         drug_ref=c.drug_ref,
                         stage=self.name,
                         action=SafetyAction.STOP_IMMEDIATELY,
@@ -166,7 +244,10 @@ class HardSafetyFilter:
                         StageTrace(
                             stage_name=self.name,
                             decision_code=DecisionCode.PREGNANCY,
-                            reason=f"{c.drug_normalized} (regimen {c.regimen_id}): pregnancy_category=PROHIBITED",
+                            reason=(
+                                f"{c.drug_normalized} (regimen {c.regimen_id}): "
+                                f"pregnancy_category=PROHIBITED{suffix}"
+                            ),
                             decision_confidence=ConfidenceLevel.FULL,
                         )
                     )
@@ -177,7 +258,7 @@ class HardSafetyFilter:
                         SafetyFlag(
                             level=SafetyLevel.WARNING,
                             code="PREGNANCY_CAUTION",
-                            message=f"{c.drug_normalized}: use in pregnancy with caution",
+                            message=f"{c.drug_normalized}: use in pregnancy with caution{suffix}",
                             drug_ref=c.drug_ref,
                             stage=self.name,
                             action=SafetyAction.MONITOR_CLOSELY,
@@ -220,6 +301,34 @@ class HardSafetyFilter:
                 else:
                     min_age = _parse_age_restriction(drug_info.age_restriction_min)
                     max_age = _parse_age_restriction(drug_info.age_restriction_max)
+                    # L-2: a restriction that exists but cannot be parsed used to
+                    # be skipped silently, even with a known age — the drug
+                    # looked exactly as safe as one with no restriction. Degrade
+                    # to an explicit flag instead.
+                    unparsed = [
+                        raw
+                        for raw in (
+                            drug_info.age_restriction_min,
+                            drug_info.age_restriction_max,
+                        )
+                        if raw and _parse_age_restriction(raw) is None
+                    ]
+                    if unparsed:
+                        rec_flags.append(
+                            SafetyFlag(
+                                level=SafetyLevel.WARNING,
+                                code="AGE_RESTRICTION_UNPARSED",
+                                message=(
+                                    f"{c.drug_normalized}: age restriction "
+                                    f"{unparsed!r} could not be parsed; the age check was "
+                                    "skipped for this drug"
+                                ),
+                                drug_ref=c.drug_ref,
+                                stage=self.name,
+                                action=SafetyAction.MONITOR_CLOSELY,
+                                requires_physician_acknowledgement=True,
+                            )
+                        )
                     if min_age is not None and patient.age < min_age:
                         flag = SafetyFlag(
                             level=SafetyLevel.ABSOLUTE_CONTRAINDICATION,

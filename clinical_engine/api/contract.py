@@ -7,6 +7,7 @@ no medical data.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -35,6 +36,7 @@ ERROR_CATEGORIES: dict[str, tuple[str, ...]] = {
                            "APPROVED_DIAGNOSIS_MISSING_REGIMEN",
                            "APPROVED_REGIMEN_MISSING_DIAGNOSIS", "PHYSICIAN_APPROVAL_MISSING"),
     "request": ("UNSUPPORTED_API_VERSION", "INVALID_REQUEST", "NOT_IMPLEMENTED"),
+    "clinical_review": ("CLINICAL_REVIEW_REQUIRED",),
 }
 
 # reverse lookup: code -> category
@@ -84,6 +86,50 @@ class RequestError(Exception):
         super().__init__(f"{code}: {detail}")
 
 
+# ── patient-field coercion (backported from api/v2_contract.py) ───────────────
+# v1 previously coerced these with bare ``bool()``/``tuple()``, which silently
+# accepted a string "false" as a pregnant patient and exploded a JSON string into
+# one allergy per character — both fail-OPEN on a safety-relevant field. Every
+# value below is now type-checked and rejected rather than coerced.
+
+def _optional_number(value: Any, name: str, *, allow_zero: bool = False) -> float | None:
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise RequestError("INVALID_REQUEST", f"{name} must be numeric")
+    number = float(value)
+    if not math.isfinite(number):
+        raise RequestError("INVALID_REQUEST", f"{name} must be a finite number")
+    if number < 0 or (number == 0 and not allow_zero):
+        relation = "zero or greater" if allow_zero else "greater than zero"
+        raise RequestError("INVALID_REQUEST", f"{name} must be {relation}")
+    return number
+
+
+def _string_tuple(value: Any, name: str) -> tuple[str, ...]:
+    if value is None:
+        return ()
+    if not isinstance(value, (list, tuple)) or any(not isinstance(v, str) for v in value):
+        raise RequestError("INVALID_REQUEST", f"{name} must be an array of strings")
+    return tuple(v.strip() for v in value if v.strip())
+
+
+def _optional_bool(value: Any, name: str) -> bool:
+    if value is None:
+        return False
+    if not isinstance(value, bool):
+        raise RequestError("INVALID_REQUEST", f"{name} must be boolean")
+    return value
+
+
+def _optional_text(value: Any, name: str) -> str | None:
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise RequestError("INVALID_REQUEST", f"{name} must be a string")
+    return value.strip() or None
+
+
 def parse_recommend_request(body: dict[str, Any]) -> RecommendRequest:
     """Validate the request envelope. Raises RequestError with a stable code.
     Does NOT perform clinical validation (that is the engine's job)."""
@@ -98,7 +144,9 @@ def parse_recommend_request(body: dict[str, Any]) -> RecommendRequest:
     query = body.get("query")
     if not isinstance(query, dict):
         raise RequestError("INVALID_REQUEST", "missing 'query' object")
-    if not (query.get("diagnosis") or query.get("icd10")):
+    diagnosis = _optional_text(query.get("diagnosis"), "diagnosis")
+    icd10 = _optional_text(query.get("icd10"), "icd10")
+    if not diagnosis and not icd10:
         raise RequestError("INVALID_REQUEST", "query requires 'diagnosis' or 'icd10'")
 
     p = query.get("patient") or {}
@@ -107,21 +155,22 @@ def parse_recommend_request(body: dict[str, Any]) -> RecommendRequest:
         raise RequestError("INVALID_REQUEST", "'patient' and 'preferences' must be objects")
 
     patient = PatientDTO(
-        age=p.get("age"), weight_kg=p.get("weight_kg"),
-        pregnant=bool(p.get("pregnant", False)),
-        renal_function=p.get("renal_function"),
-        hepatic_impairment=bool(p.get("hepatic_impairment", False)),
-        allergies=tuple(p.get("allergies") or ()),
-        current_meds=tuple(p.get("current_meds") or ()),
+        age=_optional_number(p.get("age"), "age", allow_zero=True),
+        weight_kg=_optional_number(p.get("weight_kg"), "weight_kg"),
+        pregnant=_optional_bool(p.get("pregnant"), "pregnant"),
+        renal_function=_optional_text(p.get("renal_function"), "renal_function"),
+        hepatic_impairment=_optional_bool(p.get("hepatic_impairment"), "hepatic_impairment"),
+        allergies=_string_tuple(p.get("allergies"), "allergies"),
+        current_meds=_string_tuple(p.get("current_meds"), "current_meds"),
     )
     preferences = PreferencesDTO(
-        therapy_line=pref.get("therapy_line"),
-        route_preference=pref.get("route_preference"),
-        population=pref.get("population"),
+        therapy_line=_optional_text(pref.get("therapy_line"), "therapy_line"),
+        route_preference=_optional_text(pref.get("route_preference"), "route_preference"),
+        population=_optional_text(pref.get("population"), "population"),
     )
     return RecommendRequest(
         api_version=api_version,
-        diagnosis=query.get("diagnosis"), icd10=query.get("icd10"),
+        diagnosis=diagnosis, icd10=icd10,
         patient=patient, preferences=preferences,
     )
 

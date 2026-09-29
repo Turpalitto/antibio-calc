@@ -11,10 +11,14 @@ Not implemented (explicitly out of scope, documented in DECISIONS.md
   - Confidence propagation (§7.3) -- Recommendation.confidence/
     confidence_breakdown stay at their defaults (0.0/None).
   - Plugin hooks (BEFORE_RANKING etc.) -- no plugin registry exists.
-  - guideline_version in EngineMetadata -- placeholder "unversioned" until
-    resources/diagnosis_index.json (294 curated entries) exists.
   - Non-default score profiles (ent/urology/icu/pediatrics) -- content
     curation task, not an architecture gap.
+
+H-4: `recommend()` now always returns a populated
+`RecommendationSet.safety_summary` — the engine's own aggregate safety
+verdict (status / requires_physician_review / flag codes / worst action /
+whether any dose is not patient-specific). The API layer must serialize that
+field; it must not rebuild a bare APPROVED response from `accepted` alone.
 """
 
 from __future__ import annotations
@@ -25,7 +29,7 @@ import warnings
 from datetime import datetime, timezone
 from pathlib import Path
 
-from clinical_engine.config import EngineConfig
+from clinical_engine.config import NON_CLINICAL_POLICIES, EngineConfig
 from clinical_engine.models import (
     DecisionContext,
     DecisionReport,
@@ -38,6 +42,7 @@ from clinical_engine.models import (
     PatientQuery,
     RecommendationSet,
     SafetyLevel,
+    SafetySummary,
 )
 from clinical_engine.pipeline import ClinicalConstants, PipelineState, ScoreWeights, StageContext
 from clinical_engine.readers.diagnosis_reader import DiagnosisProviderAdapter, JsonDiagnosisProvider
@@ -63,7 +68,12 @@ _UNCURATED_INDEX_STATUSES = frozenset({"AUTO_GENERATED_DRAFT", "PARTIALLY_CURATE
 
 # See DECISIONS.md 2026-07-10 "EngineMetadata — real values where available".
 _KNOWLEDGE_DATASET_VERSION = "KB-2026-07-09"  # documented KB build date, see PROJECT_STATE.md
-_GUIDELINE_VERSION_PLACEHOLDER = "unversioned"  # pending resources/diagnosis_index.json curation
+# L-5: the guideline-set version IS available (diagnosis_index.meta.
+# guideline_set_version, e.g. "draft-auto" / "partially-curated"). It was
+# hardcoded to a placeholder that looked like a real value. When the index
+# carries no version, the sentinel below is deliberately not a plausible
+# version string, so nobody can mistake it for provenance.
+_GUIDELINE_VERSION_MISSING = "UNKNOWN_NO_GUIDELINE_SET_VERSION"
 
 # Audit fix M3 (Milestone 9): resolve engine-owned resources relative to this
 # package, not the process CWD, so the engine works regardless of where it is
@@ -160,8 +170,14 @@ class Engine:
             knowledge_dataset_version=_KNOWLEDGE_DATASET_VERSION,
             normalizer_version=self._normalizer_version(),
             dictionary_version=_load_dictionary_version(),
-            guideline_version=_GUIDELINE_VERSION_PLACEHOLDER,
+            guideline_version=self._guideline_version(),
         )
+
+    def _guideline_version(self) -> str:
+        """Guideline-set version, read from the diagnosis index (L-5)."""
+        meta = getattr(self._diagnosis_provider, "meta", {}) or {}
+        value = meta.get("guideline_set_version") or meta.get("generated_at")
+        return str(value) if value else _GUIDELINE_VERSION_MISSING
 
     def _guard_index_curation_status(self) -> None:
         """Milestone 13 Production Guard. Detect an uncurated diagnosis_index.
@@ -206,6 +222,21 @@ class Engine:
     def metadata(self) -> EngineMetadata:
         return self._metadata
 
+    def guideline_diagnosis_names(self, icd10: str) -> tuple[str, ...]:
+        """Diagnosis names the index associates with an ICD-10 code.
+
+        Exposed so the curated layer can answer an ICD-only query (which
+        api/contract.py explicitly permits) without duplicating the diagnosis
+        index. Read-only, in-memory, no I/O.
+        """
+        return tuple(
+            dict.fromkeys(
+                entry.diagnosis_name
+                for entry in self._diagnosis_provider.lookup(None, icd10)
+                if entry.diagnosis_name
+            )
+        )
+
     def recommend(self, query: PatientQuery) -> RecommendationSet:
         run_start = time.perf_counter()
         # P0-2: always wire adapters to provider ports (wrap-only). Legacy reader attrs coexist for transition.
@@ -238,8 +269,23 @@ class Engine:
         )
 
         engine_notes: tuple[EngineNote, ...] = ()
+        if self.config.validation_policy in NON_CLINICAL_POLICIES:
+            # M-2: a non-clinical profile must never produce a result that looks
+            # clinical. Recorded in the result itself, not only in a console.
+            engine_notes += (
+                EngineNote(
+                    code="NON_CLINICAL_VALIDATION_PROFILE",
+                    message=(
+                        f"ValidationPolicy.{self.config.validation_policy.name} loads "
+                        "REJECT/REVIEW-verdict regimens and does not represent a "
+                        "clinically validated recommendation set"
+                    ),
+                    stage="RegimenLoad",
+                    severity=NoteSeverity.WARN,
+                ),
+            )
         if not state.guideline_ids:
-            engine_notes = (
+            engine_notes += (
                 EngineNote(
                     code="NO_DIAGNOSIS_MATCH",
                     message="Diagnosis/ICD-10 not found in diagnosis_index",
@@ -248,7 +294,7 @@ class Engine:
                 ),
             )
         elif not state.candidates and not state.excluded:
-            engine_notes = (
+            engine_notes += (
                 EngineNote(
                     code="NO_REGIMENS_EXTRACTED",
                     message="Matched guideline(s) have no regimens for this ValidationPolicy",
@@ -257,7 +303,7 @@ class Engine:
                 ),
             )
         elif not state.candidates and state.excluded:
-            engine_notes = (
+            engine_notes += (
                 EngineNote(
                     code="ALL_CANDIDATES_EXCLUDED",
                     message=(
@@ -289,6 +335,9 @@ class Engine:
             engine_notes=engine_notes,
             query=query,
             elapsed_ms=elapsed_ms,
+            # H-4: the engine publishes its own aggregate safety verdict. The
+            # transport layer must pass it through, never recompute or drop it.
+            safety_summary=SafetySummary.from_result(state.safety_flags, state.candidates),
         )
 
     def build_report(self, result: RecommendationSet) -> DecisionReport:
@@ -304,4 +353,5 @@ class Engine:
             metadata=result.metadata,
             runtime=result.runtime,
             engine_notes=result.engine_notes,
+            safety_summary=result.safety_summary,
         )

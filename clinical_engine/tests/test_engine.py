@@ -20,6 +20,7 @@ from clinical_engine.models import (
     NoteSeverity,
     Patient,
     PatientQuery,
+    SafetyAction,
     ValidationPolicy,
 )
 
@@ -80,7 +81,26 @@ class TestEngineRecommend:
         assert meta.normalizer_version == "1.0.0"  # from medical_normalizer.NORMALIZER_VERSION
         assert meta.dictionary_version == "1.0.0"  # from medical_dictionary/metadata.json
         assert meta.knowledge_dataset_version == "KB-2026-07-09"
-        assert meta.guideline_version == "unversioned"  # honest placeholder, see DECISIONS.md
+        # L-5: no more silent "unversioned" placeholder. The fixture index is a
+        # bare list (no meta), so the loud sentinel is expected here; a real
+        # index carries guideline_set_version (see the test below).
+        assert meta.guideline_version == "UNKNOWN_NO_GUIDELINE_SET_VERSION"
+
+    def test_guideline_version_comes_from_the_index(self, engine_config, tmp_path) -> None:
+        entry = {
+            "guideline_id": "g1", "diagnosis_name": "dx", "icd10_codes": ["A00"],
+            "guideline_title": "t", "guideline_year": None,
+            "guideline_revision_date": None, "source_url": "",
+        }
+        index = tmp_path / "idx.json"
+        index.write_text(
+            json.dumps({"meta": {"status": "PRODUCTION_CURATED",
+                                 "guideline_set_version": "kr-2026-01"}, "entries": [entry]}),
+            encoding="utf-8",
+        )
+        cfg = dataclasses.replace(engine_config, diagnosis_index_path=str(index))
+        with Engine(cfg) as engine:
+            assert engine.metadata.guideline_version == "kr-2026-01"
 
     def test_result_carries_ranked_candidates(self, engine_config: EngineConfig) -> None:
         query = PatientQuery(diagnosis="vnebolnichnaya pnevmoniya", patient=Patient(age=45))
@@ -167,49 +187,155 @@ class TestEngineRecommend:
         ]
 
 
+class TestSafetySummaryPublished:
+    """H-4: every flag the engine computed was dropped on the way out, so a
+    response carrying PREGNANCY_CI / RENAL_ADJ_UNPARSED was byte-identical to a
+    clean one. The engine now publishes its own aggregate verdict; the transport
+    layer must pass it through."""
+
+    def test_clean_result_is_marked_cleared(self, engine_config: EngineConfig) -> None:
+        with Engine(engine_config) as engine:
+            res = engine.recommend(
+                PatientQuery(diagnosis="vnebolnichnaya pnevmoniya", patient=Patient(age=45))
+            )
+        s = res.safety_summary
+        assert s is not None
+        assert s.status == "CLEARED"
+        assert s.requires_physician_review is False
+        assert s.total_flags == 0
+        assert s.dose_is_patient_specific is True
+
+    def test_allergy_exclusion_is_surfaced(self, engine_config: EngineConfig) -> None:
+        with Engine(engine_config) as engine:
+            res = engine.recommend(
+                PatientQuery(diagnosis="vnebolnichnaya pnevmoniya",
+                             patient=Patient(allergies=("Пенициллины",)))
+            )
+        s = res.safety_summary
+        assert s is not None
+        assert s.flag_counts == {"ALLERGY": 1}
+        assert "ALLERGY" in s.flag_codes
+        assert s.most_severe_action is SafetyAction.STOP_IMMEDIATELY
+        assert s.absolute_contraindications == 1
+        assert s.requires_physician_acknowledgement == 1
+        assert s.requires_physician_review is True
+        assert s.status == "REVIEW_REQUIRED"
+
+    def test_renal_case_is_surfaced_and_dose_marked_generic(
+        self, engine_config: EngineConfig
+    ) -> None:
+        with Engine(engine_config) as engine:
+            res = engine.recommend(
+                PatientQuery(diagnosis="vnebolnichnaya pnevmoniya",
+                             patient=Patient(age=62, renal_function=12.0))
+            )
+        s = res.safety_summary
+        assert s is not None
+        assert "RENAL_ADJ_UNPARSED" in s.flag_codes
+        assert s.most_severe_action is SafetyAction.AVOID_IF_POSSIBLE
+        assert s.dose_is_patient_specific is False  # C-2
+        assert s.status == "REVIEW_REQUIRED"
+
+    def test_report_carries_the_summary(self, engine_config: EngineConfig) -> None:
+        with Engine(engine_config) as engine:
+            res = engine.recommend(
+                PatientQuery(diagnosis="vnebolnichnaya pnevmoniya",
+                             patient=Patient(allergies=("Пенициллины",)))
+            )
+            report = engine.build_report(res)
+        assert report.safety_summary is not None
+        assert report.safety_summary.flag_counts == {"ALLERGY": 1}
+        assert report.to_dict()["safety_summary"]["status"] == "REVIEW_REQUIRED"
+
+    def test_non_clinical_profile_is_recorded_in_the_result(
+        self, engine_config: EngineConfig
+    ) -> None:
+        """M-2: DEBUG/AUDIT load REJECT regimens; the result must say so."""
+        import dataclasses as _dc
+        import warnings
+
+        cfg = _dc.replace(engine_config, validation_policy=ValidationPolicy.DEBUG)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)
+            with Engine(cfg) as engine:
+                res = engine.recommend(
+                    PatientQuery(diagnosis="vnebolnichnaya pnevmoniya", patient=Patient(age=45))
+                )
+        notes = {n.code: n for n in res.engine_notes}
+        assert "NON_CLINICAL_VALIDATION_PROFILE" in notes
+        assert notes["NON_CLINICAL_VALIDATION_PROFILE"].severity is NoteSeverity.WARN
+        assert engine_config.is_non_clinical_profile is False
+        assert cfg.is_non_clinical_profile is True
+
+    def test_interaction_check_early_return_reports_a_real_duration(
+        self, engine_config: EngineConfig
+    ) -> None:
+        """M-3: the early return hardcoded elapsed_ms=0.0, corrupting
+        pipeline_time_breakdown."""
+        with Engine(engine_config) as engine:
+            res = engine.recommend(
+                PatientQuery(diagnosis="vnebolnichnaya pnevmoniya", patient=Patient(age=45))
+            )
+        assert "InteractionCheck" in res.runtime.pipeline_time_breakdown
+        assert res.runtime.pipeline_time_breakdown["InteractionCheck"] > 0.0
+
+    def test_guideline_diagnosis_names_is_exposed_for_icd_only_queries(
+        self, engine_config: EngineConfig
+    ) -> None:
+        """api/contract.py permits an ICD-only request; the curated layer needs
+        the code->name mapping and must not duplicate the diagnosis index."""
+        with Engine(engine_config) as engine:
+            names = engine.guideline_diagnosis_names("J18")
+            assert "g_cap_adult" == engine._diagnosis_provider.lookup(None, "J18")[0].guideline_id
+        assert "vnebolnichnaya pnevmoniya" in names
+        assert engine_names_are_deduped(names)
+        with Engine(engine_config) as engine:
+            assert engine.guideline_diagnosis_names("Z99") == ()
+
+
+def engine_names_are_deduped(names: tuple[str, ...]) -> bool:
+    return len(names) == len(set(names))
+
+
 class TestP1TerminologyBenefit:
-    """P1: TerminologyProvider improves allergy exclusion via ATC hierarchy (J01C*).
-    Quantifies clinical benefit vs legacy map.
-    Uses test data with 'unmapped_pen' (not in legacy map, but ATC J01CA04 -> 'Пенициллины').
+    """M-4: the allergy class is resolved through the curated class hierarchy,
+    so a drug missing from the per-drug allergy_class_map is still classified
+    and a penicillin allergy excludes it.
+
+    Historically the excluded drug ('unmapped_pen') was only classifiable via a
+    synthetic ATC entry injected into the real lookup map (L-6) on the
+    terminology-binding path. Both problems are gone: the class now comes from
+    the drug's own class label matched against the family vocabulary, which
+    works identically with and without the terminology flag.
     """
 
-    def test_terminology_improves_allergy_exclusion(self, p1_engine_config: EngineConfig) -> None:
+    def _run(self, config, query):
+        with Engine(config) as engine:
+            return engine.recommend(query)
+
+    def test_unmapped_class_drug_is_excluded_in_both_binding_modes(
+        self, p1_engine_config: EngineConfig
+    ) -> None:
         query = PatientQuery(
             diagnosis="vnebolnichnaya pnevmoniya",
             patient=Patient(age=45, allergies=["Пенициллины"]),
         )
+        legacy = self._run(p1_engine_config, query)
+        term = self._run(
+            dataclasses.replace(p1_engine_config, use_terminology_binding=True), query
+        )
+        for res in (legacy, term):
+            excluded = {rec.candidate.drug_ref for rec, _ in res.excluded}
+            assert "amoxicillin" in excluded
+            assert "unmapped_pen" in excluded
+            # The class WAS resolvable, so it is not reported as unverifiable.
+            assert "ALLERGY_UNVERIFIABLE" not in {f.code for f in res.safety_flags}
+            assert res.accepted == ()
 
-        # Legacy path (flag=False, default)
-        with Engine(p1_engine_config) as eng_legacy:
-            res_legacy = eng_legacy.recommend(query)
-
-        # Terminology path (flag=True)
-        cfg_term = dataclasses.replace(p1_engine_config, use_terminology_binding=True)
-        with Engine(cfg_term) as eng_term:
-            res_term = eng_term.recommend(query)
-
-        # Quantify improvement:
-        # Legacy: amox excluded (in map), unmapped_pen NOT (no class) -> may have less exclusions or UNVERIFIABLE
-        # Term: both excluded via class "Пенициллины" (map or ATC hierarchy)
-        legacy_excluded_refs = {rec.candidate.drug_ref for rec, _ in res_legacy.excluded if rec.candidate.drug_ref}
-        term_excluded_refs = {rec.candidate.drug_ref for rec, _ in res_term.excluded if rec.candidate.drug_ref}
-
-        # amox always excluded
-        assert "amoxicillin" in legacy_excluded_refs
-        assert "amoxicillin" in term_excluded_refs
-
-        # The improvement: unmapped_pen excluded only with terminology (via ATC demo)
-        # (in legacy: no class -> not excluded by allergy)
-        assert "unmapped_pen" not in legacy_excluded_refs or "unmapped_pen" in [f.code for f in res_legacy.safety_flags if f.code == "ALLERGY_UNVERIFIABLE"]
-        assert "unmapped_pen" in term_excluded_refs
-
-        # Traceability: in term path, the provider mapping is used (visible in code path)
-        # Physician benefit: more complete exclusion of beta-lactams, fewer UNVERIFIABLE
-        term_safety_codes = {f.code for f in res_term.safety_flags}
-        assert "ALLERGY" in term_safety_codes or len(term_excluded_refs) > len(legacy_excluded_refs) or "unmapped_pen" in term_excluded_refs
-
-        # Before/after: term path has stricter/more accurate exclusion for the class
-        # (measurable: additional drug excluded due to terminology)
+    def test_synthetic_atc_is_gone(self, p1_engine_config: EngineConfig) -> None:
+        """L-6: a real ATC map must not carry an invented entry for a drug."""
+        with Engine(p1_engine_config) as engine:
+            assert engine._terminology_provider.get_atc("unmapped_pen") is None
 
 
 class TestProductionGuard:

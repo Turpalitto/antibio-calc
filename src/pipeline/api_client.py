@@ -4,6 +4,8 @@ import asyncio
 import hashlib
 import json
 import logging
+import os
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -32,6 +34,29 @@ logger = logging.getLogger(__name__)
 
 def _default_json(data: dict) -> bytes:
     return orjson.dumps(data)
+
+
+def _atomic_write_clinrecs(items: list) -> None:
+    """L-60: publish clinrecs.json atomically, via a single writer.
+
+    ``fetch_all_clinrecs`` and ``cmd_download`` both wrote this file; the first
+    with a bare ``write_bytes`` (so a crash truncated the authoritative corpus
+    manifest) and the second immediately overwriting it.  One helper, staged write
+    plus ``os.replace``, is now the only way this file is written.
+    """
+    CLINRECS_JSON.parent.mkdir(parents=True, exist_ok=True)
+    blob = orjson.dumps(items, option=orjson.OPT_INDENT_2)
+    fd, tmp_name = tempfile.mkstemp(dir=str(CLINRECS_JSON.parent), prefix=CLINRECS_JSON.name + ".", suffix=".tmp")
+    tmp = Path(tmp_name)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(blob)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, CLINRECS_JSON)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
 
 
 class ClinrecApi:
@@ -89,7 +114,7 @@ class ClinrecApi:
 
         if page_count <= 1:
             logger.info(f"  All {len(all_items)} records in one page")
-            CLINRECS_JSON.write_bytes(orjson.dumps(all_items, option=orjson.OPT_INDENT_2))
+            _atomic_write_clinrecs(all_items)
             return all_items
 
         if max_pages and page_count > max_pages:
@@ -117,7 +142,7 @@ class ClinrecApi:
                 all_items.extend(items)
 
         all_items.sort(key=lambda x: x.get("Id", 0))
-        CLINRECS_JSON.write_bytes(orjson.dumps(all_items, option=orjson.OPT_INDENT_2))
+        _atomic_write_clinrecs(all_items)
         logger.info(f"  Total fetched: {len(all_items)} (saved to {CLINRECS_JSON})")
         return all_items
 
@@ -127,6 +152,14 @@ class ClinrecApi:
         retry=retry_if_exception_type((httpx.HTTPError, httpx.ReadError, httpx.ConnectError)),
     )
     async def download_pdf(self, code_version: str, dest_path: Path) -> tuple[bool, str, str]:
+        """Fetch one PDF and publish it atomically.
+
+        L-61/L-62: the body was written with a bare ``write_bytes``, so a crash or a
+        short read left a TRUNCATED file on disk -- and ``download_all_pdfs`` skips
+        any destination that already exists, so that truncated file was then skipped
+        FOREVER.  The bytes are now staged next to the target and moved into place
+        with ``os.replace`` only after the full, PDF-magic-verified body is on disk.
+        """
         url = f"{API_GET_PDF}&id={code_version}"
         resp = await self._client.get(url, follow_redirects=True)
         resp.raise_for_status()
@@ -137,7 +170,19 @@ class ClinrecApi:
         if not content.startswith(b"%PDF"):
             text_sample = content[:500].decode("utf-8", errors="replace")
             return False, sha256, f"Not a PDF: {text_sample}"
+        if b"%%EOF" not in content[-2048:]:
+            return False, sha256, "Truncated PDF: no %%EOF trailer in the last 2 KiB"
 
         dest_path.parent.mkdir(parents=True, exist_ok=True)
-        dest_path.write_bytes(content)
+        fd, tmp_name = tempfile.mkstemp(dir=str(dest_path.parent), prefix=dest_path.name + ".", suffix=".part")
+        tmp = Path(tmp_name)
+        try:
+            with os.fdopen(fd, "wb") as handle:
+                handle.write(content)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(tmp, dest_path)
+        except BaseException:
+            tmp.unlink(missing_ok=True)
+            raise
         return True, sha256, ""

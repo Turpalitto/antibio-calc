@@ -11,6 +11,14 @@ from pathlib import Path
 from typing import Any
 
 _SIMPLE_UNIT = re.compile(r"(?<![\w/])(мг|mg|г|g|мкг|mcg|µg|мл|ml|ед|ме|iu)(?![\w/])", re.I)
+# A unit is only "recoverable" by attaching the unit the source already states
+# when that unit cannot be mistaken for a mass-vs-volume ambiguity. Grams are
+# excluded: "1 г" is a weight, not a count, and a per-administration gram dose is
+# a different clinical order from a milligram one. This category is NEVER
+# auto-recovered; see _AUTO_RECOVERABLE_UNITS below.
+_AUTO_RECOVERABLE_UNITS = frozenset({
+    "мг", "mg", "мкг", "mcg", "µg", "мл", "ml", "ед", "ме", "iu",
+})
 _COMPOUND_UNIT = re.compile(
     r"(?:мг|mg|г|g|мкг|mcg|µg|ед|ме|iu)\s*/\s*(?:кг|kg|мл|ml|л|l|сут\w*|день|day|час|h)", re.I
 )
@@ -18,6 +26,21 @@ _CONCENTRATION = re.compile(r"%|(?:мг|mg|г|g|мкг|mcg)\s*/\s*(?:мл|ml|л|
 _NUMBER_ONLY = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*$")
 _FREQUENCY_ROUTE = re.compile(r"раз|сут|день|внутр|перорал|в/в|в/м|oral|intraven|route", re.I)
 _NARRATIVE = re.compile(r"доз|принимать|назнач|ввод|терап", re.I)
+
+
+def _normalise_unit(unit: str | None) -> str:
+    return (unit or "").strip().casefold()
+
+
+def auto_recoverable(category: str, source_unit: str | None) -> bool:
+    """True only when the missing unit can be filled in automatically.
+
+    ``A_PARSER_MISSED_EXPLICIT_UNIT`` used to be flagged automatically
+    recoverable purely from the category, and ``_SIMPLE_UNIT`` matches grams, so
+    a source reading "1 г" was marked for automatic recovery of a *gram* dose.
+    Recovery now requires an unambiguous unit as well.
+    """
+    return category == "A_PARSER_MISSED_EXPLICIT_UNIT" and _normalise_unit(source_unit) in _AUTO_RECOVERABLE_UNITS
 
 
 def classify(texts: list[str]) -> tuple[str, str | None, str]:
@@ -42,7 +65,11 @@ def classify(texts: list[str]) -> tuple[str, str | None, str]:
 
 
 def audit(db_path: str | Path) -> dict[str, Any]:
-    connection = sqlite3.connect(f"file:{Path(db_path).resolve()}?mode=ro&immutable=1", uri=True)
+    # as_uri() percent-escapes the path, so a directory containing '?' or '#'
+    # cannot terminate the URI query early the way raw f-string interpolation did.
+    # Mirrors clinical_engine.corpus.locator.open_readonly.
+    uri = Path(db_path).resolve().as_uri() + "?mode=ro&immutable=1"
+    connection = sqlite3.connect(uri, uri=True)
     connection.row_factory = sqlite3.Row
     object_rows = connection.execute("""
         SELECT id,content FROM objects WHERE type='Dose' AND (
@@ -88,7 +115,7 @@ def audit(db_path: str | Path) -> dict[str, Any]:
             "resolution": "",
             "timestamp": generated_at,
             "source_backed_unit": source_unit,
-            "automatic_recovery_eligible": category == "A_PARSER_MISSED_EXPLICIT_UNIT",
+            "automatic_recovery_eligible": auto_recoverable(category, source_unit),
             "rationale": rationale,
             "payload": content,
         })
