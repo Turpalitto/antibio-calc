@@ -1906,8 +1906,12 @@ function renderForms(preferredRoute){
     availNote.classList.add('hidden');
   }
 
-  const groups = {po:[], im:[], iv:[]};
+  const groups = {po:[], im:[], iv:[], topical:[]};
   forms.forEach((f, idx)=>{
+    if(f.form_type === 'topical'){
+      groups.topical.push({f, idx});
+      return;
+    }
     // powder_for_suspension используется и для пероральной суспензии (есть concentration_mg_per_ml),
     // и для инъекционного флакона (готовится через dilution) — различаем по этому полю,
     // иначе пероральная детская суспензия попадает в группу "в/в".
@@ -1928,7 +1932,16 @@ function renderForms(preferredRoute){
       matched = true;
     }
     if(!matched){
-      groups.po.push({f, idx});
+      if(f.form_type === 'solution_iv'){
+        groups.iv.push({f, idx});
+      } else if(f.form_type === 'solution_im'){
+        groups.im.push({f, idx});
+      } else if(f.form_type === 'powder_for_injection'){
+        groups.iv.push({f, idx});
+        groups.im.push({f, idx});
+      } else {
+        groups.po.push({f, idx});
+      }
     }
   });
 
@@ -1938,7 +1951,7 @@ function renderForms(preferredRoute){
   // Показываем только пути введения, указанные в самом сценарии (activeDrug.route) —
   // иначе можно случайно предложить, например, пероральную форму для препарата,
   // который в этом сценарии клинически эффективен только в/в (напр. ванкомицин при сепсисе).
-  const routeMap = {per_os:'po', iv:'iv', im:'im'};
+  const routeMap = {per_os:'po', iv:'iv', im:'im', topical:'topical'};
   const intendedKeys = (activeDrug.route || []).map(r=>routeMap[r]).filter(Boolean);
   const restrictedKeys = groupKeys.filter(k=>intendedKeys.includes(k));
   const finalKeys = restrictedKeys.length > 0 ? restrictedKeys : groupKeys;
@@ -1947,7 +1960,7 @@ function renderForms(preferredRoute){
   finalKeys.forEach(k=>{
     const tab = document.createElement('button');
     tab.className = 'route-tab chip text-[10px] font-black uppercase rounded-lg px-2 py-1'+(k===currentRouteGroup?' active':'');
-    const label = k==='po'?'per os':(k==='im'?'в/м':'в/в');
+    const label = k==='po'?'per os':(k==='im'?'в/м':(k==='iv'?'в/в':'местно'));
     tab.textContent = label;
     tab.onclick = ()=>{
       currentRouteGroup = k;
@@ -2170,8 +2183,9 @@ function calculate(){
 
   const isPO = currentRouteGroup === 'po';
   const isInj = currentRouteGroup === 'im' || currentRouteGroup === 'iv';
+  const isTopical = currentRouteGroup === 'topical';
 
-  if(isPO){
+  if(isPO || isTopical){
     $('res-po').classList.remove('hidden');
     $('res-inj').classList.add('hidden');
     $('dilution-block').classList.add('hidden');
@@ -2213,6 +2227,7 @@ function getStandardBottleMl(drugKey, form){
 }
 
 function calculateCoursePackages(reg, form, singleMg, dailyMg, w){
+  if(!singleMg || singleMg <= 0) return null;
   let days = 7;
   if(reg.duration_days){
     const m = String(reg.duration_days).match(/(\d+)(?:-(\d+))?/);
@@ -2268,6 +2283,33 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
   const unit = doseUnitOf(ref);
   const concMgPerMl = form.concentration_mg_per_ml || 0;
   const isSolid = ['tablet','capsule'].includes(form.form_type);
+  const isTopical = form.form_type === 'topical' || (typeof currentRouteGroup !== 'undefined' && currentRouteGroup === 'topical');
+
+  if(isTopical || (singleMg === 0 && dailyMg === 0)){
+    $('po-ml').textContent = '—';
+    $('po-unit').textContent = '';
+    $('po-tabs').textContent = '';
+    const solidInstr = $('po-instruction');
+    solidInstr.textContent = '';
+    const solidIcon = document.createElement('i');
+    solidIcon.className = isTopical ? 'fas fa-hand-holding-medical mr-2 text-blue-300' : 'fas fa-info-circle mr-2 text-blue-300';
+    const solidLead = document.createElement('span');
+    solidLead.textContent = isTopical ? 'Применять местно: ' : 'Схема назначения: ';
+    const solidText = document.createElement('b');
+    solidText.textContent = reg.duration_note || reg.regimen_label || (activeDrug && activeDrug.indication_note) || (form.notes ? form.notes + ' (' + form.concentration + ')' : form.concentration);
+    const solidTail = document.createElement('span');
+    solidTail.textContent = reg.freq_per_day ? ' • ' + reg.freq_per_day + ' р/д' : '';
+    solidInstr.append(solidIcon, solidLead, solidText, solidTail);
+    $('po-mg').textContent = '—';
+    $('po-day').textContent = '—';
+    $('po-dur').textContent = reg.duration_days || '—';
+    const pkgEl = $('po-package-box');
+    if(pkgEl) pkgEl.classList.add('hidden');
+    $('po-range').classList.add('hidden');
+    $('po-max-warn').classList.add('hidden');
+    return;
+  }
+
   if(isSolid || (w >= 40 && concMgPerMl === 0)){
     $('po-ml').textContent = unit === 'ЕД' ? formatUnits(Math.round(singleMg)) : Math.round(singleMg);
     $('po-unit').textContent = unit;
@@ -2383,6 +2425,7 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
 }
 function formatTablets(mg, form){
   if(!['tablet','capsule'].includes(form.form_type)) return '';
+  if(!mg || mg <= 0) return '';
   const m = form.concentration.match(/(\d+)\s*мг/);
   if(!m) return '';
   const strength = parseInt(m[1]);
@@ -2437,7 +2480,7 @@ function renderReconstitution(form){
   }
 }
 function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
-  const dil = ref.dilution;
+  const dil = ref.dilution || {};
   let availableRoutes = [];
   if(dil.im && currentRouteGroup === 'im') availableRoutes.push('im');
   if((dil.iv_bolus || dil.iv_infusion) && currentRouteGroup === 'iv'){
@@ -2448,6 +2491,8 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
     if(dil.im) availableRoutes.push('im');
     else if(dil.iv_bolus) availableRoutes.push('iv_bolus');
     else if(dil.iv_infusion) availableRoutes.push('iv_infusion');
+    else if(currentRouteGroup === 'im') availableRoutes.push('im');
+    else availableRoutes.push('iv_infusion');
   }
   if(!activeRouteKey || !availableRoutes.includes(activeRouteKey)) activeRouteKey = availableRoutes[0];
 
@@ -2467,11 +2512,11 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
   });
 
   const unit = doseUnitOf(ref);
-  const routeData = dil[activeRouteKey];
+  const routeData = dil[activeRouteKey] || {};
   $('inj-route-label').textContent = routeKeyLabel(activeRouteKey);
-  $('inj-mg').textContent = unit === 'ЕД' ? formatUnits(Math.round(singleMg)) : Math.round(singleMg);
-  $('inj-unit').textContent = unit;
-  $('inj-freq').textContent = reg.freq_per_day+' р/д';
+  $('inj-mg').textContent = (singleMg <= 0) ? '—' : (unit === 'ЕД' ? formatUnits(Math.round(singleMg)) : Math.round(singleMg));
+  $('inj-unit').textContent = (singleMg <= 0) ? '' : unit;
+  $('inj-freq').textContent = reg.freq_per_day ? reg.freq_per_day+' р/д' : '—';
 
   let selectedVial = null;
   if(routeData.solvent_options && routeData.solvent_options.length > 0){
@@ -2499,21 +2544,27 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
     $('vial-selector').classList.add('hidden');
   }
 
-  $('inj-ml').textContent = computeInjectableMl(singleMg, selectedVial);
-  $('inj-day').textContent = fmtDose(dailyMg, unit);
+  $('inj-ml').textContent = (singleMg <= 0) ? '—' : computeInjectableMl(singleMg, selectedVial);
+  $('inj-day').textContent = (dailyMg <= 0) ? '—' : fmtDose(dailyMg, unit);
   $('inj-dur').textContent = reg.duration_days || '—';
   // Кратность приходит из БД — инструкция собирается узлами.
   const injInstr = $('inj-instruction');
   injInstr.textContent = '';
   const injIcon = document.createElement('i');
   injIcon.className = 'fas fa-syringe mr-2 text-orange-300';
-  const injLead = document.createElement('span');
-  injLead.textContent = 'Ввести ';
-  const injDose = document.createElement('b');
-  injDose.textContent = fmtDose(singleMg, unit);
-  const injTail = document.createElement('span');
-  injTail.textContent = ' '+routeKeyLabel(activeRouteKey)+' • '+reg.freq_per_day+' р/д';
-  injInstr.append(injIcon, injLead, injDose, injTail);
+  if(singleMg <= 0){
+    const injText = document.createElement('span');
+    injText.textContent = reg.duration_note || reg.regimen_label || 'Вводить по схеме клинических рекомендаций';
+    injInstr.append(injIcon, injText);
+  } else {
+    const injLead = document.createElement('span');
+    injLead.textContent = 'Ввести ';
+    const injDose = document.createElement('b');
+    injDose.textContent = fmtDose(singleMg, unit);
+    const injTail = document.createElement('span');
+    injTail.textContent = ' '+routeKeyLabel(activeRouteKey)+(reg.freq_per_day ? ' • '+reg.freq_per_day+' р/д' : '');
+    injInstr.append(injIcon, injLead, injDose, injTail);
+  }
 
   const rangeEl = $('inj-range');
   if(reg.dose_range_mg_kg_day && reg.dose_range_mg_kg_day.length === 2){
@@ -2547,6 +2598,7 @@ function computeInjectableMl(singleMg, vial){
   return ml.toFixed(2)+' мл';
 }
 function renderDilutionBlock(ref, routeKey, singleMg, selectedVial, routeData){
+  routeData = routeData || {};
   const warn = $('dilution-warn');
   const warnText = $('dilution-warn-text');
   let warnings = [];
@@ -2613,7 +2665,7 @@ function renderDilutionBlock(ref, routeKey, singleMg, selectedVial, routeData){
 
   const stepsEl = $('dilution-steps');
   stepsEl.innerHTML = '';
-  (routeData.steps || []).forEach(s=>{
+  ((routeData.steps) || []).forEach(s=>{
     const li = document.createElement('li');
     li.className = 'step';
     const span = document.createElement('span');
@@ -2723,7 +2775,14 @@ const LATIN_INN = {
   ciprofloxacin:'Ciprofloxacini', fosfomycin:'Fosfomycini trometamoli', nitrofurantoin:'Nitrofurantoini',
   metronidazole:'Metronidazoli', clindamycin:'Clindamycini', gentamicin:'Gentamicini',
   vancomycin:'Vancomycini', piperacillin_tazobactam:'Piperacillini et Tazobactami', meropenem:'Meropenemi',
-  erythromycin:'Erythromycini', dicloxacillin:'Dicloxacillini', cotrimoxazole:'Co-trimoxazoli'
+  erythromycin:'Erythromycini', dicloxacillin:'Dicloxacillini', cotrimoxazole:'Co-trimoxazoli',
+  ampicillin:'Ampicillini', oxacillin:'Oxacillini', cefepime:'Cefepimi',
+  ceftazidime:'Ceftazidimi', linezolid:'Linezolidi', cephalexin:'Cephalexini',
+  cefuroxime:'Cefuroximi', rifampicin:'Rifampicini', isoniazid:'Isoniazidi',
+  pyrazinamide:'Pyrazinamidi', ethambutol:'Ethambutoli', amikacin:'Amikacini',
+  tetracycline:'Tetracyclini', ofloxacin:'Ofloxacini', tobramycin:'Tobramycini',
+  netilmicin:'Netilmicini', tinidazole:'Tinidazoli', rifaximin:'Rifaximini',
+  furazidin:'Furazidini'
 };
 const LATIN_FORM = {
   tablet:'tab.', capsule:'caps.', suspension:'susp.', syrup:'sir.',
@@ -2731,7 +2790,7 @@ const LATIN_FORM = {
   solution_iv:'sol. pro inject.', solution_im:'sol. pro inject.',
   granules:'gran.', topical:'ung.', suppository:'supp.'
 };
-const LATIN_ROUTE = { po:'per os', im:'intramuscularis', iv:'intravenosus' };
+const LATIN_ROUTE = { po:'per os', im:'intramuscularis', iv:'intravenosus', topical:'ad usum externum' };
 const LATIN_FREQ = { 1:'semel in die', 2:'bis in die', 3:'ter in die', 4:'quater in die', 6:'sexies in die' };
 
 function fillPrescriptionForm(){
@@ -2747,9 +2806,10 @@ function fillPrescriptionForm(){
   }
   const reg = getActiveRegimen();
   if(!reg) return;
-  const {singleMg, dailyMg} = computeDose(reg, w);
   const refs = getDrugRefs(activeDrug);
   const mainRef = DB.drugs_reference[refs[0]];
+  const unit = doseUnitOf(mainRef);
+  const {singleMg, dailyMg} = computeDose(reg, w, unit);
   const form = mainRef.forms[activeFormIdx];
 
   // Статус БД и идентификатор сборки печатаются вместе с рецептом
@@ -2762,18 +2822,14 @@ function fillPrescriptionForm(){
   // Header (Russian — as on real forms)
   const dateStr = $('patient-date').value || new Date().toLocaleDateString('ru-RU');
   $('rx-date').textContent = dateStr;
-  $('rx-doctor').textContent = $('doctor-name').value || '________________________';
+  $('rx-doctor').textContent = $('doctor-name').value || '—';
 
   // Rp: block — Latin drug names. Названия и концентрации приходят из БД,
   // поэтому бланк собирается узлами, а не строкой разметки.
   const drugsEl = $('rx-drugs');
-  $('rx-date').textContent = $('patient-date').value || new Date().toLocaleDateString('ru-RU');
-  $('rx-doctor').textContent = $('doctor-name').value || '—';
   const latinName = LATIN_INN[refs[0]] || mainRef.inn;
   const latinForm = LATIN_FORM[form.form_type] || form.form_type;
-  const freqStr = LATIN_FREQ[reg.freq_per_day] || (reg.freq_per_day+' раза в день');
-  const routeLat = LATIN_ROUTE[currentRouteGroup] || '';
-  const routeRu = currentRouteGroup === 'po' ? 'внутрь' : (currentRouteGroup === 'im' ? 'внутримышечно' : 'внутривенно');
+  const routeRu = currentRouteGroup === 'po' ? 'внутрь' : (currentRouteGroup === 'im' ? 'внутримышечно' : (currentRouteGroup === 'iv' ? 'внутривенно' : 'местно'));
 
   const rxLine = (className, text) => {
     const div = document.createElement('div');
@@ -2783,9 +2839,9 @@ function fillPrescriptionForm(){
   };
 
   drugsEl.textContent = '';
-  drugsEl.appendChild(rxLine('rx-drug-name', latinName+' '+form.concentration));
+  drugsEl.appendChild(rxLine('rx-drug-name', latinName+' '+(form.concentration || '')));
 
-  if(form.form_type === 'tablet' || form.form_type === 'capsule'){
+  if((form.form_type === 'tablet' || form.form_type === 'capsule') && singleMg > 0){
     const tabsPerDose = singleMg / parseFloat(form.concentration);
     const totalDoses = reg.freq_per_day * (parseInt(reg.duration_days) || 0);
     if(tabsPerDose > 0 && !isNaN(tabsPerDose)){
@@ -2813,14 +2869,18 @@ function fillPrescriptionForm(){
   // D.S. block — Russian instructions (as per regulation)
   const signaEl = $('rx-signa-text');
   let signa = '';
-  if(form.form_type === 'tablet' || form.form_type === 'capsule'){
+  if(singleMg <= 0 && dailyMg <= 0){
+    signa = reg.duration_note || reg.regimen_label || (form.notes ? form.notes + ': ' : '') + 'применять по схеме клинических рекомендаций';
+  } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
+    signa = 'Применять наружно/местно: ' + (form.notes ? form.notes + ' ' : '') + form.concentration + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' раза в день' : '');
+  } else if(form.form_type === 'tablet' || form.form_type === 'capsule'){
     const tabsPerDose = singleMg / parseFloat(form.concentration);
-    signa = 'По '+tabsPerDose.toFixed(1).replace(/\.0$/,'')+' '+latinForm+' '+reg.freq_per_day+' раза в день, '+routeRu;
+    signa = 'По '+(isNaN(tabsPerDose) ? '' : tabsPerDose.toFixed(1).replace(/\.0$/,'')+' ')+latinForm+' '+reg.freq_per_day+' раза в день, '+routeRu;
   } else if(form.concentration_mg_per_ml){
     const ml = singleMg / form.concentration_mg_per_ml;
     signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+reg.freq_per_day+' раза в день';
   } else {
-    signa = 'По '+Math.round(singleMg)+' мг '+routeRu+', '+reg.freq_per_day+' раза в день';
+    signa = 'По '+fmtDose(singleMg, unit)+' '+routeRu+', '+reg.freq_per_day+' раза в день';
   }
   if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_infusion') signa += ', капельно за 30 мин';
   if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_bolus') signa += ', медленно за 5 мин';
@@ -2886,13 +2946,17 @@ function copyForMIS(){
   const coursePkg = calculateCoursePackages(reg, form, singleMg, dailyMg, w);
 
   let doseStr = '';
-  if(currentRouteGroup === 'po' && form.concentration_mg_per_ml && w < 40){
+  if(singleMg <= 0 && dailyMg <= 0){
+    doseStr = (reg.duration_note || reg.regimen_label || 'По схеме клинических рекомендаций') + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' р/сут' : '');
+  } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
+    doseStr = 'наружно/местно ' + (form.notes ? form.notes + ' ' : '') + form.concentration + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' р/сут' : '');
+  } else if(currentRouteGroup === 'po' && form.concentration_mg_per_ml && w < 40){
     const ml = (singleMg / form.concentration_mg_per_ml).toFixed(1);
-    doseStr = 'по '+ml+' мл ('+Math.round(singleMg)+' '+unit+') внутрь '+reg.freq_per_day+' р/сут';
+    doseStr = 'по '+ml+' мл ('+fmtDose(singleMg, unit)+') внутрь '+reg.freq_per_day+' р/сут';
   } else if(['tablet','capsule'].includes(form.form_type)){
-    doseStr = 'по '+Math.round(singleMg)+' '+unit+' '+formatTablets(singleMg, form)+' внутрь '+reg.freq_per_day+' р/сут';
+    doseStr = 'по '+fmtDose(singleMg, unit)+' '+formatTablets(singleMg, form)+' внутрь '+reg.freq_per_day+' р/сут';
   } else {
-    doseStr = 'по '+Math.round(singleMg)+' '+unit+' '+(currentRouteGroup === 'im' ? 'в/м' : 'в/в')+' '+reg.freq_per_day+' р/сут';
+    doseStr = 'по '+fmtDose(singleMg, unit)+' '+(currentRouteGroup === 'im' ? 'в/м' : 'в/в')+' '+reg.freq_per_day+' р/сут';
   }
 
   let txt = 'НАЗНАЧЕНИЕ АНТИБАКТЕРИАЛЬНОЙ ТЕРАПИИ (для карты / МИС):\n';
@@ -2902,7 +2966,7 @@ function copyForMIS(){
   txt += '----------------------------------------\n';
   txt += 'Препарат: '+ref.inn+'\n';
   txt += 'Форма: '+(form.concentration || form.form_type)+'\n';
-  txt += 'Режим: '+(reg.regimen_label || (reg.dose_mg_kg_day + ' мг/кг/сут'))+'\n';
+  txt += 'Режим: '+(reg.regimen_label || (reg.dose_mg_kg_day ? reg.dose_mg_kg_day + ' мг/кг/сут' : (reg.duration_note || 'По схеме КР')))+'\n';
   txt += 'Схема приёма: '+doseStr+'\n';
   txt += 'Курс лечения: '+days+' дней\n';
   if(coursePkg){
@@ -2939,13 +3003,17 @@ function copyLatinRecipe(){
   const latinForm = LATIN_FORM[form.form_type] || form.form_type;
 
   let signa = '';
-  if(currentRouteGroup === 'po' && form.concentration_mg_per_ml && w < 40){
+  if(singleMg <= 0 && dailyMg <= 0){
+    signa = (reg.duration_note || reg.regimen_label || 'По схеме КР') + ', курс ' + days + ' дней.';
+  } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
+    signa = 'Применять наружно/местно ' + (form.notes ? form.notes + ' ' : '') + (reg.freq_per_day ? reg.freq_per_day + ' раза в день, ' : '') + 'курс ' + days + ' дней.';
+  } else if(currentRouteGroup === 'po' && form.concentration_mg_per_ml && w < 40){
     const ml = (singleMg / form.concentration_mg_per_ml).toFixed(1);
     signa = 'Принимать внутрь по '+ml+' мл суспензии '+reg.freq_per_day+' раза в день в начале еды, курс '+days+' дней.';
   } else if(['tablet','capsule'].includes(form.form_type)){
     signa = 'Принимать внутрь '+formatTablets(singleMg, form)+' '+reg.freq_per_day+' раза в день, курс '+days+' дней.';
   } else {
-    signa = 'Вводить '+(currentRouteGroup === 'im' ? 'внутримышечно' : 'внутривенно')+' по '+Math.round(singleMg)+' мг '+reg.freq_per_day+' раза в день, курс '+days+' дней.';
+    signa = 'Вводить '+(currentRouteGroup === 'im' ? 'внутримышечно' : 'внутривенно')+' по '+fmtDose(singleMg, unit)+' '+reg.freq_per_day+' раза в день, курс '+days+' дней.';
   }
 
   let packageDtd = 'N. 1';
@@ -3090,17 +3158,20 @@ function saveToHistory(){
   const w = parseFloat($('weight').value);
   const reg = requireActiveRegimen('Сохранение в историю');
   if(!reg) return;
-  const {singleMg, dailyMg} = computeDose(reg, w);
   const ref = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
+  const unit = doseUnitOf(ref);
+  const {singleMg, dailyMg} = computeDose(reg, w, unit);
   const entry = {
     ts: Date.now(),
     patient: $('patient-name').value || '',
     disease: activeDisease.name,
     drug: ref.inn,
+    unit: unit,
     singleMg: Math.round(singleMg),
     dailyMg: Math.round(dailyMg),
     freq: reg.freq_per_day,
     duration: reg.duration_days || '—',
+    durationNote: reg.duration_note || reg.regimen_label || '',
     weight: w,
     ageGroup: activeAge
   };
@@ -3140,7 +3211,19 @@ function loadHistory(){
     disease.textContent = e.disease || '';
     const dose = document.createElement('div');
     dose.className = 'text-slate-600 dark:text-slate-300 mt-1 font-bold';
-    dose.textContent = e.singleMg+' мг × '+e.freq+' р/д, курс '+e.duration+(e.patient ? ' • '+e.patient : '');
+    let formattedDose = '';
+    const u = e.unit || 'мг';
+    if(typeof fmtDose === 'function'){
+      formattedDose = fmtDose(e.singleMg, u);
+    } else {
+      if(u === 'ЕД'){
+        formattedDose = e.singleMg >= 1e6 ? (e.singleMg/1e6).toFixed(1).replace(/\.0$/, '') + ' млн ЕД' : (e.singleMg >= 1e3 ? Math.round(e.singleMg/1e3) + ' тыс. ЕД' : e.singleMg + ' ЕД');
+      } else {
+        formattedDose = e.singleMg + ' ' + u;
+      }
+    }
+    const doseStr = e.singleMg <= 0 ? (e.durationNote || 'По схеме КР') : (formattedDose + (e.freq ? ' × ' + e.freq + ' р/д' : ''));
+    dose.textContent = doseStr + (e.duration && e.duration !== '—' ? ', курс ' + e.duration : '') + (e.patient ? ' • ' + e.patient : '');
     div.append(top, disease, dose);
     list.appendChild(div);
   });

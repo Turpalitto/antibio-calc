@@ -1,3 +1,12 @@
+## 2026-09-30: Comprehensive calculator bug fixes & hardening completed
+
+- **Done:** Fixed injection route crashes (dilution safety in `antibiotic_calc.html.template` + added dilution configs for `tobramycin` and `netilmicin` in `db/index.json`); fixed topical route misclassification to `po`; eliminated lethal unit bug (`ЕД` vs `мг`) across prescriptions and history; handled zero-dose/topical regimens display; expanded `LATIN_INN` genitive dictionary to all 47 drugs.
+- **Verification:** Rebuilt `db/antibio_db.json` and `antibiotic_calc.html` (722,628 bytes). `node db/validate_db.js` passed (120 recs, 47 drugs, 640 regimens). `pytest clinical_engine/tests/test_calculator_clinical_safety.py` passed (65/65). Full suite **2509 passed, 30 skipped, 0 failed**.
+- **Next steps for next agent:**
+  1. Continue physician adjudication on the 38 mismatched diseases in `tmp/dose_verification_report_2026-09-02.md` (physician-gated P5.6/P6).
+  2. If network access to `cr.minzdrav.gov.ru` is restored, run `source_fetch_verify.py` on code versions.
+  3. Rebuild commands: `.venv/bin/python db/build_db.py --db db/antibio_db.json` -> `.venv/bin/python db/build_html.py` -> `.venv/bin/python -m pytest -q`.
+
 ## 2026-09-02: Dose verification completed for all nosologies (38 to review)
 
 - Ran dose_verification harness over the 120-rec DB -> 23 verified, 18 partial, 41 no-KB, 38 mismatch-review.

@@ -1,3 +1,12 @@
+## 2026-09-30: Comprehensive calculator bug fixes & hardening (UI crash, units, routes, prescriptions, history)
+
+- **Injection Crash & Hardening:** Added dilution metadata for `tobramycin` and `netilmicin` in `db/index.json`. Hardened `renderInjection` and `renderDilutionBlock` against missing dilution configs.
+- **Topical / Vaginal Routing:** Resolved route misclassification in `renderFormChips`; topical regimens are no longer misrouted to oral (`po`) instructions.
+- **Unit Safety:** Resolved hardcoded `' мг'` in prescription generators and history store; penicillins with `ЕД` units now properly compute and display unit numbers (e.g. `1 200 000 ЕД`).
+- **Zero-Dose Support:** Regimens without fixed numeric mg doses (topical creams, eye drops) render clinical schemes from `duration_note`/`regimen_label` instead of `0 мг` / `0 таб`.
+- **Latin INN Coverage:** Expanded `LATIN_INN` mapping to all 47 drugs in `drugs_reference`.
+- **Verification:** Rebuilt `db/antibio_db.json` and `antibiotic_calc.html`. Node validation passed (120 recs, 47 drugs, 640 regimens). Canonical pytest suite **2509 passed, 30 skipped, 0 failed**.
+
 ## 2026-09-02: Dose source-verification across 120 nosologies
 
 - Run dose_verification.py over db/antibio_db.json (120 recs) vs DOSA KB -> 243 matched / 113 mismatched /

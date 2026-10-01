@@ -1,3 +1,12 @@
+## 2026-09-30: Comprehensive calculator bug fixes & hardening (UI crash, units, routes, prescriptions, history)
+
+- **Injection Route Crash Fix:** Added standard dilution configurations (`iv_infusion`, `im`) for `tobramycin` and `netilmicin` in `db/index.json`. Hardened `renderInjection` and `renderDilutionBlock` in `antibiotic_calc.html.template` against missing `ref.dilution` and `routeData` (`TypeError` prevention). Regenerated `db/antibio_db.json`.
+- **Topical / Vaginal Misrouting Fix:** Corrected route mapping in `renderFormChips` to handle `topical` forms explicitly (`routeMap = {per_os:'po', iv:'iv', im:'im', topical:'topical'}`). Prevents topical and vaginal formulations (e.g. Clindamycin vaginal cream for bacterial vaginosis) from being assigned to oral (`po`) routes.
+- **Lethal Unit Bug Fix (`ЕД` vs `мг`):** Replaced hardcoded `' мг'` in prescription generator (`copyLatinRecipe`, `fillPrescriptionForm`) and `saveToHistory` / `loadHistory` with unit-aware `fmtDose(singleMg, unit)` / `doseUnitOf(ref)` to prevent penicillins/bicillins from printing lethal milligram quantities for unit-based dosages.
+- **Zero-Dose & Topical Regimen Display:** Formatted non-numeric or zero-dose topical/ophthalmic regimens to display clinical guidance from `reg.duration_note || reg.regimen_label` instead of `0 мг`, `0 таб`, or `0.0 мл`. Safeguarded `calculateCoursePackages` and `formatTablets` against zero/negative doses.
+- **Latin Dictionary Expansion:** Extended `LATIN_INN` in `antibiotic_calc.html.template` to cover all 47 drugs in `drugs_reference` (added genitives for ampicillin, oxacillin, cefepime, ceftazidime, linezolid, cephalexin, cefuroxime, rifampicin, isoniazid, pyrazinamide, ethambutol, amikacin, tetracycline, ofloxacin, tobramycin, netilmicin, tinidazole, rifaximin, furazidin).
+- **Test Suite Verification:** Single-page app compiled to `antibiotic_calc.html` (722,628 bytes). `node db/validate_db.js` passed (120 recs, 47 drugs, 185 scenarios, 640 regimens). `pytest clinical_engine/tests/test_calculator_clinical_safety.py` (65/65 passed). Canonical pytest suite **2509 passed, 30 skipped, 0 failed**.
+
 ## 2026-09-02: Dose source-verification across all 120 nosologies (evidence-only, NOT physician attestation)
 
 - Re-ran src/pipeline/extraction/dose_verification.py over current db/antibio_db.json (120 recs) vs DOSA KB
