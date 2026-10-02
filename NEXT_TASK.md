@@ -1,3 +1,32 @@
+## 2026-10-02: Next steps after the corpus-root path fix
+
+- **`.env.example` — NOT updated (write-time guard is authoritative):** the comment/example edit
+  is refused by the write-time secret guard, which fires on lines 3–7 — the pre-existing
+  `ANTIBIO_*_API_KEY` placeholders that were NOT being changed. Confirmed false positive: those
+  values are literally `<set-in-local-secret-store>` and `<optional>`, both listed as
+  "Documentation placeholders" in the repo's own `.gitleaks.toml`. The user confirmed they are
+  placeholders, but the guard blocks any such content regardless of confirmation and bypassing it
+  via shell is not permitted. **Do not retry this edit as a write; the gap is already closed in
+  `AGENTS.md`** (section "Данные (вне репозитория)": resolution order, `ANTIBIO_CORPUS_DIR`
+  override, macOS/Linux example). If an owner wants `.env.example` itself fixed, the guard's
+  scope for that file needs adjusting first.
+- **Still open — `clinrec-downloader` canonical-home decision (owner):** antibio-calc holds the
+  newer, hardened `api_client.py` / `downloader.py` (`0cf8e33`, 2026-09-29); the private
+  repository `Turpalitto/clinrec-downloader@master` is behind and was last pushed 2026-08-19.
+  Choose between (a) back-porting the hardening (`_atomic_write_clinrecs`,
+  `unique_destination`) into the private repo, or (b) declaring antibio-calc canonical and
+  leaving `clinrec-downloader` data-only. Do NOT merge corpus data either way — it stays outside
+  git (2026-07 audit decision). See `DECISIONS.md` 2026-10-02.
+- **Follow-on worth considering:** the same depth-based pattern survives elsewhere
+  (`src/pipeline/extraction/dosa_extension_triage.py` uses `parent.parent.parent.parent`;
+  `clinical_engine/review_workbench/tests/test_real_review_artifact.py` uses `parents[3]`;
+  `generated/rc030_c*` scripts use `parents[2]`). None are confirmed broken, so they were left
+  alone — a marker-based `repo_root()` helper would be the clean shared fix if an owner wants it.
+- **Corpus is still absent on this machine:** no `clinrec_downloader` directory exists anywhere
+  under the user's home, so the pipeline cannot actually run end-to-end here. The path now
+  resolves by contract (`C:\clinrec_downloader` from the committed default) but nothing is at
+  that location — set `ANTIBIO_CORPUS_DIR` to a real corpus to run the pipeline.
+
 ## 2026-09-30: Comprehensive calculator bug fixes & hardening completed
 
 - **Done:** Fixed injection route crashes (dilution safety in `antibiotic_calc.html.template` + added dilution configs for `tobramycin` and `netilmicin` in `db/index.json`); fixed topical route misclassification to `po`; eliminated lethal unit bug (`ЕД` vs `мг`) across prescriptions and history; handled zero-dose/topical regimens display; expanded `LATIN_INN` genitive dictionary to all 47 drugs.

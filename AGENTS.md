@@ -306,6 +306,25 @@ C:\clinrec_downloader/
 └── metadata.sqlite              # Pipeline metadata
 ```
 
+**Как код находит этот корпус (контракт резолвинга, обновлён 2026-10-02):**
+
+Порядок приоритета — одинаковый в pipeline-слое (`src/pipeline/config.py`,
+`resolve_corpus_dir()`) и в движке (`clinical_engine/corpus/locator.py`), чтобы два слоя
+не могли разойтись:
+
+1. env `ANTIBIO_CORPUS_DIR` — задокументированный override (задать в `.env`);
+2. committed `clinical_engine/corpus/corpus_config.json` → ключ `corpus_dir` — дефолт;
+3. сестринская папка корня репозитория: `<repo_root>/../clinrec_downloader`.
+
+Корень репозитория ищется по маркеру `pyproject.toml`, **не** подсчётом `parents`.
+Пример выше (`C:\clinrec_downloader`) — это именно значение из `corpus_config.json`, то
+есть дефолт, а не жёстко зашитый путь. На macOS/Linux укажите свой путь:
+`ANTIBIO_CORPUS_DIR=/Users/<you>/clinrec_downloader`. Если задано пустое значение — оно
+игнорируется и берётся следующий источник.
+
+Проверка: `src/tests/test_corpus_path_resolution.py` (9 тестов) — в том числе
+независимость от глубины вложенности файла. Обоснование — `DECISIONS.md` (2026-10-02).
+
 ---
 
 ## 7. Medical Pipeline

@@ -1,3 +1,30 @@
+## 2026-10-02: Corpus-root path defect fixed + stale clinrec-downloader record corrected
+
+- **Path defect in `src/pipeline/config.py`:** `BASE_DIR` used `parents[3]` (the PARENT of the
+  repository root) — a Windows-layout leftover that now resolves to a non-existent directory on
+  this macOS checkout, silently for `BASE_DIR` and the 20 pipeline modules importing it.
+- **Fix:** `resolve_corpus_dir()` — env `ANTIBIO_CORPUS_DIR` → committed
+  `clinical_engine/corpus/corpus_config.json` → repo-root sibling; repo root found by
+  `pyproject.toml` marker. Mirrors the engine locator; verified equal to it.
+- **New test:** `src/tests/test_corpus_path_resolution.py` (9 tests) incl. a real
+  depth-independence test against a synthetic checkout.
+- **Doc correction:** `DECISIONS.md` (2026-10-02) records that antibio-calc's `api_client.py`
+  (6768 vs 4854 bytes) and `downloader.py` (6314 vs 3915) are no longer byte-identical to
+  `Turpalitto/clinrec-downloader@master` — antibio-calc holds the newer, hardened copies
+  (`0cf8e33`, 2026-09-29). `EXTERNAL_TEST_PATH_SCAN.md` entry reclassified.
+- **Verification:** `.venv/bin/python -m pytest src/tests -q` → **405 passed, 13 skipped, 0 failed**
+  (baseline before the change: 396 passed, 13 skipped).
+- **`.env.example` left unchanged (write-time guard):** the intended comment/example update was
+  refused by the write-time secret guard, which fires on lines 3–7 — the pre-existing
+  `ANTIBIO_*_API_KEY` placeholders that were neither changed nor are real secrets (literally
+  `<set-in-local-secret-store>` / `<optional>`, both listed as "Documentation placeholders" in
+  the repo's own `.gitleaks.toml`). The guard is a platform write rule, so the file was not
+  modified rather than bypassed via shell. The corpus-path contract is documented in `AGENTS.md`
+  instead (resolution order, `ANTIBIO_CORPUS_DIR` override, macOS/Linux example), so no
+  documentation gap remains.
+- Nothing committed. Corpus data, `clinical_engine/`, `medical_normalizer/`, and all clinical
+  logic untouched.
+
 ## 2026-09-30: Comprehensive calculator bug fixes & hardening (UI crash, units, routes, prescriptions, history)
 
 - **Injection Crash & Hardening:** Added dilution metadata for `tobramycin` and `netilmicin` in `db/index.json`. Hardened `renderInjection` and `renderDilutionBlock` against missing dilution configs.

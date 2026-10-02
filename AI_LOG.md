@@ -1,3 +1,49 @@
+## 2026-10-02: Corpus-root path defect fixed in the pipeline layer + stale clinrec record corrected
+
+- **Fixed — `src/pipeline/config.py`:** `BASE_DIR` was
+  `Path(__file__).resolve().parent.parent.parent.parent / "clinrec_downloader"` — `parents[3]`
+  is the PARENT of the repository root, a Windows-layout leftover (repo at `C:\ANTIBIO` →
+  `C:\clinrec_downloader`, which happened to be right). On this macOS checkout it resolved to
+  `/Users/turpal/Documents/antibiocalc/clinrec_downloader`, which does not exist (checked:
+  `exists: False`), so `BASE_DIR` and the 20 pipeline modules importing it pointed at nothing
+  silently. Also depth-dependent: moving the file changed the meaning (same defect class as
+  `L-31` in `src/pipeline/extraction/config.py`).
+- **Fix:** new `resolve_corpus_dir()` in that module — env `ANTIBIO_CORPUS_DIR` → committed
+  `clinical_engine/corpus/corpus_config.json` → repo-root sibling; repo root located by
+  `pyproject.toml` marker, not by parent counting. Resolution order deliberately mirrors the
+  engine locator `clinical_engine/corpus/locator.py` so the two layers cannot disagree.
+  Deliberately NOT done: importing `clinical_engine` from pipeline — `src/` imports it nowhere
+  today and adding that edge is an architectural change needing its own decision. Confirmed by
+  direct check: pipeline `BASE_DIR` == engine `resolve_corpus_dir()` (both `C:\clinrec_downloader`
+  from the committed default; `/tmp/x` under env override).
+- **Added `src/tests/test_corpus_path_resolution.py`** — 9 tests: env override wins, blank env
+  falls through, value stripped, repo root found by marker, default matches committed config,
+  agreement with the engine locator, and a real depth-independence test that builds a synthetic
+  checkout, places a copy of the module five levels deep and asserts marker-based resolution.
+- **Docs:** `DECISIONS.md` gained two dated 2026-10-02 entries (the path contract; and a
+  correction of the stale "byte-identical clinrec-downloader" claim — against
+  `Turpalitto/clinrec-downloader@master`, `api_client.py` is 6768 vs 4854 bytes and
+  `downloader.py` 6314 vs 3915, hardened in `0cf8e33` on 2026-09-29, so antibio-calc holds the
+  NEWER copies). `EXTERNAL_TEST_PATH_SCAN.md` reclassified its `config.py (BASE_DIR)` entry from
+  "no action needed" to a corrected path defect.
+- **Blocked (write-time guard, not worked around):** the `.env.example` edit (comment + a
+  platform-neutral example instead of only `C:\clinrec_downloader`) is refused by the write-time
+  secret guard, which fires on lines 3–7 — the pre-existing `ANTIBIO_*_API_KEY` placeholders that
+  were NOT being changed. Verified false positive: lines 3–4 are literally
+  `<set-in-local-secret-store>`, lines 5–7 literally `<optional>`, and both are listed as
+  "Documentation placeholders" in the repo's own `.gitleaks.toml`. The user confirmed they are
+  placeholders, but the guard is a platform write rule that blocks any such content regardless of
+  confirmation, so the file is left unchanged (identical to HEAD) rather than bypassed via shell.
+  **The corpus-path contract is documented in `AGENTS.md` instead** (section "Данные (вне
+  репозитория)"), which states the resolution order, the `ANTIBIO_CORPUS_DIR` override, and a
+  macOS/Linux example — so the documentation gap is closed even though `.env.example` is not.
+- **Not touched:** corpus data (never in git), `clinical_engine/`, `medical_normalizer/`
+  (FROZEN), calculator/dose/safety logic, verification statuses. Nothing committed.
+- **Verification:**
+  - `.venv/bin/python -m pytest src/tests -q` → 396 passed, 13 skipped (baseline, pre-change).
+  - `.venv/bin/python -m pytest src/tests/test_corpus_path_resolution.py -q` → 9 passed.
+  - `.venv/bin/python -m pytest src/tests -q` → 405 passed, 13 skipped (post-change).
+
 ## 2026-09-30: Comprehensive calculator bug fixes & hardening (UI crash, units, routes, prescriptions, history)
 
 - **Injection Route Crash Fix:** Added standard dilution configurations (`iv_infusion`, `im`) for `tobramycin` and `netilmicin` in `db/index.json`. Hardened `renderInjection` and `renderDilutionBlock` in `antibiotic_calc.html.template` against missing `ref.dilution` and `routeData` (`TypeError` prevention). Regenerated `db/antibio_db.json`.

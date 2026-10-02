@@ -1,3 +1,74 @@
+## 2026-10-02 — Corpus root is resolved by contract, not by file depth
+
+Decision: `src/pipeline/config.py` now resolves the external corpus root through
+`resolve_corpus_dir()` — env `ANTIBIO_CORPUS_DIR` → committed
+`clinical_engine/corpus/corpus_config.json` → repo-root sibling — instead of the
+depth-based expression `Path(__file__).parent.parent.parent.parent / "clinrec_downloader"`.
+
+The old expression was a Windows-layout assumption: with the repo at `C:\ANTIBIO`,
+`C:\ANTIBIO\src\pipeline\config.py` reached `C:\` and therefore produced
+`C:\clinrec_downloader`, which happened to be correct. On the current macOS
+checkout the same expression returns `/Users/turpal/Documents/antibiocalc/clinrec_downloader`
+— a directory that does not exist (verified: `exists: False`) — so `BASE_DIR` and
+the 20 pipeline modules importing it pointed at nothing, silently. It also changed
+meaning whenever this file changed depth (the L-31 defect class already fixed in
+`src/pipeline/extraction/config.py`, which anchors on a marker for exactly this reason).
+
+Repo root is now located by marker (`pyproject.toml`), not by counting parents.
+The resolution order deliberately mirrors the sanctioned engine locator
+`clinical_engine/corpus/locator.py`, so the pipeline layer and the engine layer
+cannot disagree about where the corpus is; the new test asserts they agree.
+
+Deliberately NOT done: importing `clinical_engine` from the pipeline layer. The
+pipeline package currently has no dependency on the engine (`src/` imports
+`clinical_engine` nowhere), and adding that edge is an architectural change, not a
+path fix — it needs its own decision. Reading the same committed JSON keeps the
+single source of truth for the default without creating the dependency.
+
+Reason: a documented, overridable path contract that silently resolves to a
+non-existent directory is worse than no default at all — it makes the
+"external corpus missing" state indistinguishable from "misconfigured".
+
+Note on `EXTERNAL_TEST_PATH_SCAN.md`: that document classified
+`src/pipeline/config.py (BASE_DIR)` as "production configuration / no action
+needed". That classification is now corrected — the entry was not a test-defect
+but it was a real path defect.
+
+Verification: `src/tests/test_corpus_path_resolution.py` (9 tests) plus the full
+`src/tests` run.
+
+## 2026-10-02 — clinrec-downloader copies are no longer byte-identical (record corrected)
+
+Correction to the 2026-09-02 entries in this file and in `AI_LOG.md`, which
+stated that antibio-calc's downloader tooling is byte-identical to the
+`clinrec-downloader` (DOSA) repository and that "nothing was down-merged".
+
+As of 2026-10-02 the copies have diverged, and the divergence is one-directional:
+the copies inside antibio-calc are the newer, hardened ones. Against
+`Turpalitto/clinrec-downloader@master` (private; last pushed 2026-08-19):
+
+| file | antibio-calc | clinrec-downloader | delta |
+|------|--------------|--------------------|-------|
+| `src/pipeline/api_client.py` | 6768 bytes | 4854 bytes | +4/−49 lines |
+| `src/pipeline/downloader.py` | 6314 bytes | 3915 bytes | adds `unique_destination` |
+
+`api_client.py` gained `_atomic_write_clinrecs` (staged write + `os.replace`) in
+place of a bare `write_bytes` on the authoritative `clinrecs.json`;
+`downloader.py` gained `unique_destination` to stop two guidelines whose names
+sanitize to the same string from colliding and inheriting each other's
+`pdf_sha256`. Both landed in antibio-calc commit `0cf8e33` (2026-09-29).
+
+The factual position of that 2026-09-02 decision still holds — the DOSA data is a
+*source prover*, never a calculation or approval path — but its description of the
+code relationship is stale and is corrected here. The API coordinates are still
+shared verbatim (`API_BASE=https://apicr.minzdrav.gov.ru`,
+`API_LIST=GetJsonClinrecsFilterV2`, `API_GET_PDF=GetClinrecPdf`, `ATC_MAP`).
+
+Still open (owner decision, not taken here): whether to back-port the hardening
+to the private repository or declare antibio-calc the canonical home and leave
+`clinrec-downloader` data-only. Per the 2026-07 audit decision, data is never
+merged and stays outside git.
+
 ## 2026-09-02: dose_verification harness totals = evidence, not verdict
 
 - Ran source-verification across all 120 nosologies: 23/18/41/38 (verified/partial/no-KB/mismatch-review).

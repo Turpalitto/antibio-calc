@@ -1,10 +1,76 @@
 """config.py — все константы и настройки проекта."""
 
+import json
 import os
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent / "clinrec_downloader"
-# clinrec_downloader/ == project-relative data dir: PDFs, SQLite, JSON
+# Corpus-root resolution.
+#
+# The corpus (PDFs, metadata.sqlite, clinrecs.json, knowledge_base.json) is a
+# large research asset deliberately kept OUTSIDE git. It used to be resolved as
+# ``Path(__file__).parents[3] / "clinrec_downloader"`` — a Windows-layout
+# assumption: with the repo at ``C:\ANTIBIO``, ``C:\ANTIBIO\src\pipeline\config.py``
+# reached ``C:\`` and so produced ``C:\clinrec_downloader``. On any other layout
+# that expression silently returned a non-existent path, and it changed meaning
+# whenever this file changed depth (the L-31 defect class already fixed in
+# ``src/pipeline/extraction/config.py``).
+#
+# Resolution order — deliberately the same as the sanctioned engine locator
+# ``clinical_engine/corpus/locator.py``, so the two layers can never disagree:
+#   1. env ``ANTIBIO_CORPUS_DIR``                          — documented override
+#   2. ``clinical_engine/corpus/corpus_config.json``        — committed default
+#   3. sibling of the repository root                       — legacy fallback
+
+_REPO_MARKER = Path("pyproject.toml")
+_CORPUS_ENV_VAR = "ANTIBIO_CORPUS_DIR"
+_CORPUS_CONFIG_REL = Path("clinical_engine") / "corpus" / "corpus_config.json"
+_CORPUS_DIR_NAME = "clinrec_downloader"
+
+
+def repo_root() -> Path:
+    """Repository root, located by marker rather than by fixed depth."""
+    here = Path(__file__).resolve()
+    for candidate in here.parents:
+        if (candidate / _REPO_MARKER).is_file():
+            return candidate
+    # Same file depth as today; only reached outside a real checkout.
+    return here.parents[2]
+
+
+def _configured_corpus_dir() -> str | None:
+    """The committed default from ``corpus_config.json``, or ``None``.
+
+    Reads the JSON directly instead of importing ``clinical_engine``: this
+    package currently has no dependency on the engine layer, and adding one
+    would be an architectural change, not a path fix.
+    """
+    try:
+        data = json.loads((repo_root() / _CORPUS_CONFIG_REL).read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    value = data.get("corpus_dir")
+    if value is None:
+        return None
+    return str(value).strip() or None
+
+
+def resolve_corpus_dir(env: dict | None = None) -> Path:
+    """Corpus root: env override → committed config → repo-root sibling.
+
+    Pure path resolution — it does not check that the path exists.
+    """
+    env = os.environ if env is None else env
+    override = env.get(_CORPUS_ENV_VAR)
+    if override and override.strip():
+        return Path(override.strip())
+    configured = _configured_corpus_dir()
+    if configured:
+        return Path(configured)
+    return repo_root().parent / _CORPUS_DIR_NAME
+
+
+BASE_DIR = resolve_corpus_dir()
+# BASE_DIR == corpus root: PDFs, SQLite, JSON. Never committed to git.
 
 API_BASE = "https://apicr.minzdrav.gov.ru"
 API_LIST = f"{API_BASE}/api.ashx?op=GetJsonClinrecsFilterV2"

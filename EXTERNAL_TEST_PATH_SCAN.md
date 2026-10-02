@@ -34,9 +34,23 @@ clinical_engine/tools/build_normalized_sqlite.py, clinical_engine/tools/clinical
 clinical_engine/tools/performance_audit.py
 ```
 
-**Classification: production configuration / documented optional override.** No action needed — these
-are not test-reproducibility defects; they are meant to be pointed at a local corpus copy by the
+**Classification: production configuration / documented optional override.** These are not
+test-reproducibility defects; they are meant to be pointed at a local corpus copy by the
 person running them.
+
+> **Correction — 2026-10-02.** One entry in the list above was misclassified as "no action
+> needed": `src/pipeline/config.py (BASE_DIR)`. It was indeed not a *test* defect, but it was a
+> real *path* defect. `BASE_DIR` was computed as
+> `Path(__file__).parent.parent.parent.parent / "clinrec_downloader"`, i.e. the **parent of the
+> repository root** — a Windows-layout assumption that only worked because the repo sat at
+> `C:\ANTIBIO`. On the current macOS checkout it resolved to
+> `/Users/turpal/Documents/antibiocalc/clinrec_downloader` (does not exist), and it changed
+> meaning whenever the file changed depth. It is now resolved by contract (env
+> `ANTIBIO_CORPUS_DIR` → committed `clinical_engine/corpus/corpus_config.json` → repo-root
+> sibling, with the repo root found by `pyproject.toml` marker), mirroring
+> `clinical_engine/corpus/locator.py`. See `DECISIONS.md` (2026-10-02) and
+> `src/tests/test_corpus_path_resolution.py`. The other listed scripts still take an explicit
+> `--corpus-dir`/`--src` argument or call `resolve_corpus_dir()` and remain as classified.
 
 ### Test files referencing the corpus — already correctly gated
 
