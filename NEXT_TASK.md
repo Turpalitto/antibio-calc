@@ -1,3 +1,19 @@
+## 2026-10-05: D2 done — next (audit-driven, see AUDIT_2026-10-05.md §8)
+
+1. ~~F1 rebuild~~ DONE; ~~D2 fail-closed~~ DONE 2026-10-05 — gate = explicit-marks policy
+   (`DECISIONS.md`), 4 blocked / 116 computable, all suites green. Do NOT reintroduce
+   `--fail-closed`; use `--unblock-all` only as a deliberate escape hatch.
+2. **CI (S-1):** `.github/workflows/ci.yml` = `npm run validate` + canonical pytest +
+   `test_build_reproducibility` + gitleaks (still no `.github/` despite
+   SECRETS_MANAGEMENT_POLICY.md:9).
+3. **Traceability (D4):** expose stage-trace chain in v1 contract
+   (`api/service.py:154-184`, `contract.py:179-187`).
+4. **PHI/CDN (S-3):** self-host Tailwind/fonts (`antibiotic_calc.html.template:9`,
+   `server.js:88`); sessionStorage TTL for patient history.
+5. **Doc canon (F2/F3/F5):** one authoritative tests/phase/date table across
+   AGENTS/GOVERNANCE/ROADMAP/PROJECT_STATE/AI_LOG.
+6. **Hygiene (F6/F11):** archive ~160 stale *AUDIT*/*REPORT*/*RCA* md files; document `audit-site/`.
+
 ## 2026-10-05: Audit-driven next steps (see AUDIT_2026-10-05.md)
 
 1. ~~**Release blocker (F1):** run `python3 db/build_html.py`, commit rebuilt

@@ -1,3 +1,16 @@
+## 2026-10-05: D2 CLOSED — source gate default = explicit-marks policy; DB/HTML rebuilt
+
+- Gate (`calculator_source_gate.py`) default now blocks ONLY source-marked records;
+  measured alternative (strict fail-closed) would have blocked 119/120 — owner chose
+  explicit-marks (see `DECISIONS.md` 2026-10-05).
+- `db/antibio_db.json` + `antibiotic_calc.html` rebuilt: **4 blocked**
+  (sinusitis_adult/child, pharyngitis_adult/child — pending statuses preserved),
+  116 computable; html sha `c7b3f00faa62…`.
+- All gates green: validate ALL CHECKS PASSED; clinical_engine 761 passed / 6 skipped;
+  src/tests 409 passed / 13 skipped; build reproducibility 8 passed.
+- `--fail-closed` CLI flag removed (default is the new policy); `--unblock-all` = escape hatch.
+- Test-count reference at this date: clinical_engine 761, src 409, collect-only ~2548.
+
 ## 2026-10-05: Full audit at 47610c6 — 2 gates red, fail-closed default OFF
 
 - **New:** `AUDIT_2026-10-05.md` (read-only audit, HEAD `47610c6`). 3 CRITICAL / 5 HIGH /

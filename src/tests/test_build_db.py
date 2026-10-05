@@ -125,15 +125,10 @@ def test_build_db_source_gate_runs_when_enabled(tmp_path, monkeypatch):
 
     calls: list = []
 
-    def fake_gate(output_path: Path, specs_dir: Path, python_exe: str | None) -> None:
-        calls.append((str(output_path), str(specs_dir), python_exe))
-        # simulate in-place mutation by the gate
-        output_path.write_text(
-            output_path.read_text(encoding="utf-8").replace(
-                '"source_verification_status"', ""
-            ),
-            encoding="utf-8",
-        ) if False else None
+    def fake_gate(
+        output_path: Path, specs_dir: Path, python_exe: str | None, *, unblock_all: bool = False
+    ) -> None:
+        calls.append((str(output_path), str(specs_dir), python_exe, unblock_all))
         db = json.loads(output_path.read_text(encoding="utf-8"))
         for r in db["recommendations"]:
             r["calculation_blocked"] = True
@@ -152,12 +147,41 @@ def test_build_db_source_gate_runs_when_enabled(tmp_path, monkeypatch):
         run_validate=True,
     )
     assert len(calls) == 1
+    # default policy is explicit-marks (NOT unblock-all): gate must not get --unblock-all
+    assert calls[0][3] is False
     # gate mutated all recommendations -> enforce blocked, source status set
     assert all(r.get("calculation_blocked") is True for r in db["recommendations"])
     assert all(
         r.get("source_verification_status") == "SOURCE_SPEC_MISSING"
         for r in db["recommendations"]
     )
+
+
+def test_build_db_forwards_unblock_all_escape_hatch(tmp_path, monkeypatch):
+    from db import build_db as bd
+
+    index, diseases = _fixture(tmp_path)
+    out = tmp_path / "out.json"
+    calls: list = []
+
+    def fake_gate(
+        output_path: Path, specs_dir: Path, python_exe: str | None, *, unblock_all: bool = False
+    ) -> None:
+        calls.append(unblock_all)
+
+    monkeypatch.setattr(bd, "_run_source_gate", fake_gate)
+    monkeypatch.setattr(bd, "_run_validate", lambda op, ne: None)
+
+    build_db(
+        index,
+        diseases,
+        output_path=out,
+        specs_dir=tmp_path / "specs",
+        run_source_gate=True,
+        run_validate=False,
+        unblock_all=True,
+    )
+    assert calls == [True]
 
 
 def test_build_db_raises_on_gate_nonzero(tmp_path, monkeypatch):
@@ -168,7 +192,7 @@ def test_build_db_raises_on_gate_nonzero(tmp_path, monkeypatch):
     monkeypatch.setattr(
         bd,
         "_run_source_gate",
-        lambda op, specs_dir, python_exe: (_ for _ in ()).throw(
+        lambda op, specs_dir, python_exe, *, unblock_all=False: (_ for _ in ()).throw(
             RuntimeError("gate failed")
         ),
     )

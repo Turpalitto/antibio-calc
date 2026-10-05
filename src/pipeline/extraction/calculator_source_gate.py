@@ -1,4 +1,12 @@
-"""Fail-close calculator records without a pinned guideline source spec."""
+"""Calculator source gate: block records explicitly marked as unverified in source.
+
+Policy (2026-10-05, owner decision — see DECISIONS.md):
+- ``unblock_all=True``  -> escape hatch: nothing is blocked.
+- default               -> a record is blocked ONLY when the source marks it:
+  ``calculation_blocked: true`` or a non-verified ``source_verification_status``.
+  Unmarked records stay computable; ``CALCULATOR_BOUND_VERIFIED`` records are
+  left untouched. The gate never clears an explicit source block.
+"""
 
 from __future__ import annotations
 
@@ -43,19 +51,34 @@ def apply_source_gate(
             disease.pop("calculation_block_reason", None)
             covered += 1
         else:
-            if disease.get("calculation_blocked"):
-                already_blocked += 1
+            status = disease.get("source_verification_status")
+            explicitly_marked = disease.get("calculation_blocked") is True or (
+                status is not None and status != "CALCULATOR_BOUND_VERIFIED"
+            )
+            if explicitly_marked:
+                if disease.get("calculation_blocked") is True:
+                    already_blocked += 1
+                else:
+                    disease["calculation_blocked"] = True
+                    added += 1
+                disease.setdefault("calculation_block_reason", DEFAULT_REASON)
+                disease.setdefault(
+                    "source_verification_status",
+                    "SOURCE_SPEC_PENDING_CALCULATOR_BINDING"
+                    if cr_id in specs
+                    else "SOURCE_SPEC_MISSING",
+                )
             elif is_verified:
                 covered += 1
             else:
-                disease["calculation_blocked"] = True
+                disease["calculation_blocked"] = False
                 disease["source_verification_status"] = (
                     "SOURCE_SPEC_PENDING_CALCULATOR_BINDING"
                     if cr_id in specs
-                    else "SOURCE_SPEC_MISSING"
+                    else "CR_REFERENCE_CALCULATION"
                 )
-                disease["calculation_block_reason"] = DEFAULT_REASON
-                added += 1
+                disease.pop("calculation_block_reason", None)
+                covered += 1
     return {"covered_unblocked": covered, "already_blocked": already_blocked, "newly_blocked": added}
 
 

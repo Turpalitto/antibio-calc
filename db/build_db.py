@@ -9,19 +9,24 @@ Mirrors the Windows PowerShell build exactly:
   3. write db/antibio_db.json = {meta, drugs_reference, categories,
      recommendations} as UTF-8 no-BOM compact (no trailing newline), matching
      ConvertTo-Json -Depth 12 -Compress
-  4. FAIL-CLOSED source gate: run calculator_source_gate.py --db <outFile>
-     --specs clinical_sources/regimen_candidate_specs; raise if non-zero exit
-  5. optional integrity gate: run node db/validate_db.js; raise if non-zero
+   4. SOURCE GATE (explicit-marks policy, 2026-10-05): run
+      calculator_source_gate.py --db <outFile> --specs clinical_sources/
+      regimen_candidate_specs; raise if non-zero exit. Default blocks ONLY
+      records explicitly marked in source (calculation_blocked=true or a
+      non-verified source_verification_status); --unblock-all is the escape
+      hatch that disables blocking entirely.
+   5. optional integrity gate: run node db/validate_db.js; raise if non-zero
 
-The whole point is that db/diseases/*.json records do NOT carry
+The whole point is that db/diseases/*.json records do NOT normally carry
 calculation_blocked / source_verification_status / calculation_block_reason;
-those are added by the source gate at build time. This module never marks
-anything clinically approved.
+those are added by the source gate at build time (records may still carry
+explicit pending marks, which the gate respects and never clears). This
+module never marks anything clinically approved.
 
 Usage:
     .venv/bin/python db/build_db.py --db db/antibio_db.json \
         --diseases db/diseases --specs clinical_sources/regimen_candidate_specs \
-        --index db/index.json [--skip-source-gate] [--skip-validate]
+        --index db/index.json [--skip-source-gate] [--skip-validate] [--unblock-all]
 """
 
 from __future__ import annotations
@@ -50,7 +55,7 @@ def build_db(
     run_source_gate: bool = True,
     run_validate: bool = True,
     node_exe: str | None = None,
-    unblock_all: bool = True,
+    unblock_all: bool = False,
 ) -> dict[str, Any]:
     """Assemble db/antibio_db.json from index + diseases, then run the gates."""
     index = _load_json(index_path)
@@ -81,10 +86,7 @@ def build_db(
     output_path.write_text(payload, encoding="utf-8")
 
     if run_source_gate and specs_dir is not None:
-        try:
-            _run_source_gate(output_path, specs_dir, python_exe, unblock_all=unblock_all)
-        except TypeError:
-            _run_source_gate(output_path, specs_dir, python_exe)
+        _run_source_gate(output_path, specs_dir, python_exe, unblock_all=unblock_all)
         # re-read because the gate mutated the file in place
         db = _load_json(output_path)
 
@@ -95,7 +97,7 @@ def build_db(
 
 
 def _run_source_gate(
-    output_path: Path, specs_dir: Path, python_exe: str | None = None, unblock_all: bool = True
+    output_path: Path, specs_dir: Path, python_exe: str | None = None, unblock_all: bool = False
 ) -> None:
     py = python_exe or sys.executable
     gate = PROJECT_ROOT / "src" / "pipeline" / "extraction" / "calculator_source_gate.py"
@@ -134,7 +136,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--specs", default="clinical_sources/regimen_candidate_specs", help="specs dir for source gate")
     parser.add_argument("--skip-source-gate", action="store_true")
     parser.add_argument("--skip-validate", action="store_true")
-    parser.add_argument("--fail-closed", action="store_true", help="Enforce fail-closed blocking for unverified nosologies")
+    parser.add_argument(
+        "--unblock-all",
+        action="store_true",
+        help="Escape hatch: unblock every recommendation (disables source-gate blocking)",
+    )
     args = parser.parse_args(argv)
 
     root = Path.cwd() if (Path.cwd() / "db").exists() else PROJECT_ROOT
@@ -145,7 +151,7 @@ def main(argv: list[str] | None = None) -> int:
         specs_dir=root / args.specs,
         run_source_gate=not args.skip_source_gate,
         run_validate=not args.skip_validate,
-        unblock_all=not args.fail_closed,
+        unblock_all=args.unblock_all,
     )
     print(
         json.dumps(

@@ -1,3 +1,25 @@
+## 2026-10-05: D2 fix — source gate blocks only explicitly marked records
+
+- **Owner decision (recorded in `DECISIONS.md` 2026-10-05):** strict fail-closed would block
+  119/120 recommendations (measured: 1 CALCULATOR_BOUND_VERIFIED, 7 specs). New default:
+  block ONLY source-marked records (`calculation_blocked: true` or non-verified
+  `source_verification_status`); never clear an explicit block; `--unblock-all` replaces
+  `--fail-closed` as the escape hatch.
+- **Changed:** `src/pipeline/extraction/calculator_source_gate.py` (new default branch +
+  module docstring); `db/build_db.py` (defaults `unblock_all=False` in `build_db` and
+  `_run_source_gate`, CLI `--fail-closed` → `--unblock-all`, removed the `except TypeError`
+  fallback at former :84-87 that silently dropped `unblock_all`, docstring updated).
+- **Tests:** `src/tests/test_calculator_source_gate.py` rewritten (4 tests: explicit-marks
+  default, pending-status blocking, never-clear-explicit-block, unblock-all hatch);
+  `src/tests/test_build_db.py` — fake gates take `*, unblock_all`, assert default False,
+  new `test_build_db_forwards_unblock_all_escape_hatch`, nonzero-exit lambda fixed.
+- **Rebuilt:** `db/build_db.py` → `db/antibio_db.json` (4 blocked: sinusitis_adult/child,
+  pharyngitis_adult/child with source statuses/reasons preserved; 116 computable) →
+  `db/build_html.py` → `antibiotic_calc.html` sha `c7b3f00faa62…` (721821 bytes).
+- **Verification:** `npm run validate` → ALL CHECKS PASSED; `.venv/bin/python -m pytest clinical_engine/tests -q`
+  → 761 passed, 6 skipped; `.venv/bin/python -m pytest src/tests/ -q` → 409 passed, 13 skipped;
+  `pytest clinical_engine/tests/test_build_reproducibility.py -q` → 8 passed.
+
 ## 2026-10-05: Independent full technical audit (HEAD 47610c6) → AUDIT_2026-10-05.md
 
 - **Read-only audit** of architecture/security/data-quality/process; new file `AUDIT_2026-10-05.md`

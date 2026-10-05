@@ -1,3 +1,32 @@
+## 2026-10-05 — Source gate policy: block only explicitly marked records (D2 fix)
+
+Decision (owner, after measured numbers): `apply_source_gate` default mode no longer
+blocks every unverified record. It blocks ONLY records the source explicitly marks —
+`calculation_blocked: true` or a non-verified `source_verification_status` — and never
+clears an explicit block. Unmarked records stay computable; `CALCULATOR_BOUND_VERIFIED`
+records are untouched. `--unblock-all` (build_db.py CLI and gate) is the escape hatch
+that disables blocking entirely; the old `--fail-closed` opt-in flag is removed
+(default is now the marked-marks policy).
+
+Rationale: strict fail-closed ("block all not-verified") would block 119 of 120
+recommendations (measured 2026-10-05: only 1 record is CALCULATOR_BOUND_VERIFIED,
+specs dir holds 7 guideline_ids) — the calculator would be effectively dead, which is
+why `b4b528a` (2026-09-22) had forced `unblock_all=True` in the first place. The
+explicit-marks policy keeps the 4 genuinely pending records blocked
+(`db/diseases/respiratory.json`: sinusitis_adult/child = CURRENT_WEB_CONFIRMED_PDF_PENDING,
+pharyngitis_adult/child = EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW) while the other
+116 remain usable.
+
+Also removed: the `except TypeError` fallback in `db/build_db.py` that silently dropped
+`unblock_all` on signature mismatch (it had hidden the broken fake-gate test). Tests:
+`src/tests/test_calculator_source_gate.py` rewritten for the new policy (4 tests),
+`src/tests/test_build_db.py` fake gates now take `unblock_all` and assert the default
+is `False` + a new test for forwarding `unblock_all=True`.
+
+Verification (2026-10-05): `db/build_db.py` → 4 blocked / 116 unblocked; `db/build_html.py`;
+`npm run validate` ALL CHECKS PASSED; `pytest clinical_engine/tests -q` → 761 passed,
+6 skipped; `pytest src/tests/ -q` → 409 passed, 13 skipped; reproducibility gate → 8 passed.
+
 ## 2026-10-02 — Corpus root is resolved by contract, not by file depth
 
 Decision: `src/pipeline/config.py` now resolves the external corpus root through
