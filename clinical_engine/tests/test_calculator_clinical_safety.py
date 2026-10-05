@@ -16,6 +16,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import time
 from pathlib import Path
 
 import pytest
@@ -721,7 +722,10 @@ def test_history_rows_are_built_with_text_content_not_inner_html() -> None:
         "let historyEntries = " + _lit(
             [
                 {
-                    "ts": 1700000000000,
+                    # fresh timestamp: readHistoryEntries drops entries older
+                    # than the 24h PHI TTL (audit S-3), so a fixed 2023 date
+                    # would be filtered out and the row would never render.
+                    "ts": int(time.time() * 1000),
                     "patient": XSS_PAYLOAD,
                     "disease": XSS_PAYLOAD,
                     "drug": XSS_PAYLOAD,
@@ -841,12 +845,12 @@ def test_history_degrades_honestly_when_session_storage_is_unavailable() -> None
             "initHistoryStore",
         ],
         ["HISTORY_MAX"],
-        "const HISTORY_KEY = 'antibio_history';\nlet historyEntries = [{ts:1,patient:'Ann',drug:'x'}];\n",
+        "const HISTORY_KEY = 'antibio_history';\nlet historyEntries = [{ts:Date.now(),patient:'Ann',drug:'x'}];\n",
         (
             "const avail=historySessionAvailable();"
             "$('history-persist').checked=true;"
             "const allowed=historyPersistAllowed();"
-            "const list=writeSessionHistory([{ts:2,patient:'Bob'}]);"
+            "const list=writeSessionHistory([{ts:Date.now(),patient:'Bob'}]);"
             "initHistoryStore();"
             "console.log(JSON.stringify({available:avail,allowed:allowed,"
             " checkboxDisabled:$('history-persist').disabled,"

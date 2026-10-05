@@ -13,9 +13,9 @@ asset requests the shell makes relative to its own origin:
   shell and proxies ``/v1/``, ``/v2/`` to this app. The assets never reach
   this process.
 * this app alone — the physician opens ``http://127.0.0.1:8000/personal``, so
-  ``/sw.js``, ``/manifest.webmanifest``, ``/antibiotic_calc.html`` and
-  ``/icons/*`` must be served here or the service worker silently fails to
-  register and the app is not installable/offline-capable.
+  ``/sw.js``, ``/manifest.webmanifest``, ``/antibiotic_calc.html``,
+  ``/icons/*`` and ``/vendor/*`` must be served here or the service worker
+  silently fails to register and the app is not installable/offline-capable.
 """
 
 from __future__ import annotations
@@ -29,6 +29,7 @@ from clinical_engine.api import contract, service
 # Repository root: ``clinical_engine/api/app.py`` -> parents[2].
 APP_ROOT = Path(__file__).resolve().parents[2]
 ICON_DIR = APP_ROOT / "icons"
+VENDOR_DIR = APP_ROOT / "vendor"
 
 # The only static files the PWA shell may fetch, mapped to the content type the
 # browser insists on (a service worker with the wrong MIME type is rejected at
@@ -284,13 +285,18 @@ def create_app(ctx: "service.ApiContext | None" = None):
     def web_manifest() -> Any:
         return _pwa_asset("manifest.webmanifest")
 
-    # Only icons/ is mounted, and only after every /v1, /v2 and /personal route
-    # is registered, so no engine path can be shadowed by a static file.
+    # Only icons/ and vendor/ are mounted, and only after every /v1, /v2 and
+    # /personal route is registered, so no engine path can be shadowed by a
+    # static file. vendor/ is the self-hosted asset set (audit S-3: Tailwind,
+    # Font Awesome, Google Fonts) precached by sw.js — the precache-list test
+    # requires it to be served here too.
     # Mounted conditionally: StaticFiles raises at request time (HTTP 500) for a
     # directory that does not exist, even with check_dir=False, and a checkout
-    # without icons/ must degrade to a plain 404 instead.
+    # without icons/ or vendor/ must degrade to a plain 404 instead.
     if ICON_DIR.is_dir():
         app.mount("/icons", StaticFiles(directory=str(ICON_DIR)), name="icons")
+    if VENDOR_DIR.is_dir():
+        app.mount("/vendor", StaticFiles(directory=str(VENDOR_DIR)), name="vendor")
 
     return app
 

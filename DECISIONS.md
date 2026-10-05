@@ -1,3 +1,30 @@
+## 2026-10-05 — S-3: self-host all CDN assets; 24h TTL on patient history
+
+Decision: third-party asset origins are removed from the product entirely —
+Tailwind Play CDN bundle, Font Awesome 6.4.0 css+woff2 and Plus Jakarta Sans woff2
+are committed under `vendor/` (864K, build is single-file + these), referenced as
+`./vendor/…` from `antibiotic_calc.html.template`, precached by `sw.js` (v4) and
+served by BOTH `server.js` (directory allowlist += `vendor`) and the uvicorn app
+(conditional `StaticFiles` mount, same absent-dir→404 contract as `icons/`).
+CSP drops every third-party host: `script-src 'self' 'unsafe-inline'`,
+`style-src 'self' 'unsafe-inline'`, `font-src 'self' data:`.
+
+Rationale: audit S-3 (AUDIT_2026-10-05.md) — PHI (Ф.И.О/анамнез) lives in
+`sessionStorage` of an origin that executed `cdn.tailwindcss.com` under
+`script-src`+`unsafe-inline`: a compromised CDN could read it. Second, CDN
+availability was an offline/PWA dependency. `unsafe-inline` for script/style
+remains (the whole app is inline) — self-hosting removes the *remote* execution
+vector, which is the finding's scope.
+
+Related decision: `readHistoryEntries` now applies a **24h TTL** to stored
+patient-history entries (session and memory, filter inline in the function so the
+node-based safety-test extraction keeps working). 24h = one working day; the
+history is a convenience log, not a medical record.
+
+Verification (2026-10-05): full suite **2527 passed, 30 skipped**; validate +
+reproducibility green; browser smoke via server.js — Tailwind/FA/fonts all local,
+rendered correctly.
+
 ## 2026-10-05 — D4: v1 contract now carries the stage-trace chain
 
 Decision: `/v1/recommend` responses always include a top-level `trace` key

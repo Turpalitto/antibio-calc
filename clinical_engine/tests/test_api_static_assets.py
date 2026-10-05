@@ -23,7 +23,7 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from clinical_engine.api.app import APP_ROOT, ICON_DIR, PWA_ASSETS, _asset, create_app
+from clinical_engine.api.app import APP_ROOT, ICON_DIR, PWA_ASSETS, VENDOR_DIR, _asset, create_app
 from clinical_engine.api.service import ApiContext
 from clinical_engine.corpus.locator import CorpusLocator
 
@@ -177,8 +177,11 @@ def test_no_static_mount_covers_the_repository_root(tmp_path):
     from starlette.routing import Mount
 
     mounts = [r for r in create_app(_context(tmp_path)).routes if isinstance(r, Mount)]
-    # icons/ is untracked in git, so a fresh clone legitimately mounts nothing.
-    assert [m.path for m in mounts] == (["/icons"] if ICON_DIR.is_dir() else [])
+    # icons/ is untracked in git, so a fresh clone legitimately mounts nothing;
+    # vendor/ (self-hosted assets, S-3) is committed but may be absent in a
+    # partial checkout — same conditional-mount contract for both.
+    expected = [p for p, d in (("/icons", ICON_DIR), ("/vendor", VENDOR_DIR)) if d.is_dir()]
+    assert [m.path for m in mounts] == expected
 
 
 def test_absent_icons_directory_degrades_to_404_not_500(tmp_path, monkeypatch):

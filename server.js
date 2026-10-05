@@ -83,14 +83,16 @@ const ENGINE_CLIENT =
 
 /**
  * Restrictive CSP. The app legitimately needs inline <script>/<style> (all of its
- * logic is inline) and the Tailwind Play CDN, Font Awesome and Google Fonts.
- * Everything else stays on 'self'.
+ * logic is inline). Every external asset (Tailwind, Font Awesome, Google Fonts)
+ * is self-hosted under ./vendor — no third-party origins are needed anymore
+ * (audit S-3, 2026-10-05): a compromised CDN can no longer execute script or
+ * read the page (PHI in sessionStorage) from this origin.
  */
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com",
-  "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com",
-  "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self' data:",
   "img-src 'self' data: https://cr.minzdrav.gov.ru",
   "connect-src 'self'",
   "worker-src 'self'",
@@ -171,9 +173,10 @@ function resolveStaticFile(rawUrl) {
   if (file !== ROOT && !file.startsWith(ROOT + path.sep)) {
     return { status: 403, code: 'OUTSIDE_ROOT' };
   }
-  // Directory allowlist: only the flat app root and icons/ are web-servable.
+  // Directory allowlist: only the flat app root, icons/ and the self-hosted
+  // asset tree vendor/ (Tailwind/Font Awesome/fonts, audit S-3) are servable.
   const segments = path.relative(ROOT, file).split(path.sep);
-  if (segments.length > 1 && segments[0] !== 'icons') {
+  if (segments.length > 1 && segments[0] !== 'icons' && segments[0] !== 'vendor') {
     return { status: 403, code: 'FORBIDDEN_PATH' };
   }
   return { status: 200, file };

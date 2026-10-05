@@ -1,3 +1,13 @@
+## 2026-10-05: S-3 CLOSED — no third-party origins; 24h PHI history TTL
+
+- `vendor/` self-hosts Tailwind/Font Awesome/Google Fonts; template + CSP + sw precache
+  all point at `./vendor/`; `/vendor` mounted in uvicorn app; server.js allowlist extended.
+- `readHistoryEntries` expires patient-history entries after 24h (session AND memory).
+- Full suite: **2527 passed, 30 skipped**; validate + reproducibility 8 green;
+  browser smoke: assets 200, UI renders from local files.
+- Audit fixes status: F1 ✅, D2 ✅, S-1 CI ✅ (bb6bcce), D4 ✅ (85c8ba3), **S-3 ✅**.
+  Remaining: doc canon (F2/F3/F5), hygiene (F6/F11).
+
 ## 2026-10-05: D4 CLOSED — v1 trace in contract; suite 2527 passed
 
 - v1 `/v1/recommend` envelope always has `trace` (D4 of AUDIT_2026-10-05):

@@ -17,8 +17,9 @@
 //   return 401/403/409. Caching them would leak one owner's responses into another
 //   session and would let a stale 200 mask a revoked token.
 //   Non-GET requests (every POST/PUT/DELETE the app makes) are not intercepted at
-//   all, and cross-origin requests (Tailwind CDN, Font Awesome, Google Fonts) are
-//   never touched.
+//   all, and any future third-party (cross-origin) asset is never touched — there
+//   are none left: Tailwind, Font Awesome and Google Fonts are self-hosted under
+//   ./vendor since audit fix S-3 (2026-10-05) and are precached like the shell.
 //
 // OFFLINE FALLBACK
 //   Only a *navigation* request falls back to the cached shell. An API request
@@ -26,15 +27,32 @@
 //   app would try to parse as JSON.
 //
 // CACHE VERSIONING
-//   CACHE_VERSION must be bumped whenever antibiotic_calc.html, the manifest or an
-//   icon changes. Bumping it creates a new cache, `activate` deletes every other
-//   cache, and the next install precaches fresh copies. Without the bump a rebuilt
-//   artifact would keep being served from the stale cache forever.
+//   CACHE_VERSION must be bumped whenever antibiotic_calc.html, the manifest, an
+//   icon or any ./vendor asset changes. Bumping it creates a new cache,
+//   `activate` deletes every other cache, and the next install precaches fresh
+//   copies. Without the bump a rebuilt artifact would keep being served from the
+//   stale cache forever.
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `antibio-shell-${CACHE_VERSION}`;
 const SHELL_URL = './antibiotic_calc.html';
-const PRECACHE_URLS = [SHELL_URL, './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
+const PRECACHE_URLS = [
+  SHELL_URL,
+  './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  // self-hosted third-party assets (S-3): the shell is unusable offline without them
+  './vendor/tailwind.js',
+  './vendor/css/all.min.css',
+  './vendor/css/fonts.css',
+  './vendor/webfonts/fa-solid-900.woff2',
+  './vendor/webfonts/fa-regular-400.woff2',
+  './vendor/webfonts/fa-brands-400.woff2',
+  './vendor/fonts/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2',
+  './vendor/fonts/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2',
+  './vendor/fonts/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko50yygg_vbd-E.woff2',
+  './vendor/fonts/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko70yygg_vbd-E.woff2',
+];
 const ENGINE_PREFIXES = ['/v1/', '/v2/'];
 
 function isEngineRequest(url) {

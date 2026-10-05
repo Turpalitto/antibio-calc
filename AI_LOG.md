@@ -1,3 +1,28 @@
+## 2026-10-05: S-3 done — third-party assets self-hosted, PHI history TTL
+
+- **New:** `vendor/` (committed, 864K): `tailwind.js` (Play CDN bundle),
+  `css/all.min.css` + `css/fonts.css` (gstatic URLs rewritten to `../fonts/`),
+  `webfonts/fa-{solid-900,regular-400,brands-400}.woff2`, 4 Plus Jakarta Sans woff2.
+- **Changed:** `antibiotic_calc.html.template:9,13,15` → `./vendor/…` (no more
+  cdn.tailwindcss.com / cdnjs / fonts.googleapis); `readHistoryEntries` now
+  drops session+memory history entries older than 24h (`Date.now()-86400000`,
+  inline — safety tests extract the function as-is).
+- **Changed:** `server.js` CSP — `script-src 'self' 'unsafe-inline'`,
+  `style-src 'self' 'unsafe-inline'`, `font-src 'self' data:`; static
+  directory allowlist now serves `vendor/` alongside `icons/`.
+- **Changed:** `sw.js` `CACHE_VERSION v3→v4`, PRECACHE_URLS += 11 vendor files
+  (precache-list test requires them served by both server.js and uvicorn app).
+- **Changed:** `clinical_engine/api/app.py` — conditional `StaticFiles` mount
+  `/vendor` (same contract as `/icons`: absent dir → clean 404).
+- **Tests updated:** `test_api_static_assets.py` (mount allowlist =
+  [/icons, /vendor] per existing dirs); `test_calculator_clinical_safety.py`
+  (fresh `ts` in history tests — fixed 2023 epoch would now be TTL-filtered;
+  `import time` added).
+- **Verification:** node --check OK; `python3 db/build_html.py` + `npm run
+  validate` ALL PASSED; reproducibility 8 passed; `.venv/bin/python -m pytest -q`
+  → **2527 passed, 30 skipped**; browser smoke (server.js :8123): all vendor
+  assets 200, Tailwind/FA/fonts render, only pre-existing /favicon.ico 404.
+
 ## 2026-10-05: D4 done — v1 API exposes stage-trace chain (audit fix)
 
 - **Changed:** `clinical_engine/api/contract.py` — `envelope()` got explicit

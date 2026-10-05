@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
 <title>AntibioAudit — КР МЗ РФ | Калькулятор доз</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="./vendor/tailwind.js"></script>
 <script>
 tailwind.config = { darkMode: 'class' };
 </script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="./vendor/css/all.min.css" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('./vendor/css/fonts.css');
 :root{
   --primary:#2563eb;--primary-hover:#1d4ed8;--primary-light:#eff6ff;--primary-glow:rgba(37,99,235,0.25);
   --success:#059669;--success-glow:rgba(5,150,105,0.2);
@@ -3136,16 +3136,22 @@ function onHistoryPersistChange(){
   loadHistory();
 }
 function readHistoryEntries(){
+  // S-3 PHI TTL: a stored patient history entry expires 24h after it was
+  // written. Filtering happens on read (storage AND memory) so expired
+  // Ф.И.О./diagnosis data stops being rendered or re-persisted. All logic
+  // is inline: the safety tests extract this function as-is.
+  const cutoff = Date.now() - 86400000;
+  const fresh = arr => arr.filter(e => e && typeof e.ts === 'number' && e.ts >= cutoff);
   if(historySessionAvailable()){
     try{
       const raw = sessionStorage.getItem(HISTORY_KEY);
       if(raw){
         const parsed = JSON.parse(raw);
-        if(Array.isArray(parsed)) return parsed;
+        if(Array.isArray(parsed)) return fresh(parsed);
       }
     }catch(_){}
   }
-  return historyEntries.slice();
+  return fresh(historyEntries.slice());
 }
 function writeSessionHistory(list){
   historyEntries = list.slice(0, HISTORY_MAX);

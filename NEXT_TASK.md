@@ -1,3 +1,21 @@
+## 2026-10-05: S-3 done — remaining NEXT_TASK (work top-down)
+
+1. ~~F1, D2, S-1 CI (bb6bcce), D4 (85c8ba3), S-3 CDN/PHI~~ ALL DONE 2026-10-05.
+   S-3 specifics: `vendor/` committed; template:9,13,15 → local; CSP tightened
+   (no third-party origins); sw v4 precaches 11 vendor files; `/vendor` StaticFiles
+   mount in `clinical_engine/api/app.py`; `readHistoryEntries` 24h TTL (inline).
+2. **Doc canon F2/F3/F5:** unify contradictory test counts (AGENTS.md:29 says 1898,
+   GOVERNANCE:28 1499, measured 2527 as of 2026-10-05) and stale phase dates
+   (ROADMAP_STATUS.md:5,45 = 2026-07-10; AGENTS.md:4-5; GOVERNANCE:3) — update the
+   "current" docs, leave historical log entries (AI_LOG) untouched. Also stale:
+   `SESSION_HISTORY.md:23` (CDN-block advice obsolete), `audit-site/src/data/audit.ts:113`
+   (describes the old CSP).
+3. **Hygiene F6/F11:** archive ~160 stale *AUDIT*/*REPORT*/*RCA* md files
+   (conservatively — verify no test/manifest references first), document
+   `audit-site/` (F11).
+4. After each task: prepend AI_LOG/PROJECT_STATE/NEXT_TASK(/DECISIONS), run
+   `.venv/bin/python -m pytest -q`, commit + push (approved flow).
+
 ## 2026-10-05: D4 done — remaining NEXT_TASK (work top-down)
 
 1. ~~F1, D2, S-1 CI (bb6bcce), D4 trace~~ ALL DONE 2026-10-05.
