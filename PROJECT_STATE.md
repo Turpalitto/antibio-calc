@@ -1,3 +1,21 @@
+## 2026-10-05: Full audit at 47610c6 — 2 gates red, fail-closed default OFF
+
+- **New:** `AUDIT_2026-10-05.md` (read-only audit, HEAD `47610c6`). 3 CRITICAL / 5 HIGH /
+  10 MEDIUM / 6 LOW findings; secret scan of tree + 57 commits clean.
+- **Gate red at HEAD:** `test_build_reproducibility` fails — committed `antibiotic_calc.html`
+  (`eea16d10…`) ≠ rebuild (`7550fc57…`). The 2026-10-02 entry's "Rebuilt … 0 failed" claim no
+  longer reproduces. **FIXED 2026-10-05:** `python3 db/build_html.py` → artifact sha
+  `7550fc578a31…`, test → 8 passed, `npm run validate` → ALL CHECKS PASSED.
+- **Fail-closed OFF by default:** `db/build_db.py:53` `unblock_all=True`; shipped
+  `db/antibio_db.json`/HTML: 0 blocked; source `db/diseases/respiratory.json`: 4 records
+  explicitly blocked (sinusitis_adult/child, pharyngitis_adult/child) get force-unblocked.
+  `src/tests/test_build_db.py:128` fake gate misses this (3-arg → TypeError fallback).
+- **Test count:** canonical number does not exist; measured 2548 collected (+407 outside
+  testpaths). Docs cite 1159 / 1373 / 1499 / 1898 / 2509.
+- **DB facts measured:** 120 recs, 47 drugs (not 48), 640 regimens, 185 scenarios,
+  `meta.verification_status="draft"`.
+- Unchanged: phase status P5.6 ACCEPTANCE / P6 BLOCKED stands.
+
 ## 2026-10-02: Corpus-root path defect fixed + stale clinrec-downloader record corrected
 
 - **Path defect in `src/pipeline/config.py`:** `BASE_DIR` used `parents[3]` (the PARENT of the

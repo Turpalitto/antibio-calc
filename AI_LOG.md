@@ -1,3 +1,26 @@
+## 2026-10-05: Independent full technical audit (HEAD 47610c6) → AUDIT_2026-10-05.md
+
+- **Read-only audit** of architecture/security/data-quality/process; new file `AUDIT_2026-10-05.md`
+  (root). No code or data files modified.
+- **Verified live:** `npm run validate` → ALL CHECKS PASSED (120 recs, 47 drugs, 640 regimens);
+  `pytest --collect-only -q` → 2548 collected (+407 in `tests/` excluded by `pyproject.toml:74-80`).
+- **3 CRITICAL findings:** (D2) fail-closed gate OFF by default — `db/build_db.py:53`
+  `unblock_all: bool = True`, shipped DB/HTML have 0 `calculation_blocked` while
+  `db/diseases/respiratory.json` has 4 explicitly blocked records force-unblocked; (F1)
+  `test_build_reproducibility.py:73` FAILS at HEAD — `antibiotic_calc.html` (committed
+  `eea16d10…`) does not match rebuild from template+DB (`7550fc57…`); (D3) EAR-1 dual
+  knowledge source still real, corpus absent on this machine (e2e impossible).
+- **HIGH:** v1 transport drops traceability chain (`api/service.py:154-184`); loopback gate
+  bypassable via server.js proxy rewriting Host (`server.js:220-246`); live
+  `cdn.tailwindcss.com` in template+CSP with PHI in sessionStorage; 5 contradictory test
+  counts across governance docs.
+- **Security verified clean:** 0 secrets in working tree and all 57 commits; server.js static
+  hardening sound; owner-token correct; SW caches shell only.
+- **Verification command:** `.venv/bin/python -m pytest clinical_engine/tests/test_build_reproducibility.py -q`
+  → currently 1 failed, 7 passed (expected green after `python3 db/build_html.py` rebuild).
+- **F1 FIXED same day:** `python3 db/build_html.py` → output sha `7550fc578a31…` (720593 bytes);
+  reproducibility test → 8 passed; `npm run validate` → ALL CHECKS PASSED.
+
 ## 2026-10-02: Corpus-root path defect fixed in the pipeline layer + stale clinrec record corrected
 
 - **Fixed — `src/pipeline/config.py`:** `BASE_DIR` was

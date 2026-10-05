@@ -1,3 +1,25 @@
+## 2026-10-05: Audit-driven next steps (see AUDIT_2026-10-05.md)
+
+1. ~~**Release blocker (F1):** run `python3 db/build_html.py`, commit rebuilt
+   `antibiotic_calc.html`, confirm
+   `.venv/bin/python -m pytest clinical_engine/tests/test_build_reproducibility.py -q` → 8 passed.~~
+   **DONE 2026-10-05:** rebuilt sha `7550fc578a31…`; 8 passed; validate green.
+2. **Safety gate (D2):** decide fail-closed policy — either default `--fail-closed` back on
+   (`db/build_db.py:53,148`) or formally retire the gate and delete/quarantine the 4 blocked
+   records in `db/diseases/respiratory.json`; fix `src/tests/test_build_db.py:128` to use the
+   real gate signature so the default is asserted.
+3. **CI (S-1):** add `.github/workflows/ci.yml` = `npm run validate` + canonical pytest +
+   `test_build_reproducibility` + gitleaks (none exist today despite SECRETS_MANAGEMENT_POLICY.md:9).
+4. **Traceability (D4):** expose the stage-trace chain in the v1 contract
+   (`api/service.py:154-184`, `contract.py:179-187`) — required by the Clinical Traceability Rule.
+5. **PHI/CDN (S-3):** self-host Tailwind/fonts (`antibiotic_calc.html.template:9`,
+   `server.js:88`); consider sessionStorage TTL for patient history.
+6. **Doc canon (F2/F3/F5):** one authoritative "tests = 2548, phase = P5.6, date" table;
+   update AGENTS.md:4-5, GOVERNANCE_SOURCE_OF_TRUTH.md:28, ROADMAP_STATUS.md:45,
+   PROJECT_STATE.md:35, AI_LOG.md:1569 (all contradict each other).
+7. **Hygiene (F6/F11):** archive ~160 stale *AUDIT*/*REPORT*/*RCA* md files; document the
+   `audit-site/` subsystem (undocumented since 0e5f7b8).
+
 ## 2026-10-02: Next steps after the corpus-root path fix
 
 - **`.env.example` — NOT updated (write-time guard is authoritative):** the comment/example edit
