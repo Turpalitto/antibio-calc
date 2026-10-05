@@ -176,14 +176,20 @@ def parse_recommend_request(body: dict[str, Any]) -> RecommendRequest:
 
 
 # ── response envelope helpers ─────────────────────────────────
+# D4 (audit 2026-10-05): `trace` is part of the v1 contract, not an optional
+# extra — the Clinical Traceability Law requires the stage chain to be
+# visible on every response. It is `{}` iff no engine result exists (parse
+# errors, corpus unavailable, recommender not wired); once the engine ran it
+# carries participating_stages/stages/considered_regimens (service._trace_obj).
 def envelope(status: str, *, knowledge_version: str | None = None,
              errors: list[dict] | None = None, notes: list[dict] | None = None,
-             **extra: Any) -> dict[str, Any]:
+             trace: dict[str, Any] | None = None, **extra: Any) -> dict[str, Any]:
     doc: dict[str, Any] = {"api_version": API_VERSION, "status": status,
                            "knowledge_version": knowledge_version}
     doc.update(extra)
     doc["errors"] = errors or []
     doc["notes"] = notes or []
+    doc["trace"] = trace or {}
     return doc
 
 

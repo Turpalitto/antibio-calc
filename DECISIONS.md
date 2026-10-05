@@ -1,3 +1,24 @@
+## 2026-10-05 — D4: v1 contract now carries the stage-trace chain
+
+Decision: `/v1/recommend` responses always include a top-level `trace` key
+(`contract.envelope` new explicit param, `doc["trace"] = trace or {}`), serialized by
+`service._trace_obj(result)` whenever the engine ran: `participating_stages` (unique,
+first-seen order), `stages` (per-StageTrace: stage/decision_code/reason/
+decision_confidence + compact evidence), `considered_regimens` (accepted +
+excluded with `rejection_reasons`, shape mirrors personal-mode trace in
+`personal/recommender.py:172-176`). Empty `{}` when no engine result exists
+(parse error, corpus 503, recommender not wired).
+
+Rationale: audit finding D4 (AUDIT_2026-10-05.md) — v1 dropped the trace entirely
+while the Clinical Traceability Law (AGENTS.md) demands stages/alternatives/evidence
+be physician-visible. `Evidence.source_pdf` (local corpus path) is deliberately NOT
+serialized — filesystem paths must not leave the API. INT-5b-1 dose-field deferral
+untouched: trace is not a clinical field.
+
+Verification (2026-10-05): `.venv/bin/python -m pytest -q` → **2527 passed,
+30 skipped** (baseline was 2522; +5 new tests in
+`clinical_engine/tests/test_api_v1_trace.py`).
+
 ## 2026-10-05 — Source gate policy: block only explicitly marked records (D2 fix)
 
 Decision (owner, after measured numbers): `apply_source_gate` default mode no longer

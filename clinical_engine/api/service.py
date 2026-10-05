@@ -195,6 +195,64 @@ def _worst_action(actions: list[str]) -> str | None:
     return next((a for a in actions if a), None)
 
 
+def _trace_obj(result: Any) -> dict[str, Any]:
+    """D4 (audit 2026-10-05): the stage-trace chain the v1 envelope used to drop.
+
+    Answers the Clinical Traceability Law questions at the transport layer:
+    which stages participated (5), which regimens were considered and why
+    alternatives were rejected (2, 6), and which evidence a stage relied on (7).
+    Shape mirrors personal-mode `trace` (personal/recommender.py) so the two
+    modes read alike. `Evidence.source_pdf` is a local corpus path and is
+    deliberately NOT exposed over the API.
+    """
+    stage_names: list[str] = []
+    stages: list[dict[str, Any]] = []
+    for t in getattr(result, "traces", ()) or ():
+        name = getattr(t, "stage_name", None)
+        entry: dict[str, Any] = {
+            "stage": name,
+            "decision_code": _enum_value(getattr(t, "decision_code", None)),
+            "reason": getattr(t, "reason", None),
+            "decision_confidence": _enum_value(
+                getattr(t, "decision_confidence", None)),
+        }
+        ev = getattr(t, "evidence", None)
+        if ev is not None:
+            entry["evidence"] = {
+                "guideline_title": getattr(ev, "guideline_title", None),
+                "guideline_year": getattr(ev, "guideline_year", None),
+                "source_section": getattr(ev, "source_section", None),
+                "source_page": getattr(ev, "source_page", None),
+                "source_url": getattr(ev, "source_url", None),
+            }
+        stages.append(entry)
+        if name is not None and name not in stage_names:
+            stage_names.append(name)
+
+    considered: list[dict[str, Any]] = []
+    for rec in (getattr(result, "accepted", ()) or ()):
+        c = getattr(rec, "candidate", None)
+        considered.append({
+            "regimen_id": getattr(c, "regimen_id", None),
+            "guideline_id": getattr(c, "guideline_id", None),
+            "accepted": True,
+            "rejection_reasons": [],
+        })
+    for rec, reason in (getattr(result, "excluded", ()) or ()):
+        c = getattr(rec, "candidate", None)
+        considered.append({
+            "regimen_id": getattr(c, "regimen_id", None),
+            "guideline_id": getattr(c, "guideline_id", None),
+            "accepted": False,
+            "rejection_reasons": [reason],
+        })
+    return {
+        "participating_stages": stage_names,
+        "stages": stages,
+        "considered_regimens": considered,
+    }
+
+
 def _safety_summary(result: Any) -> dict[str, Any] | None:
     """Pass the engine's own SafetySummary through verbatim.
 
@@ -258,7 +316,8 @@ def handle_recommend(ctx: ApiContext, body: dict[str, Any]) -> tuple[int, dict[s
     review = _review_from_notes(result)
     if review is not None:
         return 200, contract.envelope(contract.Status.REVIEW_REQUIRED, knowledge_version=kv,
-                                      review=review, recommendations=[])
+                                      review=review, recommendations=[],
+                                      trace=_trace_obj(result))
 
     recs = _minimal_recommendations(result)
     if not recs:
@@ -267,7 +326,7 @@ def handle_recommend(ctx: ApiContext, body: dict[str, Any]) -> tuple[int, dict[s
             contract.Status.REVIEW_REQUIRED, knowledge_version=kv,
             review={"code": "NO_APPROVED_REGIMEN",
                     "reason": "no physician-approved recommendation for this query"},
-            recommendations=[])
+            recommendations=[], trace=_trace_obj(result))
 
     # H-4: the engine's own safety verdict is authoritative. Stamping APPROVED
     # over a set the engine marked REVIEW_REQUIRED is exactly the bug.
@@ -284,7 +343,8 @@ def handle_recommend(ctx: ApiContext, body: dict[str, Any]) -> tuple[int, dict[s
     return 200, contract.envelope(
         status, knowledge_version=kv, notes=notes,
         safety_summary=summary,
-        recommendations=recs)
+        recommendations=recs,
+        trace=_trace_obj(result))
 
 
 def handle_recommend_v2(

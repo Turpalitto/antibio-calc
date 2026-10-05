@@ -1,3 +1,22 @@
+## 2026-10-05: D4 done — remaining NEXT_TASK (work top-down)
+
+1. ~~F1, D2, S-1 CI (bb6bcce), D4 trace~~ ALL DONE 2026-10-05.
+2. **S-3 (PHI/CDN):** self-host Tailwind (`antibiotic_calc.html.template:9`
+   `cdn.tailwindcss.com` + CSP `server.js:88-95` script-src) — also cdnjs Font
+   Awesome (`:13`) / Google fonts (`:15`) if feasible; add sessionStorage TTL for
+   patient history (`template:3141,3153` — PHI: Ф.И.О/diagnosis); remember
+   `sw.js` precache list (:37) must include any new local asset, rebuild HTML,
+   reproducibility gate must stay green.
+3. **Doc canon F2/F3/F5:** unify contradictory test counts (AGENTS.md:29 says 1898,
+   GOVERNANCE:28 1499, measured 2527 as of 2026-10-05) and stale phase dates
+   (ROADMAP_STATUS.md:5,45 = 2026-07-10; AGENTS.md:4-5; GOVERNANCE:3) — update the
+   "current" docs, leave historical log entries (AI_LOG) untouched.
+4. **Hygiene F6/F11:** archive ~160 stale *AUDIT*/*REPORT*/*RCA* md files
+   (conservatively — verify no test/manifest references first), document
+   `audit-site/` (F11).
+5. After each task: prepend AI_LOG/PROJECT_STATE/NEXT_TASK(/DECISIONS), run
+   `.venv/bin/python -m pytest -q`, commit + push (approved flow).
+
 ## 2026-10-05: D2 done — next (audit-driven, see AUDIT_2026-10-05.md §8)
 
 1. ~~F1 rebuild~~ DONE; ~~D2 fail-closed~~ DONE 2026-10-05 — gate = explicit-marks policy

@@ -1,3 +1,20 @@
+## 2026-10-05: D4 done — v1 API exposes stage-trace chain (audit fix)
+
+- **Changed:** `clinical_engine/api/contract.py` — `envelope()` got explicit
+  `trace: dict | None = None` param; every envelope now has a `trace` key
+  (`{}` if no engine ran); docstring documents the contract role.
+- **Changed:** `clinical_engine/api/service.py` — new `_trace_obj(result)`:
+  serializes `result.traces` (StageTrace → stage/decision_code/reason/
+  decision_confidence + evidence WITHOUT `source_pdf`) and
+  `result.accepted/excluded` → `considered_regimens` with `rejection_reasons`
+  (mirrors personal-mode trace shape); wired into all three result-bearing
+  returns of `handle_recommend` (review-required, no-approved-regimen, final).
+- **New tests:** `clinical_engine/tests/test_api_v1_trace.py` (5 tests): trace key
+  always present; stage chain + unique participating_stages + rejection reasons +
+  evidence-without-local-path; trace on review path; `{}` on 503 and on 400.
+- **Verification:** `.venv/bin/python -m pytest -q` → 2527 passed, 30 skipped
+  (was 2522 + 5 new). API v1/v2/personal suites green (95 passed focused run).
+
 ## 2026-10-05: D2 fix — source gate blocks only explicitly marked records
 
 - **Owner decision (recorded in `DECISIONS.md` 2026-10-05):** strict fail-closed would block

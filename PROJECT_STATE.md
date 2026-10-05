@@ -1,3 +1,12 @@
+## 2026-10-05: D4 CLOSED — v1 trace in contract; suite 2527 passed
+
+- v1 `/v1/recommend` envelope always has `trace` (D4 of AUDIT_2026-10-05):
+  participating_stages / stages / considered_regimens, `{}` when engine did not run.
+  `Evidence.source_pdf` never exposed.
+- Full suite: **2527 passed, 30 skipped** (2026-10-05).
+- Audit fixes status: F1 ✅, D2 ✅, S-1 CI ✅ (commit bb6bcce, GitHub run unverified),
+  D4 ✅. Remaining: **S-3 (CDN/PHI)**, doc canon (F2/F3/F5), hygiene (F6/F11).
+
 ## 2026-10-05: D2 CLOSED — source gate default = explicit-marks policy; DB/HTML rebuilt
 
 - Gate (`calculator_source_gate.py`) default now blocks ONLY source-marked records;
