@@ -233,7 +233,7 @@ Tests: `src/tests/test_source_fetch_verify.py` (8). Suite: `.venv/bin/python
 
 ## 2026-09-02: CAP scenario-to-dose-row bindings built and verified; calculation stays blocked
 
-On a fresh macOS clone (`/Users/turpal/Documents/antibiocalc/antibio-calc`,
+On a fresh macOS clone (`/Users/turpal/Documents/antibio-calc`,
 Python 3.12.14 venv): every cap_adult regimen (11, CR `654_2`) and cap_child
 regimen (6, CR `714_2`) now has a fail-closed binding to one verified
 dose-table row. Artifacts:

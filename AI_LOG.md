@@ -448,7 +448,7 @@ data or calculation-status changes were made. No commit.
 
 After request to do all remaining work (including physician-attested parts), an
 audit was made of every still-open NEXT_TASK workstream on the fresh macOS clone
-(`/Users/turpal/Documents/antibiocalc/antibio-calc`, Python 3.12.14 venv). Result:
+(`/Users/turpal/Documents/antibio-calc`, Python 3.12.14 venv). Result:
 no further clinically-valid work is currently possible; two local bookkeeping
 deliverables were produced.
 
@@ -509,7 +509,7 @@ Engine to change clinical-approval state. Only the owner/physician may do this.
 ## 2026-09-02: scenario-to-dose-row binding artifacts for CAP (654_2, 714_2)
 
 Implemented NEXT_TASK workstream 2 on a fresh macOS clone
-(`/Users/turpal/Documents/antibiocalc/antibio-calc`, Python 3.12.14 venv).
+(`/Users/turpal/Documents/antibio-calc`, Python 3.12.14 venv).
 Minzdrav endpoints (`apicr.minzdrav.gov.ru`, `cr.minzdrav.gov.ru`) are
 network-unreachable from this machine (TCP connect fails; other internet
 works), so live PDF/JSON acquisition for `898_1`, `912_1`, `629_2` and the full
