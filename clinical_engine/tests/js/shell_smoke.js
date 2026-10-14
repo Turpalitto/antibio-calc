@@ -288,6 +288,22 @@ async function run() {
       type($('weight'), '70');
     }
 
+    // ---- 7d. combination: the partner drug's computed dose reaches the exports --
+    {
+      w.selectDisease(find((r) => r.id === 'listeriosis'));
+      type($('weight'), '70');
+      out.combo = { drug: w.eval('JSON.stringify(activeDrug.combo_ref)'), screen: txt($('combo-block')) };
+      w.__copied = '';
+      w.copyForMIS();
+      await sleep(0);
+      out.combo.mis = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.combo.rx = txt($('rx-drugs'));
+      clickDisease('chlamydia_urogenital');
+      clickDrug(/Доксициклин/i);
+      type($('weight'), '70');
+    }
+
     // ---- 7b. route/form mismatch is fail-visible: doxycycline (tablets only)
     //          asked for iv → tabs fall back to all forms + amber notice ---------
     out.routeMismatch = { noteHiddenBefore: !visible($('route-mismatch-note')) };

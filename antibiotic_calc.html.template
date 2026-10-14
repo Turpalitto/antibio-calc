@@ -3091,6 +3091,25 @@ function renderDilutionBlock(ref, routeKey, singleMg, selectedVial, routeData){
     stepsEl.appendChild(li);
   });
 }
+// Text form of the combination components — the same numbers the screen's
+// combo cards show — for the MIS text and the printed form (an export used to
+// carry only the main drug; the partner survived as free text at best).
+function comboComponentLines(refs, reg, w){
+  const lines = [];
+  (refs || []).forEach(refKey=>{
+    const ref = DB.drugs_reference[refKey];
+    if(!ref) return;
+    const compReg = (reg.component_regimens && reg.component_regimens[refKey]) || reg;
+    const unit = doseUnitOf(ref);
+    const {singleMg, dailyMg, needWeight} = computeDose(compReg, w, unit);
+    let line = 'Компонент комбинации: '+ref.inn+' — ';
+    if(needWeight) line += 'введите вес пациента (доза по '+unit+'/кг)';
+    else line += 'по '+fmtDose(singleMg, unit)+' '+compReg.freq_per_day+' р/д'+(compReg.duration_days ? ' • '+compReg.duration_days+' дн' : '')+' (сут. '+fmtDose(dailyMg, unit)+')';
+    if(compReg.component_note) line += '; '+compReg.component_note;
+    lines.push(line);
+  });
+  return lines;
+}
 function renderComboComponents(refs, reg, w){
   if(refs.length === 0) return;
   const block = $('combo-block');
@@ -3282,14 +3301,17 @@ function fillPrescriptionForm(){
   if(refs.length > 1){
     const comboMarker = document.createElement('div');
     comboMarker.setAttribute('style', 'font-weight:bold;font-size:10pt;margin-top:4px;padding-top:4px;border-top:1px dashed #999');
-    comboMarker.textContent = 'Комбинация: вторая линия';
+    comboMarker.textContent = 'Компоненты комбинации (одновременно):';
     drugsEl.appendChild(comboMarker);
-    refs.slice(1).forEach((refKey)=>{
+    const componentLines = comboComponentLines(refs.slice(1), reg, w);
+    refs.slice(1).forEach((refKey, i)=>{
       const ref = DB.drugs_reference[refKey];
       if(!ref) return;
       const clatin = LATIN_INN[refKey] || ref.inn;
       const cform = ref.forms[0];
       drugsEl.appendChild(rxLine('rx-drug-name', clatin+' '+(cform?cform.concentration:'')));
+      // the component's own computed dose (same numbers as the screen's combo card)
+      if(componentLines[i]) drugsEl.appendChild(rxLine('rx-dose-info', componentLines[i].replace(/^Компонент комбинации: /, '')));
     });
   }
 
@@ -3413,6 +3435,7 @@ function copyForMIS(){
     ? 'местно, по указаниям КР (в записи БД задана системная схема: '+regimenSummary(reg, unit)+')'
     : regimenSummary(reg, unit))+'\n';
   txt += 'Схема приёма: '+doseStr+'\n';
+  comboComponentLines(refs.slice(1), reg, w).forEach(line=>{ txt += line+'\n'; });
   txt += 'Курс лечения: '+days+' дней\n';
   if(coursePkg){
     txt += 'Потребность на курс: '+coursePkg.summary.replace(/<\/?[^>]+(>|$)/g, '')+'\n';

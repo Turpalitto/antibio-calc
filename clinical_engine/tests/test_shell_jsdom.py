@@ -160,6 +160,18 @@ def test_pregnancy_flag_reaches_the_printed_form(shell: dict) -> None:
     assert rx["safety"].startswith("ВНИМАНИЕ: Беременность/лактация: «Доксициклин» — Противопоказан")
 
 
+def test_combination_partner_dose_is_exported_not_only_shown(shell: dict) -> None:
+    """Listeriosis = ampicillin + gentamicin: the screen computed gentamicin
+    350 mg × 1 (5 mg/kg × 70 kg) but the MIS text and the printed form named
+    ampicillin only (the partner survived as free text in «Указания»)."""
+    cb = shell["combo"]
+    assert cb["drug"] == '["ampicillin","gentamicin"]'
+    assert "Гентамицин" in cb["screen"] and "350 мг" in cb["screen"]
+    assert "Компонент комбинации: Гентамицин — по 350 мг 1 р/д" in cb["mis"]
+    assert "Gentamicini" in cb["rx"] and "Гентамицин — по 350 мг 1 р/д" in cb["rx"]
+    assert "Компоненты комбинации (одновременно)" in cb["rx"]
+
+
 def test_switching_to_a_blocked_nosology_drops_the_previous_regimen(shell: dict) -> None:
     """Regression: after doxycycline/chlamydia, selecting a source-gate-blocked
     record left activeDrug in place, so the header print button produced a

@@ -204,6 +204,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "makeActivatable",
     "allergyExportFlag",
     "exportSafetyFlags",
+    "comboComponentLines",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\n"
