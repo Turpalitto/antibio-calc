@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#2563eb">
+<script>/* saved theme before first paint — setupTheme() in init() ran after the light page had already rendered (dark-mode flash) */try{if(localStorage.getItem('antibio_theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="icons/icon-192.png">

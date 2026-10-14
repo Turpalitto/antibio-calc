@@ -264,6 +264,33 @@ def test_lan_peer_gets_the_shell_but_not_the_engine_proxy(lan_server) -> None:
     assert status == 403 and json.loads(body)["error"] == "PROXY_LOOPBACK_ONLY"
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="POSIX signals")
+def test_sigterm_stops_the_server_cleanly_and_a_busy_port_exits_nonzero(loopback_server) -> None:
+    """systemd/Docker stop → SIGTERM → exit 0 within the grace period; a second
+    instance on the same port must fail loudly instead of hanging."""
+    host, port = loopback_server
+    env = {**os.environ, "PORT": str(port), "HOST": host}
+    clash = subprocess.run([NODE, str(SERVER)], cwd=ROOT, env=env, capture_output=True, text=True, timeout=15)
+    assert clash.returncode == 1 and "cannot listen" in clash.stderr and "EADDRINUSE" in clash.stderr
+
+    own_port = _free_port()
+    env["PORT"] = str(own_port)
+    proc = subprocess.Popen([NODE, str(SERVER)], cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    try:
+        _wait_listening(host, own_port, proc)
+        proc.send_signal(15)  # SIGTERM
+        try:
+            code = proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            pytest.fail("server.js did not exit within 10 s of SIGTERM")
+        assert code == 0
+        assert "received SIGTERM" in proc.stdout.read()
+    finally:
+        if proc.poll() is None:
+            proc.kill()
+
+
 def test_is_loopback_address_helper() -> None:
     script = (
         "const s=require(process.argv[1]);"

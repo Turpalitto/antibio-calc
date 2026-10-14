@@ -477,4 +477,17 @@ if (require.main === module) {
         `; LAN peers ${ENGINE_PROXY_ALLOW_LAN ? 'FORWARDED (ENGINE_PROXY_ALLOW_LAN=1)' : 'refused'}; body cap ${ENGINE_MAX_BODY_BYTES} B)`
     );
   });
+  server.on('error', (error) => {
+    console.error(`ANTIBIO cannot listen on ${HOST}:${PORT}: ${error.code || error.message}`);
+    process.exit(1);
+  });
+  // Graceful stop (systemd/Docker/Ctrl-C): finish in-flight responses, refuse
+  // new ones, hard-exit if a client keeps a connection open too long.
+  const shutdown = (signal) => {
+    console.log(`ANTIBIO received ${signal}, closing`);
+    server.close(() => process.exit(0));
+    setTimeout(() => process.exit(0), 5000).unref();
+  };
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 }

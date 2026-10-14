@@ -173,3 +173,14 @@ def test_axe_core_reports_no_violations(shell: dict, state: str) -> None:
     report = shell["axe"][state]
     assert report["passes"] > 20, "axe did not actually run"
     assert report["violations"] == [], json.dumps(report["violations"], ensure_ascii=False, indent=1)
+
+
+def test_saved_dark_theme_is_applied_before_the_stylesheet_loads() -> None:
+    """setupTheme() runs from init() at the end of <body>, i.e. after the light
+    page has painted — a head script must apply the stored theme first."""
+    html = HTML.read_text(encoding="utf-8")
+    head = html.split("</head>", 1)[0]
+    script_at = head.find("localStorage.getItem('antibio_theme')==='dark'")
+    css_at = head.find('<link href="./vendor/app.css"')
+    assert 0 < script_at < css_at, "pre-paint theme script must precede the stylesheet link"
+    assert "documentElement.classList.add('dark')" in head[script_at:script_at + 200]
