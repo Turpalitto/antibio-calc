@@ -26,6 +26,28 @@ from urllib.parse import urlsplit
 
 from clinical_engine.api import contract, service
 
+# Mirrors server.js (SECURITY_HEADERS / CSP) — keep the two in step; a test
+# extracts the literals from server.js and compares.
+SECURITY_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "X-Frame-Options": "DENY",
+}
+CSP = "; ".join([
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self' data:",
+    "img-src 'self' data: https://cr.minzdrav.gov.ru",
+    "connect-src 'self'",
+    "worker-src 'self'",
+    "manifest-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+])
+
 # Repository root: ``clinical_engine/api/app.py`` -> parents[2].
 APP_ROOT = Path(__file__).resolve().parents[2]
 ICON_DIR = APP_ROOT / "icons"
@@ -77,6 +99,20 @@ def create_app(ctx: "service.ApiContext | None" = None):
     context = ctx or service.ApiContext.default()
     app = FastAPI(title="ANTIBIO Clinical Decision Platform API",
                   version=contract.API_VERSION)
+
+    # Same response hardening as server.js (2026-10-14): the engine can serve
+    # the shell directly on loopback, and a shell without CSP / nosniff there
+    # would be a weaker copy of the one behind the static server.
+    # ``test_api_static_assets`` pins SECURITY_HEADERS and CSP to server.js.
+    @app.middleware("http")
+    async def _security_headers(request: Request, call_next):  # type: ignore[no-untyped-def]
+        response = await call_next(request)
+        for name, value in SECURITY_HEADERS.items():
+            response.headers.setdefault(name, value)
+        content_type = response.headers.get("content-type", "")
+        if content_type.startswith("text/html"):
+            response.headers.setdefault("Content-Security-Policy", CSP)
+        return response
 
     def _json(result: tuple[int, dict[str, Any]]) -> JSONResponse:
         status_code, body = result

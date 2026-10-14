@@ -104,6 +104,33 @@ def test_shell_is_served_at_the_paths_the_manifest_resolves_to(tmp_path):
         assert response.headers["content-type"].startswith("text/html"), path
 
 
+def test_shell_and_api_responses_carry_the_server_js_security_headers(tmp_path):
+    """The engine mirrors server.js: nosniff / referrer / frame headers on every
+    response, the same CSP on HTML — and the literals are read from server.js
+    so the two cannot drift apart silently (2026-10-14)."""
+    from clinical_engine.api.app import CSP, SECURITY_HEADERS
+
+    server_js = (APP_ROOT / "server.js").read_text(encoding="utf-8")
+    csp_block = re.search(r"const CSP = \[(.*?)\]\.join\('; '\);", server_js, re.S).group(1)
+    assert "; ".join(re.findall(r'"([^"]+)"', csp_block)) == CSP
+    headers_block = re.search(r"const SECURITY_HEADERS = \{(.*?)\};", server_js, re.S).group(1)
+    assert dict(re.findall(r"'([^']+)':\s*'([^']+)'", headers_block)) == SECURITY_HEADERS
+
+    _require("antibiotic_calc.html")
+    client = _client(tmp_path)
+    for path in ("/", "/personal", "/antibiotic_calc.html"):
+        response = client.get(path)
+        assert response.status_code == 200, path
+        assert response.headers.get("content-security-policy") == CSP, path
+        for name, value in SECURITY_HEADERS.items():
+            assert response.headers.get(name.lower()) == value, (path, name)
+    # non-HTML responses: hardening headers yes, CSP no
+    for path in ("/sw.js", "/v1/health", "/manifest.webmanifest"):
+        response = client.get(path)
+        assert "content-security-policy" not in response.headers, path
+        assert response.headers.get("x-content-type-options") == "nosniff", path
+
+
 def test_shell_assets_are_revalidated_not_pinned(tmp_path):
     _require("antibiotic_calc.html")
     client = _client(tmp_path)
