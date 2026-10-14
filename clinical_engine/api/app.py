@@ -41,6 +41,7 @@ PWA_ASSETS: dict[str, str] = {
     "sw.js": "text/javascript; charset=utf-8",
     "manifest.webmanifest": "application/manifest+json; charset=utf-8",
     "antibiotic_calc.html": "text/html; charset=utf-8",
+    "favicon.ico": "image/x-icon",  # audit 2026-10-14 H-3: was a 404 on every page load
 }
 
 
@@ -322,6 +323,10 @@ def create_app(ctx: "service.ApiContext | None" = None):
     @app.get("/manifest.webmanifest")
     def web_manifest() -> Any:
         return _pwa_asset("manifest.webmanifest")
+
+    @app.get("/favicon.ico")
+    def favicon() -> Any:
+        return _pwa_asset("favicon.ico")
 
     # Only icons/ and vendor/ are mounted, and only after every /v1, /v2 and
     # /personal route is registered, so no engine path can be shadowed by a

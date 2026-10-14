@@ -148,7 +148,18 @@ def test_asset_resolver_refuses_everything_outside_the_allow_list():
                  "package.json", "server.js", "sw.js.bak", "icons/icon-192.png",
                  "../outside.html", "nested/sw.js"):
         assert _asset(name) is None, name
-    assert set(PWA_ASSETS) == {"sw.js", "manifest.webmanifest", "antibiotic_calc.html"}
+    assert set(PWA_ASSETS) == {"sw.js", "manifest.webmanifest", "antibiotic_calc.html", "favicon.ico"}
+
+
+def test_favicon_is_served_with_an_icon_media_type_and_linked_from_the_shell(tmp_path):
+    """H-3 (audit 2026-10-14): the tab icon used to 404 on every page load."""
+    _require("favicon.ico")
+    response = _client(tmp_path).get("/favicon.ico")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("image/x-icon")
+    assert response.content[:4] == b"\x00\x00\x01\x00", "not an ICO container"
+    template = (APP_ROOT / "antibiotic_calc.html.template").read_text(encoding="utf-8")
+    assert '<link rel="icon" href="favicon.ico"' in template
 
 
 def test_asset_resolver_refuses_traversal_and_returns_the_allow_listed_files():

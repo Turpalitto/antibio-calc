@@ -7,6 +7,7 @@
 // SERVED FROM CACHE (offline copies, all precached at install):
 //   ./antibiotic_calc.html    the app shell + embedded clinical DB
 //   ./manifest.webmanifest    PWA manifest
+//   ./favicon.ico             tab icon (H-3)
 //   ./icons/icon-192.png      PWA icons
 //   ./icons/icon-512.png
 //
@@ -34,12 +35,13 @@
 //   copies; `test_build_reproducibility.py` fails when the value is stale, so a
 //   rebuilt artifact can never keep being served from an old cache.
 
-const CACHE_VERSION = 'build-ff813dcc5750';
+const CACHE_VERSION = 'build-d6e42e706f0c';
 const CACHE_NAME = `antibio-shell-${CACHE_VERSION}`;
 const SHELL_URL = './antibiotic_calc.html';
 const PRECACHE_URLS = [
   SHELL_URL,
   './manifest.webmanifest',
+  './favicon.ico',
   './icons/icon-192.png',
   './icons/icon-512.png',
   // self-hosted third-party assets (S-3): the shell is unusable offline without them
