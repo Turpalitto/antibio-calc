@@ -5,7 +5,6 @@ import logging
 from pathlib import Path
 from typing import Any
 
-import orjson
 from rich.progress import (
     BarColumn,
     MofNCompleteColumn,

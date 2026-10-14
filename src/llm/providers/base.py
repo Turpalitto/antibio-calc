@@ -1,6 +1,5 @@
 """Base abstract provider for all LLM backends."""
 
-import asyncio
 import random
 from abc import ABC, abstractmethod
 from typing import Any

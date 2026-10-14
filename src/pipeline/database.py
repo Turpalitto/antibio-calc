@@ -7,13 +7,11 @@ import math
 import os
 import sqlite3
 import tempfile
-import time
 from pathlib import Path
 from typing import Any, Optional
 
-import orjson
 
-from config import ABX_JSON, DB_PATH, DOWNLOADS_ABX, DOWNLOADS_ALL, DOWNLOADS_OTHER
+from config import ABX_JSON, DB_PATH, DOWNLOADS_ABX, DOWNLOADS_OTHER
 from downloader import sanitize_filename, unique_destination
 
 logger = logging.getLogger(__name__)

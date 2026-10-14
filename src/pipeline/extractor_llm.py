@@ -5,10 +5,9 @@ import logging
 import re
 from typing import Any
 
-import httpx
 
-from config import EXTRACTION_MODEL, EXTRACTION_VERSION, LLM_DELAY, VALIDATION_MODEL
-from llm.json_payload import LLMJSONParseError, parse_json_payload
+from config import EXTRACTION_MODEL, LLM_DELAY, VALIDATION_MODEL
+from llm.json_payload import parse_json_payload
 from llm.llm_provider import create_provider
 
 logger = logging.getLogger(__name__)
@@ -79,10 +78,8 @@ def _truncate_text(text: str, max_chars: int = MAX_TEXT_CHARS) -> str:
 def _build_extraction_prompt(item: dict, section_data: dict) -> str:
     clinrec_name = item.get("Name", "")
     code_version = item.get("CodeVersion", "")
-    pdf_filename = item.get("pdf_path", "").split("\\")[-1].split("/")[-1] if item.get("pdf_path") else ""
     mkb_codes = ", ".join(m.get("MkbCode", "") for m in (item.get("Mkbs") or []))
     relevant_text = _fence(_truncate_text(section_data.get("relevant_text", "")))
-    page_range = str(section_data.get("relevant_pages", []))
 
     return f"""{_UNTRUSTED_DATA_PREAMBLE}
 Клиническая рекомендация: {clinrec_name}

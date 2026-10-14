@@ -24,7 +24,7 @@ import hashlib
 import json
 import re
 import unicodedata
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 
 from medical_normalizer.dictionary import DRUG_SYNONYMS

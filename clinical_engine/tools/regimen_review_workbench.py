@@ -44,7 +44,7 @@ import argparse
 import csv
 import json
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 from clinical_engine.corpus.locator import CorpusLocator
@@ -364,7 +364,7 @@ def render_md(data: dict, ledger_status: dict) -> str:
         "",
         f"- Areas: {len(by_area)} · regimens in queue: **{len(rows)}** · "
         f"excluded false positives: **{len(data['excluded_rows'])}**",
-        f"- By confidence: " + ", ".join(f"{c}:{conf_counts[c]}" for c in sorted(conf_counts, reverse=True)),
+        "- By confidence: " + ", ".join(f"{c}:{conf_counts[c]}" for c in sorted(conf_counts, reverse=True)),
         f"- With anomalies: **{sum(1 for r in rows if r['anomalies'])}** · "
         f"clean-parse: **{sum(1 for r in rows if not r['anomalies'])}**",
         "",

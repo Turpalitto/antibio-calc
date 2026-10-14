@@ -1,7 +1,6 @@
 """MinerU fallback extractor. Uses official library."""
 
 from pathlib import Path
-from typing import List
 import subprocess
 import re
 import tempfile

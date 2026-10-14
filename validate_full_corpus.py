@@ -8,7 +8,7 @@ import argparse
 from pathlib import Path
 from clinical_engine.corpus.locator import resolve_corpus_dir
 from src.pipeline.extraction.router import ExtractorRouter
-from src.pipeline.extraction.metrics import get_metrics, reset_metrics
+from src.pipeline.extraction.metrics import reset_metrics
 
 def find_unique_pdfs(base_path: str) -> list:
     pdfs = {}

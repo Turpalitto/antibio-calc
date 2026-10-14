@@ -1,6 +1,5 @@
 from unittest.mock import patch
 
-import pytest
 
 from classifier import classify_one, compute_confidence_score
 

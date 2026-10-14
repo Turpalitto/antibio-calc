@@ -14,9 +14,8 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass, field, asdict
-from pathlib import Path
-from typing import Any, Optional
+from dataclasses import dataclass, asdict
+from typing import Optional
 
 EVIDENCE_ORIGINS = {
     "DATABASE_QUERY", "SOURCE_PDF_EXTRACT", "GENERATED_CALCULATION",

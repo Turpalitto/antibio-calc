@@ -14,7 +14,7 @@ from clinical_engine.review_workbench.models import (
     ClinicalReviewTask, PriorityBand, QAVerdict, ReviewDecision, ReviewRole, ReviewState,
     Severity, TargetType, governance_state,
 )
-from clinical_engine.review_workbench.reviewer_registry import ReviewerRegistrationError, ReviewerRegistry
+from clinical_engine.review_workbench.reviewer_registry import ReviewerRegistry
 from clinical_engine.review_workbench.service import InvalidTransition, ReviewerValidationError, ReviewService
 from clinical_engine.review_workbench.storage import ReviewStore
 

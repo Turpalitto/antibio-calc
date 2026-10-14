@@ -13,7 +13,6 @@ from hashlib import sha256 as _sha256
 from pathlib import Path
 from typing import Any
 
-import httpx
 import orjson
 from rich.console import Console
 from rich.logging import RichHandler
@@ -91,8 +90,6 @@ try:  # package import: `python -m src.pipeline.main`, pytest
         EXTRACTION_VERSION,
         KNOWLEDGE_BASE_JSON,
         LLM_CONCURRENCY,
-        LLM_DELAY,
-        LLM_PROVIDER_CHAIN,
         REVIEW_REQUIRED_JSON,
         VALIDATION_MODEL,
     )
@@ -117,7 +114,6 @@ try:  # package import: `python -m src.pipeline.main`, pytest
         mark_extraction_incomplete,
         mark_validation_done,
         needs_reprocessing,
-        save_progress,
     )
     from .reporter import generate_report
     from .section_detector import detect_sections
@@ -136,8 +132,6 @@ except ImportError:  # pragma: no cover - legacy `cd src/pipeline && python main
         EXTRACTION_VERSION,
         KNOWLEDGE_BASE_JSON,
         LLM_CONCURRENCY,
-        LLM_DELAY,
-        LLM_PROVIDER_CHAIN,
         REVIEW_REQUIRED_JSON,
         VALIDATION_MODEL,
     )
@@ -162,7 +156,6 @@ except ImportError:  # pragma: no cover - legacy `cd src/pipeline && python main
         mark_extraction_incomplete,
         mark_validation_done,
         needs_reprocessing,
-        save_progress,
     )
     from reporter import generate_report
     from section_detector import detect_sections
@@ -187,8 +180,6 @@ except ModuleNotFoundError as _exc:  # legacy flat import
         EXTRACTION_VERSION,
         KNOWLEDGE_BASE_JSON,
         LLM_CONCURRENCY,
-        LLM_DELAY,
-        LLM_PROVIDER_CHAIN,
         REVIEW_REQUIRED_JSON,
         VALIDATION_MODEL,
     )
@@ -213,7 +204,6 @@ except ModuleNotFoundError as _exc:  # legacy flat import
         mark_extraction_incomplete,
         mark_validation_done,
         needs_reprocessing,
-        save_progress,
     )
     from reporter import generate_report
 from section_detector import detect_sections
@@ -920,7 +910,7 @@ async def cmd_verify(args: argparse.Namespace) -> None:
     if corrupted:
         console.print(f"  [yellow]Corrupted/missing: {corrupted}[/]")
     else:
-        console.print(f"  [green]All PDFs present and non-empty[/]")
+        console.print("  [green]All PDFs present and non-empty[/]")
 
     report = generate_report(items)
     console.print("\n" + report)

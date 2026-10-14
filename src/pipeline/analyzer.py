@@ -2,15 +2,13 @@
 
 import logging
 import re
-from collections import Counter
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from config import (
     ADDITIONAL_TERMS,
     ANTIBIOTIC_KEYWORDS,
     ANTIBIOTIC_NAMES,
-    DOWNLOADS_ALL,
 )
 from extractor import extract_text
 

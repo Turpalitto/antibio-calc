@@ -20,13 +20,9 @@ def test_unified_document():
 # TODO: real tests with sample pdfs (good, scan, bad, empty, corrupt)
 # pytest src/tests/ -k extraction or similar
 
-import hashlib
-import pytest
 from src.pipeline.extraction.cache import get_cache, _sha256
 from src.pipeline.extraction.metrics import get_metrics, reset_metrics
-from src.pipeline.extraction.router import ExtractorRouter
-from src.pipeline.extraction.base import Page, Document
-from pathlib import Path
+from src.pipeline.extraction.base import Page
 import fitz
 import tempfile
 
@@ -95,7 +91,6 @@ def test_router_multi_fallback_config():
 
 # P4.3 semantic tests - real execution
 from src.pipeline.extraction.semantic import SemanticProcessor, add_semantic_to_document
-from src.pipeline.extraction.base import Document, Page
 
 
 def test_semantic_processor_entities():

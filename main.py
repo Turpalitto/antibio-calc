@@ -97,7 +97,6 @@ def _load_manifest():
 def cmd_doctor():
     overall_ok = True
     t0 = time.monotonic()
-    import orjson
 
     clinrecs = _load_clinrecs()
     dry = _load_dry()
@@ -448,7 +447,6 @@ def cmd_doctor():
 def cmd_sync():
     """Fix misplaced PDFs: move to correct dir per dry_run_manifest, regenerate manifest."""
     import orjson
-    from datetime import datetime, timezone
 
     print()
     print("=" * 60)

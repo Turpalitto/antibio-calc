@@ -4,7 +4,6 @@ Runs on real data when available (normalized_regimens.sqlite + kb_p44.db); the
 deterministic/unit tests run everywhere with synthetic fixtures.
 """
 import os
-import sqlite3
 import tempfile
 
 import pytest

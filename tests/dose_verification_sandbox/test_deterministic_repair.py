@@ -3,7 +3,6 @@
 Every test asserts fail-closed behavior. None of these makes any regimen
 calculation-eligible (TYPES_MEETING_PRECISION_THRESHOLD stays empty).
 """
-import pytest
 
 from dose_verification_sandbox.semantics_parser import classify_regimen
 from dose_verification_sandbox.validation_status import validate, TYPES_MEETING_PRECISION_THRESHOLD

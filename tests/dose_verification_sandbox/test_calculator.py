@@ -3,7 +3,7 @@
 real database.")."""
 import pytest
 
-from dose_verification_sandbox.models import DoseExpression, PARSED, UNPARSED, BLOCKED, OK
+from dose_verification_sandbox.models import DoseExpression, PARSED, BLOCKED, OK
 from dose_verification_sandbox.parser import parse_dose_expression
 from dose_verification_sandbox.calculator import calculate, apply_max_dose, convert_to_volume
 

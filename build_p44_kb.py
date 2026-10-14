@@ -123,7 +123,7 @@ def main(
     processed = set(state.get("processed", []))
     remaining = [p for p in pdfs if p.name not in processed]
 
-    print(f"P4.4 KB Builder")
+    print("P4.4 KB Builder")
     print(f"  DB: {db_path}")
     print(f"  Total contributing: {len(pdfs)}")
     print(f"  Already processed: {len(processed)}")

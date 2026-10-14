@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from .models import (
     DoseExpression, DoseCalculationTrace, DoseVerificationResult,
-    PARSED, UNPARSED, BLOCKED, OK, PASS, FAIL, NOT_AVAILABLE, NEEDS_REVIEW,
+    PARSED, UNPARSED, BLOCKED, PASS, FAIL, NOT_AVAILABLE, NEEDS_REVIEW,
 )
 
 

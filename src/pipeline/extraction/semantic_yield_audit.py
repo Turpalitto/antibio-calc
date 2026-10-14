@@ -39,7 +39,7 @@ import argparse
 import json
 from collections import Counter
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 # Reasons — ranked for the histogram legend (order is presentation only; each candidate still
 # receives exactly one reason from the classifier below).

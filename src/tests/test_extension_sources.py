@@ -4,7 +4,6 @@ These tests assert the classification is a *source prover*: it never enables
 calculation, never attests clinical approval, and classifies via the
 regimen_type ratio (not keywords)."""
 
-import json
 from pathlib import Path
 
 from src.pipeline.extraction import extension_sources as ec

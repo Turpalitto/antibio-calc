@@ -145,7 +145,6 @@ class _FakeEngine:
     def recommend(self, query): return _FakeSet(self._accepted)
 
 
-import dataclasses as _dc  # noqa: E402
 import clinical_engine.curated.knowledge as _k  # noqa: E402
 
 

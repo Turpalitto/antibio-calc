@@ -105,8 +105,6 @@ def detect_sections(pdf_path: Path, clinrec_id: int = 0) -> dict:
             if _has_dosing(pages[p + 1]):
                 relevant_set.add(p + 1)
 
-    dosing_relevant = sorted(p for p in relevant_set if p in dosing_pages)
-    other_relevant = sorted(p for p in relevant_set if p not in dosing_pages)
     relevant_pages = sorted(
         relevant_set,
         key=lambda p: (-_count_abx_names(pages[p]), p not in dosing_pages, p),

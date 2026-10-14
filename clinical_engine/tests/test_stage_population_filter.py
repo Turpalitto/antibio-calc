@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import dataclasses
 
-from clinical_engine.models import DecisionCode, Patient, PatientQuery, Preferences, Recommendation
+from clinical_engine.models import DecisionCode, Patient, PatientQuery, Preferences
 from clinical_engine.pipeline import PipelineState, StageContext
 from clinical_engine.stages.population_filter import PopulationFilter
 from clinical_engine.tests.conftest import make_candidate, make_recommendation

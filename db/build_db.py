@@ -115,8 +115,10 @@ def _run_source_gate(
 def _run_validate(output_path: Path, node_exe: str | None) -> None:
     node = node_exe or "node"
     validator = PROJECT_ROOT / "db" / "validate_db.js"
+    if not validator.is_file():
+        raise RuntimeError("validator not found: %s" % validator)
     result = subprocess.run(
-        [node, "db/validate_db.js"],
+        [node, str(validator)],
         cwd=PROJECT_ROOT,
         capture_output=True,
         text=True,

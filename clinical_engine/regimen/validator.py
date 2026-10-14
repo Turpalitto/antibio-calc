@@ -6,7 +6,7 @@ Deterministic. No side effects. Returns a GateReport.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from clinical_engine.regimen.clinical_regimen import UNKNOWN, ClinicalRegimen
 

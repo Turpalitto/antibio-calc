@@ -17,7 +17,7 @@ import json
 import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable, List, Optional
+from typing import List
 
 ALLOWED_STATUSES = {
     "draft", "extracted", "validated", "reviewed", "published",
