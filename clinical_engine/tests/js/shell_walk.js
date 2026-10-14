@@ -40,6 +40,16 @@ const visible = (el) => !!el && !el.classList.contains('hidden') && w.getCompute
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
 const type = (el, value) => { el.value = value; fire(el, 'input'); fire(el, 'change'); };
 const BAD = /\bNaN\b|Infinity|undefined|\[object |null мг|null ЕД/;
+// «1000 мг» / «1.5 млн ЕД» / «625 тыс» / «1 005 000» (formatUnits for ЕД) → a number
+const num = (shown) => {
+  const mul = /млн/.test(shown) ? 1e6 : (/тыс/.test(shown) ? 1e3 : 1);
+  return parseFloat(String(shown).replace(/[\s\u00a0]/g, '').replace(/мг|ЕД|млн|тыс/g, '').replace(',', '.')) * mul;
+};
+// the dose token of an export line: «по 175 тыс ЕД», «по 22.5 мл (1125 мг)», «по 500 мг»
+const exportDose = (line, mlWord) => {
+  const m = line.match(new RegExp('по (?:\\d+(?:[.,]\\d+)? мл' + (mlWord ? '(?: ' + mlWord + ')?' : '') + ' \\()?(\\d+(?:[.,]\\d+)?(?: (?:млн|тыс))?) (мг|ЕД)'));
+  return m ? { value: num(m[1] + (m[2] === 'ЕД' ? ' ЕД' : ' мг')), unit: m[2] } : null;
+};
 
 // Override for ad-hoc sweeps: SHELL_WALK_PROFILES='[{"name":"child_14.3","age":"3","unit":"years","weight":"14.3"}]'
 const PROFILES = process.env.SHELL_WALK_PROFILES ? JSON.parse(process.env.SHELL_WALK_PROFILES) : [
@@ -119,11 +129,6 @@ setTimeout(() => {
                   else if (reg.dose_mg_day_fixed != null) daily = reg.dose_mg_day_fixed;
                   if (daily != null && reg.max_daily_mg != null && daily > reg.max_daily_mg) daily = reg.max_daily_mg;
                   const expectSingle = daily != null ? daily / freq : null;
-                  // «1000 мг» / «1.5 млн» / «625 тыс» / «1 005 000» (formatUnits for ЕД) → a number
-                  const num = (shown) => {
-                    const mul = /млн/.test(shown) ? 1e6 : (/тыс/.test(shown) ? 1e3 : 1);
-                    return parseFloat(shown.replace(/[\s\u00a0]/g, '').replace(/мг|ЕД|млн|тыс/g, '').replace(',', '.')) * mul;
-                  };
                   const po = visible($('res-po'));
                   const shown = po ? txt($('po-mg')) : (visible($('res-inj')) ? txt($('inj-mg')) : '');
                   const shownDay = po ? txt($('po-day')) : (visible($('res-inj')) ? txt($('inj-day')) : '');
@@ -153,6 +158,27 @@ setTimeout(() => {
                   } else if (expectSingle != null && !shown.startsWith('—')) {
                     out.findings.push({ kind: 'dose_not_shown', where, sample: `expected ${Math.round(expectSingle)}, screen «${shown}»` });
                   }
+                  // combination partners: each card «По N мг k р/д» = component_regimens × weight
+                  const partners = w.eval('getDrugRefs(activeDrug).slice(1)');
+                  if (partners.length && visible($('combo-block'))) {
+                    const cards = [...d.querySelectorAll('#combo-block .premium-card')];
+                    partners.forEach((key, pi) => {
+                      const pr = (reg.component_regimens || {})[key];
+                      const card = cards[pi];
+                      if (!pr || !card) { out.findings.push({ kind: 'combo_partner_missing', where, sample: `${key}: regimen ${!!pr}, card ${!!card}` }); return; }
+                      const pf = pr.freq_per_day || 1;
+                      let pd = null;
+                      if (pr.single_dose_mg != null) pd = pr.single_dose_mg * pf;
+                      else if (pr.dose_mg_kg_per_dose != null) pd = kg * pr.dose_mg_kg_per_dose * pf;
+                      else if (pr.dose_mg_kg_day != null) pd = kg * pr.dose_mg_kg_day;
+                      else if (pr.dose_mg_day_fixed != null) pd = pr.dose_mg_day_fixed;
+                      if (pd != null && pr.max_daily_mg != null && pd > pr.max_daily_mg) pd = pr.max_daily_mg;
+                      const cardDose = txt(card).match(/По (\d+(?:[.,]\d+)?(?: (?:млн|тыс))? (?:мг|ЕД))/);
+                      if (pd == null || !cardDose) return;
+                      if (Math.abs(num(cardDose[1]) - pd / pf) > 1) out.findings.push({ kind: 'combo_partner_arithmetic', where, sample: `${key}: card «${cardDose[1]}» vs ${JSON.stringify(pr)} × ${kg} kg → ${Math.round(pd / pf)}` });
+                      else stats.partnerOracle = (stats.partnerOracle || 0) + 1;
+                    });
+                  }
                 }
                 // the two physician-facing exports must be as clean as the screen
                 w.__copied = '';
@@ -164,14 +190,17 @@ setTimeout(() => {
                   // oracle: the single dose on screen (po-mg / inj-mg, plain mg only)
                   // must be the one the MIS line «Схема приёма: по N мг …» carries
                   const screenEl = visible($('res-po')) ? $('po-mg') : (visible($('res-inj')) ? $('inj-mg') : null);
-                  const screenUnit = visible($('res-po')) ? '' : txt($('inj-unit'));
+                  const screenUnit = visible($('res-po')) ? (txt($('po-mg')).endsWith('ЕД') ? 'ЕД' : '') : txt($('inj-unit'));
                   const screenMg = screenEl ? txt(screenEl).replace(/\s*мг$/, '') : '';
+                  const screenVal = screenEl ? num(txt(screenEl)) : NaN;
                   const misLine = (mis.split('\n').find((l) => l.startsWith('Схема приёма:')) || '');
-                  const misMg = misLine.match(/по (\d+(?:[.,]\d+)? мл \()?(\d+) мг/);
-                  if (/^\d+$/.test(screenMg) && screenUnit !== 'ЕД' && misMg && misMg[2] !== screenMg && !/топик|местно/.test(misLine)) {
-                    out.findings.push({ kind: 'mis_dose_differs_from_screen', where, sample: `screen ${screenMg} mg vs MIS «${misLine.slice(0, 80)}»` });
+                  const misDose = exportDose(misLine, null);
+                  if (Number.isFinite(screenVal) && misDose && !/топик|местно/.test(misLine)) {
+                    if (misDose.unit !== (screenUnit === 'ЕД' ? 'ЕД' : 'мг') || Math.abs(misDose.value - screenVal) > 1) {
+                      out.findings.push({ kind: 'mis_dose_differs_from_screen', where, sample: `screen ${txt(screenEl)} ${screenUnit} vs MIS «${misLine.slice(0, 80)}»` });
+                    }
+                    stats.doseOracle = (stats.doseOracle || 0) + 1;
                   }
-                  stats.doseOracle = (stats.doseOracle || 0) + (misMg && /^\d+$/.test(screenMg) ? 1 : 0);
                   // route oracle: the route the physician picked on screen must be the
                   // one every export names (fosfomycin granules were exported «в/в»)
                   const group = w.eval('currentRouteGroup');
@@ -190,12 +219,14 @@ setTimeout(() => {
                     if (wrong.length) out.findings.push({ kind: 'export_route_contradicts_screen', where, sample: `${group} vs ${wrong.map((x) => x[0]).join(',')}: «${misLine.slice(0, 60)}» / «${rpSigna.slice(0, 60)}»` });
                     stats.routeOracle = (stats.routeOracle || 0) + 1;
                   }
-                  // Rp dose oracle (plain mg only, same rule as the MIS oracle)
-                  const rpMg = rpSigna.match(/по (\d+(?:[.,]\d+)? мл суспензии \()?(\d+) мг/);
-                  if (/^\d+$/.test(screenMg) && screenUnit !== 'ЕД' && rpMg && rpMg[2] !== screenMg && group !== 'topical') {
-                    out.findings.push({ kind: 'rp_dose_differs_from_screen', where, sample: `screen ${screenMg} mg vs Rp «${rpSigna.slice(0, 80)}»` });
+                  // Rp dose oracle (mg and ЕД, same rule as the MIS oracle)
+                  const rpDose = exportDose(rpSigna, 'суспензии');
+                  if (Number.isFinite(screenVal) && rpDose && group !== 'topical') {
+                    if (rpDose.unit !== (screenUnit === 'ЕД' ? 'ЕД' : 'мг') || Math.abs(rpDose.value - screenVal) > 1) {
+                      out.findings.push({ kind: 'rp_dose_differs_from_screen', where, sample: `screen ${txt(screenEl)} ${screenUnit} vs Rp «${rpSigna.slice(0, 80)}»` });
+                    }
+                    stats.rpDoseOracle = (stats.rpDoseOracle || 0) + 1;
                   }
-                  stats.rpDoseOracle = (stats.rpDoseOracle || 0) + (rpMg && /^\d+$/.test(screenMg) ? 1 : 0);
                   // course units: MIS «суммарно N таб.», Rp «D.t.d. N. N» and the printed
                   // form «D.t.d. N N» must agree (they used to be packs / per-dose units)
                   const misTotal = mis.match(/суммарно (\d+) таб/);
