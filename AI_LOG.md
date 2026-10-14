@@ -24,6 +24,7 @@
 - Verification: pytest **2671 passed / 30 skipped**, `tests/` 404/3, `src/tests`
   501/13, `ruff check .` clean, `python -m src.pipeline.main --help` OK, full
   `db/build_db.py` → DB byte-identical, `build_html.py --check` fresh.
+  **CI ✅ run 38570533400** — pytest + validate (incl. step 10 changelog gate), ruff, secret scan.
   Lesson: `db/build_db.py --skip-source-gate` rewrites `db/antibio_db.json`
   without gate statuses — never use it for smoke tests (restored by a full run).
 

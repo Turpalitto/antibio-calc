@@ -9,7 +9,7 @@
 - `db/build_db.py` runs the validator by absolute path. DB/html/sw unchanged
   (db `56727a27f050…`, html `5cb3e30f7758…`, sw `build-d6e42e706f0c`).
 - Tests: **2671 passed / 30 skipped**; `tests/` 404; `src/tests` 501/13; `build_html.py --check` fresh.
-  CI: see AI_LOG round-3 entry for the run id.
+  **CI ✅ run 38570533400** (3 jobs; new changelog-gate step ran: both files in the PR diff → ok).
 - Remaining engineering backlog: C-4, H-1, G-1, F-2, F-3, E-2, I-4; owner decisions unchanged.
 
 ## 2026-10-14 (round 2): CI pinned + lint job + freshness gate; DB changelog; favicon; pipeline entry points
