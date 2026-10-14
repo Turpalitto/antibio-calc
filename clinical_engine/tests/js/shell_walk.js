@@ -110,6 +110,19 @@ setTimeout(() => {
                 const mis = w.__copied || '';
                 if (!mis) out.findings.push({ kind: 'mis_empty', where, sample: txt($('toast')) });
                 else if (BAD.test(mis)) out.findings.push({ kind: 'mis_bad_token', where, sample: mis.match(/.{0,40}(NaN|Infinity|undefined|\[object |null мг|null ЕД).{0,40}/)[0] });
+                else {
+                  // oracle: the single dose on screen (po-mg / inj-mg, plain mg only)
+                  // must be the one the MIS line «Схема приёма: по N мг …» carries
+                  const screenEl = visible($('res-po')) ? $('po-mg') : (visible($('res-inj')) ? $('inj-mg') : null);
+                  const screenUnit = visible($('res-po')) ? '' : txt($('inj-unit'));
+                  const screenMg = screenEl ? txt(screenEl).replace(/\s*мг$/, '') : '';
+                  const misLine = (mis.split('\n').find((l) => l.startsWith('Схема приёма:')) || '');
+                  const misMg = misLine.match(/по (\d+(?:[.,]\d+)? мл \()?(\d+) мг/);
+                  if (/^\d+$/.test(screenMg) && screenUnit !== 'ЕД' && misMg && misMg[2] !== screenMg && !/топик|местно/.test(misLine)) {
+                    out.findings.push({ kind: 'mis_dose_differs_from_screen', where, sample: `screen ${screenMg} mg vs MIS «${misLine.slice(0, 80)}»` });
+                  }
+                  stats.doseOracle = (stats.doseOracle || 0) + (misMg && /^\d+$/.test(screenMg) ? 1 : 0);
+                }
                 w.fillPrescriptionForm();
                 const rx = txt($('prescription-form'));
                 if (BAD.test(rx)) out.findings.push({ kind: 'rx_bad_token', where, sample: rx.match(/.{0,40}(NaN|Infinity|undefined|\[object |null мг|null ЕД).{0,40}/)[0] });
