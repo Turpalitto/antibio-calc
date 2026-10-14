@@ -15,7 +15,7 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.21            # keep in step with uv.lock (`development` extra)
     hooks:
-      - id: ruff-check       # rule set from pyproject [tool.ruff.lint]: E9, F63, F7, F82
+      - id: ruff-check       # rule set from pyproject [tool.ruff.lint]: E9 + full pyflakes F (round 3)
 
   - repo: local
     hooks:

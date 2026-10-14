@@ -1,0 +1,71 @@
+# Dependabot — version updates (2026-10-14, post-audit hygiene).
+#
+# Security updates are always on for a public repository; this file only adds
+# scheduled, grouped *version* bumps so the pins do not rot silently. Every PR
+# it opens runs the full CI (pytest, validate, build freshness, ruff, audit).
+#
+# What it deliberately does NOT touch (owner decisions, NEXT_TASK.md C-4):
+#   * the ML extraction stack (torch / torchvision / transformers / docling /
+#     mineru / doclayout-yolo …) — pinned to the owner's Windows + CUDA machine;
+#     torch >= 2.6 changes `torch.load` to `weights_only=True`;
+#   * Tailwind 4.x — vendor/app.css is a Tailwind 3.4 build (db/tailwind.config.cjs).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci(deps)"
+
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      python-non-ml:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: torch
+      - dependency-name: torchvision
+      - dependency-name: torchaudio
+      - dependency-name: transformers
+      - dependency-name: docling
+      - dependency-name: docling-core
+      - dependency-name: docling-ibm-models
+      - dependency-name: docling-parse
+      - dependency-name: mineru
+      - dependency-name: magic-pdf
+      - dependency-name: doclayout-yolo
+      - dependency-name: ultralytics
+      - dependency-name: table-transformer
+      - dependency-name: accelerate
+      - dependency-name: timm
+      - dependency-name: onnxruntime
+    commit-message:
+      prefix: "deps(py)"
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    ignore:
+      - dependency-name: tailwindcss
+        versions: [">=4"]
+    commit-message:
+      prefix: "deps(npm)"
+
+  - package-ecosystem: npm
+    directory: /audit-site
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    groups:
+      audit-site:
+        patterns: ["*"]
+    commit-message:
+      prefix: "deps(audit-site)"

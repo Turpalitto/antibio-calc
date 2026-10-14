@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+# A newer push to the same branch / PR supersedes the running checks.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 # Audit 2026-10-14 (A-4): actions pinned to their Node 24 releases (Node 20 is
 # removed from hosted runners) and the runner image pinned to ubuntu-24.04 —
 # `ubuntu-latest` migrates to Ubuntu 26.04 from 2026-10-19 and the PDF fixture
