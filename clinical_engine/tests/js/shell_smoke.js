@@ -229,6 +229,24 @@ async function run() {
     w.fillPrescriptionForm();
     out.allergy.rxSafetyAfterReset = { hidden: $('rx-safety-line').hidden, text: txt($('rx-safety-line')) };
     out.allergy.toast = txt($('toast'));
+    // changing the allergy status must keep the physician's place: the NON-first drug,
+    // its non-default form chip and regimen (it used to jump to the first card)
+    {
+      const cards = [...d.querySelectorAll('#drug-list .drug-card')];
+      const second = cards.find((c) => !c.classList.contains('active') && !/Амоксициллин/i.test(c.textContent)) || cards[cards.length - 1];
+      second.click();
+      const chips = [...d.querySelectorAll('#form-grid button[data-form-idx]')];
+      if (chips.length > 1) chips[chips.length - 1].click();
+      const state = () => w.eval('[getDrugRefs(activeDrug).join("+"), activeLine.line_number, currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
+      const keep = { before: state(), firstCard: txt(cards[0]).slice(0, 30), chips: chips.length };
+      type($('patient-allergy'), 'penicillin_severe');
+      keep.afterSevere = state();
+      keep.flaggedCards = [...d.querySelectorAll('#drug-list .drug-card')].filter((c) => /border-red-300/.test(c.className)).map((c) => txt(c).slice(0, 20));
+      keep.activeCard = txt(d.querySelector('#drug-list .drug-card.active')).slice(0, 30);
+      type($('patient-allergy'), 'none');
+      keep.afterNone = state();
+      out.allergy.keepSelection = keep;
+    }
     type($('weight'), '');
     type($('patient-age'), '');
     // the explicit age is sticky (clearing it keeps «дети»): go back to adults via the chip
@@ -376,8 +394,15 @@ async function run() {
       const other = [...d.querySelectorAll('#form-grid button')].find((c) => /^500\+125/.test(txt(c)));
       if (other) other.click();
       const before = w.eval('[activeDisease.id, activeScenario.id, activeLine.line_number, activeDrug.drug_ref, currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
-      out.historyRestore = { before, doseBefore: txt($('po-mg')) + ' ' + txt($('po-tabs')) };
+      // the rest of the patient context (GFR / pregnancy / allergy) is saved with the entry
+      type($('patient-gfr'), '25');
+      type($('patient-pregnancy'), 'no');
+      type($('patient-allergy'), 'cephalosporin');
+      out.historyRestore = { before, doseBefore: txt($('po-mg')) + ' ' + txt($('po-tabs')), flagsBefore: txt($('patient-safety-banners')) };
       w.saveToHistory();
+      type($('patient-gfr'), '');
+      type($('patient-pregnancy'), 'unknown');
+      type($('patient-allergy'), 'none');
       type($('patient-age'), '6');
       type($('weight'), '20');
       clickDisease('cap_child');
@@ -391,6 +416,12 @@ async function run() {
       out.historyRestore.age = $('patient-age').value + '|' + w.eval('activeAge') + '|' + $('weight').value;
       out.historyRestore.drawerOpen = $('history-drawer').classList.contains('open');
       out.historyRestore.toast = txt($('toast'));
+      out.historyRestore.context = [$('patient-gfr').value, $('patient-pregnancy').value, $('patient-allergy').value].join('|');
+      out.historyRestore.flagsAfter = txt($('patient-safety-banners'));
+      out.historyRestore.allergyBadge = visible($('allergy-badge'));
+      type($('patient-gfr'), '');
+      type($('patient-pregnancy'), 'unknown');
+      type($('patient-allergy'), 'none');
       clickDisease('chlamydia_urogenital');
       clickDrug(/Доксициклин/i);
       type($('weight'), '70');

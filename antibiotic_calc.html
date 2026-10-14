@@ -2358,6 +2358,21 @@ function checkAllergyStatus(drugKey, allergy){
   return { status: 'safe', label: '', alert: null };
 }
 
+// Re-render the drug cards (their allergy marks changed) without losing the
+// physician's place: the same line / drug / route / form / regimen stay selected.
+// renderLines() with no preference falls back to the FIRST card — marking a
+// penicillin allergy after choosing levofloxacin used to switch the whole
+// calculation to amoxiclav (the drug just declared contraindicated).
+function rerenderLinesKeepingSelection(){
+  if(!activeScenario) return;
+  const lineIdx = activeLine ? (activeScenario.lines || []).indexOf(activeLine) : -1;
+  const drugIdx = (lineIdx >= 0 && activeDrug) ? (activeScenario.lines[lineIdx].drugs || []).indexOf(activeDrug) : -1;
+  if(lineIdx < 0 || drugIdx < 0){ renderLines(); return; }
+  const formIdx = activeFormIdx, route = currentRouteGroup, regimenIdx = activeRegimenIdx;
+  renderLines(lineIdx, drugIdx, route, regimenIdx);
+  const chip = Number.isInteger(formIdx) ? document.querySelector('#form-grid button[data-form-idx="'+formIdx+'"]') : null;
+  if(chip && !chip.classList.contains('active')) chip.click();
+}
 function onAllergyChange(){
   const allergy = $('patient-allergy').value;
   const badge = $('allergy-badge');
@@ -2365,9 +2380,7 @@ function onAllergyChange(){
     badge.classList.toggle('hidden', allergy === 'none');
     badge.textContent = allergy === 'none' ? '' : 'активен';
   }
-  if(activeScenario){
-    renderLines();
-  }
+  rerenderLinesKeepingSelection();
   updateAllergyBanner();
 }
 
@@ -4224,7 +4237,12 @@ function saveToHistory(){
       formIdx: activeFormIdx,
       regimenIdx: activeRegimenIdx,
       ageValue: $('patient-age') ? $('patient-age').value : '',
-      ageUnit: $('patient-age-unit') ? $('patient-age-unit').value : 'years'
+      ageUnit: $('patient-age-unit') ? $('patient-age-unit').value : 'years',
+      // the rest of the patient context the flags were computed from — restored
+      // with the regimen so the re-opened calculation carries the same warnings
+      gfr: $('patient-gfr') ? $('patient-gfr').value : '',
+      pregnancy: $('patient-pregnancy') ? $('patient-pregnancy').value : 'unknown',
+      allergy: $('patient-allergy') ? $('patient-allergy').value : 'none'
     }
   };
   const hist = readHistoryEntries();
@@ -4311,6 +4329,10 @@ function restoreHistoryEntry(e){
   if($('patient-age-unit') && ref.ageUnit) $('patient-age-unit').value = ref.ageUnit;
   if($('patient-age')){ $('patient-age').value = ref.ageValue || ''; onPatientAgeChange(); }
   if(e.weight > 0){ $('weight').value = e.weight; onWeightChange(); }
+  // entries saved before the context snapshot existed keep the current inputs
+  if('gfr' in ref && $('patient-gfr')) $('patient-gfr').value = ref.gfr || '';
+  if('pregnancy' in ref && $('patient-pregnancy')) $('patient-pregnancy').value = ref.pregnancy || 'unknown';
+  if('allergy' in ref && $('patient-allergy')){ $('patient-allergy').value = ref.allergy || 'none'; onAllergyChange(); }
   if(!ref.ageValue && e.ageGroup && activeAge !== e.ageGroup){
     const chip = document.querySelector('#age-group button[data-age="'+e.ageGroup+'"]');
     if(chip) chip.click();

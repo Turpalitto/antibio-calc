@@ -159,6 +159,17 @@ def test_default_form_is_the_strength_that_fits_the_single_dose(shell: dict) -> 
     assert a["perDose"] == "(1 таб 875+125 мг)", "combination strength: one tablet named by the product, not «7 таб 125 мг»"
 
 
+def test_changing_the_allergy_status_keeps_the_selected_drug_form_and_regimen(shell: dict) -> None:
+    """renderLines() with no preference fell back to the FIRST card: marking a
+    penicillin allergy after choosing a non-first drug switched the calculation to
+    the first drug (amoxicillin — the one just declared contraindicated) and reset
+    the form chip. The place must survive the re-render in both directions."""
+    keep = shell["allergy"]["keepSelection"]
+    assert keep["before"] == keep["afterSevere"] == keep["afterNone"], keep
+    assert keep["before"].startswith("cefuroxime|") and keep["before"].split("|")[3] == "1", "non-first drug, non-default form chip"
+    assert keep["activeCard"].startswith("Цефуроксим") and any(f.startswith("Амоксициллин") for f in keep["flaggedCards"]), keep
+
+
 def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:
     h = shell["historyRestore"]
     assert h["button"] and h["button"].startswith("Открыть расчёт / Амоксициллин + Клавулановая кислота, Внебольничная пневмония у взрослых"), h
@@ -167,6 +178,11 @@ def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(sh
     assert h["doseAfter"] == h["doseBefore"] and h["doseAfter"].startswith("875 мг"), h
     assert h["age"].endswith("|adult|70"), "patient context (age group, weight) restored with the entry"
     assert h["drawerOpen"] is False and h["toast"] == "Расчёт из истории открыт"
+    # GFR / pregnancy / allergy are part of the saved context: the re-opened calculation
+    # shows the same renal flag it was saved with, not the next patient's inputs
+    assert h["context"] == "25|no|cephalosporin", h["context"]
+    assert "СКФ 25 мл/мин" in h["flagsBefore"] and h["flagsAfter"] == h["flagsBefore"], (h["flagsBefore"], h["flagsAfter"])
+    assert h["allergyBadge"] is True
     hc = shell["hashchange"]
     assert hc["before"] != "cap_adult" and hc["after"] == "cap_adult" and hc["scenario"] == "cap_adult_out_no_risk", hc
 
