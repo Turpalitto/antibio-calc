@@ -1,8 +1,9 @@
 """Exhaustive DOM walk of the built shell (``tests/js/shell_walk.js``).
 
 Every computable nosology → every age-matching scenario → every drug card →
-every route tab → every form chip, for four patient profiles (adult, child,
-infant, neonate). For each state the visible result, the MIS text and the
+every route tab → every form chip, for five patient profiles (adult, child,
+infant, neonate, and an adult with GFR 25 + pregnancy + anaphylactic penicillin
+allergy). For each state the visible result, the MIS text and the
 prescription form must be free of NaN / Infinity / undefined / "[object" and
 must either show a dose or an explicit block reason. Oracles per computed
 state: regimen age group, dose arithmetic re-derived from the DB regimen ×
@@ -72,6 +73,11 @@ def test_walk_covers_every_computable_nosology_for_every_profile(walk: dict) -> 
     # neonates are mostly blocked (no neonatal scheme) — that is the safety design, not a gap
     neonate = walk["profiles"]["neonate_10d_3kg"]
     assert neonate["blocked"] > neonate["computed"], neonate
+    # patient-context profile (GFR 25, pregnancy, anaphylactic penicillin allergy): almost every
+    # state carries flags and the flags-parity oracle (MIS = Rp = printed form) ran on all of them
+    ctx = walk["profiles"]["adult_60_gfr25_pregnant_pen_allergy"]
+    assert ctx["computed"] == adult["computed"] and ctx["blocked"] == adult["blocked"], ctx
+    assert ctx["flagsOracle"] >= ctx["computed"] - 10 and ctx["dangerFlags"] >= 350, ctx
 
 
 def test_no_state_shows_nan_undefined_or_an_empty_result(walk: dict) -> None:

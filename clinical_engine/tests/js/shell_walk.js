@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /* Exhaustive DOM walk of the built shell: every computable nosology → every
  * age-matching scenario → every drug card → every route tab → every form chip,
- * for a few patient profiles. Reports anything a physician must never see
- * (NaN / Infinity / undefined / "[object" in the visible result, console
- * errors, an empty result with no block reason).
+ * for a few patient profiles (incl. one with GFR 25 + pregnancy + penicillin
+ * allergy). Reports anything a physician must never see (NaN / Infinity /
+ * undefined / "[object" in the visible result, console errors, an empty result
+ * with no block reason) and runs the per-state oracles, incl. flags parity
+ * (MIS text = Rp text = printed form) for the patient-context warnings.
  *
  * usage: node shell_walk.js <built html> <app.css>  → JSON on stdout
  */
@@ -57,6 +59,9 @@ const PROFILES = process.env.SHELL_WALK_PROFILES ? JSON.parse(process.env.SHELL_
   { name: 'child_7y_25kg', age: '7', unit: 'years', weight: '25' },
   { name: 'infant_6m_7kg', age: '6', unit: 'months', weight: '7' },
   { name: 'neonate_10d_3kg', age: '10', unit: 'days', weight: '3.2' },
+  // full patient context: renal + pregnancy + allergy flags on every state, so the
+  // flags-parity oracle (screen = MIS = Rp = printed form) has something to compare
+  { name: 'adult_60_gfr25_pregnant_pen_allergy', age: '29', unit: 'years', weight: '60', gfr: '25', pregnancy: 'yes', allergy: 'penicillin_severe' },
 ];
 
 function resultSnapshot() {
@@ -77,6 +82,9 @@ setTimeout(() => {
     type($('patient-age-unit'), profile.unit);
     type($('patient-age'), profile.age);
     type($('weight'), profile.weight);
+    type($('patient-gfr'), profile.gfr || '');
+    type($('patient-pregnancy'), profile.pregnancy || 'unknown');
+    type($('patient-allergy'), profile.allergy || 'none');
     for (const rec of computable) {
       w.selectDisease(rec);
       stats.diseases++;
@@ -285,6 +293,25 @@ setTimeout(() => {
                   const misWarn = /Предупреждение: разовый объём/.test(w.__copied || '');
                   if (screenWarn !== misWarn) out.findings.push({ kind: 'volume_warning_parity', where, sample: `screen ${screenWarn} vs MIS ${misWarn}` });
                   if (screenWarn) stats.volumeWarnOracle = (stats.volumeWarnOracle || 0) + 1;
+                  // flags parity: the allergy / pregnancy / renal / age / weight / GFR warnings
+                  // must be the same set in the MIS text, the Rp text and the printed form, and
+                  // every «danger» banner on screen must be a «ВНИМАНИЕ» line in the exports
+                  // (the large-volume caution above is prescriber advice in the MIS text only — not a patient flag)
+                  const flagLine = (l) => l.replace(/^!\s*/, '').match(/^(ВНИМАНИЕ|Предупреждение): (?!разовый объём)(.*)$/);
+                  const flagsOf = (text) => text.split('\n').map((l) => l.trim()).map(flagLine).filter(Boolean).map((m) => m[1] + ': ' + m[2].replace(/\s+/g, ' ').trim()).sort();
+                  const misFlags = flagsOf(w.__copied || '');
+                  const rpFlags = flagsOf(w.__rp || '');
+                  const rxSafety = $('rx-safety-line');
+                  // (white-space: pre-line — the printed lines are newline-separated textContent)
+                  const rxFlags = flagsOf(rxSafety && !rxSafety.hidden ? rxSafety.textContent : '');
+                  const screenDanger = [...d.querySelectorAll('#patient-safety-banners [data-level="danger"]')].map((el) => txt(el))
+                    .concat(visible($('allergy-alert-banner')) && /Противопоказан/i.test(txt($('allergy-alert-title'))) ? ['allergy'] : []);
+                  if (misFlags.join('\u0001') !== rpFlags.join('\u0001') || misFlags.join('\u0001') !== rxFlags.join('\u0001')) {
+                    out.findings.push({ kind: 'flags_parity', where, sample: `MIS ${misFlags.length} / Rp ${rpFlags.length} / printed ${rxFlags.length}: ${misFlags.map((f) => f.slice(0, 40)).join(' ‖ ')}` });
+                  }
+                  if (screenDanger.length && !misFlags.some((f) => f.startsWith('ВНИМАНИЕ:'))) out.findings.push({ kind: 'danger_banner_not_in_exports', where, sample: screenDanger.join(' ‖ ').slice(0, 120) });
+                  if (misFlags.length) stats.flagsOracle = (stats.flagsOracle || 0) + 1;
+                  if (misFlags.some((f) => f.startsWith('ВНИМАНИЕ:'))) stats.dangerFlags = (stats.dangerFlags || 0) + 1;
                 }
                 stats.exports++;
               }
