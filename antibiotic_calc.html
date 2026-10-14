@@ -492,6 +492,10 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
     </section>
 
     <section class="premium-card p-4 md:p-6 no-print">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Пациент</span>
+        <button type="button" id="new-patient" onclick="resetPatient()" class="text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-300 hover:text-red-500" title="Очистить вес, возраст, аллергию, беременность, СКФ и текущий расчёт">↺ Новый пациент</button>
+      </div>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div>
           <label for="weight" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">1. Вес пациента</label>
@@ -2112,6 +2116,27 @@ function applyDiseaseSourceGate(d){
   block.classList.remove('hidden');
   return true;
 }
+// «Новый пациент»: the previous patient's GFR / pregnancy / allergy / age must
+// not leak into the next calculation — one action clears the whole context.
+function resetPatient(){
+  $('weight').value = '';
+  if($('patient-age')) $('patient-age').value = '';
+  if($('patient-age-unit')) $('patient-age-unit').value = 'years';
+  if($('patient-gfr')) $('patient-gfr').value = '';
+  if($('patient-pregnancy')) $('patient-pregnancy').value = 'unknown';
+  if($('patient-allergy')) $('patient-allergy').value = 'none';
+  patientAgeDays = null;
+  userPickedAge = false;
+  lastPickedAge = null;
+  setActiveAge('child');
+  clearAgeInferenceNotice();
+  updateExplicitAgeNotice();
+  document.querySelectorAll('.quick-weight-chip').forEach(c => c.classList.remove('active'));
+  resetDisease();
+  updateWeightWarn(false);
+  onAllergyChange();
+  toast('Данные пациента и расчёт сброшены');
+}
 function resetDisease(){
   activeDisease = null; activeScenario = null; activeDrug = null;
   $('active-disease').classList.add('hidden');
@@ -2125,6 +2150,7 @@ function resetDisease(){
   const clearBtn = $('search-clear');
   if(clearBtn) clearBtn.classList.add('hidden');
   $('results-box').classList.add('hidden');
+  updateAllergyBanner();
   history.replaceState(null, '', window.location.pathname);
 }
 function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
@@ -2288,7 +2314,10 @@ function onAllergyChange(){
 
 function updateAllergyBanner(){
   const banner = $('allergy-alert-banner');
-  if(!banner || !activeDrug) return;
+  if(!banner) return;
+  // no active drug (nosology reset, new patient): a stale «противопоказан» banner
+  // must not stay on screen for the next selection
+  if(!activeDrug){ banner.classList.add('hidden'); return; }
   const allergy = $('patient-allergy') ? $('patient-allergy').value : 'none';
   const refs = getDrugRefs(activeDrug);
   let worstStatus = { status: 'safe', label: '', alert: null };

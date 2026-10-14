@@ -537,6 +537,35 @@ async function run() {
       w.eval("DB.drugs_reference[getDrugRefs(activeDrug)[0]].forms.pop(); activeDrug.route = activeDrug.route.filter(r => r !== 'topical')");
       w.renderForms();
     }
+    // 15. «Новый пациент» clears the whole patient context and the calculation in one action
+    {
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '78');
+      type($('weight'), '58');
+      type($('patient-gfr'), '25');
+      type($('patient-pregnancy'), 'yes');
+      type($('patient-allergy'), 'penicillin_severe');
+      const filled = { po: visible($('res-po')) || visible($('res-inj')), allergyBanner: visible($('allergy-alert-banner')), group: w.eval('activeAge') };
+      // the nosology «✕» alone used to leave the allergy banner on screen with no drug
+      w.resetDisease();
+      filled.allergyBannerAfterDiseaseReset = visible($('allergy-alert-banner'));
+      clickDisease('cap_adult');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      filled.allergyBannerAgain = visible($('allergy-alert-banner'));
+      $('new-patient').click();
+      out.newPatient = {
+        filled,
+        weight: $('weight').value, age: $('patient-age').value, unit: $('patient-age-unit').value,
+        gfr: $('patient-gfr').value, pregnancy: $('patient-pregnancy').value, allergy: $('patient-allergy').value,
+        group: w.eval('activeAge'), userPickedAge: w.eval('userPickedAge'), patientAgeDays: w.eval('patientAgeDays'),
+        activeChip: [...d.querySelectorAll('#age-group button.active')].map((b) => b.dataset.age),
+        resultHidden: !visible($('result-step')), emptyState: visible($('empty-state')), disease: w.eval('activeDisease'),
+        allergyBanner: visible($('allergy-alert-banner')), weightWarnHidden: !visible($('weight-warn')), toast: txt($('toast')),
+        search: $('search').value,
+      };
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

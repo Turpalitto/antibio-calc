@@ -339,3 +339,18 @@ def test_drops_form_is_grouped_with_the_topical_route_not_per_os(shell: dict) ->
     assert df["before"] == ["per os"]
     assert df["tabs"] == ["per os", "местно"], df
     assert df["topicalForms"] == ["0.3 % капли ушныетест"] and df["poHasDrops"] is False
+
+
+def test_new_patient_clears_the_whole_context_and_the_stale_allergy_banner(shell: dict) -> None:
+    """One action for the next patient: weight, age, GFR, pregnancy, allergy, the
+    age group and the calculation are all reset — the previous patient's GFR or
+    pregnancy must not silently colour the next prescription. The nosology «✕»
+    used to leave the «противопоказан» allergy banner on screen with no drug."""
+    npat = shell["newPatient"]
+    assert npat["filled"]["po"] is True and npat["filled"]["allergyBanner"] is True and npat["filled"]["group"] == "adult"
+    assert npat["filled"]["allergyBannerAfterDiseaseReset"] is False and npat["filled"]["allergyBannerAgain"] is True
+    assert (npat["weight"], npat["age"], npat["unit"], npat["gfr"], npat["pregnancy"], npat["allergy"]) == ("", "", "years", "", "unknown", "none")
+    assert npat["group"] == "child" and npat["activeChip"] == ["child"] and npat["userPickedAge"] is False and npat["patientAgeDays"] is None
+    assert npat["resultHidden"] is True and npat["emptyState"] is True and npat["disease"] is None and npat["search"] == ""
+    assert npat["allergyBanner"] is False and npat["weightWarnHidden"] is True
+    assert npat["toast"] == "Данные пациента и расчёт сброшены"
