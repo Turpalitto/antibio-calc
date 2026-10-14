@@ -1,3 +1,25 @@
+## 2026-10-14: Audit fix round CLOSED — 65 computable / 55 blocked, patient context live, suite 2660 green
+
+- Shipped DB: 120 records, **65 computable** (26 `CR_REFERENCE_CALCULATION`,
+  32 `NO_FEDERAL_CR_EXPERT_BASIS` — amber "БЕЗ КР", 6 `SOURCE_SPEC_PENDING_CALCULATOR_BINDING`,
+  1 `CALCULATOR_BOUND_VERIFIED`), **55 blocked** (50 `EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW`,
+  3 `SOURCE_BASIS_MISSING`, 2 `CURRENT_WEB_CONFIRMED_PDF_PENDING`). 47 drugs.
+- Shell: weight + age + pregnancy/lactation + GFR inputs; advisory red/amber flags for
+  `age_restriction_min`, `pregnancy_category`, `renal_adjustment`; capsules whole; MIS
+  text carries context + flags; no fabricated "КР #—".
+- Loopback policy end-to-end: `server.js` proxy (peer gate, XFF, 1 MiB) and
+  `/v1/recommend` (peer gate, 1 MiB) — engine still NOT connected to the calculator.
+- Build: `build_db.py` (gate) → `validate_db.js` (0 errors) → `build_html.py`
+  (stamps `sw.js` `CACHE_VERSION=build-ff813dcc5750`); html sha `3e8b5af9d4e7f533…`.
+- Tests: canonical **2660 passed / 30 skipped / 0 failed** (py3.11 sandbox; CI = py3.12);
+  `tests/` 404 passed; golden calculator cases 23; static-server policy 23;
+  validator rules 33; API peer policy 8. CI status: see run id in the PR — do not
+  mark ✅ without it.
+- Audit 2026-10-14 status: CRITICAL B-1 ✅ B-2 ✅; HIGH A-2 ✅ C-1 ✅ C-2 ✅ B-3 ✅(validator;
+  `schema.json` owner decision) B-4 ✅ B-5 ✅ F-1 ✅(this round of docs); MEDIUM E-1 ✅
+  E-3 ✅ E-4 ✅ D-3 ✅ C-3 ✅ B-7 ✅ B-8 ✅ H-2 ✅; G-2 ✅ G-3 ✅; open: A-1 (py3.12 setup
+  doc added), A-3, E-2, D-1, D-2, C-4, B-6, F-2, F-3, H-1, G-1, G-4, G-5, A-4, D-4, H-3.
+
 ## 2026-10-05: S-3 CLOSED — no third-party origins; 24h PHI history TTL
 
 - `vendor/` self-hosts Tailwind/Font Awesome/Google Fonts; template + CSP + sw precache
@@ -233,7 +255,7 @@ Tests: `src/tests/test_source_fetch_verify.py` (8). Suite: `.venv/bin/python
 
 ## 2026-09-02: CAP scenario-to-dose-row bindings built and verified; calculation stays blocked
 
-On a fresh macOS clone (`/Users/turpal/Documents/antibio-calc`,
+On a fresh macOS clone (`<repo-root>`,
 Python 3.12.14 venv): every cap_adult regimen (11, CR `654_2`) and cap_child
 regimen (6, CR `714_2`) now has a fail-closed binding to one verified
 dose-table row. Artifacts:

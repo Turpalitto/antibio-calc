@@ -7,7 +7,7 @@ Commit: `3948186` (`test(rc030): make database invariants portable in bare clone
 - Full hash: `394818675b0ed199e03cae1d89e38a488f5102ce`
 - Parent: `dd8b3adad1ca60d3119ac7b48e6e50dbe364d328`
 - Branch: `main`
-- Author: Ruslan <h.turpal@gmail.com>
+- Author: Ruslan <owner e-mail redacted>
 - Name-status: `A RC030_COMMIT_APPROVAL_DEVIATION.md`, `A RC030_DATA_DEPENDENT_TEST_RCA.md`, `A RC030_TEST_PORTABILITY_VERIFICATION.md`, `M tests/dose_verification_sandbox/test_evidence_integrity.py`, `M tests/dose_verification_sandbox/test_invariants.py`
 - Stat: 5 files changed, 175 insertions(+), 2 deletions(-)
 - Repository status after commit: only this commit's five files left the working tree; all other untracked P5.6/RC-030 audit artifacts from prior turns remain untracked and unstaged (unchanged by this commit).

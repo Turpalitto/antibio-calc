@@ -44,7 +44,7 @@ person running them.
 > `Path(__file__).parent.parent.parent.parent / "clinrec_downloader"`, i.e. the **parent of the
 > repository root** — a Windows-layout assumption that only worked because the repo sat at
 > `C:\ANTIBIO`. On the current macOS checkout it resolved to
-> `/Users/turpal/Documents/antibiocalc/clinrec_downloader` (does not exist), and it changed
+> `<repo-root>/clinrec_downloader` (does not exist), and it changed
 > meaning whenever the file changed depth. It is now resolved by contract (env
 > `ANTIBIO_CORPUS_DIR` → committed `clinical_engine/corpus/corpus_config.json` → repo-root
 > sibling, with the repo root found by `pyproject.toml` marker), mirroring

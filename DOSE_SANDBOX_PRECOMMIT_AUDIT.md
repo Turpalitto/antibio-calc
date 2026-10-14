@@ -38,7 +38,7 @@ audit — see below.)
 | No personal paths | ✔ — no `C:\Users\...` or other user-specific absolute paths in any committed-intended file (checked via grep, see command below) |
 | All 45 sandbox tests pass | ✔ — re-run immediately before this audit: `45 passed in 0.27s` |
 
-Grep used: `grep -rn "C:\\Users\\TURPAL\|/home/\|C:\\ANTIBIO" dose_verification_sandbox/ tests/dose_verification_sandbox/` — zero matches in source files. (Generated JSON data files under `data/` do embed the machine's absolute export path indirectly through `Path(__file__)`-derived values in some fields — this is exactly why those files are excluded below, not committed.)
+Grep used: `grep -rn "C:\\Users\\<user>\|/home/\|C:\\ANTIBIO" dose_verification_sandbox/ tests/dose_verification_sandbox/` — zero matches in source files. (Generated JSON data files under `data/` do embed the machine's absolute export path indirectly through `Path(__file__)`-derived values in some fields — this is exactly why those files are excluded below, not committed.)
 
 ## Generated artifacts found (excluded, not committed)
 

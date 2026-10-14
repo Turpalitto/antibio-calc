@@ -1,3 +1,96 @@
+## 2026-10-14 — Audit fix round (AUDIT_2026-10-14.md): data trust, patient context, loopback policy
+
+Context: independent audit `docs/audits/AUDIT_2026-10-14.md` (27 findings) on
+HEAD 1885894. Verdict was "dose maths correct, embedded DATA unsafe". The owner
+authorised fixing the findings and completing the calculator. Decisions below
+are the ones that change policy; mechanical fixes are in AI_LOG.
+
+**B-1 — machine-extracted DOSA records are never computable.** All 48 records
+in `db/diseases/extended_dosa.json` carry `calculation_blocked: true` and status
+`EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW` (plus 2 `CURRENT_WEB_CONFIRMED_PDF_PENDING`
+= 50 blocked by extraction). The mapper defects that produced them
+(`каждые N ч` → N/day instead of 24/N; `г` not converted to mg; per-dose mg/kg
+written into a `*_day` field) are fixed in `dosa_to_db_mapper.py` with tests, but
+the records were NOT regenerated: regeneration + unblocking is an owner-physician
+review action, not a build step. `mkb10` strings were split into arrays.
+
+**B-2 — three-level source basis instead of one "CR" badge.** The gate
+(`calculator_source_gate.py`) now classifies every record:
+- federal `cr_id` (`^\d+(_\d+)?$`) → `CR_REFERENCE_CALCULATION` (or the stronger
+  bound/verified statuses when a spec exists) — blue "КР МЗ РФ" badge;
+- no federal `cr_id` but a documented `cr_note` (expert/professional-society
+  basis) → `NO_FEDERAL_CR_EXPERT_BASIS`, **computable**, amber "БЕЗ КР" badge and a
+  banner that names the basis — 32 records. Alternative considered: blocking all
+  35 (`--block-no-cr` flag keeps that option for the owner) — rejected because
+  these are the owner's curated schemes (scarlet fever, bites, prophylaxis…) and
+  blocking them would push physicians back to memory, which is less safe than an
+  honestly labelled scheme;
+- neither → `SOURCE_BASIS_MISSING`, **blocked** — 3 records (erysipelas,
+  pneumococcal_meningitis, brucellosis) until the owner adds a basis.
+The gate is idempotent (re-running on a gated DB changes nothing) and the UI
+never prints "КР МЗ РФ #— (2024)" again (`copyForMIS`, modal, signa).
+
+**B-3 — `db/validate_db.js` is the executable schema; `db/schema.json` untouched.**
+The validator was rewritten as module + CLI with plausibility rules (freq 1–6,
+non-empty route, per-unit mg/kg and mg/day ceilings incl. ЕД, mkb10 format,
+cr_year int, dangling drug refs, missing dose field, children's mg/kg without
+max_daily_mg). Errors block `build_html.py`; warnings are listed (518, all in
+blocked records or explicitly "owner review"). `db/schema.json` is governed by
+AGENTS.md ("без обсуждения") and was deliberately NOT edited: it remains a dead
+document (876 violations against the shipped DB) until the owner decides whether
+to regenerate it from the validator rules or delete it. Logged in NEXT_TASK.
+
+**B-5 / I-1..I-3 — patient context is an input, not a footnote.** The shell
+gained age (д/нед/мес/лет → days; neonate ≤ 28 d, child < 18 y, auto age group
+with a notice), pregnancy/lactation and GFR inputs. Flags are advisory, never a
+silent block: `age_restriction_min` below the patient's age → red flag;
+`pregnancy_category: "Противопоказан"` → red, other categories → amber;
+`renal_adjustment` with a "СКФ<N" clause that the patient meets → amber/red.
+Weight/age-group contradictions still hard-block the calculation (unchanged).
+
+**B-8 — capsules are never split.** `solidUnitsPerDose`/`formatTablets` round
+capsules to whole units and print the actual mg ("~2 капс 500 мг = 1000 мг;
+капсулы не делятся"); tablets round to 0.5. Injectable signa names the real
+route (never "внутрь").
+
+**C-1/C-2/C-3 — loopback is enforced at every hop.** `server.js` proxies
+`/v1|/v2` only for loopback peers (403 `PROXY_LOOPBACK_ONLY`; `ENGINE_PROXY_ALLOW_LAN=1`
+is an explicit owner override), adds `X-Forwarded-For`, caps bodies
+(`ENGINE_MAX_BODY_BYTES`, 1 MiB → 413) and serves a file allowlist
+(`antibiotic_calc.html, sw.js, manifest.webmanifest, favicon.ico, icons/*, vendor/*`)
+instead of "any *.json/*.js/*.html in the root". `clinical_engine/api/app.py`
+applies the same *peer* rule to `/v1/recommend` (403 `NON_LOOPBACK_REQUEST`,
+honouring `X-Forwarded-For`) and a 1 MiB cap to v1 and v2 (413 `PAYLOAD_TOO_LARGE`).
+Host/Origin are not required for v1 (local CLI clients). This does not connect
+the engine to the calculator and does not change engine logic (frozen).
+
+**A-2 — CI red cause.** The PDF fixture overflowed its 200 pt column with
+DejaVu/Liberation metrics (Linux runners) so "или внутрь" landed in the dose
+cell; the fixture now shrinks text to fit the cell. Policy stays: "✅ CI" only
+with a run id.
+
+**E-3/I-5 — golden cases are data.** `clinical_engine/tests/golden/calculator_dose_golden.json`
+pins 11 shipped regimens and their weight → mg/мл/таб/капс/флакон results, run
+through the real template JS. Changing a pinned regimen or the maths fails CI by
+design; updating a golden requires the owner to re-check the source.
+
+**H-2 — `sw.js` `CACHE_VERSION` is generated.** `db/build_html.py` stamps it
+from a digest of the shell + every precached asset; `test_build_reproducibility`
+fails on a stale value. Hand bumps are gone.
+
+**D-3 — one DB build.** `db/build_db.ps1` is a thin wrapper over `db/build_db.py`.
+
+**E-1** — manifests under `generated/` use POSIX separators; generators emit
+`as_posix()`, consumers tolerate legacy backslashes; `tests/` is green on POSIX
+(404 passed) but remains outside `testpaths` (archive of RC030 tooling).
+
+Verification (2026-10-14, Python 3.11 venv — 3.12 could not be installed in the
+sandbox, see AI_LOG): canonical suite **2660 passed, 30 skipped, 0 failed**
+(baseline 2526/1 failed); `tests/` 404 passed; `npm run validate` 0 errors /
+518 warnings / 55 blocked; rebuild deterministic (db sha `56727a27f050…`, html sha
+`3e8b5af9d4e7…`, sw `build-ff813dcc5750`); jsdom end-to-end smoke of the built
+shell (age/pregnancy/GFR flags, blocked record, БЕЗ КР banner, MIS copy) passed.
+
 ## 2026-10-05 — S-3: self-host all CDN assets; 24h TTL on patient history
 
 Decision: third-party asset origins are removed from the product entirely —
@@ -85,7 +178,7 @@ depth-based expression `Path(__file__).parent.parent.parent.parent / "clinrec_do
 The old expression was a Windows-layout assumption: with the repo at `C:\ANTIBIO`,
 `C:\ANTIBIO\src\pipeline\config.py` reached `C:\` and therefore produced
 `C:\clinrec_downloader`, which happened to be correct. On the current macOS
-checkout the same expression returns `/Users/turpal/Documents/antibiocalc/clinrec_downloader`
+checkout the same expression returns `<repo-root>/clinrec_downloader`
 — a directory that does not exist (verified: `exists: False`) — so `BASE_DIR` and
 the 20 pipeline modules importing it pointed at nothing, silently. It also changed
 meaning whenever this file changed depth (the L-31 defect class already fixed in

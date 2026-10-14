@@ -26,7 +26,7 @@
 1. **Никогда не полагайся на память чата или контекст сессии** — только на MD-файлы. Считай, что следующий агент стартует с нуля и прочитает только эти файлы.
 2. **Пиши абсолютные факты:** пути к файлам, имена функций/классов, точные команды запуска тестов, номера версий. Не «поправил парсер», а «`clinical_engine/stages/dose_adjustment.py`: убрал dead-код `excluded_here`».
 3. **Конвертируй относительные даты в абсолютные** («сегодня» → `2026-07-10`).
-4. **Всегда указывай, как проверить:** команда прогона тестов + актуальный результат (`.venv/bin/python -m pytest medical_normalizer/tests/ clinical_engine/tests/ -q` → 1898 passed, 6 skipped).
+4. **Всегда указывай, как проверить:** команда прогона тестов + актуальный результат (`.venv/bin/python -m pytest -q` → 2660 passed, 30 skipped на 2026-10-14).
 5. **Держи тесты зелёными** и фиксируй это в записи.
 6. **Порядок чтения при онбординге:** Start with HANDOFF.md (central index + required reading list). Then follow references. Onboarding complete only after explicitly reporting the 6 items (Frozen Components, Current Milestone, Active Issue, Workflow Stage, Current Test Status, Next Implementation Step). If unclear, stop and ask. Do not code until approved.
 
@@ -554,8 +554,13 @@ npm run build   # db/build_html.py: antibiotic_calc.html.template + db/ → anti
 npm start       # = node server.js → http://127.0.0.1:8080 (HOST по умолчанию 127.0.0.1)
 ```
 
-`server.js` отдаёт статику оболочки и проксирует `/v1/`, `/v2/` на движок
-(`ENGINE_BASE_URL`, дефолт `http://127.0.0.1:8000`; `ENGINE_HOST`/`ENGINE_PORT`).
+`server.js` отдаёт статику оболочки (allowlist файлов: `antibiotic_calc.html`,
+`sw.js`, `manifest.webmanifest`, `favicon.ico`, `icons/*`, `vendor/*`) и
+проксирует `/v1/`, `/v2/` на движок (`ENGINE_BASE_URL`, дефолт
+`http://127.0.0.1:8000`; `ENGINE_HOST`/`ENGINE_PORT`; `ENGINE_TIMEOUT_MS`).
+Прокси принимает только loopback-пиров (403 `PROXY_LOOPBACK_ONLY`;
+`ENGINE_PROXY_ALLOW_LAN=1` — явное исключение владельца), добавляет
+`X-Forwarded-For` и ограничивает тело `ENGINE_MAX_BODY_BYTES` (1 MiB → 413).
 Движок поднимается отдельно:
 
 ```
@@ -571,8 +576,9 @@ uvicorn clinical_engine.api.app:app --port 8000   # http://127.0.0.1:8000/person
 
 ### Тесты
 ```
-.venv/bin/python -m pytest clinical_engine/tests -q   # baseline 2026-09-27: 707 passed, 6 skipped
-.venv/bin/python -m pytest -q                         # все testpaths из pyproject.toml
+.venv/bin/python -m pytest -q                         # все testpaths из pyproject.toml; 2026-10-14: 2660 passed, 30 skipped
+npm run validate                                      # node db/validate_db.js — 0 errors обязательны
+python db/build_html.py                               # пересборка html + штамп sw.js (reproducibility-тест падает без неё)
 ```
 
 Полные пути, если нужна именно эта подсистема:
