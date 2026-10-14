@@ -215,6 +215,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "isOralLiquid",
     "unitStrengthMg",
     "unitsForCourse",
+    "bestSolidFormIndex",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\n"

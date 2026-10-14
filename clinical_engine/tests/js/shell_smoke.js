@@ -326,6 +326,32 @@ async function run() {
       out.combo.mis = w.__copied || '';
       w.fillPrescriptionForm();
       out.combo.rx = txt($('rx-drugs'));
+    }
+
+    // ---- 7e. default form = the strength that fits the single dose -------------
+    {
+      w.selectDisease(find((r) => r.id === 'cap_adult'));
+      type($('weight'), '70');
+      const sc = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc) sc.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const chips = [...d.querySelectorAll('#form-grid button')];
+      out.defaultForm = {
+        drug: w.eval('activeDrug && activeDrug.drug_ref'),
+        chips: chips.map((c) => txt(c)),
+        active: chips.filter((c) => c.classList.contains('active')).map((c) => txt(c)),
+        dose: txt($('po-mg')),
+        perDose: txt($('po-tabs')),
+      };
+      // amoxiclav 875 mg → the 875+125 tablet, one per dose
+      const amc = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => /коморбидный/i.test(c.textContent) && !c.classList.contains('opacity-50'));
+      if (amc) { amc.click(); clickDrug(/Амоксициллин\s*\+|клавулан/i); }
+      out.defaultForm.amoxiclav = {
+        drug: w.eval('activeDrug && activeDrug.drug_ref'),
+        active: [...d.querySelectorAll('#form-grid button.active')].map((c) => txt(c)),
+        dose: txt($('po-mg')),
+        perDose: txt($('po-tabs')),
+      };
       clickDisease('chlamydia_urogenital');
       clickDrug(/Доксициклин/i);
       type($('weight'), '70');

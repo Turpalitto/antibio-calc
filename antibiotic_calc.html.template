@@ -2391,18 +2391,54 @@ function renderForms(preferredRoute){
   });
   renderFormChips(groups[currentRouteGroup]);
 }
+// Default solid form for the current single dose: the strength that gives a
+// whole number of units with the fewest units (500 mg → one 500 mg tablet, not
+// «4 таб 125 мг»; 875 mg amoxiclav → the 875+125 tablet). Half tablets only
+// when no strength divides the dose; DB order breaks ties. -1 = keep DB order.
+function bestSolidFormIndex(group){
+  if(!activeDrug || typeof DB === 'undefined' || !DB) return -1;
+  if(typeof getActiveRegimen !== 'function' || typeof computeDose !== 'function' || typeof doseUnitOf !== 'function') return -1;
+  const reg = getActiveRegimen();
+  const mainRef = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
+  const w = parseFloat($('weight').value);
+  if(!reg || !mainRef) return -1;
+  const unit = doseUnitOf(mainRef);
+  const singleMg = computeDose(reg, w > 0 ? w : 0, unit).singleMg;
+  if(!(singleMg > 0)) return -1;
+  let best = null;
+  group.forEach((g, i)=>{
+    let units = null;
+    if(['tablet','capsule'].includes(g.f.form_type)){
+      const su = solidUnitsPerDose(singleMg, g.f, reg);
+      if(su && !su.rounded) units = su.units;
+    } else if(['powder_for_injection','granules'].includes(g.f.form_type)){
+      // vials / sachets: whole units only (2000 mg → one 2000 mg vial, not four of 500)
+      const strength = unitStrengthMg(g.f, singleMg, reg, unit);
+      if(strength > 0 && Math.abs(singleMg / strength - Math.round(singleMg / strength)) < 1e-6) units = Math.round(singleMg / strength);
+    }
+    if(units == null) return;
+    const score = [units >= 1 && Number.isInteger(units) ? 0 : 1, units];
+    if(!best || score[0] < best.score[0] || (score[0] === best.score[0] && score[1] < best.score[1])) best = {i, score};
+  });
+  return best ? best.i : -1;
+}
 function renderFormChips(group){
   const grid = $('form-grid');
   grid.innerHTML = '';
   if(group.length === 0){ grid.innerHTML = '<p class="text-xs text-slate-400">Нет форм для этого пути</p>'; return; }
   // Детям/новорождённым по умолчанию предпочитаем жидкую форму (суспензия/сироп) — не все могут проглотить таблетку
   let defaultIdx = 0;
+  let liquidPicked = false;
   if(activeAge === 'child' || activeAge === 'neonate'){
     // Закрепляем жидкую форму ТОЛЬКО если у неё есть готовая концентрация (mg/ml),
     // иначе можно выбрать парентеральный флакон (powder_for_suspension без mg/ml),
     // который даст деление на 0 и Infinity (напр. цефуроксим '750 мг флакон').
     const liquidPos = group.findIndex(g=>['suspension','syrup','powder_for_suspension'].includes(g.f.form_type) && g.f.concentration_mg_per_ml != null);
-    if(liquidPos !== -1) defaultIdx = liquidPos;
+    if(liquidPos !== -1){ defaultIdx = liquidPos; liquidPicked = true; }
+  }
+  if(!liquidPicked){
+    const best = bestSolidFormIndex(group);
+    if(best !== -1) defaultIdx = best;
   }
   group.forEach((entry, i)=>{
     const f = entry.f;

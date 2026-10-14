@@ -135,6 +135,17 @@ def test_course_units_agree_across_exports_and_course_is_in_days(shell: dict) ->
     assert c["screenCourse"] == "7 дней" and "1 таб 100 мг" in c["perDose"], c
 
 
+def test_default_form_is_the_strength_that_fits_the_single_dose(shell: dict) -> None:
+    f = shell["defaultForm"]
+    assert f["drug"] == "amoxicillin" and f["dose"] == "500 мг"
+    assert f["active"] == ["500 мг"], f  # not the DB-first «125 мг» (= «4 таб 125 мг»)
+    assert f["perDose"] == "(1 таб 500 мг)"
+    a = f["amoxiclav"]
+    assert a["drug"] == "amoxiclav" and a["dose"] == "875 мг"
+    assert a["active"] and a["active"][0].startswith("875+125 мг"), a
+    assert a["perDose"] == "(1 таб 875 мг)", "combination strength: one tablet, not «7 таб 125 мг»"
+
+
 def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     r = shell["searchRecall"]
     assert r["пневмония дети"]["n"] == 1 and r["пневмония дети"]["first"].startswith("Внебольничная пневмония у детей")
