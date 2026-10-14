@@ -2606,6 +2606,14 @@ function daysWord(n){
   if(m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'дня';
   return 'дней';
 }
+// «1 раз в день / 2 раза в день / 6 раз в день» — Rp Signa and the printed form
+// used «раза» for every frequency («1 раза», «6 раза»).
+function timesADay(n){
+  n = parseInt(n) || 0;
+  const m10 = n % 10, m100 = n % 100;
+  const word = (m10 === 1 && m100 !== 11) ? 'раз' : ((m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) ? 'раза' : 'раз');
+  return n+' '+word+' в день';
+}
 // true when duration_days is a number of days or a range («7», «7-10»).
 function courseIsNumeric(reg){
   return /^\d+(\s*[-–]\s*\d+)?$/.test(String((reg && reg.duration_days) || '').trim());
@@ -3528,22 +3536,22 @@ function fillPrescriptionForm(){
   if(singleMg <= 0 && dailyMg <= 0){
     signa = reg.duration_note || reg.regimen_label || (form.notes ? form.notes + ': ' : '') + 'применять по схеме клинических рекомендаций';
   } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
-    signa = 'Применять наружно/местно: ' + (form.notes ? form.notes + ' ' : '') + form.concentration + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' раза в день' : '');
+    signa = 'Применять наружно/местно: ' + (form.notes ? form.notes + ' ' : '') + form.concentration + (reg.freq_per_day ? ' ' + timesADay(reg.freq_per_day) : '');
   } else if(form.form_type === 'tablet' || form.form_type === 'capsule'){
     // Капсулы не делятся: число единиц берётся из solidUnitsPerDose (целое для
     // капсул, до половины для таблеток); фактическая доза печатается рядом.
     const su = solidUnitsPerDose(singleMg, form);
     const unitsText = su ? String(su.units).replace(/\.0$/,'')+' ' : '';
-    signa = 'По '+unitsText+latinForm+(su && su.rounded ? ' (= '+Math.round(su.actualMg)+' мг'+roundingDeviationText(singleMg, su)+')' : '')+' '+reg.freq_per_day+' раза в день, '+routeRu;
+    signa = 'По '+unitsText+latinForm+(su && su.rounded ? ' (= '+Math.round(su.actualMg)+' мг'+roundingDeviationText(singleMg, su)+')' : '')+' '+timesADay(reg.freq_per_day)+', '+routeRu;
   } else if(form.concentration_mg_per_ml && currentRouteGroup === 'po'){
     const ml = singleMg / form.concentration_mg_per_ml;
-    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+reg.freq_per_day+' раза в день';
+    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+timesADay(reg.freq_per_day);
   } else if(form.concentration_mg_per_ml){
     // Готовый раствор для инъекций (мг/мл): объём считается, путь — реальный, не «внутрь».
     const ml = singleMg / form.concentration_mg_per_ml;
-    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+' = '+fmtDose(singleMg, unit)+') '+routeRu+', '+reg.freq_per_day+' раза в день';
+    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+' = '+fmtDose(singleMg, unit)+') '+routeRu+', '+timesADay(reg.freq_per_day);
   } else {
-    signa = 'По '+fmtDose(singleMg, unit)+' '+routeRu+', '+reg.freq_per_day+' раза в день';
+    signa = 'По '+fmtDose(singleMg, unit)+' '+routeRu+', '+timesADay(reg.freq_per_day);
   }
   if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_infusion') signa += ', капельно за 30 мин';
   if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_bolus') signa += ', медленно за 5 мин';
@@ -3682,14 +3690,14 @@ function copyLatinRecipe(){
   if(singleMg <= 0 && dailyMg <= 0){
     signa = (reg.duration_note || reg.regimen_label || 'По схеме КР') + courseTail(reg);
   } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
-    signa = 'Применять наружно/местно' + (form.notes ? ' (' + form.notes + ')' : '') + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' раза в день' : '') + courseTail(reg);
+    signa = 'Применять наружно/местно' + (form.notes ? ' (' + form.notes + ')' : '') + (reg.freq_per_day ? ' ' + timesADay(reg.freq_per_day) : '') + courseTail(reg);
   } else if(isOralLiquid(form)){
     const ml = (singleMg / form.concentration_mg_per_ml).toFixed(1);
-    signa = 'Принимать внутрь по '+ml+' мл суспензии ('+fmtDose(singleMg, unit)+') '+reg.freq_per_day+' раза в день в начале еды'+courseTail(reg);
+    signa = 'Принимать внутрь по '+ml+' мл суспензии ('+fmtDose(singleMg, unit)+') '+timesADay(reg.freq_per_day)+' в начале еды'+courseTail(reg);
   } else if(['tablet','capsule'].includes(form.form_type)){
-    signa = 'Принимать внутрь по '+fmtDose(singleMg, unit)+' '+formatTablets(singleMg, form)+' '+reg.freq_per_day+' раза в день'+courseTail(reg);
+    signa = 'Принимать внутрь по '+fmtDose(singleMg, unit)+' '+formatTablets(singleMg, form)+' '+timesADay(reg.freq_per_day)+courseTail(reg);
   } else {
-    signa = routeWordsRu().verb+' по '+fmtDose(singleMg, unit)+' '+reg.freq_per_day+' раза в день'+courseTail(reg);
+    signa = routeWordsRu().verb+' по '+fmtDose(singleMg, unit)+' '+timesADay(reg.freq_per_day)+courseTail(reg);
   }
 
   // D.t.d. N. — bottles for a liquid, otherwise units for the whole course

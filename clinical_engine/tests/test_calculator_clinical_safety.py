@@ -207,6 +207,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "comboComponentLines",
     "diseaseDrugText",
     "daysWord",
+    "timesADay",
     "courseIsNumeric",
     "courseDays",
     "courseText",
@@ -1924,6 +1925,16 @@ def test_regimen_summary_keeps_units_honest() -> None:
     assert result[3] == "1500 мг/сут • 3 р/д"
     assert result[4] == "по схеме"
     assert result[5] == "однократно"
+
+
+def test_times_a_day_declension() -> None:
+    """Rp Signa / printed form said «1 раза в день» and «6 раза в день»."""
+    result = _run(["timesADay"], "", "console.log(JSON.stringify([1,2,3,4,5,6,8,11,12,21,22,0].map(timesADay)));")
+    assert result == [
+        "1 раз в день", "2 раза в день", "3 раза в день", "4 раза в день", "5 раз в день",
+        "6 раз в день", "8 раз в день", "11 раз в день", "12 раз в день", "21 раз в день",
+        "22 раза в день", "0 раз в день",
+    ]
 
 
 def test_format_units_never_drops_the_decimal_point() -> None:
