@@ -97,6 +97,13 @@ setTimeout(() => {
                 out.findings.push({ kind: 'zero_dose', where, sample: txt($('po-mg')) + ' / ' + txt($('po-tabs')) });
               }
               if (!snap.block) {
+                // the regimen actually used must fit the patient's age group
+                const reg = w.eval('getActiveRegimen()');
+                const activeAge = w.eval('activeAge');
+                if (!reg) out.findings.push({ kind: 'no_regimen_but_computed', where });
+                else if (reg.age_group && reg.age_group !== 'all' && reg.age_group !== activeAge) {
+                  out.findings.push({ kind: 'age_group_mismatch', where, sample: `regimen ${reg.age_group} for ${activeAge}` });
+                }
                 // the two physician-facing exports must be as clean as the screen
                 w.__copied = '';
                 w.copyForMIS();
