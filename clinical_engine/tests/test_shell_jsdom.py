@@ -297,6 +297,9 @@ def test_children_open_on_the_suspension_with_a_measurable_dose_volume(shell: di
     assert ld["infant7"]["active"] == ["250 мг/5 мл"] and ld["infant7"]["ml"] == "6.3 мл", ld["infant7"]
     assert ld["lowPicked"]["active"] == ["125 мг/5 мл"] and ld["lowPicked"]["ml"] == "45.0"
     assert "разовый объём 45.0 мл велик" in ld["lowPicked"]["mis"]
+    # an older child whose best suspension is still > 15 ml opens on tablets that divide evenly
+    assert ld["teen40"]["active"] == ["500 мг"] and ld["teen40"]["dose"] == "1500 мг", ld["teen40"]
+    assert ld["teen40"]["tabs"] == "(3 таб 500 мг)"
 
 
 def test_weight_impossible_for_the_age_and_implausible_age_block_every_output(shell: dict) -> None:

@@ -2568,6 +2568,28 @@ function bestLiquidFormIndex(group){
   });
   return best ? best.i : -1;
 }
+// tablets/capsules per dose for a form at the current regimen × weight (Infinity when unknown)
+function solidUnitsForDefault(form){
+  if(!activeDrug || typeof getActiveRegimen !== 'function' || typeof computeDose !== 'function' || typeof doseUnitOf !== 'function') return Infinity;
+  const reg = getActiveRegimen();
+  const mainRef = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
+  const w = parseFloat($('weight').value);
+  if(!reg || !mainRef) return Infinity;
+  const singleMg = computeDose(reg, w > 0 ? w : 0, doseUnitOf(mainRef)).singleMg;
+  const su = singleMg > 0 ? solidUnitsPerDose(singleMg, form, reg) : null;
+  return su ? su.units : Infinity;
+}
+// true when the single dose of this liquid form exceeds the large-volume threshold (15 ml)
+function liquidLargeVolume(entry){
+  if(!entry || !(entry.f.concentration_mg_per_ml > 0) || !activeDrug) return false;
+  if(typeof getActiveRegimen !== 'function' || typeof computeDose !== 'function' || typeof doseUnitOf !== 'function') return false;
+  const reg = getActiveRegimen();
+  const mainRef = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
+  const w = parseFloat($('weight').value);
+  if(!reg || !mainRef) return false;
+  const singleMg = computeDose(reg, w > 0 ? w : 0, doseUnitOf(mainRef)).singleMg;
+  return singleMg > 0 && singleMg / entry.f.concentration_mg_per_ml > 15;
+}
 function renderFormChips(group){
   const grid = $('form-grid');
   grid.innerHTML = '';
@@ -2582,6 +2604,15 @@ function renderFormChips(group){
     const bestLiquid = bestLiquidFormIndex(group);
     const liquidPos = bestLiquid !== -1 ? bestLiquid : group.findIndex(g=>['suspension','syrup','powder_for_suspension'].includes(g.f.form_type) && g.f.concentration_mg_per_ml != null);
     if(liquidPos !== -1){ defaultIdx = liquidPos; liquidPicked = true; }
+    // An older child (≥ 6 years by the entered age, or ≥ 20 kg when no age was
+    // typed) whose best suspension still means > 15 ml per dose opens on a solid
+    // form that divides evenly — the same advice the large-volume warning gives.
+    if(liquidPicked && activeAge === 'child' && liquidLargeVolume(group[liquidPos])){
+      const w = parseFloat($('weight').value);
+      const oldEnough = patientAgeDays != null ? patientAgeDays >= 6 * DAYS_PER_YEAR : w >= 20;
+      const solid = oldEnough ? bestSolidFormIndex(group) : -1;
+      if(solid !== -1 && ['tablet','capsule'].includes(group[solid].f.form_type) && solidUnitsForDefault(group[solid].f) <= 3){ defaultIdx = solid; liquidPicked = false; }
+    }
   }
   if(!liquidPicked){
     const best = bestSolidFormIndex(group);

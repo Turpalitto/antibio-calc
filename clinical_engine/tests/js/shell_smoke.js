@@ -457,6 +457,16 @@ async function run() {
       w.copyForMIS();
       await sleep(0);
       out.liquidDefault.lowPicked = { active: active(), ml: txt($('po-ml')), mis: w.__copied || '' };
+      // a 12-year-old at 39.9 kg: 1500 mg per dose = 30 ml of the strongest suspension →
+      // opens on «500 мг» tablets (3 per dose); the 7-year-old above stays on the suspension
+      // because no tablet divides 1125 mg into ≤ 3 units
+      type($('patient-age'), '12');
+      type($('weight'), '39.9');
+      clickDisease('cap_child');
+      const sc3 = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc3) sc3.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      out.liquidDefault.teen40 = { active: active(), dose: txt($('po-mg')), tabs: txt($('po-tabs')) };
       type($('patient-age-unit'), 'years');
       type($('patient-age'), '35');
       type($('weight'), '70');
