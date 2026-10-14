@@ -2064,3 +2064,29 @@ def test_header_stats_distinguish_computable_from_blocked_records() -> None:
                   "let DB=null;let dbBlockingErrors=[];let activeDisease=null;\n", body)
     assert "3 нозологий (1 расчётных, 2 закрыто до верификации)" in result["header"]
     assert result["empty"].startswith("1 расчётных нозологий из 3")
+
+
+def test_topical_forms_never_get_a_tablet_or_bottle_course_estimate() -> None:
+    """Regression (bacterial vaginosis → clindamycin 2 % cream, 2026-10-14):
+    the cream carries concentration_mg_per_ml = 20, so the suspension branch
+    produced "210 ml → 3 bottles" in the MIS text and "D.t.d. N. 3" in the
+    Latin recipe from the ORAL 300 mg regimen. Topical forms return null."""
+    globals_js = (
+        "let activeDrug={drug_ref:'clindamycin'};\n"
+        "function getDrugRefs(d){return [d.drug_ref];}\n"
+    )
+    body = (
+        "const reg={single_dose_mg:300,freq_per_day:2,duration_days:'7'};"
+        "const out={"
+        " cream: calculateCoursePackages(reg,{form_type:'topical',concentration:'2% крем',concentration_mg_per_ml:20},300,600,70),"
+        " drops: calculateCoursePackages(reg,{form_type:'drops',concentration:'0.3%',concentration_mg_per_ml:3},300,600,70),"
+        " susp: calculateCoursePackages(reg,{form_type:'suspension',concentration:'250 мг/5 мл',concentration_mg_per_ml:50},300,600,20),"
+        " caps: calculateCoursePackages(reg,{form_type:'capsule',concentration:'150 мг'},300,600,70),"
+        " none: calculateCoursePackages(reg,null,300,600,70)"
+        "};"
+        "console.log(JSON.stringify({cream:out.cream,drops:out.drops,none:out.none,susp:out.susp&&out.susp.type,caps:out.caps&&[out.caps.type,out.caps.totalTabs,out.caps.packCount]}));"
+    )
+    result = _run(["calculateCoursePackages", "getStandardBottleMl"], globals_js, body)
+    assert result["cream"] is None and result["drops"] is None and result["none"] is None
+    assert result["susp"] == "suspension"
+    assert result["caps"] == ["tablet", 28, 2]

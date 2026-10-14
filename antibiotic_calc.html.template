@@ -673,7 +673,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
       <div id="res-po" class="hidden res-box rounded-[32px] p-6 md:p-8 text-white relative overflow-hidden shadow-2xl">
         <div class="flex items-center justify-between mb-3">
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-blue-100 text-[10px] font-black uppercase tracking-widest border border-white/20">
-            <i class="fas fa-pills text-blue-200"></i>Разовая доза (per os)
+            <i class="fas fa-pills text-blue-200"></i><span id="po-route-label">Разовая доза (per os)</span>
           </span>
           <span id="po-tabs" class="text-xs md:text-sm font-black text-blue-100 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/15"></span>
         </div>
@@ -2590,6 +2590,11 @@ function getStandardBottleMl(drugKey, form){
 
 function calculateCoursePackages(reg, form, singleMg, dailyMg, w){
   if(!singleMg || singleMg <= 0) return null;
+  // A cream/ointment/drops course cannot be derived from a systemic mg dose:
+  // a 2% cream has concentration_mg_per_ml, and the bottle arithmetic used to
+  // turn it into "210 ml → 3 bottles" in the MIS text and "D.t.d. N. 3" in the
+  // Latin recipe (bacterial vaginosis → clindamycin, 2026-10-14).
+  if(!form || form.form_type === 'topical' || form.form_type === 'drops') return null;
   let days = 7;
   if(reg.duration_days){
     const m = String(reg.duration_days).match(/(\d+)(?:-(\d+))?/);
@@ -2647,6 +2652,8 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
   const isSolid = ['tablet','capsule'].includes(form.form_type);
   const isTopical = form.form_type === 'topical' || (typeof currentRouteGroup !== 'undefined' && currentRouteGroup === 'topical');
 
+  const routeLabel = $('po-route-label');
+  if(routeLabel) routeLabel.textContent = isTopical ? 'Местное применение' : 'Разовая доза (per os)';
   if(isTopical || (singleMg === 0 && dailyMg === 0)){
     $('po-ml').textContent = '—';
     $('po-unit').textContent = '';
@@ -3359,7 +3366,12 @@ function copyForMIS(){
   txt += '----------------------------------------\n';
   txt += 'Препарат: '+ref.inn+'\n';
   txt += 'Форма: '+(form.concentration || form.form_type)+'\n';
-  txt += 'Режим: '+regimenSummary(reg, unit)+'\n';
+  // A topical form paired with a systemic (mg) regimen: say so instead of
+  // presenting "300 мг на приём" as the cream's dose (bacterial vaginosis).
+  const topicalForm = currentRouteGroup === 'topical' || form.form_type === 'topical';
+  txt += 'Режим: '+(topicalForm
+    ? 'местно, по указаниям КР (в записи БД задана системная схема: '+regimenSummary(reg, unit)+')'
+    : regimenSummary(reg, unit))+'\n';
   txt += 'Схема приёма: '+doseStr+'\n';
   txt += 'Курс лечения: '+days+' дней\n';
   if(coursePkg){
