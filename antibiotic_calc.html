@@ -2869,7 +2869,10 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
     const solidDose = document.createElement('b');
     solidDose.textContent = fmtDose(singleMg, unit);
     const solidTail = document.createElement('span');
-    solidTail.textContent = ' '+reg.freq_per_day+' р/д '+(form.concentration||'');
+    // «… 500 мг (2 капс 250 мг) 4 р/д • форма: 250 мг» — the bare strength right after
+    // «р/д» used to read like a second dose; the DB form string stays visible.
+    const unitsNote = unit === 'ЕД' ? '' : formatTablets(singleMg, form);
+    solidTail.textContent = (unitsNote ? ' '+unitsNote : '')+' '+reg.freq_per_day+' р/д'+(form.concentration ? ' • форма: '+form.concentration : '');
     solidInstr.append(solidIcon, solidLead, solidDose, solidTail);
   } else if(concMgPerMl > 0) {
     const ml = singleMg / concMgPerMl;
@@ -3542,10 +3545,12 @@ function fillPrescriptionForm(){
     // капсул, до половины для таблеток); фактическая доза печатается рядом.
     const su = solidUnitsPerDose(singleMg, form);
     const unitsText = su ? String(su.units).replace(/\.0$/,'')+' ' : '';
-    signa = 'По '+unitsText+latinForm+(su && su.rounded ? ' (= '+Math.round(su.actualMg)+' мг'+roundingDeviationText(singleMg, su)+')' : '')+' '+timesADay(reg.freq_per_day)+', '+routeRu;
+    // The mg per dose is always printed next to the unit count («По 2 tab. (= 500 мг)»),
+    // not only when rounding changed it — the nurse should not have to multiply.
+    signa = 'По '+unitsText+latinForm+' (= '+(su ? Math.round(su.actualMg)+' мг'+roundingDeviationText(singleMg, su) : fmtDose(singleMg, unit))+') '+timesADay(reg.freq_per_day)+', '+routeRu;
   } else if(form.concentration_mg_per_ml && currentRouteGroup === 'po'){
     const ml = singleMg / form.concentration_mg_per_ml;
-    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+timesADay(reg.freq_per_day);
+    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+' = '+fmtDose(singleMg, unit)+') внутрь '+timesADay(reg.freq_per_day);
   } else if(form.concentration_mg_per_ml){
     // Готовый раствор для инъекций (мг/мл): объём считается, путь — реальный, не «внутрь».
     const ml = singleMg / form.concentration_mg_per_ml;
