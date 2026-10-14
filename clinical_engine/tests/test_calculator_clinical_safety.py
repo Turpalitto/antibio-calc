@@ -2054,6 +2054,7 @@ def test_header_stats_distinguish_computable_from_blocked_records() -> None:
         f"$('db-data').textContent={_lit(json.dumps(db, ensure_ascii=False))};"
         "document.querySelectorAll=()=>[];"
         "function setupButtons(){} function setupPersonalMode(){} function setupTheme(){} function initHistoryStore(){} function loadHistory(){}"
+        "function registerServiceWorker(){}"
         "const navigator={};"
         "init();"
         "console.log(JSON.stringify({header:$('header-stats').textContent,empty:$('empty-state-stats').textContent}));"
