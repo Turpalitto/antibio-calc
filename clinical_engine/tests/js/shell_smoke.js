@@ -171,6 +171,11 @@ async function run() {
       screenCourse: txt($('po-dur')),
       perDose: txt($('po-tabs')),
     };
+    // printed header: patient (raw input, text only), age, weight
+    type($('patient-name'), 'Иванова А.<img src=x onerror=alert(1)>');
+    w.fillPrescriptionForm();
+    out.rxHeader = { text: txt($('rx-header-row')), html: $('rx-header-row').innerHTML.includes('<img') };
+    type($('patient-name'), '');
 
     // ---- 4. reset context → flags disappear ------------------------------------
     $('patient-pregnancy').value = 'unknown';

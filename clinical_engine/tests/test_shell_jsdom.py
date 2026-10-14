@@ -158,6 +158,14 @@ def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(sh
     assert hc["before"] != "cap_adult" and hc["after"] == "cap_adult" and hc["scenario"] == "cap_adult_out_no_risk", hc
 
 
+def test_printed_form_header_names_patient_age_and_weight_as_text(shell: dict) -> None:
+    h = shell["rxHeader"]
+    assert "Пациент: Иванова А.<img src=x onerror=alert(1)>" in h["text"], h
+    assert h["html"] is False, "Ф.И.О. must never be parsed as markup"
+    assert "Возраст: 19 лет (взрослые)" in h["text"], h
+    assert "Вес: 70 кг" in h["text"], h
+
+
 def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     r = shell["searchRecall"]
     assert r["пневмония дети"]["n"] == 1 and r["пневмония дети"]["first"].startswith("Внебольничная пневмония у детей")

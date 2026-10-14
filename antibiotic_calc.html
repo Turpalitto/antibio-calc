@@ -878,6 +878,12 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
   <div id="rx-trust-line" class="rx-trust"></div>
   <div id="rx-safety-line" class="rx-trust rx-safety" hidden></div>
 
+  <div class="rx-header-row" id="rx-header-row">
+    <span>Пациент: <b id="rx-patient">—</b></span>
+    <span>Возраст: <b id="rx-age">—</b></span>
+    <span>Вес: <b id="rx-weight">—</b></span>
+  </div>
+
   <div class="rx-rp">Rp.:</div>
   <div id="rx-drugs"></div>
 
@@ -3453,10 +3459,14 @@ function fillPrescriptionForm(){
     (patientAgeDays != null ? ' • возраст: '+formatAgeDays(patientAgeDays) : '');
   $('rx-build-line').textContent = buildIdentifier();
 
-  // Header (Russian — as on real forms)
+  // Header (Russian — as on real forms): patient, age, weight, date, doctor.
+  // Ф.И.О. is raw user input → textContent only.
   const dateStr = $('patient-date').value || new Date().toLocaleDateString('ru-RU');
   $('rx-date').textContent = dateStr;
   $('rx-doctor').textContent = $('doctor-name').value || '—';
+  $('rx-patient').textContent = ($('patient-name') && $('patient-name').value.trim()) || '________________________';
+  $('rx-age').textContent = patientAgeDays != null ? formatAgeDays(patientAgeDays)+' ('+ageGroupLabel(activeAge)+')' : ageGroupLabel(activeAge);
+  $('rx-weight').textContent = w > 0 ? w+' кг' : '—';
 
   // Rp: block — Latin drug names. Названия и концентрации приходят из БД,
   // поэтому бланк собирается узлами, а не строкой разметки.
