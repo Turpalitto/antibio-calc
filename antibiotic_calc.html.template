@@ -385,15 +385,18 @@ body{
     </div>
 
     <!-- Patient Metadata Card -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-4 p-3 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
-      <input type="text" id="patient-name" placeholder="Ф.И.О. пациента" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
-      <input type="text" id="patient-date" placeholder="Дата" class="input-field rounded-xl px-3 py-2 text-xs font-bold" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'">
-      <input type="number" id="patient-age" placeholder="Возраст" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
-      <input type="text" id="doctor-name" placeholder="Врач" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
+    <!-- Metadata for the printout / history only. The age lives in the patient
+         context card below (#patient-age + unit): a second input with the same id
+         here made getElementById return THIS field, so typing the age next to
+         the unit selector did nothing (duplicate-id bug, fixed 2026-10-14). -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2.5 mt-4 p-3 rounded-2xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+      <input type="text" id="patient-name" placeholder="Ф.И.О. пациента" aria-label="Ф.И.О. пациента" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
+      <input type="text" id="patient-date" placeholder="Дата" aria-label="Дата" class="input-field rounded-xl px-3 py-2 text-xs font-bold" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'">
+      <input type="text" id="doctor-name" placeholder="Врач" aria-label="Врач" class="input-field rounded-xl px-3 py-2 text-xs font-bold col-span-2 md:col-span-1">
     </div>
   </header>
 
-  <div class="space-y-5">
+  <main class="space-y-5" id="main-content">
 
     <section class="premium-card p-4 md:p-6 no-print" id="personal-mode-control">
       <div class="flex items-start justify-between gap-4">
@@ -412,13 +415,13 @@ body{
           <input id="personal-session-token" type="password" autocomplete="off" placeholder="session_token (только локально)" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-          <select id="personal-pregnancy" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="unknown">Беременность: неизвестно</option><option value="no">Беременность: нет</option><option value="yes">Беременность: да</option></select>
+          <select id="personal-pregnancy" aria-label="Беременность" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="unknown">Беременность: неизвестно</option><option value="no">Беременность: нет</option><option value="yes">Беременность: да</option></select>
           <input id="personal-renal" type="text" placeholder="Почки: СКФ/статус или «нет»" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
-          <select id="personal-hepatic" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="unknown">Печень: неизвестно</option><option value="no">Печёночная недостаточность: нет</option><option value="yes">Печёночная недостаточность: да</option></select>
+          <select id="personal-hepatic" aria-label="Функция печени" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="unknown">Печень: неизвестно</option><option value="no">Печёночная недостаточность: нет</option><option value="yes">Печёночная недостаточность: да</option></select>
           <input id="personal-allergies" type="text" placeholder="Аллергии через запятую или «нет»" class="input-field rounded-xl px-3 py-2 text-xs font-bold">
           <input id="personal-current-meds" type="text" placeholder="Текущие препараты или «нет»" class="input-field rounded-xl px-3 py-2 text-xs font-bold md:col-span-2">
-          <select id="personal-contra-cleared" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="no">Противопоказания: не проверены</option><option value="yes">Противопоказания: проверены</option></select>
-          <select id="personal-interactions-reviewed" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="no">Взаимодействия: не проверены</option><option value="yes">Взаимодействия: проверены</option></select>
+          <select id="personal-contra-cleared" aria-label="Противопоказания проверены" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="no">Противопоказания: не проверены</option><option value="yes">Противопоказания: проверены</option></select>
+          <select id="personal-interactions-reviewed" aria-label="Взаимодействия проверены" class="input-field rounded-xl px-3 py-2 text-xs font-bold"><option value="no">Взаимодействия: не проверены</option><option value="yes">Взаимодействия: проверены</option></select>
         </div>
         <div class="flex items-center gap-3 flex-wrap">
           <button id="personal-request" type="button" class="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-[11px] font-black uppercase tracking-wider">Получить кандидатов</button>
@@ -479,7 +482,7 @@ body{
     <section class="premium-card p-4 md:p-6 no-print">
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div>
-          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">1. Вес пациента</label>
+          <label for="weight" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">1. Вес пациента</label>
           <div class="relative">
             <input type="number" id="weight" step="0.1" placeholder="0.0" class="input-field w-full rounded-2xl px-4 py-3 text-2xl md:text-3xl font-black tabular-num" oninput="onWeightChange()">
             <div class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-black text-sm">кг</div>
@@ -512,7 +515,7 @@ body{
           </div>
         </div>
         <div class="col-span-2 md:col-span-1">
-          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+          <label for="patient-allergy" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
             <span>Аллергоанамнез</span>
             <span id="allergy-badge" class="hidden text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">активен</span>
           </label>
@@ -527,10 +530,10 @@ body{
              беременность и СКФ сверяются со справочником препарата. Доза не меняется
              автоматически — только предупреждения (fail-visible). -->
         <div>
-          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Возраст <span class="normal-case tracking-normal text-slate-300 dark:text-slate-500">(уточняет группу)</span></label>
+          <label for="patient-age" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Возраст <span class="normal-case tracking-normal text-slate-300 dark:text-slate-500">(уточняет группу)</span></label>
           <div class="flex gap-1.5">
             <input type="number" id="patient-age" min="0" step="1" placeholder="—" class="input-field w-full rounded-2xl px-3 py-3 text-lg font-black tabular-num" oninput="onPatientAgeChange()">
-            <select id="patient-age-unit" class="input-field rounded-2xl px-2 py-3 font-bold text-xs" onchange="onPatientAgeChange()">
+            <select id="patient-age-unit" aria-label="Единица измерения возраста" class="input-field rounded-2xl px-2 py-3 font-bold text-xs" onchange="onPatientAgeChange()">
               <option value="years">лет</option>
               <option value="months">мес</option>
               <option value="days">дней</option>
@@ -538,7 +541,7 @@ body{
           </div>
         </div>
         <div>
-          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Беременность</label>
+          <label for="patient-pregnancy" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Беременность</label>
           <select id="patient-pregnancy" class="input-field w-full rounded-2xl px-3 py-3.5 font-bold text-xs" onchange="onPatientContextChange()">
             <option value="unknown">Не указано</option>
             <option value="no">Нет</option>
@@ -546,7 +549,7 @@ body{
           </select>
         </div>
         <div>
-          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">СКФ, мл/мин <span class="normal-case tracking-normal text-slate-300 dark:text-slate-500">(необязательно)</span></label>
+          <label for="patient-gfr" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">СКФ, мл/мин <span class="normal-case tracking-normal text-slate-300 dark:text-slate-500">(необязательно)</span></label>
           <input type="number" id="patient-gfr" min="0" step="1" placeholder="—" class="input-field w-full rounded-2xl px-3 py-3 text-lg font-black tabular-num" oninput="onPatientContextChange()">
         </div>
       </div>
@@ -556,7 +559,7 @@ body{
     </section>
 
     <section class="premium-card p-4 md:p-6 no-print">
-      <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 block">2. Нозология (МКБ-10 / название)</label>
+      <label for="search" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 block">2. Нозология (МКБ-10 / название)</label>
       <div class="relative">
         <i class="fas fa-search absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
         <input type="text" id="search" placeholder="Поиск: отит, J18, пневмония, синусит, тонзиллит..." class="input-field w-full rounded-2xl py-3.5 md:py-4 pl-11 md:pl-13 pr-10 font-bold text-slate-700 text-sm" oninput="handleSearch()">
@@ -585,7 +588,7 @@ body{
               </button>
             </div>
           </div>
-          <button onclick="resetDisease()" class="text-blue-300 hover:text-red-500"><i class="fas fa-times-circle text-lg"></i></button>
+          <button onclick="resetDisease()" class="text-blue-300 hover:text-red-500" aria-label="Сбросить выбранную нозологию" title="Сбросить"><i class="fas fa-times-circle text-lg"></i></button>
         </div>
         <div id="active-indications" class="mt-2 text-[11px] text-blue-900/80 dark:text-blue-300/80 font-semibold"></div>
         <div id="source-calculation-block" class="hidden mt-3 rounded-xl border-2 border-red-500 bg-red-50 dark:bg-red-950/40 px-3 py-3 text-[12px] font-black text-red-800 dark:text-red-200"></div>
@@ -730,7 +733,7 @@ body{
       <div id="reconstitution-block" class="hidden premium-card p-4 md:p-6">
         <div class="flex items-center gap-2 mb-3">
           <i class="fas fa-flask text-blue-600 text-lg"></i>
-          <h3 class="text-base font-black text-slate-800 dark:text-slate-200">Приготовление суспензии</h3>
+          <h2 class="text-base font-black text-slate-800 dark:text-slate-200">Приготовление суспензии</h2>
         </div>
         <div id="reconstitution-content" class="text-xs space-y-2"></div>
       </div>
@@ -738,7 +741,7 @@ body{
       <div id="dilution-block" class="hidden premium-card p-4 md:p-6">
         <div class="flex items-center gap-2 mb-3 flex-wrap">
           <i class="fas fa-syringe text-orange-600 text-lg"></i>
-          <h3 class="text-base font-black text-slate-800 dark:text-slate-200">Приготовление и введение</h3>
+          <h2 class="text-base font-black text-slate-800 dark:text-slate-200">Приготовление и введение</h2>
           <div id="route-selector" class="ml-auto flex gap-1"></div>
         </div>
 
@@ -785,7 +788,7 @@ body{
       <p class="text-[10px] mt-2" id="empty-state-stats"></p>
     </div>
 
-  </div>
+  </main>
 
   <footer class="mt-8 md:mt-12 text-center text-[9px] text-slate-400 font-black uppercase tracking-[0.2em] space-y-1 no-print">
     <p id="verification-status">ЧЕРНОВИК • Требует верификации по первоисточникам КР МЗ РФ</p>
@@ -794,10 +797,10 @@ body{
 </div>
 
 <div id="drawer-overlay" class="drawer-overlay no-print"></div>
-<div id="history-drawer" class="drawer no-print">
+<div id="history-drawer" class="drawer no-print" role="dialog" aria-label="История расчётов" aria-hidden="true" inert>
   <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-    <h3 class="font-black text-slate-800 dark:text-white"><i class="fas fa-history mr-2 text-blue-600"></i>История расчётов</h3>
-    <button id="drawer-close" class="text-slate-400 hover:text-red-500"><i class="fas fa-times text-lg"></i></button>
+    <h2 class="font-black text-slate-800 dark:text-white"><i class="fas fa-history mr-2 text-blue-600"></i>История расчётов</h2>
+    <button id="drawer-close" class="text-slate-400 hover:text-red-500" aria-label="Закрыть историю расчётов" title="Закрыть"><i class="fas fa-times text-lg"></i></button>
   </div>
   <div id="history-list" class="p-4 space-y-2"></div>
   <div class="px-4 pb-3 text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed" id="history-storage-note">
@@ -825,7 +828,7 @@ body{
   <button onclick="document.getElementById('btn-theme').click()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-moon mb-1" id="theme-icon-m"></i>Тема</button>
 </div>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <!-- Prescription form (print only) — Latin format -->
 <div id="prescription-form" class="print-only" style="display:none">
@@ -1074,6 +1077,14 @@ function setupButtons(){
   if($('btn-theme')) $('btn-theme').onclick = toggleTheme;
   if($('drawer-close')) $('drawer-close').onclick = closeHistory;
   if($('drawer-overlay')) $('drawer-overlay').onclick = closeHistory;
+  // Keyboard: Escape closes the guideline modal first, then the history drawer (a11y, 2026-10-14)
+  document.addEventListener('keydown', (e)=>{
+    if(e.key !== 'Escape') return;
+    const modal = $('guideline-modal');
+    if(modal && !modal.classList.contains('hidden')){ closeGuidelineModal(); return; }
+    const drawer = $('history-drawer');
+    if(drawer && drawer.classList.contains('open')) closeHistory();
+  });
   if($('history-clear')) $('history-clear').onclick = clearHistory;
   if(document.querySelector('.mobile-nav')){
     document.querySelector('.mobile-nav').style.display = (window.innerWidth < 768) ? 'flex' : 'none';
@@ -1219,7 +1230,9 @@ function buildPersonalRequest(){
   const interactionsReviewed = $('personal-interactions-reviewed').value === 'yes';
   if(!ownerId || !sessionToken) throw new Error('Требуются локальные owner_id и session_token');
   if(pregnancy === 'unknown' || hepatic === 'unknown' || !renal || !allergiesRaw || !medsRaw || !contraindicationsCleared || !interactionsReviewed) throw new Error('Заполните и подтвердите все safety-поля; неизвестные значения блокируют запрос');
-  const age = parseFloat($('patient-age').value);
+  // years, from the context card (value + unit); the v2 contract takes a decimal age
+  const ageDays = readPatientAge();
+  const age = ageDays == null ? NaN : Math.round((ageDays / DAYS_PER_YEAR) * 100) / 100;
   const weight = parseFloat($('weight').value);
   return {
     api_version:'2', operating_mode:'PERSONAL_PHYSICIAN', owner_id:ownerId, session_token:sessionToken,
@@ -3406,10 +3419,13 @@ function openGuidelineModal(){
   $('modal-cr-rubricator-link').href = url;
 
   $('guideline-modal').classList.remove('hidden');
+  const closeBtn = $('guideline-modal').querySelector('button[aria-label]');
+  if(closeBtn) closeBtn.focus();
 }
 
 function closeGuidelineModal(){
   $('guideline-modal').classList.add('hidden');
+  if($('btn-guideline-modal')) $('btn-guideline-modal').focus();
 }
 // Хранилище истории. PHI (Ф.И.О., диагноз, дозы) НЕ пишется в localStorage:
 // по умолчанию записи живут только в памяти вкладки, а явное согласие врача
@@ -3554,12 +3570,18 @@ function loadHistory(){
 }
 function openHistory(){
   loadHistory();
-  $('history-drawer').classList.add('open');
+  const drawer = $('history-drawer');
+  drawer.classList.add('open');
+  drawer.removeAttribute('inert'); drawer.setAttribute('aria-hidden', 'false');
   $('drawer-overlay').classList.add('open');
+  if($('drawer-close')) $('drawer-close').focus();
 }
 function closeHistory(){
-  $('history-drawer').classList.remove('open');
+  const drawer = $('history-drawer');
+  drawer.classList.remove('open');
+  drawer.setAttribute('inert', ''); drawer.setAttribute('aria-hidden', 'true');
   $('drawer-overlay').classList.remove('open');
+  if($('btn-history')) $('btn-history').focus();
 }
 function clearHistory(){
   if(confirm('Очистить всю историю?')){
@@ -3586,17 +3608,17 @@ init();
 </script>
 
 <!-- Guideline Evidence Modal -->
-<div id="guideline-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in no-print">
+<div id="guideline-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in no-print" role="dialog" aria-modal="true" aria-labelledby="modal-cr-title">
   <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden">
     <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-start bg-slate-50 dark:bg-slate-800/80">
       <div>
         <span class="text-[10px] font-black tracking-widest uppercase text-blue-600 dark:text-blue-400 flex items-center gap-1">
           <i class="fas fa-award"></i>Официальные клинические рекомендации МЗ РФ
         </span>
-        <h3 id="modal-cr-title" class="text-base font-extrabold text-slate-800 dark:text-slate-100 mt-1 leading-snug"></h3>
+        <h2 id="modal-cr-title" class="text-base font-extrabold text-slate-800 dark:text-slate-100 mt-1 leading-snug"></h2>
         <div id="modal-cr-meta" class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"></div>
       </div>
-      <button onclick="closeGuidelineModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xl p-1">
+      <button onclick="closeGuidelineModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xl p-1" aria-label="Закрыть окно клинической рекомендации" title="Закрыть">
         <i class="fas fa-times-circle"></i>
       </button>
     </div>
@@ -3608,9 +3630,9 @@ init();
         <p id="modal-cr-quote" class="font-medium text-blue-950 dark:text-blue-200 italic"></p>
       </div>
       <div>
-        <h4 class="font-extrabold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
+        <h3 class="font-extrabold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
           <i class="fas fa-list-check text-slate-400"></i>Линии и схемы терапии по КР:
-        </h4>
+        </h3>
         <div id="modal-cr-lines" class="space-y-2 font-mono text-[11px]"></div>
       </div>
       <div class="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl">
@@ -3633,6 +3655,6 @@ init();
   </div>
 </div>
 
-<div class="disclaimer-banner"><strong>Предупреждение:</strong> результаты расчёта являются справочным материалом и <strong>не являются окончательным медицинским заключением</strong>. Не заменяет консультацию врача. Дозирование может быть заблокировано для нозологий без закреплённого проверенного источника (status расчёта). Окончательное решение принимает лечащий врач.</div>
+<div class="disclaimer-banner" role="region" aria-label="Отказ от ответственности"><strong>Предупреждение:</strong> результаты расчёта являются справочным материалом и <strong>не являются окончательным медицинским заключением</strong>. Не заменяет консультацию врача. Дозирование может быть заблокировано для нозологий без закреплённого проверенного источника (status расчёта). Окончательное решение принимает лечащий врач.</div>
 </body>
 </html>
