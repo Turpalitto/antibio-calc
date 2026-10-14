@@ -46,7 +46,7 @@ def _load_original() -> dict:
     matches: list[dict] = []
     for item in manifest["datasets"]:
         dataset = json.loads(
-            (ROOT / item["dataset_path"]).read_text(encoding="utf-8")
+            (ROOT / item["dataset_path"].replace("\\", "/")).read_text(encoding="utf-8")
         )
         matches.extend(
             record

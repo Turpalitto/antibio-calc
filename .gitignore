@@ -109,3 +109,9 @@ weights/
 # machine-local, not reviewable project state.
 /.claude/
 /.serena/
+
+# --- Repo hygiene (2026-10-14 audit, G-2) ---
+# Node toolchains (root `npm install` for tests, audit-site/) and npm auth config
+# are machine-local; never reviewable project state.
+node_modules/
+.npmrc

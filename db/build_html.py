@@ -18,7 +18,11 @@ Build pipeline
   6. write the artifact atomically (temp file + `os.replace`) so a failed or
      interrupted build can never leave a half-written clinical document behind;
   7. print the build stamp and the sha256 of the output, so artifact drift
-     between machines is detectable.
+     between machines is detectable;
+  8. re-stamp `sw.js` (`CACHE_VERSION`) from the shell + every precached asset,
+     so offline clients can never keep serving a stale embedded DB after a
+     rebuild (audit 2026-10-14, H-2). Only the real shell is stamped: building
+     into another `output_path` (tests) leaves `sw.js` alone.
 
 Usage
     python db/build_html.py                 # validate + build + report hashes
@@ -31,6 +35,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -42,6 +47,7 @@ DB_PATH = PROJECT_ROOT / "db" / "antibio_db.json"
 TEMPLATE_PATH = PROJECT_ROOT / "antibiotic_calc.html.template"
 OUTPUT_PATH = PROJECT_ROOT / "antibiotic_calc.html"
 VALIDATOR_PATH = PROJECT_ROOT / "db" / "validate_db.js"
+SERVICE_WORKER_PATH = PROJECT_ROOT / "sw.js"
 PLACEHOLDER = "__DB_PLACEHOLDER__"
 STAMP_PLACEHOLDER = "__BUILD_STAMP__"
 REQUIRED_DB_KEYS = ("meta", "drugs_reference", "categories", "recommendations")
@@ -70,6 +76,53 @@ def build_stamp(db_text: str, template_text: str) -> str:
         _sha256_text(db_text)[:12],
         _sha256_text(template_text)[:12],
     )
+
+
+_SW_VERSION_RE = re.compile(r"const CACHE_VERSION = '(?P<version>[^']*)';")
+_SW_PRECACHE_RE = re.compile(r"'\./(?P<path>[^']+)'")
+SHELL_NAME = "antibiotic_calc.html"
+
+
+def service_worker_cache_version(html_text: str, sw_text: str, root: Path = PROJECT_ROOT) -> str:
+    """Deterministic `CACHE_VERSION` for `sw.js`.
+
+    Digest of the shell artifact plus every precached asset listed in the
+    service worker (manifest, icons, vendor files). Any change to any of them
+    yields a new value, a new cache and eviction of the stale one on activate.
+    Missing optional assets participate as "missing" so adding one later also
+    rotates the cache.
+    """
+    digest = hashlib.sha256()
+    digest.update(b"shell\0" + html_text.encode("utf-8") + b"\0")
+    for rel in sorted(set(_SW_PRECACHE_RE.findall(sw_text))):
+        if rel == SHELL_NAME:
+            continue
+        asset = root / rel
+        content = hashlib.sha256(asset.read_bytes()).hexdigest() if asset.is_file() else "missing"
+        digest.update(("%s\0%s\0" % (rel, content)).encode("utf-8"))
+    return "build-%s" % digest.hexdigest()[:12]
+
+
+def expected_service_worker_version(sw_path: Path = SERVICE_WORKER_PATH,
+                                    shell_path: Path = OUTPUT_PATH) -> tuple[str, str]:
+    """(current CACHE_VERSION, CACHE_VERSION the current artifacts require)."""
+    sw_text = sw_path.read_text(encoding="utf-8")
+    match = _SW_VERSION_RE.search(sw_text)
+    if match is None:
+        raise BuildError("sw.js defines no `const CACHE_VERSION = '...';` line")
+    html_text = shell_path.read_text(encoding="utf-8")
+    return match.group("version"), service_worker_cache_version(html_text, sw_text, sw_path.parent)
+
+
+def sync_service_worker(sw_path: Path = SERVICE_WORKER_PATH,
+                        shell_path: Path = OUTPUT_PATH) -> dict:
+    """Rewrite `CACHE_VERSION` in `sw.js` when the shell or an asset changed."""
+    current, expected = expected_service_worker_version(sw_path, shell_path)
+    if current != expected:
+        sw_text = sw_path.read_text(encoding="utf-8")
+        sw_text = _SW_VERSION_RE.sub("const CACHE_VERSION = '%s';" % expected, sw_text, count=1)
+        _write_atomic(sw_path, sw_text)
+    return {"previous": current, "current": expected, "changed": current != expected}
 
 
 def _run_validate(node_exe: str | None = None) -> str:
@@ -198,6 +251,10 @@ def build_html(
         raise BuildError("the %r marker survived substitution" % PLACEHOLDER)
     _write_atomic(output_path, html)
 
+    service_worker = None
+    if output_path.resolve() == OUTPUT_PATH.resolve() and SERVICE_WORKER_PATH.is_file():
+        service_worker = sync_service_worker(SERVICE_WORKER_PATH, output_path)
+
     return {
         "output": str(output_path),
         "bytes": len(html.encode("utf-8")),
@@ -206,6 +263,7 @@ def build_html(
         "stamp_embedded": has_stamp_marker,
         "db_bytes": len(db_json.encode("utf-8")),
         "validation": validation_report,
+        "service_worker": service_worker,
     }
 
 
@@ -241,6 +299,10 @@ def main(argv: list[str] | None = None) -> int:
             % (report["stamp"], STAMP_PLACEHOLDER)
         )
     print("Output sha256: %s" % report["sha256"])
+    if report["service_worker"]:
+        sw = report["service_worker"]
+        print("sw.js CACHE_VERSION: %s%s" % (
+            sw["current"], " (was %s)" % sw["previous"] if sw["changed"] else " (unchanged)"))
     return 0
 
 

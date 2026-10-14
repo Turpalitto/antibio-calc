@@ -46,10 +46,33 @@ def resolve_cyrillic_font() -> str:
 cyrillic_font = pytest.fixture(scope="session")(resolve_cyrillic_font)
 
 
+_BASE_FONTSIZE = 9.0
+_MIN_FONTSIZE = 5.0
+_CELL_PADDING = 4.0
+
+
+def _fit_fontsize(font: "fitz.Font", value: str, cell_width: float) -> float:
+    """Largest font size (<= 9 pt) at which ``value`` stays inside its cell.
+
+    Audit 2026-10-14 (A-2): with DejaVu/Liberation metrics a 9 pt cell such as
+    "Цефтриаксон (АТХ: J01DD04) в/в или внутрь" is ~210 pt wide and overflowed
+    the 200 pt drug column, so the extractor read "или внутрь" as part of the
+    DOSE cell and the route test failed on every Linux CI runner while passing
+    on macOS/Windows fonts. Glyph overflow is a fixture artefact, not extractor
+    behaviour, so the text is shrunk to fit instead of widening the columns.
+    """
+    available = cell_width - 2 * _CELL_PADDING
+    width = font.text_length(value, fontsize=_BASE_FONTSIZE)
+    if width <= available:
+        return _BASE_FONTSIZE
+    return max(_MIN_FONTSIZE, _BASE_FONTSIZE * available / width)
+
+
 def build_table_pdf(path: Path, rows: list[list[str]], fontfile: str) -> Path:
     """Write a ruled table PDF; rows[0] is the header row."""
     xs = [40.0, 240.0, 400.0, 540.0]
     y0, row_height = 60.0, 28.0
+    font = fitz.Font(fontfile=fontfile)
     doc = fitz.open()
     try:
         page = doc.new_page()
@@ -67,9 +90,11 @@ def build_table_pdf(path: Path, rows: list[list[str]], fontfile: str) -> Path:
                     continue
                 if c >= len(xs):
                     continue
+                cell_width = xs[c + 1] - xs[c] if c + 1 < len(xs) else 100.0
                 page.insert_text(
-                    fitz.Point(xs[c] + 4, y0 + r * row_height + 19),
-                    value, fontsize=9, fontname="F0", fontfile=fontfile,
+                    fitz.Point(xs[c] + _CELL_PADDING, y0 + r * row_height + 19),
+                    value, fontsize=_fit_fontsize(font, value, cell_width),
+                    fontname="F0", fontfile=fontfile,
                 )
         doc.save(str(path))
     finally:

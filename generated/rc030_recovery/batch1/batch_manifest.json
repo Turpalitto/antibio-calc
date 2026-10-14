@@ -3,7 +3,7 @@
     {
       "pdf_id": "Повреждение связок коленного сустава.pdf",
       "page_index_0based": 25,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_55d7c014bad9",
+      "page_dir": "generated/rc030_recovery/batch1/page_55d7c014bad9",
       "pymupdf_text_len": 2580,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 9,
@@ -16,7 +16,7 @@
     {
       "pdf_id": "Дефект аортолегочной перегородки.pdf",
       "page_index_0based": 35,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_66708a389181",
+      "page_dir": "generated/rc030_recovery/batch1/page_66708a389181",
       "pymupdf_text_len": 1734,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 13,
@@ -28,7 +28,7 @@
     {
       "pdf_id": "Лямблиоз у детей и взрослых.pdf",
       "page_index_0based": 20,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_ed06ca070a18",
+      "page_dir": "generated/rc030_recovery/batch1/page_ed06ca070a18",
       "pymupdf_text_len": 2410,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 13,
@@ -40,7 +40,7 @@
     {
       "pdf_id": "Гонококковая инфекция.pdf",
       "page_index_0based": 20,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_2cdc0070117d",
+      "page_dir": "generated/rc030_recovery/batch1/page_2cdc0070117d",
       "pymupdf_text_len": 1813,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 18,
@@ -52,7 +52,7 @@
     {
       "pdf_id": "Лепра [болезнь Гансена].pdf",
       "page_index_0based": 30,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_aab086effae3",
+      "page_dir": "generated/rc030_recovery/batch1/page_aab086effae3",
       "pymupdf_text_len": 2076,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 18,
@@ -64,7 +64,7 @@
     {
       "pdf_id": "Лепра [болезнь Гансена].pdf",
       "page_index_0based": 31,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_195f6d2d9e8a",
+      "page_dir": "generated/rc030_recovery/batch1/page_195f6d2d9e8a",
       "pymupdf_text_len": 1969,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 12,
@@ -77,7 +77,7 @@
     {
       "pdf_id": "Бронхит.pdf",
       "page_index_0based": 24,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_30d436d409d2",
+      "page_dir": "generated/rc030_recovery/batch1/page_30d436d409d2",
       "pymupdf_text_len": 2423,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 11,
@@ -90,7 +90,7 @@
     {
       "pdf_id": "Отит средний острый.pdf",
       "page_index_0based": 23,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_b607df0b582a",
+      "page_dir": "generated/rc030_recovery/batch1/page_b607df0b582a",
       "pymupdf_text_len": 2395,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 5,
@@ -103,7 +103,7 @@
     {
       "pdf_id": "Паратонзиллярный абсцесс.pdf",
       "page_index_0based": 21,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_b62db6dcc0a0",
+      "page_dir": "generated/rc030_recovery/batch1/page_b62db6dcc0a0",
       "pymupdf_text_len": 3104,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 7,
@@ -116,7 +116,7 @@
     {
       "pdf_id": "Воспалительные заболевания молочных желез.pdf",
       "page_index_0based": 24,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_23a630fed978",
+      "page_dir": "generated/rc030_recovery/batch1/page_23a630fed978",
       "pymupdf_text_len": 2640,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 4,
@@ -129,7 +129,7 @@
     {
       "pdf_id": "Хронический синусит.pdf",
       "page_index_0based": 20,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_a24598fcf7f5",
+      "page_dir": "generated/rc030_recovery/batch1/page_a24598fcf7f5",
       "pymupdf_text_len": 2555,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 5,
@@ -141,7 +141,7 @@
     {
       "pdf_id": "Хронический синусит.pdf",
       "page_index_0based": 21,
-      "page_dir": "generated\\rc030_recovery\\batch1\\page_17c4e1147432",
+      "page_dir": "generated/rc030_recovery/batch1/page_17c4e1147432",
       "pymupdf_text_len": 2344,
       "pymupdf_status": "OK",
       "doclayout_yolo_regions": 9,
