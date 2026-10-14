@@ -692,6 +692,34 @@ async function run() {
       w.navigator.clipboard = clip;
       out.clipboardFallback = viaLegacy;
     }
+    // 19. a browser that denies storage access (blocked site data): a second window where
+    //     localStorage / sessionStorage getters throw SecurityError — init() must still
+    //     restore the #hash deep link, the theme toggle must work, no uncaught errors
+    {
+      const errors2 = [];
+      const vc2 = new VirtualConsole();
+      vc2.on('jsdomError', (e) => errors2.push(String((e && e.message) || e)));
+      vc2.on('error', (...a) => errors2.push(a.map(String).join(' ')));
+      const dom2 = new JSDOM(html, {
+        runScripts: 'dangerously',
+        pretendToBeVisual: true,
+        url: 'http://10.0.0.5:8080/antibiotic_calc.html#cap_adult/cap_adult_out_comorbid/L1',
+        virtualConsole: vc2,
+        beforeParse(window) {
+          const deny = () => { throw new window.DOMException('Access is denied for this document.', 'SecurityError'); };
+          Object.defineProperty(window, 'localStorage', { get: deny, configurable: true });
+          Object.defineProperty(window, 'sessionStorage', { get: deny, configurable: true });
+        },
+      });
+      await sleep(400);
+      const w2 = dom2.window;
+      const d2 = w2.document;
+      const denied = { errors: errors2.slice(0, 5), dbLoaded: !!w2.eval('DB'), hashDisease: w2.eval('activeDisease && activeDisease.id'), hashScenario: w2.eval('activeScenario && activeScenario.id') };
+      try { w2.toggleTheme(); denied.toggleTheme = d2.documentElement.classList.contains('dark') ? 'dark' : 'light'; } catch (e) { denied.toggleTheme = 'threw: ' + e.message; }
+      try { w2.openHistory(); denied.historyOpens = !d2.getElementById('history-drawer').classList.contains('hidden'); } catch (e) { denied.historyOpens = 'threw: ' + e.message; }
+      out.storageDenied = denied;
+      dom2.window.close();
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

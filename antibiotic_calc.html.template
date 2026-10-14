@@ -1112,15 +1112,23 @@ function init(){
       calculate();
     };
   });
-  setupButtons();
-  setupPersonalMode();
-  setupTheme();
-  initHistoryStore();
-  loadHistory();
-  registerServiceWorker();
+  // Optional steps run one by one: a browser that denies storage access (blocked
+  // cookies / site data) used to throw inside setupTheme() and take the history
+  // store, the service worker and the #hash deep link down with it.
+  [setupButtons, setupPersonalMode, setupTheme, initHistoryStore, loadHistory, registerServiceWorker].forEach(step=>{
+    try{ step(); }catch(e){ console.error('ANTIBIO: шаг инициализации пропущен — '+step.name, e); }
+  });
   if(window.location.hash){
     setTimeout(restoreFromHash, 100);
   }
+}
+// localStorage access itself throws (SecurityError) when the browser blocks site
+// data — every theme read / write goes through these so the UI keeps working.
+function themeStorageGet(){
+  try{ return localStorage.getItem('antibio_theme'); }catch(_){ return null; }
+}
+function themeStorageSet(value){
+  try{ localStorage.setItem('antibio_theme', value); }catch(_){}
 }
 // Печать — только для фактически выполненного расчёта. Иначе распечатка
 // уехала бы с дозой, которой нет.
@@ -1499,7 +1507,7 @@ function renderPersonalTrace(candidate, envelope){
   $('personal-trace-panel').classList.remove('hidden');
 }
 function setupTheme(){
-  const saved = localStorage.getItem('antibio_theme');
+  const saved = themeStorageGet();
   if(saved === 'dark'){
     document.documentElement.classList.add('dark');
     $('theme-icon').className = 'fas fa-sun';
@@ -1509,7 +1517,7 @@ function setupTheme(){
 function toggleTheme(){
   document.documentElement.classList.toggle('dark');
   const isDark = document.documentElement.classList.contains('dark');
-  localStorage.setItem('antibio_theme', isDark ? 'dark' : 'light');
+  themeStorageSet(isDark ? 'dark' : 'light');
   $('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
   const m = $('theme-icon-m'); if(m) m.className = (isDark ? 'fas fa-sun' : 'fas fa-moon') + ' mb-1';
 }

@@ -1039,7 +1039,10 @@ def test_history_ui_survives_the_storage_change() -> None:
     assert 'id="history-list"' in source
     assert 'id="history-clear"' in source
     assert "onHistoryPersistChange()" in source
-    assert "initHistoryStore();" in _js_function(source, "init")
+    init_fn = _js_function(source, "init")
+    # the history store is an init step (run in the fault-tolerant step list since T58)
+    assert "initHistoryStore" in init_fn and "loadHistory" in init_fn
+    assert "try{ step(); }catch(e)" in init_fn
     clear_fn = _js_function(source, "clearHistory")
     assert "sessionStorage.removeItem(HISTORY_KEY)" in clear_fn
     assert "historyEntries = []" in clear_fn

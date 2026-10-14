@@ -211,6 +211,18 @@ def test_copy_falls_back_to_execcommand_without_navigator_clipboard(shell: dict)
     assert c["failToast"].startswith("Ошибка копирования — буфер обмена недоступен")
 
 
+def test_denied_storage_access_does_not_break_init_deep_link_or_theme(shell: dict) -> None:
+    """When the browser blocks site data, touching localStorage throws SecurityError.
+    setupTheme() used to throw inside init(), so the history store, the service
+    worker and the #hash deep link never initialised and the theme toggle threw
+    on every click."""
+    s = shell["storageDenied"]
+    assert s["errors"] == [], s["errors"]
+    assert s["dbLoaded"] is True and s["hashDisease"] == "cap_adult"
+    assert s["toggleTheme"] == "dark"
+    assert s["historyOpens"] is True
+
+
 def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:
     h = shell["historyRestore"]
     assert h["button"] and h["button"].startswith("Открыть расчёт / Амоксициллин + Клавулановая кислота, Внебольничная пневмония у взрослых"), h
