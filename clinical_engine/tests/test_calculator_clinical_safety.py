@@ -223,12 +223,13 @@ PATIENT_CONTEXT_SUPPORT = [
     "roundingDeviationText",
     "formatTablets",
     "ageInputBlockReason",
+    "gfrInputCaution",
     "weightBlockReason",
     "weightWarnReason",
     "isTopicalForm",
     "latinStrength",
 ]
-PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE"]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
 
 
@@ -2164,9 +2165,13 @@ def test_pregnancy_and_renal_flags() -> None:
         "out.nodata=renalFlag({inn:'Клиндамицин',renal_adjustment:null});"
         "$('patient-gfr').value='95'; out.generic_normal=renalFlag({inn:'Гентамицин',renal_adjustment:'Коррекция по СКФ, ТЛМ'});"
         "$('patient-gfr').value=''; out.no_gfr=renalFlag(cotrim);"
+        "$('patient-gfr').value='0'; out.gfr0=renalFlag(cotrim); out.gfr0_nodata=renalFlag({inn:'Клиндамицин',renal_adjustment:null});"
+        "$('patient-gfr').value='-5'; out.gfr_neg=renalFlag(cotrim);"
         "console.log(JSON.stringify(out));"
     )
     result = _run([], "", body)
+    assert result["gfr0"]["level"] == "danger" and "СКФ 0 мл/мин" in result["gfr0"]["text"], "anuria is the lowest GFR, not an empty field"
+    assert result["gfr0_nodata"]["level"] == "warn" and result["gfr_neg"] is None
     assert result["contra"]["level"] == "danger" and result["tri"]["level"] == "danger"
     assert result["caution"]["level"] == "warn" and result["ok"] is None
     assert result["ok_tri"]["level"] == "warn", "a trimester-restricted 'allowed' still needs a glance"
@@ -2177,6 +2182,27 @@ def test_pregnancy_and_renal_flags() -> None:
     assert result["not_required"] is None
     assert result["generic"]["level"] == "warn" and result["generic_normal"] is None
     assert result["nodata"]["level"] == "warn" and result["no_gfr"] is None
+
+
+def test_implausible_gfr_is_a_patient_level_caution_on_screen_and_in_exports() -> None:
+    """«1500» in the GFR field is a creatinine, not a GFR: the renal rules see a
+    healthy kidney and go silent. The caution travels with every drug's flags
+    (collectPatientSafetyFlags → banners, MIS text, Rp, print, history)."""
+    body = (
+        "const out={};"
+        "const probe=v=>{$('patient-gfr').value=v; return {c:gfrInputCaution(), f:collectPatientSafetyFlags(['amoxicillin']).map(x=>x.level+':'+x.text), none:collectPatientSafetyFlags([]).length};};"
+        "out.high=probe('1500'); out.edge=probe('200'); out.over=probe('201'); out.neg=probe('-5'); out.zero=probe('0'); out.empty=probe(''); out.normal=probe('90');"
+        "console.log(JSON.stringify(out));"
+    )
+    db = _fixture_db()
+    db["drugs_reference"]["amoxicillin"] = {"inn": "Амоксициллин", "renal_adjustment": "СКФ<30: увеличить интервал", "forms": []}
+    result = _run([], _age_globals(db), body)
+    assert result["high"]["c"].startswith("СКФ 1500 мл/мин — неправдоподобно высокое значение (> 200)") and "креатинин" in result["high"]["c"]
+    assert result["high"]["f"] == ["warn:" + result["high"]["c"]] and result["high"]["none"] == 0, "patient-level, once, only with a drug"
+    assert result["edge"]["c"] == "" and result["over"]["c"].startswith("СКФ 201")
+    assert result["neg"]["c"] == "СКФ -5 мл/мин — отрицательное значение, проверьте ввод." and result["neg"]["f"] == ["warn:" + result["neg"]["c"]]
+    assert result["zero"]["c"] == "" and len(result["zero"]["f"]) == 1 and result["zero"]["f"][0].startswith("warn:СКФ 0 мл/мин: «Амоксициллин» — СКФ<30"), "GFR 0 runs the renal rule itself"
+    assert result["empty"] == {"c": "", "f": [], "none": 0} and result["normal"] == {"c": "", "f": [], "none": 0}
 
 
 def test_render_patient_safety_flags_builds_nodes_and_clears() -> None:

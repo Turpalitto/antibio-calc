@@ -94,6 +94,17 @@ def test_pregnancy_and_gfr_flags_reach_the_banner_and_the_mis_text(shell: dict) 
     assert shell["afterReset"] == {"flagsVisible": False, "noticeVisible": False}
 
 
+def test_implausible_gfr_is_flagged_on_screen_and_in_the_mis_text(shell: dict) -> None:
+    """«1500» in the GFR field is a creatinine, not a GFR — the renal rules would
+    see a healthy kidney and go silent; «0» is anuria and must run them."""
+    high = shell["gfrHigh"]
+    assert "СКФ 1500 мл/мин — неправдоподобно высокое значение (> 200)" in high["flags"] and "креатинин" in high["flags"]
+    assert len(high["mis"]) >= 1 and high["mis"][-1].startswith("Предупреждение: СКФ 1500 мл/мин — неправдоподобно"), high["mis"]
+    assert "СКФ" not in shell["gfrZero"]["flags"], "doxycycline needs no renal adjustment — GFR 0 adds nothing for it"
+    zero = shell["newPatient"]["filled"]["gfrZeroFlags"]
+    assert "СКФ 0 мл/мин: «Амоксициллин» — СКФ<30" in zero and "неправдоподобно" not in zero, zero
+
+
 def test_penicillin_allergy_marks_the_amoxicillin_card(shell: dict) -> None:
     allergy = shell["allergy"]
     assert allergy["badgeVisible"] is True

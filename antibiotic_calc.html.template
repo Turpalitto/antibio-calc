@@ -1731,10 +1731,23 @@ function pregnancyFlag(ref){
 }
 // Почечная функция. Пороги вида «СКФ<30» разбираются по клаузам (разделитель «;»):
 // триггер клаузы с «противопоказан» — danger, остальное — warn. Доза НЕ меняется.
+// СКФ выше 200 мл/мин — не СКФ (вероятно, в поле введён креатинин), ниже нуля —
+// опечатка. Почечные правила всё равно считаются по введённому числу; «0»
+// (анурия/диализ) — это самая низкая СКФ, а не «поле пустое».
+const MAX_PLAUSIBLE_GFR = 200;
+function gfrInputCaution(){
+  const input = $('patient-gfr');
+  if(!input || String(input.value).trim() === '') return '';
+  const gfr = parseFloat(input.value);
+  if(!isFinite(gfr)) return '';
+  if(gfr > MAX_PLAUSIBLE_GFR) return 'СКФ '+gfr+' мл/мин — неправдоподобно высокое значение (> '+MAX_PLAUSIBLE_GFR+'). Проверьте ввод (не креатинин ли введён вместо СКФ?) — почечные предупреждения рассчитаны по введённому значению.';
+  if(gfr < 0) return 'СКФ '+gfr+' мл/мин — отрицательное значение, проверьте ввод.';
+  return '';
+}
 function renalFlag(ref){
   const input = $('patient-gfr');
-  const gfr = input ? parseFloat(input.value) : NaN;
-  if(!(gfr > 0) || !ref) return null;
+  const gfr = (input && String(input.value).trim() !== '') ? parseFloat(input.value) : NaN;
+  if(!(gfr >= 0) || !ref) return null;
   const txt = String(ref.renal_adjustment || '').trim();
   const tail = ' Расчёт выполнен БЕЗ почечной коррекции — скорректируйте дозу/интервал вручную.';
   if(!txt){
@@ -1764,6 +1777,9 @@ function collectPatientSafetyFlags(refs){
     if(!ref) return;
     [ageRestrictionFlag(ref), pregnancyFlag(ref), renalFlag(ref)].forEach(f=>{ if(f) flags.push(f); });
   });
+  // patient-level: an implausible GFR travels with the drug flags (screen + exports)
+  const gfrCaution = (refs && refs.length) ? gfrInputCaution() : '';
+  if(gfrCaution) flags.push({level:'warn', text:gfrCaution});
   return flags;
 }
 // Allergy status of the active drug(s) as an export flag. On screen it is the

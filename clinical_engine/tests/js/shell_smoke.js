@@ -178,6 +178,15 @@ async function run() {
     out.rxHeader = { text: txt($('rx-header-row')), html: $('rx-header-row').innerHTML.includes('<img') };
     type($('patient-name'), '');
 
+    // ---- 3b. implausible GFR («1500» = a creatinine?) → patient-level caution on
+    // screen and in the MIS text; GFR 0 (anuria) runs the renal rule, not silence
+    type($('patient-gfr'), '1500');
+    ($('btn-copy-mis') || $('btn-copy')).click();
+    await sleep(0);
+    out.gfrHigh = { flags: txt($('patient-safety-banners')), mis: (w.__copied || '').split('\n').filter((l) => l.includes('СКФ 1500')) };
+    type($('patient-gfr'), '0');
+    out.gfrZero = { flags: txt($('patient-safety-banners')) };  // doxycycline: «Не требуется» → nothing
+
     // ---- 4. reset context → flags disappear ------------------------------------
     $('patient-pregnancy').value = 'unknown';
     fire($('patient-pregnancy'), 'change');
@@ -552,6 +561,9 @@ async function run() {
       clickDisease('cap_adult');
       clickDrug(/^Амоксициллин(?!\s*\+)/i);
       filled.allergyBannerAgain = visible($('allergy-alert-banner'));
+      // GFR 0 (anuria) must run the renal rule («СКФ<30» for amoxicillin), not read as «empty»
+      type($('patient-gfr'), '0');
+      filled.gfrZeroFlags = txt($('patient-safety-banners'));
       $('new-patient').click();
       out.newPatient = {
         filled,
