@@ -1,3 +1,14 @@
+## 2026-10-14 (round 2): CI pinned + lint job + freshness gate; DB changelog; favicon; pipeline entry points
+
+- CI: `ubuntu-24.04`, Node-24 actions, `lint` job (ruff critical rules), `build_html.py --check`.
+- New tooling: `db/db_diff.py` + `CHANGELOG_DB.md` (I-6), `.pre-commit-config.yaml` (I-7),
+  `python db/build_html.py --check`.
+- Shell: favicon served everywhere (H-3); html sha `5cb3e30f7758…`, sw `build-d6e42e706f0c`.
+- Pipeline CLI works from a clean checkout (A-3).
+- Tests: **2671 passed / 30 skipped**; `tests/` 404; validate 0 errors; ruff clean.
+- Still owner decisions: DOSA review (50), `SOURCE_BASIS_MISSING` (3), «БЕЗ КР» (32),
+  4 regimens without `max_daily_mg`, `db/schema.json`, PR #1 merge.
+
 ## 2026-10-14: Audit fix round CLOSED — 65 computable / 55 blocked, patient context live, suite 2660 green
 
 - Shipped DB: 120 records, **65 computable** (26 `CR_REFERENCE_CALCULATION`,

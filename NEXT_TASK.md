@@ -16,15 +16,18 @@
    the `tests` extra) or delete it and point docs at the validator. Currently dead.
 3. **B-6 `dose_unit` on the regimen level** with validator consistency check (model
    change — owner decision; today unit comes from `drugs_reference.*.dose_unit`).
-4. **CI:** confirm the first green run id on `arena/2013101a-antibio-calc` / main;
-   then A-4 (actions Node 20 deprecation, ubuntu-latest → 26.04 on 2026-10-19).
-5. **Setup/portability (A-1/A-3):** README has the uv setup; still to do:
-   `src/pipeline` as a package or a `PYTHONPATH` wrapper; `.python-version` optional.
-6. **Hygiene backlog:** C-4 extras CVEs (torch ≥ 2.9.1 etc., `npm audit fix` in
-   audit-site), H-1 static Tailwind CSS, D-1 `[tool.ruff]` + CI step (F821 is 0 now;
-   F401/F841/F541/F811 remain), D-2 pipeline `except Exception` review, G-1 archive
-   root md/json into `docs/history/`, F-2 slim AGENTS.md, F-3 `audit-site/` doc or
-   removal, G-4 LICENSE, G-5 `corpus_config.json` Windows default, E-2 fixture corpus.
+4. ~~CI: first green run 38563366043; A-4 (ubuntu-24.04, Node-24 actions)~~ DONE
+   2026-10-14 round 2. Keep `setup-uv` SHA current (no floating major tag).
+5. ~~A-3 pipeline entry points~~ DONE (sys.path bootstrap in `src/pipeline/main.py`);
+   A-1: `.python-version` optional, `requires-python` unchanged.
+6. **Hygiene backlog:** C-4 extras CVEs (torch ≥ 2.9.1 etc. — needs `uv lock` on
+   3.12; `npm audit fix` in audit-site), H-1 static Tailwind CSS (needs a visual
+   check: dynamic class names in JS), D-1 phase 2: F401/F541/F811/F841 clean-up
+   outside FROZEN `medical_normalizer/`, then widen `[tool.ruff.lint] select`,
+   D-2 pipeline `except Exception` review, G-1 archive root md/json into
+   `docs/history/`, F-2 slim AGENTS.md, F-3 `audit-site/` doc or removal, G-4
+   LICENSE, G-5 `corpus_config.json` default (owner: env override exists), E-2
+   fixture corpus, I-4 shared cross-allergy table.
 7. After each task: prepend AI_LOG/PROJECT_STATE/NEXT_TASK(/DECISIONS), run
    `python -m pytest -q` + `npm run validate` + `python db/build_html.py`, commit + push.
 

@@ -1,3 +1,47 @@
+## 2026-10-14 (round 2): CI hardening, freshness gate, DB changelog, favicon, pipeline entry points
+
+- **CI (A-4/D-1):** `.github/workflows/ci.yml` — `runs-on: ubuntu-24.04` (the
+  `ubuntu-latest` → 26.04 migration starts 2026-10-19 and the PDF fixture depends
+  on image fonts), actions on Node 24 (`checkout@v7`, `setup-node@v7`,
+  `setup-python@v7`, `setup-uv@1c37ad0…` = v10.3.0 by SHA — no floating major tag
+  after v7, `gitleaks-action@v3`), new step `python db/build_html.py --check`, new
+  job `lint` = `uv sync --frozen --extra development` + `ruff check .`.
+  `pyproject.toml` `[tool.ruff]`: critical rules only (`E9, F63, F7, F82`) — green
+  today; F401/F541/F811/F841 (~200, incl. FROZEN `medical_normalizer/`) stay backlog.
+- **Freshness gate (I-7):** `db/build_html.py --check` (`check_build()`): rebuilds
+  into a temp dir, compares bytes with the committed html and the expected
+  `sw.js` `CACHE_VERSION`, never writes; also fixed the `--node <path>` argv parse
+  bug. `.pre-commit-config.yaml` (gitleaks v8.30.1, ruff-pre-commit v0.15.21,
+  `validate_db.js`, `build_html.py --check`). 3 tests in
+  `test_build_reproducibility.py` (15 total).
+- **DB changelog (I-6):** `db/db_diff.py` (`--git REV` | OLD NEW, `--json`,
+  `--fail-on-change`): records added/removed, record fields (blocking, status,
+  cr_id/year, mkb10…), drugs/routes per scenario-line, regimen dose fields per
+  age group (duplicate groups kept apart as `child#2`), drug-reference keys;
+  distinguishes a true→false unblock from a missing flag made explicit.
+  `src/tests/test_db_diff.py` (7). `CHANGELOG_DB.md` created with the 1885894 →
+  current diff: 84 records changed, 51 newly blocked, **0 regimen dose changes**,
+  2 drug refs (tobramycin/netilmicin forms).
+- **H-3:** `favicon.ico` (16/32/48 from `icons/icon-512.png`), `<link rel="icon">`
+  + apple-touch-icon in the template, served by `app.py` (`PWA_ASSETS` + route)
+  and `server.js` (already allow-listed), precached by `sw.js`; test added.
+  Rebuild → html sha `5cb3e30f7758…`, sw `build-d6e42e706f0c`.
+- **A-3:** `src/pipeline/main.py` bootstraps `sys.path` (repo root, `src`,
+  `src/pipeline`) exactly like pytest's `pythonpath`; all four documented
+  invocations work from a clean checkout (`-m src.pipeline.main`, script path,
+  `cd src/pipeline`); `verify` reports the missing external corpus honestly.
+- **Docs:** README (build/check/diff/pre-commit, CI description), `AGENTS.md`
+  header dated 2026-10-14, `ROADMAP_STATUS.md` marked as historical snapshot with
+  pointers to current facts.
+- **Left as is, on purpose:** `corpus_config.json` Windows default (G-5) — it is a
+  documented default with `ANTIBIO_CORPUS_DIR` override, owner's call; H-1 static
+  Tailwind — needs a visual check that this sandbox cannot do (dynamic class
+  names in JS); C-4 extras CVEs — needs a re-lock on 3.12.
+- **Verification:** `pytest -q` → **2671 passed, 30 skipped**; `pytest tests` 404
+  passed; `npm run validate` 0 errors; `build_html.py --check` fresh; `ruff check .`
+  clean; `node --check` ok; jsdom smoke unchanged (65/55 header, 48 мг / 2.4 мл,
+  flags). CI run id for this round: see PROJECT_STATE after push.
+
 ## 2026-10-14: Audit fix round — AUDIT_2026-10-14.md findings fixed, calculator completed with patient context
 
 Scope: `docs/audits/AUDIT_PROMPT_2026-10-14.md` (methodology) + `docs/audits/AUDIT_2026-10-14.md`

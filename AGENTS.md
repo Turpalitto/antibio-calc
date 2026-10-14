@@ -3,7 +3,8 @@
 > Current authority (2026-07-15): `GOVERNANCE_SOURCE_OF_TRUTH.md`. P5.6 is ACCEPTANCE/NOT COMPLETE; P6 BLOCKED. Never connect Clinical Engine, auto-approve medicine, commit production DB/PDF, or restore plaintext credentials. Historical instructions below apply only when non-conflicting.
 
 > Single source of truth for AI agents working on ANTIBIO.
-> Last updated: 2026-07-10 | Phase: Clinical Decision Engine — verification & production hardening
+> Last updated: 2026-10-14 | Phase: calculator completed after audit 2026-10-14 (patient context, source basis, loopback policy); Engine still disconnected, P6 BLOCKED
+> Current numbers live in `GOVERNANCE_SOURCE_OF_TRUTH.md` / `PROJECT_STATE.md`; counts quoted further down this file are historical.
 
 ---
 

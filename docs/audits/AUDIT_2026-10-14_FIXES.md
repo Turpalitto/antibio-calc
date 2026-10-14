@@ -31,12 +31,12 @@
 | B-5 | HIGH | ✅ | `age_restriction_min` в метаданных + флаг по возрасту пациента | harness `test_age_restriction_flag_matrix`, smoke (цефиксим 3 мес, доксициклин 5 лет) |
 | F-1 | HIGH | ✅ | README/AGENTS/GOVERNANCE/PROJECT_STATE/NEXT_TASK/DECISIONS/AI_LOG обновлены фактами | — |
 | A-1 | MED | ◐ | раздел Setup (uv + 3.12) в README; `requires-python` не ослаблялся | — |
-| A-3 | MED | ◐ | команда pipeline в README с `PYTHONPATH`; пакетирование — backlog | — |
+| A-3 | MED | ✅ | `src/pipeline/main.py` сам выставляет `sys.path` как pytest; работают `-m src.pipeline.main`, путь к скрипту, `cd src/pipeline` | ручной прогон 4 вариантов, `src/tests` 501 passed |
 | E-1 | MED | ✅ | POSIX-пути в манифестах `generated/`, генераторы `as_posix()`, потребители терпят `\\` | `pytest tests` 404 passed |
 | E-2 | MED | ⏳ | fixture-корпус — backlog | — |
 | E-3 | MED | ✅ | golden-кейсы (11 схем × вес → мг/мл/таб/капс/флакон) | `test_calculator_dose_golden.py` (23; негативная проверка 3/3) |
 | E-4 | MED | ✅ | `TYPE_CHECKING`-импорты, `pytest`/`Path` в тесте | `ruff --select F821` = 0 |
-| D-1 | MED | ⏳ | конфиг ruff/mypy + CI-шаг — backlog | — |
+| D-1 | MED | ◐ | `[tool.ruff]` (E9/F63/F7/F82) + job `lint` в CI; стилевые F401/F541/F811/F841 — backlog (FROZEN-модули не автофиксить) | `ruff check .` clean |
 | D-2 | MED | ⏳ | ревью `except Exception` в pipeline — backlog | — |
 | D-3 | MED | ✅ | `db/build_db.ps1` — тонкая обёртка над `build_db.py` | — |
 | C-3 | MED | ✅ | allowlist файлов вместо расширений | `test_static_server_policy.py` |
@@ -51,13 +51,15 @@
 | G-1 | LOW | ⏳ | архив корня — backlog | — |
 | G-2 | LOW | ✅ | `.gitignore` += `node_modules/`, `.npmrc` | `git check-ignore` |
 | G-3 | LOW | ✅ | домашние пути/e-mail удалены из 6 документов и docstring | `grep` |
-| G-4, G-5, A-4, D-4, H-3 | LOW | ⏳ | backlog (`NEXT_TASK.md`) | — |
+| A-4 | LOW | ✅ | `ubuntu-24.04`, actions на Node 24 (`setup-uv` по SHA) | CI run round 2 |
+| H-3 | LOW | ✅ | `favicon.ico` 16/32/48, `<link rel="icon">`, отдаётся app.py/server.js, в precache | `test_favicon_is_served…` |
+| G-4, G-5, D-4 | LOW | ⏳ | backlog (`NEXT_TASK.md`); G-5 — документированный дефолт с override `ANTIBIO_CORPUS_DIR` | — |
 | I-1 | INFO | ✅ | возраст пациента (д/нед/мес/лет) → группа + проверка порогов | harness `test_age_parsing_and_group_boundaries` |
 | I-2 | INFO | ✅ | СКФ как вход, флаг по `renal_adjustment` | harness `test_pregnancy_and_renal_flags` |
 | I-3 | INFO | ✅ | беременность/лактация как вход, «Противопоказан» → красный | harness, smoke (доксициклин) |
 | I-4 | INFO | ⏳ | единая перекрёстная аллергия — backlog | — |
 | I-5 | INFO | ✅ | golden-кейсы как данные + прогон в CI | `golden/calculator_dose_golden.json` |
-| I-6, I-7 | INFO | ⏳ | CHANGELOG_DB / pre-commit — backlog | — |
+| I-6, I-7 | INFO | ✅ | `db/db_diff.py` + `CHANGELOG_DB.md`; `.pre-commit-config.yaml` + `build_html.py --check` (и шаг CI) | `test_db_diff.py` (7), `test_build_reproducibility.py` (15) |
 
 Легенда: ✅ закрыто, ◐ частично, ⏳ в backlog (`NEXT_TASK.md`, раздел 2026-10-14).
 

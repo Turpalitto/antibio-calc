@@ -18,9 +18,11 @@ npm install                                          # no runtime deps; node ≥
 npm run validate                                     # node db/validate_db.js
 ```
 
-CI (`.github/workflows/ci.yml`) runs exactly these steps on Python 3.12 /
-Node 24. `pytest` on another Python (e.g. 3.11) works for the test suite but
-`uv sync --frozen` refuses it — use a manual venv in that case.
+CI (`.github/workflows/ci.yml`, `ubuntu-24.04`) runs exactly these steps on
+Python 3.12 / Node 24 plus `python db/build_html.py --check` and a `ruff`
+job (critical rules only, see `[tool.ruff]`). `pytest` on another Python
+(e.g. 3.11) works for the test suite but `uv sync --frozen` refuses it — use
+a manual venv in that case.
 
 Единый проект для создания и использования базы знаний по антибиотикотерапии из клинических рекомендаций Минздрава РФ.
 
@@ -83,8 +85,15 @@ Single-page приложение для расчёта доз антибиоти
 python db/build_db.py            # db/diseases/*.json + db/index.json → db/antibio_db.json (+ source gate, + validate)
 npm run validate                 # node db/validate_db.js (0 errors обязательны; warnings = owner review)
 npm run build                    # db/build_html.py: template + db/ → antibiotic_calc.html, штампует sw.js CACHE_VERSION
+python db/build_html.py --check  # ничего не пишет: exit 1, если html/sw.js устарели (pre-commit + CI)
+python db/db_diff.py --git main  # клинический diff БД: блокировки, статусы, поля доз, справочник → CHANGELOG_DB.md
 npm start                        # = node server.js → http://127.0.0.1:8080
 ```
+
+Pre-commit (опционально): `pre-commit install` — gitleaks, ruff (критичные
+правила из `pyproject.toml`), `validate_db.js`, `build_html.py --check`.
+Журнал изменений клинической БД — `CHANGELOG_DB.md` (запись на каждую сборку,
+меняющую данные).
 
 `server.js` отдаёт только allowlist файлов (`/`, `/antibiotic_calc.html`,
 `/sw.js`, `/manifest.webmanifest`, `/favicon.ico`, `/icons/*`, `/vendor/*`) и
