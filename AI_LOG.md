@@ -127,9 +127,46 @@
   has no readable unit strength («<N> мг», «<N>+<M> мг», «<N> млн ЕД») or an oral liquid
   lacks `concentration_mg_per_ml` — the shell could not count units per dose or D.t.d. N
   for such a form. Shipped DB: 0 new warnings; test.
+- **REAL DEFECT (display/exports, ЕД drugs), T22 `dac3bd6`:** `formatUnits` used
+  `(n/1e6).toString().replace('.0','')`, so 1 050 000 ЕД (150 000 ЕД/кг/сут × 7 кг,
+  diphtheria benzylpenicillin for an infant) rendered «15 млн ЕД» in the daily tile —
+  14× the true value (1 005 000 → «105 млн», 1 030 000 → «13 млн», 20 050 → «205 тыс»).
+  Now a value is scaled only when two decimals reproduce it exactly («1.05 млн»),
+  otherwise printed in full with thousand spaces («1 005 000»). Found by the new walk
+  oracle, not by any existing test.
+- **Walk oracles, T22/T23 `dac3bd6` `1f87c28` `eb48c01`:** dose arithmetic re-derived
+  from the DB regimen × profile weight independently of `computeDose` (single and
+  daily tiles; flags the old build, clean on the new one); volume = dose ÷ concentration
+  (suspension ml / selected vial ml); printed «D.t.d. N» = per dose × р/д × days;
+  `SHELL_WALK_PROFILES` env override — 7 awkward-weight profiles (120 / 45 / 14.3 / 39.9 /
+  4.6 / 2.1 / 38 kg) ran clean.
+- **T24 `73e5c4e`:** «1 раз / 2 раза / 6 раз в день» (`timesADay`) in Rp Signa and the
+  printed form — seven hand-built strings said «раза» for every frequency («1 раза»).
+- **T25 `30de925`:** printed Signa always names the mg per dose («По 2 tab. (= 500 мг)»,
+  «По 25.0 мл (100 мг/5 мл = 500 мг)»); the on-screen oral instruction no longer ends in a
+  bare strength («… 4 р/д 250 мг» read like a second dose → «… (2 капс 250 мг) 4 р/д •
+  форма: 250 мг»).
+- **T26 `b8d8fed`:** `bestLiquidFormIndex` — children open on the suspension whose
+  single-dose volume is measurable (2.5–10 ml, lower concentration breaks ties; above that
+  the smallest volume): a 25-kg child on 1125 mg opened on «125 мг/5 мл» = 45 ml. MIS text
+  gains «Суточная доза: …(ограничена максимумом …)» and «Предупреждение: разовый объём N мл
+  велик …» (> 15 ml, < 40 kg) — the screen had the warning, the chart text did not.
+- **T27 `13eeca3`:** printed form dispenses bottles for a suspension («D.t.d. N 5 in pulv.
+  pro susp. (фл. по 100 мл; на курс 450.0 мл, 10 дн.)») — the Rp text had «N. 5», the
+  printed form had no quantity line for liquids.
+- **T28 `98b234e`:** typo-tolerant search (`withinOneEdit` / `fuzzyWordHit`: one edit on a
+  word prefix for tokens of 5+ letters, applied only to tokens with no exact hit anywhere
+  — «цистит» never drags in цистицеркоз) and word-start ranking («Острый цистит» before
+  «холецистит», «Острый тонзиллит» before «паратонзиллит»).
+- **T29 `c0ff6e8` (latent hazard):** combination partners were dosed from the main drug's
+  regimen when `component_regimens[partner]` was absent (`|| reg`) — ceftriaxone's 2000 mg
+  would have been printed for metronidazole. Validator ERROR for such records (all 16
+  shipped combination regimens pass), shell fail-visible («режим компонента не задан в
+  БД …»). T21 `a959f90`: validator WARN for unit forms without a readable strength / oral
+  liquids without mg/ml (0 on the shipped DB).
 - **Verification per push:** full pytest, `ruff check .`, `npm run validate`,
   `build_html.py --check`, CI + CodeQL green (one red run `b694202` fixed by `12fdad5`).
-  Final: **2741 passed / 28 skipped** (jsdom suite 25 tests, walk gate with 7 oracles),
+  Final: **2746 passed / 28 skipped** (jsdom suite 27 tests, walk gate with 10 oracles),
   validate 0 errors (+9 owner warnings), html/sw rebuilt.
 
 ## 2026-10-14 (round 4, autonomous backlog «без моих решений»): C-4, E-2, G-1, F-2, F-3, H-1

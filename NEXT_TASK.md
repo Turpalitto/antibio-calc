@@ -27,19 +27,20 @@
      banner after a deploy, dark theme without flash, print preview after switching
      nosologies, the new «D.t.d. N <course quantity> (по K на приём, …)» line, the
      «Компоненты комбинации» block and the «Пациент / Возраст / Вес» header on the printed
-     form, the «+14 % к расчётной» wording next to rounded doses, history «Открыть расчёт».
+     form, the «+14 % к расчётной» wording next to rounded doses, history «Открыть расчёт»,
+     the suspension default for children (250 мг/5 мл for a 25-kg child), «1.05 млн ЕД».
    - GitHub → Settings → Security: enable private vulnerability reporting
      (`SECURITY.md` points there); review the CodeQL tab once (should be empty).
 2. **Engineering candidates (no physician decision needed, none urgent):**
    - ~~History restore / `hashchange`~~ DONE (T18 `d2e24a4`: «Открыть расчёт» restores
      disease/scenario/line/drug/route/form/regimen/age; `hashchange` re-reads the link).
      Still conservative: the hash itself stores disease/scenario/line only.
-   - Typo-tolerant search (one edit distance for tokens ≥ 5 letters) — the token search
-     (T12) is exact-prefix per token today.
-   - `shell_walk.js` could add an independent dose oracle (regimen × weight × caps) once
-     the owner confirms the rounding policy; today it checks tokens, age group, MIS and
-     Rp single dose vs screen, route words in MIS/Rp/printed form, course-unit agreement
-     (MIS «суммарно» = Rp `D.t.d. N.` = printed `D.t.d. N`), course wording.
+   - ~~Typo-tolerant search~~ DONE (T28 `98b234e`, one edit per word for tokens with no
+     exact hit; word-start ranking).
+   - ~~`shell_walk.js` independent dose oracle~~ DONE (T22/T23: single + daily arithmetic,
+     volume, course-quantity arithmetic; the mg value does not depend on the rounding
+     policy, which still belongs to the owner). Remaining idea: a combination-partner
+     oracle (partner dose = component_regimens × weight) and an ЕД-unit MIS/Rp oracle.
    - Latin Rp for a combination regimen still names the main drug only (the printed form
      and the MIS text carry the partner); a second `Rp.:` block per component is a small
      follow-up once the owner confirms the wanted format.

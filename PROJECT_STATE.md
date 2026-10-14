@@ -1,6 +1,6 @@
 ## 2026-10-14 (round 5, autonomous improvement loop): jsdom end-to-end gates, 8 real shell defects, infra
 
-- Eight shell defects found by driving the built HTML with real DOM events and by
+- Nine shell defects found by driving the built HTML with real DOM events and by
   cross-checking every export against the screen (none visible to handler-level unit
   tests): (1) duplicate `id="patient-age"` swallowed the typed age; (2) a stale
   `activeDrug` survived switching to a gate-blocked nosology — header «Печать» printed the
@@ -12,15 +12,22 @@
   exported as «в/в» / «Вводить внутривенно» (115 states); (7) combination strengths
   («875+125 мг», «400+80 мг») made one tablet read «7 таб 125 мг» / «6 таб 80 мг» on screen
   and in every export; (8) `D.t.d. N.` was packs (Rp) / units per dose (printed form)
-  instead of the course quantity, and courses in words printed «хроническая дней». Also:
+  instead of the course quantity, and courses in words printed «хроническая дней»;
+  (9) `formatUnits` ate the decimal point — 1 050 000 ЕД read «15 млн ЕД» (14×) in the
+  daily tile for an infant on benzylpenicillin. Latent hazard closed: a combination
+  partner without `component_regimens` was dosed with the main drug's numbers (now a
+  validator ERROR + fail-visible). Also:
   search recall (tokens, Russian endings, ICD, drug names), default form chip = the
   strength that fits the dose, dilution vial follows the form, history «Открыть расчёт»
   restores a saved calculation (+ `hashchange`), rounding deviation ≥ 10 % named next to
   the dose («+14 % к расчётной»), printed form header «Пациент / Возраст / Вес». All fixed
-  with regressions (`test_shell_jsdom.py` 25, `test_shell_walk.py` 2 — 1220 DOM states × 4
-  patient profiles with 7 oracles: tokens, age group, MIS dose, Rp dose, route words,
-  course units, course wording; `test_shell_static_ids.py` 4,
-  `test_calculator_clinical_safety.py` +5).
+  «1 раз / 2 раза / 6 раз в день», printed Signa always with the mg per dose, children
+  open on the suspension with a measurable volume, MIS «Суточная доза» + large-volume
+  warning, printed bottles for suspensions, typo-tolerant word-start-ranked search. All
+  with regressions (`test_shell_jsdom.py` 27, `test_shell_walk.py` 2 — 1220 DOM states × 4
+  patient profiles with 10 oracles: tokens, age group, dose arithmetic (single + daily),
+  volume, MIS dose, Rp dose, route words, course units, course-quantity arithmetic, course
+  wording; `test_shell_static_ids.py` 4, `test_calculator_clinical_safety.py` +9).
 - a11y: axe-core 0 violations (main/drawer/modal); cards keyboard-activatable; focus ring;
   live regions; dark theme before first paint; SW update banner with explicit reload.
 - Validator: route/form mismatch rule (9 warnings, all in blocked records); unit-strength
@@ -29,8 +36,8 @@
 - Infra: Dependabot, CodeQL (2 highs fixed, «No new alerts»), CI concurrency,
   `.gitattributes`, `SECURITY.md`; server.js ETag/304/gzip + graceful SIGTERM; FastAPI
   security-header/CSP parity with server.js; sw.js behavioural harness (13).
-- Tests: **2741 passed / 28 skipped / 0 failed**; validate 0 errors; ruff clean; build fresh;
-  CI + CodeQL green per push (`02403a2` last checked). DB unchanged (`56727a27f050…`).
+- Tests: **2746 passed / 28 skipped / 0 failed**; validate 0 errors; ruff clean; build fresh;
+  CI + CodeQL green per push (`30de925` last checked). DB unchanged (`56727a27f050…`).
 - Owner queue additions (clinical): 9 route/form gaps in blocked records (cotrimoxazole
   «iv» with oral-only forms ×5, fosfomycin iv, amikacin/gentamicin iv with im-only
   dilution ×3); `bacterial_vaginosis` — metronidazole/clindamycin topical forms share the
