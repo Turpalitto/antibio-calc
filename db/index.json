@@ -2445,6 +2445,7 @@
     {
      "form_type": "solution_iv",
      "concentration": "40 мг/мл",
+     "concentration_mg_per_ml": 40,
      "notes": ""
     }
    ]
@@ -2463,6 +2464,7 @@
     {
      "form_type": "solution_iv",
      "concentration": "25 мг/мл",
+     "concentration_mg_per_ml": 25,
      "notes": ""
     }
    ]

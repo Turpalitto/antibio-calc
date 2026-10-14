@@ -223,6 +223,12 @@ def _canonical_to_ref(canonical: str) -> str | None:
 # A `_day` field is written ONLY for a genuinely daily value.  A per-dose value
 # never lands in a `_day` field.
 
+EXTRACTED_STATUS = "EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW"
+EXTRACTED_BLOCK_REASON = (
+    "Запись извлечена автоматически из текста КР (DOSA source-слой) и не прошла "
+    "врачебную проверку. Расчёт закрыт до подтверждения владельцем/врачом."
+)
+
 _MG_KG_EXPR = re.compile(r"(?:мг|mg|mcg|мкг)\s*/\s*(?:кг|kg)", re.IGNORECASE)
 _PER_DAY_EXPR = re.compile(
     r"(?:\s*[/в]\s*(?:сут(?:к(?:и|и))?|день|дн\b)|per[\s_-]*day|/\s*day|\bday\b)",
@@ -364,8 +370,8 @@ def _normalize_dose(raw_dose: Any, raw_unit: Any, freq: int) -> dict[str, Any]:
 
       "1 г"              3/day  -> single_dose_mg=1000, max_daily_mg=3000
       "7 мг/кг/введение" 3/day  -> dose_mg_kg_per_dose=7  (NOT dose_mg_kg_day)
-      "30 мг/кг/сут"     3/day  -> dose_mg_kg_day=30,      max_daily_mg_per_kg=90
-      "30 мг/кг/день"    2/day  -> dose_mg_kg_day=30,      max_daily_mg_per_kg=60
+      "30 мг/кг/сут"     3/day  -> dose_mg_kg_day=30,      max_daily_mg_per_kg=30
+      "7 мг/кг/введение" 3/day  -> dose_mg_kg_per_dose=7,  max_daily_mg_per_kg=21
       "500-1000 мг"      3/day  -> single_dose_mg=500, single_dose_mg_max=1000,
                                      max_daily_mg=3000 (the true ceiling, not 1500)
       "500 мг, затем 1 г"      -> single_dose_mg=1000, dose_escalated=True
@@ -448,7 +454,12 @@ def _normalize_weight_dose(dose: str, unit: str, freq: int, escalated: bool) -> 
         out["dose_escalated"] = True
     if high > low:
         out["dose_range_wording"] = dose
-    if freq and per_day:
+    if per_day:
+        # The daily per-kg ceiling IS the upper bound of a per-day expression;
+        # multiplying a per-day value by the frequency (the pre-2026-10-14 code)
+        # inflated it freq-fold.
+        out["max_daily_mg_per_kg"] = high
+    elif freq:
         out["max_daily_mg_per_kg"] = high * freq
     return out
 
@@ -491,10 +502,24 @@ def _route_to_schema(raw_route: Any) -> list[str] | None:
 # ---- public mapping ------------------------------------------------------
 
 def normalize_mkb(value: Any) -> list[str]:
+    """Return one ICD-10 code per list item.
+
+    DOSA writes several codes into one cell ("D82.3, D82.8, D84.8"); a
+    comma-joined string used to be stored as a single "code", which defeats
+    the calculator's MKB search and the validator's per-code check.
+    """
     if value is None:
         return []
-    codes = value if isinstance(value, list) else [value]
-    return [str(c).strip().upper() for c in codes if c is not None and str(c).strip()]
+    raw = value if isinstance(value, list) else [value]
+    codes: list[str] = []
+    for item in raw:
+        if item is None:
+            continue
+        for part in re.split(r"[,;]", str(item)):
+            code = part.strip().upper()
+            if code and code not in codes:
+                codes.append(code)
+    return codes
 
 
 # Cyrillic -> latin transliteration for building stable ascii slugs/id's.
@@ -585,6 +610,20 @@ def parse_freq(raw_freq: Any) -> int | None:
         w = m.group(1).split()[-1]
         return _FREQ_WORDS[w]
 
+    # interval forms: 'каждые 8 ч', 'каждые 12 часов', 'через 6 ч', 'q8h'.
+    # The interval is converted to doses per day; a range ('каждые 4-6 ч') or an
+    # interval that does not divide the day evenly is ambiguous -> None (dropped).
+    # Before 2026-10-14 the numeric fallback below turned "каждые 8 ч" into 8/day
+    # (audit finding B-1); an interval is never a count.
+    m = re.search(r"(?:кажд\w*|через|q)\s*(\d+)(?:\s*[-–]\s*(\d+))?\s*(?:ч|час\w*|h)\b", s)
+    if m:
+        if m.group(2):
+            return None
+        hours = int(m.group(1))
+        if hours <= 0 or hours > 24 or 24 % hours != 0:
+            return None
+        return 24 // hours
+
     # daily idioms -> once/day
     for kw in ("ежедневно", "в сутки", "в день", "сутки"):
         if kw in s:
@@ -595,8 +634,9 @@ def parse_freq(raw_freq: Any) -> int | None:
         if kw in s:
             return 1
 
-    fallback = re.search(r"(\d+)", s)
-    return int(fallback.group(1)) if fallback else None
+    # No bare-number fallback: "за 30-60 минут до разреза" or "по 500 мг" must not
+    # become a frequency. Unknown wording is reported as undetermined.
+    return None
 
 
 def map_guideline(
@@ -707,6 +747,12 @@ def map_guideline(
         "antibiotics_indicated": True,
         "indications": [],
         "age_groups": age_groups or ["adult"],
+        # Source-layer output is never computable until a physician/owner clears
+        # it (P5.6/P6). The marks are explicit so the build gate keeps the block
+        # under the explicit-marks policy (DECISIONS.md 2026-10-05 / 2026-10-14).
+        "calculation_blocked": True,
+        "source_verification_status": EXTRACTED_STATUS,
+        "calculation_block_reason": EXTRACTED_BLOCK_REASON,
         "scenarios": scenarios,
     }
     return record
