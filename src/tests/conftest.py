@@ -16,6 +16,16 @@ def cyrillic_font() -> str:
     return resolve_cyrillic_font()
 
 
+@pytest.fixture(scope="session")
+def synthetic_guideline_pdf(tmp_path_factory, cyrillic_font: str):
+    """E-2: three-page synthetic guideline PDF (text page, dosing table, image-only
+    "scan") so the extraction router has an end-to-end path on every machine."""
+    from src.tests.table_pdf_fixture import build_guideline_pdf
+
+    target = tmp_path_factory.mktemp("synthetic_guideline") / "synthetic_guideline.pdf"
+    return build_guideline_pdf(target, cyrillic_font)
+
+
 @pytest.fixture(autouse=True)
 def reset_shared_llm_provider():
     """H-28: the LLM provider is now long-lived, so it must be reset per test.

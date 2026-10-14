@@ -105,3 +105,70 @@ def build_table_pdf(path: Path, rows: list[list[str]], fontfile: str) -> Path:
 def build_table_pdf_fixture(tmp_path: Path, rows: list[list[str]],
                             cyrillic_font: str, name: str = "table.pdf") -> Path:
     return build_table_pdf(tmp_path / name, rows, cyrillic_font)
+
+
+# ---------------------------------------------------------------------------
+# Audit 2026-10-14 (E-2): a synthetic three-page "guideline" so that the
+# extraction router has one end-to-end path that runs on every machine —
+# including CI without MinerU/docling and without the owner's corpus.
+# Page 1: narrative Cyrillic text (good page). Page 2: a ruled dosing table.
+# Page 3: an image-only rendering of page 1 (no text layer), i.e. a scanned
+# page that forces the per-page fallback decision. The content is invented
+# for the test and is NOT clinical guidance.
+# ---------------------------------------------------------------------------
+
+GUIDELINE_FIXTURE_TITLE = "Синтетическая клиническая рекомендация (тестовый документ)"
+
+GUIDELINE_FIXTURE_PARAGRAPHS = (
+    "Настоящий документ создан автоматически для проверки конвейера извлечения "
+    "и не содержит клинических рекомендаций.",
+    "Раздел 3. Лечение. Антибактериальная терапия назначается при подтверждённой "
+    "бактериальной этиологии заболевания.",
+    "Рекомендуется амоксициллин внутрь 500 мг 3 раза в сутки в течение 7 дней "
+    "(уровень убедительности рекомендаций A, уровень достоверности доказательств 1).",
+    "Детям рекомендуется амоксициллин 45 мг/кг/сут внутрь в 2 приёма, "
+    "продолжительность курса 7-10 дней.",
+    "При непереносимости пенициллинов рекомендуется азитромицин 500 мг внутрь "
+    "1 раз в сутки в течение 3 дней.",
+)
+
+GUIDELINE_FIXTURE_TABLE_ROWS = [
+    ["Препарат", "Доза", "Путь введения"],
+    ["Амоксициллин (АТХ: J01CA04)", "500 мг 3 раза в сутки", "внутрь"],
+    ["Амоксициллин (АТХ: J01CA04)", "45 мг/кг/сут в 2 приёма", "внутрь"],
+    ["Цефтриаксон (АТХ: J01DD04)", "1 г 1 раз в сутки", "в/в"],
+    ["Азитромицин (АТХ: J01FA10)", "500 мг 1 раз в сутки", "внутрь"],
+]
+
+
+def build_guideline_pdf(path: Path, fontfile: str) -> Path:
+    """Write the three-page synthetic guideline PDF described above."""
+    table_path = path.with_name(path.stem + "_table.pdf")
+    build_table_pdf(table_path, GUIDELINE_FIXTURE_TABLE_ROWS, fontfile)
+    doc = fitz.open()
+    try:
+        # page 1 — narrative text
+        page = doc.new_page()
+        page.insert_text(fitz.Point(50, 60), GUIDELINE_FIXTURE_TITLE,
+                         fontsize=12, fontname="F0", fontfile=fontfile)
+        y = 100.0
+        for paragraph in GUIDELINE_FIXTURE_PARAGRAPHS:
+            rect = fitz.Rect(50, y, 545, y + 90)
+            page.insert_textbox(rect, paragraph, fontsize=10,
+                                fontname="F0", fontfile=fontfile)
+            y += 70.0
+        # page 2 — the ruled dosing table
+        table_doc = fitz.open(str(table_path))
+        try:
+            doc.insert_pdf(table_doc)
+        finally:
+            table_doc.close()
+        # page 3 — image-only copy of page 1 (a "scan": no extractable text)
+        png = doc[0].get_pixmap(dpi=72).tobytes("png")  # PNG keeps the file small
+        scan = doc.new_page()
+        scan.insert_image(scan.rect, stream=png)
+        doc.save(str(path), deflate=True, garbage=3)
+    finally:
+        doc.close()
+    table_path.unlink(missing_ok=True)
+    return path

@@ -17,30 +17,65 @@ def test_unified_document():
     assert d.source == "test"
     assert d.full_text == "hi"
 
-# TODO: real tests with sample pdfs (good, scan, bad, empty, corrupt)
-# pytest src/tests/ -k extraction or similar
+# Audit 2026-10-14 (E-2): the end-to-end router tests below used to look for a
+# `low_test.pdf` in the current directory and were skipped everywhere but on one
+# machine. They now run on the synthetic three-page guideline fixture
+# (`synthetic_guideline_pdf`: text page, dosing table, image-only "scan").
 
-from src.pipeline.extraction.cache import get_cache, _sha256
+from src.pipeline.extraction import cache as cache_module
+from src.pipeline.extraction.cache import ExtractionCache, get_cache
 from src.pipeline.extraction.metrics import get_metrics, reset_metrics
 from src.pipeline.extraction.base import Page
 import fitz
 import tempfile
 
 
-def test_cache_hit_miss(tmp_path):
-    # use a real small pdf
-    pdf = Path("low_test.pdf")
-    if not pdf.exists():
-        pytest.skip("no low_test.pdf")
-    c = get_cache()
-    # force miss first by clearing? just check logic
-    key = _sha256(pdf)
-    # run
-    r = ExtractorRouter()
-    doc1 = r.extract(pdf)
-    # second should hit if enabled
-    doc2 = r.extract(pdf)
-    assert doc1.source == doc2.source or "cache" in getattr(doc2, 'source', '')
+@pytest.fixture
+def isolated_cache(tmp_path, monkeypatch):
+    """A fresh extraction cache under tmp_path, visible through get_cache()."""
+    monkeypatch.setattr(cache_module.get_config(), "cache_path", str(tmp_path / "cache"))
+    fresh = ExtractionCache()
+    monkeypatch.setattr(cache_module, "_cache", fresh)
+    assert get_cache() is fresh
+    return fresh
+
+
+def test_router_extracts_the_synthetic_guideline_end_to_end(synthetic_guideline_pdf, isolated_cache):
+    router = ExtractorRouter()
+    doc = router.extract(synthetic_guideline_pdf)
+
+    assert len(doc.pages) == 3
+    # page 1 narrative and page 2 table come straight from the text layer
+    assert "амоксициллин" in doc.pages[0].text.lower()
+    assert "500 мг" in doc.pages[0].text
+    assert "J01DD04" in doc.pages[1].text
+    assert "45 мг/кг/сут" in doc.full_text
+
+    prov = doc.metadata.get("page_provenance")
+    assert prov is not None and [p["page"] for p in prov] == [0, 1, 2]
+    assert prov[0]["fallback_reason"] is None and prov[1]["fallback_reason"] is None
+    # the image-only page is detected as bad and routed to the fallback engines
+    assert prov[2]["fallback_reason"], "the scanned page must be flagged for fallback"
+    if prov[2]["source"] == "pymupdf":
+        # no OCR engine on this machine: the failure is recorded, never hidden
+        assert prov[2].get("fallback_failed") == "all_ocr_engines_failed"
+        assert doc.source == "pymupdf"
+    else:
+        assert prov[2]["ocr_time"] >= 0.0 and doc.source in ("mixed", prov[2]["source"])
+
+
+def test_router_serves_the_second_extraction_from_cache(synthetic_guideline_pdf, isolated_cache):
+    router = ExtractorRouter()
+    first = router.extract(synthetic_guideline_pdf)
+    assert "cache" not in (router._last_source or "")
+    assert isolated_cache.get(synthetic_guideline_pdf) is not None, "first extraction must be cached"
+
+    second = router.extract(synthetic_guideline_pdf)
+    assert router._last_source == first.source + "+cache"
+    assert second.metadata.get("cache_hit") is True
+    assert second.full_text == first.full_text
+    assert [p.text for p in second.pages] == [p.text for p in first.pages]
+    assert second.metadata["page_provenance"] == first.metadata["page_provenance"]
 
 
 def test_mixed_pages_provenance():
@@ -66,15 +101,12 @@ def test_mixed_pages_provenance():
         assert "pymupdf" in sources or "mineru" in sources
 
 
-def test_provenance_and_metrics():
+def test_provenance_and_metrics(synthetic_guideline_pdf, isolated_cache):
     reset_metrics()
-    pdf = Path("low_test.pdf")
-    if not pdf.exists():
-        pytest.skip()
     r = ExtractorRouter()
-    d = r.extract(pdf)
+    d = r.extract(synthetic_guideline_pdf)
     prov = d.metadata.get("page_provenance")
-    assert prov is not None
+    assert prov is not None and len(prov) == 3
     m = get_metrics()
     snap = m.snapshot()
     assert snap["documents_processed"] >= 1
