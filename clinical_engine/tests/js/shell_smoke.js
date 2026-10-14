@@ -489,10 +489,11 @@ async function run() {
       clickDrug(/^Амоксициллин(?!\s*\+)/i);
       out.liquidDefault.infant7 = { active: active(), dose: txt($('po-mg')), ml: txt($('po-ml')) + ' ' + txt($('po-unit')) };
       // hand-picked low concentration → the MIS text carries the volume warning
-      const low = [...d.querySelectorAll('#form-grid button')].find((c) => /^125 мг\/5 мл/.test(txt(c)));
+      // (the chips are re-rendered when the weight changes the default — find it afterwards)
       type($('patient-age-unit'), 'years');
       type($('patient-age'), '7');
       type($('weight'), '25');
+      const low = [...d.querySelectorAll('#form-grid button')].find((c) => /^125 мг\/5 мл/.test(txt(c)));
       if (low) low.click();
       w.__copied = '';
       w.copyForMIS();
@@ -643,6 +644,32 @@ async function run() {
       type($('weight'), '70');
       keep.inferredAdult = state() + '|' + [...d.querySelectorAll('#scenario-list .scenario-card')].map((c) => (c.classList.contains('opacity-50') ? 'dim' : 'ok')).join(',') + '|' + txt($('dose-block')).slice(0, 40);
       out.ageKeepsSelection = keep;
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
+    // 17. the default form chip follows the weight (and the age / regimen) until the
+    //     physician picks one: a 25-kg child typed AFTER the drug used to stay on
+    //     «125 мг/5 мл» = 45 ml per dose, the same child typed first opened on «250 мг/5 мл»
+    {
+      const formState = () => w.eval('activeFormIdx') + '|' + txt(d.querySelector('#form-grid button.active')).slice(0, 12) + '|' + txt($('po-ml'));
+      $('new-patient').click();
+      type($('patient-age'), '7');
+      clickDisease('cap_child');
+      const def = { noWeight: formState() };
+      type($('weight'), '25');
+      def.weightAfterDrug = formState();
+      $('new-patient').click();
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      clickDisease('cap_child');
+      def.weightBeforeDrug = formState();
+      // an explicit chip survives weight changes; the next drug card starts from the default again
+      d.querySelector('#form-grid button[data-form-idx="4"]').click();
+      type($('weight'), '8');
+      def.pickedStays = formState() + '|' + w.eval('userPickedForm');
+      clickDrug(/^Амоксициллин \+ Клав/i);
+      def.nextDrugPicked = w.eval('userPickedForm');
+      out.formFollowsWeight = def;
       type($('patient-age'), '35');
       type($('weight'), '70');
     }

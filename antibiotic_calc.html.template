@@ -919,6 +919,9 @@ let activeDisease = null, activeScenario = null, activeLine = null, activeDrug =
 // The dilution vial size follows the chosen form («2000 мг флакон» → the 2000 mg
 // vial of the dilution table) until the physician picks a vial size by hand.
 let vialFollowsForm = true;
+// false until the physician clicks a form chip: the default chip (measurable
+// suspension strength, evenly dividing tablet) follows the weight / age / regimen
+let userPickedForm = false;
 let activeAge = 'child';
 let userPickedAge = false;
 let lastPickedAge = null;
@@ -1529,6 +1532,7 @@ function onWeightChange(){
     // the age marks of the scenario cards follow the inferred group too (the selection stays)
     if(activeAge !== before) rerenderScenariosKeepingSelection();
   }
+  refreshDefaultForm();
   calculate();
 }
 // Единая логика предупреждения по весу (валидация значения + требование веса для мг/кг режимов)
@@ -1692,6 +1696,8 @@ function onPatientAgeChange(){
     if(group !== activeAge){
       setActiveAge(group);
       rerenderScenariosKeepingSelection();
+    } else {
+      refreshDefaultForm();
     }
     // Явный возраст сильнее вывода из веса: группа больше не переключается по кг.
     userPickedAge = true;
@@ -2371,10 +2377,11 @@ function rerenderLinesKeepingSelection(){
   const lineIdx = activeLine ? (activeScenario.lines || []).indexOf(activeLine) : -1;
   const drugIdx = (lineIdx >= 0 && activeDrug) ? (activeScenario.lines[lineIdx].drugs || []).indexOf(activeDrug) : -1;
   if(lineIdx < 0 || drugIdx < 0){ renderLines(); return; }
-  const formIdx = activeFormIdx, route = currentRouteGroup, regimenIdx = activeRegimenIdx;
+  const formIdx = activeFormIdx, route = currentRouteGroup, regimenIdx = activeRegimenIdx, picked = userPickedForm;
   renderLines(lineIdx, drugIdx, route, regimenIdx);
   const chip = Number.isInteger(formIdx) ? document.querySelector('#form-grid button[data-form-idx="'+formIdx+'"]') : null;
   if(chip && !chip.classList.contains('active')) chip.click();
+  userPickedForm = picked;
 }
 // Age group changed (chip or typed age): keep the physician's scenario / line /
 // drug / route when the scenario still fits the new group (age_group «all» or
@@ -2520,13 +2527,14 @@ function renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, pre
   }
 }
 function selectDrug(drug, line, card, preferredRoute, preferredRegimenIdx){
-  activeDrug = drug; activeLine = line; activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0; vialFollowsForm = true;
+  activeDrug = drug; activeLine = line; activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0; vialFollowsForm = true; userPickedForm = false;
   document.querySelectorAll('#drug-list .drug-card').forEach(c=>c.classList.remove('active'));
   card.classList.add('active');
   $('form-step').classList.remove('hidden');
   $('result-step').classList.remove('hidden');
-  renderForms(preferredRoute);
+  // regimens first: the default form chip is derived from the active regimen
   renderRegimens(preferredRegimenIdx);
+  renderForms(preferredRoute);
   calculate();
   updateAllergyBanner();
   updateHash();
@@ -2626,6 +2634,7 @@ function renderForms(preferredRoute){
     tab.textContent = label;
     tab.onclick = ()=>{
       currentRouteGroup = k;
+      userPickedForm = false;
       routeTabs.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
       tab.classList.add('active');
       renderFormChips(groups[k]);
@@ -2770,6 +2779,7 @@ function renderFormChips(group){
     btn.onclick = ()=>{
       activeFormIdx = idx;
       vialFollowsForm = true;
+      userPickedForm = true;
       grid.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       calculate();
@@ -2796,6 +2806,7 @@ function renderRegimens(preferredRegimenIdx){
         activeRegimenIdx = idx;
         list.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
+        refreshDefaultForm();
         calculate();
       };
       list.appendChild(btn);
@@ -2805,6 +2816,14 @@ function renderRegimens(preferredRegimenIdx){
     sel.classList.add('hidden');
     activeRegimenIdx = selectedIdx;
   }
+}
+// The default form chip depends on the single dose (weight, age, regimen): until
+// the physician picks a chip, re-derive it after those change (a 25-kg child typed
+// after the drug used to stay on «125 мг/5 мл» = 45 ml per dose, where the same
+// child typed first opened on «250 мг/5 мл»).
+function refreshDefaultForm(){
+  if(!activeDrug || userPickedForm) return;
+  renderForms(currentRouteGroup);
 }
 // Режимы, допустимые для выбранной возрастной группы. Единственный источник
 // правды об age_group: подстановка режима другой группы запрещена.

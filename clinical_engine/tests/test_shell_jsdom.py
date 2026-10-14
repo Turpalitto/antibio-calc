@@ -187,6 +187,19 @@ def test_age_group_change_keeps_the_scenario_and_drug_when_the_scenario_fits(she
     assert k["inferredAdult"].startswith("aom_child_standard|1|amoxicillin|po|adult|dim,dim|РАСЧЁТ ЗАБЛОКИРОВАН"), "a weight-inferred group change dims the child-only scenarios and blocks, fail-visible"
 
 
+def test_default_form_chip_follows_the_weight_until_the_physician_picks_one(shell: dict) -> None:
+    """The default suspension strength is chosen from the single dose; a weight typed
+    after the drug used to leave the chip on «125 мг/5 мл» (45 ml per dose) where the
+    same child typed first opened on «250 мг/5 мл» (22.5 ml). An explicit chip
+    survives weight changes; the next drug card starts from the default again."""
+    k = shell["formFollowsWeight"]
+    assert k["noWeight"] == "4|125 мг/5 мл|—"
+    assert k["weightAfterDrug"] == "5|250 мг/5 мл|22.5"
+    assert k["weightAfterDrug"] == k["weightBeforeDrug"], "the entry order must not change the default form"
+    assert k["pickedStays"] == "4|125 мг/5 мл|14.4|true"
+    assert k["nextDrugPicked"] is False
+
+
 def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:
     h = shell["historyRestore"]
     assert h["button"] and h["button"].startswith("Открыть расчёт / Амоксициллин + Клавулановая кислота, Внебольничная пневмония у взрослых"), h
