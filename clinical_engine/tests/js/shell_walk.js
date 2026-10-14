@@ -132,6 +132,23 @@ setTimeout(() => {
                     // the daily tile must be the same arithmetic (1 050 000 ЕД once read «15 млн ЕД»)
                     if (Number.isFinite(num(shownDay)) && Math.abs(num(shownDay) - daily) > 1) out.findings.push({ kind: 'daily_dose_arithmetic', where, sample: `screen daily ${shownDay} vs regimen ${regStr} × ${kg} kg → ${Math.round(daily)}` });
                     stats.arithmeticOracle = (stats.arithmeticOracle || 0) + 1;
+                    // volume oracle: ml on screen = single dose / concentration of the
+                    // suspension (po) or of the selected vial's final solution (im/iv)
+                    const formNow = w.eval('(DB.drugs_reference[getDrugRefs(activeDrug)[0]] || {forms:[]}).forms[activeFormIdx] || null');
+                    if (po && txt($('po-unit')) === 'мл' && /^\d/.test(txt($('po-ml')))) {
+                      const conc = formNow && formNow.concentration_mg_per_ml;
+                      const ml = parseFloat(txt($('po-ml')).replace(',', '.'));
+                      if (!(conc > 0)) out.findings.push({ kind: 'po_ml_without_concentration', where, sample: txt($('po-ml')) });
+                      else if (Math.abs(ml - expectSingle / conc) > 0.06) out.findings.push({ kind: 'po_volume_arithmetic', where, sample: `screen ${ml} мл vs ${Math.round(expectSingle)} / ${conc} мг/мл = ${(expectSingle / conc).toFixed(2)}` });
+                      else stats.volumeOracle = (stats.volumeOracle || 0) + 1;
+                    } else if (!po && /^\d/.test(txt($('inj-ml')))) {
+                      const vial = w.eval('(function(){ const ref = DB.drugs_reference[getDrugRefs(activeDrug)[0]] || {}; const rd = (ref.dilution || {})[activeRouteKey] || {}; return (rd.solvent_options || [])[activeVialIdx] || null; })()');
+                      const conc = vial && (vial.final_concentration_mg_ml || vial.final_concentration_units_ml);
+                      const ml = parseFloat(txt($('inj-ml')).replace(',', '.'));
+                      if (!(conc > 0)) out.findings.push({ kind: 'inj_ml_without_concentration', where, sample: txt($('inj-ml')) });
+                      else if (Math.abs(ml - expectSingle / conc) > 0.006) out.findings.push({ kind: 'inj_volume_arithmetic', where, sample: `screen ${ml} мл vs ${Math.round(expectSingle)} / ${conc} per ml = ${(expectSingle / conc).toFixed(3)}` });
+                      else stats.volumeOracle = (stats.volumeOracle || 0) + 1;
+                    }
                   } else if (expectSingle != null && !shown.startsWith('—')) {
                     out.findings.push({ kind: 'dose_not_shown', where, sample: `expected ${Math.round(expectSingle)}, screen «${shown}»` });
                   }
@@ -197,6 +214,13 @@ setTimeout(() => {
                 {
                   const rxDtd = txt($('rx-drugs')).match(/D\.t\.d\. N (\d+)/);
                   if (rxDtd && w.__rpDtd && rxDtd[1] !== w.__rpDtd) out.findings.push({ kind: 'course_units_rx_vs_rp', where, sample: `printed N ${rxDtd[1]} vs Rp N. ${w.__rpDtd}` });
+                  // the printed breakdown must multiply out: N = per dose × р/д × days
+                  const br = txt($('rx-drugs')).match(/D\.t\.d\. N (\d+) [^()]*\(по (\d+(?:[.,]\d+)?) на приём, (\d+) р\/д × (\d+) дн\.\)/);
+                  if (br) {
+                    const want = Math.ceil(parseFloat(br[2].replace(',', '.')) * parseInt(br[3]) * parseInt(br[4]) - 1e-9);
+                    if (parseInt(br[1]) !== want) out.findings.push({ kind: 'course_quantity_arithmetic', where, sample: br[0] });
+                    else stats.courseArithmeticOracle = (stats.courseArithmeticOracle || 0) + 1;
+                  }
                 }
                 {
                   const group = w.eval('currentRouteGroup');
