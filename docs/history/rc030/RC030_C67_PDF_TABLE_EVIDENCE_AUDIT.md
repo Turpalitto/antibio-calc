@@ -29,7 +29,7 @@ Investigated further (whole-document search, not just the cited page): the ancho
 
 This is a genuine source-attribution defect in the two records' `source_pdf`/`source_quote` fields upstream of this audit (most likely a mis-join during original corpus assembly to the wrong guideline), **not a PDF-extraction or whitespace-normalization artifact** — the text genuinely isn't in the cited file.
 
-**Disposition:** both `5688` and `6052` are classified `PDF_QUOTE_NOT_FOUND` and removed from the exact-link-eligible evidence pool. Both were already `SAFE_SINGLE_CANDIDATE` (not `SAFE_EXACT_LINK`), so this does not change the 74-count exact-link pool, but it does directly inform their Part VI disposition (`SINGLE_SOURCE_BLOCKED`, not any confirmation-track bucket) — see [RC030_C67_SINGLE_CANDIDATE_DISPOSITION.md](RC030_C67_SINGLE_CANDIDATE_DISPOSITION.md).
+**Disposition:** both `5688` and `6052` are classified `PDF_QUOTE_NOT_FOUND` and removed from the exact-link-eligible evidence pool. Both were already `SAFE_SINGLE_CANDIDATE` (not `SAFE_EXACT_LINK`), so this does not change the 74-count exact-link pool, but it does directly inform their Part VI disposition (`SINGLE_SOURCE_BLOCKED`, not any confirmation-track bucket) — see [RC030_C67_SINGLE_CANDIDATE_DISPOSITION.md](../../../RC030_C67_SINGLE_CANDIDATE_DISPOSITION.md).
 
 ## Table evidence
 

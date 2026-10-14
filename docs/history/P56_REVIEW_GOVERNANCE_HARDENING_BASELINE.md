@@ -40,7 +40,7 @@ Generated: 2026-07-15. Reproduces GOV-001, GOV-002, GOV-003 against the pre-hard
 
 ## Root-cause register
 
-All three entries recorded in [ROOT_CAUSE_REGISTER.md](ROOT_CAUSE_REGISTER.md) as GOV-001, GOV-002, GOV-003.
+All three entries recorded in [ROOT_CAUSE_REGISTER.md](../../ROOT_CAUSE_REGISTER.md) as GOV-001, GOV-002, GOV-003.
 
 ## Reproduction tests exist before implementation
 

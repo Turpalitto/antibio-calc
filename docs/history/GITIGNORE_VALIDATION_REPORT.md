@@ -34,7 +34,7 @@ No false-positive ignores were found against this spot-check set.
 
 ## Gaps identified (original pass) — now resolved per owner decisions of 2026-07-15
 
-- `medical_dictionary/unknown_drugs.csv` is a **different file** from the root-anchored `/unknown_drugs.csv` pattern (line 83). **Resolution:** owner decision 2 classifies it as a legacy/runtime artifact (GENERATE DURING BUILD), excluded from the recovery commit at the file-list level (`REPOSITORY_RECOVERY_CLASSIFICATION.csv`, `P56_PROPOSED_TRACKED_FILES.txt`) rather than via a new `.gitignore` pattern — see [UNKNOWN_DRUGS_CSV_DECISION.md](UNKNOWN_DRUGS_CSV_DECISION.md). No `.gitignore` change was needed or made for this file.
+- `medical_dictionary/unknown_drugs.csv` is a **different file** from the root-anchored `/unknown_drugs.csv` pattern (line 83). **Resolution:** owner decision 2 classifies it as a legacy/runtime artifact (GENERATE DURING BUILD), excluded from the recovery commit at the file-list level (`REPOSITORY_RECOVERY_CLASSIFICATION.csv`, `P56_PROPOSED_TRACKED_FILES.txt`) rather than via a new `.gitignore` pattern — see [UNKNOWN_DRUGS_CSV_DECISION.md](../../UNKNOWN_DRUGS_CSV_DECISION.md). No `.gitignore` change was needed or made for this file.
 - `p56_queue_report.json` and `p56_review_benchmark.json` (repo root) did not match any existing ignore pattern. **Resolution (owner decision 6): fixed.** Added two root-anchored lines to `.gitignore`:
 
   ```

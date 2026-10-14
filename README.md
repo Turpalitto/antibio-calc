@@ -6,7 +6,9 @@ audit `docs/audits/AUDIT_2026-10-14.md` — 120 nosologies, **65 computable /
 with advisory safety flags, golden-case tests, loopback-only engine API.
 P5.6 Clinical Review Workbench is local-only, Clinical Engine disconnected; no
 object is physician-approved automatically; P6 is blocked. Working docs:
-`PROJECT_STATE.md`, `NEXT_TASK.md`, `DECISIONS.md`, `AI_LOG.md`.
+`PROJECT_STATE.md`, `NEXT_TASK.md`, `DECISIONS.md`, `AI_LOG.md`. Historical
+reports, RCAs and one-off run artefacts live in `docs/history/` (index in its
+README); policies, specs, RFCs and anything read by code stay in the root.
 
 ## Setup
 

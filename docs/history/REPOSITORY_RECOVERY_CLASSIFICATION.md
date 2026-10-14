@@ -1,6 +1,6 @@
 # Repository Recovery Classification — Phase 3 (updated Phase 8, post owner-decision pass 2026-07-15)
 
-Generated: 2026-07-15, regenerated after owner decisions. Full per-file detail in [REPOSITORY_RECOVERY_CLASSIFICATION.csv](REPOSITORY_RECOVERY_CLASSIFICATION.csv) (520 unique files: 19 currently-tracked + 501 untracked non-ignored files, each with path, category, size, SHA-256, fresh-clone requirement, safe-to-commit flag, and reason).
+Generated: 2026-07-15, regenerated after owner decisions. Full per-file detail in [REPOSITORY_RECOVERY_CLASSIFICATION.csv](../../REPOSITORY_RECOVERY_CLASSIFICATION.csv) (520 unique files: 19 currently-tracked + 501 untracked non-ignored files, each with path, category, size, SHA-256, fresh-clone requirement, safe-to-commit flag, and reason).
 
 `.venv/`, `__pycache__/`, `.mypy_cache/`, runtime databases, PDFs, and backups are already excluded by `.gitignore` and do not appear in this list — they were never candidates for tracking.
 
@@ -25,7 +25,7 @@ Generated: 2026-07-15, regenerated after owner decisions. Full per-file detail i
 
 ## Special-attention areas (per Phase 3 instructions, resolved)
 
-- **`unknown_drugs.csv`**: both the root copy (gitignored) and `medical_dictionary/unknown_drugs.csv` (untracked) are excluded per owner decision 2 (GENERATE DURING BUILD; no producer script exists; classified legacy/runtime artifact). See [UNKNOWN_DRUGS_CSV_DECISION.md](UNKNOWN_DRUGS_CSV_DECISION.md).
+- **`unknown_drugs.csv`**: both the root copy (gitignored) and `medical_dictionary/unknown_drugs.csv` (untracked) are excluded per owner decision 2 (GENERATE DURING BUILD; no producer script exists; classified legacy/runtime artifact). See [UNKNOWN_DRUGS_CSV_DECISION.md](../../UNKNOWN_DRUGS_CSV_DECISION.md).
 - **`clinical_engine/regimen/`** and **`clinical_engine/review_workbench/`**: all category A/B, tracked, no exclusions.
 - **Tests**: 73 files, all category B, all tracked, required for the 1387-test canonical suite.
 - **Migration**: `clinical_engine/regimen/class_level_migration.py`, tracked.
