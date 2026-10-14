@@ -597,6 +597,32 @@ def test_adult_weight_over_40_never_produces_a_caution() -> None:
     assert result["w"] == ""
 
 
+def test_weight_impossible_for_the_entered_age_blocks_and_rare_combinations_warn() -> None:
+    """«25» typed instead of «2.5» for a neonate is a 10× mg/kg dose: the explicit
+    age makes the weight checkable, and the notice names both values."""
+    body = (
+        "const probe = (days, w, age) => ({b: weightBlockReason(w, age), w: weightWarnReason(w, age)});"
+        "const out = {};"
+        "patientAgeDays = 10; out.neo25 = probe(10, 25, 'neonate'); out.neo7 = probe(10, 7, 'neonate'); out.neo71 = probe(10, 7.1, 'neonate');"
+        "patientAgeDays = 6 * DAYS_PER_MONTH; out.inf25 = probe(0, 25, 'child'); out.inf20 = probe(0, 20, 'child'); out.inf7 = probe(0, 7, 'child');"
+        "patientAgeDays = 2 * DAYS_PER_YEAR; out.tod28 = probe(0, 28, 'child'); out.tod14 = probe(0, 14, 'child');"
+        "patientAgeDays = 5 * DAYS_PER_YEAR; out.five28 = probe(0, 28, 'child');"
+        "patientAgeDays = null; out.noAge25 = probe(0, 25, 'neonate');"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["weightBlockReason", "weightWarnReason"], "", body)
+    assert result["neo25"]["b"].startswith("Вес 25 кг при возрасте 10 дн. — неправдоподобное сочетание для новорождённого (> 7 кг)"), result["neo25"]
+    assert "2.5 кг вместо 25" in result["neo25"]["b"]
+    assert result["neo7"] == {"b": "", "w": ""} and result["neo71"]["b"].startswith("Вес 7.1 кг при возрасте 10 дн.")
+    assert result["inf25"]["b"].startswith("Вес 25 кг при возрасте 6 мес — неправдоподобное сочетание для ребёнка до года (> 20 кг)"), result["inf25"]
+    assert result["inf20"] == {"b": "", "w": ""} and result["inf7"] == {"b": "", "w": ""}
+    # 1–3 years: a warning, never a block (obesity exists; the typo risk is lower)
+    assert result["tod28"]["b"] == "" and result["tod28"]["w"].startswith("Вес 28 кг при возрасте 2 года — редкое сочетание для ребёнка до 3 лет"), result["tod28"]
+    assert result["tod14"] == {"b": "", "w": ""} and result["five28"] == {"b": "", "w": ""}
+    # without an explicit age the old group-only rules apply (25 kg neonate → not checkable by age)
+    assert result["noAge25"] == {"b": "", "w": ""}, result["noAge25"]
+
+
 def test_calculate_refuses_to_render_a_dose_for_out_of_range_weight() -> None:
     """B6: the blocking path must hide the dose panels, not just print a message."""
     fixture = _fixture_db()

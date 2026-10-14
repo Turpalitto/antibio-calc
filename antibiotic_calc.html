@@ -1506,6 +1506,12 @@ function weightBlockReason(w, age){
   if(!(w > 0)) return '';
   if(w < 1) return 'Вес '+w+' кг — неправдоподобное значение (< 1 кг). Расчёт заблокирован: доза не может быть пациент-специфичной. Проверьте вес.';
   if(w > 250) return 'Вес '+w+' кг — вне рабочего диапазона (> 250 кг). Расчёт заблокирован: проверьте вес пациента.';
+  // Вес, невозможный для введённого возраста (опечатка «25» вместо «2.5» даёт
+  // 10-кратную мг/кг-дозу): новорождённый > 7 кг, ребёнок до года > 20 кг.
+  if(patientAgeDays != null){
+    if(patientAgeDays <= 28 && w > 7) return 'Вес '+w+' кг при возрасте '+formatAgeDays(patientAgeDays)+' — неправдоподобное сочетание для новорождённого (> 7 кг). Расчёт заблокирован: проверьте вес (например, 2.5 кг вместо 25).';
+    if(patientAgeDays < DAYS_PER_YEAR && w > 20) return 'Вес '+w+' кг при возрасте '+formatAgeDays(patientAgeDays)+' — неправдоподобное сочетание для ребёнка до года (> 20 кг). Расчёт заблокирован: проверьте вес.';
+  }
   if(w >= 40 && age === 'child') return 'Вес '+w+' кг при возрастной группе «дети»: мг/кг-дозирование по детской схеме с таким весом даёт передозировку. Расчёт заблокирован — проверьте возрастную группу и вес.';
   if(w >= 40 && age === 'neonate') return 'Вес '+w+' кг при возрастной группе «новорождённые» (0–28 дней): основание дозирования противоречиво. Расчёт заблокирован — проверьте возраст и группу.';
   return '';
@@ -1514,6 +1520,7 @@ function weightWarnReason(w, age){
   if(!(w > 0)) return '';
   if(weightBlockReason(w, age)) return '';
   if(w < 40 && age === 'adult') return 'Вес '+w+' кг при возрастной группе «взрослые» — редкое, но возможное сочетание. Проверьте, что возрастная группа выбрана верно: расчёт использует фиксированную дозу для взрослых, она не зависит от веса.';
+  if(patientAgeDays != null && patientAgeDays < 3 * DAYS_PER_YEAR && w > 25) return 'Вес '+w+' кг при возрасте '+formatAgeDays(patientAgeDays)+' — редкое сочетание для ребёнка до 3 лет. Проверьте вес: мг/кг-доза растёт пропорционально.';
   return '';
 }
 function updateWeightWarn(needWeight){
@@ -1525,8 +1532,10 @@ function updateWeightWarn(needWeight){
   if(!msg){
     if(!w){
       if(needWeight) msg = 'Для этого режима нужен вес пациента — доза рассчитывается по мг/кг.';
-    } else if(w < 40 && activeAge === 'neonate'){
-      msg = 'Вес <40 кг при группе «новорождённые» — уточните возрастную группу.';
+    } else if(w < 40 && activeAge === 'neonate' && patientAgeDays == null){
+      // the group was picked by hand: weight alone cannot tell a neonate from an
+      // older infant — once an explicit age (0–28 days) is entered the notice goes away
+      msg = 'Группа «новорождённые» выбрана без указания возраста — введите возраст (0–28 дней), чтобы подтвердить группу.';
     }
   }
   if(msg){ warn.querySelector('span').textContent = msg; warn.classList.remove('hidden'); warn.dataset.blocking = block ? 'true' : 'false'; }
@@ -2794,13 +2803,15 @@ function calculationBlockReason(w){
   return '';
 }
 function calculate(){
+  // The weight / age plausibility notice is shown as soon as the value is typed,
+  // not only after a drug is chosen (300 kg used to sit silently until then).
+  updateWeightWarn(false);
   if(!activeDrug) return;
   const w = parseFloat($('weight').value);
   const refs = getDrugRefs(activeDrug);
   const mainRef = DB.drugs_reference[refs[0]];
   if(!mainRef) return;
   const form = mainRef.forms[activeFormIdx];
-  updateWeightWarn(false);
   const block = calculationBlockReason(w);
   if(block){
     // Ничего не показываем: ни дозы, ни объёма, ни препарата для печати.

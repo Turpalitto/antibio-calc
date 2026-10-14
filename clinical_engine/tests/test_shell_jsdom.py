@@ -297,3 +297,22 @@ def test_children_open_on_the_suspension_with_a_measurable_dose_volume(shell: di
     assert ld["infant7"]["active"] == ["250 мг/5 мл"] and ld["infant7"]["ml"] == "6.3 мл", ld["infant7"]
     assert ld["lowPicked"]["active"] == ["125 мг/5 мл"] and ld["lowPicked"]["ml"] == "45.0"
     assert "разовый объём 45.0 мл велик" in ld["lowPicked"]["mis"]
+
+
+def test_weight_impossible_for_the_age_and_implausible_age_block_every_output(shell: dict) -> None:
+    """Typed values are checked against each other: 25 kg at 10 days (a typo for
+    2.5 → a 10× mg/kg dose) and 150 years both block the screen, the MIS copy
+    and the printed form; the notice is shown while typing, drug or no drug."""
+    pl = shell["plausibility"]
+    neo = pl["neonate25"]
+    assert neo["hidden"] is False and neo["blocking"] == "true"
+    assert neo["text"].startswith("Вес 25 кг при возрасте 10 дн. — неправдоподобное сочетание для новорождённого (> 7 кг)"), neo
+    assert neo["block"].startswith("РАСЧЁТ ЗАБЛОКИРОВАН: Вес 25 кг при возрасте 10 дн.")
+    assert neo["mis"] == "" and "заблокировано" in neo["toast"], neo
+    # a real neonate weight with an explicit age: no notice at all (the old «<40 кг при
+    # группе новорождённые» hint only applies when no age was entered)
+    assert pl["neonate32"]["hidden"] is True, pl["neonate32"]
+    assert pl["age150"]["po"] is False and pl["age150"]["block"].startswith("РАСЧЁТ ЗАБЛОКИРОВАН: Возраст 150 лет — неправдоподобное значение (> 120 лет)"), pl["age150"]
+    assert pl["age150"]["notice"].startswith("Возраст 150 лет — неправдоподобное значение")
+    assert pl["age35"]["notice"] == "Возраст 35 лет → группа «взрослые»."
+    assert pl["w300"]["hidden"] is False and pl["w300"]["blocking"] == "true" and "> 250 кг" in pl["w300"]["text"]

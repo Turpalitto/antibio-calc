@@ -461,6 +461,30 @@ async function run() {
       type($('patient-age'), '35');
       type($('weight'), '70');
     }
+    // 12. weight / age plausibility: the notice appears while typing (drug or not),
+    //     a weight impossible for the entered age blocks every output
+    {
+      const warn = () => ({ text: txt($('weight-warn')), hidden: !visible($('weight-warn')), blocking: $('weight-warn').dataset.blocking });
+      type($('patient-age-unit'), 'days');
+      type($('patient-age'), '10');
+      type($('weight'), '25');
+      w.__copied = '';
+      w.copyForMIS();
+      await sleep(0);
+      out.plausibility = { neonate25: Object.assign(warn(), { mis: w.__copied || '', toast: txt($('toast')), block: txt($('dose-block')) }) };
+      type($('weight'), '3.2');
+      out.plausibility.neonate32 = warn();
+      type($('patient-age'), '150');
+      type($('patient-age-unit'), 'years');
+      type($('weight'), '70');
+      out.plausibility.age150 = { notice: txt($('age-explicit-notice')), block: txt($('dose-block')), po: visible($('res-po')) };
+      type($('patient-age'), '35');
+      out.plausibility.age35 = { notice: txt($('age-explicit-notice')), block: txt($('dose-block')), po: visible($('res-po')) };
+      // no drug at all: pick nothing new, just an out-of-range weight on a fresh page state
+      type($('weight'), '300');
+      out.plausibility.w300 = warn();
+      type($('weight'), '70');
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }
