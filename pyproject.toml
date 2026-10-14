@@ -66,6 +66,20 @@ override-dependencies = [
     "tqdm>=4.67.1,<5",
 ]
 
+[tool.ruff]
+# Audit 2026-10-14 (D-1): the lint gate in CI is deliberately the *critical*
+# subset only — syntax errors, undefined names, invalid comparisons, misused
+# statements — so it is green today and can never hide a NameError-class bug
+# again (E-4 shipped six of them). Style rules (F401/F541/F811/F841 ~200 hits)
+# are a separate clean-up: `medical_normalizer/` is FROZEN and must not be
+# auto-fixed in passing.
+line-length = 120
+target-version = "py312"
+extend-exclude = ["tmp", "generated/*/page_*", "audit-site"]
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]
+
 [tool.pytest.ini_options]
 # Milestone 13: repo root on the path so `clinical_engine` / `medical_normalizer`
 # import under a bare `pytest` run.

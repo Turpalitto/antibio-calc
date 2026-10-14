@@ -28,6 +28,8 @@ Usage
     python db/build_html.py                 # validate + build + report hashes
     python db/build_html.py --skip-validate # local iteration only
     python db/build_html.py --node /path/to/node
+    python db/build_html.py --check         # no writes: exit 1 if the committed
+                                            # antibiotic_calc.html or sw.js is stale
 """
 
 from __future__ import annotations
@@ -267,21 +269,68 @@ def build_html(
     }
 
 
+def check_build(*, node_exe: str | None = None, run_validate: bool = True) -> list[str]:
+    """Rebuild into a temp dir and compare with the committed artifacts.
+
+    Returns a list of human-readable problems (empty = fresh). Never writes to
+    the repository: used by `--check`, the pre-commit hook and CI.
+    """
+    problems: list[str] = []
+    with tempfile.TemporaryDirectory(prefix="antibio-check-") as tmp:
+        fresh = Path(tmp) / OUTPUT_PATH.name
+        build_html(output_path=fresh, node_exe=node_exe, run_validate=run_validate)
+        if not OUTPUT_PATH.is_file():
+            problems.append("%s is missing — run `python db/build_html.py`" % OUTPUT_PATH.name)
+        elif fresh.read_bytes() != OUTPUT_PATH.read_bytes():
+            problems.append(
+                "%s is stale: the template/DB produce a different artifact "
+                "(committed sha256 %s, rebuilt %s) — run `python db/build_html.py`"
+                % (OUTPUT_PATH.name, _sha256_text(OUTPUT_PATH.read_text(encoding="utf-8"))[:12],
+                   _sha256_text(fresh.read_text(encoding="utf-8"))[:12])
+            )
+    if SERVICE_WORKER_PATH.is_file() and OUTPUT_PATH.is_file():
+        current, expected = expected_service_worker_version(SERVICE_WORKER_PATH, OUTPUT_PATH)
+        if current != expected:
+            problems.append(
+                "sw.js CACHE_VERSION %r is stale (expected %r) — run `python db/build_html.py`"
+                % (current, expected)
+            )
+    return problems
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     node_exe: str | None = None
     run_validate = True
+    check_only = False
     for i, a in enumerate(argv):
         if a == "--node" and i + 1 < len(argv):
             node_exe = argv[i + 1]
         elif a in ("--skip-validate", "--no-validate"):
             run_validate = False
+        elif a == "--check":
+            check_only = True
         elif a in ("-h", "--help"):
             print(__doc__)
             return 0
+        elif i > 0 and argv[i - 1] == "--node":
+            continue
         else:
             print("unknown argument: %s" % a, file=sys.stderr)
             return 2
+
+    if check_only:
+        try:
+            problems = check_build(node_exe=node_exe, run_validate=run_validate)
+        except (BuildError, FileNotFoundError, OSError) as exc:
+            print("CHECK FAILED: %s" % exc, file=sys.stderr)
+            return 1
+        for problem in problems:
+            print("STALE: %s" % problem, file=sys.stderr)
+        if problems:
+            return 1
+        print("Build is fresh: %s and sw.js match the template + DB" % OUTPUT_PATH.name)
+        return 0
 
     try:
         report = build_html(node_exe=node_exe, run_validate=run_validate)

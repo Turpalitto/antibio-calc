@@ -8,23 +8,29 @@ on:
 permissions:
   contents: read
 
+# Audit 2026-10-14 (A-4): actions pinned to their Node 24 releases (Node 20 is
+# removed from hosted runners) and the runner image pinned to ubuntu-24.04 —
+# `ubuntu-latest` migrates to Ubuntu 26.04 from 2026-10-19 and the PDF fixture
+# depends on the fonts shipped by the image. `astral-sh/setup-uv` publishes no
+# floating major tag after v7, hence the commit SHA.
+
 jobs:
   test:
     name: pytest + validate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
 
       # pyproject [tool.uv] package=false: deps only, project is imported via
       # pytest pythonpath. --frozen guarantees the committed uv.lock is used.
@@ -33,22 +39,49 @@ jobs:
 
       # testpaths (pyproject.toml) = medical_normalizer, clinical_engine,
       # regimen, review_workbench, src/tests — includes
-      # test_build_reproducibility (antibiotic_calc.html rebuild gate).
+      # test_build_reproducibility (antibiotic_calc.html + sw.js rebuild gate),
+      # the calculator golden cases and the static-server / API peer policies.
       - name: Run test suite
         run: uv run --no-sync python -m pytest -q
 
       - name: Validate shipped DB (120 recs / regimens / scenarios)
         run: npm run validate
 
-  gitleaks:
-    name: secret scan
-    runs-on: ubuntu-latest
+      # The committed artifact must be what the inputs produce (belt and braces
+      # next to test_build_reproducibility: this also catches a stale sw.js).
+      - name: Check the committed build is fresh
+        run: uv run --no-sync python db/build_html.py --check
+
+  lint:
+    name: ruff (critical rules)
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      # ruff is pinned in uv.lock through the `development` extra; the rule set
+      # lives in pyproject [tool.ruff.lint] (E9, F63, F7, F82).
+      - name: Install locked ruff
+        run: uv sync --frozen --extra development
+
+      - name: ruff check
+        run: uv run --no-sync ruff check .
+
+  gitleaks:
+    name: secret scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: gitleaks/gitleaks-action@v2
+      - uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

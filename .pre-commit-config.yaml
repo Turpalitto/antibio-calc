@@ -1,0 +1,34 @@
+# Pre-commit hooks (audit 2026-10-14, I-7). Opt-in:
+#
+#     uv tool install pre-commit        # or: pip install pre-commit
+#     pre-commit install
+#
+# Every hook mirrors a CI gate, so a commit that passes here passes
+# `.github/workflows/ci.yml` lint/validate/freshness steps. Tests are not run
+# on commit (40 s) — CI does that.
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.21            # keep in step with uv.lock (`development` extra)
+    hooks:
+      - id: ruff-check       # rule set from pyproject [tool.ruff.lint]: E9, F63, F7, F82
+
+  - repo: local
+    hooks:
+      - id: validate-db
+        name: node db/validate_db.js (0 errors required)
+        entry: node db/validate_db.js
+        language: system
+        pass_filenames: false
+        files: ^db/.*\.(json|js)$
+
+      - id: build-fresh
+        name: antibiotic_calc.html + sw.js are rebuilt from template/DB
+        entry: python db/build_html.py --check
+        language: system
+        pass_filenames: false
+        files: ^(antibiotic_calc\.html(\.template)?|sw\.js|db/.*\.(json|py|js)|manifest\.webmanifest|icons/.*|vendor/.*)$

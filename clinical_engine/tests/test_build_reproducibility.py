@@ -182,6 +182,35 @@ def test_building_elsewhere_never_touches_the_repo_service_worker(tmp_path: Path
     assert SW_PATH.read_bytes() == before
 
 
+def test_check_mode_reports_fresh_for_the_committed_artifacts() -> None:
+    """`python db/build_html.py --check` is the pre-commit/CI freshness gate."""
+    assert build_html_module.check_build(run_validate=False) == []
+
+
+def test_check_mode_detects_a_stale_shell_and_a_stale_service_worker(monkeypatch: pytest.MonkeyPatch,
+                                                                     tmp_path: Path) -> None:
+    repo_html = tmp_path / "antibiotic_calc.html"
+    repo_sw = tmp_path / "sw.js"
+    repo_html.write_bytes(ARTIFACT_PATH.read_bytes() + b"\n<!-- hand edit -->")
+    repo_sw.write_text(SW_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+    monkeypatch.setattr(build_html_module, "OUTPUT_PATH", repo_html)
+    monkeypatch.setattr(build_html_module, "SERVICE_WORKER_PATH", repo_sw)
+    problems = build_html_module.check_build(run_validate=False)
+    assert any("antibiotic_calc.html is stale" in p for p in problems)
+    assert any("sw.js CACHE_VERSION" in p for p in problems)
+    # check mode never repairs anything by itself
+    assert repo_html.read_bytes().endswith(b"<!-- hand edit -->")
+    assert "const CACHE_VERSION = 'build-" in repo_sw.read_text(encoding="utf-8")
+
+
+def test_cli_check_flag_exit_codes(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    assert build_html_module.main(["--check", "--skip-validate"]) == 0
+    assert "Build is fresh" in capsys.readouterr().out
+    monkeypatch.setattr(build_html_module, "check_build", lambda **_: ["sw.js CACHE_VERSION 'v4' is stale"])
+    assert build_html_module.main(["--check", "--skip-validate"]) == 1
+    assert "STALE: sw.js" in capsys.readouterr().err
+
+
 def test_build_refuses_template_without_marker(tmp_path: Path) -> None:
     bad_template = tmp_path / "tpl.html"
     bad_template.write_text("<html>no marker here</html>", encoding="utf-8")
