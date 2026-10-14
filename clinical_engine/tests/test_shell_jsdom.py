@@ -270,3 +270,19 @@ def test_saved_dark_theme_is_applied_before_the_stylesheet_loads() -> None:
     css_at = head.find('<link href="./vendor/app.css"')
     assert 0 < script_at < css_at, "pre-paint theme script must precede the stylesheet link"
     assert "documentElement.classList.add('dark')" in head[script_at:script_at + 200]
+
+
+def test_children_open_on_the_suspension_with_a_measurable_dose_volume(shell: dict) -> None:
+    """A 25-kg child on amoxicillin 90 mg/kg/day (1125 mg per dose) used to open
+    on the DB-first «125 мг/5 мл» = 45 ml per dose; now the concentration whose
+    volume is closest to measurable wins, and the MIS text names the daily dose
+    and carries the large-volume warning when the physician picks a weak one."""
+    ld = shell["liquidDefault"]
+    assert ld["child25"]["active"] == ["250 мг/5 мл"] and ld["child25"]["dose"] == "1125 мг", ld["child25"]
+    assert ld["child25"]["ml"] == "22.5 мл"
+    assert "Суточная доза: 2250 мг" in ld["child25"]["mis"]
+    assert "Предупреждение: разовый объём 22.5 мл велик" in ld["child25"]["mis"]
+    # 7-kg infant, 315 mg per dose: 125 mg/5 ml would be 12.6 ml, 250 mg/5 ml is 6.3 ml
+    assert ld["infant7"]["active"] == ["250 мг/5 мл"] and ld["infant7"]["ml"] == "6.3 мл", ld["infant7"]
+    assert ld["lowPicked"]["active"] == ["125 мг/5 мл"] and ld["lowPicked"]["ml"] == "45.0"
+    assert "разовый объём 45.0 мл велик" in ld["lowPicked"]["mis"]

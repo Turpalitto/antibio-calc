@@ -2431,6 +2431,28 @@ function bestSolidFormIndex(group){
   });
   return best ? best.i : -1;
 }
+// Default liquid form for children: the concentration whose single-dose volume is
+// convenient to measure (2.5–10 ml). Above that the smallest volume wins (a 25-kg
+// child on 1125 mg opened on «125 мг/5 мл» = 45 ml per dose), below it the
+// largest; DB order (lower concentration first) breaks ties. -1 = keep DB order.
+function bestLiquidFormIndex(group){
+  if(!activeDrug || typeof DB === 'undefined' || !DB) return -1;
+  if(typeof getActiveRegimen !== 'function' || typeof computeDose !== 'function' || typeof doseUnitOf !== 'function') return -1;
+  const reg = getActiveRegimen();
+  const mainRef = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
+  const w = parseFloat($('weight').value);
+  if(!reg || !mainRef) return -1;
+  const singleMg = computeDose(reg, w > 0 ? w : 0, doseUnitOf(mainRef)).singleMg;
+  if(!(singleMg > 0)) return -1;
+  let best = null;
+  group.forEach((g, i)=>{
+    if(!['suspension','syrup','powder_for_suspension'].includes(g.f.form_type) || !(g.f.concentration_mg_per_ml > 0)) return;
+    const ml = singleMg / g.f.concentration_mg_per_ml;
+    const score = ml > 10 ? [1, ml - 10] : (ml < 2.5 ? [2, 2.5 - ml] : [0, 0]);
+    if(!best || score[0] < best.score[0] || (score[0] === best.score[0] && score[1] < best.score[1] - 1e-9)) best = {i, score};
+  });
+  return best ? best.i : -1;
+}
 function renderFormChips(group){
   const grid = $('form-grid');
   grid.innerHTML = '';
@@ -2442,7 +2464,8 @@ function renderFormChips(group){
     // Закрепляем жидкую форму ТОЛЬКО если у неё есть готовая концентрация (mg/ml),
     // иначе можно выбрать парентеральный флакон (powder_for_suspension без mg/ml),
     // который даст деление на 0 и Infinity (напр. цефуроксим '750 мг флакон').
-    const liquidPos = group.findIndex(g=>['suspension','syrup','powder_for_suspension'].includes(g.f.form_type) && g.f.concentration_mg_per_ml != null);
+    const bestLiquid = bestLiquidFormIndex(group);
+    const liquidPos = bestLiquid !== -1 ? bestLiquid : group.findIndex(g=>['suspension','syrup','powder_for_suspension'].includes(g.f.form_type) && g.f.concentration_mg_per_ml != null);
     if(liquidPos !== -1){ defaultIdx = liquidPos; liquidPicked = true; }
   }
   if(!liquidPicked){
@@ -3616,7 +3639,7 @@ function copyForMIS(){
   const refs = getDrugRefs(activeDrug);
   const ref = DB.drugs_reference[refs[0]];
   const unit = doseUnitOf(ref);
-  const {singleMg, dailyMg} = computeDose(reg, w, unit);
+  const {singleMg, dailyMg, capped} = computeDose(reg, w, unit);
   const form = ref.forms[activeFormIdx];
   const coursePkg = calculateCoursePackages(reg, form, singleMg, dailyMg, w);
 
@@ -3654,6 +3677,10 @@ function copyForMIS(){
     ? 'местно, по указаниям КР (в записи БД задана системная схема: '+regimenSummary(reg, unit)+')'
     : regimenSummary(reg, unit))+'\n';
   txt += 'Схема приёма: '+doseStr+'\n';
+  if(dailyMg > 0 && !topicalForm) txt += 'Суточная доза: '+fmtDose(dailyMg, unit)+(capped && reg.max_daily_mg != null ? ' (ограничена максимумом '+fmtDose(reg.max_daily_mg, unit)+'/сут)' : '')+'\n';
+  if(isOralLiquid(form) && singleMg / form.concentration_mg_per_ml > 15 && w > 0 && w < 40){
+    txt += 'Предупреждение: разовый объём '+(singleMg / form.concentration_mg_per_ml).toFixed(1)+' мл велик — рассмотрите более концентрированную суспензию или диспергируемые таблетки\n';
+  }
   comboComponentLines(refs.slice(1), reg, w).forEach(line=>{ txt += line+'\n'; });
   txt += 'Курс лечения: '+courseText(reg)+'\n';
   if(coursePkg){

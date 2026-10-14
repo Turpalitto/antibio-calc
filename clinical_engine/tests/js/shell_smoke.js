@@ -415,6 +415,45 @@ async function run() {
       await sleep(20);
       out.hashchange = { before: beforeHash, after: w.eval('activeDisease && activeDisease.id'), scenario: w.eval('activeScenario && activeScenario.id') };
     }
+
+    // ---- 11. children open on the suspension whose dose volume is measurable ------
+    {
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      clickDisease('cap_child');
+      const sc = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc) sc.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const active = () => [...d.querySelectorAll('#form-grid button.active')].map((c) => txt(c));
+      out.liquidDefault = { child25: { active: active(), dose: txt($('po-mg')), ml: txt($('po-ml')) + ' ' + txt($('po-unit')) } };
+      w.__copied = '';
+      w.copyForMIS();
+      await sleep(0);
+      out.liquidDefault.child25.mis = w.__copied || '';
+      // the same drug for a 7-kg infant: the low concentration is the measurable one
+      type($('patient-age-unit'), 'months');
+      type($('patient-age'), '6');
+      type($('weight'), '7');
+      clickDisease('cap_child');
+      const sc2 = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc2) sc2.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      out.liquidDefault.infant7 = { active: active(), dose: txt($('po-mg')), ml: txt($('po-ml')) + ' ' + txt($('po-unit')) };
+      // hand-picked low concentration → the MIS text carries the volume warning
+      const low = [...d.querySelectorAll('#form-grid button')].find((c) => /^125 мг\/5 мл/.test(txt(c)));
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      if (low) low.click();
+      w.__copied = '';
+      w.copyForMIS();
+      await sleep(0);
+      out.liquidDefault.lowPicked = { active: active(), ml: txt($('po-ml')), mis: w.__copied || '' };
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }
