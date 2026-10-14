@@ -352,6 +352,29 @@ async function run() {
         dose: txt($('po-mg')),
         perDose: txt($('po-tabs')),
       };
+    }
+
+    // ---- 7f. history «Открыть расчёт» re-opens the saved calculation ------------
+    {
+      // pick the NON-default 500+125 tablet, save, go somewhere else, restore
+      const other = [...d.querySelectorAll('#form-grid button')].find((c) => /^500\+125/.test(txt(c)));
+      if (other) other.click();
+      const before = w.eval('[activeDisease.id, activeScenario.id, activeLine.line_number, activeDrug.drug_ref, currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
+      out.historyRestore = { before, doseBefore: txt($('po-mg')) + ' ' + txt($('po-tabs')) };
+      w.saveToHistory();
+      type($('patient-age'), '6');
+      type($('weight'), '20');
+      clickDisease('cap_child');
+      out.historyRestore.elsewhere = w.eval('activeDisease.id + "|" + activeAge');
+      w.openHistory();
+      const open = d.querySelector('#history-list button[data-action="restore"]');
+      out.historyRestore.button = open ? txt(open) + ' / ' + (open.getAttribute('aria-describedby') || '').split(' ').map((id) => txt($(id))).join(', ') : null;
+      if (open) open.click();
+      out.historyRestore.after = w.eval('[activeDisease.id, activeScenario.id, activeLine.line_number, activeDrug.drug_ref, currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
+      out.historyRestore.doseAfter = txt($('po-mg')) + ' ' + txt($('po-tabs'));
+      out.historyRestore.age = $('patient-age').value + '|' + w.eval('activeAge') + '|' + $('weight').value;
+      out.historyRestore.drawerOpen = $('history-drawer').classList.contains('open');
+      out.historyRestore.toast = txt($('toast'));
       clickDisease('chlamydia_urogenital');
       clickDrug(/Доксициклин/i);
       type($('weight'), '70');
@@ -379,6 +402,14 @@ async function run() {
     type($('weight'), '70');
     await axeRun('main', out);
     $('update-banner').classList.add('hidden');
+
+    // ---- 10. a hand-edited hash re-opens that nosology (hashchange) ----------------
+    {
+      const beforeHash = w.eval('activeDisease && activeDisease.id');
+      w.location.hash = '#cap_adult/cap_adult_out_no_risk';
+      await sleep(20);
+      out.hashchange = { before: beforeHash, after: w.eval('activeDisease && activeDisease.id'), scenario: w.eval('activeScenario && activeScenario.id') };
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

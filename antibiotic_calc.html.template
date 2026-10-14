@@ -2448,6 +2448,7 @@ function renderFormChips(group){
     const idx = entry.idx;
     const btn = document.createElement('button');
     btn.className = 'chip rounded-xl py-2 md:py-3 px-2 text-[10px] font-black uppercase tracking-wider text-left'+(i===defaultIdx?' active':'');
+    btn.dataset.formIdx = String(idx);
     let routeIcon = 'fa-pill';
     if(f.form_type === 'tablet' || f.form_type === 'capsule') routeIcon = 'fa-pills';
     else if(['powder_for_suspension','suspension','syrup'].includes(f.form_type)) routeIcon = 'fa-flask';
@@ -3842,7 +3843,19 @@ function saveToHistory(){
     weight: w,
     ageGroup: activeAge,
     // the warnings shown at the time of saving (allergy / pregnancy / renal / age)
-    flags: exportSafetyFlags(getDrugRefs(activeDrug)).map(f=>f.text)
+    flags: exportSafetyFlags(getDrugRefs(activeDrug)).map(f=>f.text),
+    // what is needed to re-open the same calculation (ids, not display names)
+    ref: {
+      disease: activeDisease.id,
+      scenario: activeScenario ? activeScenario.id : null,
+      line: activeLine ? activeLine.line_number : null,
+      drug: getDrugRefs(activeDrug).join('+'),
+      route: currentRouteGroup,
+      formIdx: activeFormIdx,
+      regimenIdx: activeRegimenIdx,
+      ageValue: $('patient-age') ? $('patient-age').value : '',
+      ageUnit: $('patient-age-unit') ? $('patient-age-unit').value : 'years'
+    }
   };
   const hist = readHistoryEntries();
   hist.unshift(entry);
@@ -3870,6 +3883,7 @@ function loadHistory(){
     top.className = 'flex justify-between';
     const drug = document.createElement('span');
     drug.className = 'font-bold text-slate-700 dark:text-slate-200';
+    drug.id = 'hist-drug-'+idx;
     drug.textContent = e.drug || '';
     const when = document.createElement('span');
     when.className = 'text-slate-400';
@@ -3877,6 +3891,7 @@ function loadHistory(){
     top.append(drug, when);
     const disease = document.createElement('div');
     disease.className = 'text-slate-500 dark:text-slate-400 mt-1';
+    disease.id = 'hist-dis-'+idx;
     disease.textContent = e.disease || '';
     const dose = document.createElement('div');
     dose.className = 'text-slate-600 dark:text-slate-300 mt-1 font-bold';
@@ -3900,8 +3915,55 @@ function loadHistory(){
       warn.textContent = '⚠ ' + e.flags.map(String).join(' • ');
       div.appendChild(warn);
     }
+    if(e.ref && e.ref.disease){
+      const open = document.createElement('button');
+      open.type = 'button';
+      open.className = 'mt-2 chip rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-wider';
+      open.dataset.action = 'restore';
+      open.textContent = 'Открыть расчёт';
+      // the drug / nosology of the card name the button for assistive tech
+      open.setAttribute('aria-describedby', 'hist-drug-'+idx+' hist-dis-'+idx);
+      open.onclick = ()=>restoreHistoryEntry(e);
+      div.appendChild(open);
+    }
     list.appendChild(div);
   });
+}
+// Re-open a saved calculation through the normal UI path (patient context →
+// nosology → scenario → line/drug → route → form → regimen). Anything that no
+// longer resolves (DB changed, age no longer fits) falls back to the nearest
+// step and says so instead of silently showing another regimen.
+function restoreHistoryEntry(e){
+  const ref = e && e.ref;
+  if(!ref || !DB) return false;
+  const disease = DB.recommendations.find(d=>d.id === ref.disease);
+  if(!disease){ toast('Нозология из истории не найдена в текущей БД'); return false; }
+  if($('patient-age-unit') && ref.ageUnit) $('patient-age-unit').value = ref.ageUnit;
+  if($('patient-age')){ $('patient-age').value = ref.ageValue || ''; onPatientAgeChange(); }
+  if(e.weight > 0){ $('weight').value = e.weight; onWeightChange(); }
+  if(!ref.ageValue && e.ageGroup && activeAge !== e.ageGroup){
+    const chip = document.querySelector('#age-group button[data-age="'+e.ageGroup+'"]');
+    if(chip) chip.click();
+  }
+  closeHistory();
+  selectDisease(disease);
+  const scenario = ref.scenario ? (disease.scenarios || []).find(sc=>sc.id === ref.scenario) : null;
+  if(!scenario || $('scenario-step').classList.contains('hidden')){
+    toast('Открыта нозология; сценарий из истории недоступен');
+    return false;
+  }
+  const lineIndex = (scenario.lines || []).findIndex(ln=>ln.line_number === ref.line);
+  const line = lineIndex >= 0 ? scenario.lines[lineIndex] : null;
+  const drugIndex = line ? (line.drugs || []).findIndex(dr=>getDrugRefs(dr).join('+') === ref.drug) : -1;
+  renderScenarios(scenario, lineIndex >= 0 ? lineIndex : undefined, drugIndex >= 0 ? drugIndex : undefined, ref.route, Number.isInteger(ref.regimenIdx) ? ref.regimenIdx : undefined);
+  if(!activeDrug || getDrugRefs(activeDrug).join('+') !== ref.drug){
+    toast('Открыт сценарий; препарат из истории недоступен для этой возрастной группы');
+    return false;
+  }
+  const chip = Number.isInteger(ref.formIdx) ? document.querySelector('#form-grid button[data-form-idx="'+ref.formIdx+'"]') : null;
+  if(chip && !chip.classList.contains('active')) chip.click();
+  toast('Расчёт из истории открыт');
+  return true;
 }
 function openHistory(){
   loadHistory();
@@ -3947,6 +4009,9 @@ function restoreFromHash(){
   if(scenario && !$('scenario-step').classList.contains('hidden')) renderScenarios(scenario);
 }
 init();
+// A hash edited by hand or a back/forward step onto another #disease/scenario
+// re-opens that nosology (updateHash uses replaceState, so this never loops).
+window.addEventListener('hashchange', ()=>{ if(DB) restoreFromHash(); });
 </script>
 
 <!-- Guideline Evidence Modal -->

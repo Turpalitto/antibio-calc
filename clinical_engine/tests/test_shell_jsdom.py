@@ -146,6 +146,18 @@ def test_default_form_is_the_strength_that_fits_the_single_dose(shell: dict) -> 
     assert a["perDose"] == "(1 таб 875 мг)", "combination strength: one tablet, not «7 таб 125 мг»"
 
 
+def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:
+    h = shell["historyRestore"]
+    assert h["button"] and h["button"].startswith("Открыть расчёт / Амоксициллин + Клавулановая кислота, Внебольничная пневмония у взрослых"), h
+    assert h["elsewhere"] == "cap_child|child"
+    assert h["after"] == h["before"], h  # nosology, scenario, line, drug, route, form chip, regimen
+    assert h["doseAfter"] == h["doseBefore"] and h["doseAfter"].startswith("875 мг"), h
+    assert h["age"].endswith("|adult|70"), "patient context (age group, weight) restored with the entry"
+    assert h["drawerOpen"] is False and h["toast"] == "Расчёт из истории открыт"
+    hc = shell["hashchange"]
+    assert hc["before"] != "cap_adult" and hc["after"] == "cap_adult" and hc["scenario"] == "cap_adult_out_no_risk", hc
+
+
 def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     r = shell["searchRecall"]
     assert r["пневмония дети"]["n"] == 1 and r["пневмония дети"]["first"].startswith("Внебольничная пневмония у детей")
