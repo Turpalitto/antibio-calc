@@ -189,9 +189,23 @@
   `copyPrescription` removed. **T37 `9df259f`:** combination tablets are named by the
   product strength in every dose line («1 таб 875+125 мг», «~4.5 таб 400+80 мг = 360 мг по
   триметоприму» — the physician no longer reads «таб 80 мг»).
+- **T38 `65af0ad`:** keyboard search — Enter opens the top-ranked result, ArrowDown/ArrowUp
+  walk the list and return to the input, Escape clears the query (the calculation stays).
+- **T39 `d4b149a`:** older children (≥ 6 years, or ≥ 20 kg without an age) whose best
+  suspension still means > 15 ml per dose open on a tablet/capsule that divides into ≤ 3
+  units (12 y / 39.9 kg amoxicillin 1500 mg: «500 мг» × 3 instead of 30 ml); a 7-year-old
+  on 1125 mg stays on the suspension («9 таб 125 мг» is not a default).
+- **T40 `9841333` + `a7d2824` (latent):** `drops` is a validator-accepted form type but the
+  shell's route grouping fell through to per os for it (ear drops would have been offered
+  as an oral dose) — now topical via `isTopicalForm()` (six scattered checks unified),
+  Latin «gtt.»; static test: every validator FORM_TYPE is routed explicitly and has a
+  Latin form.
+- **T43 `6d6355e`:** Latin Rp line writes the strength in Latin units — «Amoxicillini 250
+  mg/5 ml», «Benzylpenicillini natrici 1 000 000 ED», «Fosfomycini trometamoli 3000 mg» (the
+  package word belongs to the D.t.d. form); DB strings unchanged elsewhere.
 - **Verification per push:** full pytest, `ruff check .`, `npm run validate`,
   `build_html.py --check`, CI + CodeQL green (one red run `b694202` fixed by `12fdad5`).
-  Final: **2751 passed / 28 skipped** (jsdom suite 28 tests, walk gate with 13 oracles),
+  Final: **2755 passed / 28 skipped** (jsdom suite 30 tests, walk gate with 13 oracles),
   validate 0 errors (+9 owner warnings), html/sw rebuilt.
 
 ## 2026-10-14 (round 4, autonomous backlog «без моих решений»): C-4, E-2, G-1, F-2, F-3, H-1

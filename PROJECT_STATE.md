@@ -27,12 +27,15 @@
   Input plausibility gates: age > 120 years and a weight impossible for the entered age
   (newborn > 7 kg, infant > 20 kg — a «25» for «2.5» typo is a 10× mg/kg dose) block every
   output; 1–3 years > 25 kg and sub-40-kg adults warn, and the caution travels with the
-  exports. Combination tablets are named by the product strength («1 таб 875+125 мг»). All
-  with regressions (`test_shell_jsdom.py` 28, `test_shell_walk.py` 2 — 1220 DOM states × 4
+  exports. Combination tablets are named by the product strength («1 таб 875+125 мг»);
+  the Latin Rp line uses Latin units («250 mg/5 ml», «1 000 000 ED»); older children with
+  a > 15 ml suspension dose open on tablets; `drops` forms are topical; search works from
+  the keyboard (Enter / arrows / Escape). All
+  with regressions (`test_shell_jsdom.py` 30, `test_shell_walk.py` 2 — 1220 DOM states × 4
   patient profiles with 13 oracles: tokens, age group, dose arithmetic (single + daily),
   volume, MIS dose (mg + ЕД), Rp dose, combination-partner dose, route words, course
   units, course-quantity arithmetic, course wording, number-word grammar, volume-warning
-  parity; `test_shell_static_ids.py` 5, `test_calculator_clinical_safety.py` +13).
+  parity; `test_shell_static_ids.py` 6, `test_calculator_clinical_safety.py` +14).
 - a11y: axe-core 0 violations (main/drawer/modal); cards keyboard-activatable; focus ring;
   live regions; dark theme before first paint; SW update banner with explicit reload.
 - Validator: route/form mismatch rule (9 warnings, all in blocked records); unit-strength
@@ -41,7 +44,7 @@
 - Infra: Dependabot, CodeQL (2 highs fixed, «No new alerts»), CI concurrency,
   `.gitattributes`, `SECURITY.md`; server.js ETag/304/gzip + graceful SIGTERM; FastAPI
   security-header/CSP parity with server.js; sw.js behavioural harness (13).
-- Tests: **2751 passed / 28 skipped / 0 failed**; validate 0 errors; ruff clean; build fresh;
+- Tests: **2755 passed / 28 skipped / 0 failed**; validate 0 errors; ruff clean; build fresh;
   CI + CodeQL green per push (`4a812e4` last checked). DB unchanged (`56727a27f050…`).
 - Owner queue additions (clinical): 9 route/form gaps in blocked records (cotrimoxazole
   «iv» with oral-only forms ×5, fosfomycin iv, amikacin/gentamicin iv with im-only

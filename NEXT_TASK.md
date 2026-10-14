@@ -31,7 +31,12 @@
      the suspension default for children (250 мг/5 мл for a 25-kg child), «1.05 млн ЕД»,
      the plausibility gates (age > 120 y; newborn > 7 kg / infant > 20 kg block, 1–3 y
      > 25 kg warns — thresholds are generous typo catchers, tighten or loosen as you see
-     fit), «~4.5 таб 400+80 мг = 360 мг по триметоприму».
+     fit), «~4.5 таб 400+80 мг = 360 мг по триметоприму», the «tablets from 6 years when the
+     suspension dose is > 15 ml» default, the Latin Rp strength («250 mg/5 ml»,
+     «1 000 000 ED» — ED vs UI vs ЕД is your house style).
+   - Tablet divisibility is not in the DB: the shell allows half tablets for every tablet
+     form («0.5 таб 875+125 мг»). A per-form `divisible: false` (or `scored: true`) field
+     plus a validator rule would let the shell round film-coated tablets to whole units.
    - GitHub → Settings → Security: enable private vulnerability reporting
      (`SECURITY.md` points there); review the CodeQL tab once (should be empty).
 2. **Engineering candidates (no physician decision needed, none urgent):**
