@@ -44,15 +44,21 @@ DOM events (search → nosology → drug → weight, age/pregnancy/GFR flags,
 allergy, blocked records, keyboard activation, theme, drawer/modal focus,
 search recall, exports — MIS text / Latin Rp / printed form / history) and
 runs axe-core (0 violations); `test_shell_walk.py` walks every computable
-nosology × scenario × drug × route × form for four patient profiles (1220
-states) and fails on NaN/undefined/empty results, an age-group mismatch in the
-regimen used, a MIS or Rp single dose that differs from the screen, a route
-word that contradicts the chosen route, course quantities that disagree
-between MIS / Rp / printed form, or a course in words printed as «… дней»;
-`test_shell_static_ids.py` pins markup wiring (unique ids, every looked-up
-id exists); `test_service_worker.py` runs the real `sw.js` in Node. CodeQL
-(`.github/workflows/codeql.yml`) and Dependabot (`.github/dependabot.yml`)
-cover the Python/JS code and the action/uv/npm pins.
+nosology × scenario × drug × route × form for five patient profiles (adult,
+child, infant, neonate, adult with GFR 25 + pregnancy + penicillin allergy —
+1777 states) and fails on NaN/undefined/empty results, an age-group mismatch in
+the regimen used, a single dose / ml / course quantity that is not what the DB
+regimen × weight gives, a MIS or Rp single dose that differs from the screen, a
+route word that contradicts the chosen route, course quantities that disagree
+between MIS / Rp / printed form, a course in words printed as «… дней»,
+number-word grammar («1 раза»), or patient-context warnings that differ between
+the MIS text, the Rp text and the printed form; `test_shell_static_ids.py` pins
+markup wiring (unique ids, every looked-up id exists); `test_service_worker.py`
+runs the real `sw.js` in Node. `npm run check` runs the validator, the build
+freshness check and all of these shell gates in one go (`npm run check:all`
+adds the full pytest suite and `ruff`). CodeQL (`.github/workflows/codeql.yml`)
+and Dependabot (`.github/dependabot.yml`) cover the Python/JS code and the
+action/uv/npm pins.
 
 Единый проект для создания и использования базы знаний по антибиотикотерапии из клинических рекомендаций Минздрава РФ.
 
@@ -118,6 +124,8 @@ npm run build                    # db/build_html.py: template + db/ → antibiot
 npm run build:css                # Tailwind 3.4.17 CLI: template → vendor/app.css (статический CSS вместо Play CDN; после правки классов в template)
 python db/build_html.py --check  # ничего не пишет: exit 1, если html/sw.js устарели (pre-commit + CI)
 python db/db_diff.py --git main  # клинический diff БД: блокировки, статусы, поля доз, справочник → CHANGELOG_DB.md
+npm run check                    # validate + build_html.py --check + shell gates (static ids, CSS, golden, clinical safety, jsdom, walk, sw.js)
+npm run check:all                # то же + полный pytest + ruff
 npm start                        # = node server.js → http://127.0.0.1:8080
 ```
 
@@ -180,7 +188,7 @@ antibio-calc/
 ├── sw.js                   # Service worker (офлайн-оболочка)
 ├── manifest.webmanifest    # PWA-манифест
 ├── icons/                  # PWA-иконки 192/512
-├── package.json            # scripts: start / build / validate / test
+├── package.json            # scripts: start / build / build:css / validate / test / check / check:all
 ├── server.js               # Локальный сервер + прокси движка (http://127.0.0.1:8080)
 ├── quality_report.md       # Quality Audit отчёт
 ├── medical_dictionary/unknown_drugs.csv  # 441 неизвестный препарат
@@ -219,7 +227,7 @@ API Минздрава РФ: https://apicr.minzdrav.gov.ru
 ## Python
 
 ```
-.venv/bin/python -m pytest -q                         # testpaths из pyproject.toml; 2026-10-14: 2660 passed, 30 skipped
+.venv/bin/python -m pytest -q                         # testpaths из pyproject.toml; 2026-10-14 (round 6): 2790 passed, 28 skipped
 .venv/bin/python -m pytest clinical_engine/tests/test_calculator_dose_golden.py -q   # golden-кейсы калькулятора
 .venv/bin/python -m pytest tests -q                   # архив RC030-инструментов (вне testpaths): 404 passed
 PYTHONPATH=.:src/pipeline:src .venv/bin/python src/pipeline/main.py verify   # Pipeline health check

@@ -14,6 +14,8 @@
     "validate:json": "node db/validate_db.js --json",
     "build": "python3 db/build_html.py",
     "test": "npm run validate && .venv/bin/python -m pytest clinical_engine/tests/test_build_reproducibility.py -q",
+    "check": "npm run validate && .venv/bin/python db/build_html.py --check && .venv/bin/python -m pytest clinical_engine/tests/test_shell_static_ids.py clinical_engine/tests/test_tailwind_static_css.py clinical_engine/tests/test_calculator_dose_golden.py clinical_engine/tests/test_calculator_clinical_safety.py clinical_engine/tests/test_shell_jsdom.py clinical_engine/tests/test_shell_walk.py clinical_engine/tests/test_service_worker.py -q",
+    "check:all": "npm run check && .venv/bin/python -m pytest -q && .venv/bin/python -m ruff check .",
     "build:css": "tailwindcss -c db/tailwind.config.cjs -i db/tailwind.input.css -o vendor/app.css --minify"
   },
   "devDependencies": {
