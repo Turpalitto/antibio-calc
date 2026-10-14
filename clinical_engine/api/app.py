@@ -81,9 +81,31 @@ def create_app(ctx: "service.ApiContext | None" = None):
         status_code, body = result
         return JSONResponse(status_code=status_code, content=body)
 
-    def _loopback(request: Request) -> bool:
+    _LOOPBACK_PEERS = {"127.0.0.1", "::1", "::ffff:127.0.0.1", "testclient"}
+    # Audit C-2 (2026-10-14): /v1/recommend had no peer policy and no body cap.
+    # A reverse proxy (server.js) now forwards X-Forwarded-For, so a laundered
+    # LAN request is recognised even when the TCP peer is 127.0.0.1.
+    _MAX_BODY_BYTES = 1024 * 1024
+
+    def _peer_is_loopback(request: Request) -> bool:
         peer = (request.client.host if request.client else "").lower()
-        if peer not in {"127.0.0.1", "::1", "testclient"}:
+        if peer not in _LOOPBACK_PEERS:
+            return False
+        forwarded = request.headers.get("x-forwarded-for", "")
+        for hop in filter(None, (h.strip().lower() for h in forwarded.split(","))):
+            if hop not in _LOOPBACK_PEERS and hop != "localhost":
+                return False
+        return True
+
+    def _body_too_large(request: Request) -> bool:
+        try:
+            declared = int(request.headers.get("content-length") or 0)
+        except ValueError:
+            return True
+        return declared > _MAX_BODY_BYTES
+
+    def _loopback(request: Request) -> bool:
+        if not _peer_is_loopback(request):
             return False
         if (request.url.hostname or "").lower() not in {"127.0.0.1", "localhost", "::1"}:
             return False
@@ -120,7 +142,18 @@ def create_app(ctx: "service.ApiContext | None" = None):
         return _json(service.handle_version(context))
 
     @app.post("/v1/recommend")
-    def recommend(payload: dict[str, Any] | None = Body(default=None)) -> Any:
+    def recommend(request: Request, payload: dict[str, Any] | None = Body(default=None)) -> Any:
+        # Same peer policy as v2: the engine is loopback-only until P6 entry
+        # gates open (GOVERNANCE_SOURCE_OF_TRUTH.md). Host/Origin are not
+        # required here because v1 is also used by local CLI clients.
+        if not _peer_is_loopback(request):
+            return _json((403, contract.error_response(
+                "NON_LOOPBACK_REQUEST", "the clinical engine API is loopback-only"
+            )))
+        if _body_too_large(request):
+            return _json((413, contract.error_response(
+                "PAYLOAD_TOO_LARGE", f"request body exceeds {_MAX_BODY_BYTES} bytes"
+            )))
         if payload is None:
             return _json((400, contract.error_response("INVALID_REQUEST", "missing JSON body")))
         return _json(service.handle_recommend(context, payload))
@@ -133,6 +166,11 @@ def create_app(ctx: "service.ApiContext | None" = None):
         if not _loopback(request):
             return _json((403, service.v2_contract.blocked(
                 "NON_LOOPBACK_REQUEST", "personal mode is loopback-only"
+            )))
+        if _body_too_large(request):
+            return _json((413, service.v2_contract.blocked(
+                "PAYLOAD_TOO_LARGE", f"request body exceeds {_MAX_BODY_BYTES} bytes",
+                status=service.v2_contract.Status.ERROR,
             )))
         if payload is None:
             return _json((400, service.v2_contract.blocked(

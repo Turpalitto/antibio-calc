@@ -23,8 +23,10 @@
  *     `%2e%2e%2f` is rejected too);
  *   * any dot-path — `.env`, `.git/`, and the gitignored
  *     `.local/personal_physician/` owner-token store are unreachable;
- *   * any path outside the app root and `icons/`;
- *   * any extension outside ALLOWED_EXTENSIONS;
+ *   * any root file outside the explicit ROOT_FILES allowlist (audit C-3,
+ *     2026-10-14: `package.json`, `REPOSITORY_MANIFEST.json`, `server.js`,
+ *     `sw.js` sources of other builds, … are not app assets) — only `icons/` and
+ *     `vendor/` subtrees are servable, and only with an allowed extension;
  *   * any method other than GET / HEAD on a static path (405). Proxied engine
  *     requests keep their own method (the personal workflow is POST-heavy).
  *
@@ -36,12 +38,22 @@
  *   502 with a JSON body explaining why — it never falls back to the app shell,
  *   which would make the client parse 680 KB of HTML as a JSON API response.
  *
+ *   Loopback peer policy (audit C-1, 2026-10-14). The engine's physician-mode
+ *   endpoints trust the *peer address* (loopback only). A proxy that forwards
+ *   LAN requests from 127.0.0.1 would silently defeat that gate, so the proxy
+ *   itself refuses non-loopback peers with 403 PROXY_LOOPBACK_ONLY unless the
+ *   operator opts in with ENGINE_PROXY_ALLOW_LAN=1 (and then the engine still
+ *   sees X-Forwarded-For). Request bodies are capped at ENGINE_MAX_BODY_BYTES
+ *   (413 PAYLOAD_TOO_LARGE) so the engine never has to buffer an unbounded body.
+ *
  * Environment
- *   PORT               (default 8080)
- *   HOST               (default 127.0.0.1) — set to 0.0.0.0 to expose on the LAN
- *   ENGINE_BASE_URL    (default http://<ENGINE_HOST>:<ENGINE_PORT>)
- *   ENGINE_HOST        (default 127.0.0.1)   ENGINE_PORT (default 8000)
- *   ENGINE_TIMEOUT_MS  (default 20000)
+ *   PORT                   (default 8080)
+ *   HOST                   (default 127.0.0.1) — set to 0.0.0.0 to expose on the LAN
+ *   ENGINE_BASE_URL        (default http://<ENGINE_HOST>:<ENGINE_PORT>)
+ *   ENGINE_HOST            (default 127.0.0.1)   ENGINE_PORT (default 8000)
+ *   ENGINE_TIMEOUT_MS      (default 20000)
+ *   ENGINE_PROXY_ALLOW_LAN (default unset) — "1" forwards engine calls from LAN peers
+ *   ENGINE_MAX_BODY_BYTES  (default 1048576) — proxied request body cap
  */
 
 const http = require('http');
@@ -80,6 +92,27 @@ const ENGINE_BASE_URL = (
 const ENGINE_TIMEOUT_MS = Number(process.env.ENGINE_TIMEOUT_MS || 20000);
 const ENGINE_CLIENT =
   ENGINE_BASE_URL.startsWith('https:') ? https : http;
+const ENGINE_PROXY_ALLOW_LAN = process.env.ENGINE_PROXY_ALLOW_LAN === '1';
+const ENGINE_MAX_BODY_BYTES = Number(process.env.ENGINE_MAX_BODY_BYTES || 1024 * 1024);
+
+/** Root-level files the app shell actually needs. Everything else at the root is refused. */
+const ROOT_FILES = new Set([
+  '/antibiotic_calc.html',
+  '/sw.js',
+  '/manifest.webmanifest',
+  '/favicon.ico',
+]);
+/** Subtrees that may be served (with an allowed extension). */
+const ALLOWED_DIRS = new Set(['icons', 'vendor']);
+
+/** True for IPv4/IPv6 loopback peers, including IPv4-mapped IPv6 form. */
+function isLoopbackAddress(address) {
+  if (!address) return false;
+  const a = String(address).toLowerCase();
+  if (a === '::1' || a === 'localhost') return true;
+  const v4 = a.startsWith('::ffff:') ? a.slice(7) : a;
+  return /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(v4);
+}
 
 /**
  * Restrictive CSP. The app legitimately needs inline <script>/<style> (all of its
@@ -167,16 +200,20 @@ function resolveStaticFile(rawUrl) {
     return { status: 403, code: 'FORBIDDEN_EXTENSION' };
   }
 
-  const file = path.resolve(ROOT, '.' + path.posix.normalize(pathname));
+  const normalized = path.posix.normalize(pathname);
+  const file = path.resolve(ROOT, '.' + normalized);
   // Containment: strictly inside ROOT, never ROOT itself and never a sibling
   // whose name merely starts with ROOT's name.
   if (file !== ROOT && !file.startsWith(ROOT + path.sep)) {
     return { status: 403, code: 'OUTSIDE_ROOT' };
   }
-  // Directory allowlist: only the flat app root, icons/ and the self-hosted
-  // asset tree vendor/ (Tailwind/Font Awesome/fonts, audit S-3) are servable.
+  // Allowlist: an explicit set of root files, plus the icons/ and self-hosted
+  // vendor/ subtrees (Tailwind/Font Awesome/fonts, audit S-3). A repository
+  // checkout holds many more .json/.js/.html files than the app needs.
   const segments = path.relative(ROOT, file).split(path.sep);
-  if (segments.length > 1 && segments[0] !== 'icons' && segments[0] !== 'vendor') {
+  if (segments.length === 1) {
+    if (!ROOT_FILES.has(normalized)) return { status: 403, code: 'FORBIDDEN_PATH' };
+  } else if (!ALLOWED_DIRS.has(segments[0])) {
     return { status: 403, code: 'FORBIDDEN_PATH' };
   }
   return { status: 200, file };
@@ -230,6 +267,26 @@ const HOP_BY_HOP = new Set([
 ]);
 
 function proxyToEngine(req, res) {
+  // The engine's physician-mode gate trusts the peer address. Forwarding a LAN
+  // request from 127.0.0.1 would launder it into a loopback request, so the
+  // proxy enforces the same peer policy unless the operator opted in.
+  const peer = req.socket && req.socket.remoteAddress;
+  if (!ENGINE_PROXY_ALLOW_LAN && !isLoopbackAddress(peer)) {
+    sendError(
+      res,
+      403,
+      'PROXY_LOOPBACK_ONLY',
+      'engine endpoints are proxied for loopback clients only; set ENGINE_PROXY_ALLOW_LAN=1 to forward LAN peers'
+    );
+    req.resume();
+    return;
+  }
+  const declared = Number(req.headers['content-length'] || 0);
+  if (declared > ENGINE_MAX_BODY_BYTES) {
+    sendError(res, 413, 'PAYLOAD_TOO_LARGE', `request body exceeds ${ENGINE_MAX_BODY_BYTES} bytes`);
+    req.resume();
+    return;
+  }
   // Only the path+query of the incoming request is reused. The upstream origin is
   // always ENGINE_BASE_URL, so an absolute-form request target
   // (`GET http://elsewhere/v2/x`) cannot turn this proxy into an open relay.
@@ -239,6 +296,8 @@ function proxyToEngine(req, res) {
   for (const [name, value] of Object.entries(req.headers)) {
     if (!HOP_BY_HOP.has(name.toLowerCase())) headers[name] = value;
   }
+  // The engine must be able to tell a forwarded peer from a true loopback client.
+  headers['x-forwarded-for'] = peer ? (req.headers['x-forwarded-for'] ? `${req.headers['x-forwarded-for']}, ${peer}` : String(peer)) : (req.headers['x-forwarded-for'] || 'unknown');
 
   const upstream = ENGINE_CLIENT.request(
     {
@@ -276,6 +335,20 @@ function proxyToEngine(req, res) {
     );
   });
 
+  // Streaming cap: a chunked body (no Content-Length) is still bounded.
+  let received = 0;
+  req.on('data', (chunk) => {
+    received += chunk.length;
+    if (received > ENGINE_MAX_BODY_BYTES) {
+      upstream.destroy();
+      if (!res.headersSent) {
+        sendError(res, 413, 'PAYLOAD_TOO_LARGE', `request body exceeds ${ENGINE_MAX_BODY_BYTES} bytes`);
+      } else {
+        res.destroy();
+      }
+      req.destroy();
+    }
+  });
   req.on('error', () => upstream.destroy());
   req.pipe(upstream);
 }
@@ -322,8 +395,13 @@ server.on('clientError', (err, socket) => {
   }
 });
 
-server.listen(PORT, HOST, () => {
-  console.log(
-    `ANTIBIO serving ${ROOT} at http://${HOST}:${PORT} (engine proxy ${PROXY_PREFIXES.join(', ')} -> ${ENGINE_BASE_URL})`
-  );
-});
+module.exports = { resolveStaticFile, isLoopbackAddress, isProxyPath, ROOT_FILES, ALLOWED_DIRS };
+
+if (require.main === module) {
+  server.listen(PORT, HOST, () => {
+    console.log(
+      `ANTIBIO serving ${ROOT} at http://${HOST}:${PORT} (engine proxy ${PROXY_PREFIXES.join(', ')} -> ${ENGINE_BASE_URL}` +
+        `; LAN peers ${ENGINE_PROXY_ALLOW_LAN ? 'FORWARDED (ENGINE_PROXY_ALLOW_LAN=1)' : 'refused'}; body cap ${ENGINE_MAX_BODY_BYTES} B)`
+    );
+  });
+}
