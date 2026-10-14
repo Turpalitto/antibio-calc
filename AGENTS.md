@@ -60,11 +60,12 @@
 
 ```
 uv python install 3.12 && uv sync --frozen --extra clinical --extra tests   # requires-python ==3.12.*
-python -m pytest -q                      # все testpaths (pyproject): 2026-10-14 → 2678 passed, 28 skipped
+python -m pytest -q                      # все testpaths (pyproject): 2026-10-14 → 2684 passed, 28 skipped
 python -m pytest tests -q                # архив RC030: 404 passed
 npm run validate                         # node db/validate_db.js — 0 errors обязательны
 python db/build_db.py                    # пересборка БД (НЕ использовать --skip-source-gate: он снимает статусы гейта)
 python db/build_html.py                  # html + штамп sw.js; `--check` — без записи, так же в CI и pre-commit
+npm ci && npm run build:css              # Tailwind 3.4.17 CLI → vendor/app.css (статический CSS, H-1); обязателен после правки классов в template, затем build_html
 python db/db_diff.py --git origin/main   # запись для CHANGELOG_DB.md при изменении db/antibio_db.json
 ruff check .                             # E9 + полный pyflakes; FROZEN-модули только через per-file-ignores
 npm start                                # node server.js → http://127.0.0.1:8080 (HOST=127.0.0.1)
@@ -85,4 +86,4 @@ CI (`.github/workflows/ci.yml`, `ubuntu-24.04`, Python 3.12 / Node 24): pytest +
 - **Extraction improvement:** `PROJECT_STATE.md` (раздел LLM provider), `python main.py doctor`, `extract_raw` → `knowledge`; реальная валидация только на корпусе владельца.
 - **Решения владельца-врача** (не инженерные; не принимать за него): очередь в `NEXT_TASK.md` п.1–3 — DOSA-записи `PENDING_OWNER_REVIEW`, `SOURCE_BASIS_MISSING`, записи «БЕЗ КР», `max_daily_mg` у детских мг/кг-схем, `db/schema.json`, `dose_unit`, пины ML-зависимостей, LICENSE, merge PR.
 
-Перед коммитом всегда: `python -m pytest -q`, `npm run validate`, `python db/build_html.py --check`, `ruff check .`; затем протокол хендоффа (§3).
+Перед коммитом всегда: `python -m pytest -q`, `npm run validate`, `python db/build_html.py --check`, `ruff check .` (после правки классов в template — ещё `npm run build:css`, его проверяет `test_tailwind_static_css`); затем протокол хендоффа (§3).

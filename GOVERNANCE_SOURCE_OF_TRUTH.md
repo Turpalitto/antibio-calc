@@ -28,7 +28,7 @@ BLOCKED.
 - proposed-boundary canonical test run: 1499 passed, 11 skipped, 1 xfailed,
   0 failed (1511 collected; 2026-07-30);
 - current canonical test run (2026-10-14, `python -m pytest -q`, testpaths from
-  `pyproject.toml`): 2678 passed, 28 skipped, 0 failed (after rounds 1–4 of the
+  `pyproject.toml`): 2684 passed, 28 skipped, 0 failed (after rounds 1–4 of the
   fix work, 2026-10-14); `npm run validate`
   0 errors; shipped calculator DB 120 records = 65 computable / 55 blocked
   (`docs/audits/AUDIT_2026-10-14.md`, fix round in `DECISIONS.md` 2026-10-14);

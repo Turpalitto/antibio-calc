@@ -15,7 +15,7 @@ README); policies, specs, RFCs and anything read by code stay in the root.
 ```
 uv python install 3.12                               # requires-python = ">=3.12,<3.13"
 uv sync --frozen --extra clinical --extra tests      # creates .venv from uv.lock
-npm install                                          # no runtime deps; node ≥ 22 for db/validate_db.js
+npm ci                                               # no runtime deps; devDependency = Tailwind 3.4.17 CLI (vendor/app.css); node ≥ 22
 .venv/bin/python -m pytest -q                        # testpaths from pyproject.toml
 npm run validate                                     # node db/validate_db.js
 ```
@@ -23,12 +23,17 @@ npm run validate                                     # node db/validate_db.js
 CI (`.github/workflows/ci.yml`, `ubuntu-24.04`) runs exactly these steps on
 Python 3.12 / Node 24 plus `python db/build_html.py --check`, a `ruff` job
 (pyflakes + syntax errors, see `[tool.ruff.lint]`), a `dependency audit` job
-(`pip-audit` over the locked core — blocking; ML extras and `audit-site/` —
-report-only, see `NEXT_TASK.md` C-4) and, on pull requests, a gate that fails
+(`pip-audit` over the locked core — blocking; ML extras, the root `npm` dev
+tree (Tailwind CLI) and `audit-site/` — report-only, see `NEXT_TASK.md` C-4)
+and, on pull requests, a gate that fails
 when `db/antibio_db.json` changes without a `CHANGELOG_DB.md` entry
 (`python db/db_diff.py --git origin/main` writes it). A red core audit is fixed
 with `uv lock --upgrade-package <name>`; accepting an advisory needs
-`--ignore-vuln <ID>` in `ci.yml` with a written reason. `pytest` on another Python
+`--ignore-vuln <ID>` in `ci.yml` with a written reason. The shell's CSS is a
+static Tailwind 3.4.17 build (`vendor/app.css`, config `db/tailwind.config.cjs`):
+after changing classes in the template run `npm run build:css`, then
+`npm run build` — `test_tailwind_static_css.py` fails CI on a stale or
+incomplete stylesheet. `pytest` on another Python
 (e.g. 3.11) works for the test suite but `uv sync --frozen` refuses it — use
 a manual venv in that case.
 
@@ -93,6 +98,7 @@ Single-page приложение для расчёта доз антибиоти
 python db/build_db.py            # db/diseases/*.json + db/index.json → db/antibio_db.json (+ source gate, + validate)
 npm run validate                 # node db/validate_db.js (0 errors обязательны; warnings = owner review)
 npm run build                    # db/build_html.py: template + db/ → antibiotic_calc.html, штампует sw.js CACHE_VERSION
+npm run build:css                # Tailwind 3.4.17 CLI: template → vendor/app.css (статический CSS вместо Play CDN; после правки классов в template)
 python db/build_html.py --check  # ничего не пишет: exit 1, если html/sw.js устарели (pre-commit + CI)
 python db/db_diff.py --git main  # клинический diff БД: блокировки, статусы, поля доз, справочник → CHANGELOG_DB.md
 npm start                        # = node server.js → http://127.0.0.1:8080

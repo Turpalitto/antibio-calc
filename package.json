@@ -13,6 +13,13 @@
     "validate": "node db/validate_db.js",
     "validate:json": "node db/validate_db.js --json",
     "build": "python3 db/build_html.py",
-    "test": "npm run validate && .venv/bin/python -m pytest clinical_engine/tests/test_build_reproducibility.py -q"
+    "test": "npm run validate && .venv/bin/python -m pytest clinical_engine/tests/test_build_reproducibility.py -q",
+    "build:css": "tailwindcss -c db/tailwind.config.cjs -i db/tailwind.input.css -o vendor/app.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  },
+  "overrides": {
+    "postcss-selector-parser": "^7.1.6"
   }
 }

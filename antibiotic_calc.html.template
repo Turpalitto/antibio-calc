@@ -8,10 +8,8 @@
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>AntibioAudit — КР МЗ РФ | Калькулятор доз</title>
-<script src="./vendor/tailwind.js"></script>
-<script>
-tailwind.config = { darkMode: 'class' };
-</script>
+<!-- Tailwind 3.4.17: static build (db/tailwind.config.cjs → `npm run build:css`), replaces the Play-CDN runtime compiler (audit 2026-10-14, H-1) -->
+<link href="./vendor/app.css" rel="stylesheet">
 <link href="./vendor/css/all.min.css" rel="stylesheet">
 <style>
 @import url('./vendor/css/fonts.css');

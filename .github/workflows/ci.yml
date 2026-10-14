@@ -27,6 +27,13 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: "24"
+          cache: npm
+
+      # Only devDependency: the pinned Tailwind 3.4.17 CLI (vendor/app.css,
+      # audit H-1) — lets test_tailwind_static_css rebuild the committed
+      # stylesheet and prove it is not stale.
+      - name: Install the Tailwind CLI (npm ci)
+        run: npm ci --no-fund --no-audit
 
       - uses: actions/setup-python@v7
         with:
@@ -134,6 +141,16 @@ jobs:
         run: |
           uvx --from "pip-audit==2.10.1" pip-audit -r /tmp/req_all.txt --no-deps --disable-pip \
             || echo "::warning title=pip-audit (extras)::known vulnerabilities in the ML extras — see the step log; pins are an owner decision (NEXT_TASK.md C-4)"
+
+      # Root package.json: no runtime deps; the only devDependency is the
+      # Tailwind 3.4.17 CLI that builds vendor/app.css (H-1). The remaining
+      # advisory there is the same `braces` DoS as in audit-site (no fixed
+      # release; build-time tool, never shipped to the browser).
+      - name: npm audit — root (Tailwind CLI, build-time only) — report only
+        continue-on-error: true
+        run: |
+          npm audit \
+            || echo "::warning title=npm audit (root devDependencies)::build-time Tailwind CLI tree — braces has no fixed release; see README.md"
 
       - name: npm audit — audit-site (archival dashboard) — report only
         continue-on-error: true

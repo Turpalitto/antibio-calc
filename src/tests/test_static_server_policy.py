@@ -118,7 +118,7 @@ def lan_server():
 
 
 @pytest.mark.parametrize("path", ["/", "/antibiotic_calc.html", "/sw.js", "/manifest.webmanifest",
-                                  "/icons/icon-192.png", "/vendor/tailwind.js"])
+                                  "/icons/icon-192.png", "/vendor/app.css"])
 def test_app_assets_are_served(loopback_server, path) -> None:
     host, port = loopback_server
     status, headers, body = _request(host, port, "GET", path)

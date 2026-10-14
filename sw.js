@@ -35,7 +35,7 @@
 //   copies; `test_build_reproducibility.py` fails when the value is stale, so a
 //   rebuilt artifact can never keep being served from an old cache.
 
-const CACHE_VERSION = 'build-65c03b25f9dd';
+const CACHE_VERSION = 'build-d6312f5e52bb';
 const CACHE_NAME = `antibio-shell-${CACHE_VERSION}`;
 const SHELL_URL = './antibiotic_calc.html';
 const PRECACHE_URLS = [
@@ -45,7 +45,7 @@ const PRECACHE_URLS = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   // self-hosted third-party assets (S-3): the shell is unusable offline without them
-  './vendor/tailwind.js',
+  './vendor/app.css',          // static Tailwind build (H-1, 2026-10-14) — replaced the Play-CDN vendor/tailwind.js
   './vendor/css/all.min.css',
   './vendor/css/fonts.css',
   './vendor/webfonts/fa-solid-900.woff2',

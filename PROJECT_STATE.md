@@ -1,3 +1,33 @@
+## 2026-10-14 (round 4, autonomous backlog): static Tailwind, dependency audit in CI, root archived, slim AGENTS.md, extraction e2e fixture
+
+- H-1: Play-CDN `vendor/tailwind.js` (407 KB JIT compiler in the browser) → static
+  `vendor/app.css` (30.8 KB, Tailwind **3.4.17** CLI = same line as the CDN bundle;
+  `db/tailwind.config.cjs` content = template, `darkMode: "class"`; `npm run build:css`).
+  `sw.js` precaches `app.css`; root `package.json` gained its only devDependency (+ override
+  `postcss-selector-parser ^7.1.6`, output byte-identical). `test_tailwind_static_css.py`
+  (6): link/no CDN, config, precache, every template class token has a rule, CLI rebuild ==
+  committed file (CI runs `npm ci`). Equivalence evidence: static scan 491 tokens ⊇ 433
+  classes seen in the DOM across a jsdom walk of all 120 nosologies / 370 drug cards /
+  1673 form buttons + theme + allergy; only `md:pl-13`, `no-print`, `num-glow` uncovered —
+  no-ops under the CDN too. **Owner: one visual pass in a real browser (light/dark).**
+- C-4: `uv.lock` transitive bumps (all-extras advisories 65 → 44, core 0); CI job
+  `dependency audit` — core pip-audit blocking, extras + root/audit-site `npm audit`
+  report-only. Direct ML pins (torch/transformers/docling/mineru) left for the owner's
+  CUDA machine (`weights_only=True` caveat).
+- E-2: synthetic CR-like PDF fixture (`src/tests/table_pdf_fixture.py`) + 3 end-to-end
+  extraction-router tests; skips 30 → 28 (rest need owner corpus artifacts).
+- G-1: 199 unreferenced historical reports → `docs/history/` (68) + `docs/history/rc030/`
+  (131) via `git mv`; index `docs/history/README.md`; root 416 → 208; 0 new broken links.
+- F-2: `AGENTS.md` 633 → 88 lines (full text archived byte-identical in
+  `docs/history/AGENTS_2026-10-14_full.md`). F-3: `audit-site/README.md`, package renamed.
+- Build: DB unchanged (`56727a27f050…`); html `39bfdff1ad35…`; sw `build-d6312f5e52bb`.
+- Tests: **2684 passed / 28 skipped / 0 failed**; `tests/` 404; validate 0 errors; ruff clean;
+  `build_html.py --check` fresh. CI ✅ runs 38572809113 (C-4 audit job), 38574220002 (E-2 + G-1);
+  the H-1/F-2 run is recorded in AI_LOG.
+- Engineering backlog from the 2026-10-14 audit is closed; everything left in `NEXT_TASK.md`
+  §1–3 and §6 is an owner-physician decision (DOSA review, `SOURCE_BASIS_MISSING`, «БЕЗ КР»,
+  `max_daily_mg`, `schema.json`, B-6, I-4 merge, ML pins, LICENSE, corpus default, PR #1).
+
 ## 2026-10-14 (round 3): lint debt cleared, full pyflakes gate, DB-changelog CI gate, pipeline logging
 
 - Lint (D-1): 156 mechanical F401/F541/F811 fixes outside FROZEN `medical_normalizer/`,
@@ -14,7 +44,7 @@
 - Tests: **2675 passed / 30 skipped**; `tests/` 404; `src/tests` 501/13; `build_html.py --check` fresh.
   **CI ✅ runs 38570533400 (lint/CI/D-2) and 38571378607 (I-4 + rebuilt html; 2675 tests)**;
   the new changelog-gate step ran (both files in the PR diff → ok).
-- Remaining engineering backlog: C-4, H-1, G-1, F-2, F-3, E-2, I-4; owner decisions unchanged.
+- Remaining engineering backlog after round 3: C-4, H-1, G-1, F-2, F-3, E-2, I-4 — closed in round 4 (see above); owner decisions unchanged.
 
 ## 2026-10-14 (round 2): CI pinned + lint job + freshness gate; DB changelog; favicon; pipeline entry points
 

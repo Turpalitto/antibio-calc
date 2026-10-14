@@ -20,22 +20,46 @@
    2026-10-14 round 2. Keep `setup-uv` SHA current (no floating major tag).
 5. ~~A-3 pipeline entry points~~ DONE (sys.path bootstrap in `src/pipeline/main.py`);
    A-1: `.python-version` optional, `requires-python` unchanged.
-6. **Hygiene backlog:** C-4 extras CVEs (torch ≥ 2.9.1 etc. — needs `uv lock` on
-   3.12; `npm audit fix` in audit-site), H-1 static Tailwind CSS (needs a visual
-   check: dynamic class names in JS), ~~D-1 phase 2 lint clean-up + widen
-   `[tool.ruff.lint] select`~~ DONE round 3 (`select = ["E9", "F"]`, FROZEN
-   `medical_normalizer/` only via `per-file-ignores`), ~~D-2 pipeline
-   `except Exception` review~~ DONE round 3 (logging only; `layout.py` untouched),
-   G-1 archive root md/json into `docs/history/`, F-2 slim AGENTS.md, F-3
-   `audit-site/` doc or removal, G-4 LICENSE, G-5 `corpus_config.json` default
-   (owner: env override exists), E-2 fixture corpus, I-4 shared cross-allergy
-   table (round 3 pinned both tables with `test_allergy_class_consistency.py`;
-   merging them and the class of the 6 blocked-only drugs = owner decision).
-   Owner note from the I-4 check: `checkAllergyStatus` gives carbapenems
-   "recommended" under mild penicillin allergy and penicillins "safe" under
-   cephalosporin allergy (no side-chain cross-reactivity rule) — clinical policy,
-   not changed.
-   CI now also fails a PR that changes `db/antibio_db.json` without a
+6. **Hygiene backlog — round 4 (2026-10-14, autonomous) closed the engineering
+   part;** what remains is owner-only:
+   - ~~C-4 transitive pins~~ DONE (`uv.lock` bumps: all-extras 65 → 44 advisories,
+     core clinical+tests+development = 0; CI job `dependency audit`: core pip-audit
+     **blocking**, extras / root `npm audit` / audit-site report-only).
+     **Owner:** direct ML pins — torch 2.4.1 → ≥ 2.6 switches `torch.load` to
+     `weights_only=True` and most likely breaks doclayout-yolo 0.0.4 weights
+     loading; transformers fix exists only in 5.x; docling ≥ 2.120.3; mineru —
+     upgrade on the Windows/CUDA machine with the extraction smoke, then `uv lock`.
+     `wheel` 0.40 is held by `table-transformer`, `accelerate` 1.14 has no fix,
+     npm `braces` has no fixed release (root devDependency tree and audit-site).
+   - ~~H-1 static Tailwind~~ DONE (`vendor/app.css`, Tailwind 3.4.17 CLI, config
+     `db/tailwind.config.cjs`, `npm run build:css`; `test_tailwind_static_css.py`
+     proves every template class has a rule + byte-exact rebuild in CI; jsdom
+     walk over all 120 nosologies found no class outside the static scan).
+     **Owner:** one visual pass in a real browser (light + dark theme) — the
+     sandbox has no browser; rollback = `git revert` of the H-1 commit.
+   - ~~G-1 root archive~~ DONE (199 files → `docs/history/` + `docs/history/rc030/`,
+     index in `docs/history/README.md`, root 416 → 208 entries).
+   - ~~F-2 slim AGENTS.md~~ DONE (88 lines; full text in
+     `docs/history/AGENTS_2026-10-14_full.md`).
+   - ~~F-3 audit-site~~ DONE (README, package name, dist ignored). **Owner:** keep or
+     delete `audit-site/` (archival, not part of the calculator).
+   - ~~E-2 fixture corpus~~ DONE for the synthetic router path
+     (`src/tests/table_pdf_fixture.py` + 3 e2e tests, skips 30 → 28). **Owner:**
+     the 28 remaining skips need real CR snapshots, `normalized_regimens.sqlite`
+     and review-workbench artifacts that only exist on the owner's machine —
+     drop a small anonymised set under `src/tests/fixtures/` and the tests run.
+   - ~~D-1 phase 2 lint~~ DONE round 3 (`select = ["E9", "F"]`), ~~D-2 pipeline
+     `except Exception` review~~ DONE round 3.
+   - G-4 LICENSE, G-5 `corpus_config.json` default (env override exists) — owner.
+   - I-4 shared cross-allergy table (round 3 pinned both tables with
+     `test_allergy_class_consistency.py`; merging them, the class of the 6
+     blocked-only drugs and the engine hierarchy gaps `netilmicin, ofloxacin,
+     rifaximin, tetracycline, tinidazole, tobramycin` = owner decision).
+     Owner note from the I-4 check: `checkAllergyStatus` gives carbapenems
+     "recommended" under mild penicillin allergy and penicillins "safe" under
+     cephalosporin allergy (no side-chain cross-reactivity rule) — clinical policy,
+     not changed.
+   CI also fails a PR that changes `db/antibio_db.json` without a
    `CHANGELOG_DB.md` entry (generate it with `python db/db_diff.py --git origin/main`).
 7. After each task: prepend AI_LOG/PROJECT_STATE/NEXT_TASK(/DECISIONS), run
    `python -m pytest -q` + `npm run validate` + `python db/build_html.py`, commit + push.

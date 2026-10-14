@@ -18,6 +18,7 @@
 | GitHub Actions CI после раунда 3 | — | **✅ runs 38570533400 / 38571378607** (ruff при полном `F`, шаг changelog-gate, pytest 2675, пересобранный html) |
 | GitHub Actions CI | 4/4 красных прогона, никогда не был зелёным | **✅ run 38563366043** (PR #1: pytest + validate на 3.12/Node 24, secret scan) |
 | jsdom end-to-end smoke собранной оболочки | — | пройден (возраст/беременность/СКФ, блокировки, «БЕЗ КР», МИС-текст) |
+| Раунд 4 (2026-10-14, автономный backlog) | pytest 2675 / 30 skipped; CDN-Tailwind 407 КБ JS; AGENTS.md 633 строк; корень 416 записей; CI без аудита зависимостей | **pytest 2684 / 0 failed / 28 skipped**; `vendor/app.css` 30.8 КБ (Tailwind 3.4.17 static, тест покрытия классов); AGENTS.md 88 строк; корень 208 записей (`docs/history/`); CI job `dependency audit` (ядро блокирующее) + `npm ci`; html `39bfdff1ad35…`, sw `build-d6312f5e52bb`; CI ✅ runs 38572809113 / 38574220002 |
 
 ## Статус находок
 
@@ -35,22 +36,22 @@
 | A-1 | MED | ◐ | раздел Setup (uv + 3.12) в README; `requires-python` не ослаблялся | — |
 | A-3 | MED | ✅ | `src/pipeline/main.py` сам выставляет `sys.path` как pytest; работают `-m src.pipeline.main`, путь к скрипту, `cd src/pipeline` | ручной прогон 4 вариантов, `src/tests` 501 passed |
 | E-1 | MED | ✅ | POSIX-пути в манифестах `generated/`, генераторы `as_posix()`, потребители терпят `\\` | `pytest tests` 404 passed |
-| E-2 | MED | ⏳ | fixture-корпус — backlog | — |
+| E-2 | MED | ◐ | раунд 4: синтетическая PDF-фикстура «КР» (`src/tests/table_pdf_fixture.py`, рендер PyMuPDF, детерминированная) + 3 e2e-теста роутера извлечения (`test_document_extraction.py`: PDF → таблица режимов → кандидаты); 28 оставшихся skip требуют реальных снимков КР / `normalized_regimens.sqlite` / артефактов review-workbench — данные владельца, синтезировать их нельзя (это фабрикация источника) | `pytest src/tests/test_document_extraction.py`; skip 30 → 28 |
 | E-3 | MED | ✅ | golden-кейсы (11 схем × вес → мг/мл/таб/капс/флакон) | `test_calculator_dose_golden.py` (23; негативная проверка 3/3) |
 | E-4 | MED | ✅ | `TYPE_CHECKING`-импорты, `pytest`/`Path` в тесте | `ruff --select F821` = 0 |
 | D-1 | MED | ✅ | раунд 3: 156 авто-исправлений F401/F541/F811 вне FROZEN `medical_normalizer/`, F841 вручную в pipeline, `select = ["E9", "F"]` + документированные `per-file-ignores` (FROZEN — только стилевые правила, тесты/legacy — F841) | `ruff check .` clean при полном pyflakes; pytest 2671/30 |
 | D-2 | MED | ✅ | раунд 3: 5 «тихих» `except Exception: pass/continue` в `src/pipeline` (OCR-fallback, salvage JSON LLM, resume-фильтр `extraction_raw.json`, счётчик схем в отчёте, кэш извлечения) теперь логируют причину; поведение не менялось. `layout.py` (ML-таблицы без локального покрытия) и `config.py` (возврат `None` по контракту) оставлены | `src/tests` 501/13 |
 | D-3 | MED | ✅ | `db/build_db.ps1` — тонкая обёртка над `build_db.py` | — |
 | C-3 | MED | ✅ | allowlist файлов вместо расширений | `test_static_server_policy.py` |
-| C-4 | MED | ⏳ | CVE extras / `npm audit` — backlog | — |
+| C-4 | MED | ◐ | раунд 4: транзитивные пины `uv.lock` подняты (all-extras 65 → 44 уязвимостей, ядро clinical+tests+development — 0); шаг CI `audit`: pip-audit ядра **блокирующий**, extras / `npm audit` (корень, audit-site) — report-only с аннотацией; `wheel` 0.40 держит `table-transformer`, `accelerate` без фикса, `braces` без релиза с фиксом. Прямые ML-пины (torch 2.4.1 → ≥2.6 ломает `torch.load(weights_only=True)` в doclayout-yolo; transformers фикс только в 5.x; docling ≥2.120.3; mineru) — среда владельца (Windows/CUDA), не трогались | CI job `dependency audit` ✅; `pip-audit -r req_core.txt` 0 |
 | B-6 | MED | ⏳ | `dose_unit` на уровне схемы — решение владельца; валидатор уже имеет лимиты по единицам | — |
 | B-7 | MED | ✅ | `concentration_mg_per_ml` тобрамицин/нетилмицин; правило `route≠[]` (29 пустых — все в заблокированных); `calculation_blocked` всегда явный | `test_validate_db_rules.py` |
 | B-8 | MED | ✅ | капсулы — целые, с фактической дозой | harness `test_format_tablets_never_splits_a_capsule…` |
-| F-2 | MED | ⏳ | AGENTS.md ≤ 200 строк — backlog | — |
-| F-3 | MED | ⏳ | `audit-site/` — backlog | — |
-| H-1 | MED | ⏳ | статический Tailwind — backlog | — |
+| F-2 | MED | ✅ | раунд 4: `AGENTS.md` 633 → 88 строк (цепочка авторитета, запреты, FROZEN/изменяемое, законы трассируемости, протокол хендоффа, карта репо, команды/CI, плейбуки); полный текст побайтно в `docs/history/AGENTS_2026-10-14_full.md`; ссылки в `HANDOFF.md`, `pyproject.toml`, `GOVERNANCE_SOURCE_OF_TRUTH.md` обновлены | `test_api_static_assets.py` / `test_static_server_policy.py` (forbidden-path `/AGENTS.md`) 61 passed |
+| F-3 | MED | ✅ | раунд 4: `audit-site/README.md` (назначение: архивный React-дашборд аудита, не часть калькулятора), `package.json.name` = `antibio-audit-site`, `.gitignore` для `dist/`; `npm audit fix` без `--force` (остаток: `braces` — нет релиза с фиксом) | `npm ci && npm run build` в audit-site (одиночный `dist/index.html`) |
+| H-1 | MED | ✅ | раунд 4: Play-CDN `vendor/tailwind.js` (407 КБ JS, JIT в браузере) заменён статическим `vendor/app.css` (30.8 КБ) — тот же Tailwind **3.4.17** (CLI, devDependency корня, `db/tailwind.config.cjs`: `content = template`, `darkMode: "class"`, `npm run build:css`); `sw.js` precache и allowlist-тест сервера обновлены; CI `npm ci` + `test_tailwind_static_css.py` (6 тестов: ссылка/отсутствие CDN, конфиг, precache, **каждый класс template есть в CSS**, пересборка CLI побайтно = коммит). Эквивалентность доказана: статический скан template даёт 491 токен ⊇ 433 классов, когда-либо появлявшихся в DOM при jsdom-обходе всех 120 нозологий / 370 карточек / 1673 кнопок форм + тема + аллергия; непокрыты только 3 токена, которые и под CDN были no-op (`md:pl-13` — нет в шкале Tailwind, `no-print`, `num-glow` — нигде не определены). Ошибка консоли `tailwind is not defined` из jsdom-smoke исчезла. Визуальная сверка в браузере — за владельцем | `pytest clinical_engine/tests/test_tailwind_static_css.py` 6 passed; jsdom-обход 0 console errors |
 | H-2 | MED | ✅ | `CACHE_VERSION` генерируется `build_html.py`; тест на устаревшее значение | `test_build_reproducibility.py` (+4) |
-| G-1 | LOW | ⏳ | архив корня — backlog | — |
+| G-1 | LOW | ✅ | раунд 4: 199 файлов из корня → `docs/history/` (68) и `docs/history/rc030/` (131) через `git mv` (история сохранена); правило отбора: файл **не упоминается** в коде/тестах/конфигах/workflow/входных документах **и** имя — исторический отчёт (REPORT/RCA/AUDIT/BASELINE/…/RC03x/дата), но **не** POLICY/MODEL/GUIDE/SPEC/RFC/CONTRACT/RULES/GATES/REGISTER/PLAN/PROGRAM/FRAMEWORK/MANIFEST/SCORECARD/PROPOSAL; 10 md-ссылок переписаны, 0 новых битых (4 битых были до); индекс `docs/history/README.md`; корень 416 → 208 записей | `/tmp/linkcheck.py`-проход по всем md; `pytest tests` 404 passed (архив RC030 ссылается только на оставшиеся файлы) |
 | G-2 | LOW | ✅ | `.gitignore` += `node_modules/`, `.npmrc` | `git check-ignore` |
 | G-3 | LOW | ✅ | домашние пути/e-mail удалены из 6 документов и docstring | `grep` |
 | A-4 | LOW | ✅ | `ubuntu-24.04`, actions на Node 24 (`setup-uv` по SHA) | CI run 38569123307 — 3 джоба ✓, аннотаций о Node 20 / ubuntu-latest нет |

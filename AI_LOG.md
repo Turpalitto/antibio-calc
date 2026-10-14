@@ -1,3 +1,76 @@
+## 2026-10-14 (round 4, autonomous backlog «без моих решений»): C-4, E-2, G-1, F-2, F-3, H-1
+
+- **Scope rule:** every engineering item left in NEXT_TASK §6 that needs no
+  physician decision; clinical data, FROZEN modules, LICENSE, `corpus_config`
+  default, PR merge untouched. Python 3.12 is unavailable in the sandbox, so a
+  CPython 3.12.15 was built from source *only* to drive `uv lock`/`uv export`
+  (no ssl/sqlite); tests ran on the 3.11 venv, CI (3.12) is the authority.
+- **F-3 + C-4 (audit-site), commit `e610549`:** `audit-site/README.md`
+  (archival React-19/Vite-7 dashboard, not part of the calculator), package
+  renamed `antibio-audit-site`, `dist/` ignored; `npm audit fix` without
+  `--force` — residual `braces` (no fixed release).
+- **C-4 (lock), commit `c851105`:** `uv lock --upgrade-package …` on the
+  transitive tree only: all-extras pip-audit 65 → 44 advisories, core
+  (clinical+tests+development) 0. CI job `dependency audit`: core blocking,
+  extras report-only (`::warning`), `npm audit` report-only. NOT bumped
+  (owner's Windows/CUDA machine): torch 2.4.1 (≥ 2.6 → `torch.load
+  weights_only=True` breaks doclayout-yolo 0.0.4 weight loading), torchvision,
+  transformers (fix only in 5.x), docling (≥ 2.120.3), mineru; `wheel` 0.40 held
+  by `table-transformer`; `accelerate` 1.14 no fix. README documents the job.
+- **E-2, commit `83d29e6`:** `src/tests/table_pdf_fixture.py` renders a
+  deterministic CR-like guideline PDF (PyMuPDF, DejaVu, regimen table) and
+  `test_document_extraction.py` (UTF-8 BOM kept) runs the extraction router end
+  to end on it (PDF → table → regimen candidates), cache isolated per test.
+  Skips 30 → 28; the rest need real CR snapshots / `normalized_regimens.sqlite`
+  / review-workbench artifacts — fabricating them would be fabricating sources.
+- **G-1, commit `7b9efaa`:** 199 root files → `docs/history/` (68) and
+  `docs/history/rc030/` (131) with `git mv`. Selection: not referenced from
+  code/tests/config/workflows/entry docs/sub-dir docs **and** history-pattern
+  name (REPORT/RCA/AUDIT/BASELINE/ANALYSIS/VERIFICATION/SUMMARY/RESULT/REVIEW/
+  CHECKLIST/SESSION/date/ALLOWLIST/INVENTORY/…/RC03x) **and not** POLICY/MODEL/
+  GUIDE/SPEC/RFC/CONTRACT/RULES/GATES/REGISTER/PLAN/PROGRAM/FRAMEWORK/MANIFEST/
+  ARCHITECTURE_V/SCORECARD/PROPOSAL. 81 root files stay because `tests/`
+  (RC030 archive suite), `generated/` scripts, `server.js` or docstrings name
+  them. 10 markdown links rewritten; link check 4 broken before = 4 after;
+  `docs/history/README.md` index; README pointer. Root 416 → 208 entries.
+- **F-2, commit `9277ff7`:** `AGENTS.md` 633 → 88 lines: authority chain,
+  absolute prohibitions, FROZEN/may-change, traceability + optimisation laws,
+  hand-off protocol, repo map, commands/CI, playbooks, owner-queue pointer. Old
+  text byte-identical at `docs/history/AGENTS_2026-10-14_full.md`; references
+  in `HANDOFF.md`, `pyproject.toml`, `GOVERNANCE_SOURCE_OF_TRUTH.md` updated;
+  forbidden-path tests for `/AGENTS.md` still pass.
+- **H-1 (this commit):** the Play-CDN bundle was Tailwind **3.4.17** — so the
+  static build uses exactly that CLI (`devDependencies`, root
+  `package-lock.json`; override `postcss-selector-parser ^7.1.6` closes the
+  moderate advisory, output byte-identical). `db/tailwind.config.cjs`
+  (`content: template`, `darkMode: "class"` = the inline CDN config),
+  `db/tailwind.input.css`, `npm run build:css` → `vendor/app.css` (30.8 KB vs
+  407 KB JS). Template: CDN `<script>` + `tailwind.config` → `<link app.css>`;
+  `sw.js` precache swapped; `vendor/tailwind.js` deleted; server allowlist test
+  → `/vendor/app.css`. Equivalence check (the CDN compiled from the live DOM,
+  the CLI from the template text): the template never builds class names from
+  fragments (13 concatenations, all whole literals: `active`, `fas …`,
+  `cardAllergyClass`, `lineCls`); static scan = 491 tokens; a jsdom walk over
+  all 120 nosologies × every drug card (370) × every form/route button (1673)
+  + theme toggle + penicillin allergy recorded 433 distinct DOM classes, all
+  inside the static scan; uncovered = `md:pl-13` (not in Tailwind's spacing
+  scale), `no-print`, `num-glow` (defined nowhere) — no-ops under the CDN as
+  well, left untouched to keep the visuals identical. The jsdom smoke's former
+  console error `tailwind is not defined` is gone (0 console errors).
+  New `clinical_engine/tests/test_tailwind_static_css.py` (6) guards link /
+  no CDN / config / precache / **every template class has a rule** / CLI
+  rebuild == committed CSS (CI test job now runs `npm ci`; audit job runs root
+  `npm audit` report-only — `braces`). README/AGENTS: `npm ci`, `npm run
+  build:css` after editing classes in the template.
+- **Verification (HEAD):** `pytest -q` **2684 passed / 28 skipped / 0 failed**;
+  `pytest tests` 404; `npm run validate` 0 errors; `ruff check .` clean;
+  `build_html.py --check` fresh (html `39bfdff1ad35…`, sw `build-d6312f5e52bb`;
+  DB unchanged `56727a27f050…`). CI ✅ 38572809113 (C-4), 38574220002 (E-2 +
+  G-1); F-2 and H-1 runs: see PR #1 checks.
+- **Owner follow-ups recorded in NEXT_TASK §6:** browser visual pass after
+  H-1 (sandbox has no browser; rollback = revert of the H-1 commit), ML pin
+  upgrades, real-corpus fixtures for the 28 skips, `audit-site/` keep/delete.
+
 ## 2026-10-14 (round 3): pyflakes debt cleared, full `F` gate, DB-changelog CI gate, D-2 logging
 
 - **D-1 phase 2:** `ruff --fix --select F401,F541,F811` with `medical_normalizer/`
