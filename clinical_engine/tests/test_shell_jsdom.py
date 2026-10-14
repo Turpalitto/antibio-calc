@@ -170,6 +170,21 @@ def test_changing_the_allergy_status_keeps_the_selected_drug_form_and_regimen(sh
     assert keep["activeCard"].startswith("Цефуроксим") and any(f.startswith("Амоксициллин") for f in keep["flaggedCards"]), keep
 
 
+def test_age_group_change_keeps_the_scenario_and_drug_when_the_scenario_fits(shell: dict) -> None:
+    """Typing an age (or clicking a group chip) re-rendered the scenarios from
+    scratch — first eligible scenario, first drug. For an «all»-age scenario the
+    physician's drug now stays: without a regimen for the new group it shows the
+    explicit age block (ciprofloxacin at 7 y) instead of silently becoming
+    ceftriaxone; with one it re-derives the regimen (1250 mg at 25 kg ↔ 2000 mg)."""
+    k = shell["ageKeepsSelection"]
+    assert k["adult"] == "salmonellosis_severe|2|ciprofloxacin|po|adult" and k["adultBlock"] == ""
+    assert k["child"] == "salmonellosis_severe|2|ciprofloxacin|po|child" and k["childResultHidden"] is True
+    assert k["childBlock"].startswith("РАСЧЁТ ЗАБЛОКИРОВАН: для препарата «Ципрофлоксацин» в БД нет ни одной схемы дозирования для возрастной группы «дети»")
+    assert k["childCeftriaxone"] == "salmonellosis_severe|1|ceftriaxone|im|child|1250"
+    assert k["backToAdult"] == "salmonellosis_severe|1|ceftriaxone|im|adult|2000" and k["backBlock"] == ""
+    assert k["adultOnlyScenarioAtChildAge"].startswith("cap_adult_out_no_risk|1|amoxicillin|po|child|РАСЧЁТ ЗАБЛОКИРОВАН"), "an adult-only scenario still falls back to the first one, fail-visible"
+
+
 def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:
     h = shell["historyRestore"]
     assert h["button"] and h["button"].startswith("Открыть расчёт / Амоксициллин + Клавулановая кислота, Внебольничная пневмония у взрослых"), h

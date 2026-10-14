@@ -610,6 +610,34 @@ async function run() {
       type($('patient-age'), '35');
       type($('weight'), '70');
     }
+    // 16. an age-group change keeps the physician's scenario / drug when the scenario
+    //     fits both groups; a drug without a regimen for the new group shows the explicit
+    //     age block instead of silently jumping to the first scenario's first drug
+    {
+      clickDisease('salmonellosis');
+      const state = () => w.eval('[activeScenario && activeScenario.id, activeLine && activeLine.line_number, activeDrug && getDrugRefs(activeDrug).join("+"), currentRouteGroup, activeAge].join("|")');
+      clickDrug(/^Ципрофлоксацин/i);
+      const keep = { adult: state(), adultBlock: txt($('dose-block')) };
+      type($('weight'), '25');
+      type($('patient-age'), '7');
+      keep.child = state();
+      keep.childBlock = txt($('dose-block'));
+      keep.childResultHidden = !visible($('res-po')) && !visible($('res-inj'));
+      clickDrug(/^Цефтриаксон/i);
+      keep.childCeftriaxone = state() + '|' + txt($('inj-mg') || $('po-mg'));
+      type($('patient-age'), '40');
+      type($('weight'), '70');
+      keep.backToAdult = state() + '|' + txt($('inj-mg') || $('po-mg'));
+      keep.backBlock = txt($('dose-block'));
+      // a scenario that does NOT fit the new group still falls back to the first eligible one
+      clickDisease('cap_adult');
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      keep.adultOnlyScenarioAtChildAge = state() + '|' + txt($('dose-block')).slice(0, 60);
+      out.ageKeepsSelection = keep;
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

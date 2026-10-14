@@ -1105,7 +1105,7 @@ function init(){
       lastPickedAge = activeAge;
       clearAgeInferenceNotice();
       updateExplicitAgeNotice();
-      if(activeDisease) renderScenarios();
+      rerenderScenariosKeepingSelection();
       calculate();
     };
   });
@@ -1688,7 +1688,7 @@ function onPatientAgeChange(){
     const group = ageGroupFromDays(patientAgeDays);
     if(group !== activeAge){
       setActiveAge(group);
-      if(activeDisease) renderScenarios();
+      rerenderScenariosKeepingSelection();
     }
     // Явный возраст сильнее вывода из веса: группа больше не переключается по кг.
     userPickedAge = true;
@@ -2372,6 +2372,20 @@ function rerenderLinesKeepingSelection(){
   renderLines(lineIdx, drugIdx, route, regimenIdx);
   const chip = Number.isInteger(formIdx) ? document.querySelector('#form-grid button[data-form-idx="'+formIdx+'"]') : null;
   if(chip && !chip.classList.contains('active')) chip.click();
+}
+// Age group changed (chip or typed age): keep the physician's scenario / line /
+// drug / route when the scenario still fits the new group (age_group «all» or
+// the group itself); the regimen and the default form are re-derived for the
+// group, and a drug without a regimen for it shows the explicit age block
+// instead of silently jumping to the first scenario's first drug.
+function rerenderScenariosKeepingSelection(){
+  if(!activeDisease) return;
+  const sc = activeScenario;
+  const fits = !!(sc && (sc.age_group === 'all' || sc.age_group === activeAge) && (activeDisease.scenarios || []).includes(sc));
+  if(!fits){ renderScenarios(); return; }
+  const lineIdx = activeLine ? (sc.lines || []).indexOf(activeLine) : -1;
+  const drugIdx = (lineIdx >= 0 && activeDrug) ? (sc.lines[lineIdx].drugs || []).indexOf(activeDrug) : -1;
+  renderScenarios(sc, lineIdx >= 0 ? lineIdx : undefined, drugIdx >= 0 ? drugIdx : undefined, currentRouteGroup, undefined);
 }
 function onAllergyChange(){
   const allergy = $('patient-allergy').value;
