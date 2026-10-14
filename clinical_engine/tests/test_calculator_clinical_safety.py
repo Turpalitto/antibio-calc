@@ -206,6 +206,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "exportSafetyFlags",
     "comboComponentLines",
     "componentRegimen",
+    "searchFold",
     "diseaseDrugText",
     "daysWord",
     "timesADay",

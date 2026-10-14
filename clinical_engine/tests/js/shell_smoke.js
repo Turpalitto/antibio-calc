@@ -102,7 +102,7 @@ async function run() {
     out.search = { resultsVisible: visible($('results-box')), results: $('results-box').children.length, first: txt($('results-box').firstElementChild), status: txt($('search-status')), statusVisible: visible($('search-status')) };
     // recall: tokens + Russian endings + ICD + drug names, computable hits first
     out.searchRecall = {};
-    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'отит взрослые', 'xyzzy', 'пневмания дети', 'тонзилит', 'амоксицилин', 'цистит', 'бронхит', 'ин', 'х']) {
+    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'отит взрослые', 'xyzzy', 'пневмания дети', 'тонзилит', 'амоксицилин', 'цистит', 'бронхит', 'ин', 'х', 'лёгк', 'легк', 'трёх', 'трех', 'НОВОРОЖДЁННЫЕ']) {
       type($('search'), q);
       const items = [...$('results-box').children];
       out.searchRecall[q] = {

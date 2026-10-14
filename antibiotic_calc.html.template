@@ -1915,6 +1915,11 @@ function selectQuickDisease(code){
 }
 // Lower-cased INNs + keys of every drug a record uses (built once per record):
 // lets the search answer «амоксициллин» with the nosologies that use it.
+// Search-side normalisation: lower case and «ё» = «е» (Russian keyboards skip ё —
+// «лёгкая» / «легкая», «трёх» / «трех» must be the same word on both sides).
+function searchFold(x){
+  return String(x == null ? '' : x).toLowerCase().replace(/ё/g, 'е');
+}
 function diseaseDrugText(d){
   const cache = diseaseDrugText._cache || (diseaseDrugText._cache = {});
   if(d && d.id && cache[d.id] !== undefined) return cache[d.id];
@@ -1923,9 +1928,9 @@ function diseaseDrugText(d){
     const keys = dr.combo_ref ? dr.combo_ref : [dr.drug_ref];
     keys.forEach(k=>{
       if(!k) return;
-      names.add(String(k).toLowerCase());
+      names.add(searchFold(k));
       const ref = (typeof DB !== 'undefined' && DB && DB.drugs_reference) ? DB.drugs_reference[k] : null;
-      if(ref && ref.inn) names.add(String(ref.inn).toLowerCase());
+      if(ref && ref.inn) names.add(searchFold(ref.inn));
     });
   })));
   const text = [...names].join(' ');
@@ -1990,7 +1995,7 @@ function handleSearch(){
   const box = $('results-box');
   if(rawQ.length < 2){ box.classList.add('hidden'); box.innerHTML = ''; updateSearchStatus(rawQ, null); return; }
 
-  const qLower = rawQ.toLowerCase();
+  const qLower = searchFold(rawQ);
   const qClean = qLower.replace(/[\.\s\-_]/g, '');
   const qEn = qLower.split('').map(ch => KEY_MAP_RU_EN[ch] || HOMOGLYPHS_RU_EN[ch] || ch).join('').replace(/[\.\s\-_]/g, '');
 
@@ -1999,7 +2004,7 @@ function handleSearch(){
   // the whole phrase still matches as before.
   const tokens = qLower.split(/\s+/).map(t => t.replace(/^[\.,;:]+|[\.,;:]+$/g, '')).filter(t => t.length >= 2);
   const mkbHit = (d, t, tEn) => (d.mkb10 || []).some(m => {
-    const mc = m.toLowerCase().replace(/[\.\s\-_]/g, '');
+    const mc = searchFold(m).replace(/[\.\s\-_]/g, '');
     return mc.includes(t) || mc.includes(tEn);
   });
   // Russian endings: «дети» must find «у детей», «взрослые» — «у взрослых»; a
@@ -2014,9 +2019,9 @@ function handleSearch(){
     const tClean = t.replace(/[\.\s\-_]/g, '');
     const tEn = t.split('').map(ch => KEY_MAP_RU_EN[ch] || HOMOGLYPHS_RU_EN[ch] || ch).join('').replace(/[\.\s\-_]/g, '');
     if(tClean && mkbHit(d, tClean, tEn)) return true;
-    if(stemHit(d.name.toLowerCase(), t)) return true;
-    if(d.synonyms && d.synonyms.some(s=>stemHit(s.toLowerCase(), t))) return true;
-    if(d.cr_id && String(d.cr_id).toLowerCase().includes(t)) return true;
+    if(stemHit(searchFold(d.name), t)) return true;
+    if(d.synonyms && d.synonyms.some(s=>stemHit(searchFold(s), t))) return true;
+    if(d.cr_id && searchFold(String(d.cr_id)).includes(t)) return true;
     if(stemHit(diseaseDrugText(d), t)) return true;
     return false;
   };
@@ -2030,15 +2035,15 @@ function handleSearch(){
   const tokenAtWordStart = (d, t) => {
     const stems = [t, t.length >= 4 ? t.slice(0, -1) : null, t.length >= 5 ? t.slice(0, -2) : null].filter(Boolean);
     const re = new RegExp('(^|[^a-zа-яё0-9])(' + stems.map(escapeRe).join('|') + ')');
-    return re.test(d.name.toLowerCase()) || (d.synonyms || []).some(s => re.test(s.toLowerCase())) || re.test(diseaseDrugText(d));
+    return re.test(searchFold(d.name)) || (d.synonyms || []).some(s => re.test(searchFold(s))) || re.test(diseaseDrugText(d));
   };
   // 1 = exact hit at a word start, 2 = exact hit inside a word / ICD / CR id,
   // 3 = one-typo hit (ranked after), 0 = none
   const tokenLevel = (d, t) => {
     if(exactHit(d, t)) return tokenAtWordStart(d, t) ? 1 : 2;
     if(!typoTokens.has(t)) return 0;
-    if(fuzzyWordHit(d.name.toLowerCase(), t)) return 3;
-    if(d.synonyms && d.synonyms.some(s=>fuzzyWordHit(s.toLowerCase(), t))) return 3;
+    if(fuzzyWordHit(searchFold(d.name), t)) return 3;
+    if(d.synonyms && d.synonyms.some(s=>fuzzyWordHit(searchFold(s), t))) return 3;
     if(fuzzyWordHit(diseaseDrugText(d), t)) return 3;
     return 0;
   };
@@ -2046,9 +2051,9 @@ function handleSearch(){
   const diseaseLevel = d => tokens.length ? Math.max(0, ...tokens.map(t => tokenLevel(d, t))) : 0;
   const phraseMatches = (d) => {
     if(mkbHit(d, qClean, qEn)) return true;
-    if(d.name.toLowerCase().includes(qLower)) return true;
-    if(d.synonyms && d.synonyms.some(s=>s.toLowerCase().includes(qLower))) return true;
-    if(d.cr_id && String(d.cr_id).toLowerCase().includes(qLower)) return true;
+    if(searchFold(d.name).includes(qLower)) return true;
+    if(d.synonyms && d.synonyms.some(s=>searchFold(s).includes(qLower))) return true;
+    if(d.cr_id && searchFold(String(d.cr_id)).includes(qLower)) return true;
     return false;
   };
   const filtered = DB.recommendations.filter(d => phraseMatches(d) || (tokens.length > 0 && tokens.every(t => tokenMatches(d, t))));
@@ -2057,8 +2062,8 @@ function handleSearch(){
   // one-typo hits; computable before blocked; otherwise DB order.
   const wordStartRe = new RegExp('(^|[^a-zа-яё0-9])'+qLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   const phraseRank = d => {
-    if(wordStartRe.test(d.name.toLowerCase())) return 0;
-    if((d.synonyms || []).some(s => wordStartRe.test(s.toLowerCase())) || mkbHit(d, qClean, qEn)) return 2;
+    if(wordStartRe.test(searchFold(d.name))) return 0;
+    if((d.synonyms || []).some(s => wordStartRe.test(searchFold(s))) || mkbHit(d, qClean, qEn)) return 2;
     return 4;
   };
   const rank = d => (phraseMatches(d) ? phraseRank(d) : 4 + 2 * diseaseLevel(d)) + (d.calculation_blocked ? 1 : 0);
@@ -2069,7 +2074,7 @@ function handleSearch(){
     const item = document.createElement('div');
     item.className = 'bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-700 transition-all font-bold text-slate-700 dark:text-slate-200 text-sm flex justify-between items-center';
     const matchedMkb = (d.mkb10 || []).find(m => {
-      const mc = m.toLowerCase().replace(/[\.\s\-_]/g, '');
+      const mc = searchFold(m).replace(/[\.\s\-_]/g, '');
       if(mc.includes(qClean) || mc.includes(qEn)) return true;
       return tokens.some(t => { const tc = t.replace(/[\.\s\-_]/g, ''); return tc && mc.includes(tc); });
     });

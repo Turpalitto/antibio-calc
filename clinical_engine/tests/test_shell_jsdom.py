@@ -298,6 +298,15 @@ def test_search_status_counts_hits_and_says_when_nothing_matched(shell: dict) ->
     assert r["J18"]["status"].startswith(f"Найдено: {r['J18']['n']} ") and "уточните" not in r["J18"]["status"]
 
 
+def test_search_treats_yo_and_ye_as_the_same_letter(shell: dict) -> None:
+    """Russian keyboards skip «ё»: «лёгк» found 1 nosology and «легк» 3 (different
+    sets), «трёх» found nothing while «трех» found 4. Both sides are folded now."""
+    r = shell["searchRecall"]
+    assert r["лёгк"]["n"] >= 4 and r["лёгк"]["names"] == r["легк"]["names"], (r["лёгк"], r["легк"])
+    assert r["трёх"]["n"] >= 4 and r["трёх"]["names"] == r["трех"]["names"], (r["трёх"], r["трех"])
+    assert r["НОВОРОЖДЁННЫЕ"]["n"] >= 1, r["НОВОРОЖДЁННЫЕ"]
+
+
 def test_cards_are_keyboard_activatable_and_deep_link_restores_scenario(shell: dict) -> None:
     kb = shell["keyboard"]
     assert kb["hitRole"] == "button" and kb["hitTabindex"] == "0"
