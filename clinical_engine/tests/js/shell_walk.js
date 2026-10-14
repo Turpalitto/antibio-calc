@@ -281,7 +281,7 @@ setTimeout(() => {
                   });
                   stats.grammarOracle = (stats.grammarOracle || 0) + 1;
                   // large-volume warning parity: the screen and the chart text agree
-                  const screenWarn = /Разовый объём велик/.test(txt($('res-po')));
+                  const screenWarn = visible($('res-po')) && /Разовый объём велик/.test(txt($('res-po')));
                   const misWarn = /Предупреждение: разовый объём/.test(w.__copied || '');
                   if (screenWarn !== misWarn) out.findings.push({ kind: 'volume_warning_parity', where, sample: `screen ${screenWarn} vs MIS ${misWarn}` });
                   if (screenWarn) stats.volumeWarnOracle = (stats.volumeWarnOracle || 0) + 1;
