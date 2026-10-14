@@ -13,8 +13,9 @@
   (stamps `sw.js` `CACHE_VERSION=build-ff813dcc5750`); html sha `3e8b5af9d4e7f533…`.
 - Tests: canonical **2660 passed / 30 skipped / 0 failed** (py3.11 sandbox; CI = py3.12);
   `tests/` 404 passed; golden calculator cases 23; static-server policy 23;
-  validator rules 33; API peer policy 8. CI status: see run id in the PR — do not
-  mark ✅ without it.
+  validator rules 33; API peer policy 8. **CI ✅ GREEN — first green run of the
+  repository: GitHub Actions run 38563366043 (PR #1, Python 3.12 / Node 24,
+  jobs "pytest + validate" 1m07s and "secret scan" both ✓).**
 - Audit 2026-10-14 status: CRITICAL B-1 ✅ B-2 ✅; HIGH A-2 ✅ C-1 ✅ C-2 ✅ B-3 ✅(validator;
   `schema.json` owner decision) B-4 ✅ B-5 ✅ F-1 ✅(this round of docs); MEDIUM E-1 ✅
   E-3 ✅ E-4 ✅ D-3 ✅ C-3 ✅ B-7 ✅ B-8 ✅ H-2 ✅; G-2 ✅ G-3 ✅; open: A-1 (py3.12 setup
