@@ -415,8 +415,9 @@ async def cmd_extract_raw(args: argparse.Namespace) -> None:
                     # Filter out items that are already in raw output
                     # but NOT in progress (e.g., from a previous --force run)
                     pending = [i for i in pending if i.get("Id", 0) not in raw_ids]
-            except Exception:
-                pass
+            except Exception as exc:  # D-2: visible, since every item would be re-extracted
+                logger.warning("Could not read %s to filter already-extracted items: %s",
+                               EXTRACTION_RAW_JSON, exc)
 
     if args.limit and len(pending) > args.limit:
         pending = pending[:args.limit]

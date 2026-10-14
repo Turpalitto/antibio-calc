@@ -1,7 +1,10 @@
 """reporter.py — финальный отчёт."""
 
+import logging
 from collections import Counter
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 def generate_report(items: list[dict[str, Any]]) -> str:
@@ -87,14 +90,15 @@ def generate_report(items: list[dict[str, Any]]) -> str:
     regimen_count = 0
     try:
         import sqlite3
+
         from config import DB_PATH
         if DB_PATH.exists():
             db = sqlite3.connect(str(DB_PATH))
             cur = db.execute("SELECT COUNT(*) FROM antibiotic_regimens WHERE validated = 1")
             regimen_count = cur.fetchone()[0]
             db.close()
-    except Exception:
-        pass
+    except Exception as exc:  # D-2: the report would silently show 0 validated regimens
+        logger.warning("Could not count validated regimens in the SQLite DB: %s", exc)
 
     if regimen_count > 0:
         lines += [

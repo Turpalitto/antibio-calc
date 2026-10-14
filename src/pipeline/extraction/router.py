@@ -270,7 +270,9 @@ class ExtractorRouter:
                             fb_doc = fb.extract(single_pdf)
                             ocr_text = fb_doc.full_text
                             break
-                        except Exception:
+                        except Exception as exc:  # D-2: never silent — the page keeps its bad text
+                            logger.warning("OCR fallback %s failed on %s p.%s: %s",
+                                           fb.name, pdf_path.name, page.page_num, exc)
                             continue
                     if not ocr_text:
                         # keep the original text, but say so

@@ -221,8 +221,8 @@ async def extract_regimens(item: dict, section_data: dict) -> list[dict]:
             if json_match:
                 try:
                     regimens = parse_llm_json(json_match.group(1))
-                except Exception:
-                    pass
+                except Exception as exc:  # D-2: salvage failed → caller sees [] + a log line
+                    logger.warning("LLM JSON salvage failed (%s); treating response as empty", exc)
 
     if not isinstance(regimens, list):
         regimens = [regimens] if regimens else []
