@@ -83,3 +83,24 @@ def test_print_stylesheet_shows_only_the_prescription_form() -> None:
     assert depth == 0, f"#prescription-form is nested {depth} level(s) deep — it must be a direct child of <body>"
     # the printed form itself is never shown on screen
     assert 'id="prescription-form" class="print-only" style="display:none"' in html
+
+
+def test_every_validator_form_type_is_routed_explicitly_by_the_shell() -> None:
+    """``renderForms`` sorts forms into per os / в/м / в/в / topical by form_type;
+    an unlisted type falls through to per os. Every type the validator accepts
+    must therefore be named in that function (``drops`` was not — ear drops
+    would have been offered as an oral dose)."""
+    html = _template()
+    validator = (PROJECT_ROOT / "db" / "validate_db.js").read_text(encoding="utf-8")
+    block = re.search(r"const FORM_TYPES = new Set\(\[(.*?)\]\);", validator, re.S)
+    assert block, "FORM_TYPES not found in db/validate_db.js"
+    form_types = re.findall(r"'([a-z_]+)'", block.group(1))
+    assert len(form_types) >= 10
+    start = html.index("function renderForms(")
+    body = html[start : html.index("\nfunction ", start + 10)]
+    missing = [t for t in form_types if f"'{t}'" not in body and t not in ("topical", "drops")]
+    assert "isTopicalForm(f)" in body, "topical / drops must go through isTopicalForm"
+    assert missing == [], f"form types the shell does not route explicitly: {missing}"
+    # and the Latin table knows every type the validator accepts
+    latin = re.search(r"const LATIN_FORM = \{(.*?)\};", html, re.S).group(1)
+    assert [t for t in form_types if f"{t}:" not in latin] == []
