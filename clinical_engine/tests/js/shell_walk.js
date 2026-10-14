@@ -122,11 +122,56 @@ setTimeout(() => {
                     out.findings.push({ kind: 'mis_dose_differs_from_screen', where, sample: `screen ${screenMg} mg vs MIS «${misLine.slice(0, 80)}»` });
                   }
                   stats.doseOracle = (stats.doseOracle || 0) + (misMg && /^\d+$/.test(screenMg) ? 1 : 0);
+                  // route oracle: the route the physician picked on screen must be the
+                  // one every export names (fosfomycin granules were exported «в/в»)
+                  const group = w.eval('currentRouteGroup');
+                  const ROUTE_WORDS = { po: /внутрь/, im: /в\/м|внутримышечно/, iv: /в\/в|внутривенно/, topical: /наружно|местно/ };
+                  const want = ROUTE_WORDS[group];
+                  w.__copied = '';
+                  w.copyLatinRecipe();
+                  const rp = w.__copied || '';
+                  const rpSigna = (rp.split('\n').find((l) => l.startsWith('S.:')) || '');
+                  if (!rp) out.findings.push({ kind: 'rp_empty', where, sample: txt($('toast')) });
+                  else if (BAD.test(rp)) out.findings.push({ kind: 'rp_bad_token', where, sample: rp.match(/.{0,40}(NaN|Infinity|undefined|\[object |null мг|null ЕД).{0,40}/)[0] });
+                  if (want && /\d/.test(misLine)) {
+                    const wrong = Object.entries(ROUTE_WORDS).filter(([g, re]) => g !== group && (g === 'po' || group === 'po') && re.test(misLine + ' ' + rpSigna));
+                    if (!want.test(misLine)) out.findings.push({ kind: 'mis_route_missing', where, sample: `${group}: «${misLine.slice(0, 90)}»` });
+                    if (rpSigna && !want.test(rpSigna)) out.findings.push({ kind: 'rp_route_missing', where, sample: `${group}: «${rpSigna.slice(0, 90)}»` });
+                    if (wrong.length) out.findings.push({ kind: 'export_route_contradicts_screen', where, sample: `${group} vs ${wrong.map((x) => x[0]).join(',')}: «${misLine.slice(0, 60)}» / «${rpSigna.slice(0, 60)}»` });
+                    stats.routeOracle = (stats.routeOracle || 0) + 1;
+                  }
+                  // Rp dose oracle (plain mg only, same rule as the MIS oracle)
+                  const rpMg = rpSigna.match(/по (\d+(?:[.,]\d+)? мл суспензии \()?(\d+) мг/);
+                  if (/^\d+$/.test(screenMg) && screenUnit !== 'ЕД' && rpMg && rpMg[2] !== screenMg && group !== 'topical') {
+                    out.findings.push({ kind: 'rp_dose_differs_from_screen', where, sample: `screen ${screenMg} mg vs Rp «${rpSigna.slice(0, 80)}»` });
+                  }
+                  stats.rpDoseOracle = (stats.rpDoseOracle || 0) + (rpMg && /^\d+$/.test(screenMg) ? 1 : 0);
+                  // course units: MIS «суммарно N таб.», Rp «D.t.d. N. N» and the printed
+                  // form «D.t.d. N N» must agree (they used to be packs / per-dose units)
+                  const misTotal = mis.match(/суммарно (\d+) таб/);
+                  const rpDtd = rp.match(/D\.t\.d\. N\. (\d+)/);
+                  if (misTotal && rpDtd && misTotal[1] !== rpDtd[1]) out.findings.push({ kind: 'course_units_mis_vs_rp', where, sample: `MIS ${misTotal[1]} таб vs Rp N. ${rpDtd[1]}` });
+                  if (rpDtd) w.__rpDtd = rpDtd[1]; else w.__rpDtd = null;
+                  stats.unitsOracle = (stats.unitsOracle || 0) + (misTotal && rpDtd ? 1 : 0);
+                  // course wording: a course given in words must never become «… дней»
+                  const courseBad = (mis + '\n' + rp).match(/(хроническая|по ситуации|не указан[а-я]*|однократно) дн/);
+                  if (courseBad) out.findings.push({ kind: 'course_words_plus_days', where, sample: courseBad[0] });
                 }
                 w.fillPrescriptionForm();
                 const rx = txt($('prescription-form'));
                 if (BAD.test(rx)) out.findings.push({ kind: 'rx_bad_token', where, sample: rx.match(/.{0,40}(NaN|Infinity|undefined|\[object |null мг|null ЕД).{0,40}/)[0] });
                 if (!txt($('rx-drugs'))) out.findings.push({ kind: 'rx_empty', where, sample: txt($('rx-trust-line')).slice(0, 80) });
+                if (/(хроническая|по ситуации|не указан[а-я]*) дн/.test(txt($('rx-course')))) out.findings.push({ kind: 'rx_course_words_plus_days', where, sample: txt($('rx-course')).slice(0, 80) });
+                {
+                  const rxDtd = txt($('rx-drugs')).match(/D\.t\.d\. N (\d+)/);
+                  if (rxDtd && w.__rpDtd && rxDtd[1] !== w.__rpDtd) out.findings.push({ kind: 'course_units_rx_vs_rp', where, sample: `printed N ${rxDtd[1]} vs Rp N. ${w.__rpDtd}` });
+                }
+                {
+                  const group = w.eval('currentRouteGroup');
+                  const ROUTE_WORDS = { po: /внутрь/, im: /в\/м|внутримышечно/, iv: /в\/в|внутривенно/, topical: /наружно|местно/ };
+                  const signa = txt($('rx-signa-text'));
+                  if (ROUTE_WORDS[group] && /\d/.test(signa) && !ROUTE_WORDS[group].test(signa)) out.findings.push({ kind: 'rx_route_missing', where, sample: `${group}: «${signa.slice(0, 90)}»` });
+                }
                 stats.exports++;
               }
             }

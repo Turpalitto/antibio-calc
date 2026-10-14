@@ -2551,6 +2551,50 @@ function regimenSummary(reg, unit){
   return parts.join(' • ') || reg.duration_note || 'по схеме КР';
 }
 // Форматирование дозы с учётом единиц (мг или ЕД)
+// «1 день / 3 дня / 7 дней»; a range takes the form of its last number («7–10 дней», «2–3 дня»).
+function daysWord(n){
+  n = Math.abs(parseInt(n)) || 0;
+  const m10 = n % 10, m100 = n % 100;
+  if(m10 === 1 && m100 !== 11) return 'день';
+  if(m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'дня';
+  return 'дней';
+}
+// true when duration_days is a number of days or a range («7», «7-10»).
+function courseIsNumeric(reg){
+  return /^\d+(\s*[-–]\s*\d+)?$/.test(String((reg && reg.duration_days) || '').trim());
+}
+// Days to plan a course for: the upper bound of a range, 0 when the DB gives words.
+function courseDays(reg){
+  const m = String((reg && reg.duration_days) || '').match(/(\d+)(?:\s*[-–]\s*(\d+))?/);
+  return courseIsNumeric(reg) && m ? (parseInt(m[2] || m[1]) || 0) : 0;
+}
+// Course wording for the exports: «7 дней», «7–10 дней», or the DB's own words
+// («хроническая», «по ситуации») — never «хроническая дней».
+function courseText(reg){
+  const raw = String((reg && reg.duration_days) || '').trim();
+  if(!raw) return 'не указан';
+  if(!courseIsNumeric(reg)) return raw;
+  const m = raw.match(/^(\d+)(?:\s*[-–]\s*(\d+))?$/);
+  return raw.replace(/\s*[-–]\s*/, '–') + ' ' + daysWord(m[2] || m[1]);
+}
+// Route wording for the exports from the route the physician actually picked
+// (the screen's route group), never guessed from the form type: fosfomycin
+// granules (PO) used to be exported as «в/в» because they are not tablets.
+function routeWordsRu(){
+  if(currentRouteGroup === 'po') return {short:'внутрь', verb:'Принимать внутрь'};
+  if(currentRouteGroup === 'im') return {short:'в/м', verb:'Вводить внутримышечно'};
+  if(currentRouteGroup === 'iv') return {short:'в/в', verb:'Вводить внутривенно'};
+  if(currentRouteGroup === 'topical') return {short:'наружно/местно', verb:'Применять наружно/местно'};
+  return {short:'', verb:'Применять'};
+}
+// A liquid oral form (suspension / syrup / oral powder with mg/ml): dose in ml.
+function isOralLiquid(form){
+  return !!(form && form.concentration_mg_per_ml && !['tablet','capsule','granules'].includes(form.form_type) && currentRouteGroup === 'po');
+}
+// «, курс 7 дней.» / «, длительность: хроническая.» — tail of a Signa line.
+function courseTail(reg){
+  return (courseIsNumeric(reg) ? ', курс ' : ', длительность: ') + courseText(reg) + '.';
+}
 function fmtDose(val, unit){
   if(unit === 'ЕД') return formatUnits(Math.round(val)) + ' ЕД';
   return Math.round(val) + ' мг';
@@ -2673,13 +2717,10 @@ function calculateCoursePackages(reg, form, singleMg, dailyMg, w){
   // turn it into "210 ml → 3 bottles" in the MIS text and "D.t.d. N. 3" in the
   // Latin recipe (bacterial vaginosis → clindamycin, 2026-10-14).
   if(!form || form.form_type === 'topical' || form.form_type === 'drops') return null;
-  let days = 7;
-  if(reg.duration_days){
-    const m = String(reg.duration_days).match(/(\d+)(?:-(\d+))?/);
-    if(m){
-      days = m[2] ? parseInt(m[2]) : parseInt(m[1]);
-    }
-  }
+  // A course in words («хроническая», «по ситуации») has no package count: the
+  // old default of 7 days turned asplenia prophylaxis into «Курс (7 дн.) → 1 уп.».
+  const days = courseDays(reg);
+  if(!days) return null;
   const isSolid = ['tablet', 'capsule'].includes(form.form_type);
   const concMgPerMl = form.concentration_mg_per_ml || 0;
 
@@ -2703,11 +2744,12 @@ function calculateCoursePackages(reg, form, singleMg, dailyMg, w){
       summary: `Курс (${days} дн.): суммарно ${totalMl.toFixed(1)} мл → <b>${count} фл. по ${bottleSize} мл</b> (остаток: ${remainder} мл)`
     };
   } else if(isSolid){
-    const strengthMatch = (form.concentration || '').match(/(\d+)\s*мг/);
-    const strength = strengthMatch ? parseInt(strengthMatch[1]) : null;
+    // Same unit maths as the screen / Rp (combination strengths, capsule rounding).
+    const solid = solidUnitsPerDose(singleMg, form, reg);
+    const strength = solid ? solid.strength : null;
     if(strength && strength > 0){
-      const tabsPerDose = singleMg / strength;
-      const totalTabs = Math.ceil(tabsPerDose * reg.freq_per_day * days);
+      const tabsPerDose = solid.units;
+      const totalTabs = Math.ceil(tabsPerDose * reg.freq_per_day * days - 1e-9);
       const packSize = totalTabs > 14 ? 20 : (totalTabs > 10 ? 14 : 10);
       const packs = Math.ceil(totalTabs / packSize);
       return {
@@ -2749,7 +2791,7 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
     solidInstr.append(solidIcon, solidLead, solidText, solidTail);
     $('po-mg').textContent = '—';
     $('po-day').textContent = '—';
-    $('po-dur').textContent = reg.duration_days || '—';
+    $('po-dur').textContent = courseText(reg);
     const pkgEl = $('po-package-box');
     if(pkgEl) pkgEl.classList.add('hidden');
     $('po-range').classList.add('hidden');
@@ -2818,7 +2860,7 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
   }
   $('po-mg').textContent = fmtDose(singleMg, unit);
   $('po-day').textContent = fmtDose(dailyMg, unit);
-  $('po-dur').textContent = reg.duration_days || '—';
+  $('po-dur').textContent = courseText(reg);
 
   // Курсовой расчёт упаковок / флаконов
   const coursePkg = calculateCoursePackages(reg, form, singleMg, dailyMg, w);
@@ -2873,12 +2915,41 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
 // Число твёрдых единиц на приём. Таблетки округляются до половины, капсулы —
 // только до целой (капсулу не делят); при округлении возвращается фактическая
 // доза, чтобы расхождение с расчётной было видно, а не скрыто.
-function solidUnitsPerDose(mg, form){
+// Strength of ONE unit (tablet / capsule / sachet / vial) for a dose expressed
+// in the drug's unit. A combination strength («875+125 мг», «400+80 мг») names
+// several components and the dose may refer to the first (875 mg = amoxicillin
+// of amoxiclav), to the sum (480 mg = one co-trimoxazole 400+80 tablet) or —
+// when the regimen itself says «по триметоприму / TMP» — to the last one.
+// Rule: TMP wording → last component; otherwise whichever of {first, sum} gives
+// a whole number of units with the fewest units; otherwise the first component.
+// The old regex took the component printed right before «мг» (125 of 875+125),
+// which made one amoxiclav tablet «7 таб 125 мг» and co-trimoxazole «6 таб 80 мг».
+function unitStrengthMg(form, mg, reg, unit){
+  const conc = String((form && form.concentration) || '');
+  if(unit === 'ЕД'){
+    const u = conc.match(/^\s*(\d+(?:[.,]\d+)?)\s*(млн|тыс)?\s*ЕД/);
+    if(!u) return null;
+    const base = parseFloat(u[1].replace(',', '.'));
+    return base > 0 ? base * (u[2] === 'млн' ? 1e6 : (u[2] === 'тыс' ? 1e3 : 1)) : null;
+  }
+  const m = conc.match(/^\s*((?:\d+(?:[.,]\d+)?\s*\+\s*)*\d+(?:[.,]\d+)?)\s*мг/);
+  if(!m) return null;
+  const parts = m[1].split('+').map(x => parseFloat(x.replace(',', '.'))).filter(x => x > 0);
+  if(!parts.length) return null;
+  if(parts.length === 1) return parts[0];
+  const regText = reg ? [reg.regimen_label, reg.duration_note, reg.note].filter(Boolean).join(' ') : '';
+  if(/по\s+триметоприму|\bTMP\b|\bТМП\b/i.test(regText)) return parts[parts.length - 1];
+  if(!(mg > 0)) return parts[0];
+  const sum = parts.reduce((a, b) => a + b, 0);
+  const whole = [parts[0], sum].filter(st => Math.round(mg / st) >= 1 && Math.abs(mg / st - Math.round(mg / st)) < 1e-6);
+  if(whole.length) return whole.sort((a, b) => (mg / a) - (mg / b))[0];
+  return parts[0];
+}
+function solidUnitsPerDose(mg, form, reg){
   if(!form || !['tablet','capsule'].includes(form.form_type)) return null;
   if(!mg || mg <= 0) return null;
-  const m = String(form.concentration || '').match(/(\d+(?:[.,]\d+)?)\s*мг/);
-  if(!m) return null;
-  const strength = parseFloat(m[1].replace(',', '.'));
+  if(reg === undefined) reg = (typeof getActiveRegimen === 'function') ? getActiveRegimen() : null;
+  const strength = unitStrengthMg(form, mg, reg);
   if(!(strength > 0)) return null;
   const exact = mg / strength;
   const isCapsule = form.form_type === 'capsule';
@@ -2891,6 +2962,21 @@ function solidUnitsPerDose(mg, form){
     rounded: Math.abs(units - exact) > 1e-9,
     actualMg: units * strength
   };
+}
+// Units dispensed for the whole course — tablets / capsules / sachets / vials —
+// from the unit strength in the form's concentration («500 мг», «3000 мг пакет»,
+// «1000 мг флакон»). D.t.d. N. is the number of such units, not of packs and not
+// of units per dose. null when the course is given in words or the strength
+// cannot be read; partial units are rounded up over the course.
+function unitsForCourse(reg, form, singleMg, unit){
+  const days = courseDays(reg);
+  if(!days || !(singleMg > 0) || !form || !(reg && reg.freq_per_day > 0)) return null;
+  if(!['tablet','capsule','granules','powder_for_injection'].includes(form.form_type)) return null;
+  const strength = unitStrengthMg(form, singleMg, reg, unit);
+  if(!(strength > 0)) return null;
+  const solid = solidUnitsPerDose(singleMg, form, reg);
+  const perDose = solid ? solid.units : Math.ceil(singleMg / strength - 1e-9);
+  return {perDose: perDose, total: Math.ceil(perDose * reg.freq_per_day * days - 1e-9), days: days, strength: strength};
 }
 function formatTablets(mg, form){
   const u = solidUnitsPerDose(mg, form);
@@ -3009,7 +3095,7 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
 
   $('inj-ml').textContent = (singleMg <= 0) ? '—' : computeInjectableMl(singleMg, selectedVial);
   $('inj-day').textContent = (dailyMg <= 0) ? '—' : fmtDose(dailyMg, unit);
-  $('inj-dur').textContent = reg.duration_days || '—';
+  $('inj-dur').textContent = courseText(reg);
   // Кратность приходит из БД — инструкция собирается узлами.
   const injInstr = $('inj-instruction');
   injInstr.textContent = '';
@@ -3334,14 +3420,14 @@ function fillPrescriptionForm(){
   drugsEl.textContent = '';
   drugsEl.appendChild(rxLine('rx-drug-name', latinName+' '+(form.concentration || '')));
 
-  const solidUnits = solidUnitsPerDose(singleMg, form);
-  if(solidUnits){
-    const perDose = Math.ceil(solidUnits.units);
-    const totalDoses = reg.freq_per_day * (parseInt(reg.duration_days) || 0);
-    drugsEl.appendChild(rxLine('rx-dtd', 'D.t.d. N '+perDose+' in '+latinForm));
-    if(totalDoses > 0 && !isNaN(totalDoses)){
-      drugsEl.appendChild(rxLine('rx-dtd', '(для курса: '+(totalDoses * perDose)+' '+latinForm+')'));
-    }
+  // D.t.d. N — units for the whole course (the old line printed the units per
+  // dose as if they were the quantity to dispense).
+  const courseUnits = unitsForCourse(reg, form, singleMg, unit);
+  const solidUnits = solidUnitsPerDose(singleMg, form, reg);
+  if(courseUnits){
+    drugsEl.appendChild(rxLine('rx-dtd', 'D.t.d. N '+courseUnits.total+' in '+latinForm+' (по '+String(courseUnits.perDose).replace(/\.0$/,'')+' на приём, '+reg.freq_per_day+' р/д × '+courseUnits.days+' дн.)'));
+  } else if(solidUnits){
+    drugsEl.appendChild(rxLine('rx-dtd', 'D.t.d. N ___ in '+latinForm+' (по '+String(solidUnits.units).replace(/\.0$/,'')+' на приём; длительность: '+courseText(reg)+')'));
   }
 
   if(refs.length > 1){
@@ -3389,7 +3475,7 @@ function fillPrescriptionForm(){
   signaEl.textContent = signa;
 
   // Course
-  $('rx-course').textContent = 'Курс: '+(reg.duration_days || '—')+' дней'+(reg.duration_note?'. '+reg.duration_note:'');
+  $('rx-course').textContent = 'Курс: '+courseText(reg)+(reg.duration_note?'. '+reg.duration_note:'');
 
   // Injection preparation
   const injEl = $('rx-injection-details');
@@ -3444,7 +3530,6 @@ function copyForMIS(){
   const unit = doseUnitOf(ref);
   const {singleMg, dailyMg} = computeDose(reg, w, unit);
   const form = ref.forms[activeFormIdx];
-  const days = reg.duration_days || '7-10';
   const coursePkg = calculateCoursePackages(reg, form, singleMg, dailyMg, w);
 
   let doseStr = '';
@@ -3452,13 +3537,13 @@ function copyForMIS(){
     doseStr = (reg.duration_note || reg.regimen_label || 'По схеме клинических рекомендаций') + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' р/сут' : '');
   } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
     doseStr = 'наружно/местно ' + (form.notes ? form.notes + ' ' : '') + form.concentration + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' р/сут' : '');
-  } else if(currentRouteGroup === 'po' && form.concentration_mg_per_ml && w < 40){
+  } else if(isOralLiquid(form)){
     const ml = (singleMg / form.concentration_mg_per_ml).toFixed(1);
     doseStr = 'по '+ml+' мл ('+fmtDose(singleMg, unit)+') внутрь '+reg.freq_per_day+' р/сут';
   } else if(['tablet','capsule'].includes(form.form_type)){
     doseStr = 'по '+fmtDose(singleMg, unit)+' '+formatTablets(singleMg, form)+' внутрь '+reg.freq_per_day+' р/сут';
   } else {
-    doseStr = 'по '+fmtDose(singleMg, unit)+' '+(currentRouteGroup === 'im' ? 'в/м' : 'в/в')+' '+reg.freq_per_day+' р/сут';
+    doseStr = 'по '+fmtDose(singleMg, unit)+' '+routeWordsRu().short+' '+reg.freq_per_day+' р/сут';
   }
 
   const pregSel = $('patient-pregnancy');
@@ -3482,7 +3567,7 @@ function copyForMIS(){
     : regimenSummary(reg, unit))+'\n';
   txt += 'Схема приёма: '+doseStr+'\n';
   comboComponentLines(refs.slice(1), reg, w).forEach(line=>{ txt += line+'\n'; });
-  txt += 'Курс лечения: '+days+' дней\n';
+  txt += 'Курс лечения: '+courseText(reg)+'\n';
   if(coursePkg){
     txt += 'Потребность на курс: '+coursePkg.summary.replace(/<\/?[^>]+(>|$)/g, '')+'\n';
   }
@@ -3513,7 +3598,6 @@ function copyLatinRecipe(){
   const unit = doseUnitOf(ref);
   const {singleMg, dailyMg} = computeDose(reg, w, unit);
   const form = ref.forms[activeFormIdx];
-  const days = reg.duration_days || '7-10';
   const coursePkg = calculateCoursePackages(reg, form, singleMg, dailyMg, w);
 
   const latinName = LATIN_INN[refs[0]] || ref.inn;
@@ -3521,23 +3605,28 @@ function copyLatinRecipe(){
 
   let signa = '';
   if(singleMg <= 0 && dailyMg <= 0){
-    signa = (reg.duration_note || reg.regimen_label || 'По схеме КР') + ', курс ' + days + ' дней.';
+    signa = (reg.duration_note || reg.regimen_label || 'По схеме КР') + courseTail(reg);
   } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
-    signa = 'Применять наружно/местно ' + (form.notes ? form.notes + ' ' : '') + (reg.freq_per_day ? reg.freq_per_day + ' раза в день, ' : '') + 'курс ' + days + ' дней.';
-  } else if(currentRouteGroup === 'po' && form.concentration_mg_per_ml && w < 40){
+    signa = 'Применять наружно/местно' + (form.notes ? ' (' + form.notes + ')' : '') + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' раза в день' : '') + courseTail(reg);
+  } else if(isOralLiquid(form)){
     const ml = (singleMg / form.concentration_mg_per_ml).toFixed(1);
-    signa = 'Принимать внутрь по '+ml+' мл суспензии '+reg.freq_per_day+' раза в день в начале еды, курс '+days+' дней.';
+    signa = 'Принимать внутрь по '+ml+' мл суспензии ('+fmtDose(singleMg, unit)+') '+reg.freq_per_day+' раза в день в начале еды'+courseTail(reg);
   } else if(['tablet','capsule'].includes(form.form_type)){
-    signa = 'Принимать внутрь '+formatTablets(singleMg, form)+' '+reg.freq_per_day+' раза в день, курс '+days+' дней.';
+    signa = 'Принимать внутрь по '+fmtDose(singleMg, unit)+' '+formatTablets(singleMg, form)+' '+reg.freq_per_day+' раза в день'+courseTail(reg);
   } else {
-    signa = 'Вводить '+(currentRouteGroup === 'im' ? 'внутримышечно' : 'внутривенно')+' по '+fmtDose(singleMg, unit)+' '+reg.freq_per_day+' раза в день, курс '+days+' дней.';
+    signa = routeWordsRu().verb+' по '+fmtDose(singleMg, unit)+' '+reg.freq_per_day+' раза в день'+courseTail(reg);
   }
 
-  let packageDtd = 'N. 1';
+  // D.t.d. N. — bottles for a liquid, otherwise units for the whole course
+  // (it used to be the number of PACKS for tablets: «N. 5» for 84 tablets).
+  const courseUnits = unitsForCourse(reg, form, singleMg, unit);
+  let packageDtd = 'N. ___';
   if(coursePkg && coursePkg.type === 'suspension'){
     packageDtd = 'N. ' + coursePkg.bottleCount;
+  } else if(courseUnits){
+    packageDtd = 'N. ' + courseUnits.total;
   } else if(coursePkg && coursePkg.type === 'tablet'){
-    packageDtd = 'N. ' + coursePkg.packCount;
+    packageDtd = 'N. ' + coursePkg.totalTabs;
   }
 
   let txt = 'Rp.: ' + latinName + ' ' + (form.concentration || '') + '\n';

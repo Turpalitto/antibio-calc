@@ -156,6 +156,21 @@ async function run() {
     out.mis = { text: w.__copied || '', lines: (w.__copied || '').split('\n').length };
     w.fillPrescriptionForm();
     out.rxPregGfr = { safetyHidden: $('rx-safety-line').hidden, safety: txt($('rx-safety-line')) };
+    // course units + wording: MIS «суммарно N таб.» == Rp «D.t.d. N. N» == printed «D.t.d. N N»,
+    // and the course is «N дней», never «<words> дней»
+    w.__copied = '';
+    w.copyLatinRecipe();
+    await sleep(0);
+    out.courseUnits = {
+      misTotal: ((w.__copied && out.mis.text.match(/суммарно (\d+) таб/)) || [])[1] || null,
+      rpDtd: ((w.__copied || '').match(/D\.t\.d\. N\. (\d+)/) || [])[1] || null,
+      rxDtd: (txt($('rx-drugs')).match(/D\.t\.d\. N (\d+)/) || [])[1] || null,
+      rpSigna: ((w.__copied || '').split('\n').find((l) => l.startsWith('S.:')) || ''),
+      misCourse: (out.mis.text.split('\n').find((l) => l.startsWith('Курс лечения:')) || ''),
+      rxCourse: txt($('rx-course')),
+      screenCourse: txt($('po-dur')),
+      perDose: txt($('po-tabs')),
+    };
 
     // ---- 4. reset context → flags disappear ------------------------------------
     $('patient-pregnancy').value = 'unknown';

@@ -126,6 +126,15 @@ def test_guideline_modal_is_a_labelled_dialog_with_focus_return(shell: dict) -> 
     assert shell["modalAfterEscape"] == {"visible": False, "focusId": "btn-guideline-modal"}
 
 
+def test_course_units_agree_across_exports_and_course_is_in_days(shell: dict) -> None:
+    c = shell["courseUnits"]
+    # doxycycline 100 mg × 2/day × 7 days of 100 mg tablets → 14 tablets everywhere
+    assert c["misTotal"] == c["rpDtd"] == c["rxDtd"] == "14", c
+    assert "по 100 мг" in c["rpSigna"] and "Принимать внутрь" in c["rpSigna"] and "курс 7 дней" in c["rpSigna"], c
+    assert c["misCourse"] == "Курс лечения: 7 дней" and c["rxCourse"].startswith("Курс: 7 дней"), c
+    assert c["screenCourse"] == "7 дней" and "1 таб 100 мг" in c["perDose"], c
+
+
 def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     r = shell["searchRecall"]
     assert r["пневмония дети"]["n"] == 1 and r["пневмония дети"]["first"].startswith("Внебольничная пневмония у детей")

@@ -206,6 +206,15 @@ PATIENT_CONTEXT_SUPPORT = [
     "exportSafetyFlags",
     "comboComponentLines",
     "diseaseDrugText",
+    "daysWord",
+    "courseIsNumeric",
+    "courseDays",
+    "courseText",
+    "courseTail",
+    "routeWordsRu",
+    "isOralLiquid",
+    "unitStrengthMg",
+    "unitsForCourse",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\n"
@@ -2042,7 +2051,61 @@ def test_prescription_capsule_count_is_whole_and_shows_actual_dose() -> None:
     )
     assert "По 2 " in result["signa"] and "(= 200 мг)" in result["signa"], result["signa"]
     assert "1.5" not in result["signa"]
-    assert "D.t.d. N 2" in result["drugs"]
+    # D.t.d. N is the quantity for the whole course (2 caps × 2/day × 7 days), with the per-dose count beside it
+    assert "D.t.d. N 28 in caps." in result["drugs"] and "по 2 на приём, 2 р/д × 7 дн." in result["drugs"], result["drugs"]
+
+
+def test_unit_strength_handles_combination_strengths_and_dose_basis() -> None:
+    """One amoxiclav 875+125 tablet used to be «7 таб 125 мг»; co-trimoxazole 480 mg «6 таб 80 мг»."""
+    body = (
+        "const amc={form_type:'tablet',concentration:'875+125 мг'};"
+        "const amc500={form_type:'tablet',concentration:'500+125 мг'};"
+        "const amcIv={form_type:'powder_for_injection',concentration:'1000+200 мг флакон'};"
+        "const cot={form_type:'tablet',concentration:'400+80 мг'};"
+        "const pen={form_type:'powder_for_injection',concentration:'1.2 млн ЕД флакон'};"
+        "const tmp={regimen_label:'10 мг/кг (по TMP) на ночь'};"
+        "const tmp2={duration_note:'По триметоприму 15-20 мг/кг/сут в 3-4 введения.'};"
+        "console.log(JSON.stringify({"
+        "amc875:unitStrengthMg(amc,875,null),amc500:unitStrengthMg(amc500,500,null),amcIv:unitStrengthMg(amcIv,1000,null),"
+        "cot480:unitStrengthMg(cot,480,null),cot800:unitStrengthMg(cot,800,null),cot960:unitStrengthMg(cot,960,null),"
+        "cotTmp:unitStrengthMg(cot,250,tmp),cotTmp2:unitStrengthMg(cot,350,tmp2),"
+        "pen:unitStrengthMg(pen,2.4e6,null,'ЕД'),plain:unitStrengthMg({concentration:'500 мг'},1000,null),"
+        "none:unitStrengthMg({concentration:'крем 2%'},100,null),"
+        "amcUnits:solidUnitsPerDose(875,amc,null).units,cotUnits:solidUnitsPerDose(480,cot,null).units,"
+        "cotTmpUnits:solidUnitsPerDose(250,cot,tmp).units}));"
+    )
+    result = _run([], "", body)
+    assert result["amc875"] == 875 and result["amc500"] == 500 and result["amcIv"] == 1000
+    assert result["cot480"] == 480 and result["cot800"] == 400 and result["cot960"] == 480
+    assert result["cotTmp"] == 80 and result["cotTmp2"] == 80, "«по триметоприму» regimens dose the TMP component"
+    assert result["pen"] == 1_200_000 and result["plain"] == 500 and result["none"] is None
+    assert result["amcUnits"] == 1 and result["cotUnits"] == 1 and result["cotTmpUnits"] == 3
+
+
+def test_course_text_and_units_for_course() -> None:
+    body = (
+        "const tab={form_type:'tablet',concentration:'500 мг'};"
+        "const vial={form_type:'powder_for_injection',concentration:'1000 мг флакон'};"
+        "const r=(d,f)=>({duration_days:d,freq_per_day:f});"
+        "console.log(JSON.stringify({"
+        "w1:daysWord(1),w3:daysWord(3),w7:daysWord(7),w11:daysWord(11),w21:daysWord(21),w22:daysWord(22),"
+        "t7:courseText(r(7,1)),t710:courseText(r('7-10',1)),t1:courseText(r(1,1)),t21:courseText(r('14-21',1)),"
+        "tChr:courseText(r('хроническая',1)),tNone:courseText(r('',1)),"
+        "tail7:courseTail(r('7',1)),tailChr:courseTail(r('по ситуации',1)),"
+        "d710:courseDays(r('7-10',1)),dChr:courseDays(r('хроническая',1)),"
+        "u:unitsForCourse(r('7-10',3),tab,1000),uVial:unitsForCourse(r(5,2),vial,1500),"
+        "uChr:unitsForCourse(r('хроническая',1),tab,500),uHalf:unitsForCourse(r(7,1),tab,250)}));"
+    )
+    result = _run([], "", body)
+    assert (result["w1"], result["w3"], result["w7"], result["w11"], result["w21"], result["w22"]) == ("день", "дня", "дней", "дней", "день", "дня")
+    assert result["t7"] == "7 дней" and result["t710"] == "7–10 дней" and result["t1"] == "1 день" and result["t21"] == "14–21 день"
+    assert result["tChr"] == "хроническая" and result["tNone"] == "не указан"
+    assert result["tail7"] == ", курс 7 дней." and result["tailChr"] == ", длительность: по ситуации."
+    assert result["d710"] == 10 and result["dChr"] == 0
+    assert result["u"] == {"perDose": 2, "total": 60, "days": 10, "strength": 500}
+    assert result["uVial"] == {"perDose": 2, "total": 20, "days": 5, "strength": 1000}, "partial vials are rounded up per dose"
+    assert result["uChr"] is None, "a course in words has no dispensable quantity"
+    assert result["uHalf"] == {"perDose": 0.5, "total": 4, "days": 7, "strength": 500}
 
 
 def test_header_stats_distinguish_computable_from_blocked_records() -> None:
