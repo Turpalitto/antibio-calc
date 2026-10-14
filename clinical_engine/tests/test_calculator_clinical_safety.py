@@ -202,6 +202,8 @@ PATIENT_CONTEXT_SUPPORT = [
     "regimenSummary",
     "solidUnitsPerDose",
     "makeActivatable",
+    "allergyExportFlag",
+    "exportSafetyFlags",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\n"

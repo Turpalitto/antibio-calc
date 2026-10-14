@@ -137,6 +137,29 @@ def test_cards_are_keyboard_activatable_and_deep_link_restores_scenario(shell: d
     assert kb["restoredScenario"] == kb["scenarioAfterSpace"]
 
 
+def test_allergy_status_travels_with_every_export(shell: dict) -> None:
+    """Regression: severe penicillin allergy + amoxicillin showed ⛔ on screen,
+    but the MIS text, the Latin recipe, the printed form and the history entry
+    left without a word about it."""
+    al = shell["allergy"]
+    assert al["bannerVisible"] is True and "противопоказан" in al["bannerTitle"].lower()
+    needle = "ВНИМАНИЕ: Аллергия («Пенициллины (анафилаксия / отёк)»): препарат ПРОТИВОПОКАЗАН по аллергоанамнезу"
+    assert needle in al["mis"]
+    assert "! " + needle in al["rp"] and al["rp"].startswith("Rp.: Amoxicillini")
+    assert al["rxSafety"]["hidden"] is False and needle in al["rxSafety"]["text"]
+    assert "⚠ Аллергия («Пенициллины (анафилаксия / отёк)»)" in al["history"]
+    # no allergy → the printed safety block disappears again
+    assert al["rxSafetyAfterReset"]["hidden"] is True and al["rxSafetyAfterReset"]["text"] == ""
+
+
+def test_pregnancy_flag_reaches_the_printed_form(shell: dict) -> None:
+    """Doxycycline needs no renal adjustment, so GFR 25 adds nothing here — the
+    pregnancy contraindication alone must appear on the paper."""
+    rx = shell["rxPregGfr"]
+    assert rx["safetyHidden"] is False
+    assert rx["safety"].startswith("ВНИМАНИЕ: Беременность/лактация: «Доксициклин» — Противопоказан")
+
+
 def test_switching_to_a_blocked_nosology_drops_the_previous_regimen(shell: dict) -> None:
     """Regression: after doxycycline/chlamydia, selecting a source-gate-blocked
     record left activeDrug in place, so the header print button produced a

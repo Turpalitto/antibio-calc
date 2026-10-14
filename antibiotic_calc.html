@@ -863,6 +863,8 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
     .rx-inj-block b{font-weight:bold}
     .rx-footer{margin-top:25px;display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid #000;font-size:10pt}
     .rx-trust{border:2px solid #000;padding:6px 10px;margin:0 0 10px;font-size:9pt;font-weight:bold;line-height:1.35}
+    .rx-safety{border-style:double;border-width:4px;white-space:pre-line}
+    .rx-safety[hidden]{display:none}
     .rx-build{border-top:1px solid #999;padding-top:4px;margin-top:6px;font-size:7.5pt;color:#333}
     .rx-sign-col{text-align:center;flex:1}
     .rx-sign-col .line{border-top:1px solid #000;margin-top:30px;padding-top:4px;font-size:9pt}
@@ -874,6 +876,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
   </style>
 
   <div id="rx-trust-line" class="rx-trust"></div>
+  <div id="rx-safety-line" class="rx-trust rx-safety" hidden></div>
 
   <div class="rx-rp">Rp.:</div>
   <div id="rx-drugs"></div>
@@ -1695,6 +1698,35 @@ function collectPatientSafetyFlags(refs){
     if(!ref) return;
     [ageRestrictionFlag(ref), pregnancyFlag(ref), renalFlag(ref)].forEach(f=>{ if(f) flags.push(f); });
   });
+  return flags;
+}
+// Allergy status of the active drug(s) as an export flag. On screen it is the
+// separate #allergy-alert-banner; the MIS text, the Latin recipe, the printed
+// form and the history used to leave with NO trace of «⛔ Противопоказано»
+// (severe penicillin allergy + amoxicillin exported cleanly, 2026-10-14).
+function allergyExportFlag(refs){
+  const sel = $('patient-allergy');
+  const allergy = sel ? sel.value : 'none';
+  if(!allergy || allergy === 'none' || typeof checkAllergyStatus !== 'function') return null;
+  const allergyLabel = sel && sel.selectedOptions && sel.selectedOptions[0]
+    ? sel.selectedOptions[0].textContent.replace(/^[^\wА-Яа-яЁё]+/, '').trim() : allergy;
+  let worst = null;
+  (refs || []).forEach(key=>{
+    const res = checkAllergyStatus(key, allergy);
+    if(res.status === 'contraindicated') worst = res;
+    else if(res.status === 'caution' && !(worst && worst.status === 'contraindicated')) worst = res;
+  });
+  if(!worst) return null;
+  const level = worst.status === 'contraindicated' ? 'danger' : 'warn';
+  const head = worst.status === 'contraindicated' ? 'ПРОТИВОПОКАЗАН по аллергоанамнезу' : 'осторожно по аллергоанамнезу';
+  return { kind: 'allergy', level, text: 'Аллергия («'+allergyLabel+'»): препарат '+head+'. '+(worst.alert || '') };
+}
+// Everything an export must repeat from the screen: age / pregnancy / renal
+// flags from the drug reference plus the allergy status of the selection.
+function exportSafetyFlags(refs){
+  const flags = collectPatientSafetyFlags(refs);
+  const allergy = allergyExportFlag(refs);
+  if(allergy) flags.unshift(allergy);
   return flags;
 }
 // Баннеры строятся узлами: текст приходит из справочника препарата (БД).
@@ -3184,6 +3216,8 @@ function fillPrescriptionForm(){
   if(!activeDrug || !activeDisease) return;
   const w = parseFloat($('weight').value);
   const block = calculationBlockReason(w);
+  const safetyLine = $('rx-safety-line');
+  if(safetyLine){ safetyLine.textContent = ''; safetyLine.hidden = true; }
   if(block){
     // Печать заблокирована, но сам факт блокировки попадает в бланк — врач
     // не должен получить распечатку без объяснения, почему расчёта нет.
@@ -3194,6 +3228,12 @@ function fillPrescriptionForm(){
   const reg = getActiveRegimen();
   if(!reg) return;
   const refs = getDrugRefs(activeDrug);
+  // Patient-context warnings travel with the paper: the screen's allergy /
+  // pregnancy / renal / age banners were missing from the printed form.
+  if(safetyLine){
+    const lines = exportSafetyFlags(refs).map(f=>(f.level === 'danger' ? 'ВНИМАНИЕ: ' : 'Предупреждение: ')+f.text);
+    if(lines.length){ safetyLine.textContent = lines.join('\n'); safetyLine.hidden = false; }
+  }
   const mainRef = DB.drugs_reference[refs[0]];
   const unit = doseUnitOf(mainRef);
   const {singleMg, dailyMg} = computeDose(reg, w, unit);
@@ -3380,7 +3420,7 @@ function copyForMIS(){
   if(reg.duration_note){
     txt += 'Указания: '+reg.duration_note+'\n';
   }
-  collectPatientSafetyFlags(refs).forEach(f=>{
+  exportSafetyFlags(refs).forEach(f=>{
     txt += (f.level === 'danger' ? 'ВНИМАНИЕ: ' : 'Предупреждение: ')+f.text+'\n';
   });
 
@@ -3434,6 +3474,9 @@ function copyLatinRecipe(){
   let txt = 'Rp.: ' + latinName + ' ' + (form.concentration || '') + '\n';
   txt += 'D.t.d. ' + packageDtd + ' in ' + latinForm + '\n';
   txt += 'S.: ' + signa;
+  exportSafetyFlags(refs).forEach(f=>{
+    txt += '\n' + (f.level === 'danger' ? '! ВНИМАНИЕ: ' : '! Предупреждение: ') + f.text;
+  });
 
   navigator.clipboard.writeText(txt).then(()=>{
     toast('✅ Рецепт (Rp:) скопирован в буфер');
@@ -3593,7 +3636,9 @@ function saveToHistory(){
     duration: reg.duration_days || '—',
     durationNote: reg.duration_note || reg.regimen_label || '',
     weight: w,
-    ageGroup: activeAge
+    ageGroup: activeAge,
+    // the warnings shown at the time of saving (allergy / pregnancy / renal / age)
+    flags: exportSafetyFlags(getDrugRefs(activeDrug)).map(f=>f.text)
   };
   const hist = readHistoryEntries();
   hist.unshift(entry);
@@ -3645,6 +3690,12 @@ function loadHistory(){
     const doseStr = e.singleMg <= 0 ? (e.durationNote || 'По схеме КР') : (formattedDose + (e.freq ? ' × ' + e.freq + ' р/д' : ''));
     dose.textContent = doseStr + (e.duration && e.duration !== '—' ? ', курс ' + e.duration : '') + (e.patient ? ' • ' + e.patient : '');
     div.append(top, disease, dose);
+    if(Array.isArray(e.flags) && e.flags.length){
+      const warn = document.createElement('div');
+      warn.className = 'text-red-700 dark:text-red-300 mt-1 font-bold';
+      warn.textContent = '⚠ ' + e.flags.map(String).join(' • ');
+      div.appendChild(warn);
+    }
     list.appendChild(div);
   });
 }

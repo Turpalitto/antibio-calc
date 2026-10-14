@@ -142,6 +142,8 @@ async function run() {
     ($('btn-copy-mis') || $('btn-copy')).click();
     await sleep(0);
     out.mis = { text: w.__copied || '', lines: (w.__copied || '').split('\n').length };
+    w.fillPrescriptionForm();
+    out.rxPregGfr = { safetyHidden: $('rx-safety-line').hidden, safety: txt($('rx-safety-line')) };
 
     // ---- 4. reset context → flags disappear ------------------------------------
     $('patient-pregnancy').value = 'unknown';
@@ -151,6 +153,7 @@ async function run() {
     out.afterReset = { flagsVisible: visible($('patient-safety-banners')), noticeVisible: visible($('age-explicit-notice')) };
 
     // ---- 5. allergy: penicillin → amoxicillin card flagged -------------------
+    type($('patient-age'), '7');
     clickDisease('aom_child');
     $('patient-allergy').value = 'penicillin_severe';
     fire($('patient-allergy'), 'change');
@@ -160,8 +163,34 @@ async function run() {
       amoxCardClass: amox ? amox.className : null,
       amoxText: amox ? txt(amox).slice(0, 120) : null,
     };
+    // selecting the contraindicated drug anyway: every export must say so
+    amox.click();
+    type($('weight'), '25');
+    out.allergy.bannerVisible = visible($('allergy-alert-banner'));
+    out.allergy.bannerTitle = txt($('allergy-alert-title'));
+    w.__copied = '';
+    w.copyForMIS();
+    await sleep(0);
+    out.allergy.mis = w.__copied || '';
+    w.__copied = '';
+    w.copyLatinRecipe();
+    await sleep(0);
+    out.allergy.rp = w.__copied || '';
+    w.fillPrescriptionForm();
+    out.allergy.rxSafety = { hidden: $('rx-safety-line').hidden, text: txt($('rx-safety-line')) };
+    w.saveToHistory();
+    w.loadHistory();
+    out.allergy.history = txt($('history-list'));
     $('patient-allergy').value = 'none';
     fire($('patient-allergy'), 'change');
+    w.fillPrescriptionForm();
+    out.allergy.rxSafetyAfterReset = { hidden: $('rx-safety-line').hidden, text: txt($('rx-safety-line')) };
+    out.allergy.toast = txt($('toast'));
+    type($('weight'), '');
+    type($('patient-age'), '');
+    // the explicit age is sticky (clearing it keeps «дети»): go back to adults via the chip
+    d.querySelector('[data-age="adult"]').click();
+    out.allergy.ageGroupAfterChip = w.eval('activeAge');
 
     // ---- 6. blocked and no-CR records --------------------------------------------
     const blocked = find((r) => r.calculation_blocked);
