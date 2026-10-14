@@ -216,6 +216,8 @@ PATIENT_CONTEXT_SUPPORT = [
     "unitStrengthMg",
     "unitsForCourse",
     "bestSolidFormIndex",
+    "roundingDeviationText",
+    "formatTablets",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
@@ -1882,11 +1884,11 @@ def test_format_tablets_never_splits_a_capsule_and_shows_the_actual_dose() -> No
     )
     result = _run(["formatTablets"], "", body)
     assert result["cap_exact"] == "(2 капс 500 мг)"
-    assert result["cap_half"] == "(~2 капс 500 мг = 1000 мг; капсулы не делятся)"
-    assert result["cap_small"] == "(~1 капс 500 мг = 500 мг; капсулы не делятся)"
+    assert result["cap_half"] == "(~2 капс 500 мг = 1000 мг, +33 % к расчётной; капсулы не делятся)"
+    assert result["cap_small"] == "(~1 капс 500 мг = 500 мг, +400 % к расчётной; капсулы не делятся)"
     assert result["tab_exact"] == "(2 таб 500 мг)"
     assert result["tab_half"] == "(1.5 таб 500 мг)", "a half tablet is exact, not a rounding"
-    assert result["tab_third"] == "(~0.5 таб 500 мг = 250 мг)"
+    assert result["tab_third"] == "(~0.5 таб 500 мг = 250 мг, -25 % к расчётной)"
     assert result["none"] == "" and result["susp"] == ""
     assert result["units_cap"] == 2 and result["units_tab"] == 1.5
 
@@ -2050,7 +2052,7 @@ def test_prescription_capsule_count_is_whole_and_shows_actual_dose() -> None:
         _RX_FUNCS, _RX_CONSTS, _rx_globals(drug, active, "po", None),
         "fillPrescriptionForm();console.log(JSON.stringify({signa:$('rx-signa-text').textContent,drugs:$('rx-drugs').innerHTML}));",
     )
-    assert "По 2 " in result["signa"] and "(= 200 мг)" in result["signa"], result["signa"]
+    assert "По 2 " in result["signa"] and "(= 200 мг, +33 % к расчётной)" in result["signa"], result["signa"]
     assert "1.5" not in result["signa"]
     # D.t.d. N is the quantity for the whole course (2 caps × 2/day × 7 days), with the per-dose count beside it
     assert "D.t.d. N 28 in caps." in result["drugs"] and "по 2 на приём, 2 р/д × 7 дн." in result["drugs"], result["drugs"]
@@ -2081,6 +2083,25 @@ def test_unit_strength_handles_combination_strengths_and_dose_basis() -> None:
     assert result["cotTmp"] == 80 and result["cotTmp2"] == 80, "«по триметоприму» regimens dose the TMP component"
     assert result["pen"] == 1_200_000 and result["plain"] == 500 and result["none"] is None
     assert result["amcUnits"] == 1 and result["cotUnits"] == 1 and result["cotTmpUnits"] == 3
+
+
+def test_rounding_deviation_is_named_when_it_reaches_ten_percent() -> None:
+    body = (
+        "const t500={form_type:'tablet',concentration:'500 мг'};"
+        "const c100={form_type:'capsule',concentration:'100 мг'};"
+        "console.log(JSON.stringify({"
+        "exact:formatTablets(1000,t500,null),"
+        "small:formatTablets(1050,t500,null),"   # 2.1 → 2 tabs = 1000 mg, −5 % → no percent
+        "plus:formatTablets(875,t500,null),"     # 1.75 → 2 tabs = 1000 mg, +14 %
+        "minus:formatTablets(500,{form_type:'tablet',concentration:'750 мг'},null),"  # 0.5 × 750 = 375, −25 %
+        "caps:formatTablets(150,c100,null)}));"  # 1.5 → 2 caps = 200 mg, +33 %
+    )
+    result = _run([], "", body)
+    assert result["exact"] == "(2 таб 500 мг)"
+    assert result["small"] == "(~2 таб 500 мг = 1000 мг)", result["small"]
+    assert result["plus"] == "(~2 таб 500 мг = 1000 мг, +14 % к расчётной)", result["plus"]
+    assert result["minus"] == "(~0.5 таб 750 мг = 375 мг, -25 % к расчётной)", result["minus"]
+    assert result["caps"] == "(~2 капс 100 мг = 200 мг, +33 % к расчётной; капсулы не делятся)", result["caps"]
 
 
 def test_course_text_and_units_for_course() -> None:

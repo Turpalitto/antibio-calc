@@ -3019,11 +3019,19 @@ function unitsForCourse(reg, form, singleMg, unit){
   const perDose = solid ? solid.units : Math.ceil(singleMg / strength - 1e-9);
   return {perDose: perDose, total: Math.ceil(perDose * reg.freq_per_day * days - 1e-9), days: days, strength: strength};
 }
+// «, +14 % к расчётной» when rounding to whole/half units moves the dose by
+// 10 % or more — the physician sees the size of the compromise, not only «~».
+function roundingDeviationText(mg, u){
+  if(!u || !u.rounded || !(mg > 0)) return '';
+  const dev = Math.round((u.actualMg - mg) / mg * 100);
+  if(Math.abs(dev) < 10) return '';
+  return ', '+(dev > 0 ? '+' : '')+dev+' % к расчётной';
+}
 function formatTablets(mg, form){
   const u = solidUnitsPerDose(mg, form);
   if(!u) return '';
   if(!u.rounded) return '('+u.units+' '+u.label+' '+u.strength+' мг)';
-  return '(~'+u.units+' '+u.label+' '+u.strength+' мг = '+Math.round(u.actualMg)+' мг'+(u.label === 'капс' ? '; капсулы не делятся' : '')+')';
+  return '(~'+u.units+' '+u.label+' '+u.strength+' мг = '+Math.round(u.actualMg)+' мг'+roundingDeviationText(mg, u)+(u.label === 'капс' ? '; капсулы не делятся' : '')+')';
 }
 function renderReconstitution(form){
   const block = $('reconstitution-block');
@@ -3506,7 +3514,7 @@ function fillPrescriptionForm(){
     // капсул, до половины для таблеток); фактическая доза печатается рядом.
     const su = solidUnitsPerDose(singleMg, form);
     const unitsText = su ? String(su.units).replace(/\.0$/,'')+' ' : '';
-    signa = 'По '+unitsText+latinForm+(su && su.rounded ? ' (= '+Math.round(su.actualMg)+' мг)' : '')+' '+reg.freq_per_day+' раза в день, '+routeRu;
+    signa = 'По '+unitsText+latinForm+(su && su.rounded ? ' (= '+Math.round(su.actualMg)+' мг'+roundingDeviationText(singleMg, su)+')' : '')+' '+reg.freq_per_day+' раза в день, '+routeRu;
   } else if(form.concentration_mg_per_ml && currentRouteGroup === 'po'){
     const ml = singleMg / form.concentration_mg_per_ml;
     signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+reg.freq_per_day+' раза в день';

@@ -23,7 +23,7 @@
       "weight_kg": 20, "unit": "мг",
       "expect": {"daily": 1800, "single": 600, "capped": false},
       "suspension": {"concentration": "250 мг/5 мл", "concentration_mg_per_ml": 50, "single_ml": 12.0},
-      "solid": {"form_type": "tablet", "concentration": "500 мг", "label": "(~1 таб 500 мг = 500 мг)"}
+      "solid": {"form_type": "tablet", "concentration": "500 мг", "label": "(~1 таб 500 мг = 500 мг, -17 % к расчётной)"}
     },
     {
       "id": "cap_child_amoxicillin_40kg_capped_and_half_tablet",
@@ -47,7 +47,7 @@
       "regimen": {"dose_mg_day_fixed": 1200, "single_dose_mg": 300, "freq_per_day": 4, "max_daily_mg": 1800},
       "weight_kg": 70, "unit": "мг",
       "expect": {"daily": 1200, "single": 300, "capped": false},
-      "solid": {"form_type": "capsule", "concentration": "250 мг", "label": "(~1 капс 250 мг = 250 мг; капсулы не делятся)"}
+      "solid": {"form_type": "capsule", "concentration": "250 мг", "label": "(~1 капс 250 мг = 250 мг, -17 % к расчётной; капсулы не делятся)"}
     },
     {
       "id": "ut_child_ceftriaxone_10kg_im_lidocaine",
