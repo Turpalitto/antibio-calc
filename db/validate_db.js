@@ -67,6 +67,8 @@ const FORM_TYPES = new Set([
   'tablet', 'capsule', 'suspension', 'syrup', 'granules', 'powder_for_suspension',
   'powder_for_injection', 'solution_iv', 'solution_im', 'topical', 'drops',
 ]);
+// Forms the shell counts in whole units (tablets / capsules / sachets / vials).
+const UNIT_FORMS = new Set(['tablet', 'capsule', 'granules', 'powder_for_injection']);
 const KNOWN_STATUSES = new Set([
   'CALCULATOR_BOUND_VERIFIED',
   'SOURCE_SPEC_PENDING_CALCULATOR_BINDING',
@@ -146,6 +148,20 @@ function validateDatabase(db) {
         else if (!FORM_TYPES.has(form.form_type)) errors.push(`drugs_reference.${key}.forms[${fi}]: unknown form_type "${form.form_type}"`);
         if (form && form.concentration_mg_per_ml != null && !(isFiniteNumber(form.concentration_mg_per_ml) && form.concentration_mg_per_ml > 0)) {
           errors.push(`drugs_reference.${key}.forms[${fi}]: concentration_mg_per_ml must be a positive number`);
+        }
+        // Unit strength the shell reads for «N таб / флаконов на приём», D.t.d. N and the
+        // course quantity (unitStrengthMg): «500 мг», «875+125 мг», «1 млн ЕД флакон».
+        if (form && UNIT_FORMS.has(form.form_type)) {
+          const conc = String(form.concentration || '');
+          const unitsDrug = ref.dose_unit === 'ЕД';
+          const ok = unitsDrug
+            ? /^\s*\d+(?:[.,]\d+)?\s*(?:млн|тыс)?\s*ЕД/.test(conc)
+            : /^\s*(?:\d+(?:[.,]\d+)?\s*\+\s*)*\d+(?:[.,]\d+)?\s*мг/.test(conc);
+          if (!ok) warnings.push(`drugs_reference.${key}.forms[${fi}]: ${form.form_type} concentration "${conc}" has no readable unit strength (expected «<N> мг», «<N>+<M> мг» or «<N> млн ЕД») — the shell cannot count units per dose or D.t.d. N for it (owner review)`);
+        }
+        // A liquid oral form without mg/ml cannot be dosed in ml by the shell.
+        if (form && ['suspension', 'syrup'].includes(form.form_type) && form.concentration_mg_per_ml == null) {
+          warnings.push(`drugs_reference.${key}.forms[${fi}]: ${form.form_type} without concentration_mg_per_ml — the shell cannot convert the dose to ml (owner review)`);
         }
       });
       if (ref.forms.length === 0) warnings.push(`drugs_reference.${key}: no dosage forms`);

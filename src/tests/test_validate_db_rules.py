@@ -185,6 +185,23 @@ def test_child_mg_kg_regimen_without_ceiling_is_a_warning_not_an_error() -> None
     assert any("without max_daily_mg" in w for w in result["warnings"])
 
 
+def test_unit_strength_unreadable_or_liquid_without_mg_per_ml_is_a_warning() -> None:
+    """The shell's unit maths (N таб на приём, D.t.d. N) reads «<N> мг» / «<N>+<M> мг» / «<N> млн ЕД»."""
+    db = _db()
+    db["drugs_reference"]["amoxicillin"]["forms"] = [
+        {"form_type": "tablet", "concentration": "1 г"},
+        {"form_type": "tablet", "concentration": "875+125 мг"},
+        {"form_type": "suspension", "concentration": "250 мг/5 мл"},
+    ]
+    db["drugs_reference"]["benzylpenicillin_na"]["forms"] = [{"form_type": "powder_for_injection", "concentration": "1000000 ЕД"}]
+    result = _validate(db)
+    assert result["errors"] == []
+    unreadable = [w for w in result["warnings"] if "no readable unit strength" in w]
+    assert len(unreadable) == 1 and 'forms[0]: tablet concentration "1 г"' in unreadable[0], result["warnings"]
+    liquid = [w for w in result["warnings"] if "without concentration_mg_per_ml" in w]
+    assert len(liquid) == 1 and "forms[2]: suspension" in liquid[0], result["warnings"]
+
+
 def test_route_without_a_matching_form_is_a_warning() -> None:
     """Scenario says iv, drugs_reference only has tablets: the shell falls back
     to every form and shows #route-mismatch-note; the validator says so too."""
