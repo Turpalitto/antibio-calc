@@ -18,6 +18,18 @@ import orjson
 from rich.console import Console
 from rich.logging import RichHandler
 
+# A-3 (audit 2026-10-14): the pipeline mixes package-relative imports (main.py)
+# with flat ones (`from config import …` in api_client.py & co.), so from a clean
+# checkout only pytest — which sets `pythonpath = [".", "src/pipeline", "src"]`
+# in pyproject.toml — could import it. Mirror that contract here so every
+# documented invocation works: `python -m src.pipeline.main`,
+# `python src/pipeline/main.py`, `cd src/pipeline && python main.py`.
+_PIPELINE_DIR = Path(__file__).resolve().parent
+for _entry in (_PIPELINE_DIR.parent.parent, _PIPELINE_DIR.parent, _PIPELINE_DIR):
+    if str(_entry) not in sys.path:
+        sys.path.insert(0, str(_entry))
+del _entry
+
 
 # L-5: there were TWO locks for the same file -- a module-level ``_write_lock`` and
 # the ``save_lock`` created inside cmd_extract_raw -- and only one of them was ever
