@@ -104,6 +104,38 @@ setTimeout(() => {
                 else if (reg.age_group && reg.age_group !== 'all' && reg.age_group !== activeAge) {
                   out.findings.push({ kind: 'age_group_mismatch', where, sample: `regimen ${reg.age_group} for ${activeAge}` });
                 }
+                // arithmetic oracle: the single dose on screen must be what the DB regimen
+                // gives for this weight — re-derived here independently of computeDose
+                // (single_dose_mg × freq, else mg/kg/day × weight, else fixed daily; the
+                // daily ceiling max_daily_mg cuts the single dose too).
+                if (reg) {
+                  const kg = parseFloat(profile.weight);
+                  const freq = reg.freq_per_day || 1;
+                  let daily = null;
+                  if (reg.single_dose_mg != null) daily = reg.single_dose_mg * freq;
+                  else if (reg.dose_mg_kg_per_dose != null) daily = kg * reg.dose_mg_kg_per_dose * freq;
+                  else if (reg.dose_mg_kg_day != null) daily = kg * reg.dose_mg_kg_day;
+                  else if (reg.dose_mg_day_fixed != null) daily = reg.dose_mg_day_fixed;
+                  if (daily != null && reg.max_daily_mg != null && daily > reg.max_daily_mg) daily = reg.max_daily_mg;
+                  const expectSingle = daily != null ? daily / freq : null;
+                  // «1000 мг» / «1.5 млн» / «625 тыс» / «1 005 000» (formatUnits for ЕД) → a number
+                  const num = (shown) => {
+                    const mul = /млн/.test(shown) ? 1e6 : (/тыс/.test(shown) ? 1e3 : 1);
+                    return parseFloat(shown.replace(/[\s\u00a0]/g, '').replace(/мг|ЕД|млн|тыс/g, '').replace(',', '.')) * mul;
+                  };
+                  const po = visible($('res-po'));
+                  const shown = po ? txt($('po-mg')) : (visible($('res-inj')) ? txt($('inj-mg')) : '');
+                  const shownDay = po ? txt($('po-day')) : (visible($('res-inj')) ? txt($('inj-day')) : '');
+                  const regStr = JSON.stringify({ s: reg.single_dose_mg, kg: reg.dose_mg_kg_day, fx: reg.dose_mg_day_fixed, max: reg.max_daily_mg, f: reg.freq_per_day });
+                  if (expectSingle != null && Number.isFinite(num(shown))) {
+                    if (Math.abs(num(shown) - expectSingle) > 1) out.findings.push({ kind: 'dose_arithmetic', where, sample: `screen ${shown} vs regimen ${regStr} × ${kg} kg → ${Math.round(expectSingle)}` });
+                    // the daily tile must be the same arithmetic (1 050 000 ЕД once read «15 млн ЕД»)
+                    if (Number.isFinite(num(shownDay)) && Math.abs(num(shownDay) - daily) > 1) out.findings.push({ kind: 'daily_dose_arithmetic', where, sample: `screen daily ${shownDay} vs regimen ${regStr} × ${kg} kg → ${Math.round(daily)}` });
+                    stats.arithmeticOracle = (stats.arithmeticOracle || 0) + 1;
+                  } else if (expectSingle != null && !shown.startsWith('—')) {
+                    out.findings.push({ kind: 'dose_not_shown', where, sample: `expected ${Math.round(expectSingle)}, screen «${shown}»` });
+                  }
+                }
                 // the two physician-facing exports must be as clean as the screen
                 w.__copied = '';
                 w.copyForMIS();

@@ -4,8 +4,12 @@ Every computable nosology → every age-matching scenario → every drug card �
 every route tab → every form chip, for four patient profiles (adult, child,
 infant, neonate). For each state the visible result, the MIS text and the
 prescription form must be free of NaN / Infinity / undefined / "[object" and
-must either show a dose or an explicit block reason. ~30 s in jsdom; skipped
-when Node.js or the root devDependencies are absent (CI installs them).
+must either show a dose or an explicit block reason. Oracles per computed
+state: regimen age group, dose arithmetic re-derived from the DB regimen ×
+profile weight (single and daily tiles — «15 млн ЕД» for 1 050 000 was found
+this way), MIS / Rp dose vs screen, route words in every export, course units
+(MIS = Rp = printed form), course wording. ~30 s in jsdom; skipped when
+Node.js or the root devDependencies are absent (CI installs them).
 """
 
 from __future__ import annotations
@@ -48,6 +52,9 @@ def test_walk_covers_every_computable_nosology_for_every_profile(walk: dict) -> 
         assert stats["exports"] == stats["computed"], (name, stats)
     adult = walk["profiles"]["adult_70"]
     assert adult["scenarios"] >= 80 and adult["drugs"] >= 180 and adult["computed"] >= 500, adult
+    # the arithmetic oracle must actually run on (almost) every computed state
+    for name, stats in walk["profiles"].items():
+        assert stats["arithmeticOracle"] >= stats["computed"] - 1, (name, stats)
     # neonates are mostly blocked (no neonatal scheme) — that is the safety design, not a gap
     neonate = walk["profiles"]["neonate_10d_3kg"]
     assert neonate["blocked"] > neonate["computed"], neonate

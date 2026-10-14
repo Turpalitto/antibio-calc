@@ -3348,10 +3348,20 @@ function renderComboComponents(refs, reg, w){
     block.appendChild(card);
   });
 }
+// ЕД → «1.5 млн», «625 тыс», «1 005 000». The old `.replace('.0','')` ate the
+// decimal point of 1 050 000 → «15 млн» (a 14× dose on the screen and in the
+// exports for 150 000 ЕД/кг/сут × 7 кг); now a value is scaled only when two
+// decimals reproduce it exactly, otherwise it is printed in full with spaces.
 function formatUnits(n){
-  if(n >= 1000000) return (n/1000000).toString().replace('.0','')+' млн';
-  if(n >= 1000) return (n/1000).toString().replace('.0','')+' тыс';
-  return n.toString();
+  n = Math.round(Number(n) || 0);
+  const scaled = (div, word) => {
+    const v = Math.round(n / div * 100) / 100;
+    return Math.abs(v * div - n) < 0.5 ? String(v)+' '+word : null;
+  };
+  const grouped = () => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  if(n >= 1000000) return scaled(1000000, 'млн') || grouped();
+  if(n >= 1000) return scaled(1000, 'тыс') || grouped();
+  return String(n);
 }
 function renderDrugMeta(ref, reg){
   const meta = $('drug-meta');

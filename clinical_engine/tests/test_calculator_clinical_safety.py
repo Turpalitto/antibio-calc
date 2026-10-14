@@ -1926,6 +1926,22 @@ def test_regimen_summary_keeps_units_honest() -> None:
     assert result[5] == "однократно"
 
 
+def test_format_units_never_drops_the_decimal_point() -> None:
+    """1 050 000 ЕД (150 000 ЕД/кг/сут × 7 кг) once read «15 млн ЕД»: the old
+    `.replace('.0','')` ate the point. Scale only when two decimals are exact,
+    otherwise print the number in full with thousand spaces."""
+    body = (
+        "console.log(JSON.stringify([1050000,1005000,1030000,2000000,1500000,1000000,1250000,"
+        "24000000,175000,625000,20050,1050,1000,999,0].map(formatUnits)));"
+    )
+    result = _run(["formatUnits"], "", body)
+    assert result == [
+        "1.05 млн", "1 005 000", "1.03 млн", "2 млн", "1.5 млн", "1 млн", "1.25 млн",
+        "24 млн", "175 тыс", "625 тыс", "20.05 тыс", "1.05 тыс", "1 тыс", "999", "0",
+    ]
+    assert _run(["fmtDose", "formatUnits"], "", "console.log(JSON.stringify(fmtDose(1050000,'ЕД')));") == "1.05 млн ЕД"
+
+
 def test_age_parsing_and_group_boundaries() -> None:
     body = (
         "console.log(JSON.stringify({"
