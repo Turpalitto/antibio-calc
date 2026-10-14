@@ -51,7 +51,7 @@
 | G-1 | LOW | ⏳ | архив корня — backlog | — |
 | G-2 | LOW | ✅ | `.gitignore` += `node_modules/`, `.npmrc` | `git check-ignore` |
 | G-3 | LOW | ✅ | домашние пути/e-mail удалены из 6 документов и docstring | `grep` |
-| A-4 | LOW | ✅ | `ubuntu-24.04`, actions на Node 24 (`setup-uv` по SHA) | CI run round 2 |
+| A-4 | LOW | ✅ | `ubuntu-24.04`, actions на Node 24 (`setup-uv` по SHA) | CI run 38569123307 — 3 джоба ✓, аннотаций о Node 20 / ubuntu-latest нет |
 | H-3 | LOW | ✅ | `favicon.ico` 16/32/48, `<link rel="icon">`, отдаётся app.py/server.js, в precache | `test_favicon_is_served…` |
 | G-4, G-5, D-4 | LOW | ⏳ | backlog (`NEXT_TASK.md`); G-5 — документированный дефолт с override `ANTIBIO_CORPUS_DIR` | — |
 | I-1 | INFO | ✅ | возраст пациента (д/нед/мес/лет) → группа + проверка порогов | harness `test_age_parsing_and_group_boundaries` |

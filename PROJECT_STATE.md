@@ -6,6 +6,7 @@
 - Shell: favicon served everywhere (H-3); html sha `5cb3e30f7758…`, sw `build-d6e42e706f0c`.
 - Pipeline CLI works from a clean checkout (A-3).
 - Tests: **2671 passed / 30 skipped**; `tests/` 404; validate 0 errors; ruff clean.
+  **CI ✅ run 38569123307** (3 jobs: pytest + validate 58s, ruff 10s, secret scan 10s; no Node-20 / ubuntu-latest annotations any more).
 - Still owner decisions: DOSA review (50), `SOURCE_BASIS_MISSING` (3), «БЕЗ КР» (32),
   4 regimens without `max_daily_mg`, `db/schema.json`, PR #1 merge.
 
