@@ -2437,7 +2437,9 @@ function renderForms(preferredRoute){
 
   const groups = {po:[], im:[], iv:[], topical:[]};
   forms.forEach((f, idx)=>{
-    if(f.form_type === 'topical'){
+    // «drops» (ear / eye) is a validator-accepted form type: it belongs with the
+    // topical forms, never with per os (the old fall-through put it there).
+    if(isTopicalForm(f)){
       groups.topical.push({f, idx});
       return;
     }
@@ -2567,6 +2569,11 @@ function bestLiquidFormIndex(group){
     if(!best || score[0] < best.score[0] || (score[0] === best.score[0] && score[1] < best.score[1] - 1e-9)) best = {i, score};
   });
   return best ? best.i : -1;
+}
+// Topical forms (cream / ointment / ear & eye drops): no systemic mg dose, no course
+// quantity from mg, route «наружно / местно». Validator FORM_TYPES lists both.
+function isTopicalForm(form){
+  return !!form && (form.form_type === 'topical' || form.form_type === 'drops');
 }
 // tablets/capsules per dose for a form at the current regimen × weight (Infinity when unknown)
 function solidUnitsForDefault(form){
@@ -2944,7 +2951,7 @@ function calculateCoursePackages(reg, form, singleMg, dailyMg, w){
   // a 2% cream has concentration_mg_per_ml, and the bottle arithmetic used to
   // turn it into "210 ml → 3 bottles" in the MIS text and "D.t.d. N. 3" in the
   // Latin recipe (bacterial vaginosis → clindamycin, 2026-10-14).
-  if(!form || form.form_type === 'topical' || form.form_type === 'drops') return null;
+  if(!form || isTopicalForm(form)) return null;
   // A course in words («хроническая», «по ситуации») has no package count: the
   // old default of 7 days turned asplenia prophylaxis into «Курс (7 дн.) → 1 уп.».
   const days = courseDays(reg);
@@ -2998,7 +3005,7 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
   const unit = doseUnitOf(ref);
   const concMgPerMl = form.concentration_mg_per_ml || 0;
   const isSolid = ['tablet','capsule'].includes(form.form_type);
-  const isTopical = form.form_type === 'topical' || (typeof currentRouteGroup !== 'undefined' && currentRouteGroup === 'topical');
+  const isTopical = isTopicalForm(form) || (typeof currentRouteGroup !== 'undefined' && currentRouteGroup === 'topical');
 
   const routeLabel = $('po-route-label');
   if(routeLabel) routeLabel.textContent = isTopical ? 'Местное применение' : 'Разовая доза (per os)';
@@ -3637,7 +3644,7 @@ const LATIN_FORM = {
   tablet:'tab.', capsule:'caps.', suspension:'susp.', syrup:'sir.',
   powder_for_suspension:'pulv. pro susp.', powder_for_injection:'pulv. pro inject.',
   solution_iv:'sol. pro inject.', solution_im:'sol. pro inject.',
-  granules:'gran.', topical:'ung.', suppository:'supp.'
+  granules:'gran.', topical:'ung.', drops:'gtt.', suppository:'supp.'
 };
 const LATIN_ROUTE = { po:'per os', im:'intramuscularis', iv:'intravenosus', topical:'ad usum externum' };
 const LATIN_FREQ = { 1:'semel in die', 2:'bis in die', 3:'ter in die', 4:'quater in die', 6:'sexies in die' };
@@ -3744,7 +3751,7 @@ function fillPrescriptionForm(){
   let signa = '';
   if(singleMg <= 0 && dailyMg <= 0){
     signa = reg.duration_note || reg.regimen_label || (form.notes ? form.notes + ': ' : '') + 'применять по схеме клинических рекомендаций';
-  } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
+  } else if(currentRouteGroup === 'topical' || isTopicalForm(form)){
     signa = 'Применять наружно/местно: ' + (form.notes ? form.notes + ' ' : '') + form.concentration + (reg.freq_per_day ? ' ' + timesADay(reg.freq_per_day) : '');
   } else if(form.form_type === 'tablet' || form.form_type === 'capsule'){
     // Капсулы не делятся: число единиц берётся из solidUnitsPerDose (целое для
@@ -3821,7 +3828,7 @@ function copyForMIS(){
   let doseStr = '';
   if(singleMg <= 0 && dailyMg <= 0){
     doseStr = (reg.duration_note || reg.regimen_label || 'По схеме клинических рекомендаций') + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' р/сут' : '');
-  } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
+  } else if(currentRouteGroup === 'topical' || isTopicalForm(form)){
     doseStr = 'наружно/местно ' + (form.notes ? form.notes + ' ' : '') + form.concentration + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' р/сут' : '');
   } else if(isOralLiquid(form)){
     const ml = (singleMg / form.concentration_mg_per_ml).toFixed(1);
@@ -3847,7 +3854,7 @@ function copyForMIS(){
   txt += 'Форма: '+(form.concentration || form.form_type)+'\n';
   // A topical form paired with a systemic (mg) regimen: say so instead of
   // presenting "300 мг на приём" as the cream's dose (bacterial vaginosis).
-  const topicalForm = currentRouteGroup === 'topical' || form.form_type === 'topical';
+  const topicalForm = currentRouteGroup === 'topical' || isTopicalForm(form);
   txt += 'Режим: '+(topicalForm
     ? 'местно, по указаниям КР (в записи БД задана системная схема: '+regimenSummary(reg, unit)+')'
     : regimenSummary(reg, unit))+'\n';
@@ -3896,7 +3903,7 @@ function copyLatinRecipe(){
   let signa = '';
   if(singleMg <= 0 && dailyMg <= 0){
     signa = (reg.duration_note || reg.regimen_label || 'По схеме КР') + courseTail(reg);
-  } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
+  } else if(currentRouteGroup === 'topical' || isTopicalForm(form)){
     signa = 'Применять наружно/местно' + (form.notes ? ' (' + form.notes + ')' : '') + (reg.freq_per_day ? ' ' + timesADay(reg.freq_per_day) : '') + courseTail(reg);
   } else if(isOralLiquid(form)){
     const ml = (singleMg / form.concentration_mg_per_ml).toFixed(1);

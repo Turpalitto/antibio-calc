@@ -515,6 +515,28 @@ async function run() {
       key($('search'), 'Enter');
       out.keyboardSearch.openedDisease = w.eval('activeDisease && activeDisease.name');
     }
+    // 14. a validator-accepted «drops» form belongs with the topical route, never per os
+    {
+      clickDisease('cap_adult');
+      const sc = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc) sc.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const before = [...d.querySelectorAll('#route-tabs button')].map((b) => txt(b));
+      w.eval("DB.drugs_reference[getDrugRefs(activeDrug)[0]].forms.push({form_type:'drops', concentration:'0.3 % капли ушные', notes:'тест'})");
+      w.eval("activeDrug.route = (activeDrug.route || []).concat(['topical'])");
+      w.renderForms();
+      const tabs = [...d.querySelectorAll('#route-tabs button')];
+      const topicalTab = tabs.find((b) => /наружно|местно|топик/i.test(txt(b)));
+      if (topicalTab) topicalTab.click();
+      out.dropsForm = {
+        before,
+        tabs: tabs.map((b) => txt(b)),
+        topicalForms: [...d.querySelectorAll('#form-grid button')].map((b) => txt(b)),
+        poHasDrops: (() => { const po = tabs.find((b) => /per os|внутрь/i.test(txt(b))); if (po) po.click(); return [...d.querySelectorAll('#form-grid button')].some((b) => /капли/.test(txt(b))); })(),
+      };
+      w.eval("DB.drugs_reference[getDrugRefs(activeDrug)[0]].forms.pop(); activeDrug.route = activeDrug.route.filter(r => r !== 'topical')");
+      w.renderForms();
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

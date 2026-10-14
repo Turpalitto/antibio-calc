@@ -329,3 +329,13 @@ def test_search_is_operable_from_the_keyboard(shell: dict) -> None:
     assert ks["focusAfterDown"] is True and ks["focusAfterDown2"] is True and ks["backToInput"] is True, ks
     assert ks["clearedValue"] == "" and ks["boxHiddenAfterEscape"] is True
     assert ks["openedDisease"] == "Острый тонзиллит / фарингит (БГСА) у взрослых"
+
+
+def test_drops_form_is_grouped_with_the_topical_route_not_per_os(shell: dict) -> None:
+    """``drops`` is a validator-accepted form type; the shell's route grouping
+    fell through to per os for it (an ear-drop form would have been offered as
+    an oral dose). Now it joins the topical group like a cream."""
+    df = shell["dropsForm"]
+    assert df["before"] == ["per os"]
+    assert df["tabs"] == ["per os", "местно"], df
+    assert df["topicalForms"] == ["0.3 % капли ушныетест"] and df["poHasDrops"] is False

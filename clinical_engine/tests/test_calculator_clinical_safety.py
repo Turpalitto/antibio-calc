@@ -223,6 +223,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "ageInputBlockReason",
     "weightBlockReason",
     "weightWarnReason",
+    "isTopicalForm",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
