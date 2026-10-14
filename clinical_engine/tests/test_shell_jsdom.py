@@ -63,6 +63,8 @@ def test_shell_boots_with_the_shipped_db_and_a_clean_document(shell: dict) -> No
 
 def test_search_select_drug_weight_flow_through_the_dom(shell: dict) -> None:
     assert shell["search"]["resultsVisible"] is True and shell["search"]["results"] >= 1
+    assert shell["search"]["statusVisible"] is True and shell["search"]["status"].startswith(f"Найдено: {shell['search']['results']} нозологии"), shell["search"]
+    assert shell["disease"]["searchStatusVisible"] is False, "the count disappears with the result list once a nosology is chosen"
     assert shell["disease"]["status"] == "CR_REFERENCE_CALCULATION"
     assert shell["disease"]["activeCr"].startswith("КР МЗ РФ #")
     adult = shell["adult"]
@@ -194,6 +196,17 @@ def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     assert r["цистит"]["names"][0] == "Острый неосложнённый цистит у женщин" and r["цистит"]["names"][-1] == "Острый холецистит и холангит", r["цистит"]
     assert "цистицеркоз" not in " ".join(r["цистит"]["names"]).lower()
     assert r["бронхит"]["names"] == ["Бронхит"], "«бронхит» has an exact hit, so бронхиолит must not be pulled in"
+
+
+def test_search_status_counts_hits_and_says_when_nothing_matched(shell: dict) -> None:
+    """A silent empty list was the only sign that nothing matched; 110 hits for
+    «ин» had no count. The status line is role=status/aria-live for screen readers."""
+    r = shell["searchRecall"]
+    assert r["xyzzy"]["n"] == 0 and r["xyzzy"]["boxVisible"] is False and r["xyzzy"]["statusVisible"] is True
+    assert r["xyzzy"]["status"] == "Ничего не найдено по запросу «xyzzy». Попробуйте код МКБ-10 (например, J18), другое название или синоним."
+    assert r["ин"]["n"] > 20 and r["ин"]["status"].startswith(f"Найдено: {r['ин']['n']} нозологий (с закрытым расчётом: ") and r["ин"]["status"].endswith(") — уточните запрос.")
+    assert r["х"] == {"n": 0, "status": "", "statusVisible": False, "boxVisible": False, "first": None, "names": [], "blockedBeforeComputable": False}, "a single letter is not a query yet — and the previous list is cleared, not just hidden"
+    assert r["J18"]["status"].startswith(f"Найдено: {r['J18']['n']} ") and "уточните" not in r["J18"]["status"]
 
 
 def test_cards_are_keyboard_activatable_and_deep_link_restores_scenario(shell: dict) -> None:

@@ -591,6 +591,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
         <button type="button" class="quick-disease-tag" onclick="selectQuickDisease('N30')">💧 Цистит (N30)</button>
         <button type="button" class="quick-disease-tag" onclick="selectQuickDisease('N10')">🩺 Пиелонефрит (N10)</button>
       </div>
+      <div id="search-status" class="hidden mt-3 text-[11px] font-bold text-slate-400" role="status" aria-live="polite"></div>
       <div id="results-box" class="hidden mt-3 space-y-2 max-h-72 overflow-y-auto pr-1 scrollbar"></div>
       <div id="active-disease" class="hidden mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl">
         <div class="flex justify-between items-start">
@@ -1934,12 +1935,38 @@ function fuzzyWordHit(text, t){
     return [t.length, t.length + 1, t.length - 1].some(len => len >= 4 && len <= wd.length && withinOneEdit(t, wd.slice(0, len)));
   });
 }
+// «1 нозология / 2 нозологии / 5 нозологий»
+function nosologiesWord(n){
+  n = Math.abs(parseInt(n)) || 0;
+  const m10 = n % 10, m100 = n % 100;
+  if(m10 === 1 && m100 !== 11) return 'нозология';
+  if(m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'нозологии';
+  return 'нозологий';
+}
+// Search outcome in words (and for screen readers): a silent empty list used to
+// be the only sign that nothing matched; 110 hits for «ин» had no count either.
+function searchStatusText(q, hits){
+  const n = hits.length;
+  if(n === 0) return 'Ничего не найдено по запросу «'+q+'». Попробуйте код МКБ-10 (например, J18), другое название или синоним.';
+  const blocked = hits.filter(d => d.calculation_blocked).length;
+  let text = 'Найдено: '+n+' '+nosologiesWord(n);
+  if(blocked) text += ' (с закрытым расчётом: '+blocked+')';
+  if(n > 20) text += ' — уточните запрос';
+  return text+'.';
+}
+function updateSearchStatus(q, hits){
+  const el = $('search-status');
+  if(!el) return;
+  if(hits == null){ el.classList.add('hidden'); el.textContent = ''; return; }
+  el.textContent = searchStatusText(q, hits);
+  el.classList.remove('hidden');
+}
 function handleSearch(){
   const rawQ = $('search').value.trim();
   const clearBtn = $('search-clear');
   if(clearBtn) clearBtn.classList.toggle('hidden', rawQ.length === 0);
   const box = $('results-box');
-  if(rawQ.length < 2){ box.classList.add('hidden'); return; }
+  if(rawQ.length < 2){ box.classList.add('hidden'); box.innerHTML = ''; updateSearchStatus(rawQ, null); return; }
 
   const qLower = rawQ.toLowerCase();
   const qClean = qLower.replace(/[\.\s\-_]/g, '');
@@ -2052,6 +2079,7 @@ function handleSearch(){
     box.appendChild(item);
   });
   box.classList.toggle('hidden', filtered.length === 0);
+  updateSearchStatus(rawQ, filtered);
 }
 function selectDisease(d){
   activeDisease = d;
@@ -2064,6 +2092,7 @@ function selectDisease(d){
   $('scenario-list').innerHTML = '';
   $('drug-list').innerHTML = '';
   $('results-box').classList.add('hidden');
+  updateSearchStatus('', null);
   $('search').value = '';
   const clearBtn = $('search-clear');
   if(clearBtn) clearBtn.classList.add('hidden');
@@ -2179,6 +2208,7 @@ function resetDisease(){
   const clearBtn = $('search-clear');
   if(clearBtn) clearBtn.classList.add('hidden');
   $('results-box').classList.add('hidden');
+  updateSearchStatus('', null);
   updateAllergyBanner();
   history.replaceState(null, '', window.location.pathname);
 }

@@ -99,14 +99,15 @@ async function run() {
 
     // ---- 1. search → disease → drug → weight (all through the DOM) ----------
     type($('search'), 'хламид');
-    out.search = { resultsVisible: visible($('results-box')), results: $('results-box').children.length, first: txt($('results-box').firstElementChild) };
+    out.search = { resultsVisible: visible($('results-box')), results: $('results-box').children.length, first: txt($('results-box').firstElementChild), status: txt($('search-status')), statusVisible: visible($('search-status')) };
     // recall: tokens + Russian endings + ICD + drug names, computable hits first
     out.searchRecall = {};
-    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'отит взрослые', 'xyzzy', 'пневмания дети', 'тонзилит', 'амоксицилин', 'цистит', 'бронхит']) {
+    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'отит взрослые', 'xyzzy', 'пневмания дети', 'тонзилит', 'амоксицилин', 'цистит', 'бронхит', 'ин', 'х']) {
       type($('search'), q);
       const items = [...$('results-box').children];
       out.searchRecall[q] = {
         n: items.length,
+        status: txt($('search-status')), statusVisible: visible($('search-status')), boxVisible: visible($('results-box')),
         first: items.length ? txt(items[0]).slice(0, 60) : null,
         names: items.slice(0, 5).map((i) => txt(i).split('МКБ')[0]),
         blockedBeforeComputable: items.findIndex((i) => /расчёт закрыт/i.test(i.textContent)) >= 0
@@ -114,7 +115,7 @@ async function run() {
       };
     }
     const chl = clickDisease('chlamydia_urogenital');
-    out.disease = { name: chl.name, status: $('source-calculation-block').dataset.sourceStatus, activeCr: txt($('active-cr')) };
+    out.disease = { name: chl.name, status: $('source-calculation-block').dataset.sourceStatus, activeCr: txt($('active-cr')), searchStatusVisible: visible($('search-status')) };
     clickDrug(/Доксициклин/i);
     type($('weight'), '70');
     out.adult = {
