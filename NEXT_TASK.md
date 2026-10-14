@@ -1,3 +1,31 @@
+## 2026-10-14 (after round 6, T45–T50): remaining NEXT_TASK (work top-down)
+
+1. **Owner-physician queue** — everything in the «after round 5» section still stands, plus:
+   - **GFR plausibility (T48):** `MAX_PLAUSIBLE_GFR = 200` ml/min is a typo/creatinine
+     catcher, not a clinical bound; GFR «0» now runs the renal thresholds (anuria /
+     dialysis). If dialysis patients need their own wording («на диализе — доза после
+     сеанса»), that is a `renal_adjustment` text item per drug in `drugs_reference`.
+   - **Courses in words (T47):** «однократно» (24 regimens), «не указано», «по ситуации»,
+     «хроническая» and the perioperative free text still export as «длительность: …» with
+     no quantity. «однократно» could be encoded as `duration_days "1"` with
+     `freq_per_day 1` (then the course quantity = one dose) when those records are
+     reviewed; the shell does not guess it.
+   - `duration_days` written as «7 дней» / «3 недели» is parsed now, but normalising the
+     gated records to plain numbers («7», «7-14») keeps the DB uniform; the validator no
+     longer warns about the parseable suffix forms (436 warnings left, all blocked records
+     or owner items).
+   - Real-browser pass additions: the «↺ Новый пациент» button, the «Найдено: N …» /
+     «Ничего не найдено …» status under the search field, the «Поле «вес» содержит
+     нечисловое значение …» hint when typing «12,5» (Chrome en-US / Firefox), the
+     «СКФ 1500 мл/мин — неправдоподобно …» banner.
+2. **Engineering candidates (none urgent):**
+   - `npm run check` convenience script (validate + `build_html.py --check` + jsdom smoke +
+     walk) and a README section listing every gate added in rounds 5–6.
+   - History entries could store the patient context snapshot (GFR / pregnancy / allergy)
+     so «Открыть расчёт» restores the flags too (today it restores the regimen path + age).
+   - Latin Rp for a combination regimen still names the main drug only (unchanged).
+3. Everything in the previous sections (§1–3, §6) that is marked **Owner** still stands.
+
 ## 2026-10-14 (after round 5): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue (unchanged items from the previous section, plus):**

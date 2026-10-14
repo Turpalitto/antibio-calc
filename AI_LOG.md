@@ -1,3 +1,42 @@
+## 2026-10-14 (round 6, autonomous loop continued, T45–T50)
+
+- **Scope rule unchanged:** engineering only; DB sha `56727a27f050…` unchanged, FROZEN
+  modules untouched, owner decisions left in NEXT_TASK.
+- **T45 `0be78ef`:** «↺ Новый пациент» (`#new-patient`) clears weight, age (unit back to
+  years), GFR, pregnancy, allergy, the sticky explicit age and age group, notices, chips and
+  the calculation in one action (toast). REAL BUG on the way: `updateAllergyBanner()`
+  returned early with no active drug, so the nosology «✕» left the previous drug's
+  «противопоказан» allergy banner on screen — fixed (`resetDisease()` now refreshes it).
+- **T46 `822436f` (validator shell-parity):** WARN for `age_restriction_min` the shell's
+  `parseAgeRestrictionDays()` cannot parse (regex pinned equal to the shell's), for
+  `component_regimens` keys that are not combination partners (misspelt drug key = dead
+  data), for zero / inverted («14-7») / > 365-day courses, and for `single_dose_mg ×
+  freq_per_day` disagreeing with `dose_mg_day_fixed` beyond `computeDose()`'s 5 % + 1
+  tolerance. 24 rule tests; the shipped DB raises none of them.
+- **T47 `70f3315`:** `parseCourse()` / `COURSE_RE` — a course given as «7 дней», «7–14
+  дней», «21 день», «3 сут» or «3 недели» (90+ regimens in the gated records) now yields a
+  course quantity (D.t.d. N, «на курс … мл») and consistent wording («7–14 дней», «3 недели
+  (21 день)»); «однократно», «10!», «7 дней (минимальный курс)» stay words. Partner lines use
+  `courseText()` (no «7 дней дн»). Validator uses the same literal (pinned sample by
+  sample): 528 → 436 warnings, all in blocked records.
+- **T48 `b4bda08` (input safety):** GFR > 200 ml/min («1500» — a creatinine typed in the
+  wrong field?) or negative → patient-level «warn» flag on screen and in MIS / Rp / print /
+  history. REAL GAP: `renalFlag()` treated «0» as an empty field (`gfr > 0`) — anuria /
+  dialysis produced **no renal warning at all**; it now runs the thresholds («СКФ 0 мл/мин:
+  «Амоксициллин» — СКФ<30 …»).
+- **T49 `7aca0c8`:** a `type=number` field holding «12,5» in a dot-decimal locale reports
+  `value ''` + `validity.badInput` — the physician saw a weight, the shell said «нужен вес».
+  `badInputHint()` names the field(s) and the separator; a plausibility block still outranks
+  it. `inputmode` decimal/numeric on weight / age / GFR.
+- **T50 `f802248`:** `#search-status` (role=status, aria-live): «Найдено: 5 нозологий (с
+  закрытым расчётом: 2).», «— уточните запрос» above 20 hits, «Ничего не найдено по запросу
+  «…». Попробуйте код МКБ-10 …» where the only sign used to be a hidden list; a too-short
+  query empties the list instead of hiding stale cards.
+- **Verification per push:** full pytest, `ruff check .`, `npm run validate`,
+  `build_html.py --check`, walk gate 0 findings, axe 0 violations, CI + CodeQL green.
+  After T50: **2788 passed / 28 skipped** (jsdom 32, validate_db rules 65,
+  clinical_safety 92), validate 0 errors / 436 warnings (blocked records + 9 owner).
+
 ## 2026-10-14 (round 5, autonomous «доведи до совершенства», self-generated tasks)
 
 - **Scope rule unchanged:** engineering only; clinical data, FROZEN modules, LICENSE,

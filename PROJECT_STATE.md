@@ -1,3 +1,22 @@
+## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
+
+- Shell: «↺ Новый пациент» resets the whole patient context + calculation (and the
+  nosology «✕» no longer leaves the previous drug's allergy banner on screen); courses
+  given as «7 дней» / «7–14 дней» / «21 день» / «3 сут» / «3 недели» are planned like
+  numbers (D.t.d. N, «на курс … мл», «3 недели (21 день)»); GFR > 200 / negative is a
+  patient-level caution in every export, and **GFR 0 (anuria) now runs the renal rules**
+  (it used to be read as an empty field — no warning at all); an unparsed «12,5» in a
+  number field is named instead of «нужен вес»; the search reports «Найдено: N …» /
+  «Ничего не найдено …» (aria-live) and empties stale lists.
+- Validator (shell-parity class): `age_restriction_min` unparseable by the shell,
+  `component_regimens` keys that are not partners, zero / inverted / > 365-day courses,
+  `single × freq` vs `dose_mg_day_fixed` beyond the shell's 5 % + 1 tolerance; `COURSE_RE`
+  and the age-restriction regex are pinned equal to the shell's. Shipped DB: 0 errors,
+  436 warnings (was 528 — «7 дней» is parseable now), none of them new.
+- Tests: **2788 passed / 28 skipped / 0 failed** (jsdom 32, walk 2 / 13 oracles / 0
+  findings, validate_db rules 65, clinical_safety 92); axe 0 violations; ruff clean; build
+  fresh; CI + CodeQL green per push (`f802248` last checked). DB unchanged.
+
 ## 2026-10-14 (round 5, autonomous improvement loop): jsdom end-to-end gates, 8 real shell defects, infra
 
 - Nine shell defects found by driving the built HTML with real DOM events and by
