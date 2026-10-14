@@ -218,7 +218,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "bestSolidFormIndex",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR"]
-PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\n"
+PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
 
 
 def _run_with_consts(functions: list[str], consts: list[str], globals_js: str, body: str) -> dict:

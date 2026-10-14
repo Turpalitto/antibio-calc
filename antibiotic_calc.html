@@ -905,6 +905,9 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
 <script>
 let DB = null;
 let activeDisease = null, activeScenario = null, activeLine = null, activeDrug = null, activeFormIdx = 0, activeRegimenIdx = 0, activeRouteKey = null, activeVialIdx = 0;
+// The dilution vial size follows the chosen form («2000 мг флакон» → the 2000 mg
+// vial of the dilution table) until the physician picks a vial size by hand.
+let vialFollowsForm = true;
 let activeAge = 'child';
 let userPickedAge = false;
 let lastPickedAge = null;
@@ -2278,7 +2281,7 @@ function renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, pre
   }
 }
 function selectDrug(drug, line, card, preferredRoute, preferredRegimenIdx){
-  activeDrug = drug; activeLine = line; activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0;
+  activeDrug = drug; activeLine = line; activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0; vialFollowsForm = true;
   document.querySelectorAll('#drug-list .drug-card').forEach(c=>c.classList.remove('active'));
   card.classList.add('active');
   $('form-step').classList.remove('hidden');
@@ -2465,6 +2468,7 @@ function renderFormChips(group){
     }
     btn.onclick = ()=>{
       activeFormIdx = idx;
+      vialFollowsForm = true;
       grid.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       calculate();
@@ -3106,6 +3110,11 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
   let selectedVial = null;
   if(routeData.solvent_options && routeData.solvent_options.length > 0){
     const vials = routeData.solvent_options;
+    if(vialFollowsForm && typeof unitStrengthMg === 'function'){
+      const strength = unitStrengthMg(form, singleMg, reg, unit);
+      const pos = vials.findIndex(v => unit === 'ЕД' ? v.vial_units === strength : v.vial_mg === strength);
+      if(pos !== -1) activeVialIdx = pos;
+    }
     if(activeVialIdx >= vials.length) activeVialIdx = 0;
     selectedVial = vials[activeVialIdx];
     const vialSel = $('vial-selector');
@@ -3118,6 +3127,7 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
       btn.textContent = label;
       btn.onclick = ()=>{
         activeVialIdx = idx;
+        vialFollowsForm = false;
         vialList.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
         renderInjection(reg, form, ref, w, singleMg, dailyMg, capped);
