@@ -238,6 +238,13 @@ def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(sh
     assert h["allergyBadge"] is True
     hc = shell["hashchange"]
     assert hc["before"] != "cap_adult" and hc["after"] == "cap_adult" and hc["scenario"] == "cap_adult_out_no_risk", hc
+    # the L<n> part opens that line (first drug); a scenario outside the current age group
+    # waits with a note until the patient data moves into its group, then opens with its line
+    assert hc["line"] == "adult|salmonellosis_severe|2|ciprofloxacin", hc
+    assert hc["pendingState"] == "child|||", hc
+    assert hc["pendingNote"].startswith("Сценарий из ссылки «Амбулаторно, коморбидный пациент") and "рассчитан на группу «взрослые»" in hc["pendingNote"]
+    assert hc["resolvedState"] == "adult|cap_adult_out_comorbid|1|amoxiclav" and hc["resolvedNote"] is False, hc
+    assert hc["otherDiseaseClearsNote"] is True
 
 
 def test_printed_form_header_names_patient_age_and_weight_as_text(shell: dict) -> None:

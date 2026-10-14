@@ -456,6 +456,32 @@ async function run() {
       w.location.hash = '#cap_adult/cap_adult_out_no_risk';
       await sleep(20);
       out.hashchange = { before: beforeHash, after: w.eval('activeDisease && activeDisease.id'), scenario: w.eval('activeScenario && activeScenario.id') };
+      // the hash line is restored too, and a scenario that does not fit the current age
+      // group waits (note under the list) until the patient data moves into its group
+      const hs = () => w.eval('[activeAge, activeScenario && activeScenario.id, activeLine && activeLine.line_number, activeDrug && getDrugRefs(activeDrug)[0]].join("|")');
+      w.location.hash = '#salmonellosis/salmonellosis_severe/L2';
+      await sleep(20);
+      out.hashchange.line = hs();
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      w.location.hash = '#cap_adult/cap_adult_out_comorbid/L1';
+      await sleep(20);
+      out.hashchange.pendingState = hs();
+      out.hashchange.pendingNote = visible($('scenario-hash-note')) ? txt($('scenario-hash-note')) : '';
+      type($('patient-age'), '40');
+      type($('weight'), '70');
+      out.hashchange.resolvedState = hs();
+      out.hashchange.resolvedNote = visible($('scenario-hash-note'));
+      // a scenario picked by hand drops the pending link
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      w.location.hash = '#cap_adult/cap_adult_out_comorbid/L1';
+      await sleep(20);
+      w.location.hash = '#cap_child/cap_child_out/L1';
+      await sleep(20);
+      out.hashchange.otherDiseaseClearsNote = !visible($('scenario-hash-note'));
+      type($('patient-age'), '35');
+      type($('weight'), '70');
     }
 
     // ---- 11. children open on the suspension whose dose volume is measurable ------

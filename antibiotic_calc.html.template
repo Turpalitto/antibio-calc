@@ -625,6 +625,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
     <div id="scenario-step" class="hidden animate-in no-print">
       <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2 block">3. Клинический сценарий</label>
       <div id="scenario-list" class="space-y-2"></div>
+      <p id="scenario-hash-note" class="hidden text-[10px] text-amber-700 dark:text-amber-400 font-bold mt-2 ml-2" role="status"></p>
     </div>
 
     <div id="drug-step" class="hidden animate-in no-print">
@@ -931,6 +932,10 @@ let patientAgeDays = null;
 let dbBlockingErrors = [];
 let historyEntries = [];
 let currentRouteGroup = 'all';
+// #hash scenario (and line) that did not fit the age group when the link was opened:
+// kept until the patient data makes it eligible, dropped when the physician picks a
+// scenario by hand or another nosology
+let pendingHashScenario = null;
 let personalCandidates = [];
 let extractedReviewCandidates = [];
 
@@ -2106,6 +2111,7 @@ function selectDisease(d){
   // was blocked by the source gate or had no age-matching scenario (2026-10-14).
   activeScenario = null; activeLine = null; activeDrug = null;
   activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0;
+  setPendingHashScenario(null);
   $('scenario-list').innerHTML = '';
   $('drug-list').innerHTML = '';
   $('results-box').classList.add('hidden');
@@ -2257,7 +2263,7 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
     chevron.className = 'fas fa-chevron-right text-slate-300';
     row.append(col, chevron);
     card.appendChild(row);
-    makeActivatable(card, ()=>selectScenario(s, card));
+    makeActivatable(card, ()=>{ setPendingHashScenario(null); selectScenario(s, card); });
     list.appendChild(card);
     if(ageMatch && !firstVisible){ firstVisible = s; firstVisibleCard = card; }
     if(ageMatch && s === preferredScenario) preferredCard = card;
@@ -2396,11 +2402,32 @@ function rerenderLinesKeepingSelection(){
 // the group itself); the regimen and the default form are re-derived for the
 // group, and a drug without a regimen for it shows the explicit age block
 // instead of silently jumping to the first scenario's first drug.
+function setPendingHashScenario(scenario, lineIdx){
+  pendingHashScenario = scenario ? {scenario, lineIdx} : null;
+  const note = $('scenario-hash-note');
+  if(!note) return;
+  if(scenario){
+    note.textContent = 'Сценарий из ссылки «'+scenario.name+'» рассчитан на группу «'+ageGroupLabel(scenario.age_group)+'» — он откроется, когда возраст или вес пациента переведёт расчёт в эту группу.';
+    note.classList.remove('hidden');
+  } else {
+    note.textContent = '';
+    note.classList.add('hidden');
+  }
+}
 function rerenderScenariosKeepingSelection(){
   if(!activeDisease) return;
   const sc = activeScenario;
   const fits = !!(sc && (sc.age_group === 'all' || sc.age_group === activeAge) && (activeDisease.scenarios || []).includes(sc));
-  if(!fits){ renderScenarios(); return; }
+  if(!fits){
+    const pending = pendingHashScenario;
+    if(pending && (activeDisease.scenarios || []).includes(pending.scenario) && (pending.scenario.age_group === 'all' || pending.scenario.age_group === activeAge)){
+      setPendingHashScenario(null);
+      renderScenarios(pending.scenario, pending.lineIdx >= 0 ? pending.lineIdx : undefined);
+      return;
+    }
+    renderScenarios();
+    return;
+  }
   const lineIdx = activeLine ? (sc.lines || []).indexOf(activeLine) : -1;
   const drugIdx = (lineIdx >= 0 && activeDrug) ? (sc.lines[lineIdx].drugs || []).indexOf(activeDrug) : -1;
   renderScenarios(sc, lineIdx >= 0 ? lineIdx : undefined, drugIdx >= 0 ? drugIdx : undefined, currentRouteGroup, undefined);
@@ -2525,7 +2552,9 @@ function renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, pre
       card.append(main, lineBadge);
       makeActivatable(card, ()=>selectDrug(drug, line, card));
       list.appendChild(card);
-      if(lineIdx === preferredLineIndex && drugIdx === preferredDrugIndex){ preferredCard = card; preferredDrug = drug; preferredLine = line; }
+      // a preferred line without a drug index (#hash L<n>) opens on the first drug of that line
+      const drugMatch = Number.isInteger(preferredDrugIndex) ? drugIdx === preferredDrugIndex : drugIdx === 0;
+      if(lineIdx === preferredLineIndex && drugMatch && !preferredCard){ preferredCard = card; preferredDrug = drug; preferredLine = line; }
     });
   });
   if(preferredCard) selectDrug(preferredDrug, preferredLine, preferredCard, preferredRoute, preferredRegimenIdx);
@@ -4461,11 +4490,17 @@ function restoreFromHash(){
   const disease = DB.recommendations.find(d=>d.id === parts[0]);
   if(!disease) return;
   selectDisease(disease);
-  // #disease/scenario/L<n> (updateHash): re-open the scenario as well, unless the
-  // source gate hid the scenario step or the scenario does not fit the age
-  // (renderScenarios only pre-selects an age-matching card).
+  // #disease/scenario/L<n> (updateHash): re-open the scenario and the line as well,
+  // unless the source gate hid the scenario step. A scenario that does not fit the
+  // current age group (renderScenarios only pre-selects an age-matching card) is kept
+  // pending and opens once the patient data moves the calculation into its group.
   const scenario = parts[1] ? (disease.scenarios || []).find(s=>s.id === parts[1]) : null;
-  if(scenario && !$('scenario-step').classList.contains('hidden')) renderScenarios(scenario);
+  const lineNo = parts[2] && /^L\d+$/.test(parts[2]) ? parseInt(parts[2].slice(1), 10) : null;
+  const lineIdx = scenario && lineNo != null ? (scenario.lines || []).findIndex(l=>l.line_number === lineNo) : -1;
+  if(scenario && !$('scenario-step').classList.contains('hidden')){
+    renderScenarios(scenario, lineIdx >= 0 ? lineIdx : undefined);
+    if(activeScenario !== scenario) setPendingHashScenario(scenario, lineIdx);
+  }
 }
 init();
 // A hash edited by hand or a back/forward step onto another #disease/scenario
