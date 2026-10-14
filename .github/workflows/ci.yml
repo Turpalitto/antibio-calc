@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # the changelog gate below diffs against the PR base
 
       - uses: actions/setup-node@v7
         with:
@@ -52,8 +54,30 @@ jobs:
       - name: Check the committed build is fresh
         run: uv run --no-sync python db/build_html.py --check
 
+      # Audit 2026-10-14 (I-6): a change to the embedded clinical DB must come
+      # with a CHANGELOG_DB.md entry (generate it with db/db_diff.py).
+      - name: Clinical DB change requires a CHANGELOG_DB.md entry
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          changed="$(git diff --name-only "origin/${BASE_REF}...HEAD")"
+          if printf '%s\n' "$changed" | grep -qx 'db/antibio_db.json'; then
+            if printf '%s\n' "$changed" | grep -qx 'CHANGELOG_DB.md'; then
+              echo "db/antibio_db.json changed and CHANGELOG_DB.md was updated — ok"
+            else
+              echo "::error file=CHANGELOG_DB.md::db/antibio_db.json changed in this PR but CHANGELOG_DB.md has no new entry. Generate one: python db/db_diff.py --git origin/${BASE_REF} >> CHANGELOG_DB.md (and describe why)."
+              uv run --no-sync python db/db_diff.py --git "origin/${BASE_REF}" | head -40 || true
+              exit 1
+            fi
+          else
+            echo "db/antibio_db.json unchanged — nothing to log"
+          fi
+
   lint:
-    name: ruff (critical rules)
+    name: ruff (pyflakes + syntax)
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
