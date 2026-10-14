@@ -1113,7 +1113,6 @@ function printBlocked(){
 function setupButtons(){
   if($('btn-print')) $('btn-print').onclick = ()=>{ if(printBlocked()) return; fillPrescriptionForm(); window.print(); };
   if($('btn-print2')) $('btn-print2').onclick = ()=>{ if(printBlocked()) return; fillPrescriptionForm(); window.print(); };
-  if($('btn-copy')) $('btn-copy').onclick = copyForMIS;
   if($('btn-copy-mis')) $('btn-copy-mis').onclick = copyForMIS;
   if($('btn-copy-rx')) $('btn-copy-rx').onclick = copyLatinRecipe;
   if($('btn-guideline-modal')) $('btn-guideline-modal').onclick = openGuidelineModal;
