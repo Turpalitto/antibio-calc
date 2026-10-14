@@ -3647,6 +3647,20 @@ const LATIN_FORM = {
   granules:'gran.', topical:'ung.', drops:'gtt.', suppository:'supp.'
 };
 const LATIN_ROUTE = { po:'per os', im:'intramuscularis', iv:'intravenosus', topical:'ad usum externum' };
+// Strength for the Latin Rp line: «250 мг/5 мл» → «250 mg/5 ml», «1.2 млн ЕД флакон» →
+// «1 200 000 ED», «3000 мг пакет» → «3000 mg» (the package word is the D.t.d. form;
+// ratio notes like «(4:1)» / «(14:1 ES)» stay). The DB string itself is unchanged
+// everywhere else (chips, MIS text, printed D.S.).
+function latinStrength(conc){
+  let s = String(conc || '').trim();
+  const grouped = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  s = s.replace(/(\d+(?:[.,]\d+)?)\s*млн\s*ЕД/g, (m, n) => grouped(parseFloat(n.replace(',', '.')) * 1e6) + ' ED');
+  s = s.replace(/(\d+(?:[.,]\d+)?)\s*тыс\.?\s*ЕД/g, (m, n) => grouped(parseFloat(n.replace(',', '.')) * 1e3) + ' ED');
+  s = s.replace(/(^|[^а-яё])ЕД(?![а-яё])/g, '$1ED');
+  s = s.replace(/мг/g, 'mg').replace(/мл/g, 'ml');
+  s = s.replace(/\s*(?:флакон|пакет|саше|ампула|амп\.)(?![а-яё])\s*/gi, ' ').replace(/\s{2,}/g, ' ').trim();
+  return s;
+}
 const LATIN_FREQ = { 1:'semel in die', 2:'bis in die', 3:'ter in die', 4:'quater in die', 6:'sexies in die' };
 
 function fillPrescriptionForm(){
@@ -3708,7 +3722,7 @@ function fillPrescriptionForm(){
   };
 
   drugsEl.textContent = '';
-  drugsEl.appendChild(rxLine('rx-drug-name', latinName+' '+(form.concentration || '')));
+  drugsEl.appendChild(rxLine('rx-drug-name', latinName+' '+latinStrength(form.concentration)));
 
   // D.t.d. N — units for the whole course (the old line printed the units per
   // dose as if they were the quantity to dispense).
@@ -3740,7 +3754,7 @@ function fillPrescriptionForm(){
       if(!ref) return;
       const clatin = LATIN_INN[refKey] || ref.inn;
       const cform = ref.forms[0];
-      drugsEl.appendChild(rxLine('rx-drug-name', clatin+' '+(cform?cform.concentration:'')));
+      drugsEl.appendChild(rxLine('rx-drug-name', clatin+' '+latinStrength(cform ? cform.concentration : '')));
       // the component's own computed dose (same numbers as the screen's combo card)
       if(componentLines[i]) drugsEl.appendChild(rxLine('rx-dose-info', componentLines[i].replace(/^Компонент комбинации: /, '')));
     });
@@ -3926,7 +3940,7 @@ function copyLatinRecipe(){
     packageDtd = 'N. ' + coursePkg.totalTabs;
   }
 
-  let txt = 'Rp.: ' + latinName + ' ' + (form.concentration || '') + '\n';
+  let txt = 'Rp.: ' + latinName + ' ' + latinStrength(form.concentration) + '\n';
   txt += 'D.t.d. ' + packageDtd + ' in ' + latinForm + '\n';
   txt += 'S.: ' + signa;
   exportSafetyFlags(refs).forEach(f=>{

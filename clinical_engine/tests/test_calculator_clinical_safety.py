@@ -224,6 +224,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "weightBlockReason",
     "weightWarnReason",
     "isTopicalForm",
+    "latinStrength",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
@@ -1902,6 +1903,22 @@ _RX_FUNCS = [
     "fillPrescriptionForm",
 ]
 _RX_CONSTS = ["LATIN_INN", "LATIN_FORM", "LATIN_ROUTE", "LATIN_FREQ"]
+
+
+def test_latin_rp_line_writes_the_strength_in_latin_units() -> None:
+    """«Rp.: Amoxicillini 250 мг/5 мл» mixed Cyrillic units into the Latin line;
+    the package word belongs to the D.t.d. form, not to the strength."""
+    body = (
+        "console.log(JSON.stringify(["
+        "'250 мг/5 мл','1.2 млн ЕД флакон','1 млн ЕД флакон','3000 мг пакет','1000+200 мг флакон',"
+        "'600+42.9 мг/5 мл (14:1 ES)','875+125 мг','500 мг/2 мл','40 мг/мл','500 тыс ЕД','2% крем',''"
+        "].map(latinStrength)));"
+    )
+    result = _run(["latinStrength", "formatUnits"], "", body)
+    assert result == [
+        "250 mg/5 ml", "1 200 000 ED", "1 000 000 ED", "3000 mg", "1000+200 mg",
+        "600+42.9 mg/5 ml (14:1 ES)", "875+125 mg", "500 mg/2 ml", "40 mg/ml", "500 000 ED", "2% крем", "",
+    ], result
 
 
 def _rx_globals(drug_ref: dict, active_drug: dict, route_group: str, route_key: str, weight: str = "70") -> str:
