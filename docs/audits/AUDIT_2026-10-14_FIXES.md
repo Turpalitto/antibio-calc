@@ -59,7 +59,7 @@
 | I-1 | INFO | ✅ | возраст пациента (д/нед/мес/лет) → группа + проверка порогов | harness `test_age_parsing_and_group_boundaries` |
 | I-2 | INFO | ✅ | СКФ как вход, флаг по `renal_adjustment` | harness `test_pregnancy_and_renal_flags` |
 | I-3 | INFO | ✅ | беременность/лактация как вход, «Противопоказан» → красный | harness, smoke (доксициклин) |
-| I-4 | INFO | ⏳ | единая перекрёстная аллергия — backlog | — |
+| I-4 | INFO | ◐ | раунд 3: таблицы не объединены (движок не подключён, слияние — решение владельца), но закреплены тестом: все расчётные препараты БД есть в `DRUG_CLASSES` оболочки и в `allergy_class_hierarchy` движка; членство в β-лактамах совпадает; 3 противотуберкулёзных (изониазид, этамбутол, пиразинамид) добавлены в `DRUG_CLASSES` как `antituberculous` (поведение не изменилось). 6 препаратов только из заблокированных записей отсутствуют в таблице движка — зафиксированы как долг владельца | `test_allergy_class_consistency.py` (4) |
 | I-5 | INFO | ✅ | golden-кейсы как данные + прогон в CI | `golden/calculator_dose_golden.json` |
 | I-6, I-7 | INFO | ✅ | `db/db_diff.py` + `CHANGELOG_DB.md`; `.pre-commit-config.yaml` + `build_html.py --check` (и шаг CI). Раунд 3: шаг CI «Clinical DB change requires a CHANGELOG_DB.md entry» — PR с изменённым `db/antibio_db.json` без правки `CHANGELOG_DB.md` падает и печатает `db_diff.py --git origin/<base>` | `test_db_diff.py` (7), `test_build_reproducibility.py` (15) |
 

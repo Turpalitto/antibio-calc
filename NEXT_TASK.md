@@ -29,7 +29,12 @@
    G-1 archive root md/json into `docs/history/`, F-2 slim AGENTS.md, F-3
    `audit-site/` doc or removal, G-4 LICENSE, G-5 `corpus_config.json` default
    (owner: env override exists), E-2 fixture corpus, I-4 shared cross-allergy
-   table (clinical content of the class table = owner decision).
+   table (round 3 pinned both tables with `test_allergy_class_consistency.py`;
+   merging them and the class of the 6 blocked-only drugs = owner decision).
+   Owner note from the I-4 check: `checkAllergyStatus` gives carbapenems
+   "recommended" under mild penicillin allergy and penicillins "safe" under
+   cephalosporin allergy (no side-chain cross-reactivity rule) — clinical policy,
+   not changed.
    CI now also fails a PR that changes `db/antibio_db.json` without a
    `CHANGELOG_DB.md` entry (generate it with `python db/db_diff.py --git origin/main`).
 7. After each task: prepend AI_LOG/PROJECT_STATE/NEXT_TASK(/DECISIONS), run

@@ -25,6 +25,15 @@
   501/13, `ruff check .` clean, `python -m src.pipeline.main --help` OK, full
   `db/build_db.py` → DB byte-identical, `build_html.py --check` fresh.
   **CI ✅ run 38570533400** — pytest + validate (incl. step 10 changelog gate), ruff, secret scan.
+- **I-4 (partial):** `clinical_engine/tests/test_allergy_class_consistency.py` —
+  shell `DRUG_CLASSES` (template) vs engine `allergy_class_hierarchy` vs shipped DB:
+  computable drugs complete in both tables, β-lactam membership identical, no
+  β-lactam under a non-β-lactam class, 6 blocked-only engine gaps pinned
+  (netilmicin, ofloxacin, rifaximin, tetracycline, tinidazole, tobramycin). Found
+  isoniazid/ethambutol/pyrazinamide (computable TB records) missing from
+  `DRUG_CLASSES` → added as `antituberculous`; `checkAllergyStatus` output
+  verified identical under all 4 allergy settings. Rebuilt html `8169d2df3e70…`,
+  sw `build-65c03b25f9dd`. pytest **2675 / 30**. Commit `29a540b`.
   Lesson: `db/build_db.py --skip-source-gate` rewrites `db/antibio_db.json`
   without gate statuses — never use it for smoke tests (restored by a full run).
 
