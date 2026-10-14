@@ -43,7 +43,8 @@ then `NEXT_TASK.md`.
 Read **`docs/governance/AUTONOMOUS_ENGINEERING_KERNEL.md` first** — it is the single master entry
 point and points to the six governing documents (Constitution, Engineering Playbook, Current
 Project State, AI Operating System, Clinical Governance, Repository Intelligence), read in that
-order. These supersede the old Reviewer-only role in AGENTS.md §0.1. Frozen technical scope
+order. These supersede the old Reviewer-only role (historical AGENTS.md §0.1, now archived in
+`docs/history/AGENTS_2026-10-14_full.md`; the slim `AGENTS.md` holds only the rules in force). Frozen technical scope
 unchanged. Prioritized debt lives in `TECH_DEBT_BACKLOG.md`. To start work: "Read
 `docs/governance/`, adopt them as governing documents, continue with the active milestone."
 Then continue with the state/plan docs below.
