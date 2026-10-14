@@ -35,7 +35,7 @@
 //   copies; `test_build_reproducibility.py` fails when the value is stale, so a
 //   rebuilt artifact can never keep being served from an old cache.
 
-const CACHE_VERSION = 'build-d6e42e706f0c';
+const CACHE_VERSION = 'build-65c03b25f9dd';
 const CACHE_NAME = `antibio-shell-${CACHE_VERSION}`;
 const SHELL_URL = './antibiotic_calc.html';
 const PRECACHE_URLS = [

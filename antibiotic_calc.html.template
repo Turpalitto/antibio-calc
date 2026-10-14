@@ -1950,7 +1950,12 @@ const DRUG_CLASSES = {
   metronidazole: 'nitroimidazole',
   tinidazole: 'nitroimidazole',
   rifampicin: 'rifamycin',
-  rifaximin: 'rifamycin'
+  rifaximin: 'rifamycin',
+  // Audit 2026-10-14 (I-4): every drug the calculator can dose must be listed —
+  // a missing key degrades to "safe" silently. Not beta-lactams: no allergy gate reacts.
+  isoniazid: 'antituberculous',
+  ethambutol: 'antituberculous',
+  pyrazinamide: 'antituberculous'
 };
 
 function checkAllergyStatus(drugKey, allergy){
