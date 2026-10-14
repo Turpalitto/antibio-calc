@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T54: selection kept across context changes, flags parity)
+## 2026-10-14 (round 6 continued, T51–T60: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening)
 
 - **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
   «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:
@@ -23,9 +23,40 @@
   1 524 computed states, 0 findings (the MIS-only large-volume prescriber caution is
   excluded by design; the printed form is `white-space: pre-line`, so the oracle reads
   raw `textContent`).
-- **Verification per push:** unchanged gates. After T54: **2790 passed / 28 skipped**
-  (jsdom 34, walk 2 / 14 oracles / 5 profiles / 0 findings), validate 0 / 436, axe 0,
-  CI + CodeQL green through `5c62161` (`7b863fa` pending at the time of writing).
+- **T55 `a86842a`:** `npm run check` (validator + build freshness + every shell gate) and
+  `npm run check:all` (+ full pytest + ruff); README gate list refreshed (five walk
+  profiles, 1777 states, flags parity).
+- **T56 `8b9cdd0`:** the default form chip followed the dose only at render time, so the
+  entry order decided it — a 25-kg child typed AFTER the drug stayed on «125 мг/5 мл»
+  (45 ml per dose + the large-volume warning) while the same child typed first opened on
+  «250 мг/5 мл» (22.5 ml). `userPickedForm` + `refreshDefaultForm()`: weight / same-group
+  age / regimen changes re-derive the default; an explicit chip survives; a new drug card
+  or route tab starts from the default again; `selectDrug` renders regimens before forms.
+- **T57 `7838606`:** `navigator.clipboard` is undefined outside secure contexts (plain-http
+  intranet host) — «Копировать для МИС» / Rp threw a TypeError before the `.catch` and the
+  physician saw nothing. `copyTextToClipboard()` falls back to a hidden textarea +
+  `execCommand('copy')` and always toasts the outcome.
+- **T58 `5473f11`:** when the browser blocks site data, touching `localStorage` throws
+  SecurityError: `setupTheme()` threw inside `init()`, so the history store, the service
+  worker and the `#hash` deep link never initialised and the theme toggle threw on every
+  click. Theme reads/writes are try/catch helpers; optional init steps run one by one.
+- **T59 `1f62843`:** `restoreFromHash()` ignored the `L<n>` part and silently dropped a
+  scenario outside the default age group (a fresh tab opens as «дети»): an adult deep link
+  showed every card dimmed and, once the weight moved the group to adults, opened the FIRST
+  adult scenario — not the linked one. The line is restored; a scenario outside the group
+  is kept pending with a note («Сценарий из ссылки «…» рассчитан на группу «взрослые» — он
+  откроется, когда …») and opens with its line when the patient data moves into its group.
+- **T60 `3aa0adf` (REAL HAZARD):** the print stylesheet shows `#prescription-form` alone,
+  but only the «Печать» button filled it — **Ctrl+P / the browser print menu printed
+  whatever the form held: the previous patient's prescription, or nothing**; a blocked
+  fill left the old drug lines under the block notice. `beforeprint` refills the form from
+  the current state, `clearPrescriptionForm()` resets every field first, an empty state
+  prints «ПЕЧАТЬ НЕВОЗМОЖНА: расчёт не выполнен …», a blocked one «ПЕЧАТЬ ЗАБЛОКИРОВАНА. …».
+- **Verification per push:** unchanged gates (`/tmp/gate.sh`-style: pytest rc, walk, ruff,
+  freshness, validator before every commit). After T60: **2794 passed / 28 skipped**
+  (jsdom 39, walk 2 / 14 oracles / 5 profiles / 1777 states / 0 findings), validate 0 /
+  436, axe 0, CI + CodeQL green through `5473f11` (later commits pending at the time of
+  writing).
 
 ## 2026-10-14 (round 6, autonomous loop continued, T45–T50)
 

@@ -1,13 +1,20 @@
-## 2026-10-14 (after round 6, T51–T54): remaining NEXT_TASK (work top-down)
+## 2026-10-14 (after round 6, T51–T60): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
    pass: change the allergy status / type an age after picking a non-first drug — the drug
    must stay (ciprofloxacin at a child's age shows the «нет схемы для группы «дети»» block
    instead of switching to ceftriaxone); «Открыть расчёт» on an entry saved with GFR 25 /
    pregnancy / allergy must bring those inputs and banners back.
+   - Real-browser pass additions (T55–T60): Ctrl+P with no calculation prints «ПЕЧАТЬ
+     НЕВОЗМОЖНА …», Ctrl+P after a block prints «ПЕЧАТЬ ЗАБЛОКИРОВАНА …», Ctrl+P after a
+     valid calculation prints the CURRENT drug (open a second nosology without clicking
+     «Печать» first); «Копировать для МИС» over plain http (intranet IP) copies via the
+     legacy path and toasts; Chrome with «block all cookies» still opens `#hash` links and
+     toggles the theme; a deep link to an adult scenario in a fresh tab shows the «Сценарий
+     из ссылки …» note and opens it once the weight is typed; typing the weight after the
+     drug switches the suspension chip to the measurable strength.
 2. **Engineering candidates (none urgent):**
-   - `npm run check` convenience script (validate + `build_html.py --check` + jsdom smoke +
-     walk) and a README section listing every gate added in rounds 5–6.
+   - ~~`npm run check` convenience script~~ — done in T55 (`a86842a`).
    - Latin Rp for a combination regimen still names the main drug only (unchanged).
    - The MIS-only «разовый объём велик» caution is prescriber advice and is deliberately not
      on the Rp / printed form; if the owner wants it on the printed form too, the walk

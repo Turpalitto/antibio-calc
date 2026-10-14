@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T54): selection survives context changes, history restores the context, flags parity in every export
+## 2026-10-14 (round 6 continued, T51–T60): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening
 
 - Shell: changing the allergy status, the age group (chip, typed age or weight inference)
   no longer jumps to the first scenario / drug card — the physician's scenario, line, drug,
@@ -9,9 +9,19 @@
 - Walk gate: fifth profile with GFR 25 + pregnancy + anaphylactic penicillin allergy and a
   flags-parity oracle (MIS = Rp = printed form; every danger banner reaches the exports) —
   1 524 computed states, 0 findings.
-- Tests: **2790 passed / 28 skipped / 0 failed** (jsdom 34, walk 14 oracles / 5 profiles);
-  validate 0 / 436; axe 0; ruff clean; build fresh; CI + CodeQL green per push (`5c62161`
-  last checked, `7b863fa` pending). DB unchanged (`56727a27f050…`).
+- Print safety: Ctrl+P / the browser print menu now prints the CURRENT state (`beforeprint`
+  refill) — it used to print whatever the form held from the last «Печать» click (the
+  previous patient's prescription) or nothing; empty / blocked states print the reason.
+- Browser-environment hardening: clipboard copy works without `navigator.clipboard`
+  (plain-http intranet host) and always reports the outcome; `init()` survives denied
+  storage access (blocked site data) — theme, history store, service worker and `#hash`
+  deep links keep working; deep links restore the line and wait for the patient data
+  instead of losing the scenario; the default form chip follows the weight / age / regimen
+  until the physician picks one (entry order no longer decides the suspension strength).
+- `npm run check` / `npm run check:all` run every gate in one go.
+- Tests: **2794 passed / 28 skipped / 0 failed** (jsdom 39, walk 14 oracles / 5 profiles /
+  1777 states); validate 0 / 436; axe 0; ruff clean; build fresh; CI + CodeQL green per
+  push (`5473f11` last checked). DB unchanged (`56727a27f050…`).
 
 ## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
 
