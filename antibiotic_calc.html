@@ -3537,6 +3537,15 @@ function fillPrescriptionForm(){
     drugsEl.appendChild(rxLine('rx-dtd', 'D.t.d. N '+courseUnits.total+' in '+latinForm+' (по '+String(courseUnits.perDose).replace(/\.0$/,'')+' на приём, '+reg.freq_per_day+' р/д × '+courseUnits.days+' дн.)'));
   } else if(solidUnits){
     drugsEl.appendChild(rxLine('rx-dtd', 'D.t.d. N ___ in '+latinForm+' (по '+String(solidUnits.units).replace(/\.0$/,'')+' на приём; длительность: '+courseText(reg)+')'));
+  } else if(isOralLiquid(form)){
+    // bottles for the course — the Rp text already said «D.t.d. N. 5 in pulv. pro susp.»,
+    // the printed form had no quantity line for a suspension at all
+    const liquidPkg = calculateCoursePackages(reg, form, singleMg, dailyMg, w);
+    if(liquidPkg && liquidPkg.type === 'suspension'){
+      drugsEl.appendChild(rxLine('rx-dtd', 'D.t.d. N '+liquidPkg.bottleCount+' in '+latinForm+' (фл. по '+liquidPkg.bottleSize+' мл; на курс '+liquidPkg.totalMl.toFixed(1)+' мл, '+liquidPkg.days+' дн.)'));
+    } else {
+      drugsEl.appendChild(rxLine('rx-dtd', 'D.t.d. N ___ in '+latinForm+' (длительность: '+courseText(reg)+')'));
+    }
   }
 
   if(refs.length > 1){

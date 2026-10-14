@@ -431,6 +431,12 @@ async function run() {
       w.copyForMIS();
       await sleep(0);
       out.liquidDefault.child25.mis = w.__copied || '';
+      w.__copied = '';
+      w.copyLatinRecipe();
+      await sleep(0);
+      out.liquidDefault.child25.rp = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.liquidDefault.child25.rxDtd = [...d.querySelectorAll('#rx-drugs .rx-dtd')].map((e) => txt(e));
       // the same drug for a 7-kg infant: the low concentration is the measurable one
       type($('patient-age-unit'), 'months');
       type($('patient-age'), '6');

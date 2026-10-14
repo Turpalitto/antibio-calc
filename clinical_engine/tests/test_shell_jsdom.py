@@ -282,6 +282,9 @@ def test_children_open_on_the_suspension_with_a_measurable_dose_volume(shell: di
     assert ld["child25"]["ml"] == "22.5 мл"
     assert "Суточная доза: 2250 мг" in ld["child25"]["mis"]
     assert "Предупреждение: разовый объём 22.5 мл велик" in ld["child25"]["mis"]
+    # the printed form now dispenses bottles like the Rp text (it had no D.t.d. for a suspension)
+    assert "D.t.d. N. 5 in pulv. pro susp." in ld["child25"]["rp"]
+    assert ld["child25"]["rxDtd"] == ["D.t.d. N 5 in pulv. pro susp. (фл. по 100 мл; на курс 450.0 мл, 10 дн.)"], ld["child25"]["rxDtd"]
     # 7-kg infant, 315 mg per dose: 125 mg/5 ml would be 12.6 ml, 250 mg/5 ml is 6.3 ml
     assert ld["infant7"]["active"] == ["250 мг/5 мл"] and ld["infant7"]["ml"] == "6.3 мл", ld["infant7"]
     assert ld["lowPicked"]["active"] == ["125 мг/5 мл"] and ld["lowPicked"]["ml"] == "45.0"
