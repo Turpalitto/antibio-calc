@@ -17,6 +17,9 @@
  *   /sw.js                  service worker; must be served from the app root
  *   /manifest.webmanifest   PWA manifest
  *   /icons/*.png            PWA icons
+ *   /vendor/**              self-hosted CSS / fonts (S-3)
+ *   Every static response has a strong ETag and honours If-None-Match (304);
+ *   HTML/CSS/JS/JSON are gzip-encoded for clients that accept it (Vary).
  *
  * Never served
  *   * any request path containing ".." (checked after percent-decoding, so
@@ -60,6 +63,8 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
+const crypto = require('crypto');
 const { URL } = require('url');
 
 const ROOT = path.resolve(__dirname);
@@ -219,6 +224,52 @@ function resolveStaticFile(rawUrl) {
   return { status: 200, file };
 }
 
+// Conditional requests + compression (2026-10-14). `Cache-Control: no-cache`
+// makes the browser revalidate every asset; without a validator that meant
+// re-downloading the 760 KB shell on every launch. Now every static response
+// carries a strong ETag (sha256 of the bytes) and answers `If-None-Match` with
+// 304, and text assets are served gzip-encoded when the client accepts it
+// (identity bytes stay the source of truth: the ETag of the gzip variant is
+// suffixed so the two representations never collide). Encoded bodies are
+// memoised per (path, mtime, size) — a handful of files, no eviction needed.
+const COMPRESSIBLE = new Set(['.html', '.js', '.mjs', '.css', '.json', '.webmanifest', '.svg']);
+const COMPRESS_MIN_BYTES = 1024;
+const encodedCache = new Map();
+
+function acceptsGzip(req) {
+  const header = req.headers['accept-encoding'];
+  if (!header) return false;
+  return header
+    .split(',')
+    .map((token) => token.trim().split(';'))
+    .some(([name, ...params]) => {
+      if (name !== 'gzip' && name !== '*') return false;
+      const q = params.map((p) => p.trim()).find((p) => p.startsWith('q='));
+      return !q || parseFloat(q.slice(2)) > 0;
+    });
+}
+
+function etagMatches(header, etag) {
+  if (!header) return false;
+  if (header.trim() === '*') return true;
+  // weak comparison (RFC 9110 §8.8.3.2): W/ prefixes are ignored
+  const strip = (value) => value.trim().replace(/^W\//, '');
+  return header.split(',').some((candidate) => strip(candidate) === strip(etag));
+}
+
+function representation(realFile, stat, data, gzip) {
+  const key = `${realFile}|${stat.mtimeMs}|${stat.size}|${gzip ? 'gzip' : 'identity'}`;
+  let entry = encodedCache.get(key);
+  if (!entry) {
+    const digest = crypto.createHash('sha256').update(data).digest('hex').slice(0, 32);
+    entry = gzip
+      ? { body: zlib.gzipSync(data, { level: 6 }), etag: `"${digest}-gzip"` }
+      : { body: data, etag: `"${digest}"` };
+    encodedCache.set(key, entry);
+  }
+  return entry;
+}
+
 function serveStatic(req, res, file) {
   // realpath first: a symlink inside ROOT must not become a way out of ROOT.
   fs.realpath(file, (realErr, realFile) => {
@@ -231,24 +282,46 @@ function serveStatic(req, res, file) {
       sendError(res, 403, 'SYMLINK_ESCAPE', 'the resolved path is outside the app root');
       return;
     }
-    fs.readFile(realFile, (err, data) => {
-      if (err) {
-        const missing = err.code === 'ENOENT' || err.code === 'EISDIR';
-        sendError(res, missing ? 404 : 500, missing ? 'NOT_FOUND' : 'READ_FAILED', err.code);
+    fs.stat(realFile, (statErr, stat) => {
+      if (statErr || !stat.isFile()) {
+        const code = statErr ? statErr.code : 'EISDIR';
+        const missing = code === 'ENOENT' || code === 'EISDIR';
+        sendError(res, missing ? 404 : 500, missing ? 'NOT_FOUND' : 'READ_FAILED', code);
         return;
       }
-      const ext = path.extname(realFile).toLowerCase();
-      const headers = {
-        ...SECURITY_HEADERS,
-        'Content-Type': MIME[ext] || 'application/octet-stream',
-        'Content-Length': data.length,
-        'Cache-Control': 'no-cache',
-      };
-      if (ext === '.html') {
-        headers['Content-Security-Policy'] = CSP;
-      }
-      res.writeHead(200, headers);
-      res.end(req.method === 'HEAD' ? undefined : data);
+      fs.readFile(realFile, (err, data) => {
+        if (err) {
+          const missing = err.code === 'ENOENT' || err.code === 'EISDIR';
+          sendError(res, missing ? 404 : 500, missing ? 'NOT_FOUND' : 'READ_FAILED', err.code);
+          return;
+        }
+        const ext = path.extname(realFile).toLowerCase();
+        const gzip = COMPRESSIBLE.has(ext) && data.length >= COMPRESS_MIN_BYTES && acceptsGzip(req);
+        const rep = representation(realFile, stat, data, gzip);
+        const headers = {
+          ...SECURITY_HEADERS,
+          'Cache-Control': 'no-cache',
+          ETag: rep.etag,
+        };
+        if (COMPRESSIBLE.has(ext)) {
+          headers.Vary = 'Accept-Encoding';
+        }
+        if (ext === '.html') {
+          headers['Content-Security-Policy'] = CSP;
+        }
+        if (etagMatches(req.headers['if-none-match'], rep.etag)) {
+          res.writeHead(304, headers);
+          res.end();
+          return;
+        }
+        headers['Content-Type'] = MIME[ext] || 'application/octet-stream';
+        headers['Content-Length'] = rep.body.length;
+        if (gzip) {
+          headers['Content-Encoding'] = 'gzip';
+        }
+        res.writeHead(200, headers);
+        res.end(req.method === 'HEAD' ? undefined : rep.body);
+      });
     });
   });
 }

@@ -9,7 +9,9 @@ the real `server.js` on an ephemeral port and pin:
 * the proxy peer policy — engine paths are forwarded for loopback clients only
   (a LAN peer gets 403 PROXY_LOOPBACK_ONLY instead of being laundered into a
   127.0.0.1 request towards the engine's physician-mode gate);
-* the request-body cap — 413 before anything reaches the engine.
+* the request-body cap — 413 before anything reaches the engine;
+* conditional requests and compression — strong ETag + 304, gzip for text
+  assets only when accepted, HEAD parity (2026-10-14).
 """
 
 from __future__ import annotations
@@ -127,6 +129,79 @@ def test_app_assets_are_served(loopback_server, path) -> None:
     if path in ("/", "/antibiotic_calc.html"):
         assert "Content-Security-Policy" in headers
         assert b"db-data" in body
+
+
+# ---- conditional requests + compression (2026-10-14) ------------------------------
+
+
+def test_static_responses_carry_a_strong_etag_and_answer_304(loopback_server) -> None:
+    host, port = loopback_server
+    status, headers, body = _request(host, port, "GET", "/antibiotic_calc.html")
+    assert status == 200
+    etag = headers.get("ETag")
+    assert etag and etag.startswith('"') and etag.endswith('"') and "-gzip" not in etag
+    assert headers.get("Cache-Control") == "no-cache"
+    assert headers.get("Vary") == "Accept-Encoding"
+    # same bytes → same validator (stable across requests)
+    assert _request(host, port, "GET", "/antibiotic_calc.html")[1].get("ETag") == etag
+
+    status, headers304, body304 = _request(host, port, "GET", "/antibiotic_calc.html",
+                                           headers={"If-None-Match": etag})
+    assert status == 304
+    assert body304 == b""
+    assert headers304.get("ETag") == etag
+    assert headers304.get("X-Content-Type-Options") == "nosniff"
+    assert "Content-Security-Policy" in headers304
+    assert "Content-Length" not in headers304 and "Content-Type" not in headers304
+
+    # weak comparison and lists, as browsers send them
+    status, _, _ = _request(host, port, "GET", "/antibiotic_calc.html",
+                            headers={"If-None-Match": f'W/"stale", {etag}'})
+    assert status == 304
+    status, _, body = _request(host, port, "GET", "/antibiotic_calc.html",
+                               headers={"If-None-Match": '"something-else"'})
+    assert status == 200 and body
+
+
+def test_text_assets_are_gzip_encoded_only_when_accepted(loopback_server) -> None:
+    import gzip
+
+    host, port = loopback_server
+    status, identity_headers, identity = _request(host, port, "GET", "/antibiotic_calc.html")
+    assert status == 200 and "Content-Encoding" not in identity_headers
+
+    status, headers, body = _request(host, port, "GET", "/antibiotic_calc.html",
+                                     headers={"Accept-Encoding": "gzip, deflate, br"})
+    assert status == 200
+    assert headers.get("Content-Encoding") == "gzip"
+    assert headers.get("Vary") == "Accept-Encoding"
+    assert int(headers["Content-Length"]) == len(body) < len(identity) // 3
+    assert gzip.decompress(body) == identity, "the encoded representation must decode to the exact shell bytes"
+    gz_etag = headers.get("ETag")
+    assert gz_etag.endswith('-gzip"') and gz_etag != identity_headers.get("ETag")
+    # the gzip validator revalidates the gzip representation
+    status, _, _ = _request(host, port, "GET", "/antibiotic_calc.html",
+                            headers={"Accept-Encoding": "gzip", "If-None-Match": gz_etag})
+    assert status == 304
+
+    # q=0 opts out; binary assets are never re-encoded
+    status, headers, _ = _request(host, port, "GET", "/antibiotic_calc.html",
+                                  headers={"Accept-Encoding": "gzip;q=0, identity"})
+    assert status == 200 and "Content-Encoding" not in headers
+    status, headers, png = _request(host, port, "GET", "/icons/icon-192.png",
+                                    headers={"Accept-Encoding": "gzip"})
+    assert status == 200 and "Content-Encoding" not in headers and "Vary" not in headers
+    assert png[:8] == b"\x89PNG\r\n\x1a\n"
+
+
+def test_head_requests_carry_the_same_validators_without_a_body(loopback_server) -> None:
+    host, port = loopback_server
+    status, get_headers, _ = _request(host, port, "GET", "/sw.js", headers={"Accept-Encoding": "gzip"})
+    status_head, head_headers, body = _request(host, port, "HEAD", "/sw.js", headers={"Accept-Encoding": "gzip"})
+    assert status == status_head == 200
+    assert body == b""
+    for name in ("ETag", "Content-Type", "Content-Length", "Content-Encoding", "Vary"):
+        assert head_headers.get(name) == get_headers.get(name), name
 
 
 @pytest.mark.parametrize("path,code", [
