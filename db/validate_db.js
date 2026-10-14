@@ -293,6 +293,20 @@ function validateDatabase(db) {
             if (reg.age_group != null && !AGE_GROUPS.has(reg.age_group)) {
               errors.push(`${where}: age_group "${reg.age_group}" must be one of ${[...AGE_GROUPS].join('/')}`);
             }
+            // A combination partner must carry its own regimen: without
+            // component_regimens[partner] the shell has nothing but the main
+            // drug's numbers for it (ceftriaxone's 2000 mg for metronidazole).
+            if (Array.isArray(drug.combo_ref) && drug.combo_ref.length > 1) {
+              const comp = reg.component_regimens && typeof reg.component_regimens === 'object' ? reg.component_regimens : {};
+              drug.combo_ref.slice(1).forEach((partner) => {
+                const pr = comp[partner];
+                if (!pr || typeof pr !== 'object') {
+                  regimenIssues.push(`${where}: component_regimens lacks a regimen for combination partner "${partner}" — the partner would be dosed with the main drug's numbers${tag}`);
+                } else if (!DOSE_FIELDS.some((f) => pr[f] != null) || pr.freq_per_day == null) {
+                  regimenIssues.push(`${where}: component_regimens.${partner} needs a dose field (${DOSE_FIELDS.join('/')}) and freq_per_day${tag}`);
+                }
+              });
+            }
             if (reg.age_group && sc.age_group && reg.age_group !== 'all' && reg.age_group !== sc.age_group) {
               const scGroups = sc.age_group === 'all' ? ['neonate', 'child', 'adult'] : [sc.age_group];
               if (!scGroups.includes(reg.age_group)) {

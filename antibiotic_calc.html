@@ -3378,15 +3378,28 @@ function renderDilutionBlock(ref, routeKey, singleMg, selectedVial, routeData){
 // Text form of the combination components — the same numbers the screen's
 // combo cards show — for the MIS text and the printed form (an export used to
 // carry only the main drug; the partner survived as free text at best).
+// The partner of a combination is dosed ONLY from its own component_regimens
+// entry. Falling back to the main drug's regimen (the old behaviour) would print
+// ceftriaxone's 2000 mg for metronidazole; the validator rejects such records,
+// and the shell says so instead of inventing a number.
+const COMPONENT_REGIMEN_MISSING = 'режим компонента не задан в БД — дозу уточните по КР (расчёт не выполнен)';
+function componentRegimen(reg, refKey){
+  const compReg = reg && reg.component_regimens && reg.component_regimens[refKey];
+  return compReg && typeof compReg === 'object' ? compReg : null;
+}
 function comboComponentLines(refs, reg, w){
   const lines = [];
   (refs || []).forEach(refKey=>{
     const ref = DB.drugs_reference[refKey];
     if(!ref) return;
-    const compReg = (reg.component_regimens && reg.component_regimens[refKey]) || reg;
+    const compReg = componentRegimen(reg, refKey);
+    let line = 'Компонент комбинации: '+ref.inn+' — ';
+    if(!compReg){
+      lines.push(line + COMPONENT_REGIMEN_MISSING);
+      return;
+    }
     const unit = doseUnitOf(ref);
     const {singleMg, dailyMg, needWeight} = computeDose(compReg, w, unit);
-    let line = 'Компонент комбинации: '+ref.inn+' — ';
     if(needWeight) line += 'введите вес пациента (доза по '+unit+'/кг)';
     else line += 'по '+fmtDose(singleMg, unit)+' '+compReg.freq_per_day+' р/д'+(compReg.duration_days ? ' • '+compReg.duration_days+' дн' : '')+' (сут. '+fmtDose(dailyMg, unit)+')';
     if(compReg.component_note) line += '; '+compReg.component_note;
@@ -3402,10 +3415,10 @@ function renderComboComponents(refs, reg, w){
   refs.forEach(refKey=>{
     const ref = DB.drugs_reference[refKey];
     if(!ref) return;
-    // У каждого компонента может быть собственный режим (component_regimens), иначе — режим основной линии
-    const compReg = (reg.component_regimens && reg.component_regimens[refKey]) || reg;
+    // Каждый компонент дозируется только по собственному режиму (component_regimens).
+    const compReg = componentRegimen(reg, refKey);
     const unit = doseUnitOf(ref);
-    const {singleMg, dailyMg, needWeight} = computeDose(compReg, w, unit);
+    const {singleMg, dailyMg, needWeight} = compReg ? computeDose(compReg, w, unit) : {singleMg: 0, dailyMg: 0, needWeight: false};
     // МНН компонента, кратность, длительность и примечание приходят из БД:
     // карточка собирается узлами, а не строкой разметки.
     const card = document.createElement('div');
@@ -3415,7 +3428,10 @@ function renderComboComponents(refs, reg, w){
     innEl.textContent = ref.inn;
     const doseEl = document.createElement('div');
     doseEl.className = 'text-xs text-slate-600 dark:text-slate-400';
-    if(needWeight){
+    if(!compReg){
+      doseEl.className = 'text-xs font-bold text-red-700 dark:text-red-300';
+      doseEl.textContent = COMPONENT_REGIMEN_MISSING;
+    } else if(needWeight){
       doseEl.textContent = 'Введите вес пациента — доза по '+unit+'/кг';
     } else {
       const lead = document.createElement('span');
@@ -3430,7 +3446,7 @@ function renderComboComponents(refs, reg, w){
       doseEl.append(lead, dose, mid, daily);
     }
     card.append(innEl, doseEl);
-    if(compReg.component_note){
+    if(compReg && compReg.component_note){
       const role = document.createElement('div');
       role.className = 'text-[11px] text-slate-500 dark:text-slate-500 mt-1';
       role.textContent = compReg.component_note;

@@ -205,6 +205,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "allergyExportFlag",
     "exportSafetyFlags",
     "comboComponentLines",
+    "componentRegimen",
     "diseaseDrugText",
     "daysWord",
     "timesADay",
@@ -220,7 +221,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "roundingDeviationText",
     "formatTablets",
 ]
-PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR"]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
 
 
@@ -1602,11 +1603,12 @@ def test_render_combo_components_never_parses_inn_or_component_note_as_markup() 
         "const reg = " + _lit(
             {
                 "age_group": "all",
-                "single_dose_mg": 40,
-                "freq_per_day": 3,
+                "single_dose_mg": 2000,
+                "freq_per_day": 1,
                 "duration_days": 7,
-                "component_note": "Компонент " + XSS_PAYLOAD,
-                "component_regimens": {},
+                "component_regimens": {
+                    "x": {"single_dose_mg": 40, "freq_per_day": 3, "duration_days": 7, "component_note": "Компонент " + XSS_PAYLOAD},
+                },
             }
         ) + ";\n"
     )
@@ -1617,9 +1619,19 @@ def test_render_combo_components_never_parses_inn_or_component_note_as_markup() 
         + _lit(XSS_PAYLOAD)
         + ",forms:[{form_type:'tablet',concentration:'500 мг'}]};"
         "renderComboComponents(['x'], reg, 20);"
-        "console.log(JSON.stringify(report($('combo-block'))));",
+        "const rep = report($('combo-block'));const text = $('combo-block').textContent;"
+        "DB.drugs_reference.y = {inn:'Без режима',forms:[{form_type:'tablet',concentration:'500 мг'}]};"
+        "renderComboComponents(['y'], reg, 20);"
+        "console.log(JSON.stringify(Object.assign(rep, {partnerText: text, orphan: $('combo-block').textContent,"
+        " lines: comboComponentLines(['x', 'y'], reg, 20)})));",
     )
     _assert_payload_is_inert(result, "renderComboComponents")
+    # the partner is dosed from ITS regimen (40 mg × 3), never from the main drug's 2000 mg
+    assert "40 мг" in result["partnerText"] and "2000 мг" not in result["partnerText"], result["partnerText"]
+    # a partner without component_regimens is fail-visible, not dosed with the main drug's numbers
+    assert "режим компонента не задан в БД" in result["orphan"] and "2000 мг" not in result["orphan"], result["orphan"]
+    assert result["lines"][0].startswith("Компонент комбинации: МНН ") and "по 40 мг 3 р/д" in result["lines"][0]
+    assert result["lines"][1] == "Компонент комбинации: Без режима — режим компонента не задан в БД — дозу уточните по КР (расчёт не выполнен)"
 
 
 def test_render_drug_meta_never_parses_drug_metadata_as_markup() -> None:

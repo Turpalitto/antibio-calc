@@ -202,6 +202,24 @@ def test_unit_strength_unreadable_or_liquid_without_mg_per_ml_is_a_warning() -> 
     assert len(liquid) == 1 and "forms[2]: suspension" in liquid[0], result["warnings"]
 
 
+def test_combination_partner_without_its_own_regimen_is_an_error() -> None:
+    """The shell doses a partner only from component_regimens[partner]; the old
+    fallback printed the main drug's numbers for it."""
+    db = _db()
+    drug = _drug(db)
+    drug.pop("drug_ref", None)
+    drug["combo_ref"] = ["amoxicillin", "benzylpenicillin_na"]
+    result = _validate(db)
+    hits = _errors_matching(result, "component_regimens lacks a regimen for combination partner")
+    assert len(hits) == 1 and '"benzylpenicillin_na"' in hits[0], result["errors"]
+    drug["regimens"][0]["component_regimens"] = {"benzylpenicillin_na": {"single_dose_mg": 1000000}}
+    result = _validate(db)
+    assert _errors_matching(result, "component_regimens.benzylpenicillin_na needs a dose field"), result["errors"]
+    drug["regimens"][0]["component_regimens"] = {"benzylpenicillin_na": {"single_dose_mg": 1000000, "freq_per_day": 4, "duration_days": "7"}}
+    result = _validate(db)
+    assert not [e for e in result["errors"] if "component_regimens" in e], result["errors"]
+
+
 def test_route_without_a_matching_form_is_a_warning() -> None:
     """Scenario says iv, drugs_reference only has tablets: the shell falls back
     to every form and shows #route-mismatch-note; the validator says so too."""
