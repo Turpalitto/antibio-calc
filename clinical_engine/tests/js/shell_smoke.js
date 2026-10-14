@@ -100,6 +100,18 @@ async function run() {
     // ---- 1. search → disease → drug → weight (all through the DOM) ----------
     type($('search'), 'хламид');
     out.search = { resultsVisible: visible($('results-box')), results: $('results-box').children.length, first: txt($('results-box').firstElementChild) };
+    // recall: tokens + Russian endings + ICD + drug names, computable hits first
+    out.searchRecall = {};
+    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'отит взрослые', 'xyzzy']) {
+      type($('search'), q);
+      const items = [...$('results-box').children];
+      out.searchRecall[q] = {
+        n: items.length,
+        first: items.length ? txt(items[0]).slice(0, 60) : null,
+        blockedBeforeComputable: items.findIndex((i) => /расчёт закрыт/i.test(i.textContent)) >= 0
+          && items.findIndex((i) => /расчёт закрыт/i.test(i.textContent)) < items.map((i) => !/расчёт закрыт/i.test(i.textContent)).lastIndexOf(true),
+      };
+    }
     const chl = clickDisease('chlamydia_urogenital');
     out.disease = { name: chl.name, status: $('source-calculation-block').dataset.sourceStatus, activeCr: txt($('active-cr')) };
     clickDrug(/Доксициклин/i);

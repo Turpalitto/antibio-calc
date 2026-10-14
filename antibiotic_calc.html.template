@@ -1790,6 +1790,25 @@ function selectQuickDisease(code){
     handleSearch();
   }
 }
+// Lower-cased INNs + keys of every drug a record uses (built once per record):
+// lets the search answer «амоксициллин» with the nosologies that use it.
+function diseaseDrugText(d){
+  const cache = diseaseDrugText._cache || (diseaseDrugText._cache = {});
+  if(d && d.id && cache[d.id] !== undefined) return cache[d.id];
+  const names = new Set();
+  ((d && d.scenarios) || []).forEach(sc=>((sc && sc.lines) || []).forEach(ln=>((ln && ln.drugs) || []).forEach(dr=>{
+    const keys = dr.combo_ref ? dr.combo_ref : [dr.drug_ref];
+    keys.forEach(k=>{
+      if(!k) return;
+      names.add(String(k).toLowerCase());
+      const ref = (typeof DB !== 'undefined' && DB && DB.drugs_reference) ? DB.drugs_reference[k] : null;
+      if(ref && ref.inn) names.add(String(ref.inn).toLowerCase());
+    });
+  })));
+  const text = [...names].join(' ');
+  if(d && d.id) cache[d.id] = text;
+  return text;
+}
 function handleSearch(){
   const rawQ = $('search').value.trim();
   const clearBtn = $('search-clear');
@@ -1801,17 +1820,43 @@ function handleSearch(){
   const qClean = qLower.replace(/[\.\s\-_]/g, '');
   const qEn = qLower.split('').map(ch => KEY_MAP_RU_EN[ch] || HOMOGLYPHS_RU_EN[ch] || ch).join('').replace(/[\.\s\-_]/g, '');
 
-  const filtered = DB.recommendations.filter(d=>{
-    const mkbMatch = (d.mkb10 || []).some(m => {
-      const mc = m.toLowerCase().replace(/[\.\s\-_]/g, '');
-      return mc.includes(qClean) || mc.includes(qEn);
-    });
-    if(mkbMatch) return true;
+  // Every token must match somewhere (name / synonyms / CR id / ICD-10 / a drug
+  // of the record): «пневмония дети», «h. pylori», «амоксициллин» all work;
+  // the whole phrase still matches as before.
+  const tokens = qLower.split(/\s+/).map(t => t.replace(/^[\.,;:]+|[\.,;:]+$/g, '')).filter(t => t.length >= 2);
+  const mkbHit = (d, t, tEn) => (d.mkb10 || []).some(m => {
+    const mc = m.toLowerCase().replace(/[\.\s\-_]/g, '');
+    return mc.includes(t) || mc.includes(tEn);
+  });
+  // Russian endings: «дети» must find «у детей», «взрослые» — «у взрослых»; a
+  // token of 4+ letters also matches by its stem (last 1–2 letters dropped).
+  const stemHit = (text, t) => {
+    if(text.includes(t)) return true;
+    if(t.length >= 5 && text.includes(t.slice(0, -2))) return true;
+    if(t.length >= 4 && text.includes(t.slice(0, -1))) return true;
+    return false;
+  };
+  const tokenMatches = (d, t) => {
+    const tClean = t.replace(/[\.\s\-_]/g, '');
+    const tEn = t.split('').map(ch => KEY_MAP_RU_EN[ch] || HOMOGLYPHS_RU_EN[ch] || ch).join('').replace(/[\.\s\-_]/g, '');
+    if(tClean && mkbHit(d, tClean, tEn)) return true;
+    if(stemHit(d.name.toLowerCase(), t)) return true;
+    if(d.synonyms && d.synonyms.some(s=>stemHit(s.toLowerCase(), t))) return true;
+    if(d.cr_id && String(d.cr_id).toLowerCase().includes(t)) return true;
+    if(stemHit(diseaseDrugText(d), t)) return true;
+    return false;
+  };
+  const phraseMatches = (d) => {
+    if(mkbHit(d, qClean, qEn)) return true;
     if(d.name.toLowerCase().includes(qLower)) return true;
     if(d.synonyms && d.synonyms.some(s=>s.toLowerCase().includes(qLower))) return true;
-    if(d.cr_id && d.cr_id.toLowerCase().includes(qLower)) return true;
+    if(d.cr_id && String(d.cr_id).toLowerCase().includes(qLower)) return true;
     return false;
-  });
+  };
+  const filtered = DB.recommendations.filter(d => phraseMatches(d) || (tokens.length > 0 && tokens.every(t => tokenMatches(d, t))));
+  // Phrase hits before token/drug hits, computable before blocked; otherwise DB order.
+  const rank = d => (phraseMatches(d) ? 0 : 2) + (d.calculation_blocked ? 1 : 0);
+  filtered.sort((a, b) => rank(a) - rank(b));
 
   box.innerHTML = '';
   filtered.forEach(d=>{
@@ -1819,7 +1864,8 @@ function handleSearch(){
     item.className = 'bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-700 transition-all font-bold text-slate-700 dark:text-slate-200 text-sm flex justify-between items-center';
     const matchedMkb = (d.mkb10 || []).find(m => {
       const mc = m.toLowerCase().replace(/[\.\s\-_]/g, '');
-      return mc.includes(qClean) || mc.includes(qEn);
+      if(mc.includes(qClean) || mc.includes(qEn)) return true;
+      return tokens.some(t => { const tc = t.replace(/[\.\s\-_]/g, ''); return tc && mc.includes(tc); });
     });
 
     // Название/МКБ приходят из БД: собираем через textContent, а не innerHTML,

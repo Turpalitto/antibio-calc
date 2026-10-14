@@ -126,6 +126,17 @@ def test_guideline_modal_is_a_labelled_dialog_with_focus_return(shell: dict) -> 
     assert shell["modalAfterEscape"] == {"visible": False, "focusId": "btn-guideline-modal"}
 
 
+def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
+    r = shell["searchRecall"]
+    assert r["пневмония дети"]["n"] == 1 and r["пневмония дети"]["first"].startswith("Внебольничная пневмония у детей")
+    assert r["h. pylori"]["n"] == 1 and "pylori" in r["h. pylori"]["first"].lower()
+    assert r["амоксициллин"]["n"] >= 20, "drug-name search must list the nosologies using the drug"
+    assert r["амоксициллин"]["blockedBeforeComputable"] is False, "computable records must come first"
+    assert r["J18"]["n"] >= 2 and "пневмония" in r["J18"]["first"].lower()
+    assert r["отит взрослые"]["n"] == 1 and "у взрослых" in r["отит взрослые"]["first"]
+    assert r["xyzzy"]["n"] == 0
+
+
 def test_cards_are_keyboard_activatable_and_deep_link_restores_scenario(shell: dict) -> None:
     kb = shell["keyboard"]
     assert kb["hitRole"] == "button" and kb["hitTabindex"] == "0"
