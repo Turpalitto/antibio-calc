@@ -1763,6 +1763,11 @@ function exportSafetyFlags(refs){
   const flags = collectPatientSafetyFlags(refs);
   const allergy = allergyExportFlag(refs);
   if(allergy) flags.unshift(allergy);
+  // the non-blocking weight caution («28 кг в 2 года», «35 кг у взрослого») travels
+  // with the chart text too — on screen it sits under the weight field only
+  const weightEl = $('weight');
+  const caution = weightEl ? weightWarnReason(parseFloat(weightEl.value), activeAge) : '';
+  if(caution) flags.push({level:'warn', text:caution});
   return flags;
 }
 // Баннеры строятся узлами: текст приходит из справочника препарата (БД).

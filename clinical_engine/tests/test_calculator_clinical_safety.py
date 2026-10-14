@@ -221,6 +221,8 @@ PATIENT_CONTEXT_SUPPORT = [
     "roundingDeviationText",
     "formatTablets",
     "ageInputBlockReason",
+    "weightBlockReason",
+    "weightWarnReason",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
@@ -621,6 +623,28 @@ def test_weight_impossible_for_the_entered_age_blocks_and_rare_combinations_warn
     assert result["tod14"] == {"b": "", "w": ""} and result["five28"] == {"b": "", "w": ""}
     # without an explicit age the old group-only rules apply (25 kg neonate → not checkable by age)
     assert result["noAge25"] == {"b": "", "w": ""}, result["noAge25"]
+
+
+def test_weight_caution_travels_with_the_exports() -> None:
+    """The sub-40-kg adult / heavy toddler caution sat under the weight field only;
+    the MIS text, Rp and printed form use exportSafetyFlags, so it is added there."""
+    body = (
+        "const DB = {drugs_reference: {amoxicillin: {inn: 'Амоксициллин'}}};"
+        "let activeAge = 'adult';"
+        "$('weight').value = '35';"
+        "const adult35 = exportSafetyFlags(['amoxicillin']);"
+        "$('weight').value = '70';"
+        "const adult70 = exportSafetyFlags(['amoxicillin']);"
+        "activeAge = 'child'; patientAgeDays = 2 * DAYS_PER_YEAR; $('weight').value = '28';"
+        "const toddler28 = exportSafetyFlags(['amoxicillin']);"
+        "console.log(JSON.stringify({adult35, adult70, toddler28}));"
+    )
+    result = _run([], "", body)
+    assert result["adult35"] == [{"level": "warn", "text": result["adult35"][0]["text"]}] and result["adult35"][0]["text"].startswith(
+        "Вес 35 кг при возрастной группе «взрослые» — редкое, но возможное сочетание"
+    ), result["adult35"]
+    assert result["adult70"] == []
+    assert len(result["toddler28"]) == 1 and result["toddler28"][0]["text"].startswith("Вес 28 кг при возрасте 2 года — редкое сочетание"), result["toddler28"]
 
 
 def test_calculate_refuses_to_render_a_dose_for_out_of_range_weight() -> None:
