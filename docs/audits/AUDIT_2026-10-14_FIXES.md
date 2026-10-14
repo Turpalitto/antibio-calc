@@ -15,7 +15,7 @@
 | Сборка | детерминирована | детерминирована: db `56727a27f050…`, html `3e8b5af9d4e7…` (765 620 B), sw `build-ff813dcc5750` |
 | `ruff --select F821` | 6 | 0 |
 | `ruff check .` (раунд 3: полный pyflakes `F` + `E9`) | ~200 F401/F541/F811/F841 | **0** (FROZEN `medical_normalizer/` исключён из стилевых правил, не правился) |
-| GitHub Actions CI после раунда 3 | — | **✅ run 38570533400** (ruff при полном `F`, шаг changelog-gate, pytest 2671) |
+| GitHub Actions CI после раунда 3 | — | **✅ runs 38570533400 / 38571378607** (ruff при полном `F`, шаг changelog-gate, pytest 2675, пересобранный html) |
 | GitHub Actions CI | 4/4 красных прогона, никогда не был зелёным | **✅ run 38563366043** (PR #1: pytest + validate на 3.12/Node 24, secret scan) |
 | jsdom end-to-end smoke собранной оболочки | — | пройден (возраст/беременность/СКФ, блокировки, «БЕЗ КР», МИС-текст) |
 
