@@ -523,9 +523,36 @@ body{
             <option value="cephalosporin">⛔ Аллергия на цефалоспорины</option>
           </select>
         </div>
+        <!-- Контекст пациента: возраст уточняет группу и проверяет age_restriction_min,
+             беременность и СКФ сверяются со справочником препарата. Доза не меняется
+             автоматически — только предупреждения (fail-visible). -->
+        <div>
+          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Возраст <span class="normal-case tracking-normal text-slate-300 dark:text-slate-500">(уточняет группу)</span></label>
+          <div class="flex gap-1.5">
+            <input type="number" id="patient-age" min="0" step="1" placeholder="—" class="input-field w-full rounded-2xl px-3 py-3 text-lg font-black tabular-num" oninput="onPatientAgeChange()">
+            <select id="patient-age-unit" class="input-field rounded-2xl px-2 py-3 font-bold text-xs" onchange="onPatientAgeChange()">
+              <option value="years">лет</option>
+              <option value="months">мес</option>
+              <option value="days">дней</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Беременность</label>
+          <select id="patient-pregnancy" class="input-field w-full rounded-2xl px-3 py-3.5 font-bold text-xs" onchange="onPatientContextChange()">
+            <option value="unknown">Не указано</option>
+            <option value="no">Нет</option>
+            <option value="yes">Да / лактация</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">СКФ, мл/мин <span class="normal-case tracking-normal text-slate-300 dark:text-slate-500">(необязательно)</span></label>
+          <input type="number" id="patient-gfr" min="0" step="1" placeholder="—" class="input-field w-full rounded-2xl px-3 py-3 text-lg font-black tabular-num" oninput="onPatientContextChange()">
+        </div>
       </div>
       <div id="weight-warn" class="hidden mt-3 text-[11px] font-bold text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2" data-blocking="false"><i class="fas fa-exclamation-triangle mr-1"></i><span></span></div>
       <div id="age-infer-notice" class="hidden mt-2 text-[11px] font-bold text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2"><i class="fas fa-circle-info mr-1"></i><span></span></div>
+      <div id="age-explicit-notice" class="hidden mt-2 text-[11px] font-bold text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-3 py-2"><i class="fas fa-user-clock mr-1"></i><span></span></div>
     </section>
 
     <section class="premium-card p-4 md:p-6 no-print">
@@ -604,6 +631,9 @@ body{
     <div id="result-step" class="hidden space-y-4 animate-in">
 
       <div id="dose-block" class="hidden" role="alert" aria-live="assertive"></div>
+      <!-- Предупреждения по контексту пациента (возраст / беременность / СКФ):
+           строятся узлами из данных справочника, не блокируют расчёт, печатаются. -->
+      <div id="patient-safety-banners" class="hidden space-y-2" role="status" aria-live="polite"></div>
 
       <div class="no-print flex gap-2 flex-wrap items-center">
         <button id="btn-copy-mis" onclick="copyForMIS()" class="action-btn text-[11px] font-black uppercase tracking-wider text-blue-700 bg-white dark:bg-slate-800 dark:text-blue-300 border border-blue-200 dark:border-blue-700/60 rounded-xl px-3.5 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 flex items-center gap-2 shadow-sm">
@@ -858,6 +888,9 @@ let activeDisease = null, activeScenario = null, activeLine = null, activeDrug =
 let activeAge = 'child';
 let userPickedAge = false;
 let lastPickedAge = null;
+// Явно введённый возраст пациента в днях (null — не введён). Он задаёт группу
+// и проверяется против age_restriction_min препарата; вес его не переопределяет.
+let patientAgeDays = null;
 let dbBlockingErrors = [];
 let historyEntries = [];
 let currentRouteGroup = 'all';
@@ -877,9 +910,14 @@ function validateDB(){
   if(!DB || !DB.recommendations || !DB.drugs_reference){ errs.push('Нет БД'); return {errs,warns}; }
   const drugKeys = Object.keys(DB.drugs_reference).filter(k=>k!=='_note');
   DB.recommendations.forEach((r,i)=>{
+    // Заблокированная запись не считается, поэтому её схемы не должны ронять
+    // всю БД: дефекты её режимов — предупреждения, а не блокирующие ошибки.
+    const recBlocked = r.calculation_blocked === true;
+    const regimenIssues = recBlocked ? warns : errs;
     if(!r.id) errs.push('rec['+i+']: нет id');
     if(!r.mkb10||!r.mkb10.length) errs.push('rec['+i+'] '+r.id+': нет mkb10');
     if(!r.name) errs.push('rec['+i+']: нет name');
+    if(typeof r.calculation_blocked !== 'boolean') errs.push('rec['+i+'] '+r.id+': calculation_blocked не выставлен сборкой (gate)');
     if(!r.cr_id) warns.push('rec['+i+'] '+r.id+': нет cr_id');
     if(!r.cr_year) warns.push('rec['+i+'] '+r.id+': нет cr_year');
     (r.scenarios||[]).forEach((s,si)=>{
@@ -892,8 +930,10 @@ function validateDB(){
           if(d.combo_ref) d.combo_ref.forEach((cr,cdi)=>{ if(!drugKeys.includes(cr)) errs.push('combo_ref "'+cr+'" не найден'); });
           if(!d.route||!d.route.length) warns.push('rec['+i+'] '+r.id+'>drug '+d.drug_ref+': нет route');
           (d.regimens||[]).forEach((rg,ri)=>{
-            if(!rg.freq_per_day) errs.push('rec['+i+'] '+r.id+'>drug '+d.drug_ref+' regimen['+ri+']: нет freq_per_day');
-            if(!rg.duration_days) warns.push('rec['+i+'] '+r.id+'>drug '+d.drug_ref+' regimen['+ri+']: нет duration_days');
+            const where = 'rec['+i+'] '+r.id+'>drug '+d.drug_ref+' regimen['+ri+']';
+            if(!rg.freq_per_day) regimenIssues.push(where+': нет freq_per_day');
+            else if(!Number.isInteger(rg.freq_per_day) || rg.freq_per_day < 1 || rg.freq_per_day > 6) regimenIssues.push(where+': freq_per_day='+rg.freq_per_day+' вне допустимого 1–6 р/сут');
+            if(!rg.duration_days) warns.push(where+': нет duration_days');
           });
         });
       });
@@ -958,8 +998,11 @@ function init(){
     const raw = $('db-data').textContent.trim();
     DB = JSON.parse(raw);
     document.getElementById('verification-status').textContent = (DB.meta.verification_status||'draft').toUpperCase()+' • '+DB.meta.warning;
-    document.getElementById('header-stats').textContent = 'КР МЗ РФ • '+DB.recommendations.length+' нозологий • '+Object.keys(DB.drugs_reference).filter(k=>k!=='_note').length+' препаратов';
-    document.getElementById('empty-state-stats').textContent = DB.recommendations.length+' нозологий • '+Object.keys(DB.drugs_reference).filter(k=>k!=='_note').length+' препаратов • КР МЗ РФ';
+    const computable = DB.recommendations.filter(r=>!r.calculation_blocked).length;
+    const blockedCount = DB.recommendations.length - computable;
+    const drugCount = Object.keys(DB.drugs_reference).filter(k=>k!=='_note').length;
+    document.getElementById('header-stats').textContent = 'КР МЗ РФ • '+DB.recommendations.length+' нозологий ('+computable+' расчётных'+(blockedCount ? ', '+blockedCount+' закрыто до верификации' : '')+') • '+drugCount+' препаратов';
+    document.getElementById('empty-state-stats').textContent = computable+' расчётных нозологий из '+DB.recommendations.length+' • '+drugCount+' препаратов • КР МЗ РФ';
     const v = validateDB();
     dbBlockingErrors = v.errs.slice();
     renderTrustBanner();
@@ -994,6 +1037,7 @@ function init(){
       userPickedAge = true;
       lastPickedAge = activeAge;
       clearAgeInferenceNotice();
+      updateExplicitAgeNotice();
       if(activeDisease) renderScenarios();
       calculate();
     };
@@ -1321,7 +1365,7 @@ function applyPersonalCandidate(index, envelope){
     $('active-disease').classList.remove('hidden'); $('empty-state').classList.add('hidden');
     $('active-title').textContent = activeDisease.name;
     $('active-mkb').textContent = 'МКБ-10: '+activeDisease.mkb10.join(', ');
-    $('active-cr').textContent = 'КР #'+activeDisease.cr_id+' · '+activeDisease.cr_year;
+    $('active-cr').textContent = diseaseSourceLabel(activeDisease);
     $('active-indications').textContent = activeDisease.indications ? 'Показания: '+activeDisease.indications.join('; ') : '';
     $('scenario-step').classList.remove('hidden'); $('drug-step').classList.remove('hidden'); $('form-step').classList.remove('hidden'); $('result-step').classList.remove('hidden');
     renderScenarios(resolved.scenario, resolved.lineIndex, resolved.drugIndex, resolved.routeGroup, resolved.regimenIndex);
@@ -1442,6 +1486,199 @@ function setActiveAge(a, inferredFromWeight){
   });
   if(inferredFromWeight && previous !== a) showAgeInferenceNotice(inferredFromWeight.w, a, previous);
 }
+// ---- Контекст пациента: возраст, беременность, СКФ -------------------------------
+// Возраст хранится в днях. Границы групп совпадают с кнопками: 0–28 дней —
+// новорождённые, до 18 лет — дети, далее взрослые.
+const DAYS_PER_MONTH = 30.4375;
+const DAYS_PER_YEAR = 365.25;
+function parseAgeToDays(value, unit){
+  const n = parseFloat(value);
+  if(!isFinite(n) || n < 0) return null;
+  if(unit === 'days') return n;
+  if(unit === 'months') return n * DAYS_PER_MONTH;
+  return n * DAYS_PER_YEAR;
+}
+function ageGroupFromDays(days){
+  if(days == null) return null;
+  if(days <= 28) return 'neonate';
+  if(days < 18 * DAYS_PER_YEAR) return 'child';
+  return 'adult';
+}
+function formatAgeDays(days){
+  if(days == null) return '—';
+  if(days <= 28) return Math.round(days)+' дн.';
+  if(days < 2 * DAYS_PER_YEAR) return Math.round(days / DAYS_PER_MONTH)+' мес';
+  const years = Math.floor(days / DAYS_PER_YEAR);
+  return years+' '+(years % 10 === 1 && years % 100 !== 11 ? 'год' : (years % 10 >= 2 && years % 10 <= 4 && (years % 100 < 10 || years % 100 >= 20) ? 'года' : 'лет'));
+}
+// age_restriction_min в справочнике — свободный текст («6 мес», «18 лет», «28 дней»).
+// Распознаём только явные «число + единица»; всё остальное — null (проверяется вручную).
+function parseAgeRestrictionDays(text){
+  const m = String(text || '').toLowerCase().match(/(\d+(?:[.,]\d+)?)\s*(лет|года|год|г\b|мес|м\b|нед|дн|сут)/);
+  if(!m) return null;
+  const n = parseFloat(m[1].replace(',', '.'));
+  if(!isFinite(n)) return null;
+  const u = m[2];
+  if(u.startsWith('нед')) return n * 7;
+  if(u.startsWith('дн') || u.startsWith('сут')) return n;
+  if(u.startsWith('мес') || u === 'м') return n * DAYS_PER_MONTH;
+  return n * DAYS_PER_YEAR;
+}
+function readPatientAge(){
+  const input = $('patient-age');
+  const unitEl = $('patient-age-unit');
+  if(!input) return null;
+  return parseAgeToDays(input.value, unitEl ? unitEl.value : 'years');
+}
+function updateExplicitAgeNotice(){
+  const el = $('age-explicit-notice');
+  if(!el) return;
+  if(patientAgeDays == null){ el.classList.add('hidden'); return; }
+  const group = ageGroupFromDays(patientAgeDays);
+  let text = 'Возраст '+formatAgeDays(patientAgeDays)+' → группа «'+ageGroupLabel(group)+'».';
+  if(group !== activeAge){
+    text += ' Сейчас выбрана группа «'+ageGroupLabel(activeAge)+'» — она не соответствует введённому возрасту, проверьте выбор.';
+  }
+  el.querySelector('span').textContent = text;
+  el.classList.remove('hidden');
+}
+function onPatientAgeChange(){
+  patientAgeDays = readPatientAge();
+  if(patientAgeDays != null){
+    const group = ageGroupFromDays(patientAgeDays);
+    if(group !== activeAge){
+      setActiveAge(group);
+      if(activeDisease) renderScenarios();
+    }
+    // Явный возраст сильнее вывода из веса: группа больше не переключается по кг.
+    userPickedAge = true;
+    lastPickedAge = group;
+    clearAgeInferenceNotice();
+  }
+  updateExplicitAgeNotice();
+  calculate();
+}
+function onPatientContextChange(){
+  calculate();
+}
+// Проверка возрастного ограничения препарата. Возвращает {level, text} или null.
+// level 'danger' — нарушение установлено (или неизбежно для выбранной группы),
+// 'warn' — проверить невозможно без возраста либо текст ограничения не разобран.
+function ageRestrictionFlag(ref){
+  const raw = ref && ref.age_restriction_min ? String(ref.age_restriction_min).trim() : '';
+  if(!raw) return null;
+  const minDays = parseAgeRestrictionDays(raw);
+  if(minDays == null){
+    return {level:'warn', text:'Возрастное ограничение по справочнику для «'+ref.inn+'»: «'+raw+'» — проверьте вручную.'};
+  }
+  if(patientAgeDays != null){
+    if(patientAgeDays < minDays){
+      return {level:'danger', text:'Возраст пациента ('+formatAgeDays(patientAgeDays)+') меньше минимального для «'+ref.inn+'» по справочнику («'+raw+'»). Назначение вне возрастного ограничения — сверьте с КР и инструкцией.'};
+    }
+    return null;
+  }
+  // Возраст не введён: границы берём из выбранной группы (дети — строго младше
+  // 18 лет, новорождённые — до 28 дней включительно).
+  const certainViolation = activeAge === 'child'
+    ? minDays >= 18 * DAYS_PER_YEAR
+    : (activeAge === 'neonate' ? minDays > 28 : false);
+  if(certainViolation){
+    return {level:'danger', text:'«'+ref.inn+'» по справочнику не применяется до «'+raw+'», а выбрана группа «'+ageGroupLabel(activeAge)+'». Сверьте с КР и инструкцией.'};
+  }
+  if(activeAge !== 'adult'){
+    return {level:'warn', text:'У «'+ref.inn+'» есть возрастное ограничение («'+raw+'»). Введите возраст пациента, чтобы проверить его.'};
+  }
+  return null;
+}
+function pregnancyFlag(ref){
+  const sel = $('patient-pregnancy');
+  if(!sel || sel.value !== 'yes' || !ref) return null;
+  const cat = String(ref.pregnancy_category || '').trim();
+  if(!cat){
+    return {level:'warn', text:'Беременность/лактация: в справочнике нет данных о безопасности «'+ref.inn+'». Проверьте инструкцию.'};
+  }
+  if(/противопоказан/i.test(cat)){
+    return {level:'danger', text:'Беременность/лактация: «'+ref.inn+'» — '+cat+'. Выберите альтернативу.'};
+  }
+  if(/разреш/i.test(cat) && !/триместр/i.test(cat)) return null;
+  return {level:'warn', text:'Беременность/лактация: «'+ref.inn+'» — '+cat+'.'};
+}
+// Почечная функция. Пороги вида «СКФ<30» разбираются по клаузам (разделитель «;»):
+// триггер клаузы с «противопоказан» — danger, остальное — warn. Доза НЕ меняется.
+function renalFlag(ref){
+  const input = $('patient-gfr');
+  const gfr = input ? parseFloat(input.value) : NaN;
+  if(!(gfr > 0) || !ref) return null;
+  const txt = String(ref.renal_adjustment || '').trim();
+  const tail = ' Расчёт выполнен БЕЗ почечной коррекции — скорректируйте дозу/интервал вручную.';
+  if(!txt){
+    return gfr < 60 ? {level:'warn', text:'СКФ '+gfr+' мл/мин: в справочнике нет данных о почечной коррекции «'+ref.inn+'».'+tail} : null;
+  }
+  const clauses = txt.split(/;/).map(c=>c.trim()).filter(Boolean);
+  let worst = null;
+  let hadThreshold = false;
+  clauses.forEach(clause=>{
+    const m = clause.match(/скф\s*[<≤]\s*(\d+)/i);
+    if(!m) return;
+    hadThreshold = true;
+    if(gfr < parseFloat(m[1])){
+      const level = /противопоказан/i.test(clause) ? 'danger' : 'warn';
+      if(!worst || level === 'danger') worst = {level: level, text:'СКФ '+gfr+' мл/мин: «'+ref.inn+'» — '+clause+'.'+tail};
+    }
+  });
+  if(worst) return worst;
+  if(hadThreshold) return null;
+  if(/не требуется|без коррекции/i.test(txt)) return null;
+  return gfr < 60 ? {level:'warn', text:'СКФ '+gfr+' мл/мин: «'+ref.inn+'» — '+txt+'.'+tail} : null;
+}
+function collectPatientSafetyFlags(refs){
+  const flags = [];
+  (refs || []).forEach(key=>{
+    const ref = (typeof DB !== 'undefined' && DB && DB.drugs_reference) ? DB.drugs_reference[key] : null;
+    if(!ref) return;
+    [ageRestrictionFlag(ref), pregnancyFlag(ref), renalFlag(ref)].forEach(f=>{ if(f) flags.push(f); });
+  });
+  return flags;
+}
+// Баннеры строятся узлами: текст приходит из справочника препарата (БД).
+function renderPatientSafetyFlags(refs){
+  const box = $('patient-safety-banners');
+  if(!box) return [];
+  const flags = collectPatientSafetyFlags(refs);
+  box.textContent = '';
+  if(!flags.length){ box.classList.add('hidden'); return flags; }
+  flags.forEach(f=>{
+    const row = document.createElement('div');
+    row.className = f.level === 'danger'
+      ? 'p-3 rounded-2xl border-2 border-red-500 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-200 text-xs font-bold flex items-start gap-2.5'
+      : 'p-3 rounded-2xl border border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 text-xs font-bold flex items-start gap-2.5';
+    row.dataset.level = f.level;
+    const icon = document.createElement('i');
+    icon.className = (f.level === 'danger' ? 'fas fa-ban text-red-500' : 'fas fa-exclamation-triangle text-amber-500')+' mt-0.5 flex-shrink-0';
+    const text = document.createElement('span');
+    text.textContent = f.text;
+    row.append(icon, text);
+    box.appendChild(row);
+  });
+  box.classList.remove('hidden');
+  return flags;
+}
+function hidePatientSafetyFlags(){
+  const box = $('patient-safety-banners');
+  if(box){ box.textContent = ''; box.classList.add('hidden'); }
+}
+// Единая подпись источника записи: федеральная КР — только при настоящем cr_id;
+// иначе честно «без федеральной КР» + документированное основание (cr_note).
+function isFederalCrId(value){
+  return /^\d+(_\d+)?$/.test(String(value == null ? '' : value).trim());
+}
+function diseaseSourceLabel(d){
+  if(!d) return '';
+  if(isFederalCrId(d.cr_id)){
+    return 'КР МЗ РФ #'+String(d.cr_id).trim()+(d.cr_year ? ' ('+d.cr_year+')' : ' (год не указан)');
+  }
+  return 'без федеральной КР'+(d.cr_note ? ' — основание: '+d.cr_note : ' — основание не документировано');
+}
 const KEY_MAP_RU_EN = {
   'й':'q','ц':'w','у':'e','к':'r','е':'t','н':'y','г':'u','ш':'i','щ':'o','з':'p','х':'[','ъ':']',
   'ф':'a','ы':'s','в':'d','а':'f','п':'g','р':'h','о':'j','л':'k','д':'l','ж':';','э':"'",
@@ -1513,7 +1750,7 @@ function handleSearch(){
     }
     const meta = document.createElement('div');
     meta.className = 'text-[10px] text-slate-400 font-normal mt-0.5';
-    meta.textContent = 'МКБ: '+(d.mkb10 || []).slice(0,3).join(', ')+((d.mkb10 || []).length > 3 ? '…' : '')+(d.cr_id ? ' • КР #'+d.cr_id : '');
+    meta.textContent = 'МКБ: '+(d.mkb10 || []).slice(0,3).join(', ')+((d.mkb10 || []).length > 3 ? '…' : '')+(isFederalCrId(d.cr_id) ? ' • КР #'+d.cr_id : ' • без федеральной КР')+(d.calculation_blocked ? ' • расчёт закрыт' : '');
     left.append(topRow, meta);
     const code = document.createElement('span');
     code.className = 'text-blue-500 font-mono text-xs ml-2 font-bold';
@@ -1533,7 +1770,7 @@ function selectDisease(d){
   $('active-disease').classList.remove('hidden');
   $('active-title').textContent = d.name;
   $('active-mkb').textContent = 'МКБ-10: '+d.mkb10.join(', ');
-  $('active-cr').textContent = (d.cr_id && d.cr_id !== '—' ? 'КР #'+d.cr_id : 'Протокол МЗ РФ') + (d.cr_year ? ' • '+d.cr_year : '');
+  $('active-cr').textContent = diseaseSourceLabel(d);
   $('active-indications').textContent = d.indications ? 'Показания: '+d.indications.join('; ') : '';
   $('empty-state').classList.add('hidden');
   if(!applyDiseaseSourceGate(d)){
@@ -1563,28 +1800,48 @@ function applyDiseaseSourceGate(d){
     $('result-step').classList.add('hidden');
     return false;
   }
+  // Баннер собирается узлами (status/cr_note приходят из БД), а перед сборкой
+  // контейнер очищается: раньше ветки append накапливали баннеры при смене нозологии.
+  block.textContent = '';
+  const left = document.createElement('span');
+  left.className = 'flex items-center gap-1.5';
+  const icon = document.createElement('i');
+  const caption = document.createElement('span');
+  const badge = document.createElement('span');
   if(status === 'CALCULATOR_BOUND_VERIFIED'){
     block.className = 'mt-3 rounded-xl border border-emerald-500/50 bg-emerald-50/80 dark:bg-emerald-950/30 px-3 py-2 text-[11px] font-bold text-emerald-800 dark:text-emerald-200 flex items-center justify-between';
-    block.innerHTML = '<span class="flex items-center gap-1.5"><i class="fas fa-check-circle text-emerald-600 dark:text-emerald-400"></i>Верифицировано по актуальной КР МЗ РФ (строгая привязка таблиц)</span><span class="badge bg-emerald-200 dark:bg-emerald-800 text-emerald-900 dark:text-emerald-100">VERIFIED</span>';
-  } else if(status === 'UNVERIFIED' || status === 'unknown'){
-    block.className = 'mt-3 rounded-xl border-2 border-amber-500 bg-amber-50 dark:bg-amber-950/40 px-3 py-2 text-[11px] font-black text-amber-900 dark:text-amber-200 flex items-center justify-between';
-    block.innerHTML = '<span class="flex items-center gap-1.5"><i class="fas fa-exclamation-triangle text-amber-600 dark:text-amber-400"></i>Источник не верифицирован: расчёт справочный, сверьте схему с КР</span><span class="badge bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100">НЕ ВЕРИФИЦИРОВАНО</span>';
-  } else {
-    block.className = 'mt-3 rounded-xl border border-blue-200/80 bg-blue-50/60 dark:bg-blue-950/20 px-3 py-2 text-[11px] font-medium text-blue-900 dark:text-blue-200 flex items-center justify-between';
-    // status приходит из БД, поэтому собираем баннер узлами: строковая склейка
-    // в innerHTML превратила бы значение из БД в исполняемую разметку.
-    const left = document.createElement('span');
-    left.className = 'flex items-center gap-1.5';
-    const icon = document.createElement('i');
+    icon.className = 'fas fa-check-circle text-emerald-600 dark:text-emerald-400';
+    caption.textContent = 'Верифицировано по актуальной КР МЗ РФ (строгая привязка таблиц)';
+    badge.className = 'badge bg-emerald-200 dark:bg-emerald-800 text-emerald-900 dark:text-emerald-100';
+    badge.textContent = 'VERIFIED';
+  } else if(status === 'NO_FEDERAL_CR_EXPERT_BASIS'){
+    block.className = 'mt-3 rounded-xl border-2 border-amber-500 bg-amber-50 dark:bg-amber-950/40 px-3 py-2 text-[11px] font-black text-amber-900 dark:text-amber-200 flex items-center justify-between gap-2';
+    icon.className = 'fas fa-exclamation-triangle text-amber-600 dark:text-amber-400';
+    caption.textContent = 'Нет федеральной КР по этой нозологии: схема справочная, не верифицирована по КР. Основание: '+(d.cr_note || 'не документировано');
+    badge.className = 'badge bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 flex-shrink-0';
+    badge.textContent = 'БЕЗ КР';
+  } else if(status === 'SOURCE_SPEC_PENDING_CALCULATOR_BINDING'){
+    block.className = 'mt-3 rounded-xl border border-amber-400 bg-amber-50/80 dark:bg-amber-950/30 px-3 py-2 text-[11px] font-bold text-amber-900 dark:text-amber-200 flex items-center justify-between gap-2';
+    icon.className = 'fas fa-hourglass-half text-amber-600 dark:text-amber-400';
+    caption.textContent = 'Справочный расчёт по КР МЗ РФ №'+(d.cr_id || '—')+': карточка источника есть, построчная привязка таблиц ещё не подтверждена — сверьте схему с КР';
+    badge.className = 'badge bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 flex-shrink-0';
+    badge.textContent = 'КР • БЕЗ ПРИВЯЗКИ';
+  } else if(status === 'CR_REFERENCE_CALCULATION'){
+    block.className = 'mt-3 rounded-xl border border-blue-200/80 bg-blue-50/60 dark:bg-blue-950/20 px-3 py-2 text-[11px] font-medium text-blue-900 dark:text-blue-200 flex items-center justify-between gap-2';
     icon.className = 'fas fa-book-medical text-blue-600 dark:text-blue-400';
-    const caption = document.createElement('span');
-    caption.textContent = 'Справочный расчёт по данным клинических рекомендаций МЗ РФ (status: '+status+')';
-    left.append(icon, caption);
-    const badge = document.createElement('span');
-    badge.className = 'badge bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100';
+    caption.textContent = 'Справочный расчёт по КР МЗ РФ №'+(d.cr_id || '—')+(d.cr_year ? ' ('+d.cr_year+')' : '')+': схема не проходила построчную верификацию таблиц — сверьте с первоисточником';
+    badge.className = 'badge bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 flex-shrink-0';
     badge.textContent = 'КР МЗ РФ';
-    block.append(left, badge);
+  } else {
+    // UNVERIFIED / unknown / любой незнакомый статус — янтарный fail-visible баннер.
+    block.className = 'mt-3 rounded-xl border-2 border-amber-500 bg-amber-50 dark:bg-amber-950/40 px-3 py-2 text-[11px] font-black text-amber-900 dark:text-amber-200 flex items-center justify-between gap-2';
+    icon.className = 'fas fa-exclamation-triangle text-amber-600 dark:text-amber-400';
+    caption.textContent = 'Источник не верифицирован: расчёт справочный, сверьте схему с КР (status: '+status+')';
+    badge.className = 'badge bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 flex-shrink-0';
+    badge.textContent = 'НЕ ВЕРИФИЦИРОВАНО';
   }
+  left.append(icon, caption);
+  block.append(left, badge);
   block.classList.remove('hidden');
   return true;
 }
@@ -2032,8 +2289,7 @@ function renderRegimens(preferredRegimenIdx){
     regimens.forEach((r, idx)=>{
       const btn = document.createElement('button');
       btn.className = 'chip text-[10px] font-black rounded-lg px-3 py-2'+(idx===selectedIdx?' active':'');
-      const label = r.regimen_label || ((r.dose_mg_kg_day?r.dose_mg_kg_day+' мг/кг':'')+' '+(r.freq_per_day?r.freq_per_day+' р/д':''));
-      btn.textContent = label;
+      btn.textContent = regimenSummary(r, doseUnitOf(DB.drugs_reference[getDrugRefs(activeDrug)[0]]));
       btn.onclick = ()=>{
         activeRegimenIdx = idx;
         list.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
@@ -2084,6 +2340,7 @@ function computeDose(reg, w, unit){
   // а stored daily (perKg/fixed) используем только для кросс-проверки.
   let singleMg = 0, dailyMg = 0, capped = false, needWeight = false, inconsistent = false;
   const perKg = reg.dose_mg_kg_day;
+  const perKgDose = reg.dose_mg_kg_per_dose;
   const fixed = reg.dose_mg_day_fixed;
   const single = reg.single_dose_mg;
   const maxDaily = reg.max_daily_mg;
@@ -2092,6 +2349,11 @@ function computeDose(reg, w, unit){
     dailyMg = single * reg.freq_per_day;
     const stored = (perKg != null && w > 0) ? w * perKg : (fixed != null ? fixed : null);
     if(stored != null && Math.abs(stored - dailyMg) > 0.05 * Math.abs(dailyMg) + 1) inconsistent = true;
+  } else if(perKgDose != null){
+    // мг/кг НА ПРИЁМ (контракт dosa_to_db_mapper: per-dose значение никогда не
+    // попадает в *_day поле). Суточная = разовая × кратность.
+    if(w > 0){ singleMg = w * perKgDose; dailyMg = singleMg * (reg.freq_per_day || 1); }
+    else { needWeight = true; }
   } else if(perKg != null){
     if(w > 0){ dailyMg = w * perKg; }
     else { needWeight = true; }
@@ -2111,6 +2373,21 @@ function computeDose(reg, w, unit){
   }
   if(singleMg === 0 && reg.freq_per_day) singleMg = dailyMg / reg.freq_per_day;
   return {singleMg, dailyMg, capped, needWeight, inconsistent, unit: unit || 'мг'};
+}
+// Краткое описание режима для чипов/МИС/модалки: единицы берутся из справочника
+// препарата, мг/кг никогда не печатается как мг.
+function regimenSummary(reg, unit){
+  unit = unit || 'мг';
+  if(!reg) return '';
+  if(reg.regimen_label) return reg.regimen_label;
+  const parts = [];
+  if(reg.dose_mg_kg_per_dose != null) parts.push(reg.dose_mg_kg_per_dose+' '+unit+'/кг на приём');
+  else if(reg.dose_mg_kg_day != null) parts.push(reg.dose_mg_kg_day+' '+unit+'/кг/сут');
+  else if(reg.single_dose_mg != null) parts.push(fmtDose(reg.single_dose_mg, unit)+' на приём');
+  else if(reg.dose_mg_day_fixed != null) parts.push(fmtDose(reg.dose_mg_day_fixed, unit)+'/сут');
+  if(reg.freq_per_day) parts.push(reg.freq_per_day+' р/д');
+  if(reg.max_daily_mg != null) parts.push('макс '+fmtDose(reg.max_daily_mg, unit)+'/сут');
+  return parts.join(' • ') || reg.duration_note || 'по схеме КР';
 }
 // Форматирование дозы с учётом единиц (мг или ЕД)
 function fmtDose(val, unit){
@@ -2143,6 +2420,7 @@ function hideDoseResults(){
   $('combo-block').innerHTML = '';
   $('drug-meta').classList.add('hidden');
   $('res-note').textContent = '';
+  hidePatientSafetyFlags();
 }
 // Единая точка отказа: любое из этих условий запрещает показ, сохранение,
 // копирование и печать дозы. Fail closed.
@@ -2205,6 +2483,7 @@ function calculate(){
 
   $('res-note').textContent = activeDrug.indication_note || (activeLine && activeLine.line_label) || '';
   renderDrugMeta(mainRef, reg);
+  renderPatientSafetyFlags(refs);
 }
 function getStandardBottleMl(drugKey, form){
   const conc = (form.concentration || '').toLowerCase();
@@ -2423,17 +2702,33 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
     warnEl.classList.remove('hidden');
   } else warnEl.classList.add('hidden');
 }
+// Число твёрдых единиц на приём. Таблетки округляются до половины, капсулы —
+// только до целой (капсулу не делят); при округлении возвращается фактическая
+// доза, чтобы расхождение с расчётной было видно, а не скрыто.
+function solidUnitsPerDose(mg, form){
+  if(!form || !['tablet','capsule'].includes(form.form_type)) return null;
+  if(!mg || mg <= 0) return null;
+  const m = String(form.concentration || '').match(/(\d+(?:[.,]\d+)?)\s*мг/);
+  if(!m) return null;
+  const strength = parseFloat(m[1].replace(',', '.'));
+  if(!(strength > 0)) return null;
+  const exact = mg / strength;
+  const isCapsule = form.form_type === 'capsule';
+  const units = isCapsule ? Math.max(1, Math.round(exact)) : Math.round(exact * 2) / 2;
+  return {
+    units: units,
+    exact: exact,
+    strength: strength,
+    label: isCapsule ? 'капс' : 'таб',
+    rounded: Math.abs(units - exact) > 1e-9,
+    actualMg: units * strength
+  };
+}
 function formatTablets(mg, form){
-  if(!['tablet','capsule'].includes(form.form_type)) return '';
-  if(!mg || mg <= 0) return '';
-  const m = form.concentration.match(/(\d+)\s*мг/);
-  if(!m) return '';
-  const strength = parseInt(m[1]);
-  if(strength <= 0) return '';
-  const tabs = mg / strength;
-  if(tabs === Math.round(tabs)) return '('+tabs+' таб '+strength+' мг)';
-  const half = Math.round(tabs*2)/2;
-  return '(~'+half+' таб '+strength+' мг)';
+  const u = solidUnitsPerDose(mg, form);
+  if(!u) return '';
+  if(!u.rounded) return '('+u.units+' '+u.label+' '+u.strength+' мг)';
+  return '(~'+u.units+' '+u.label+' '+u.strength+' мг = '+Math.round(u.actualMg)+' мг'+(u.label === 'капс' ? '; капсулы не делятся' : '')+')';
 }
 function renderReconstitution(form){
   const block = $('reconstitution-block');
@@ -2732,16 +3027,18 @@ function renderDrugMeta(ref, reg){
   const mon = ref.monitoring || '—';
   const inter = ref.interactions || '—';
   const stor = ref.storage_reconstituted || '—';
-  const hasCr = activeDisease && activeDisease.cr_id && activeDisease.cr_id !== '—';
-  const cr = hasCr ? 'КР №'+activeDisease.cr_id+' • '+activeDisease.cr_year : (activeDisease ? 'Схема антимикробной терапии' : '');
+  const ageMin = ref.age_restriction_min || '—';
+  const hasCr = activeDisease && isFederalCrId(activeDisease.cr_id);
+  const cr = hasCr ? diseaseSourceLabel(activeDisease) : (activeDisease ? 'Схема антимикробной терапии без федеральной КР' : '');
   const url = activeDisease ? activeDisease.source_url : '';
-  const crNote = (activeDisease && !hasCr && activeDisease.cr_note) ? activeDisease.cr_note : '';
+  const crNote = (activeDisease && !hasCr) ? (activeDisease.cr_note || 'не документировано') : '';
   // Все значения — из БД, поэтому метаданные строятся узлами: строка разметки
   // с интерполяцией сделала бы содержимое PDF КР исполняемым.
   meta.textContent = '';
   meta.append(
     metaRow('МНН', ref.inn),
     metaRow('Класс', ref.class || '—'),
+    metaRow('Мин. возраст', ageMin),
     metaRow('Коррекция по почкам', renal),
     metaRow('Коррекция по печени', hepatic),
     metaRow('Беременность', preg),
@@ -2814,9 +3111,10 @@ function fillPrescriptionForm(){
 
   // Статус БД и идентификатор сборки печатаются вместе с рецептом
   $('rx-trust-line').textContent = (dbTrustState().verified ? 'ВЕРИФИЦИРОВАННАЯ БД. ' : 'НЕПРОВЕРЕННАЯ БД (ЧЕРНОВИК) — расчёт справочный, сверьте схему с КР. ')+
-    'Источник: КР МЗ РФ #'+(activeDisease.cr_id || '—')+(activeDisease.cr_year ? ' ('+activeDisease.cr_year+')' : '')+
+    'Источник: '+diseaseSourceLabel(activeDisease)+
     ' • source_verification_status: '+diseaseSourceStatus(activeDisease)+
-    ' • группа: '+ageGroupLabel(activeAge)+(w>0 ? ' • вес: '+w+' кг' : '');
+    ' • группа: '+ageGroupLabel(activeAge)+(w>0 ? ' • вес: '+w+' кг' : '')+
+    (patientAgeDays != null ? ' • возраст: '+formatAgeDays(patientAgeDays) : '');
   $('rx-build-line').textContent = buildIdentifier();
 
   // Header (Russian — as on real forms)
@@ -2841,14 +3139,13 @@ function fillPrescriptionForm(){
   drugsEl.textContent = '';
   drugsEl.appendChild(rxLine('rx-drug-name', latinName+' '+(form.concentration || '')));
 
-  if((form.form_type === 'tablet' || form.form_type === 'capsule') && singleMg > 0){
-    const tabsPerDose = singleMg / parseFloat(form.concentration);
+  const solidUnits = solidUnitsPerDose(singleMg, form);
+  if(solidUnits){
+    const perDose = Math.ceil(solidUnits.units);
     const totalDoses = reg.freq_per_day * (parseInt(reg.duration_days) || 0);
-    if(tabsPerDose > 0 && !isNaN(tabsPerDose)){
-      drugsEl.appendChild(rxLine('rx-dtd', 'D.t.d. N '+Math.ceil(tabsPerDose)+' in '+latinForm));
-    }
+    drugsEl.appendChild(rxLine('rx-dtd', 'D.t.d. N '+perDose+' in '+latinForm));
     if(totalDoses > 0 && !isNaN(totalDoses)){
-      drugsEl.appendChild(rxLine('rx-dtd', '(для курса: '+(totalDoses * Math.ceil(tabsPerDose))+' '+latinForm+')'));
+      drugsEl.appendChild(rxLine('rx-dtd', '(для курса: '+(totalDoses * perDose)+' '+latinForm+')'));
     }
   }
 
@@ -2874,11 +3171,18 @@ function fillPrescriptionForm(){
   } else if(currentRouteGroup === 'topical' || form.form_type === 'topical'){
     signa = 'Применять наружно/местно: ' + (form.notes ? form.notes + ' ' : '') + form.concentration + (reg.freq_per_day ? ' ' + reg.freq_per_day + ' раза в день' : '');
   } else if(form.form_type === 'tablet' || form.form_type === 'capsule'){
-    const tabsPerDose = singleMg / parseFloat(form.concentration);
-    signa = 'По '+(isNaN(tabsPerDose) ? '' : tabsPerDose.toFixed(1).replace(/\.0$/,'')+' ')+latinForm+' '+reg.freq_per_day+' раза в день, '+routeRu;
-  } else if(form.concentration_mg_per_ml){
+    // Капсулы не делятся: число единиц берётся из solidUnitsPerDose (целое для
+    // капсул, до половины для таблеток); фактическая доза печатается рядом.
+    const su = solidUnitsPerDose(singleMg, form);
+    const unitsText = su ? String(su.units).replace(/\.0$/,'')+' ' : '';
+    signa = 'По '+unitsText+latinForm+(su && su.rounded ? ' (= '+Math.round(su.actualMg)+' мг)' : '')+' '+reg.freq_per_day+' раза в день, '+routeRu;
+  } else if(form.concentration_mg_per_ml && currentRouteGroup === 'po'){
     const ml = singleMg / form.concentration_mg_per_ml;
     signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+') внутрь '+reg.freq_per_day+' раза в день';
+  } else if(form.concentration_mg_per_ml){
+    // Готовый раствор для инъекций (мг/мл): объём считается, путь — реальный, не «внутрь».
+    const ml = singleMg / form.concentration_mg_per_ml;
+    signa = 'По '+ml.toFixed(1)+' мл ('+form.concentration+' = '+fmtDose(singleMg, unit)+') '+routeRu+', '+reg.freq_per_day+' раза в день';
   } else {
     signa = 'По '+fmtDose(singleMg, unit)+' '+routeRu+', '+reg.freq_per_day+' раза в день';
   }
@@ -2959,14 +3263,20 @@ function copyForMIS(){
     doseStr = 'по '+fmtDose(singleMg, unit)+' '+(currentRouteGroup === 'im' ? 'в/м' : 'в/в')+' '+reg.freq_per_day+' р/сут';
   }
 
+  const pregSel = $('patient-pregnancy');
+  const gfrInput = $('patient-gfr');
+  const gfr = gfrInput ? parseFloat(gfrInput.value) : NaN;
   let txt = 'НАЗНАЧЕНИЕ АНТИБАКТЕРИАЛЬНОЙ ТЕРАПИИ (для карты / МИС):\n';
-  txt += 'Пациент: вес '+w+' кг ('+(activeAge === 'child' ? 'дети' : (activeAge === 'neonate' ? 'новорожденный' : 'взрослый'))+')\n';
+  txt += 'Пациент: вес '+(w > 0 ? w+' кг' : 'не указан')+' ('+(activeAge === 'child' ? 'дети' : (activeAge === 'neonate' ? 'новорожденный' : 'взрослый'))+')'+
+    (patientAgeDays != null ? ', возраст '+formatAgeDays(patientAgeDays) : '')+
+    (pregSel && pregSel.value === 'yes' ? ', беременность/лактация' : '')+
+    (gfr > 0 ? ', СКФ '+gfr+' мл/мин' : '')+'\n';
   txt += 'Диагноз: '+activeDisease.name+' (МКБ-10: '+activeDisease.mkb10.join(', ')+')\n';
-  txt += 'Обоснование: КР МЗ РФ #'+(activeDisease.cr_id || '—')+' ('+(activeDisease.cr_year || '2024')+')\n';
+  txt += 'Обоснование: '+diseaseSourceLabel(activeDisease)+'\n';
   txt += '----------------------------------------\n';
   txt += 'Препарат: '+ref.inn+'\n';
   txt += 'Форма: '+(form.concentration || form.form_type)+'\n';
-  txt += 'Режим: '+(reg.regimen_label || (reg.dose_mg_kg_day ? reg.dose_mg_kg_day + ' мг/кг/сут' : (reg.duration_note || 'По схеме КР')))+'\n';
+  txt += 'Режим: '+regimenSummary(reg, unit)+'\n';
   txt += 'Схема приёма: '+doseStr+'\n';
   txt += 'Курс лечения: '+days+' дней\n';
   if(coursePkg){
@@ -2975,6 +3285,9 @@ function copyForMIS(){
   if(reg.duration_note){
     txt += 'Указания: '+reg.duration_note+'\n';
   }
+  collectPatientSafetyFlags(refs).forEach(f=>{
+    txt += (f.level === 'danger' ? 'ВНИМАНИЕ: ' : 'Предупреждение: ')+f.text+'\n';
+  });
 
   navigator.clipboard.writeText(txt).then(()=>{
     toast('✅ Назначение скопировано для МИС');
@@ -3038,8 +3351,8 @@ function copyPrescription(){
 
 function openGuidelineModal(){
   if(!activeDisease) return;
-  $('modal-cr-title').textContent = activeDisease.name + ' (КР МЗ РФ #' + (activeDisease.cr_id || '—') + ')';
-  $('modal-cr-meta').textContent = 'Год утверждения: ' + (activeDisease.cr_year || '2024') + ' • МКБ-10: ' + (activeDisease.mkb10 || []).join(', ');
+  $('modal-cr-title').textContent = activeDisease.name + ' (' + diseaseSourceLabel(activeDisease) + ')';
+  $('modal-cr-meta').textContent = 'Год утверждения: ' + (activeDisease.cr_year || 'не указан') + ' • МКБ-10: ' + (activeDisease.mkb10 || []).join(', ');
 
   let quote = activeDisease.clinical_notes || (activeDisease.indications ? activeDisease.indications.join('; ') : '');
   if(!quote && activeDrug && activeDrug.indication_note){
@@ -3073,7 +3386,7 @@ function openGuidelineModal(){
         strong.textContent = inn;
         drugs.appendChild(strong);
         if(reg){
-          drugs.appendChild(document.createTextNode(' (' + (reg.dose_mg_kg_day || reg.dose_mg_day_fixed || '') + ' мг, ' + (reg.freq_per_day || '') + ' р/д)'));
+          drugs.appendChild(document.createTextNode(' (' + regimenSummary(reg, doseUnitOf(DB.drugs_reference[rk])) + ')'));
         }
       });
       div.append(lineTag, lineLabelEl, drugs);
@@ -3081,8 +3394,8 @@ function openGuidelineModal(){
     });
   }
 
-  const rubricatorId = (activeDisease.cr_id || '').split('_')[0];
-  const url = rubricatorId && rubricatorId !== '—'
+  const rubricatorId = isFederalCrId(activeDisease.cr_id) ? String(activeDisease.cr_id).split('_')[0] : '';
+  const url = rubricatorId
     ? 'https://cr.minzdrav.gov.ru/recomend/' + rubricatorId
     : 'https://cr.minzdrav.gov.ru';
   $('modal-cr-rubricator-link').href = url;

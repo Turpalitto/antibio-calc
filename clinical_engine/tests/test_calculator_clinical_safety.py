@@ -183,12 +183,37 @@ def _run(functions: list[str], globals_js: str, body: str) -> dict:
     return _run_with_consts(functions, [], globals_js, body)
 
 
+# Helpers the shell calls from calculate()/hideDoseResults()/renderDrugMeta()/
+# fillPrescriptionForm() since the patient-context work (age / pregnancy / GFR
+# flags, honest source labels, capsule-aware tablet maths). They are extracted
+# from the real template and appended to every harness run that did not ask
+# for them explicitly, so a test still exercises production code paths.
+PATIENT_CONTEXT_SUPPORT = [
+    "hidePatientSafetyFlags",
+    "renderPatientSafetyFlags",
+    "collectPatientSafetyFlags",
+    "ageRestrictionFlag",
+    "pregnancyFlag",
+    "renalFlag",
+    "parseAgeRestrictionDays",
+    "formatAgeDays",
+    "isFederalCrId",
+    "diseaseSourceLabel",
+    "regimenSummary",
+    "solidUnitsPerDose",
+]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR"]
+PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\n"
+
+
 def _run_with_consts(functions: list[str], consts: list[str], globals_js: str, body: str) -> dict:
     source = _source()
+    support = [name for name in PATIENT_CONTEXT_SUPPORT if name not in functions]
     script = "\n".join(
-        [DOM_STUB, globals_js]
+        [DOM_STUB, globals_js, PATIENT_CONTEXT_GLOBALS]
+        + [_js_simple_const(source, name) for name in PATIENT_CONTEXT_CONSTS]
         + [_js_const(source, name) for name in consts]
-        + [_js_function(source, name) for name in functions]
+        + [_js_function(source, name) for name in functions + support]
         + [body]
     )
     return _node(script)
@@ -1428,7 +1453,7 @@ def test_open_guideline_modal_never_parses_line_label_or_inn_as_markup() -> None
         "let activeDrug = null;\n"
     )
     result = _run(
-        ["getDrugRefs", "openGuidelineModal"],
+        ["getDrugRefs", "doseUnitOf", "fmtDose", "formatUnits", "openGuidelineModal"],
         globals_js,
         _XSS_INSPECTOR + "openGuidelineModal();console.log(JSON.stringify(report($('modal-cr-lines'))));",
     )
@@ -1670,7 +1695,7 @@ def test_apply_disease_source_gate_banner_carries_no_markup() -> None:
     globals_js = "const DOSE_BLOCK_CLASS = 'blocked';\n"
     body = (
         _XSS_INSPECTOR
-        + "applyDiseaseSourceGate({source_verification_status:'SOURCE_PDF_VERIFIED'});"
+        + "applyDiseaseSourceGate({cr_id:'654', cr_year:2021, source_verification_status:'CR_REFERENCE_CALCULATION'});"
         "const reference=report($('source-calculation-block'));"
         "applyDiseaseSourceGate({source_verification_status:'<img src=x onerror=\"globalThis.__pwned=1\">'});"
         "const injected=report($('source-calculation-block'));"
@@ -1738,3 +1763,302 @@ def test_render_injection_never_parses_the_frequency_or_solvent_as_markup() -> N
     _assert_payload_is_inert(result["instr"], "renderInjection (instruction)")
     _assert_payload_is_inert(result["vials"], "renderInjection (vial selector)")
     assert result["route"] == "в/в струйно", "the route label must still be produced"
+
+
+# --------------------------------------------------------------------------
+# Audit 2026-10-14 — patient context, honest source labels, solid-form maths
+# --------------------------------------------------------------------------
+
+_RX_FUNCS = [
+    "getDrugRefs", "ageGroupLabel", "ageEligibleRegimens", "getActiveRegimen",
+    "ageRegimenBlockReason", "weightBlockReason", "weightWarnReason", "dbBlockReason",
+    "calculationBlockReason", "dbTrustState", "buildFingerprint", "buildIdentifier",
+    "doseUnitOf", "computeDose", "formatUnits", "fmtDose", "diseaseSourceStatus",
+    "formatTablets", "getStandardBottleMl", "calculateCoursePackages", "formTypeRussian",
+    "fillPrescriptionForm",
+]
+_RX_CONSTS = ["LATIN_INN", "LATIN_FORM", "LATIN_ROUTE", "LATIN_FREQ"]
+
+
+def _rx_globals(drug_ref: dict, active_drug: dict, route_group: str, route_key: str, weight: str = "70") -> str:
+    fixture = _fixture_db()
+    fixture["drugs_reference"]["d"] = drug_ref
+    return (
+        f"const DB = {_lit(fixture)};\n"
+        "let activeAge='adult';\nlet userPickedAge=false;\nlet lastPickedAge=null;\n"
+        "let dbBlockingErrors=[];\nlet activeRegimenIdx=0;\n"
+        f"let activeFormIdx=0;let currentRouteGroup='{route_group}';let activeRouteKey={_lit(route_key)};let activeVialIdx=0;\n"
+        "let activeLine=null;\n"
+        f"let activeDrug={_lit(active_drug)};\n"
+        "let activeDisease={name:'x',cr_id:'654',cr_year:2021,source_verification_status:'CR_REFERENCE_CALCULATION',mkb10:['J18']};\n"
+        f"$('weight').value='{weight}';\n"
+    )
+
+
+def test_apply_disease_source_gate_does_not_accumulate_banners_across_selections() -> None:
+    """Regression: the reference branch appended children without clearing them first."""
+    body = (
+        "applyDiseaseSourceGate({cr_id:'654',cr_year:2021,source_verification_status:'CR_REFERENCE_CALCULATION'});"
+        "applyDiseaseSourceGate({cr_id:'—',cr_note:'СКАТ 2018',source_verification_status:'NO_FEDERAL_CR_EXPERT_BASIS'});"
+        "const b=$('source-calculation-block');"
+        "console.log(JSON.stringify({children:b.children.length,text:b.innerHTML,status:b.dataset.sourceStatus}));"
+    )
+    result = _run(["diseaseSourceStatus", "applyDiseaseSourceGate"], "", body)
+    assert result["children"] == 2, "exactly one caption + one badge after the second selection"
+    assert result["text"].count("Справочный расчёт") == 0, "the previous nosology's banner must be gone"
+    assert "СКАТ 2018" in result["text"] and "БЕЗ КР" in result["text"]
+    assert result["status"] == "NO_FEDERAL_CR_EXPERT_BASIS"
+
+
+def test_source_banner_wording_per_status() -> None:
+    body = (
+        "const out={};"
+        "for(const d of ["
+        " {k:'cr',cr_id:'654',cr_year:2021,source_verification_status:'CR_REFERENCE_CALCULATION'},"
+        " {k:'spec',cr_id:'314',source_verification_status:'SOURCE_SPEC_PENDING_CALCULATOR_BINDING'},"
+        " {k:'nocr',cr_id:'—',cr_note:'IDSA 2019',source_verification_status:'NO_FEDERAL_CR_EXPERT_BASIS'},"
+        " {k:'nocr_nonote',cr_id:'—',source_verification_status:'NO_FEDERAL_CR_EXPERT_BASIS'},"
+        " {k:'unknown',source_verification_status:'SOMETHING_ELSE'},"
+        " {k:'blocked',calculation_blocked:true,calculation_block_reason:'нет источника'}"
+        "]){ const ok=applyDiseaseSourceGate(d); out[d.k]={ok:ok,text:$('source-calculation-block').innerHTML}; }"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["diseaseSourceStatus", "applyDiseaseSourceGate"], "", body)
+    assert "№654 (2021)" in result["cr"]["text"] and "не проходила построчную верификацию" in result["cr"]["text"]
+    assert "построчная привязка таблиц ещё не подтверждена" in result["spec"]["text"]
+    assert "Нет федеральной КР" in result["nocr"]["text"] and "IDSA 2019" in result["nocr"]["text"]
+    assert "не документировано" in result["nocr_nonote"]["text"]
+    assert "НЕ ВЕРИФИЦИРОВАНО" in result["unknown"]["text"] and "SOMETHING_ELSE" in result["unknown"]["text"]
+    assert result["blocked"]["ok"] is False and "РАСЧЁТ ЗАБЛОКИРОВАН" in result["blocked"]["text"]
+    assert all(v["ok"] is True for k, v in result.items() if k != "blocked")
+
+
+def test_disease_source_label_never_invents_a_federal_guideline() -> None:
+    body = (
+        "console.log(JSON.stringify({"
+        "cr:diseaseSourceLabel({cr_id:'654',cr_year:2021}),"
+        "cr_noyear:diseaseSourceLabel({cr_id:'313_3'}),"
+        "dash:diseaseSourceLabel({cr_id:'—',cr_year:2024,cr_note:'СКАТ 2018'}),"
+        "dash_nonote:diseaseSourceLabel({cr_id:'—'}),"
+        "none:diseaseSourceLabel({}),"
+        "fed:[isFederalCrId('654'),isFederalCrId('313_3'),isFederalCrId('—'),isFederalCrId(''),isFederalCrId(null),isFederalCrId('IDSA')]"
+        "}));"
+    )
+    result = _run([], "", body)
+    assert result["cr"] == "КР МЗ РФ #654 (2021)"
+    assert result["cr_noyear"] == "КР МЗ РФ #313_3 (год не указан)"
+    assert result["dash"] == "без федеральной КР — основание: СКАТ 2018"
+    assert "2024" not in result["dash"], "a year must not be attached to a non-existent CR"
+    assert result["dash_nonote"] == "без федеральной КР — основание не документировано"
+    assert result["none"].startswith("без федеральной КР")
+    assert result["fed"] == [True, True, False, False, False, False]
+
+
+def test_format_tablets_never_splits_a_capsule_and_shows_the_actual_dose() -> None:
+    body = (
+        "const cap={form_type:'capsule',concentration:'500 мг'};"
+        "const tab={form_type:'tablet',concentration:'500 мг'};"
+        "console.log(JSON.stringify({"
+        "cap_exact:formatTablets(1000,cap), cap_half:formatTablets(750,cap), cap_small:formatTablets(100,cap),"
+        "tab_exact:formatTablets(1000,tab), tab_half:formatTablets(750,tab), tab_third:formatTablets(333,tab),"
+        "none:formatTablets(0,tab), susp:formatTablets(500,{form_type:'suspension',concentration:'250 мг/5 мл'}),"
+        "units_cap:solidUnitsPerDose(750,cap).units, units_tab:solidUnitsPerDose(750,tab).units"
+        "}));"
+    )
+    result = _run(["formatTablets"], "", body)
+    assert result["cap_exact"] == "(2 капс 500 мг)"
+    assert result["cap_half"] == "(~2 капс 500 мг = 1000 мг; капсулы не делятся)"
+    assert result["cap_small"] == "(~1 капс 500 мг = 500 мг; капсулы не делятся)"
+    assert result["tab_exact"] == "(2 таб 500 мг)"
+    assert result["tab_half"] == "(1.5 таб 500 мг)", "a half tablet is exact, not a rounding"
+    assert result["tab_third"] == "(~0.5 таб 500 мг = 250 мг)"
+    assert result["none"] == "" and result["susp"] == ""
+    assert result["units_cap"] == 2 and result["units_tab"] == 1.5
+
+
+def test_compute_dose_understands_per_kg_per_dose_regimens() -> None:
+    body = (
+        "const reg={age_group:'child',dose_mg_kg_per_dose:7,freq_per_day:3,max_daily_mg:2000};"
+        "const a=computeDose(reg,20,'мг'); const b=computeDose(reg,0,'мг'); const c=computeDose(reg,120,'мг');"
+        "console.log(JSON.stringify({a:a,b:b,c:c}));"
+    )
+    result = _run(["computeDose"], "", body)
+    assert result["a"]["singleMg"] == 140 and result["a"]["dailyMg"] == 420 and result["a"]["needWeight"] is False
+    assert result["b"]["needWeight"] is True and result["b"]["dailyMg"] == 0
+    # 120 kg × 7 × 3 = 2520 > 2000 → capped, single dose re-derived from the ceiling
+    assert result["c"]["capped"] is True and result["c"]["dailyMg"] == 2000 and abs(result["c"]["singleMg"] - 2000 / 3) < 1e-9
+
+
+def test_regimen_summary_keeps_units_honest() -> None:
+    body = (
+        "console.log(JSON.stringify(["
+        "regimenSummary({dose_mg_kg_day:45,freq_per_day:3,max_daily_mg:3000},'мг'),"
+        "regimenSummary({dose_mg_kg_per_dose:7,freq_per_day:3},'мг'),"
+        "regimenSummary({single_dose_mg:1000000,freq_per_day:4},'ЕД'),"
+        "regimenSummary({dose_mg_day_fixed:1500,freq_per_day:3},'мг'),"
+        "regimenSummary({regimen_label:'по схеме',dose_mg_kg_day:45},'мг'),"
+        "regimenSummary({duration_note:'однократно'},'мг')"
+        "]));"
+    )
+    result = _run(["fmtDose", "formatUnits"], "", body)
+    assert result[0] == "45 мг/кг/сут • 3 р/д • макс 3000 мг/сут"
+    assert result[1] == "7 мг/кг на приём • 3 р/д"
+    assert result[2].startswith("1") and "ЕД на приём • 4 р/д" in result[2]
+    assert result[3] == "1500 мг/сут • 3 р/д"
+    assert result[4] == "по схеме"
+    assert result[5] == "однократно"
+
+
+def test_age_parsing_and_group_boundaries() -> None:
+    body = (
+        "console.log(JSON.stringify({"
+        "days:[parseAgeToDays('10','days'),parseAgeToDays('6','months'),parseAgeToDays('7','years'),parseAgeToDays('','years'),parseAgeToDays('-1','years'),parseAgeToDays('abc','years')],"
+        "groups:[ageGroupFromDays(0),ageGroupFromDays(28),ageGroupFromDays(29),ageGroupFromDays(17*365.25+364),ageGroupFromDays(18*365.25),ageGroupFromDays(null)],"
+        "restr:[parseAgeRestrictionDays('6 мес'),parseAgeRestrictionDays('18 лет'),parseAgeRestrictionDays('1 мес'),parseAgeRestrictionDays('28 дней'),parseAgeRestrictionDays('с 3 лет'),parseAgeRestrictionDays('2 нед'),parseAgeRestrictionDays('нет'),parseAgeRestrictionDays(null)],"
+        "fmt:[formatAgeDays(10),formatAgeDays(200),formatAgeDays(365.25*1),formatAgeDays(365.25*3),formatAgeDays(365.25*5),formatAgeDays(365.25*21)]"
+        "}));"
+    )
+    result = _run(["parseAgeToDays", "ageGroupFromDays"], "", body)
+    assert result["days"][0] == 10 and abs(result["days"][1] - 6 * 30.4375) < 1e-9 and abs(result["days"][2] - 7 * 365.25) < 1e-9
+    assert result["days"][3:] == [None, None, None]
+    assert result["groups"] == ["neonate", "neonate", "child", "child", "adult", None]
+    assert abs(result["restr"][0] - 6 * 30.4375) < 1e-9 and abs(result["restr"][1] - 18 * 365.25) < 1e-9
+    assert abs(result["restr"][2] - 30.4375) < 1e-9 and result["restr"][3] == 28
+    assert abs(result["restr"][4] - 3 * 365.25) < 1e-9 and result["restr"][5] == 14
+    assert result["restr"][6:] == [None, None]
+    assert result["fmt"] == ["10 дн.", "7 мес", "12 мес", "3 года", "5 лет", "21 год"]
+
+
+def test_age_restriction_flag_matrix() -> None:
+    body = (
+        "const ref={inn:'Доксициклин',age_restriction_min:'8 лет'};"
+        "const adultOnly={inn:'Левофлоксацин',age_restriction_min:'18 лет'};"
+        "const infant={inn:'Цефиксим',age_restriction_min:'6 мес'};"
+        "const odd={inn:'X',age_restriction_min:'по инструкции'};"
+        "const out={};"
+        "activeAge='child'; patientAgeDays=5*365.25; out.child_5y_vs_8y=ageRestrictionFlag(ref);"
+        "patientAgeDays=10*365.25; out.child_10y_vs_8y=ageRestrictionFlag(ref);"
+        "patientAgeDays=null; out.child_unknown_vs_18y=ageRestrictionFlag(adultOnly);"
+        "out.child_unknown_vs_6m=ageRestrictionFlag(infant);"
+        "activeAge='neonate'; out.neonate_unknown_vs_6m=ageRestrictionFlag(infant);"
+        "activeAge='adult'; out.adult_unknown_vs_18y=ageRestrictionFlag(adultOnly);"
+        "out.adult_odd=ageRestrictionFlag(odd);"
+        "out.none=ageRestrictionFlag({inn:'Y'});"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["ageGroupLabel"], "let activeAge='child';\n", body)
+    assert result["child_5y_vs_8y"]["level"] == "danger" and "5 лет" in result["child_5y_vs_8y"]["text"]
+    assert result["child_10y_vs_8y"] is None
+    assert result["child_unknown_vs_18y"]["level"] == "danger", "a child can never satisfy an 18-year minimum"
+    assert result["child_unknown_vs_6m"]["level"] == "warn" and "Введите возраст" in result["child_unknown_vs_6m"]["text"]
+    assert result["neonate_unknown_vs_6m"]["level"] == "danger"
+    assert result["adult_unknown_vs_18y"] is None
+    assert result["adult_odd"]["level"] == "warn" and "по инструкции" in result["adult_odd"]["text"]
+    assert result["none"] is None
+
+
+def test_pregnancy_and_renal_flags() -> None:
+    body = (
+        "const out={};"
+        "$('patient-pregnancy').value='yes';"
+        "out.contra=pregnancyFlag({inn:'Доксициклин',pregnancy_category:'Противопоказан'});"
+        "out.tri=pregnancyFlag({inn:'Ко-тримоксазол',pregnancy_category:'Противопоказан в I и III триместрах'});"
+        "out.caution=pregnancyFlag({inn:'Азитромицин',pregnancy_category:'С осторожностью'});"
+        "out.ok=pregnancyFlag({inn:'Амоксициллин',pregnancy_category:'Разрешён'});"
+        "out.ok_tri=pregnancyFlag({inn:'Нитрофурантоин',pregnancy_category:'Разрешён во II-III триместрах'});"
+        "out.nodata=pregnancyFlag({inn:'Тинидазол',pregnancy_category:null});"
+        "$('patient-pregnancy').value='no'; out.not_pregnant=pregnancyFlag({inn:'Доксициклин',pregnancy_category:'Противопоказан'});"
+        "const cotrim={inn:'Ко-тримоксазол',renal_adjustment:'СКФ<30: коррекция дозы; СКФ<15 — противопоказан'};"
+        "$('patient-gfr').value='20'; out.gfr20=renalFlag(cotrim);"
+        "$('patient-gfr').value='10'; out.gfr10=renalFlag(cotrim);"
+        "$('patient-gfr').value='45'; out.gfr45=renalFlag(cotrim);"
+        "out.not_required=renalFlag({inn:'Доксициклин',renal_adjustment:'Не требуется'});"
+        "out.generic=renalFlag({inn:'Гентамицин',renal_adjustment:'Коррекция по СКФ, ТЛМ'});"
+        "out.nodata=renalFlag({inn:'Клиндамицин',renal_adjustment:null});"
+        "$('patient-gfr').value='95'; out.generic_normal=renalFlag({inn:'Гентамицин',renal_adjustment:'Коррекция по СКФ, ТЛМ'});"
+        "$('patient-gfr').value=''; out.no_gfr=renalFlag(cotrim);"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run([], "", body)
+    assert result["contra"]["level"] == "danger" and result["tri"]["level"] == "danger"
+    assert result["caution"]["level"] == "warn" and result["ok"] is None
+    assert result["ok_tri"]["level"] == "warn", "a trimester-restricted 'allowed' still needs a glance"
+    assert result["nodata"]["level"] == "warn" and result["not_pregnant"] is None
+    assert result["gfr20"]["level"] == "warn" and "СКФ<30" in result["gfr20"]["text"] and "БЕЗ почечной коррекции" in result["gfr20"]["text"]
+    assert result["gfr10"]["level"] == "danger" and "противопоказан" in result["gfr10"]["text"]
+    assert result["gfr45"] is None
+    assert result["not_required"] is None
+    assert result["generic"]["level"] == "warn" and result["generic_normal"] is None
+    assert result["nodata"]["level"] == "warn" and result["no_gfr"] is None
+
+
+def test_render_patient_safety_flags_builds_nodes_and_clears() -> None:
+    fixture = _fixture_db()
+    fixture["drugs_reference"]["doxy"] = {"inn": "Доксициклин " + XSS_PAYLOAD, "age_restriction_min": "8 лет " + XSS_PAYLOAD, "forms": []}
+    body = (
+        _XSS_INSPECTOR
+        + "activeAge='child'; patientAgeDays=3*365.25;"
+        "const flags=renderPatientSafetyFlags(['doxy']);"
+        "const first=report($('patient-safety-banners'));"
+        "const hiddenAfterFlags=$('patient-safety-banners').classList.contains('hidden');"
+        "hidePatientSafetyFlags();"
+        "const cleared=$('patient-safety-banners').children.length;"
+        "const hiddenAfterClear=$('patient-safety-banners').classList.contains('hidden');"
+        "const none=renderPatientSafetyFlags(['vancomycin']);"
+        "console.log(JSON.stringify({n:flags.length,level:flags[0]&&flags[0].level,first:first,hiddenAfterFlags:hiddenAfterFlags,cleared:cleared,hiddenAfterClear:hiddenAfterClear,none:none.length,noneHidden:$('patient-safety-banners').classList.contains('hidden')}));"
+    )
+    result = _run(["ageGroupLabel"], f"const DB = {_lit(fixture)};\nlet activeAge='child';\n", body)
+    assert result["n"] == 1 and result["level"] == "danger"
+    _assert_payload_is_inert(result["first"], "renderPatientSafetyFlags")
+    assert result["hiddenAfterFlags"] is False
+    assert result["cleared"] == 0 and result["hiddenAfterClear"] is True
+    assert result["none"] == 0 and result["noneHidden"] is True
+
+
+def test_prescription_signa_for_an_injectable_solution_names_the_real_route() -> None:
+    """Regression: a solution_im with concentration_mg_per_ml printed 'внутрь'."""
+    drug = {"inn": "Гентамицин", "forms": [{"form_type": "solution_im", "concentration": "40 мг/мл", "concentration_mg_per_ml": 40}]}
+    active = {"drug_ref": "d", "regimens": [{"age_group": "all", "single_dose_mg": 240, "freq_per_day": 1, "duration_days": 7}]}
+    result = _run_with_consts(
+        _RX_FUNCS, _RX_CONSTS, _rx_globals(drug, active, "im", "im"),
+        "fillPrescriptionForm();console.log(JSON.stringify({signa:$('rx-signa-text').textContent,trust:$('rx-trust-line').textContent}));",
+    )
+    assert "внутримышечно" in result["signa"] and "внутрь" not in result["signa"]
+    assert "6.0 мл" in result["signa"] and "240 мг" in result["signa"]
+    assert "КР МЗ РФ #654 (2021)" in result["trust"]
+
+
+def test_prescription_capsule_count_is_whole_and_shows_actual_dose() -> None:
+    drug = {"inn": "Доксициклин", "forms": [{"form_type": "capsule", "concentration": "100 мг"}]}
+    active = {"drug_ref": "d", "regimens": [{"age_group": "all", "single_dose_mg": 150, "freq_per_day": 2, "duration_days": 7}]}
+    result = _run_with_consts(
+        _RX_FUNCS, _RX_CONSTS, _rx_globals(drug, active, "po", None),
+        "fillPrescriptionForm();console.log(JSON.stringify({signa:$('rx-signa-text').textContent,drugs:$('rx-drugs').innerHTML}));",
+    )
+    assert "По 2 " in result["signa"] and "(= 200 мг)" in result["signa"], result["signa"]
+    assert "1.5" not in result["signa"]
+    assert "D.t.d. N 2" in result["drugs"]
+
+
+def test_header_stats_distinguish_computable_from_blocked_records() -> None:
+    db = {
+        "meta": {"version": "t", "verification_status": "draft", "warning": "w"},
+        "drugs_reference": {"amoxicillin": {"inn": "A", "forms": []}},
+        "recommendations": [
+            {"id": "a", "name": "A", "mkb10": ["J18"], "calculation_blocked": False, "scenarios": []},
+            {"id": "b", "name": "B", "mkb10": ["J19"], "calculation_blocked": True, "calculation_block_reason": "r", "scenarios": []},
+            {"id": "c", "name": "C", "mkb10": ["J20"], "calculation_blocked": True, "calculation_block_reason": "r", "scenarios": []},
+        ],
+    }
+    body = (
+        f"$('db-data').textContent={_lit(json.dumps(db, ensure_ascii=False))};"
+        "document.querySelectorAll=()=>[];"
+        "function setupButtons(){} function setupPersonalMode(){} function setupTheme(){} function initHistoryStore(){} function loadHistory(){}"
+        "const navigator={};"
+        "init();"
+        "console.log(JSON.stringify({header:$('header-stats').textContent,empty:$('empty-state-stats').textContent}));"
+    )
+    result = _run(["validateDB", "dbBlockReason", "dbTrustState", "buildFingerprint", "buildIdentifier", "renderTrustBanner", "init"],
+                  "let DB=null;let dbBlockingErrors=[];let activeDisease=null;\n", body)
+    assert "3 нозологий (1 расчётных, 2 закрыто до верификации)" in result["header"]
+    assert result["empty"].startswith("1 расчётных нозологий из 3")
