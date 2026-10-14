@@ -201,9 +201,18 @@ async function run() {
     key('Escape');
     out.modalAfterEscape = { visible: visible($('guideline-modal')), focusId: d.activeElement && d.activeElement.id };
 
-    // ---- 8. accessibility of the main state ----------------------------------------
+    // ---- 8. service-worker update notice (jsdom has no serviceWorker; the
+    //         banner path is exercised directly) ------------------------------------
+    out.updateBanner = { hiddenBefore: !visible($('update-banner')) };
+    w.showUpdateBanner();
+    out.updateBanner.visibleAfter = visible($('update-banner'));
+    out.updateBanner.text = txt($('update-banner'));
+    out.updateBanner.role = $('update-banner').getAttribute('role');
+
+    // ---- 9. accessibility of the main state ----------------------------------------
     type($('weight'), '70');
     await axeRun('main', out);
+    $('update-banner').classList.add('hidden');
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

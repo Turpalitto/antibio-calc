@@ -34,8 +34,12 @@
 //   `activate` deletes every other cache, and the next install precaches fresh
 //   copies; `test_build_reproducibility.py` fails when the value is stale, so a
 //   rebuilt artifact can never keep being served from an old cache.
+//   A page that was already controlled keeps running the previous shell until
+//   it is reloaded: the shell watches the registration and shows
+//   `#update-banner` ("new version — reload") when a new worker activates
+//   while a controller exists (registerServiceWorker in the template).
 
-const CACHE_VERSION = 'build-d6de5e7ed033';
+const CACHE_VERSION = 'build-d39a819370a8';
 const CACHE_NAME = `antibio-shell-${CACHE_VERSION}`;
 const SHELL_URL = './antibiotic_calc.html';
 const PRECACHE_URLS = [

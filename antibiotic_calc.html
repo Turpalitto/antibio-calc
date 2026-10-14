@@ -351,6 +351,13 @@ body{
 <div id="personal-mode-banner" class="personal-banner hidden no-print px-4 py-3 text-center text-xs font-black uppercase tracking-wider" role="alert" aria-live="assertive">
   OWNER_REVIEWED_EXPERIMENTAL — локальный режим врача-владельца; схема не имеет независимого production-одобрения. Проверяйте источник и расчёт.
 </div>
+<!-- Shown when a NEW service worker took over a page that is still running the
+     previous shell/DB (sw.js: skipWaiting + clients.claim). The physician decides
+     when to reload — never mid-calculation behind their back (2026-10-14). -->
+<div id="update-banner" class="hidden no-print px-4 py-2.5 text-center text-xs font-black uppercase tracking-wider bg-blue-600 text-white" role="status" aria-live="polite">
+  Доступна новая версия калькулятора (обновлены база или оболочка).
+  <button type="button" onclick="location.reload()" class="underline ml-2 font-black">Перезагрузить</button>
+</div>
 <div class="max-w-4xl mx-auto px-4 md:px-8 pt-6 md:pt-8">
 
   <header class="mb-6 no-print">
@@ -901,6 +908,28 @@ let personalCandidates = [];
 let extractedReviewCandidates = [];
 
 function $(id){return document.getElementById(id);}
+// Service worker registration + update notice. sw.js activates a new build
+// immediately (skipWaiting + clients.claim), so a page that was already
+// controlled keeps running the OLD shell and DB until it is reloaded. A worker
+// reaching 'activated' while a controller already exists is exactly that case.
+function registerServiceWorker(){
+  if(!('serviceWorker' in navigator)) return;
+  if(!(window.location.protocol === 'http:' || window.location.protocol === 'https:')) return;
+  const watch = (worker)=>{
+    if(!worker) return;
+    worker.addEventListener('statechange', ()=>{
+      if(worker.state === 'activated' && navigator.serviceWorker.controller) showUpdateBanner();
+    });
+  };
+  navigator.serviceWorker.register('./sw.js').then((reg)=>{
+    watch(reg.installing);
+    reg.addEventListener('updatefound', ()=>watch(reg.installing));
+  }).catch(()=>{});
+}
+function showUpdateBanner(){
+  const banner = $('update-banner');
+  if(banner) banner.classList.remove('hidden');
+}
 function toast(msg){
   const t = $('toast');
   t.textContent = msg;
@@ -1050,9 +1079,7 @@ function init(){
   setupTheme();
   initHistoryStore();
   loadHistory();
-  if('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')){
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  }
+  registerServiceWorker();
   if(window.location.hash){
     setTimeout(restoreFromHash, 100);
   }

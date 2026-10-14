@@ -126,6 +126,13 @@ def test_guideline_modal_is_a_labelled_dialog_with_focus_return(shell: dict) -> 
     assert shell["modalAfterEscape"] == {"visible": False, "focusId": "btn-guideline-modal"}
 
 
+def test_service_worker_update_banner_is_opt_in_reload(shell: dict) -> None:
+    banner = shell["updateBanner"]
+    assert banner["hiddenBefore"] is True and banner["visibleAfter"] is True
+    assert "новая версия" in banner["text"].lower() and "Перезагрузить" in banner["text"]
+    assert banner["role"] == "status"
+
+
 @pytest.mark.parametrize("state", ["main", "drawer_open", "modal_open"])
 def test_axe_core_reports_no_violations(shell: dict, state: str) -> None:
     report = shell["axe"][state]
