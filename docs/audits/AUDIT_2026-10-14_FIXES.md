@@ -14,6 +14,7 @@
 | Расчётных / заблокированных записей | 115 / 4 (+1 без ключа; 48 машинных считались как «КР») | **65 / 55** |
 | Сборка | детерминирована | детерминирована: db `56727a27f050…`, html `3e8b5af9d4e7…` (765 620 B), sw `build-ff813dcc5750` |
 | `ruff --select F821` | 6 | 0 |
+| `ruff check .` (раунд 3: полный pyflakes `F` + `E9`) | ~200 F401/F541/F811/F841 | **0** (FROZEN `medical_normalizer/` исключён из стилевых правил, не правился) |
 | GitHub Actions CI | 4/4 красных прогона, никогда не был зелёным | **✅ run 38563366043** (PR #1: pytest + validate на 3.12/Node 24, secret scan) |
 | jsdom end-to-end smoke собранной оболочки | — | пройден (возраст/беременность/СКФ, блокировки, «БЕЗ КР», МИС-текст) |
 
@@ -36,8 +37,8 @@
 | E-2 | MED | ⏳ | fixture-корпус — backlog | — |
 | E-3 | MED | ✅ | golden-кейсы (11 схем × вес → мг/мл/таб/капс/флакон) | `test_calculator_dose_golden.py` (23; негативная проверка 3/3) |
 | E-4 | MED | ✅ | `TYPE_CHECKING`-импорты, `pytest`/`Path` в тесте | `ruff --select F821` = 0 |
-| D-1 | MED | ◐ | `[tool.ruff]` (E9/F63/F7/F82) + job `lint` в CI; стилевые F401/F541/F811/F841 — backlog (FROZEN-модули не автофиксить) | `ruff check .` clean |
-| D-2 | MED | ⏳ | ревью `except Exception` в pipeline — backlog | — |
+| D-1 | MED | ✅ | раунд 3: 156 авто-исправлений F401/F541/F811 вне FROZEN `medical_normalizer/`, F841 вручную в pipeline, `select = ["E9", "F"]` + документированные `per-file-ignores` (FROZEN — только стилевые правила, тесты/legacy — F841) | `ruff check .` clean при полном pyflakes; pytest 2671/30 |
+| D-2 | MED | ✅ | раунд 3: 5 «тихих» `except Exception: pass/continue` в `src/pipeline` (OCR-fallback, salvage JSON LLM, resume-фильтр `extraction_raw.json`, счётчик схем в отчёте, кэш извлечения) теперь логируют причину; поведение не менялось. `layout.py` (ML-таблицы без локального покрытия) и `config.py` (возврат `None` по контракту) оставлены | `src/tests` 501/13 |
 | D-3 | MED | ✅ | `db/build_db.ps1` — тонкая обёртка над `build_db.py` | — |
 | C-3 | MED | ✅ | allowlist файлов вместо расширений | `test_static_server_policy.py` |
 | C-4 | MED | ⏳ | CVE extras / `npm audit` — backlog | — |
@@ -59,7 +60,7 @@
 | I-3 | INFO | ✅ | беременность/лактация как вход, «Противопоказан» → красный | harness, smoke (доксициклин) |
 | I-4 | INFO | ⏳ | единая перекрёстная аллергия — backlog | — |
 | I-5 | INFO | ✅ | golden-кейсы как данные + прогон в CI | `golden/calculator_dose_golden.json` |
-| I-6, I-7 | INFO | ✅ | `db/db_diff.py` + `CHANGELOG_DB.md`; `.pre-commit-config.yaml` + `build_html.py --check` (и шаг CI) | `test_db_diff.py` (7), `test_build_reproducibility.py` (15) |
+| I-6, I-7 | INFO | ✅ | `db/db_diff.py` + `CHANGELOG_DB.md`; `.pre-commit-config.yaml` + `build_html.py --check` (и шаг CI). Раунд 3: шаг CI «Clinical DB change requires a CHANGELOG_DB.md entry» — PR с изменённым `db/antibio_db.json` без правки `CHANGELOG_DB.md` падает и печатает `db_diff.py --git origin/<base>` | `test_db_diff.py` (7), `test_build_reproducibility.py` (15) |
 
 Легенда: ✅ закрыто, ◐ частично, ⏳ в backlog (`NEXT_TASK.md`, раздел 2026-10-14).
 

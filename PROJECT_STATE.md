@@ -1,3 +1,17 @@
+## 2026-10-14 (round 3): lint debt cleared, full pyflakes gate, DB-changelog CI gate, pipeline logging
+
+- Lint (D-1): 156 mechanical F401/F541/F811 fixes outside FROZEN `medical_normalizer/`,
+  F841 dead locals removed in `src/pipeline`, `extraction/__init__.py` explicit `__all__`;
+  `[tool.ruff.lint] select = ["E9", "F"]` with documented `per-file-ignores`. `ruff check .` clean.
+- CI: PR-only step fails when `db/antibio_db.json` changes without `CHANGELOG_DB.md`
+  (prints `db_diff.py --git origin/<base>`); checkout `fetch-depth: 0`; lint job renamed.
+- Pipeline (D-2): 5 silent `except Exception: pass/continue` now log the cause (no behaviour change).
+- `db/build_db.py` runs the validator by absolute path. DB/html/sw unchanged
+  (db `56727a27f050…`, html `5cb3e30f7758…`, sw `build-d6e42e706f0c`).
+- Tests: **2671 passed / 30 skipped**; `tests/` 404; `src/tests` 501/13; `build_html.py --check` fresh.
+  CI: see AI_LOG round-3 entry for the run id.
+- Remaining engineering backlog: C-4, H-1, G-1, F-2, F-3, E-2, I-4; owner decisions unchanged.
+
 ## 2026-10-14 (round 2): CI pinned + lint job + freshness gate; DB changelog; favicon; pipeline entry points
 
 - CI: `ubuntu-24.04`, Node-24 actions, `lint` job (ruff critical rules), `build_html.py --check`.

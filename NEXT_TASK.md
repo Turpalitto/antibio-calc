@@ -22,12 +22,16 @@
    A-1: `.python-version` optional, `requires-python` unchanged.
 6. **Hygiene backlog:** C-4 extras CVEs (torch ≥ 2.9.1 etc. — needs `uv lock` on
    3.12; `npm audit fix` in audit-site), H-1 static Tailwind CSS (needs a visual
-   check: dynamic class names in JS), D-1 phase 2: F401/F541/F811/F841 clean-up
-   outside FROZEN `medical_normalizer/`, then widen `[tool.ruff.lint] select`,
-   D-2 pipeline `except Exception` review, G-1 archive root md/json into
-   `docs/history/`, F-2 slim AGENTS.md, F-3 `audit-site/` doc or removal, G-4
-   LICENSE, G-5 `corpus_config.json` default (owner: env override exists), E-2
-   fixture corpus, I-4 shared cross-allergy table.
+   check: dynamic class names in JS), ~~D-1 phase 2 lint clean-up + widen
+   `[tool.ruff.lint] select`~~ DONE round 3 (`select = ["E9", "F"]`, FROZEN
+   `medical_normalizer/` only via `per-file-ignores`), ~~D-2 pipeline
+   `except Exception` review~~ DONE round 3 (logging only; `layout.py` untouched),
+   G-1 archive root md/json into `docs/history/`, F-2 slim AGENTS.md, F-3
+   `audit-site/` doc or removal, G-4 LICENSE, G-5 `corpus_config.json` default
+   (owner: env override exists), E-2 fixture corpus, I-4 shared cross-allergy
+   table (clinical content of the class table = owner decision).
+   CI now also fails a PR that changes `db/antibio_db.json` without a
+   `CHANGELOG_DB.md` entry (generate it with `python db/db_diff.py --git origin/main`).
 7. After each task: prepend AI_LOG/PROJECT_STATE/NEXT_TASK(/DECISIONS), run
    `python -m pytest -q` + `npm run validate` + `python db/build_html.py`, commit + push.
 

@@ -1,3 +1,32 @@
+## 2026-10-14 (round 3): pyflakes debt cleared, full `F` gate, DB-changelog CI gate, D-2 logging
+
+- **D-1 phase 2:** `ruff --fix --select F401,F541,F811` with `medical_normalizer/`
+  excluded (FROZEN, 0 files touched there) — 156 fixes, all import-line reflows or
+  `f"…"` → `"…"`. Manual: `src/pipeline/main.py` relative-import blocks lose
+  `LLM_DELAY`/`LLM_PROVIDER_CHAIN`/`save_progress`; `extraction/__init__.py` gets an
+  explicit `__all__` (same 10 names); F841 dead locals removed in
+  `section_detector.py`, `extractor_llm.py`, `extraction/router.py`;
+  `db/build_db.py::_run_validate` checks `validator.is_file()` and runs it by
+  absolute path. `pyproject.toml`: `select = ["E9", "F"]` + `per-file-ignores`
+  (`medical_normalizer/**` F401/F541/F811/F841; tests F841; `main.py`,
+  `generated/**`, `dose_verification_sandbox/**`, `extraction/layout.py` F841).
+  Commits `f0cd140`, `eea3035`.
+- **CI (I-6 follow-up):** test job step "Clinical DB change requires a
+  CHANGELOG_DB.md entry" (`pull_request` only; `git diff --name-only
+  origin/<base>...HEAD`; fails with `::error` + first 40 lines of
+  `db_diff.py --git origin/<base>`); `checkout` `fetch-depth: 0`; lint job renamed
+  "ruff (pyflakes + syntax)". Commit `2017982`.
+- **D-2:** 5 tolerant `except Exception: pass/continue` in `src/pipeline` now log
+  (`router.py` OCR fallback → warning with extractor/PDF/page; `extractor_llm.py`
+  JSON salvage → warning; `main.py` resume filter → warning; `reporter.py` SQLite
+  count → warning; `extraction/cache.py` corrupt entry → debug). Control flow
+  unchanged; `config.py` and `extraction/layout.py` left. Commit `8882a04`.
+- Verification: pytest **2671 passed / 30 skipped**, `tests/` 404/3, `src/tests`
+  501/13, `ruff check .` clean, `python -m src.pipeline.main --help` OK, full
+  `db/build_db.py` → DB byte-identical, `build_html.py --check` fresh.
+  Lesson: `db/build_db.py --skip-source-gate` rewrites `db/antibio_db.json`
+  without gate statuses — never use it for smoke tests (restored by a full run).
+
 ## 2026-10-14 (round 2): CI hardening, freshness gate, DB changelog, favicon, pipeline entry points
 
 - **CI (A-4/D-1):** `.github/workflows/ci.yml` — `runs-on: ubuntu-24.04` (the
