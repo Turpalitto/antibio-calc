@@ -110,9 +110,26 @@
 - **T15 `73db627`:** the dilution vial size follows the chosen form («2000 мг флакон» →
   2000 mg vial in the dilution table and the printed injection details) until the
   physician picks a vial by hand (`vialFollowsForm`).
+- **T18 `d2e24a4`:** history entries carry a reference (`disease / scenario / line / drug /
+  route / form / regimen / age`) and a button «Открыть расчёт» restores the calculation
+  (`restoreHistoryEntry`); `restoreFromHash` also runs on `hashchange` (back/forward,
+  pasted links). Accessible name = visible text + `aria-describedby` (an `aria-label`
+  that differs from the text makes axe's `label-content-name-mismatch` hit jsdom's
+  missing canvas). jsdom steps 7f/10 + 2 tests.
+- **T19 `08714d4`:** when rounding to whole units moves the dose by ≥ 10 % the text says
+  so everywhere the dose is shown («~2 таб 500 мг = 1000 мг, +14 % к расчётной» on screen
+  / MIS / Rp / printed Signa) — `roundingDeviationText`; golden labels updated (numbers
+  unchanged), unit test.
+- **T20 `02403a2`:** printed form header «Пациент / Возраст / Вес» (text nodes only,
+  blank underscores when empty) — jsdom test types a name with markup and checks the
+  printed header is plain text.
+- **T21 `a959f90`:** validator WARN when a tablet / capsule / sachet / vial concentration
+  has no readable unit strength («<N> мг», «<N>+<M> мг», «<N> млн ЕД») or an oral liquid
+  lacks `concentration_mg_per_ml` — the shell could not count units per dose or D.t.d. N
+  for such a form. Shipped DB: 0 new warnings; test.
 - **Verification per push:** full pytest, `ruff check .`, `npm run validate`,
   `build_html.py --check`, CI + CodeQL green (one red run `b694202` fixed by `12fdad5`).
-  Final: **2737 passed / 28 skipped** (jsdom suite 23 tests, walk gate with 7 oracles),
+  Final: **2741 passed / 28 skipped** (jsdom suite 25 tests, walk gate with 7 oracles),
   validate 0 errors (+9 owner warnings), html/sw rebuilt.
 
 ## 2026-10-14 (round 4, autonomous backlog «без моих решений»): C-4, E-2, G-1, F-2, F-3, H-1

@@ -25,15 +25,17 @@
      `doses_total`) or set `duration_days` to the number of injections.
    - Real-browser pass (sandbox has none): keyboard focus ring on cards, the SW update
      banner after a deploy, dark theme without flash, print preview after switching
-     nosologies, the new «D.t.d. N <course quantity> (по K на приём, …)» line and the
-     «Компоненты комбинации» block on the printed form.
+     nosologies, the new «D.t.d. N <course quantity> (по K на приём, …)» line, the
+     «Компоненты комбинации» block and the «Пациент / Возраст / Вес» header on the printed
+     form, the «+14 % к расчётной» wording next to rounded doses, history «Открыть расчёт».
    - GitHub → Settings → Security: enable private vulnerability reporting
      (`SECURITY.md` points there); review the CodeQL tab once (should be empty).
 2. **Engineering candidates (no physician decision needed, none urgent):**
-   - History entries store display strings only; restoring a saved calculation would
-     need `disease.id/scenario.id/line/drug` in the entry (format change, 24 h TTL).
-   - `restoreFromHash` on `hashchange` (today only on load) and restoring the line/drug
-     part of `#disease/scenario/L<n>` (currently scenario only — conservative).
+   - ~~History restore / `hashchange`~~ DONE (T18 `d2e24a4`: «Открыть расчёт» restores
+     disease/scenario/line/drug/route/form/regimen/age; `hashchange` re-reads the link).
+     Still conservative: the hash itself stores disease/scenario/line only.
+   - Typo-tolerant search (one edit distance for tokens ≥ 5 letters) — the token search
+     (T12) is exact-prefix per token today.
    - `shell_walk.js` could add an independent dose oracle (regimen × weight × caps) once
      the owner confirms the rounding policy; today it checks tokens, age group, MIS and
      Rp single dose vs screen, route words in MIS/Rp/printed form, course-unit agreement
