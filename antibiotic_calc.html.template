@@ -1599,10 +1599,27 @@ function readPatientAge(){
   if(!input) return null;
   return parseAgeToDays(input.value, unitEl ? unitEl.value : 'years');
 }
+// Возраст старше 120 лет — опечатка (например, «150» вместо «15» или год рождения
+// вместо возраста). Как и неправдоподобный вес, он блокирует расчёт, а не молча
+// попадает в группу «взрослые».
+const MAX_PLAUSIBLE_AGE_DAYS = 120 * DAYS_PER_YEAR;
+function ageInputBlockReason(){
+  if(patientAgeDays == null || patientAgeDays <= MAX_PLAUSIBLE_AGE_DAYS) return '';
+  const input = $('patient-age');
+  const unitEl = $('patient-age-unit');
+  const unitWord = {days:'дн.', months:'мес', years:'лет'}[unitEl ? unitEl.value : 'years'] || 'лет';
+  return 'Возраст '+(input ? input.value : '')+' '+unitWord+' — неправдоподобное значение (> 120 лет). Расчёт заблокирован: проверьте ввод возраста.';
+}
 function updateExplicitAgeNotice(){
   const el = $('age-explicit-notice');
   if(!el) return;
   if(patientAgeDays == null){ el.classList.add('hidden'); return; }
+  const implausible = ageInputBlockReason();
+  if(implausible){
+    el.querySelector('span').textContent = implausible;
+    el.classList.remove('hidden');
+    return;
+  }
   const group = ageGroupFromDays(patientAgeDays);
   let text = 'Возраст '+formatAgeDays(patientAgeDays)+' → группа «'+ageGroupLabel(group)+'».';
   if(group !== activeAge){
@@ -2769,6 +2786,8 @@ function calculationBlockReason(w){
   if(dbReason) return 'РАСЧЁТ ЗАБЛОКИРОВАН: '+dbReason+'. Обратитесь к владельцу сборки БД.';
   const weightReason = weightBlockReason(w, activeAge);
   if(weightReason) return 'РАСЧЁТ ЗАБЛОКИРОВАН: '+weightReason;
+  const ageInputReason = ageInputBlockReason();
+  if(ageInputReason) return 'РАСЧЁТ ЗАБЛОКИРОВАН: '+ageInputReason;
   const ageReason = ageRegimenBlockReason();
   if(ageReason) return ageReason;
   return '';

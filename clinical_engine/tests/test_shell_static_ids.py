@@ -65,3 +65,21 @@ def test_inline_handlers_only_call_functions_the_script_defines() -> None:
                "if", "for", "while", "switch", "return"}  # keywords that look like calls
     unknown = sorted(c for c in calls if c not in defined and c not in builtin)
     assert unknown == [], f"inline on*= handlers call undefined functions: {unknown}"
+
+
+def test_print_stylesheet_shows_only_the_prescription_form() -> None:
+    """``@media print`` hides every direct child of <body> and re-shows
+    ``#prescription-form`` — that only works while the form stays a direct
+    child of <body> (wrapping it in a container would print a blank page)."""
+    html = _template()
+    print_block = re.search(r"@media print\{(.*?)\n\}", html, re.S)
+    assert print_block, "the @media print block is missing"
+    rules = print_block.group(1)
+    assert "body>*{display:none!important}" in rules
+    assert "#prescription-form{display:block!important}" in rules
+    # the form is a direct child of <body>: no unclosed <div> between <body> and it
+    body = html[html.index("<body") : html.index('<div id="prescription-form"')]
+    depth = len(re.findall(r"<div\b", body)) - len(re.findall(r"</div>", body))
+    assert depth == 0, f"#prescription-form is nested {depth} level(s) deep — it must be a direct child of <body>"
+    # the printed form itself is never shown on screen
+    assert 'id="prescription-form" class="print-only" style="display:none"' in html

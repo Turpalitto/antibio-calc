@@ -220,8 +220,9 @@ PATIENT_CONTEXT_SUPPORT = [
     "bestSolidFormIndex",
     "roundingDeviationText",
     "formatTablets",
+    "ageInputBlockReason",
 ]
-PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING"]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
 
 
@@ -345,6 +346,49 @@ def test_age_filter_expression_is_de_duplicated() -> None:
     # renderRegimens / resolveCalculatorBinding must both go through the helper.
     assert "ageEligibleRegimens(activeDrug)" in _js_function(source, "renderRegimens")
     assert "ageEligibleRegimens(drug)" in _js_function(source, "resolveCalculatorBinding")
+
+
+def test_implausible_age_blocks_the_calculation_like_an_implausible_weight() -> None:
+    """«150 лет» (a typo for 15, or a birth year) must not silently land in the
+    adult group: the calculation is blocked and the notice names the input."""
+    fixture = _fixture_db()
+    adult = {
+        "drug_ref": "vancomycin",
+        "regimens": [{"age_group": "adult", "freq_per_day": 2, "single_dose_mg": 1000}],
+    }
+    globals_js = _age_globals(fixture) + f"activeDrug = {json.dumps(adult)};\nactiveAge='adult';\n"
+    funcs = [
+        "getDrugRefs",
+        "ageGroupLabel",
+        "ageEligibleRegimens",
+        "ageRegimenBlockReason",
+        "weightBlockReason",
+        "weightWarnReason",
+        "dbBlockReason",
+        "calculationBlockReason",
+        "parseAgeToDays",
+        "readPatientAge",
+        "ageGroupFromDays",
+        "updateExplicitAgeNotice",
+    ]
+    body = (
+        "const out = {};"
+        "const probe = (v, unit) => { $('patient-age').value = v; $('patient-age-unit').value = unit;"
+        " patientAgeDays = readPatientAge(); updateExplicitAgeNotice();"
+        " return {block: calculationBlockReason(70), notice: $('age-explicit-notice').querySelector('span').textContent,"
+        " hidden: $('age-explicit-notice').classList.contains('hidden')}; };"
+        "out.y150 = probe('150', 'years'); out.m1500 = probe('1500', 'months'); out.d50000 = probe('50000', 'days');"
+        "out.y119 = probe('119', 'years'); out.y120 = probe('120', 'years'); out.y15 = probe('15', 'years');"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(funcs, globals_js, body)
+    for key, shown in (("y150", "150 лет"), ("m1500", "1500 мес"), ("d50000", "50000 дн.")):
+        assert result[key]["block"].startswith("РАСЧЁТ ЗАБЛОКИРОВАН: Возраст " + shown + " — неправдоподобное значение (> 120 лет)"), result[key]
+        assert "неправдоподобное" in result[key]["notice"] and result[key]["hidden"] is False, result[key]
+    assert result["y119"]["block"] == "" and result["y120"]["block"] == "", result
+    assert result["y119"]["notice"] == "Возраст 119 лет → группа «взрослые»."
+    # 15 years → child group mismatch notice, not a block
+    assert result["y15"]["block"] == "" and "не соответствует введённому возрасту" in result["y15"]["notice"], result["y15"]
 
 
 def test_age_regimen_block_reason_is_explicit_and_blocks() -> None:
