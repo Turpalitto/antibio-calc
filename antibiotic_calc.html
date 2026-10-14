@@ -3859,21 +3859,33 @@ function latinStrength(conc){
 }
 const LATIN_FREQ = { 1:'semel in die', 2:'bis in die', 3:'ter in die', 4:'quater in die', 6:'sexies in die' };
 
-function fillPrescriptionForm(){
-  if(!activeDrug || !activeDisease) return;
-  const w = parseFloat($('weight').value);
-  const block = calculationBlockReason(w);
+// Every printable field back to «—»: the print stylesheet shows #prescription-form
+// alone, so a stale fill (previous patient / drug) must never survive into a
+// blocked or empty print (Ctrl+P bypasses the «Печать» button).
+function clearPrescriptionForm(reason){
+  ['rx-drugs', 'rx-signa-text', 'rx-course', 'rx-injection-details'].forEach(id=>{ const el = $(id); if(el) el.textContent = ''; });
+  ['rx-patient', 'rx-age', 'rx-weight', 'rx-date', 'rx-doctor'].forEach(id=>{ const el = $(id); if(el) el.textContent = '—'; });
   const safetyLine = $('rx-safety-line');
   if(safetyLine){ safetyLine.textContent = ''; safetyLine.hidden = true; }
+  if($('rx-trust-line')) $('rx-trust-line').textContent = reason || '';
+  if($('rx-build-line')) $('rx-build-line').textContent = typeof buildIdentifier === 'function' ? buildIdentifier() : '';
+}
+const PRINT_NO_CALCULATION = 'ПЕЧАТЬ НЕВОЗМОЖНА: расчёт не выполнен — выберите нозологию, препарат и введите данные пациента. Бланк пуст намеренно.';
+function fillPrescriptionForm(){
+  if(!activeDrug || !activeDisease){ clearPrescriptionForm(PRINT_NO_CALCULATION); return; }
+  const w = parseFloat($('weight').value);
+  const block = calculationBlockReason(w);
+  clearPrescriptionForm('');
+  const safetyLine = $('rx-safety-line');
   if(block){
     // Печать заблокирована, но сам факт блокировки попадает в бланк — врач
     // не должен получить распечатку без объяснения, почему расчёта нет.
-    $('rx-trust-line').textContent = block;
+    $('rx-trust-line').textContent = 'ПЕЧАТЬ ЗАБЛОКИРОВАНА. ' + block;
     $('rx-build-line').textContent = buildIdentifier();
     return;
   }
   const reg = getActiveRegimen();
-  if(!reg) return;
+  if(!reg){ clearPrescriptionForm(PRINT_NO_CALCULATION); return; }
   const refs = getDrugRefs(activeDrug);
   // Patient-context warnings travel with the paper: the screen's allergy /
   // pregnancy / renal / age banners were missing from the printed form.
@@ -4506,6 +4518,10 @@ init();
 // A hash edited by hand or a back/forward step onto another #disease/scenario
 // re-opens that nosology (updateHash uses replaceState, so this never loops).
 window.addEventListener('hashchange', ()=>{ if(DB) restoreFromHash(); });
+// Ctrl+P / browser menu print bypasses the «Печать» button: refill the form from
+// the CURRENT state right before printing (an empty or blocked state prints the
+// reason, never the previous patient's prescription).
+window.addEventListener('beforeprint', ()=>{ if(DB) fillPrescriptionForm(); });
 </script>
 
 <!-- Guideline Evidence Modal -->

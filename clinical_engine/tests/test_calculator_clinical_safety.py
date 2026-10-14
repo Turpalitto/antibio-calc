@@ -234,7 +234,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "isTopicalForm",
     "latinStrength",
 ]
-PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR"]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR", "PRINT_NO_CALCULATION"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
 
 
@@ -1630,6 +1630,7 @@ def test_fill_prescription_form_never_parses_a_drug_name_or_solvent_as_markup() 
         "formatTablets",
         "getStandardBottleMl",
         "calculateCoursePackages",
+        "clearPrescriptionForm",
         "fillPrescriptionForm",
     ]
     result = _run_with_consts(
@@ -1911,7 +1912,7 @@ _RX_FUNCS = [
     "calculationBlockReason", "dbTrustState", "buildFingerprint", "buildIdentifier",
     "doseUnitOf", "computeDose", "formatUnits", "fmtDose", "diseaseSourceStatus",
     "formatTablets", "getStandardBottleMl", "calculateCoursePackages",
-    "fillPrescriptionForm",
+    "clearPrescriptionForm", "fillPrescriptionForm",
 ]
 _RX_CONSTS = ["LATIN_INN", "LATIN_FORM", "LATIN_ROUTE", "LATIN_FREQ"]
 

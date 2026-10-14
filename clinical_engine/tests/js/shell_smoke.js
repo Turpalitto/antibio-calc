@@ -746,6 +746,29 @@ async function run() {
       out.storageDenied = denied;
       dom2.window.close();
     }
+    // 20. Ctrl+P bypasses the «Печать» button: beforeprint refills the form from the current
+    //     state — a valid calculation prints, an empty or blocked state prints the reason and
+    //     never the previous patient's lines
+    {
+      const beforeprint = () => w.dispatchEvent(new w.Event('beforeprint'));
+      const rx = () => ({ drugs: txt($('rx-drugs')), trust: txt($('rx-trust-line')).slice(0, 60), signa: txt($('rx-signa-text')), patient: txt($('rx-patient')) });
+      type($('patient-name'), 'Петров П.П.');
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      beforeprint();
+      const p = { filled: rx() };
+      w.resetDisease();
+      beforeprint();
+      p.afterReset = rx();
+      clickDisease('cap_adult');
+      type($('weight'), '0.5');
+      beforeprint();
+      p.blocked = rx();
+      type($('weight'), '70');
+      type($('patient-name'), '');
+      out.ctrlP = p;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

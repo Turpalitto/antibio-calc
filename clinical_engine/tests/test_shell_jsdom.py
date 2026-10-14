@@ -223,6 +223,19 @@ def test_denied_storage_access_does_not_break_init_deep_link_or_theme(shell: dic
     assert s["historyOpens"] is True
 
 
+def test_ctrl_p_prints_the_current_state_never_a_stale_prescription(shell: dict) -> None:
+    """The print stylesheet shows #prescription-form alone, but only the «Печать»
+    button filled it: Ctrl+P / the browser menu printed whatever the form held —
+    the previous patient's prescription, or nothing. beforeprint now refills it
+    from the current state, and an empty / blocked state prints the reason."""
+    p = shell["ctrlP"]
+    assert p["filled"]["drugs"].startswith("Amoxicillini 500 mg") and p["filled"]["patient"] == "Петров П.П."
+    assert p["afterReset"] == {"drugs": "", "signa": "", "patient": "—", "trust": p["afterReset"]["trust"]}
+    assert p["afterReset"]["trust"].startswith("ПЕЧАТЬ НЕВОЗМОЖНА: расчёт не выполнен")
+    assert p["blocked"]["drugs"] == "" and p["blocked"]["signa"] == "" and p["blocked"]["patient"] == "—"
+    assert p["blocked"]["trust"].startswith("ПЕЧАТЬ ЗАБЛОКИРОВАНА. РАСЧЁТ ЗАБЛОКИРОВАН: Вес 0.5 кг")
+
+
 def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:
     h = shell["historyRestore"]
     assert h["button"] and h["button"].startswith("Открыть расчёт / Амоксициллин + Клавулановая кислота, Внебольничная пневмония у взрослых"), h
