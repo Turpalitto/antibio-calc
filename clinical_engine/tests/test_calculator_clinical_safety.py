@@ -2226,7 +2226,9 @@ def test_unit_strength_handles_combination_strengths_and_dose_basis() -> None:
         "pen:unitStrengthMg(pen,2.4e6,null,'ЕД'),plain:unitStrengthMg({concentration:'500 мг'},1000,null),"
         "none:unitStrengthMg({concentration:'крем 2%'},100,null),"
         "amcUnits:solidUnitsPerDose(875,amc,null).units,cotUnits:solidUnitsPerDose(480,cot,null).units,"
-        "cotTmpUnits:solidUnitsPerDose(250,cot,tmp).units}));"
+        "cotTmpUnits:solidUnitsPerDose(250,cot,tmp).units,"
+        "amcText:formatTablets(875,amc,null),cotText:formatTablets(480,cot,null),cotTmpText:formatTablets(350,cot,tmp3),"
+        "amcIvLabel:solidUnitsPerDose(875,amc,null).strengthLabel}));"
     )
     result = _run([], "", body)
     assert result["amc875"] == 875 and result["amc500"] == 500 and result["amcIv"] == 1000
@@ -2235,6 +2237,10 @@ def test_unit_strength_handles_combination_strengths_and_dose_basis() -> None:
     assert result["cotTmp3"] == 80, "«(по ТМП)» alone must be recognised — JS \\b never matches after Cyrillic"
     assert result["pen"] == 1_200_000 and result["plain"] == 500 and result["none"] is None
     assert result["amcUnits"] == 1 and result["cotUnits"] == 1 and result["cotTmpUnits"] == 3
+    # combination tablets are named by the product strength; a trimethoprim basis is said
+    assert result["amcText"] == "(1 таб 875+125 мг)" and result["amcIvLabel"] == "875+125 мг"
+    assert result["cotText"] == "(1 таб 400+80 мг)", result["cotText"]
+    assert result["cotTmpText"] == "(~4.5 таб 400+80 мг = 360 мг по триметоприму)", result["cotTmpText"]
 
 
 def test_rounding_deviation_is_named_when_it_reaches_ten_percent() -> None:

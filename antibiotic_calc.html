@@ -3128,10 +3128,18 @@ function solidUnitsPerDose(mg, form, reg){
   const exact = mg / strength;
   const isCapsule = form.form_type === 'capsule';
   const units = isCapsule ? Math.max(1, Math.round(exact)) : Math.round(exact * 2) / 2;
+  // Combination tablets are named by the product strength («875+125 мг», not
+  // «875 мг»); when the dose basis is the last component (co-trimoxazole by
+  // trimethoprim) the «= N мг» total is marked «по триметоприму».
+  const combo = String(form.concentration || '').match(/^\s*((?:\d+(?:[.,]\d+)?\s*\+\s*)+\d+(?:[.,]\d+)?)\s*мг/);
+  const parts = combo ? combo[1].split('+').map(x => parseFloat(x.replace(',', '.'))) : [];
+  const byLast = parts.length > 1 && strength === parts[parts.length - 1] && strength !== parts[0];
   return {
     units: units,
     exact: exact,
     strength: strength,
+    strengthLabel: combo ? combo[1].replace(/\s*\+\s*/g, '+') + ' мг' : strength + ' мг',
+    basisNote: byLast ? ' по триметоприму' : '',
     label: isCapsule ? 'капс' : 'таб',
     rounded: Math.abs(units - exact) > 1e-9,
     actualMg: units * strength
@@ -3160,11 +3168,11 @@ function roundingDeviationText(mg, u){
   if(Math.abs(dev) < 10) return '';
   return ', '+(dev > 0 ? '+' : '')+dev+' % к расчётной';
 }
-function formatTablets(mg, form){
-  const u = solidUnitsPerDose(mg, form);
+function formatTablets(mg, form, reg){
+  const u = solidUnitsPerDose(mg, form, reg);
   if(!u) return '';
-  if(!u.rounded) return '('+u.units+' '+u.label+' '+u.strength+' мг)';
-  return '(~'+u.units+' '+u.label+' '+u.strength+' мг = '+Math.round(u.actualMg)+' мг'+roundingDeviationText(mg, u)+(u.label === 'капс' ? '; капсулы не делятся' : '')+')';
+  if(!u.rounded) return '('+u.units+' '+u.label+' '+u.strengthLabel+')';
+  return '(~'+u.units+' '+u.label+' '+u.strengthLabel+' = '+Math.round(u.actualMg)+' мг'+u.basisNote+roundingDeviationText(mg, u)+(u.label === 'капс' ? '; капсулы не делятся' : '')+')';
 }
 function renderReconstitution(form){
   const block = $('reconstitution-block');

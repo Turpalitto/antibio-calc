@@ -143,7 +143,7 @@ def test_default_form_is_the_strength_that_fits_the_single_dose(shell: dict) -> 
     a = f["amoxiclav"]
     assert a["drug"] == "amoxiclav" and a["dose"] == "875 мг"
     assert a["active"] and a["active"][0].startswith("875+125 мг"), a
-    assert a["perDose"] == "(1 таб 875 мг)", "combination strength: one tablet, not «7 таб 125 мг»"
+    assert a["perDose"] == "(1 таб 875+125 мг)", "combination strength: one tablet named by the product, not «7 таб 125 мг»"
 
 
 def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:
