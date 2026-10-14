@@ -24,10 +24,15 @@
   «1 раз / 2 раза / 6 раз в день», printed Signa always with the mg per dose, children
   open on the suspension with a measurable volume, MIS «Суточная доза» + large-volume
   warning, printed bottles for suspensions, typo-tolerant word-start-ranked search. All
-  with regressions (`test_shell_jsdom.py` 27, `test_shell_walk.py` 2 — 1220 DOM states × 4
-  patient profiles with 10 oracles: tokens, age group, dose arithmetic (single + daily),
-  volume, MIS dose, Rp dose, route words, course units, course-quantity arithmetic, course
-  wording; `test_shell_static_ids.py` 4, `test_calculator_clinical_safety.py` +9).
+  Input plausibility gates: age > 120 years and a weight impossible for the entered age
+  (newborn > 7 kg, infant > 20 kg — a «25» for «2.5» typo is a 10× mg/kg dose) block every
+  output; 1–3 years > 25 kg and sub-40-kg adults warn, and the caution travels with the
+  exports. Combination tablets are named by the product strength («1 таб 875+125 мг»). All
+  with regressions (`test_shell_jsdom.py` 28, `test_shell_walk.py` 2 — 1220 DOM states × 4
+  patient profiles with 13 oracles: tokens, age group, dose arithmetic (single + daily),
+  volume, MIS dose (mg + ЕД), Rp dose, combination-partner dose, route words, course
+  units, course-quantity arithmetic, course wording, number-word grammar, volume-warning
+  parity; `test_shell_static_ids.py` 5, `test_calculator_clinical_safety.py` +13).
 - a11y: axe-core 0 violations (main/drawer/modal); cards keyboard-activatable; focus ring;
   live regions; dark theme before first paint; SW update banner with explicit reload.
 - Validator: route/form mismatch rule (9 warnings, all in blocked records); unit-strength
@@ -36,8 +41,8 @@
 - Infra: Dependabot, CodeQL (2 highs fixed, «No new alerts»), CI concurrency,
   `.gitattributes`, `SECURITY.md`; server.js ETag/304/gzip + graceful SIGTERM; FastAPI
   security-header/CSP parity with server.js; sw.js behavioural harness (13).
-- Tests: **2746 passed / 28 skipped / 0 failed**; validate 0 errors; ruff clean; build fresh;
-  CI + CodeQL green per push (`30de925` last checked). DB unchanged (`56727a27f050…`).
+- Tests: **2751 passed / 28 skipped / 0 failed**; validate 0 errors; ruff clean; build fresh;
+  CI + CodeQL green per push (`4a812e4` last checked). DB unchanged (`56727a27f050…`).
 - Owner queue additions (clinical): 9 route/form gaps in blocked records (cotrimoxazole
   «iv» with oral-only forms ×5, fosfomycin iv, amikacin/gentamicin iv with im-only
   dilution ×3); `bacterial_vaginosis` — metronidazole/clindamycin topical forms share the

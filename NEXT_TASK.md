@@ -28,7 +28,10 @@
      nosologies, the new «D.t.d. N <course quantity> (по K на приём, …)» line, the
      «Компоненты комбинации» block and the «Пациент / Возраст / Вес» header on the printed
      form, the «+14 % к расчётной» wording next to rounded doses, history «Открыть расчёт»,
-     the suspension default for children (250 мг/5 мл for a 25-kg child), «1.05 млн ЕД».
+     the suspension default for children (250 мг/5 мл for a 25-kg child), «1.05 млн ЕД»,
+     the plausibility gates (age > 120 y; newborn > 7 kg / infant > 20 kg block, 1–3 y
+     > 25 kg warns — thresholds are generous typo catchers, tighten or loosen as you see
+     fit), «~4.5 таб 400+80 мг = 360 мг по триметоприму».
    - GitHub → Settings → Security: enable private vulnerability reporting
      (`SECURITY.md` points there); review the CodeQL tab once (should be empty).
 2. **Engineering candidates (no physician decision needed, none urgent):**
@@ -39,8 +42,8 @@
      exact hit; word-start ranking).
    - ~~`shell_walk.js` independent dose oracle~~ DONE (T22/T23: single + daily arithmetic,
      volume, course-quantity arithmetic; the mg value does not depend on the rounding
-     policy, which still belongs to the owner). Remaining idea: a combination-partner
-     oracle (partner dose = component_regimens × weight) and an ЕД-unit MIS/Rp oracle.
+     policy, which still belongs to the owner). ~~Combination-partner oracle, ЕД MIS/Rp
+     oracle~~ DONE (T30), ~~grammar / volume-parity oracles~~ DONE (T32).
    - Latin Rp for a combination regimen still names the main drug only (the printed form
      and the MIS text carry the partner); a second `Rp.:` block per component is a small
      follow-up once the owner confirms the wanted format.

@@ -164,9 +164,34 @@
   shipped combination regimens pass), shell fail-visible («режим компонента не задан в
   БД …»). T21 `a959f90`: validator WARN for unit forms without a readable strength / oral
   liquids without mg/ml (0 on the shipped DB).
+- **T30 `7a34643`:** walk MIS/Rp dose oracle covers ЕД drugs («по 175 тыс ЕД», 529 → 541
+  of 542 adult states) and re-derives every combination-partner card from
+  `component_regimens × weight` (36 checks).
+- **T31 `7f3852e` (input safety):** age > 120 years («150» for 15, or a birth year) blocks
+  the calculation like an implausible weight — the result area, MIS copy, Rp copy and the
+  printed form all say «РАСЧЁТ ЗАБЛОКИРОВАН: Возраст 150 лет — неправдоподобное значение»;
+  119/120 still compute. Static test: `@media print` contract (`#prescription-form` must stay
+  a direct child of `<body>`).
+- **T32 `0e8c416`:** walk grammar oracle («1 раз / 2 раза / 5 раз в день», «2 дня / 5 дней»)
+  over every export + screen/MIS large-volume-warning parity. Mutation check against the
+  pre-T24 build: 457 grammar findings, 19 parity findings; current build clean.
+- **T33 `d4d8ac4` (latent):** JS `\b` never matches after Cyrillic — two dead regex
+  alternatives: `parseAgeRestrictionDays` («12 г» / «6 м» limits fell through to «проверьте
+  вручную») and `unitStrengthMg` («\bТМП\b» — a regimen marked only «(по ТМП)» would have
+  been dosed by the sulfamethoxazole strength). No shipped record affected; both pinned.
+- **T34 `2a559ac` (input safety):** weight is checked against the entered age — «25» typed
+  for «2.5» at 10 days passed every gate (the only neonate rule was ≥ 40 kg) and gave a 10×
+  mg/kg dose everywhere. Block for a newborn > 7 kg or an infant > 20 kg, warning for 1–3
+  years > 25 kg; the notice renders while typing (it used to wait for a drug); the «<40 кг
+  при группе новорождённые» hint only when no age was entered.
+- **T35 `504339e`:** the non-blocking weight caution travels with the MIS text, Rp and
+  printed form (`exportSafetyFlags`). **T36 `4a812e4`:** dead `formTypeRussian` /
+  `copyPrescription` removed. **T37 `9df259f`:** combination tablets are named by the
+  product strength in every dose line («1 таб 875+125 мг», «~4.5 таб 400+80 мг = 360 мг по
+  триметоприму» — the physician no longer reads «таб 80 мг»).
 - **Verification per push:** full pytest, `ruff check .`, `npm run validate`,
   `build_html.py --check`, CI + CodeQL green (one red run `b694202` fixed by `12fdad5`).
-  Final: **2746 passed / 28 skipped** (jsdom suite 27 tests, walk gate with 10 oracles),
+  Final: **2751 passed / 28 skipped** (jsdom suite 28 tests, walk gate with 13 oracles),
   validate 0 errors (+9 owner warnings), html/sw rebuilt.
 
 ## 2026-10-14 (round 4, autonomous backlog «без моих решений»): C-4, E-2, G-1, F-2, F-3, H-1
