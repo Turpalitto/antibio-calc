@@ -1,3 +1,32 @@
+## 2026-10-14 (round 6 continued, T51–T54: selection kept across context changes, flags parity)
+
+- **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
+  «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:
+  changing the allergy status re-rendered the drug cards without a preference, so the
+  physician's levofloxacin (form 2) silently became the first card (amoxiclav, form 1) and
+  the history restore never matched its saved form. `rerenderLinesKeepingSelection()`
+  re-selects line / drug / route / regimen and re-clicks the form chip.
+- **T53 `fccbf4b` + T53b `5c62161`:** same class for the age group — the age chip,
+  `onPatientAgeChange` and the weight inference re-rendered the scenarios from scratch
+  (first eligible scenario, first drug): on an «all»-age scenario ciprofloxacin became
+  ceftriaxone when a child's age was typed. `rerenderScenariosKeepingSelection()` keeps the
+  scenario / line / drug / route when the scenario fits the new group, re-derives the
+  regimen and default form, and shows the explicit age block for a drug without a regimen
+  for that group; a scenario that no longer fits still falls back to the first eligible one
+  (fail-visible). Weight-inferred group changes now re-mark the scenario cards too.
+  (`6ebee14` was red: an apostrophe in a JS comment broke the test extractor — fixed in
+  `5c62161`; the commit gate now runs through `/tmp/gate.sh`-style `rc` checks.)
+- **T54 `7b863fa`:** walk profile 5 — adult 60 kg, GFR 25, pregnancy, anaphylactic
+  penicillin allergy (536 / 542 computed states carry warnings) — and a **flags-parity
+  oracle**: the «ВНИМАНИЕ / Предупреждение» set must be identical in the MIS text, the Rp
+  text and the printed form, and every danger banner on screen must reach the exports.
+  1 524 computed states, 0 findings (the MIS-only large-volume prescriber caution is
+  excluded by design; the printed form is `white-space: pre-line`, so the oracle reads
+  raw `textContent`).
+- **Verification per push:** unchanged gates. After T54: **2790 passed / 28 skipped**
+  (jsdom 34, walk 2 / 14 oracles / 5 profiles / 0 findings), validate 0 / 436, axe 0,
+  CI + CodeQL green through `5c62161` (`7b863fa` pending at the time of writing).
+
 ## 2026-10-14 (round 6, autonomous loop continued, T45–T50)
 
 - **Scope rule unchanged:** engineering only; DB sha `56727a27f050…` unchanged, FROZEN

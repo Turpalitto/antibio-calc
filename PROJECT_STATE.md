@@ -1,3 +1,18 @@
+## 2026-10-14 (round 6 continued, T51–T54): selection survives context changes, history restores the context, flags parity in every export
+
+- Shell: changing the allergy status, the age group (chip, typed age or weight inference)
+  no longer jumps to the first scenario / drug card — the physician's scenario, line, drug,
+  route (and form / regimen for the allergy case) stay; a drug without a regimen for the new
+  age group shows the explicit block instead of a silent switch (two REAL BUGS of the
+  «preference-less re-render» class). History entries snapshot GFR / pregnancy / allergy and
+  «Открыть расчёт» restores them.
+- Walk gate: fifth profile with GFR 25 + pregnancy + anaphylactic penicillin allergy and a
+  flags-parity oracle (MIS = Rp = printed form; every danger banner reaches the exports) —
+  1 524 computed states, 0 findings.
+- Tests: **2790 passed / 28 skipped / 0 failed** (jsdom 34, walk 14 oracles / 5 profiles);
+  validate 0 / 436; axe 0; ruff clean; build fresh; CI + CodeQL green per push (`5c62161`
+  last checked, `7b863fa` pending). DB unchanged (`56727a27f050…`).
+
 ## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
 
 - Shell: «↺ Новый пациент» resets the whole patient context + calculation (and the

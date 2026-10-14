@@ -1,3 +1,22 @@
+## 2026-10-14 (after round 6, T51–T54): remaining NEXT_TASK (work top-down)
+
+1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
+   pass: change the allergy status / type an age after picking a non-first drug — the drug
+   must stay (ciprofloxacin at a child's age shows the «нет схемы для группы «дети»» block
+   instead of switching to ceftriaxone); «Открыть расчёт» on an entry saved with GFR 25 /
+   pregnancy / allergy must bring those inputs and banners back.
+2. **Engineering candidates (none urgent):**
+   - `npm run check` convenience script (validate + `build_html.py --check` + jsdom smoke +
+     walk) and a README section listing every gate added in rounds 5–6.
+   - Latin Rp for a combination regimen still names the main drug only (unchanged).
+   - The MIS-only «разовый объём велик» caution is prescriber advice and is deliberately not
+     on the Rp / printed form; if the owner wants it on the printed form too, the walk
+     flags-parity oracle must then include it (one regex).
+   - Other `if(!activeX) return` guards / preference-less re-render callers were audited:
+     the remaining `renderScenarios(` callers (search / hash resolve, `selectDisease`,
+     history restore, `restoreFromHash`) all pass preferences or intentionally start fresh.
+3. Everything below that is marked **Owner** still stands.
+
 ## 2026-10-14 (after round 6, T45–T50): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — everything in the «after round 5» section still stands, plus:
@@ -21,8 +40,8 @@
 2. **Engineering candidates (none urgent):**
    - `npm run check` convenience script (validate + `build_html.py --check` + jsdom smoke +
      walk) and a README section listing every gate added in rounds 5–6.
-   - History entries could store the patient context snapshot (GFR / pregnancy / allergy)
-     so «Открыть расчёт» restores the flags too (today it restores the regimen path + age).
+   - ~~History entries could store the patient context snapshot (GFR / pregnancy / allergy)~~
+     — done in T51 (`1da3564`).
    - Latin Rp for a combination regimen still names the main drug only (unchanged).
 3. Everything in the previous sections (§1–3, §6) that is marked **Owner** still stands.
 
