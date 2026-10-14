@@ -38,6 +38,31 @@ const REQUIRED_KEYS = ['meta', 'drugs_reference', 'categories', 'recommendations
 
 const AGE_GROUPS = new Set(['neonate', 'child', 'adult', 'all']);
 const ROUTES = new Set(['per_os', 'iv', 'im', 'topical', 'inhalation', 'intrathecal']);
+// Mirror of the shell's route grouping (renderRouteTabs): which route tab a
+// form of drugs_reference can appear under. `powder_for_suspension` is oral
+// only with a ready mg/ml concentration, otherwise an injectable vial.
+const ROUTE_GROUP = { per_os: 'po', iv: 'iv', im: 'im', topical: 'topical' };
+function formGroups(ref) {
+  const groups = new Set();
+  const dilution = (ref && ref.dilution) || {};
+  (ref && Array.isArray(ref.forms) ? ref.forms : []).forEach((f) => {
+    if (!f) return;
+    const t = f.form_type;
+    if (t === 'topical' || t === 'drops') { groups.add('topical'); return; }
+    if (['tablet', 'capsule', 'suspension', 'syrup', 'granules'].includes(t)
+        || (t === 'powder_for_suspension' && f.concentration_mg_per_ml != null)) { groups.add('po'); return; }
+    let matched = false;
+    if (dilution.im && ['powder_for_suspension', 'powder_for_injection', 'solution_im'].includes(t)) { groups.add('im'); matched = true; }
+    if ((dilution.iv_bolus || dilution.iv_infusion) && ['powder_for_suspension', 'powder_for_injection', 'solution_iv'].includes(t)) { groups.add('iv'); matched = true; }
+    if (!matched) {
+      if (t === 'solution_iv') groups.add('iv');
+      else if (t === 'solution_im') groups.add('im');
+      else if (t === 'powder_for_injection') { groups.add('iv'); groups.add('im'); }
+      else groups.add('po');
+    }
+  });
+  return groups;
+}
 const FORM_TYPES = new Set([
   'tablet', 'capsule', 'suspension', 'syrup', 'granules', 'powder_for_suspension',
   'powder_for_injection', 'solution_iv', 'solution_im', 'topical', 'drops',
@@ -226,6 +251,17 @@ function validateDatabase(db) {
             regimenIssues.push(`${whereDrug}: route is empty${tag}`);
           } else {
             drug.route.forEach((rt) => { if (!ROUTES.has(rt)) errors.push(`${whereDrug}: unknown route "${rt}"`); });
+            // The shell restricts the form tabs to these routes; when no form of
+            // the referenced drug(s) fits, it falls back to EVERY form and shows a
+            // notice (#route-mismatch-note). Flag the data gap at build time too.
+            const intended = new Set(drug.route.map((rt) => ROUTE_GROUP[rt]).filter(Boolean));
+            if (intended.size > 0) {
+              const available = new Set();
+              refs.filter((key) => drugKeySet.has(key)).forEach((key) => formGroups(drugsReference[key]).forEach((g) => available.add(g)));
+              if (available.size > 0 && ![...intended].some((g) => available.has(g))) {
+                warnings.push(`${whereDrug}: route ${JSON.stringify(drug.route)} has no matching form in drugs_reference (forms cover: ${[...available].join('/') || 'none'}) — the shell falls back to all forms (owner review)${tag}`);
+              }
+            }
           }
           if (!Array.isArray(drug.regimens) || drug.regimens.length === 0) {
             regimenIssues.push(`${whereDrug}: no regimens${tag}`);

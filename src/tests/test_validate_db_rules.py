@@ -185,6 +185,59 @@ def test_child_mg_kg_regimen_without_ceiling_is_a_warning_not_an_error() -> None
     assert any("without max_daily_mg" in w for w in result["warnings"])
 
 
+def test_route_without_a_matching_form_is_a_warning() -> None:
+    """Scenario says iv, drugs_reference only has tablets: the shell falls back
+    to every form and shows #route-mismatch-note; the validator says so too."""
+    db = _db()
+    _drug(db)["route"] = ["iv"]
+    result = _validate(db)
+    assert result["errors"] == []
+    hits = [w for w in result["warnings"] if "has no matching form" in w]
+    assert len(hits) == 1 and "forms cover: po" in hits[0]
+
+
+def test_route_matching_rules_mirror_the_shell_grouping() -> None:
+    """Injectable vials follow the shell: dilution.im/iv decide, a plain
+    powder_for_injection without dilution serves both; combos use the union."""
+    db = _db()
+    db["drugs_reference"]["gentamicin"] = {
+        "inn": "Гентамицин",
+        "dilution": {"im": {"note": "x"}},
+        "forms": [{"form_type": "powder_for_injection", "concentration": "80 мг"}],
+    }
+    db["drugs_reference"]["ceftriaxone"] = {
+        "inn": "Цефтриаксон",
+        "forms": [{"form_type": "powder_for_injection", "concentration": "1 г"}],
+    }
+    # a vial whose dilution block documents im only is never offered under iv
+    _drug(db).update({"drug_ref": "gentamicin", "route": ["iv"]})
+    assert [w for w in _validate(db)["warnings"] if "has no matching form" in w and "forms cover: im" in w]
+    db["drugs_reference"]["gentamicin"]["dilution"]["iv_infusion"] = {"note": "y"}
+    assert not [w for w in _validate(db)["warnings"] if "has no matching form" in w]
+    # powder_for_injection without dilution serves im and iv
+    _drug(db).update({"drug_ref": "ceftriaxone", "route": ["iv", "im"]})
+    assert not [w for w in _validate(db)["warnings"] if "has no matching form" in w]
+    # combo: the main (first) drug covers the route, the second is oral — union passes
+    drug = _drug(db)
+    drug.pop("drug_ref")
+    drug.update({"combo_ref": ["ceftriaxone", "amoxicillin"], "route": ["iv"]})
+    assert not [w for w in _validate(db)["warnings"] if "has no matching form" in w]
+    # topical-only reference asked for per os → warning
+    drug.pop("combo_ref")
+    db["drugs_reference"]["mupirocin"] = {"inn": "Мупироцин", "forms": [{"form_type": "topical", "concentration": "2 %"}]}
+    drug.update({"drug_ref": "mupirocin", "route": ["per_os"]})
+    assert [w for w in _validate(db)["warnings"] if "has no matching form" in w and "forms cover: topical" in w]
+
+
+def test_shipped_database_route_mismatches_are_confined_to_blocked_records() -> None:
+    """Pins the current state: the 9 known route/form gaps all sit in records the
+    source gate already blocks (owner queue), none in a computable record."""
+    db = json.loads((ROOT / "db" / "antibio_db.json").read_text(encoding="utf-8-sig"))
+    hits = [w for w in _validate(db)["warnings"] if "has no matching form" in w]
+    assert hits, "rule stopped firing on the shipped DB — check validate_db.js"
+    assert all(w.endswith("[blocked record]") for w in hits), [w for w in hits if not w.endswith("[blocked record]")]
+
+
 # ---- structure -------------------------------------------------------------------
 
 

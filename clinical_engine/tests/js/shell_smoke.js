@@ -201,6 +201,16 @@ async function run() {
     key('Escape');
     out.modalAfterEscape = { visible: visible($('guideline-modal')), focusId: d.activeElement && d.activeElement.id };
 
+    // ---- 7b. route/form mismatch is fail-visible: doxycycline (tablets only)
+    //          asked for iv → tabs fall back to all forms + amber notice ---------
+    out.routeMismatch = { noteHiddenBefore: !visible($('route-mismatch-note')) };
+    w.eval("activeDrug.route = ['iv']; renderForms();");
+    out.routeMismatch.noteVisible = visible($('route-mismatch-note'));
+    out.routeMismatch.noteText = txt($('route-mismatch-note'));
+    out.routeMismatch.tabs = [...$('route-tabs').querySelectorAll('button')].map((b) => txt(b));
+    w.eval("activeDrug.route = ['per_os']; renderForms();");
+    out.routeMismatch.noteHiddenAfter = !visible($('route-mismatch-note'));
+
     // ---- 8. service-worker update notice (jsdom has no serviceWorker; the
     //         banner path is exercised directly) ------------------------------------
     out.updateBanner = { hiddenBefore: !visible($('update-banner')) };

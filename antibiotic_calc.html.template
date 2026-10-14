@@ -629,6 +629,8 @@ body{
           <div id="route-tabs" class="flex gap-1"></div>
         </div>
         <div id="form-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+        <!-- fail-visible: the scenario names a route for which drugs_reference has no form -->
+        <div id="route-mismatch-note" class="hidden mt-3 text-[11px] font-semibold bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 rounded-xl px-3 py-2" role="status"><i class="fas fa-triangle-exclamation mr-1"></i><span></span></div>
         <div id="availability-note" class="hidden mt-3 text-[11px] font-semibold bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 rounded-xl px-3 py-2"><i class="fas fa-circle-info mr-1"></i><span></span></div>
 
         <div id="regimen-selector" class="hidden mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
@@ -2257,6 +2259,19 @@ function renderForms(preferredRoute){
   const intendedKeys = (activeDrug.route || []).map(r=>routeMap[r]).filter(Boolean);
   const restrictedKeys = groupKeys.filter(k=>intendedKeys.includes(k));
   const finalKeys = restrictedKeys.length > 0 ? restrictedKeys : groupKeys;
+  // Fallback to every form is a data gap, not a clinical choice — say so
+  // (db/validate_db.js warns about the same mismatch at build time).
+  const mismatchNote = $('route-mismatch-note');
+  if(mismatchNote){
+    if(intendedKeys.length > 0 && restrictedKeys.length === 0){
+      const routeLabel = k => k==='po'?'per os':(k==='im'?'в/м':(k==='iv'?'в/в':'местно'));
+      mismatchNote.querySelector('span').textContent = 'В справочнике препарата нет лекарственной формы для пути введения, указанного в схеме ('
+        + intendedKeys.map(routeLabel).join(', ') + ') — показаны все доступные формы. Сверьте путь введения с текстом КР.';
+      mismatchNote.classList.remove('hidden');
+    } else {
+      mismatchNote.classList.add('hidden');
+    }
+  }
 
   currentRouteGroup = preferredRoute && finalKeys.includes(preferredRoute) ? preferredRoute : finalKeys[0];
   finalKeys.forEach(k=>{

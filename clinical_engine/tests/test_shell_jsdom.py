@@ -126,6 +126,17 @@ def test_guideline_modal_is_a_labelled_dialog_with_focus_return(shell: dict) -> 
     assert shell["modalAfterEscape"] == {"visible": False, "focusId": "btn-guideline-modal"}
 
 
+def test_route_form_mismatch_falls_back_visibly(shell: dict) -> None:
+    """A scenario route with no matching form must not silently widen the
+    offer: the shell shows every form AND an amber notice (validate_db.js
+    warns about the same gap at build time)."""
+    rm = shell["routeMismatch"]
+    assert rm["noteHiddenBefore"] is True
+    assert rm["noteVisible"] is True and rm["noteHiddenAfter"] is True
+    assert "в/в" in rm["noteText"] and "показаны все доступные формы" in rm["noteText"]
+    assert rm["tabs"] == ["per os"]
+
+
 def test_service_worker_update_banner_is_opt_in_reload(shell: dict) -> None:
     banner = shell["updateBanner"]
     assert banner["hiddenBefore"] is True and banner["visibleAfter"] is True
