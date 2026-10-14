@@ -11,9 +11,22 @@
      prophylaxis fosfomycin iv; ТКИН / congenital pneumonia amikacin iv and pelvic
      fracture gentamicin iv with `dilution.im` only). Fix the route or add the
      iv form/dilution when those records are reviewed.
+   - **B-6 dose basis per regimen (now visible in the shell):** co-trimoxazole regimens
+     mix bases — `uti_prophylaxis` adult 480 mg (= one 400+80 tablet), `cellulitis` /
+     `skin_abscess` 800 mg (= SMX component, «800/160 мг»), `uti_prophylaxis` child and
+     `listeriosis` «по триметоприму». The shell reads «по триметоприму / TMP» from the
+     regimen wording and otherwise picks the component that divides the dose
+     (`unitStrengthMg`); a `dose_basis` field (`sum` / `first_component` /
+     `trimethoprim`) per regimen + validator rule would make this explicit. Same for
+     amoxiclav (dose = amoxicillin component) and piperacillin/tazobactam.
+   - Benzathine benzylpenicillin (syphilis): «2.4 млн ЕД однократно / × 2 с интервалом
+     7 дней» is encoded as `duration_days "1-3"`, `freq_per_day 1`, so the course
+     quantity reads 3 doses × 2 vials. Encode weekly schedules explicitly (e.g.
+     `doses_total`) or set `duration_days` to the number of injections.
    - Real-browser pass (sandbox has none): keyboard focus ring on cards, the SW update
      banner after a deploy, dark theme without flash, print preview after switching
-     nosologies.
+     nosologies, the new «D.t.d. N <course quantity> (по K на приём, …)» line and the
+     «Компоненты комбинации» block on the printed form.
    - GitHub → Settings → Security: enable private vulnerability reporting
      (`SECURITY.md` points there); review the CodeQL tab once (should be empty).
 2. **Engineering candidates (no physician decision needed, none urgent):**
@@ -22,7 +35,15 @@
    - `restoreFromHash` on `hashchange` (today only on load) and restoring the line/drug
      part of `#disease/scenario/L<n>` (currently scenario only — conservative).
    - `shell_walk.js` could add an independent dose oracle (regimen × weight × caps) once
-     the owner confirms the rounding policy; today it checks age group, tokens, exports.
+     the owner confirms the rounding policy; today it checks tokens, age group, MIS and
+     Rp single dose vs screen, route words in MIS/Rp/printed form, course-unit agreement
+     (MIS «суммарно» = Rp `D.t.d. N.` = printed `D.t.d. N`), course wording.
+   - Latin Rp for a combination regimen still names the main drug only (the printed form
+     and the MIS text carry the partner); a second `Rp.:` block per component is a small
+     follow-up once the owner confirms the wanted format.
+   - When a form chip has no matching entry in the drug's dilution table (ceftriaxone
+     «500 мг флакон» vs vials 1000/2000 mg) the vial selector keeps its previous choice;
+     adding the 500 mg vial to `dilution.*.solvent_options` is a DB (owner) item.
 3. Everything in the previous section (§1–3, §6) that is marked **Owner** still stands.
 
 ## 2026-10-14: after the audit fix round — remaining NEXT_TASK (work top-down)

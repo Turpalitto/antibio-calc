@@ -1,12 +1,23 @@
-## 2026-10-14 (round 5, autonomous improvement loop): jsdom end-to-end gates, 3 real shell defects, infra
+## 2026-10-14 (round 5, autonomous improvement loop): jsdom end-to-end gates, 8 real shell defects, infra
 
-- Three shell defects found by driving the built HTML with real DOM events (none visible
-  to handler-level unit tests): (1) duplicate `id="patient-age"` swallowed the typed age;
-  (2) a stale `activeDrug` survived switching to a gate-blocked nosology — header «Печать»
-  printed the previous regimen under the new diagnosis; (3) topical forms got a
-  bottle/tablet course estimate and `D.t.d. N. 3` from the oral mg regimen. All fixed with
-  regressions (`test_shell_jsdom.py` 17, `test_shell_walk.py` 2 — 1220 DOM states × 4
-  patient profiles, `test_shell_static_ids.py` 4, `test_calculator_clinical_safety.py` +1).
+- Eight shell defects found by driving the built HTML with real DOM events and by
+  cross-checking every export against the screen (none visible to handler-level unit
+  tests): (1) duplicate `id="patient-age"` swallowed the typed age; (2) a stale
+  `activeDrug` survived switching to a gate-blocked nosology — header «Печать» printed the
+  previous regimen under the new diagnosis; (3) topical forms got a bottle/tablet course
+  estimate and `D.t.d. N. 3` from the oral mg regimen; (4) allergy ⛔/⚠, pregnancy, renal
+  and age flags were absent from MIS text / Rp / printed form / history; (5) the
+  combination partner's computed dose (gentamicin of ampicillin + gentamicin) was absent
+  from MIS / printed form; (6) PO suspensions for adults and fosfomycin granules were
+  exported as «в/в» / «Вводить внутривенно» (115 states); (7) combination strengths
+  («875+125 мг», «400+80 мг») made one tablet read «7 таб 125 мг» / «6 таб 80 мг» on screen
+  and in every export; (8) `D.t.d. N.` was packs (Rp) / units per dose (printed form)
+  instead of the course quantity, and courses in words printed «хроническая дней». Also:
+  search recall (tokens, Russian endings, ICD, drug names), default form chip = the
+  strength that fits the dose, dilution vial follows the form. All fixed with regressions
+  (`test_shell_jsdom.py` 23, `test_shell_walk.py` 2 — 1220 DOM states × 4 patient profiles
+  with 7 oracles: tokens, age group, MIS dose, Rp dose, route words, course units, course
+  wording; `test_shell_static_ids.py` 4, `test_calculator_clinical_safety.py` +4).
 - a11y: axe-core 0 violations (main/drawer/modal); cards keyboard-activatable; focus ring;
   live regions; dark theme before first paint; SW update banner with explicit reload.
 - Validator: route/form mismatch rule (9 warnings, all in blocked records). Shell:
@@ -14,12 +25,17 @@
 - Infra: Dependabot, CodeQL (2 highs fixed, «No new alerts»), CI concurrency,
   `.gitattributes`, `SECURITY.md`; server.js ETag/304/gzip + graceful SIGTERM; FastAPI
   security-header/CSP parity with server.js; sw.js behavioural harness (13).
-- Tests: **2729 passed / 28 skipped / 0 failed**; validate 0 errors; ruff clean; build fresh;
-  CI + CodeQL green per push (`fa60736` last). DB unchanged (`56727a27f050…`).
+- Tests: **2737 passed / 28 skipped / 0 failed**; validate 0 errors; ruff clean; build fresh;
+  CI + CodeQL green per push (`73db627` last). DB unchanged (`56727a27f050…`).
 - Owner queue additions (clinical): 9 route/form gaps in blocked records (cotrimoxazole
   «iv» with oral-only forms ×5, fosfomycin iv, amikacin/gentamicin iv with im-only
   dilution ×3); `bacterial_vaginosis` — metronidazole/clindamycin topical forms share the
-  ORAL regimen (gel/cream need their own regimen or `topical` dropped from `route`).
+  ORAL regimen (gel/cream need their own regimen or `topical` dropped from `route`);
+  co-trimoxazole regimens mix dose bases (480 mg = tablet sum, 800 mg = SMX component,
+  10 mg/kg «по TMP») — the shell now reads the basis from the regimen wording (B-6 stays
+  an owner item: one `dose_unit`/`dose_basis` field per regimen); benzathine penicillin
+  «2.4 млн ЕД однократно» is encoded as `duration_days 1-3` × 1/day, so the course
+  quantity reads 3 doses.
 
 ## 2026-10-14 (round 4, autonomous backlog): static Tailwind, dependency audit in CI, root archived, slim AGENTS.md, extraction e2e fixture
 

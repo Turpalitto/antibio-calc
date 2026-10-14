@@ -41,11 +41,15 @@ Browser-level gates run in Node without a browser (`npm ci` installs `jsdom`
 and `axe-core`; the tests skip when they are missing):
 `clinical_engine/tests/test_shell_jsdom.py` drives the built shell with real
 DOM events (search → nosology → drug → weight, age/pregnancy/GFR flags,
-allergy, blocked records, keyboard activation, theme, drawer/modal focus) and
+allergy, blocked records, keyboard activation, theme, drawer/modal focus,
+search recall, exports — MIS text / Latin Rp / printed form / history) and
 runs axe-core (0 violations); `test_shell_walk.py` walks every computable
-nosology × scenario × drug × route × form for four patient profiles and
-fails on NaN/undefined/empty results or an age-group mismatch in the regimen
-used; `test_shell_static_ids.py` pins markup wiring (unique ids, every looked-up
+nosology × scenario × drug × route × form for four patient profiles (1220
+states) and fails on NaN/undefined/empty results, an age-group mismatch in the
+regimen used, a MIS or Rp single dose that differs from the screen, a route
+word that contradicts the chosen route, course quantities that disagree
+between MIS / Rp / printed form, or a course in words printed as «… дней»;
+`test_shell_static_ids.py` pins markup wiring (unique ids, every looked-up
 id exists); `test_service_worker.py` runs the real `sw.js` in Node. CodeQL
 (`.github/workflows/codeql.yml`) and Dependabot (`.github/dependabot.yml`)
 cover the Python/JS code and the action/uv/npm pins.

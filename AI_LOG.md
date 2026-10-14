@@ -60,9 +60,60 @@
   tab × form chip for adult 70 kg / child 7 y 25 kg / infant 6 mo 7 kg / neonate 10 d
   3.2 kg = 1220 states, 982 computed + exported (MIS + prescription form): no NaN /
   Infinity / undefined / empty result, regimen age_group == patient group (`fa60736`).
+- **REAL DEFECT (exports), T10 `7589b29`:** severe penicillin allergy + amoxicillin (and
+  the pregnancy / renal / age flags) were shown on screen only — MIS text, Latin Rp,
+  printed form and history carried nothing. `exportSafetyFlags(refs)` =
+  `collectPatientSafetyFlags` + `allergyExportFlag` («Аллергия («<option>»): препарат
+  ПРОТИВОПОКАЗАН по аллергоанамнезу…» / «осторожно…»); MIS prefixes `ВНИМАНИЕ:` /
+  `Предупреждение:`, Rp appends `! ВНИМАНИЕ: …`, printed form `#rx-safety-line`,
+  history `flags` + «⚠ …». jsdom step 5 + 2 tests.
+- **REAL DEFECT (exports), T11 `e045729`:** combination partner (listeriosis ampicillin +
+  gentamicin 350 mg × 1 = 5 mg/kg × 70 kg) lived on screen only; MIS / printed form named
+  ampicillin alone. `comboComponentLines` → MIS «Компонент комбинации: Гентамицин — по
+  350 мг 1 р/д • 14 дн (сут. 350 мг); …», printed form «Компоненты комбинации
+  (одновременно):» + Latin name + dose line. jsdom step 7d + test.
+- **Walk oracle, `1ebcbd6`:** `shell_walk.js` compares the single dose on screen
+  (`po-mg` / `inj-mg`) with the MIS «Схема приёма: по N мг» in every computed state —
+  960 states, 0 mismatches.
+- **Search recall, T12 `c771822`:** `handleSearch` matched the whole phrase only, so
+  «пневмония дети», «h. pylori», «амоксициллин» returned nothing. Tokens (≥2 chars) must
+  each match name / synonyms / CR id / ICD-10 / the record's drug INNs+keys
+  (`diseaseDrugText`, cached); 4+-letter tokens also match by stem («дети» → «у детей»);
+  phrase hits rank first, computable records before blocked. jsdom `searchRecall` + test.
+- **REAL DEFECTS (exports), T13 `2f71425` — found by four new walk oracles (route words,
+  Rp dose, course units, course wording; 395 findings on the previous build, 0 after):**
+  (1) **115 adult states** — any PO form that is not a tablet/capsule (oral suspensions
+  for w ≥ 40 kg, fosfomycin granules) fell through to the injection branch of
+  `copyForMIS` / `copyLatinRecipe`: «Схема приёма: по 500 мг **в/в**», «**Вводить
+  внутривенно** по 3000 мг» for a sachet taken by mouth. Route words now come from
+  `currentRouteGroup` (`routeWordsRu`, `isOralLiquid`). (2) **Combination strengths**:
+  «875+125 мг» / «400+80 мг» were parsed as the component printed before «мг», so one
+  amoxiclav 875+125 tablet was shown as «7 таб 125 мг» and 480 mg co-trimoxazole as «6 таб
+  80 мг» on screen, in MIS, Rp, printed form and package maths. `unitStrengthMg`: regimen
+  says «по триметоприму / TMP» → last component; otherwise whichever of {first, sum} is a
+  whole number of units with the fewest units; otherwise first; «млн ЕД» parsed too.
+  (3) **D.t.d. N.** was the number of PACKS in the Rp («N. 5» for 84 tablets) and the units
+  PER DOSE in the printed form («N 4»); both are now the course quantity
+  (`unitsForCourse`: tablets / capsules / sachets / vials, upper bound of a range), «N. ___»
+  when the course is given in words; MIS package maths reuses the same arithmetic.
+  (4) **Course wording**: «Курс лечения: хроническая дней», «курс по ситуации дней.»
+  (asplenia prophylaxis, post-coital fosfomycin) → `courseText` / `daysWord` («7 дней»,
+  «1 день», «2–3 дня», «хроническая», «длительность: по ситуации»); a course in words no
+  longer gets a fabricated 7-day package plan. Unit tests for `unitStrengthMg`,
+  `courseText`, `unitsForCourse`; capsule test moved to the course quantity; jsdom
+  `courseUnits` test.
+- **T14 `b23178c`:** default form chip = the strength that fits the single dose
+  (`bestSolidFormIndex`: whole units, fewest units; half tablets only when nothing
+  divides the dose; DB order breaks ties) — 500 mg amoxicillin opened on the 125 mg
+  dispersible tablet («4 таб 125 мг»), 2000 mg ceftriaxone on the 500 mg vial. The
+  paediatric liquid-form preference is unchanged. jsdom step 7e + test.
+- **T15 `73db627`:** the dilution vial size follows the chosen form («2000 мг флакон» →
+  2000 mg vial in the dilution table and the printed injection details) until the
+  physician picks a vial by hand (`vialFollowsForm`).
 - **Verification per push:** full pytest, `ruff check .`, `npm run validate`,
   `build_html.py --check`, CI + CodeQL green (one red run `b694202` fixed by `12fdad5`).
-  Final: **2729 passed / 28 skipped**, validate 0 errors (+9 owner warnings), html/sw rebuilt.
+  Final: **2737 passed / 28 skipped** (jsdom suite 23 tests, walk gate with 7 oracles),
+  validate 0 errors (+9 owner warnings), html/sw rebuilt.
 
 ## 2026-10-14 (round 4, autonomous backlog «без моих решений»): C-4, E-2, G-1, F-2, F-3, H-1
 
