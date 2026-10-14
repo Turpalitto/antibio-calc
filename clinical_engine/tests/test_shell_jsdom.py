@@ -200,6 +200,17 @@ def test_default_form_chip_follows_the_weight_until_the_physician_picks_one(shel
     assert k["nextDrugPicked"] is False
 
 
+def test_copy_falls_back_to_execcommand_without_navigator_clipboard(shell: dict) -> None:
+    """navigator.clipboard exists only in secure contexts; a shell served over plain
+    http from an intranet host used to throw a TypeError on «Копировать для МИС»
+    and show nothing. The legacy copy is used and the outcome is always toasted."""
+    c = shell["clipboardFallback"]
+    assert c["toast"] == "✅ Назначение скопировано для МИС"
+    assert c["startsWith"].startswith("НАЗНАЧЕНИЕ") and c["copiedLines"] >= 10
+    assert c["leftover"] == 0, "the helper textarea must not stay in the DOM"
+    assert c["failToast"].startswith("Ошибка копирования — буфер обмена недоступен")
+
+
 def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:
     h = shell["historyRestore"]
     assert h["button"] and h["button"].startswith("Открыть расчёт / Амоксициллин + Клавулановая кислота, Внебольничная пневмония у взрослых"), h

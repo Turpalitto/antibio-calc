@@ -4048,9 +4048,7 @@ function copyForMIS(){
     txt += (f.level === 'danger' ? 'ВНИМАНИЕ: ' : 'Предупреждение: ')+f.text+'\n';
   });
 
-  navigator.clipboard.writeText(txt).then(()=>{
-    toast('✅ Назначение скопировано для МИС');
-  }).catch(()=>toast('Ошибка копирования'));
+  copyTextToClipboard(txt, '✅ Назначение скопировано для МИС');
 }
 
 function copyLatinRecipe(){
@@ -4106,9 +4104,34 @@ function copyLatinRecipe(){
     txt += '\n' + (f.level === 'danger' ? '! ВНИМАНИЕ: ' : '! Предупреждение: ') + f.text;
   });
 
-  navigator.clipboard.writeText(txt).then(()=>{
-    toast('✅ Рецепт (Rp:) скопирован в буфер');
-  }).catch(()=>toast('Ошибка копирования'));
+  copyTextToClipboard(txt, '✅ Рецепт (Rp:) скопирован в буфер');
+}
+// navigator.clipboard exists only in secure contexts (https, localhost, file:). A
+// shell served over plain http from an intranet host has none — the old call threw
+// a TypeError and nothing happened, not even the error toast. Fall back to the
+// legacy selection + execCommand copy and always tell the physician the outcome.
+function legacyCopyText(txt){
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.setAttribute('readonly', '');
+    ta.setAttribute('aria-hidden', 'true');
+    ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '0'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    const ok = typeof document.execCommand === 'function' && document.execCommand('copy');
+    document.body.removeChild(ta);
+    return !!ok;
+  }catch(e){ return false; }
+}
+function copyTextToClipboard(txt, okMsg){
+  const failMsg = 'Ошибка копирования — буфер обмена недоступен (нужен https / localhost), выделите текст вручную';
+  const clip = typeof navigator !== 'undefined' ? navigator.clipboard : null;
+  if(clip && typeof clip.writeText === 'function'){
+    clip.writeText(txt).then(()=>toast(okMsg)).catch(()=>{ if(legacyCopyText(txt)) toast(okMsg); else toast(failMsg); });
+    return;
+  }
+  if(legacyCopyText(txt)) toast(okMsg); else toast(failMsg);
 }
 
 function openGuidelineModal(){

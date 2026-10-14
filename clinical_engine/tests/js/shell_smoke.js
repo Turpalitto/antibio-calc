@@ -673,6 +673,25 @@ async function run() {
       type($('patient-age'), '35');
       type($('weight'), '70');
     }
+    // 18. no navigator.clipboard (plain-http intranet host): the legacy execCommand copy
+    //     is used and the physician is always told the outcome (it used to throw silently)
+    {
+      clickDisease('cap_adult');
+      const clip = w.navigator.clipboard;
+      w.navigator.clipboard = undefined;
+      let legacy = '';
+      w.document.execCommand = (cmd) => { legacy = cmd === 'copy' ? (d.activeElement && d.activeElement.value) || '' : ''; return true; };
+      w.copyForMIS();
+      await sleep(0);
+      const viaLegacy = { toast: txt($('toast')), copiedLines: legacy.split('\n').length, startsWith: legacy.slice(0, 20), leftover: d.querySelectorAll('textarea[aria-hidden="true"]').length };
+      w.document.execCommand = () => false;
+      w.copyLatinRecipe();
+      await sleep(0);
+      viaLegacy.failToast = txt($('toast'));
+      delete w.document.execCommand;
+      w.navigator.clipboard = clip;
+      out.clipboardFallback = viaLegacy;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }
