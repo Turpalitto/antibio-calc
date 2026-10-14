@@ -126,6 +126,30 @@ def test_guideline_modal_is_a_labelled_dialog_with_focus_return(shell: dict) -> 
     assert shell["modalAfterEscape"] == {"visible": False, "focusId": "btn-guideline-modal"}
 
 
+def test_cards_are_keyboard_activatable_and_deep_link_restores_scenario(shell: dict) -> None:
+    kb = shell["keyboard"]
+    assert kb["hitRole"] == "button" and kb["hitTabindex"] == "0"
+    assert kb["diseaseAfterEnter"] == "chlamydia_urogenital"
+    assert kb["scenarioRoles"] and all(r == "button/0" for r in kb["scenarioRoles"])
+    assert kb["scenarioAfterSpace"] and kb["scenarioCardActive"] is True
+    assert kb["drugRole"] == "button" and kb["drugAfterEnter"] and kb["resultVisible"] is True
+    assert kb["hash"].startswith("#chlamydia_urogenital/" + kb["scenarioAfterSpace"] + "/L")
+    assert kb["restoredScenario"] == kb["scenarioAfterSpace"]
+
+
+def test_switching_to_a_blocked_nosology_drops_the_previous_regimen(shell: dict) -> None:
+    """Regression: after doxycycline/chlamydia, selecting a source-gate-blocked
+    record left activeDrug in place, so the header print button produced a
+    prescription with the old regimen under the new, blocked diagnosis."""
+    st = shell["stale"]
+    assert st["drugBefore"] == "doxycycline" and st["gate"] == "blocked"
+    assert st["drugAfter"] is None and st["scenarioAfter"] is None
+    assert st["hash"] == "#" + st["blockedId"]
+    assert st["staleCards"] == 0
+    assert st["printed"] == 0 and st["rxDrugs"] == ""
+    assert st["toast"] == "Выберите препарат"
+
+
 def test_route_form_mismatch_falls_back_visibly(shell: dict) -> None:
     """A scenario route with no matching form must not silently widen the
     offer: the shell shows every form AND an amber notice (validate_db.js

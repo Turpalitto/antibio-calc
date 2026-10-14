@@ -71,6 +71,10 @@ body{
   box-shadow:0 0 0 4px var(--primary-glow);
 }
 .dark .input-field:focus{background:#0b1120;border-color:var(--primary)}
+/* keyboard focus must be visible on every activatable element (cards, chips, buttons) */
+button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-visible{
+  outline:2px solid var(--primary);outline-offset:2px;
+}
 .chip{
   cursor:pointer;
   border:1.5px solid var(--slate-200);
@@ -832,7 +836,7 @@ body{
 <div class="mobile-nav hidden md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 px-2 py-2 justify-around no-print z-50" style="display:none">
   <button onclick="document.getElementById('search').focus()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-search mb-1"></i>Поиск</button>
   <button onclick="document.getElementById('btn-history').click()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-history mb-1"></i>История</button>
-  <button onclick="document.getElementById('btn-copy').click()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-copy mb-1"></i>Копир</button>
+  <button onclick="copyForMIS()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-copy mb-1"></i>Копир</button>
   <button onclick="document.getElementById('btn-print').click()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-print mb-1"></i>Печать</button>
   <button onclick="document.getElementById('btn-theme').click()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-moon mb-1" id="theme-icon-m"></i>Тема</button>
 </div>
@@ -910,6 +914,17 @@ let personalCandidates = [];
 let extractedReviewCandidates = [];
 
 function $(id){return document.getElementById(id);}
+// Clickable cards (disease hits, scenarios, drugs) are <div>s: make them real
+// keyboard targets — focusable, announced as buttons, Enter/Space activate.
+function makeActivatable(el, handler, label){
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  if(label) el.setAttribute('aria-label', label);
+  el.onclick = handler;
+  el.onkeydown = (ev)=>{
+    if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){ ev.preventDefault(); handler(ev); }
+  };
+}
 // Service worker registration + update notice. sw.js activates a new build
 // immediately (skipWaiting + clients.claim), so a page that was already
 // controlled keeps running the OLD shell and DB until it is reloaded. A worker
@@ -1798,13 +1813,21 @@ function handleSearch(){
     code.className = 'text-blue-500 font-mono text-xs ml-2 font-bold';
     code.textContent = (d.mkb10 || [])[0] || '';
     item.append(left, code);
-    item.onclick = ()=>selectDisease(d);
+    makeActivatable(item, ()=>selectDisease(d));
     box.appendChild(item);
   });
   box.classList.toggle('hidden', filtered.length === 0);
 }
 function selectDisease(d){
   activeDisease = d;
+  // The previous nosology's scenario/line/drug must not survive the switch:
+  // the always-visible header "Печать" (printBlocked → fillPrescriptionForm)
+  // used to print the OLD regimen under the NEW diagnosis when the new record
+  // was blocked by the source gate or had no age-matching scenario (2026-10-14).
+  activeScenario = null; activeLine = null; activeDrug = null;
+  activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0;
+  $('scenario-list').innerHTML = '';
+  $('drug-list').innerHTML = '';
   $('results-box').classList.add('hidden');
   $('search').value = '';
   const clearBtn = $('search-clear');
@@ -1930,7 +1953,7 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
     chevron.className = 'fas fa-chevron-right text-slate-300';
     row.append(col, chevron);
     card.appendChild(row);
-    card.onclick = ()=>selectScenario(s, card);
+    makeActivatable(card, ()=>selectScenario(s, card));
     list.appendChild(card);
     if(ageMatch && !firstVisible){ firstVisible = s; firstVisibleCard = card; }
     if(ageMatch && s === preferredScenario) preferredCard = card;
@@ -2165,7 +2188,7 @@ function renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, pre
       lineBadge.setAttribute('style', 'border:1px solid');
       lineBadge.textContent = lineLabel;
       card.append(main, lineBadge);
-      card.onclick = ()=>selectDrug(drug, line, card);
+      makeActivatable(card, ()=>selectDrug(drug, line, card));
       list.appendChild(card);
       if(lineIdx === preferredLineIndex && drugIdx === preferredDrugIndex){ preferredCard = card; preferredDrug = drug; preferredLine = line; }
     });
@@ -3578,7 +3601,7 @@ function loadHistory(){
   }
   hist.forEach((e, idx)=>{
     const div = document.createElement('div');
-    div.className = 'premium-card p-3 text-xs cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-700';
+    div.className = 'premium-card p-3 text-xs';
     const dt = new Date(e.ts);
     // e.patient — необработанный ввод пользователя: только textContent, иначе
     // сохранённое Ф.И.О. исполняется как HTML при открытии истории.
@@ -3637,8 +3660,10 @@ function clearHistory(){
   }
 }
 function updateHash(){
-  if(!activeDisease || !activeDrug) return;
-  const h = [activeDisease.id, activeScenario?activeScenario.id:'', activeLine?'L'+activeLine.line_number:''].join('/');
+  if(!activeDisease) return;
+  // #disease[/scenario[/L<line>]] — a nosology without a chosen drug keeps only
+  // its own id (never the previous nosology's scenario/line).
+  const h = [activeDisease.id, activeScenario?activeScenario.id:'', activeLine?'L'+activeLine.line_number:''].join('/').replace(/\/+$/, '');
   history.replaceState(null, '', '#'+h);
 }
 function restoreFromHash(){
@@ -3648,6 +3673,11 @@ function restoreFromHash(){
   const disease = DB.recommendations.find(d=>d.id === parts[0]);
   if(!disease) return;
   selectDisease(disease);
+  // #disease/scenario/L<n> (updateHash): re-open the scenario as well, unless the
+  // source gate hid the scenario step or the scenario does not fit the age
+  // (renderScenarios only pre-selects an age-matching card).
+  const scenario = parts[1] ? (disease.scenarios || []).find(s=>s.id === parts[1]) : null;
+  if(scenario && !$('scenario-step').classList.contains('hidden')) renderScenarios(scenario);
 }
 init();
 </script>

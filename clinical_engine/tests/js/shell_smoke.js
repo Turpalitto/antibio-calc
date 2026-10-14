@@ -201,6 +201,64 @@ async function run() {
     key('Escape');
     out.modalAfterEscape = { visible: visible($('guideline-modal')), focusId: d.activeElement && d.activeElement.id };
 
+    // ---- 7a. keyboard: cards are focusable buttons, Enter/Space activate -------
+    {
+      const key = (el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+      type($('search'), 'хламид');
+      const hits = [...$('results-box').children];
+      const hit = hits.find((c) => /Урогенитальный хламидиоз/i.test(c.textContent)) || hits[0];
+      out.keyboard = { hits: hits.length, hitRole: hit.getAttribute('role'), hitTabindex: hit.getAttribute('tabindex') };
+      key(hit, 'Enter');
+      out.keyboard.diseaseAfterEnter = w.eval('activeDisease && activeDisease.id');
+      const scCards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      out.keyboard.scenarioRoles = scCards.map((c) => c.getAttribute('role') + '/' + c.getAttribute('tabindex'));
+      const target = scCards.find((c) => !c.classList.contains('opacity-50')) || scCards[0];
+      key(target, ' ');
+      out.keyboard.scenarioAfterSpace = w.eval('activeScenario && activeScenario.id');
+      out.keyboard.scenarioCardActive = target.classList.contains('active');
+      const drugCard = d.querySelector('#drug-list .drug-card');
+      out.keyboard.drugRole = drugCard && drugCard.getAttribute('role');
+      key(drugCard, 'Enter');
+      out.keyboard.drugAfterEnter = w.eval('activeDrug && (activeDrug.drug_ref || (activeDrug.combo_ref || []).join("+"))');
+      out.keyboard.resultVisible = visible($('result-step'));
+      // deep link: #disease/scenario restores the scenario, not only the disease
+      const hash = w.location.hash;
+      out.keyboard.hash = hash;
+      w.eval('activeScenario = null; activeDisease = null;');
+      w.eval('restoreFromHash()');
+      out.keyboard.restoredScenario = w.eval('activeScenario && activeScenario.id');
+      // leave the harness in the doxycycline/70 kg state the later steps expect
+      clickDisease('chlamydia_urogenital');
+      clickDrug(/Доксициклин/i);
+      type($('weight'), '70');
+    }
+
+    // ---- 7c. switching to a gate-blocked nosology must drop the previous
+    //          drug: the always-visible header "Печать" used to print the OLD
+    //          regimen under the NEW (blocked) diagnosis ------------------------
+    {
+      w.print = () => { w.__printed = (w.__printed || 0) + 1; };
+      $('rx-drugs').textContent = '';
+      $('rx-trust-line').textContent = '';
+      out.stale = { drugBefore: w.eval('activeDrug && activeDrug.drug_ref') };
+      const blocked = find((r) => r.calculation_blocked && r.id !== 'chlamydia_urogenital');
+      w.selectDisease(blocked);
+      out.stale.blockedId = blocked.id;
+      out.stale.gate = $('source-calculation-block').dataset.sourceStatus;
+      out.stale.drugAfter = w.eval('activeDrug && activeDrug.drug_ref');
+      out.stale.scenarioAfter = w.eval('activeScenario && activeScenario.id');
+      out.stale.hash = w.location.hash;
+      out.stale.staleCards = d.querySelectorAll('#scenario-list .scenario-card, #drug-list .drug-card').length;
+      $('btn-print').click();
+      out.stale.printed = w.__printed || 0;
+      out.stale.rxDrugs = txt($('rx-drugs'));
+      out.stale.toast = txt($('toast'));
+      // back to the working state for the remaining steps
+      clickDisease('chlamydia_urogenital');
+      clickDrug(/Доксициклин/i);
+      type($('weight'), '70');
+    }
+
     // ---- 7b. route/form mismatch is fail-visible: doxycycline (tablets only)
     //          asked for iv → tabs fall back to all forms + amber notice ---------
     out.routeMismatch = { noteHiddenBefore: !visible($('route-mismatch-note')) };

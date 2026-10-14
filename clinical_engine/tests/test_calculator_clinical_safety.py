@@ -201,6 +201,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "diseaseSourceLabel",
     "regimenSummary",
     "solidUnitsPerDose",
+    "makeActivatable",
 ]
 PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\n"
