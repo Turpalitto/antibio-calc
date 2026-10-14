@@ -316,3 +316,13 @@ def test_weight_impossible_for_the_age_and_implausible_age_block_every_output(sh
     assert pl["age150"]["notice"].startswith("Возраст 150 лет — неправдоподобное значение")
     assert pl["age35"]["notice"] == "Возраст 35 лет → группа «взрослые»."
     assert pl["w300"]["hidden"] is False and pl["w300"]["blocking"] == "true" and "> 250 кг" in pl["w300"]["text"]
+
+
+def test_search_is_operable_from_the_keyboard(shell: dict) -> None:
+    """Enter opens the top-ranked result, ArrowDown/ArrowUp walk the list and
+    return to the input, Escape clears the query without touching the calculation."""
+    ks = shell["keyboardSearch"]
+    assert ks["n"] >= 2 and ks["first"] == "Острый тонзиллит / фарингит (БГСА) у взрослых", ks
+    assert ks["focusAfterDown"] is True and ks["focusAfterDown2"] is True and ks["backToInput"] is True, ks
+    assert ks["clearedValue"] == "" and ks["boxHiddenAfterEscape"] is True
+    assert ks["openedDisease"] == "Острый тонзиллит / фарингит (БГСА) у взрослых"

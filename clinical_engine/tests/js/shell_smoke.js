@@ -485,6 +485,26 @@ async function run() {
       out.plausibility.w300 = warn();
       type($('weight'), '70');
     }
+    // 13. keyboard search: Enter opens the top result, arrows walk the list, Escape clears
+    {
+      const key = (el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+      type($('search'), 'тонзилит');
+      const items = [...$('results-box').querySelectorAll('[role="button"]')];
+      out.keyboardSearch = { n: items.length, first: items[0] ? txt(items[0]).split('МКБ')[0].trim() : null };
+      key($('search'), 'ArrowDown');
+      out.keyboardSearch.focusAfterDown = d.activeElement === items[0];
+      key(items[0], 'ArrowDown');
+      out.keyboardSearch.focusAfterDown2 = d.activeElement === items[1];
+      key(items[1], 'ArrowUp');
+      key(items[0], 'ArrowUp');
+      out.keyboardSearch.backToInput = d.activeElement === $('search');
+      key($('search'), 'Escape');
+      out.keyboardSearch.clearedValue = $('search').value;
+      out.keyboardSearch.boxHiddenAfterEscape = !visible($('results-box'));
+      type($('search'), 'тонзилит');
+      key($('search'), 'Enter');
+      out.keyboardSearch.openedDisease = w.eval('activeDisease && activeDisease.name');
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }
