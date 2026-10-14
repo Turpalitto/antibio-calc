@@ -1583,7 +1583,8 @@ function formatAgeDays(days){
 // age_restriction_min в справочнике — свободный текст («6 мес», «18 лет», «28 дней»).
 // Распознаём только явные «число + единица»; всё остальное — null (проверяется вручную).
 function parseAgeRestrictionDays(text){
-  const m = String(text || '').toLowerCase().match(/(\d+(?:[.,]\d+)?)\s*(лет|года|год|г\b|мес|м\b|нед|дн|сут)/);
+  // (JS `\b` is ASCII-only: «г» / «м» need an explicit «not followed by a letter» check)
+  const m = String(text || '').toLowerCase().match(/(\d+(?:[.,]\d+)?)\s*(лет|года|год|г(?![а-яё])|мес|м(?![а-яё])|нед|дн|сут)/);
   if(!m) return null;
   const n = parseFloat(m[1].replace(',', '.'));
   if(!isFinite(n)) return null;
@@ -3095,7 +3096,7 @@ function unitStrengthMg(form, mg, reg, unit){
   if(!parts.length) return null;
   if(parts.length === 1) return parts[0];
   const regText = reg ? [reg.regimen_label, reg.duration_note, reg.note].filter(Boolean).join(' ') : '';
-  if(/по\s+триметоприму|\bTMP\b|\bТМП\b/i.test(regText)) return parts[parts.length - 1];
+  if(/по\s+триметоприму|\bTMP\b|(^|[^а-яё])тмп(?![а-яё])/i.test(regText)) return parts[parts.length - 1];
   if(!(mg > 0)) return parts[0];
   const sum = parts.reduce((a, b) => a + b, 0);
   const whole = [parts[0], sum].filter(st => Math.round(mg / st) >= 1 && Math.abs(mg / st - Math.round(mg / st)) < 1e-6);

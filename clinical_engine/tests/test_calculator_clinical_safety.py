@@ -2029,7 +2029,7 @@ def test_age_parsing_and_group_boundaries() -> None:
         "console.log(JSON.stringify({"
         "days:[parseAgeToDays('10','days'),parseAgeToDays('6','months'),parseAgeToDays('7','years'),parseAgeToDays('','years'),parseAgeToDays('-1','years'),parseAgeToDays('abc','years')],"
         "groups:[ageGroupFromDays(0),ageGroupFromDays(28),ageGroupFromDays(29),ageGroupFromDays(17*365.25+364),ageGroupFromDays(18*365.25),ageGroupFromDays(null)],"
-        "restr:[parseAgeRestrictionDays('6 мес'),parseAgeRestrictionDays('18 лет'),parseAgeRestrictionDays('1 мес'),parseAgeRestrictionDays('28 дней'),parseAgeRestrictionDays('с 3 лет'),parseAgeRestrictionDays('2 нед'),parseAgeRestrictionDays('нет'),parseAgeRestrictionDays(null)],"
+        "restr:[parseAgeRestrictionDays('6 мес'),parseAgeRestrictionDays('18 лет'),parseAgeRestrictionDays('1 мес'),parseAgeRestrictionDays('28 дней'),parseAgeRestrictionDays('с 3 лет'),parseAgeRestrictionDays('2 нед'),parseAgeRestrictionDays('нет'),parseAgeRestrictionDays(null),parseAgeRestrictionDays('12 г'),parseAgeRestrictionDays('6 м.'),parseAgeRestrictionDays('5 мг')],"
         "fmt:[formatAgeDays(10),formatAgeDays(200),formatAgeDays(365.25*1),formatAgeDays(365.25*3),formatAgeDays(365.25*5),formatAgeDays(365.25*21)]"
         "}));"
     )
@@ -2040,7 +2040,10 @@ def test_age_parsing_and_group_boundaries() -> None:
     assert abs(result["restr"][0] - 6 * 30.4375) < 1e-9 and abs(result["restr"][1] - 18 * 365.25) < 1e-9
     assert abs(result["restr"][2] - 30.4375) < 1e-9 and result["restr"][3] == 28
     assert abs(result["restr"][4] - 3 * 365.25) < 1e-9 and result["restr"][5] == 14
-    assert result["restr"][6:] == [None, None]
+    # JS «\b» is ASCII-only: «12 г» / «6 м.» used to fall through to «проверьте вручную»
+    assert result["restr"][6:8] == [None, None] and len(result["restr"]) == 11
+    assert abs(result["restr"][8] - 12 * 365.25) < 1e-9 and abs(result["restr"][9] - 6 * 30.4375) < 1e-9
+    assert result["restr"][10] is None, "«5 мг» is not an age"
     assert result["fmt"] == ["10 дн.", "7 мес", "12 мес", "3 года", "5 лет", "21 год"]
 
 
@@ -2166,10 +2169,11 @@ def test_unit_strength_handles_combination_strengths_and_dose_basis() -> None:
         "const pen={form_type:'powder_for_injection',concentration:'1.2 млн ЕД флакон'};"
         "const tmp={regimen_label:'10 мг/кг (по TMP) на ночь'};"
         "const tmp2={duration_note:'По триметоприму 15-20 мг/кг/сут в 3-4 введения.'};"
+        "const tmp3={regimen_label:'15-20 мг/кг/сут (по ТМП)'};"
         "console.log(JSON.stringify({"
         "amc875:unitStrengthMg(amc,875,null),amc500:unitStrengthMg(amc500,500,null),amcIv:unitStrengthMg(amcIv,1000,null),"
         "cot480:unitStrengthMg(cot,480,null),cot800:unitStrengthMg(cot,800,null),cot960:unitStrengthMg(cot,960,null),"
-        "cotTmp:unitStrengthMg(cot,250,tmp),cotTmp2:unitStrengthMg(cot,350,tmp2),"
+        "cotTmp:unitStrengthMg(cot,250,tmp),cotTmp2:unitStrengthMg(cot,350,tmp2),cotTmp3:unitStrengthMg(cot,350,tmp3),"
         "pen:unitStrengthMg(pen,2.4e6,null,'ЕД'),plain:unitStrengthMg({concentration:'500 мг'},1000,null),"
         "none:unitStrengthMg({concentration:'крем 2%'},100,null),"
         "amcUnits:solidUnitsPerDose(875,amc,null).units,cotUnits:solidUnitsPerDose(480,cot,null).units,"
@@ -2179,6 +2183,7 @@ def test_unit_strength_handles_combination_strengths_and_dose_basis() -> None:
     assert result["amc875"] == 875 and result["amc500"] == 500 and result["amcIv"] == 1000
     assert result["cot480"] == 480 and result["cot800"] == 400 and result["cot960"] == 480
     assert result["cotTmp"] == 80 and result["cotTmp2"] == 80, "«по триметоприму» regimens dose the TMP component"
+    assert result["cotTmp3"] == 80, "«(по ТМП)» alone must be recognised — JS \\b never matches after Cyrillic"
     assert result["pen"] == 1_200_000 and result["plain"] == 500 and result["none"] is None
     assert result["amcUnits"] == 1 and result["cotUnits"] == 1 and result["cotTmpUnits"] == 3
 
