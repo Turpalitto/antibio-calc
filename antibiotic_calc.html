@@ -3412,8 +3412,11 @@ function openGuidelineModal(){
     });
   }
 
-  const rubricatorId = isFederalCrId(activeDisease.cr_id) ? String(activeDisease.cr_id).split('_')[0] : '';
-  const url = rubricatorId
+  // The rubricator id is rebuilt from digits only (never the raw DB string):
+  // the link target is a URL sink and the DB text is parsed from the document.
+  const rubricatorDigits = String(activeDisease.cr_id == null ? '' : activeDisease.cr_id).trim().match(/^(\d{1,8})(?:_\d{1,4})?$/);
+  const rubricatorId = rubricatorDigits ? String(parseInt(rubricatorDigits[1], 10)) : '';
+  const url = rubricatorId && rubricatorId !== 'NaN'
     ? 'https://cr.minzdrav.gov.ru/recomend/' + rubricatorId
     : 'https://cr.minzdrav.gov.ru';
   $('modal-cr-rubricator-link').href = url;
