@@ -1818,6 +1818,31 @@ function diseaseDrugText(d){
   if(d && d.id) cache[d.id] = text;
   return text;
 }
+// One typo per word («пневмания», «тонзилит», «амоксицилин», «синусид»): true
+// when a and b differ by a single substitution, insertion, deletion or swap of
+// two adjacent letters.
+function withinOneEdit(a, b){
+  if(a === b) return true;
+  const la = a.length, lb = b.length;
+  if(Math.abs(la - lb) > 1) return false;
+  let i = 0;
+  while(i < la && i < lb && a[i] === b[i]) i++;
+  if(i === la || i === lb) return true;
+  if(la === lb){
+    if(a.slice(i + 1) === b.slice(i + 1)) return true;
+    return a[i] === b[i + 1] && a[i + 1] === b[i] && a.slice(i + 2) === b.slice(i + 2);
+  }
+  return la > lb ? a.slice(i + 1) === b.slice(i) : a.slice(i) === b.slice(i + 1);
+}
+// A token of 5+ letters matches a word of the text whose prefix of the same
+// length (±1) is within one edit — the user types a stem, with one typo.
+function fuzzyWordHit(text, t){
+  if(t.length < 5) return false;
+  return text.split(/[^a-zа-яё0-9]+/).some(wd => {
+    if(wd.length < t.length - 1) return false;
+    return [t.length, t.length + 1, t.length - 1].some(len => len >= 4 && len <= wd.length && withinOneEdit(t, wd.slice(0, len)));
+  });
+}
 function handleSearch(){
   const rawQ = $('search').value.trim();
   const clearBtn = $('search-clear');
@@ -1845,7 +1870,7 @@ function handleSearch(){
     if(t.length >= 4 && text.includes(t.slice(0, -1))) return true;
     return false;
   };
-  const tokenMatches = (d, t) => {
+  const exactHit = (d, t) => {
     const tClean = t.replace(/[\.\s\-_]/g, '');
     const tEn = t.split('').map(ch => KEY_MAP_RU_EN[ch] || HOMOGLYPHS_RU_EN[ch] || ch).join('').replace(/[\.\s\-_]/g, '');
     if(tClean && mkbHit(d, tClean, tEn)) return true;
@@ -1855,6 +1880,30 @@ function handleSearch(){
     if(stemHit(diseaseDrugText(d), t)) return true;
     return false;
   };
+  // A token that matches nothing in the whole DB exactly is retried with one
+  // typo allowed («пневмания» → пневмония); a token with exact hits is never
+  // widened («цистит» must not drag in цистицеркоз).
+  const typoTokens = new Set(tokens.filter(t => !DB.recommendations.some(d => exactHit(d, t))));
+  // Word-start hit of the token or its stem («тонзил» in «Острый тонзиллит»,
+  // not only inside «паратонзиллит»).
+  const escapeRe = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const tokenAtWordStart = (d, t) => {
+    const stems = [t, t.length >= 4 ? t.slice(0, -1) : null, t.length >= 5 ? t.slice(0, -2) : null].filter(Boolean);
+    const re = new RegExp('(^|[^a-zа-яё0-9])(' + stems.map(escapeRe).join('|') + ')');
+    return re.test(d.name.toLowerCase()) || (d.synonyms || []).some(s => re.test(s.toLowerCase())) || re.test(diseaseDrugText(d));
+  };
+  // 1 = exact hit at a word start, 2 = exact hit inside a word / ICD / CR id,
+  // 3 = one-typo hit (ranked after), 0 = none
+  const tokenLevel = (d, t) => {
+    if(exactHit(d, t)) return tokenAtWordStart(d, t) ? 1 : 2;
+    if(!typoTokens.has(t)) return 0;
+    if(fuzzyWordHit(d.name.toLowerCase(), t)) return 3;
+    if(d.synonyms && d.synonyms.some(s=>fuzzyWordHit(s.toLowerCase(), t))) return 3;
+    if(fuzzyWordHit(diseaseDrugText(d), t)) return 3;
+    return 0;
+  };
+  const tokenMatches = (d, t) => tokenLevel(d, t) > 0;
+  const diseaseLevel = d => tokens.length ? Math.max(0, ...tokens.map(t => tokenLevel(d, t))) : 0;
   const phraseMatches = (d) => {
     if(mkbHit(d, qClean, qEn)) return true;
     if(d.name.toLowerCase().includes(qLower)) return true;
@@ -1863,8 +1912,16 @@ function handleSearch(){
     return false;
   };
   const filtered = DB.recommendations.filter(d => phraseMatches(d) || (tokens.length > 0 && tokens.every(t => tokenMatches(d, t))));
-  // Phrase hits before token/drug hits, computable before blocked; otherwise DB order.
-  const rank = d => (phraseMatches(d) ? 0 : 2) + (d.calculation_blocked ? 1 : 0);
+  // Phrase hits at a word start («цистит» → «Острый цистит», not «холецистит»
+  // first) before phrase hits inside a word, before token/drug hits, before
+  // one-typo hits; computable before blocked; otherwise DB order.
+  const wordStartRe = new RegExp('(^|[^a-zа-яё0-9])'+qLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const phraseRank = d => {
+    if(wordStartRe.test(d.name.toLowerCase())) return 0;
+    if((d.synonyms || []).some(s => wordStartRe.test(s.toLowerCase())) || mkbHit(d, qClean, qEn)) return 2;
+    return 4;
+  };
+  const rank = d => (phraseMatches(d) ? phraseRank(d) : 4 + 2 * diseaseLevel(d)) + (d.calculation_blocked ? 1 : 0);
   filtered.sort((a, b) => rank(a) - rank(b));
 
   box.innerHTML = '';

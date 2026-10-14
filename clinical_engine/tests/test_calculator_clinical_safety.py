@@ -1927,6 +1927,21 @@ def test_regimen_summary_keeps_units_honest() -> None:
     assert result[5] == "однократно"
 
 
+def test_search_typo_tolerance_is_one_edit_on_a_word_prefix() -> None:
+    body = (
+        "console.log(JSON.stringify({"
+        "edits:[withinOneEdit('пневмония','пневмания'),withinOneEdit('тонзилит','тонзиллит'),withinOneEdit('пнвемония','пневмония'),"
+        "withinOneEdit('синусит','синусид'),withinOneEdit('отит','отит'),withinOneEdit('ангина','ангиоп'),withinOneEdit('abc','abcde')],"
+        "hits:[fuzzyWordHit('внебольничная пневмония у детей','пневмания'),fuzzyWordHit('острый тонзиллит','тонзилит'),"
+        "fuzzyWordHit('амоксициллин','амоксицилин'),fuzzyWordHit('острый синусит','синусид'),fuzzyWordHit('отит','отти'),"
+        "fuzzyWordHit('менингококковая инфекция','менингит'),fuzzyWordHit('холецистит','холера')]"
+        "}));"
+    )
+    result = _run(["withinOneEdit", "fuzzyWordHit"], "", body)
+    assert result["edits"] == [True, True, True, True, True, False, False]
+    assert result["hits"] == [True, True, True, True, False, False, False]
+
+
 def test_times_a_day_declension() -> None:
     """Rp Signa / printed form said «1 раза в день» and «6 раза в день»."""
     result = _run(["timesADay"], "", "console.log(JSON.stringify([1,2,3,4,5,6,8,11,12,21,22,0].map(timesADay)));")

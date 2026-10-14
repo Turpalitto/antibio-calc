@@ -175,6 +175,14 @@ def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     assert r["J18"]["n"] >= 2 and "пневмония" in r["J18"]["first"].lower()
     assert r["отит взрослые"]["n"] == 1 and "у взрослых" in r["отит взрослые"]["first"]
     assert r["xyzzy"]["n"] == 0
+    # one typo per word, only for tokens that match nothing exactly; ranked after exact hits
+    assert r["пневмания дети"]["n"] == 1 and r["пневмания дети"]["first"].startswith("Внебольничная пневмония у детей")
+    assert r["тонзилит"]["names"][:2] == ["Острый тонзиллит / фарингит (БГСА) у взрослых", "Острый тонзиллит / фарингит (БГСА) у детей"], r["тонзилит"]
+    assert r["амоксицилин"]["n"] == r["амоксициллин"]["n"]
+    # a word-start hit outranks a hit inside another word; an exact token is never widened
+    assert r["цистит"]["names"][0] == "Острый неосложнённый цистит у женщин" and r["цистит"]["names"][-1] == "Острый холецистит и холангит", r["цистит"]
+    assert "цистицеркоз" not in " ".join(r["цистит"]["names"]).lower()
+    assert r["бронхит"]["names"] == ["Бронхит"], "«бронхит» has an exact hit, so бронхиолит must not be pulled in"
 
 
 def test_cards_are_keyboard_activatable_and_deep_link_restores_scenario(shell: dict) -> None:

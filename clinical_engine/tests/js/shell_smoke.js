@@ -102,12 +102,13 @@ async function run() {
     out.search = { resultsVisible: visible($('results-box')), results: $('results-box').children.length, first: txt($('results-box').firstElementChild) };
     // recall: tokens + Russian endings + ICD + drug names, computable hits first
     out.searchRecall = {};
-    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'отит взрослые', 'xyzzy']) {
+    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'отит взрослые', 'xyzzy', 'пневмания дети', 'тонзилит', 'амоксицилин', 'цистит', 'бронхит']) {
       type($('search'), q);
       const items = [...$('results-box').children];
       out.searchRecall[q] = {
         n: items.length,
         first: items.length ? txt(items[0]).slice(0, 60) : null,
+        names: items.slice(0, 5).map((i) => txt(i).split('МКБ')[0]),
         blockedBeforeComputable: items.findIndex((i) => /расчёт закрыт/i.test(i.textContent)) >= 0
           && items.findIndex((i) => /расчёт закрыт/i.test(i.textContent)) < items.map((i) => !/расчёт закрыт/i.test(i.textContent)).lastIndexOf(true),
       };
