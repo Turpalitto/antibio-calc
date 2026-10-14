@@ -390,3 +390,126 @@ def test_cli_db_flag_and_exit_codes(tmp_path) -> None:
     assert ko.returncode == 1 and json.loads(ko.stdout)["errors"] == 1
     missing = subprocess.run([NODE, str(VALIDATOR), "--db", str(tmp_path / "nope.json"), "--json"], capture_output=True, text=True)
     assert missing.returncode == 2
+
+
+# ---- shell-parity rules (round 6, T46) ---------------------------------------------
+
+
+def _warnings_matching(result: dict, needle: str) -> list[str]:
+    return [w for w in result["warnings"] if needle in w]
+
+
+@pytest.mark.parametrize("value,flagged", [
+    ("6 мес", False), ("18 лет", False), ("28 дней", False), ("3 нед", False), ("2 г", False),
+    ("с рождения", True), ("старше 12", True), (12, True), ("грудной возраст", True),
+])
+def test_age_restriction_min_the_shell_cannot_parse_is_a_warning(value, flagged) -> None:
+    """ageRestrictionFlag() compares only «<N> лет/мес/нед/дн» with the patient's
+    age; any other wording silently degrades to a «проверьте вручную» flag."""
+    db = _db()
+    db["drugs_reference"]["amoxicillin"]["age_restriction_min"] = value
+    result = _validate(db)
+    assert result["errors"] == []
+    hits = _warnings_matching(result, "age_restriction_min")
+    assert bool(hits) is flagged, (value, result["warnings"])
+    if flagged:
+        assert "drugs_reference.amoxicillin" in hits[0] and "проверьте вручную" in hits[0]
+
+
+def test_age_restriction_regex_is_the_shell_regex() -> None:
+    """The validator's AGE_RESTRICTION_RE must be the literal the shell parses with,
+    otherwise the rule drifts from what the screen can actually check."""
+    import re
+
+    template = (ROOT / "antibiotic_calc.html.template").read_text(encoding="utf-8")
+    validator = VALIDATOR.read_text(encoding="utf-8")
+    shell_fn = template[template.index("function parseAgeRestrictionDays"):]
+    shell_rx = re.search(r"\.match\((/.+?/)\)", shell_fn).group(1)
+    validator_rx = re.search(r"const AGE_RESTRICTION_RE = (/.+?/);", validator).group(1)
+    assert shell_rx == validator_rx, (shell_rx, validator_rx)
+
+
+def test_course_regex_accepts_exactly_what_the_shell_plans_a_course_for() -> None:
+    """COURSE_RE (validator) and courseIsNumeric() (shell) must agree sample by sample."""
+    import re
+
+    template = (ROOT / "antibiotic_calc.html.template").read_text(encoding="utf-8")
+    validator = VALIDATOR.read_text(encoding="utf-8")
+    shell_fn = template[template.index("function courseIsNumeric"):]
+    shell_rx = re.search(r"return (/.+?/)\.test", shell_fn).group(1)
+    validator_rx = re.search(r"const COURSE_RE = (/.+?/);", validator).group(1)
+    samples = ["7", "7-10", "7 – 10", "14–21", "0", "7 дней", "7-14 дней", "хроническая", "", " 5 ", "1-", "a-b", "3 недели", "180-365"]
+    script = (
+        f"const a={shell_rx}, b={validator_rx};"
+        f"const s={json.dumps(samples, ensure_ascii=False)};"
+        "console.log(JSON.stringify(s.map(x=>[a.test(x.trim()), b.test(x.trim())])));"
+    )
+    completed = subprocess.run([NODE, "-e", script], capture_output=True, text=True, check=False)
+    assert completed.returncode == 0, completed.stderr
+    pairs = json.loads(completed.stdout)
+    assert all(shell == validator for shell, validator in pairs), list(zip(samples, pairs))
+    assert [p[0] for p in pairs] == [True, True, True, True, True, False, False, False, False, True, False, False, False, True]
+
+
+@pytest.mark.parametrize("value,needle", [
+    ("0", "zero-day course"),
+    ("14-7", "inverted range"),
+    ("400", "longer than 365 days"),
+    ("180-366", "longer than 365 days"),
+    ("7-10", None),
+    (365, None),
+    ("хроническая", None),
+])
+def test_course_sanity_zero_inverted_or_year_long_is_a_warning(value, needle) -> None:
+    db = _db()
+    _regimen(db)["duration_days"] = value
+    result = _validate(db)
+    assert result["errors"] == []
+    hits = [w for w in result["warnings"] if any(k in w for k in ("zero-day", "inverted range", "longer than"))]
+    if needle is None:
+        assert hits == [], hits
+    else:
+        assert len(hits) == 1 and needle in hits[0] and f'duration_days "{value}"' in hits[0], hits
+
+
+@pytest.mark.parametrize("fixed,flagged", [(3000, False), (3100, False), (2000, True), (4000, True)])
+def test_single_times_frequency_disagreeing_with_fixed_daily_is_a_warning(fixed, flagged) -> None:
+    """computeDose() doses from single × freq and shows dose_mg_day_fixed only as a
+    cross-check («несогласованность»); the validator applies the same 5 % + 1 tolerance."""
+    db = _db()
+    _regimen(db)["dose_mg_day_fixed"] = fixed
+    result = _validate(db)
+    assert result["errors"] == []
+    hits = _warnings_matching(result, "disagrees with dose_mg_day_fixed")
+    assert bool(hits) is flagged, (fixed, result["warnings"])
+    if flagged:
+        assert f"(3000) disagrees with dose_mg_day_fixed ({fixed})" in hits[0]
+
+
+def test_component_regimen_keyed_by_a_non_partner_is_a_warning() -> None:
+    """A misspelt partner key is dead data: the shell ignores it and the partner is
+    then reported as lacking a regimen."""
+    db = _db()
+    drug = _drug(db)
+    drug.pop("drug_ref", None)
+    drug["combo_ref"] = ["amoxicillin", "benzylpenicillin_na"]
+    drug["regimens"][0]["component_regimens"] = {"benzylpenicilin_na": {"single_dose_mg": 1000000, "freq_per_day": 4}}
+    result = _validate(db)
+    assert _errors_matching(result, 'lacks a regimen for combination partner "benzylpenicillin_na"')
+    stray = _warnings_matching(result, "is not a combination partner")
+    assert len(stray) == 1 and "component_regimens.benzylpenicilin_na" in stray[0] and "partners: benzylpenicillin_na" in stray[0], result["warnings"]
+    # a component regimen on a plain (non-combination) drug is equally dead
+    plain = _db()
+    _regimen(plain)["component_regimens"] = {"metronidazole": {"single_dose_mg": 500, "freq_per_day": 3}}
+    result = _validate(plain)
+    assert result["errors"] == []
+    stray = _warnings_matching(result, "is not a combination partner")
+    assert len(stray) == 1 and "(not a combination)" in stray[0], result["warnings"]
+
+
+def test_shipped_database_has_no_shell_parity_warnings() -> None:
+    db = json.loads((ROOT / "db" / "antibio_db.json").read_text(encoding="utf-8-sig"))
+    result = _validate(db)
+    needles = ("age_restriction_min", "is not a combination partner", "zero-day", "inverted range", "longer than 365", "disagrees with dose_mg_day_fixed")
+    hits = [w for w in result["warnings"] if any(n in w for n in needles)]
+    assert hits == [], hits[:5]
