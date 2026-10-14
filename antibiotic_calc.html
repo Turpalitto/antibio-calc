@@ -1523,8 +1523,11 @@ function onWeightChange(){
     c.classList.toggle('active', parseFloat(c.dataset.weight) === w);
   });
   if(w && !userPickedAge){
+    const before = activeAge;
     if(w > 0 && w < 40 && activeAge !== 'neonate') setActiveAge('child', {w:w});
     else if(w >= 40 && activeAge === 'child') setActiveAge('adult', {w:w});
+    // the scenario cards' age marks follow the inferred group too (the selection stays)
+    if(activeAge !== before) rerenderScenariosKeepingSelection();
   }
   calculate();
 }

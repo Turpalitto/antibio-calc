@@ -183,6 +183,8 @@ def test_age_group_change_keeps_the_scenario_and_drug_when_the_scenario_fits(she
     assert k["childCeftriaxone"] == "salmonellosis_severe|1|ceftriaxone|im|child|1250"
     assert k["backToAdult"] == "salmonellosis_severe|1|ceftriaxone|im|adult|2000" and k["backBlock"] == ""
     assert k["adultOnlyScenarioAtChildAge"].startswith("cap_adult_out_no_risk|1|amoxicillin|po|child|РАСЧЁТ ЗАБЛОКИРОВАН"), "an adult-only scenario still falls back to the first one, fail-visible"
+    assert k["inferredChild"] == "aom_child_standard|1|amoxicillin|po|child|ok,ok"
+    assert k["inferredAdult"].startswith("aom_child_standard|1|amoxicillin|po|adult|dim,dim|РАСЧЁТ ЗАБЛОКИРОВАН"), "a weight-inferred group change dims the child-only scenarios and blocks, fail-visible"
 
 
 def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:

@@ -634,6 +634,14 @@ async function run() {
       type($('patient-age'), '7');
       type($('weight'), '25');
       keep.adultOnlyScenarioAtChildAge = state() + '|' + txt($('dose-block')).slice(0, 60);
+      // weight-inferred group change re-marks the scenario cards as well (sticky explicit
+      // age disables inference — start from «Новый пациент»)
+      $('new-patient').click();
+      clickDisease('aom_child');
+      type($('weight'), '25');
+      keep.inferredChild = state() + '|' + [...d.querySelectorAll('#scenario-list .scenario-card')].map((c) => (c.classList.contains('opacity-50') ? 'dim' : 'ok')).join(',');
+      type($('weight'), '70');
+      keep.inferredAdult = state() + '|' + [...d.querySelectorAll('#scenario-list .scenario-card')].map((c) => (c.classList.contains('opacity-50') ? 'dim' : 'ok')).join(',') + '|' + txt($('dose-block')).slice(0, 40);
       out.ageKeepsSelection = keep;
       type($('patient-age'), '35');
       type($('weight'), '70');
