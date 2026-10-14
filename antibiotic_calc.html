@@ -3736,14 +3736,6 @@ function fillPrescriptionForm(){
     }
   }
 }
-function formTypeRussian(t){
-  const map = {
-    'tablet':'Таблетки', 'capsule':'Капсулы', 'suspension':'Суспензия', 'syrup':'Сироп',
-    'powder_for_suspension':'Порошок для приготовления суспензии', 'solution_iv':'Раствор для в/в введения',
-    'solution_im':'Раствор для в/м введения', 'granules':'Гранулы', 'topical':'Крем/мазь наружно', 'suppository':'Суппозитории'
-  };
-  return map[t] || t;
-}
 function copyForMIS(){
   if(!activeDrug || !activeDisease){
     toast('Нет активного расчёта');
@@ -3872,10 +3864,6 @@ function copyLatinRecipe(){
   navigator.clipboard.writeText(txt).then(()=>{
     toast('✅ Рецепт (Rp:) скопирован в буфер');
   }).catch(()=>toast('Ошибка копирования'));
-}
-
-function copyPrescription(){
-  copyForMIS();
 }
 
 function openGuidelineModal(){

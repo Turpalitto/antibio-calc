@@ -1617,7 +1617,6 @@ def test_fill_prescription_form_never_parses_a_drug_name_or_solvent_as_markup() 
         "formatTablets",
         "getStandardBottleMl",
         "calculateCoursePackages",
-        "formTypeRussian",
         "fillPrescriptionForm",
     ]
     result = _run_with_consts(
@@ -1898,7 +1897,7 @@ _RX_FUNCS = [
     "ageRegimenBlockReason", "weightBlockReason", "weightWarnReason", "dbBlockReason",
     "calculationBlockReason", "dbTrustState", "buildFingerprint", "buildIdentifier",
     "doseUnitOf", "computeDose", "formatUnits", "fmtDose", "diseaseSourceStatus",
-    "formatTablets", "getStandardBottleMl", "calculateCoursePackages", "formTypeRussian",
+    "formatTablets", "getStandardBottleMl", "calculateCoursePackages",
     "fillPrescriptionForm",
 ]
 _RX_CONSTS = ["LATIN_INN", "LATIN_FORM", "LATIN_ROUTE", "LATIN_FREQ"]
