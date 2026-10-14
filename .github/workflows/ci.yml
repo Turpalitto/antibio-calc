@@ -90,12 +90,57 @@ jobs:
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
 
       # ruff is pinned in uv.lock through the `development` extra; the rule set
-      # lives in pyproject [tool.ruff.lint] (E9, F63, F7, F82).
+      # lives in pyproject [tool.ruff.lint] (E9 + full pyflakes F).
       - name: Install locked ruff
         run: uv sync --frozen --extra development
 
       - name: ruff check
         run: uv run --no-sync ruff check .
+
+  # Audit 2026-10-14 (C-4): known-vulnerability scan of the locked dependency
+  # tree. The core (what the calculator API and the test suite actually run on)
+  # is BLOCKING; the ML extras (torch / docling / transformers — pinned, owner
+  # environment) and the archival audit-site are REPORT-ONLY until the owner
+  # re-pins them. To accept a specific advisory in the core, add
+  # `--ignore-vuln <ID>` with a comment explaining why.
+  audit:
+    name: dependency audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      - name: Export locked requirements
+        run: |
+          uv export --frozen --no-hashes --no-emit-project \
+            --extra clinical --extra tests --extra development -o /tmp/req_core.txt
+          uv export --frozen --no-hashes --no-emit-project --all-extras -o /tmp/req_all.txt
+
+      - name: pip-audit — core (clinical + tests + development) — blocking
+        run: uvx --from "pip-audit==2.10.1" pip-audit -r /tmp/req_core.txt --no-deps --disable-pip
+
+      - name: pip-audit — all extras incl. ML pipeline — report only
+        continue-on-error: true
+        run: |
+          uvx --from "pip-audit==2.10.1" pip-audit -r /tmp/req_all.txt --no-deps --disable-pip \
+            || echo "::warning title=pip-audit (extras)::known vulnerabilities in the ML extras — see the step log; pins are an owner decision (NEXT_TASK.md C-4)"
+
+      - name: npm audit — audit-site (archival dashboard) — report only
+        continue-on-error: true
+        working-directory: audit-site
+        run: |
+          npm audit \
+            || echo "::warning title=npm audit (audit-site)::see audit-site/README.md — braces <=3.0.3 has no fixed release"
 
   gitleaks:
     name: secret scan

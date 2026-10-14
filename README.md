@@ -20,9 +20,13 @@ npm run validate                                     # node db/validate_db.js
 
 CI (`.github/workflows/ci.yml`, `ubuntu-24.04`) runs exactly these steps on
 Python 3.12 / Node 24 plus `python db/build_html.py --check`, a `ruff` job
-(pyflakes + syntax errors, see `[tool.ruff.lint]`) and, on pull requests, a
-gate that fails when `db/antibio_db.json` changes without a `CHANGELOG_DB.md`
-entry (`python db/db_diff.py --git origin/main` writes it). `pytest` on another Python
+(pyflakes + syntax errors, see `[tool.ruff.lint]`), a `dependency audit` job
+(`pip-audit` over the locked core — blocking; ML extras and `audit-site/` —
+report-only, see `NEXT_TASK.md` C-4) and, on pull requests, a gate that fails
+when `db/antibio_db.json` changes without a `CHANGELOG_DB.md` entry
+(`python db/db_diff.py --git origin/main` writes it). A red core audit is fixed
+with `uv lock --upgrade-package <name>`; accepting an advisory needs
+`--ignore-vuln <ID>` in `ci.yml` with a written reason. `pytest` on another Python
 (e.g. 3.11) works for the test suite but `uv sync --frozen` refuses it — use
 a manual venv in that case.
 
