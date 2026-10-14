@@ -224,6 +224,8 @@ PATIENT_CONTEXT_SUPPORT = [
     "formatTablets",
     "ageInputBlockReason",
     "gfrInputCaution",
+    "badNumberInputs",
+    "badInputHint",
     "weightBlockReason",
     "weightWarnReason",
     "isTopicalForm",
@@ -2203,6 +2205,32 @@ def test_implausible_gfr_is_a_patient_level_caution_on_screen_and_in_exports() -
     assert result["neg"]["c"] == "СКФ -5 мл/мин — отрицательное значение, проверьте ввод." and result["neg"]["f"] == ["warn:" + result["neg"]["c"]]
     assert result["zero"]["c"] == "" and len(result["zero"]["f"]) == 1 and result["zero"]["f"][0].startswith("warn:СКФ 0 мл/мин: «Амоксициллин» — СКФ<30"), "GFR 0 runs the renal rule itself"
     assert result["empty"] == {"c": "", "f": [], "none": 0} and result["normal"] == {"c": "", "f": [], "none": 0}
+
+
+def test_unparsed_number_input_is_named_instead_of_asking_for_a_weight() -> None:
+    """A type=number field keeps «12,5» on screen but reports value '' with
+    validity.badInput in dot-decimal locales: the physician sees a weight, the
+    shell sees none. The notice names the field; a clean field changes nothing."""
+    body = (
+        "let activeAge='child';"
+        "const out={};"
+        "const warnText=()=>$('weight-warn').classList.contains('hidden') ? null : $('weight-warn').querySelector('span').textContent;"
+        "$('weight').value=''; $('weight').validity={badInput:true};"
+        "updateWeightWarn(true); out.badWeight={text:warnText(), blocking:$('weight-warn').dataset.blocking, bad:badNumberInputs()};"
+        "$('patient-gfr').validity={badInput:true}; $('patient-age').validity={badInput:true};"
+        "updateWeightWarn(false); out.badAll={text:warnText(), bad:badNumberInputs()};"
+        "$('weight').validity={badInput:false}; $('patient-gfr').validity={badInput:false}; $('patient-age').validity={badInput:false};"
+        "updateWeightWarn(true); out.clean={text:warnText(), hint:badInputHint()};"
+        "$('weight').value='300'; $('weight').validity={badInput:true};"
+        "updateWeightWarn(false); out.blockWins={text:warnText(), blocking:$('weight-warn').dataset.blocking};"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["updateWeightWarn"], "", body)
+    assert result["badWeight"]["bad"] == ["вес"] and result["badWeight"]["blocking"] == "false"
+    assert result["badWeight"]["text"] == "Поле «вес» содержит нечисловое значение и не учитывается в расчёте — введите число, разделитель дробной части: точка (например, 12.5)."
+    assert result["badAll"]["bad"] == ["вес", "возраст", "СКФ"] and result["badAll"]["text"].startswith("Поле «вес», «возраст», «СКФ» содержит")
+    assert result["clean"] == {"text": "Для этого режима нужен вес пациента — доза рассчитывается по мг/кг.", "hint": ""}
+    assert result["blockWins"]["text"].startswith("Вес 300 кг") and result["blockWins"]["blocking"] == "true", "a plausibility block outranks the hint"
 
 
 def test_render_patient_safety_flags_builds_nodes_and_clears() -> None:

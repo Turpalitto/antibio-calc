@@ -500,7 +500,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
         <div>
           <label for="weight" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">1. Вес пациента</label>
           <div class="relative">
-            <input type="number" id="weight" step="0.1" placeholder="0.0" class="input-field w-full rounded-2xl px-4 py-3 text-2xl md:text-3xl font-black tabular-num" oninput="onWeightChange()">
+            <input type="number" id="weight" step="0.1" inputmode="decimal" placeholder="0.0" class="input-field w-full rounded-2xl px-4 py-3 text-2xl md:text-3xl font-black tabular-num" oninput="onWeightChange()">
             <div class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-black text-sm">кг</div>
           </div>
           <!-- Quick weight presets for instant clinical testing -->
@@ -548,7 +548,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
         <div>
           <label for="patient-age" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Возраст <span class="normal-case tracking-normal text-slate-300 dark:text-slate-500">(уточняет группу)</span></label>
           <div class="flex gap-1.5">
-            <input type="number" id="patient-age" min="0" step="1" placeholder="—" class="input-field w-full rounded-2xl px-3 py-3 text-lg font-black tabular-num" oninput="onPatientAgeChange()">
+            <input type="number" id="patient-age" min="0" step="1" inputmode="numeric" placeholder="—" class="input-field w-full rounded-2xl px-3 py-3 text-lg font-black tabular-num" oninput="onPatientAgeChange()">
             <select id="patient-age-unit" aria-label="Единица измерения возраста" class="input-field rounded-2xl px-2 py-3 font-bold text-xs" onchange="onPatientAgeChange()">
               <option value="years">лет</option>
               <option value="months">мес</option>
@@ -566,7 +566,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
         </div>
         <div>
           <label for="patient-gfr" class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">СКФ, мл/мин <span class="normal-case tracking-normal text-slate-300 dark:text-slate-500">(необязательно)</span></label>
-          <input type="number" id="patient-gfr" min="0" step="1" placeholder="—" class="input-field w-full rounded-2xl px-3 py-3 text-lg font-black tabular-num" oninput="onPatientContextChange()">
+          <input type="number" id="patient-gfr" min="0" step="1" inputmode="numeric" placeholder="—" class="input-field w-full rounded-2xl px-3 py-3 text-lg font-black tabular-num" oninput="onPatientContextChange()">
         </div>
       </div>
       <div id="weight-warn" class="hidden mt-3 text-[11px] font-bold text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2" data-blocking="false"><i class="fas fa-exclamation-triangle mr-1"></i><span></span></div>
@@ -1553,12 +1553,25 @@ function weightWarnReason(w, age){
   if(patientAgeDays != null && patientAgeDays < 3 * DAYS_PER_YEAR && w > 25) return 'Вес '+w+' кг при возрасте '+formatAgeDays(patientAgeDays)+' — редкое сочетание для ребёнка до 3 лет. Проверьте вес: мг/кг-доза растёт пропорционально.';
   return '';
 }
+// type="number" fields reject «12,5» when the browser locale expects a dot: the
+// keystrokes stay on screen but .value is '' (validity.badInput) — the physician
+// sees a weight, the shell sees none and asks for one. Name the field instead.
+function badNumberInputs(){
+  return [['weight', 'вес'], ['patient-age', 'возраст'], ['patient-gfr', 'СКФ']]
+    .filter(([id]) => { const el = $(id); return !!(el && el.validity && el.validity.badInput); })
+    .map(([, label]) => label);
+}
+function badInputHint(){
+  const bad = badNumberInputs();
+  if(!bad.length) return '';
+  return 'Поле «'+bad.join('», «')+'» содержит нечисловое значение и не учитывается в расчёте — введите число, разделитель дробной части: точка (например, 12.5).';
+}
 function updateWeightWarn(needWeight){
   const warn = $('weight-warn');
   const w = parseFloat($('weight').value);
   const block = weightBlockReason(w, activeAge);
   const caution = weightWarnReason(w, activeAge);
-  let msg = block || caution;
+  let msg = block || caution || badInputHint();
   if(!msg){
     if(!w){
       if(needWeight) msg = 'Для этого режима нужен вес пациента — доза рассчитывается по мг/кг.';
