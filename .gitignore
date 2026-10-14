@@ -115,3 +115,5 @@ weights/
 # are machine-local; never reviewable project state.
 node_modules/
 .npmrc
+# audit-site/ build output (`npm run build` → single dist/index.html); regenerate, never commit.
+audit-site/dist/
