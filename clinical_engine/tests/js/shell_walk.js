@@ -41,7 +41,8 @@ const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true })
 const type = (el, value) => { el.value = value; fire(el, 'input'); fire(el, 'change'); };
 const BAD = /\bNaN\b|Infinity|undefined|\[object |null мг|null ЕД/;
 
-const PROFILES = [
+// Override for ad-hoc sweeps: SHELL_WALK_PROFILES='[{"name":"child_14.3","age":"3","unit":"years","weight":"14.3"}]'
+const PROFILES = process.env.SHELL_WALK_PROFILES ? JSON.parse(process.env.SHELL_WALK_PROFILES) : [
   { name: 'adult_70', age: '35', unit: 'years', weight: '70' },
   { name: 'child_7y_25kg', age: '7', unit: 'years', weight: '25' },
   { name: 'infant_6m_7kg', age: '6', unit: 'months', weight: '7' },
