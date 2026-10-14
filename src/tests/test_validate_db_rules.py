@@ -430,25 +430,28 @@ def test_age_restriction_regex_is_the_shell_regex() -> None:
 
 
 def test_course_regex_accepts_exactly_what_the_shell_plans_a_course_for() -> None:
-    """COURSE_RE (validator) and courseIsNumeric() (shell) must agree sample by sample."""
+    """COURSE_RE (validator) is the shell's parseCourse() literal; pinned sample by sample
+    so that «7 дней» / «3 недели» are planned and «однократно» / «10!» stay words."""
     import re
 
     template = (ROOT / "antibiotic_calc.html.template").read_text(encoding="utf-8")
     validator = VALIDATOR.read_text(encoding="utf-8")
-    shell_fn = template[template.index("function courseIsNumeric"):]
-    shell_rx = re.search(r"return (/.+?/)\.test", shell_fn).group(1)
-    validator_rx = re.search(r"const COURSE_RE = (/.+?/);", validator).group(1)
-    samples = ["7", "7-10", "7 – 10", "14–21", "0", "7 дней", "7-14 дней", "хроническая", "", " 5 ", "1-", "a-b", "3 недели", "180-365"]
+    shell_rx = re.search(r"^const COURSE_RE = (/.+/[a-z]*);", template, re.M).group(1)
+    validator_rx = re.search(r"^const COURSE_RE = (/.+/[a-z]*);", validator, re.M).group(1)
+    assert shell_rx == validator_rx, (shell_rx, validator_rx)
+    samples = ["7", "7-10", "7 – 10", "14–21", "0", "7 дней", "7-14 дней", "21 день", "3 сут", "3 недели", "10–12 недель",
+               "хроническая", "", " 5 ", "1-", "a-b", "3 месяца", "180-365", "однократно", "10!", "7 дней (минимальный курс)"]
     script = (
-        f"const a={shell_rx}, b={validator_rx};"
+        f"const a={shell_rx};"
         f"const s={json.dumps(samples, ensure_ascii=False)};"
-        "console.log(JSON.stringify(s.map(x=>[a.test(x.trim()), b.test(x.trim())])));"
+        "console.log(JSON.stringify(s.map(x=>a.test(x.trim()))));"
     )
     completed = subprocess.run([NODE, "-e", script], capture_output=True, text=True, check=False)
     assert completed.returncode == 0, completed.stderr
-    pairs = json.loads(completed.stdout)
-    assert all(shell == validator for shell, validator in pairs), list(zip(samples, pairs))
-    assert [p[0] for p in pairs] == [True, True, True, True, True, False, False, False, False, True, False, False, False, True]
+    accepted = json.loads(completed.stdout)
+    expected = [True, True, True, True, True, True, True, True, True, True, True,
+                False, False, True, False, False, False, True, False, False, False]
+    assert accepted == expected, list(zip(samples, accepted))
 
 
 @pytest.mark.parametrize("value,needle", [
@@ -456,7 +459,10 @@ def test_course_regex_accepts_exactly_what_the_shell_plans_a_course_for() -> Non
     ("14-7", "inverted range"),
     ("400", "longer than 365 days"),
     ("180-366", "longer than 365 days"),
+    ("53 недели", "longer than 365 days"),
     ("7-10", None),
+    ("7-10 дней", None),
+    ("52 недели", None),
     (365, None),
     ("хроническая", None),
 ])

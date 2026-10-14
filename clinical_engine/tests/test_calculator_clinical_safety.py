@@ -209,6 +209,8 @@ PATIENT_CONTEXT_SUPPORT = [
     "diseaseDrugText",
     "daysWord",
     "timesADay",
+    "parseCourse",
+    "weeksWord",
     "courseIsNumeric",
     "courseDays",
     "courseText",
@@ -226,7 +228,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "isTopicalForm",
     "latinStrength",
 ]
-PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS"]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
 
 
@@ -2304,6 +2306,40 @@ def test_course_text_and_units_for_course() -> None:
     assert result["uVial"] == {"perDose": 2, "total": 20, "days": 5, "strength": 1000}, "partial vials are rounded up per dose"
     assert result["uChr"] is None, "a course in words has no dispensable quantity"
     assert result["uHalf"] == {"perDose": 0.5, "total": 4, "days": 7, "strength": 500}
+
+
+def test_course_with_a_days_or_weeks_suffix_is_planned_like_a_number() -> None:
+    """duration_days also arrives as «7 дней», «7-14 дней», «21 день», «3 сут»,
+    «3 недели» (90+ regimens in the gated records): the shell plans the course
+    quantity from them and words the course consistently («7–14 дней», not
+    «7-14 дней дн»). Free text with extra words stays words."""
+    body = (
+        "const tab={form_type:'tablet',concentration:'500 мг'};"
+        "const r=(d,f)=>({duration_days:d,freq_per_day:f});"
+        "const probe=d=>({num:courseIsNumeric(r(d,1)),days:courseDays(r(d,1)),text:courseText(r(d,1)),tail:courseTail(r(d,1))});"
+        "console.log(JSON.stringify({"
+        "d7:probe('7 дней'),d714:probe('7-14 дней'),d514:probe('5–14 дней'),d21:probe('21 день'),d1421:probe('14–21 дня'),"
+        "s3:probe('3 сут'),s3b:probe('3 суток'),dn:probe('10 дн.'),w3:probe('3 недели'),w1012:probe('10–12 недель'),w2:probe('2 нед'),w1:probe('1 неделя'),"
+        "once:probe('однократно'),mix:probe('7 дней (минимальный курс)'),bang:probe('10!'),m3:probe('3 месяца'),"
+        "u:unitsForCourse(r('7-14 дней',3),tab,1000),uw:unitsForCourse(r('3 недели',2),tab,500),"
+        "ww:[1,2,5,11,21,22].map(weeksWord)}));"
+    )
+    result = _run([], "", body)
+    assert result["d7"] == {"num": True, "days": 7, "text": "7 дней", "tail": ", курс 7 дней."}
+    assert result["d714"] == {"num": True, "days": 14, "text": "7–14 дней", "tail": ", курс 7–14 дней."}
+    assert result["d514"]["text"] == "5–14 дней" and result["d514"]["days"] == 14
+    assert result["d21"] == {"num": True, "days": 21, "text": "21 день", "tail": ", курс 21 день."}
+    assert result["d1421"]["text"] == "14–21 день" and result["d1421"]["days"] == 21
+    assert result["s3"]["text"] == "3 дня" and result["s3b"]["days"] == 3 and result["dn"] == {"num": True, "days": 10, "text": "10 дней", "tail": ", курс 10 дней."}
+    assert result["w3"] == {"num": True, "days": 21, "text": "3 недели (21 день)", "tail": ", курс 3 недели (21 день)."}
+    assert result["w1012"] == {"num": True, "days": 84, "text": "10–12 недель (84 дня)", "tail": ", курс 10–12 недель (84 дня)."}
+    assert result["w2"]["days"] == 14 and result["w1"]["text"] == "1 неделя (7 дней)"
+    for key in ("once", "mix", "bang", "m3"):
+        assert result[key]["num"] is False and result[key]["days"] == 0, (key, result[key])
+    assert result["once"]["tail"] == ", длительность: однократно." and result["mix"]["text"] == "7 дней (минимальный курс)"
+    assert result["u"] == {"perDose": 2, "total": 84, "days": 14, "strength": 500}
+    assert result["uw"] == {"perDose": 1, "total": 42, "days": 21, "strength": 500}
+    assert result["ww"] == ["неделя", "недели", "недель", "недель", "неделя", "недели"]
 
 
 def test_header_stats_distinguish_computable_from_blocked_records() -> None:

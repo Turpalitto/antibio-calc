@@ -2819,23 +2819,45 @@ function timesADay(n){
   const word = (m10 === 1 && m100 !== 11) ? 'раз' : ((m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) ? 'раза' : 'раз');
   return n+' '+word+' в день';
 }
-// true when duration_days is a number of days or a range («7», «7-10»).
+// A course the shell can plan a quantity for: «7», «7-10», «7 дней», «7–14 дней»,
+// «21 день», «3 сут» (days) and «2 нед» / «3 недели» (weeks, ×7). Anything else
+// («хроническая», «по ситуации», «однократно», «7 дней (минимум)») is words.
+// Mirrored by COURSE_RE in db/validate_db.js (pinned sample-by-sample in tests).
+const COURSE_RE = /^(\d+)(?:\s*[-–]\s*(\d+))?(?:\s*(?:дн\.?|дней|день|дня|сут(?:ок|ки)?\.?|(нед\.?|недел[яиь])))?$/i;
+// {lo, hi, weeks, days} or null for a course in words.
+function parseCourse(reg){
+  const m = String((reg && reg.duration_days) || '').trim().match(COURSE_RE);
+  if(!m) return null;
+  const lo = parseInt(m[1]), hi = m[2] != null ? parseInt(m[2]) : lo;
+  const weeks = !!m[3];
+  return {lo, hi, weeks, days: weeks ? hi * 7 : hi};
+}
 function courseIsNumeric(reg){
-  return /^\d+(\s*[-–]\s*\d+)?$/.test(String((reg && reg.duration_days) || '').trim());
+  return parseCourse(reg) !== null;
 }
 // Days to plan a course for: the upper bound of a range, 0 when the DB gives words.
 function courseDays(reg){
-  const m = String((reg && reg.duration_days) || '').match(/(\d+)(?:\s*[-–]\s*(\d+))?/);
-  return courseIsNumeric(reg) && m ? (parseInt(m[2] || m[1]) || 0) : 0;
+  const c = parseCourse(reg);
+  return c ? c.days : 0;
 }
-// Course wording for the exports: «7 дней», «7–10 дней», or the DB's own words
-// («хроническая», «по ситуации») — never «хроническая дней».
+// «1 неделя / 2 недели / 5 недель»
+function weeksWord(n){
+  n = Math.abs(parseInt(n)) || 0;
+  const m10 = n % 10, m100 = n % 100;
+  if(m10 === 1 && m100 !== 11) return 'неделя';
+  if(m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'недели';
+  return 'недель';
+}
+// Course wording for the exports: «7 дней», «7–10 дней», «3 недели (21 день)», or
+// the DB's own words («хроническая», «по ситуации») — never «хроническая дней».
 function courseText(reg){
   const raw = String((reg && reg.duration_days) || '').trim();
   if(!raw) return 'не указан';
-  if(!courseIsNumeric(reg)) return raw;
-  const m = raw.match(/^(\d+)(?:\s*[-–]\s*(\d+))?$/);
-  return raw.replace(/\s*[-–]\s*/, '–') + ' ' + daysWord(m[2] || m[1]);
+  const c = parseCourse(reg);
+  if(!c) return raw;
+  const span = c.lo === c.hi ? String(c.hi) : c.lo+'–'+c.hi;
+  if(c.weeks) return span+' '+weeksWord(c.hi)+' ('+c.days+' '+daysWord(c.days)+')';
+  return span+' '+daysWord(c.hi);
 }
 // Route wording for the exports from the route the physician actually picked
 // (the screen's route group), never guessed from the form type: fosfomycin
@@ -3538,7 +3560,7 @@ function comboComponentLines(refs, reg, w){
     const unit = doseUnitOf(ref);
     const {singleMg, dailyMg, needWeight} = computeDose(compReg, w, unit);
     if(needWeight) line += 'введите вес пациента (доза по '+unit+'/кг)';
-    else line += 'по '+fmtDose(singleMg, unit)+' '+compReg.freq_per_day+' р/д'+(compReg.duration_days ? ' • '+compReg.duration_days+' дн' : '')+' (сут. '+fmtDose(dailyMg, unit)+')';
+    else line += 'по '+fmtDose(singleMg, unit)+' '+compReg.freq_per_day+' р/д'+(compReg.duration_days ? ' • '+courseText(compReg) : '')+' (сут. '+fmtDose(dailyMg, unit)+')';
     if(compReg.component_note) line += '; '+compReg.component_note;
     lines.push(line);
   });
@@ -3576,7 +3598,7 @@ function renderComboComponents(refs, reg, w){
       const dose = document.createElement('b');
       dose.textContent = fmtDose(singleMg, unit);
       const mid = document.createElement('span');
-      mid.textContent = ' '+compReg.freq_per_day+' р/д'+(compReg.duration_days ? ' • '+compReg.duration_days+' дн' : '')+' ';
+      mid.textContent = ' '+compReg.freq_per_day+' р/д'+(compReg.duration_days ? ' • '+courseText(compReg) : '')+' ';
       const daily = document.createElement('span');
       daily.className = 'opacity-70';
       daily.textContent = '(сут. '+fmtDose(dailyMg, unit)+')';

@@ -26,6 +26,10 @@
  *                  is the exact bug this rule was written for)
  *   provenance   — cr_id is a federal CR id or the record documents its basis
  *                  (cr_note); the source gate must have set calculation_blocked
+ *   shell parity — warnings for data the shell would silently degrade on:
+ *                  age_restriction_min it cannot parse, component_regimens keys
+ *                  that are not partners, zero/inverted/year-long courses,
+ *                  single × freq disagreeing with dose_mg_day_fixed
  * A record that is calculation_blocked cannot reach the dose engine, so its
  * regimen-level defects are reported as warnings instead of blocking the build.
  */
@@ -84,8 +88,9 @@ const DOSE_FIELDS = ['dose_mg_kg_day', 'dose_mg_kg_per_dose', 'dose_mg_day_fixed
 // is compared with the patient's age; anything else degrades to a «проверьте
 // вручную» flag on screen (JS `\b` is ASCII-only, hence the explicit lookaheads).
 const AGE_RESTRICTION_RE = /(\d+(?:[.,]\d+)?)\s*(лет|года|год|г(?![а-яё])|мес|м(?![а-яё])|нед|дн|сут)/;
-// Shell's courseIsNumeric(): a course the shell can plan a quantity for.
-const COURSE_RE = /^(\d+)(?:\s*[-–]\s*(\d+))?$/;
+// Shell's parseCourse(): a course the shell can plan a quantity for — «7»,
+// «7-10», «7 дней», «21 день», «3 сут», «2 нед» / «3 недели» (weeks ×7).
+const COURSE_RE = /^(\d+)(?:\s*[-–]\s*(\d+))?(?:\s*(?:дн\.?|дней|день|дня|сут(?:ок|ки)?\.?|(нед\.?|недел[яиь])))?$/i;
 const MAX_COURSE_DAYS = 365;
 /** ICD-10: "J18.9", "A41", ranges "B20-B24" / "B20-24". */
 const MKB_RE = /^[A-Z]\d{2}(?:\.\d{1,2})?(?:-[A-Z]?\d{2}(?:\.\d{1,2})?)?$/;
@@ -342,16 +347,17 @@ function validateDatabase(db) {
               regimenIssues.push(`${where}: freq_per_day=${JSON.stringify(reg.freq_per_day)} is outside 1..6 per day (a "каждые N ч" parse defect?)${tag}`);
             }
             if (reg.duration_days == null) warnings.push(`${where}: missing duration_days`);
-            if (reg.duration_days != null && !(isFiniteNumber(reg.duration_days) || /^\d+(-\d+)?$/.test(String(reg.duration_days).trim()))) {
-              warnings.push(`${where}: duration_days "${reg.duration_days}" is not a number or "a-b" range`);
+            const courseMatch = reg.duration_days != null ? String(reg.duration_days).trim().match(COURSE_RE) : null;
+            if (reg.duration_days != null && !isFiniteNumber(reg.duration_days) && !courseMatch) {
+              warnings.push(`${where}: duration_days "${reg.duration_days}" is not a number, "a-b" range or «N дней/нед» — the shell cannot plan a course quantity for it`);
             }
             // The shell plans the course quantity (D.t.d. N, «на курс … мл») from
             // the upper bound of a numeric course; a zero, inverted or year-long
             // course is a data defect rather than a prescription.
-            const courseMatch = reg.duration_days != null ? String(reg.duration_days).trim().match(COURSE_RE) : null;
             if (courseMatch) {
-              const lo = parseInt(courseMatch[1], 10);
-              const hi = courseMatch[2] != null ? parseInt(courseMatch[2], 10) : lo;
+              const weeks = courseMatch[3] ? 7 : 1;
+              const lo = parseInt(courseMatch[1], 10) * weeks;
+              const hi = (courseMatch[2] != null ? parseInt(courseMatch[2], 10) : parseInt(courseMatch[1], 10)) * weeks;
               if (lo < 1) warnings.push(`${where}: duration_days "${reg.duration_days}" is a zero-day course${tag}`);
               else if (hi < lo) warnings.push(`${where}: duration_days "${reg.duration_days}" is an inverted range (upper bound below lower)${tag}`);
               else if (hi > MAX_COURSE_DAYS) warnings.push(`${where}: duration_days "${reg.duration_days}" plans a course longer than ${MAX_COURSE_DAYS} days — the shell would dispense that quantity (owner review)${tag}`);
