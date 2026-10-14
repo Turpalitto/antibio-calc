@@ -1,3 +1,30 @@
+## 2026-10-14 (after round 5): remaining NEXT_TASK (work top-down)
+
+1. **Owner-physician queue (unchanged items from the previous section, plus):**
+   - `bacterial_vaginosis` → metronidazole (gel 0.75 %) and clindamycin (cream 2 %):
+     `route` lists `topical` but the only regimens are the oral ones (500 mg × 2 /
+     300 mg × 2); the shell now labels this honestly («в записи БД задана системная
+     схема»), but the record needs a topical regimen (e.g. 5 g cream на ночь × 7) or
+     `topical` removed from `route`.
+   - 9 validator warnings «route … has no matching form in drugs_reference» — all in
+     blocked records (PCP prophylaxis ×5 cotrimoxazole «iv» with oral-only forms; cataract
+     prophylaxis fosfomycin iv; ТКИН / congenital pneumonia amikacin iv and pelvic
+     fracture gentamicin iv with `dilution.im` only). Fix the route or add the
+     iv form/dilution when those records are reviewed.
+   - Real-browser pass (sandbox has none): keyboard focus ring on cards, the SW update
+     banner after a deploy, dark theme without flash, print preview after switching
+     nosologies.
+   - GitHub → Settings → Security: enable private vulnerability reporting
+     (`SECURITY.md` points there); review the CodeQL tab once (should be empty).
+2. **Engineering candidates (no physician decision needed, none urgent):**
+   - History entries store display strings only; restoring a saved calculation would
+     need `disease.id/scenario.id/line/drug` in the entry (format change, 24 h TTL).
+   - `restoreFromHash` on `hashchange` (today only on load) and restoring the line/drug
+     part of `#disease/scenario/L<n>` (currently scenario only — conservative).
+   - `shell_walk.js` could add an independent dose oracle (regimen × weight × caps) once
+     the owner confirms the rounding policy; today it checks age group, tokens, exports.
+3. Everything in the previous section (§1–3, §6) that is marked **Owner** still stands.
+
 ## 2026-10-14: after the audit fix round — remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician review queue (clinical, not engineering):**

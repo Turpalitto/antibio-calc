@@ -22,8 +22,8 @@ issue — it goes through the owner-physician review queue (`NEXT_TASK.md` §1).
 | Component | Security-relevant behaviour |
 |---|---|
 | `antibiotic_calc.html` (shell) | no network calls for dosing; patient history kept in `sessionStorage` with a 24 h TTL; no third-party origins (Tailwind / Font Awesome / fonts self-hosted under `vendor/`) |
-| `server.js` | loopback bind by default; allowlisted static paths only; CSP on HTML; `/v1/*`, `/v2/*` proxied only for loopback peers unless `ENGINE_PROXY_ALLOW_LAN=1`; 1 MiB body cap |
-| `clinical_engine/api` | loopback peer gate on physician-mode endpoints; 413 on oversized bodies; the engine is **not** connected to the calculator |
+| `server.js` | loopback bind by default; allowlisted static paths only; `nosniff`, `Referrer-Policy: no-referrer`, `X-Frame-Options: DENY`, CSP on HTML (`default-src 'self'`, `frame-ancestors 'none'`, `object-src 'none'`); `/v1/*`, `/v2/*` proxied only for loopback peers unless `ENGINE_PROXY_ALLOW_LAN=1`; 1 MiB body cap |
+| `clinical_engine/api` | loopback peer gate on physician-mode endpoints; 413 on oversized bodies; the same security headers / CSP as `server.js` on the shell it serves; the engine is **not** connected to the calculator |
 | `sw.js` | never caches `/v1/*`, `/v2/*` or non-GET requests; only same-origin assets |
 
 ## Guarantees enforced by CI
@@ -35,7 +35,11 @@ issue — it goes through the owner-physician review queue (`NEXT_TASK.md` §1).
 * CodeQL (Python, JavaScript, Actions) on pushes, PRs and weekly.
 * Policy tests: `src/tests/test_static_server_policy.py`,
   `clinical_engine/tests/test_api_peer_policy.py`,
-  `clinical_engine/tests/test_api_static_assets.py` (forbidden paths).
+  `clinical_engine/tests/test_api_static_assets.py` (forbidden paths, header
+  parity with `server.js`), `clinical_engine/tests/test_service_worker.py`
+  (the worker never caches engine routes), `test_calculator_clinical_safety.py`
+  (DB strings are rendered as text, never as markup; CodeQL-found
+  `js/xss-through-dom` on the rubricator link fixed 2026-10-14).
 
 ## Out of scope
 

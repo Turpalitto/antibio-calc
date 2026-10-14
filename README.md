@@ -37,6 +37,19 @@ incomplete stylesheet. `pytest` on another Python
 (e.g. 3.11) works for the test suite but `uv sync --frozen` refuses it — use
 a manual venv in that case.
 
+Browser-level gates run in Node without a browser (`npm ci` installs `jsdom`
+and `axe-core`; the tests skip when they are missing):
+`clinical_engine/tests/test_shell_jsdom.py` drives the built shell with real
+DOM events (search → nosology → drug → weight, age/pregnancy/GFR flags,
+allergy, blocked records, keyboard activation, theme, drawer/modal focus) and
+runs axe-core (0 violations); `test_shell_walk.py` walks every computable
+nosology × scenario × drug × route × form for four patient profiles and
+fails on NaN/undefined/empty results or an age-group mismatch in the regimen
+used; `test_shell_static_ids.py` pins markup wiring (unique ids, every looked-up
+id exists); `test_service_worker.py` runs the real `sw.js` in Node. CodeQL
+(`.github/workflows/codeql.yml`) and Dependabot (`.github/dependabot.yml`)
+cover the Python/JS code and the action/uv/npm pins.
+
 Единый проект для создания и использования базы знаний по антибиотикотерапии из клинических рекомендаций Минздрава РФ.
 
 ## Компоненты
@@ -112,7 +125,14 @@ Pre-commit (опционально): `pre-commit install` — gitleaks, ruff (к
 `server.js` отдаёт только allowlist файлов (`/`, `/antibiotic_calc.html`,
 `/sw.js`, `/manifest.webmanifest`, `/favicon.ico`, `/icons/*`, `/vendor/*`) и
 проксирует `/v1/`, `/v2/` на клинический движок в режиме реального времени
-(никогда не кэширует). Переменные окружения:
+(никогда не кэширует). Статика отдаётся со строгим `ETag` (304 на
+`If-None-Match`) и gzip для текстовых ресурсов; заголовки безопасности и CSP
+на HTML — те же, что ставит FastAPI-адаптер (`test_api_static_assets.py`
+сверяет литералы). `SIGTERM`/`SIGINT` закрывают сервер корректно (systemd /
+Docker stop), занятый порт — выход с кодом 1. После деплоя новой сборки
+открытая вкладка показывает баннер «Доступна новая версия … Перезагрузить»
+(service worker активируется сразу, но старая оболочка работает до
+перезагрузки по решению врача). Переменные окружения:
 
 | Переменная | По умолчанию | Назначение |
 |---|---|---|

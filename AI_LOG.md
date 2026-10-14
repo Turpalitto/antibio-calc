@@ -1,3 +1,69 @@
+## 2026-10-14 (round 5, autonomous «доведи до совершенства», self-generated tasks)
+
+- **Scope rule unchanged:** engineering only; clinical data, FROZEN modules, LICENSE,
+  `corpus_config` default, PR #1 merge untouched. DB sha `56727a27f050…` unchanged.
+- **T4 infra, `9d4c92e`:** `.github/dependabot.yml` (actions / uv / root npm; ML pins and
+  Tailwind 4 ignored), `.github/workflows/codeql.yml` (python + javascript + actions),
+  CI `concurrency`, `.gitattributes` (LF build contract), `SECURITY.md`.
+- **T1 sw.js harness, `4e4a1b1`:** `clinical_engine/tests/js/sw_harness.js` runs the real
+  worker in Node (FakeRequest — Node's `Request` rejects relative URLs);
+  `test_service_worker.py` (13): install/activate/version purge, navigation
+  network-first + offline shell fallback, SWR for `/vendor`, never caches `/v1/`, `/v2/`.
+- **T2 server.js, `3eadcf2`:** strong ETag + `If-None-Match` 304, gzip for text assets
+  (`Vary`, q-values, HEAD parity); `test_static_server_policy.py` +3 (26).
+- **T3 a11y + REAL BUG, `3b45ce8`:** duplicate `id="patient-age"` — the header metadata
+  card had a second, unused age input with the same id, so `getElementById` returned
+  it and the age typed next to the years/months/days selector was **ignored in real
+  browsers** (age-group / child-scheme / notices from round 1 partly dead). Found only
+  because the new jsdom harness drives the visible controls with real DOM events.
+  Fixed (header field removed); a11y pass: `button-name`, `select-name`,
+  `heading-order`, 24× `region`, `empty-heading` → axe-core **0 violations** in main /
+  drawer / modal states. `clinical_engine/tests/js/shell_smoke.js` +
+  `test_shell_jsdom.py` (now 17): search → disease → drug → weight through the DOM,
+  age 7 / 7 мес / 19, pregnancy + GFR flags in banner and MIS text, allergy card,
+  blocked DOSA banner, «БЕЗ КР» banner, theme persistence, drawer/modal Escape +
+  focus return, 0 duplicate ids, landmarks. Root devDeps `jsdom`, `axe-core` (CI `npm ci`).
+- **CodeQL, `688e57a`:** 2 high alerts on `3b45ce8` fixed — rubricator link built from
+  digits only (`js/xss-through-dom`), `src/pipeline/database.py` logs the kind of a
+  non-finite value, not the value (`py/clear-text-logging`). Check-run: «No new alerts».
+- **API headers, `000701b`:** `clinical_engine/api/app.py` middleware mirrors
+  `server.js` (nosniff, Referrer-Policy, X-Frame-Options DENY, CSP on HTML);
+  `test_api_static_assets.py` extracts both literals from `server.js` and pins parity.
+- **SW update notice, `b694202` + `12fdad5`:** `#update-banner` («Доступна новая версия
+  … Перезагрузить») when a new worker activates over a controlled page
+  (`registerServiceWorker`); explicit reload, never mid-calculation.
+- **Validator + shell, `54c43d4`:** new `validate_db.js` rule — a scenario route with no
+  matching form in `drugs_reference` (mirrors `renderRouteTabs` grouping incl. dilution
+  rules); 9 warnings, **all in blocked records** (owner queue below). Shell no longer
+  falls back to every form silently: `#route-mismatch-note`. `test_validate_db_rules.py` +3.
+- **REAL BUG (clinical safety), `fbc4048`:** after a calculation, selecting a nosology
+  that the source gate blocks (or one without an age-matching scenario) left
+  `activeDrug`/`activeScenario` from the previous nosology; the always-visible header
+  «Печать» then printed the **old regimen under the new (blocked) diagnosis** (jsdom
+  reproduction: doxycycline/chlamydia → LGV blocked → prescription form filled with
+  doxycycline, trust line «status blocked»). `selectDisease` now resets
+  scenario/line/drug + clears both card lists; hash is `#disease` until a drug is chosen.
+  Same commit: disease hits / scenario / drug cards are `role=button tabindex=0` with
+  Enter/Space (`makeActivatable`) and a visible focus ring; deep link
+  `#disease/scenario` restores the scenario; mobile-nav «Копир» called a non-existent
+  `btn-copy` (dead button) → `copyForMIS()`; history cards no longer pretend to be clickable.
+- **`968b0d2`:** saved dark theme applied in `<head>` before first paint (no flash);
+  `server.js` SIGTERM/SIGINT graceful close, EADDRINUSE exits 1 loudly; tests.
+- **`2068492`:** `test_shell_static_ids.py` — unique markup ids, every `$('id')` exists,
+  `for=`/`aria-*` targets exist, inline `on*=` handlers call defined functions.
+- **REAL DEFECT (exports), `5d16c40`:** topical forms (2 % clindamycin cream carries
+  `concentration_mg_per_ml`) got a bottle course from the ORAL mg regimen: MIS
+  «Потребность на курс: 210 мл → 3 фл.», Latin Rp «D.t.d. N. 3». `calculateCoursePackages`
+  returns null for `topical`/`drops`; result-card label follows the route; MIS marks a
+  systemic regimen under a topical form. New `clinical_engine/tests/js/shell_walk.js` +
+  `test_shell_walk.py`: every computable nosology × age-matching scenario × drug × route
+  tab × form chip for adult 70 kg / child 7 y 25 kg / infant 6 mo 7 kg / neonate 10 d
+  3.2 kg = 1220 states, 982 computed + exported (MIS + prescription form): no NaN /
+  Infinity / undefined / empty result, regimen age_group == patient group (`fa60736`).
+- **Verification per push:** full pytest, `ruff check .`, `npm run validate`,
+  `build_html.py --check`, CI + CodeQL green (one red run `b694202` fixed by `12fdad5`).
+  Final: **2729 passed / 28 skipped**, validate 0 errors (+9 owner warnings), html/sw rebuilt.
+
 ## 2026-10-14 (round 4, autonomous backlog «без моих решений»): C-4, E-2, G-1, F-2, F-3, H-1
 
 - **Scope rule:** every engineering item left in NEXT_TASK §6 that needs no

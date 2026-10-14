@@ -1,3 +1,26 @@
+## 2026-10-14 (round 5, autonomous improvement loop): jsdom end-to-end gates, 3 real shell defects, infra
+
+- Three shell defects found by driving the built HTML with real DOM events (none visible
+  to handler-level unit tests): (1) duplicate `id="patient-age"` swallowed the typed age;
+  (2) a stale `activeDrug` survived switching to a gate-blocked nosology — header «Печать»
+  printed the previous regimen under the new diagnosis; (3) topical forms got a
+  bottle/tablet course estimate and `D.t.d. N. 3` from the oral mg regimen. All fixed with
+  regressions (`test_shell_jsdom.py` 17, `test_shell_walk.py` 2 — 1220 DOM states × 4
+  patient profiles, `test_shell_static_ids.py` 4, `test_calculator_clinical_safety.py` +1).
+- a11y: axe-core 0 violations (main/drawer/modal); cards keyboard-activatable; focus ring;
+  live regions; dark theme before first paint; SW update banner with explicit reload.
+- Validator: route/form mismatch rule (9 warnings, all in blocked records). Shell:
+  fail-visible `#route-mismatch-note`.
+- Infra: Dependabot, CodeQL (2 highs fixed, «No new alerts»), CI concurrency,
+  `.gitattributes`, `SECURITY.md`; server.js ETag/304/gzip + graceful SIGTERM; FastAPI
+  security-header/CSP parity with server.js; sw.js behavioural harness (13).
+- Tests: **2729 passed / 28 skipped / 0 failed**; validate 0 errors; ruff clean; build fresh;
+  CI + CodeQL green per push (`fa60736` last). DB unchanged (`56727a27f050…`).
+- Owner queue additions (clinical): 9 route/form gaps in blocked records (cotrimoxazole
+  «iv» with oral-only forms ×5, fosfomycin iv, amikacin/gentamicin iv with im-only
+  dilution ×3); `bacterial_vaginosis` — metronidazole/clindamycin topical forms share the
+  ORAL regimen (gel/cream need their own regimen or `topical` dropped from `route`).
+
 ## 2026-10-14 (round 4, autonomous backlog): static Tailwind, dependency audit in CI, root archived, slim AGENTS.md, extraction e2e fixture
 
 - H-1: Play-CDN `vendor/tailwind.js` (407 KB JIT compiler in the browser) → static

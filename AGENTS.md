@@ -60,7 +60,7 @@
 
 ```
 uv python install 3.12 && uv sync --frozen --extra clinical --extra tests   # requires-python ==3.12.*
-python -m pytest -q                      # все testpaths (pyproject): 2026-10-14 → 2684 passed, 28 skipped
+python -m pytest -q                      # все testpaths (pyproject): 2026-10-14 → 2729 passed, 28 skipped
 python -m pytest tests -q                # архив RC030: 404 passed
 npm run validate                         # node db/validate_db.js — 0 errors обязательны
 python db/build_db.py                    # пересборка БД (НЕ использовать --skip-source-gate: он снимает статусы гейта)
