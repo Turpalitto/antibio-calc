@@ -10,7 +10,9 @@ profile weight (single and daily tiles — «15 млн ЕД» for 1 050 000 was 
 this way), ml on screen = dose / concentration (suspension or selected vial),
 printed «D.t.d. N» = per dose × р/д × days, MIS / Rp dose vs screen (mg and
 ЕД), combination-partner dose = component_regimens × weight, route words in
-every export, course units (MIS = Rp = printed form), course wording. ~30 s in jsdom; skipped when
+every export, course units (MIS = Rp = printed form), course wording,
+number-word grammar («1 раза в день» shipped once), screen/MIS large-volume
+warning parity. ~30 s in jsdom; skipped when
 Node.js or the root devDependencies are absent (CI installs them).
 """
 
@@ -63,6 +65,10 @@ def test_walk_covers_every_computable_nosology_for_every_profile(walk: dict) -> 
     for name, stats in walk["profiles"].items():
         assert stats["doseOracle"] >= stats["computed"] - 1 and stats["rpDoseOracle"] >= stats["computed"] - 1, (name, stats)
     assert adult["partnerOracle"] >= 30, adult
+    # number-word grammar («1 раз / 2 раза / 5 раз в день», «2 дня / 5 дней») on every export,
+    # and the large-volume warning shown on screen is also in the chart text (child profile)
+    assert all(stats["grammarOracle"] == stats["computed"] for stats in walk["profiles"].values()), walk["profiles"]
+    assert walk["profiles"]["child_7y_25kg"]["volumeWarnOracle"] >= 10, walk["profiles"]["child_7y_25kg"]
     # neonates are mostly blocked (no neonatal scheme) — that is the safety design, not a gap
     neonate = walk["profiles"]["neonate_10d_3kg"]
     assert neonate["blocked"] > neonate["computed"], neonate

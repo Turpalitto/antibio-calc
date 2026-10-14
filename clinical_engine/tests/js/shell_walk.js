@@ -206,9 +206,11 @@ setTimeout(() => {
                   const group = w.eval('currentRouteGroup');
                   const ROUTE_WORDS = { po: /внутрь/, im: /в\/м|внутримышечно/, iv: /в\/в|внутривенно/, topical: /наружно|местно/ };
                   const want = ROUTE_WORDS[group];
+                  const misText = w.__copied;
                   w.__copied = '';
                   w.copyLatinRecipe();
                   const rp = w.__copied || '';
+                  w.__rp = rp; w.__copied = misText;
                   const rpSigna = (rp.split('\n').find((l) => l.startsWith('S.:')) || '');
                   if (!rp) out.findings.push({ kind: 'rp_empty', where, sample: txt($('toast')) });
                   else if (BAD.test(rp)) out.findings.push({ kind: 'rp_bad_token', where, sample: rp.match(/.{0,40}(NaN|Infinity|undefined|\[object |null мг|null ЕД).{0,40}/)[0] });
@@ -259,6 +261,30 @@ setTimeout(() => {
                   const ROUTE_WORDS = { po: /внутрь/, im: /в\/м|внутримышечно/, iv: /в\/в|внутривенно/, topical: /наружно|местно/ };
                   const signa = txt($('rx-signa-text'));
                   if (ROUTE_WORDS[group] && /\d/.test(signa) && !ROUTE_WORDS[group].test(signa)) out.findings.push({ kind: 'rx_route_missing', where, sample: `${group}: «${signa.slice(0, 90)}»` });
+                  // grammar oracle: «1 раз / 2 раза / 5 раз в день», «1 день / 2 дня / 5 дней»
+                  // across every text the physician can paste or print («1 раза в день» shipped once)
+                  const everything = [w.__copied || '', w.__rp || '', signa, txt($('rx-drugs')), txt($('res-po')), txt($('res-inj'))].join('\n');
+                  // (JS `\b` is ASCII-only — Cyrillic word ends need an explicit lookahead)
+                  const END = '(?![а-яё])';
+                  const GRAMMAR = [
+                    // («не чаще 1 раза в 10 дней» is correct — only the daily-frequency phrase is checked)
+                    [new RegExp('(^|[^\\d.,])(?:1|21|31)\\s+раза\\s+в\\s+(?:день|сутки)', 'u'), 'N раза (1/21)'],
+                    [new RegExp('(^|[^\\d.,])(?:[5-9]|1\\d|20|2[5-9]|30)\\s+раза\\s+в\\s+(?:день|сутки)', 'u'), 'N раза (5–20)'],
+                    [new RegExp('(^|[^\\d.,])(?:[2-4]|2[2-4])\\s+раз\\s+в\\s+день', 'u'), 'N раз в день (2–4)'],
+                    [new RegExp('(^|[^\\d.,–-])(?:[2-4]|2[2-4])\\s+дней' + END, 'u'), 'N дней (2–4)'],
+                    [new RegExp('(^|[^\\d.,–-])(?:[5-9]|1\\d|20)\\s+дня' + END, 'u'), 'N дня (5–20)'],
+                    [new RegExp('(^|[^\\d.,–-])(?:1|21)\\s+(?:дня|дней)' + END, 'u'), 'N дня/дней (1/21)'],
+                  ];
+                  GRAMMAR.forEach(([re, label]) => {
+                    const m = everything.match(re);
+                    if (m) out.findings.push({ kind: 'grammar_number_word', where, sample: `${label}: «${everything.slice(Math.max(0, m.index - 30), m.index + 40).replace(/\n/g, ' ⏎ ')}»` });
+                  });
+                  stats.grammarOracle = (stats.grammarOracle || 0) + 1;
+                  // large-volume warning parity: the screen and the chart text agree
+                  const screenWarn = /Разовый объём велик/.test(txt($('res-po')));
+                  const misWarn = /Предупреждение: разовый объём/.test(w.__copied || '');
+                  if (screenWarn !== misWarn) out.findings.push({ kind: 'volume_warning_parity', where, sample: `screen ${screenWarn} vs MIS ${misWarn}` });
+                  if (screenWarn) stats.volumeWarnOracle = (stats.volumeWarnOracle || 0) + 1;
                 }
                 stats.exports++;
               }
