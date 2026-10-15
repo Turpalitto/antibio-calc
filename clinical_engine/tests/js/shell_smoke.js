@@ -360,6 +360,10 @@ async function run() {
       out.combo.mis = w.__copied || '';
       w.fillPrescriptionForm();
       out.combo.rx = txt($('rx-drugs'));
+      w.__copied = '';
+      w.copyLatinRecipe();
+      await sleep(0);
+      out.combo.rp = w.__copied || '';
     }
 
     // ---- 7e. default form = the strength that fits the single dose -------------

@@ -293,6 +293,15 @@ setTimeout(() => {
                   const rpDtd = rp.match(/D\.t\.d\. N\. (\d+)/);
                   if (misTotal && rpDtd && misTotal[1] !== rpDtd[1]) out.findings.push({ kind: 'course_units_mis_vs_rp', where, sample: `MIS ${misTotal[1]} таб vs Rp N. ${rpDtd[1]}` });
                   if (rpDtd) w.__rpDtd = rpDtd[1]; else w.__rpDtd = null;
+                  // combination oracle (T83): every partner the screen lists reaches
+                  // both exports by INN — the MIS «Компонент комбинации: <INN>» line and
+                  // the Rp «<Latin> (<INN>)» line after the Signa
+                  const partnerInns = JSON.parse(w.eval('JSON.stringify(getDrugRefs(activeDrug).slice(1).map((k) => (DB.drugs_reference[k] || {}).inn || k))'));
+                  partnerInns.forEach((inn) => {
+                    if (!mis.includes('Компонент комбинации: ' + inn)) out.findings.push({ kind: 'mis_partner_missing', where, sample: inn });
+                    if (!rp.includes('(' + inn + ')')) out.findings.push({ kind: 'rp_partner_missing', where, sample: inn });
+                    else stats.partnerExportOracle = (stats.partnerExportOracle || 0) + 1;
+                  });
                   stats.unitsOracle = (stats.unitsOracle || 0) + (misTotal && rpDtd ? 1 : 0);
                   // course wording: a course given in words must never become «… дней»
                   const courseBad = (mis + '\n' + rp).match(/(хроническая|по ситуации|не указан[а-я]*|однократно) дн/);

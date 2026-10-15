@@ -375,6 +375,12 @@ def test_combination_partner_dose_is_exported_not_only_shown(shell: dict) -> Non
     assert "Компонент комбинации: Гентамицин — по 350 мг 1 р/д" in cb["mis"]
     assert "Gentamicini" in cb["rx"] and "Гентамицин — по 350 мг 1 р/д" in cb["rx"]
     assert "Компоненты комбинации (одновременно)" in cb["rx"]
+    # T83: the copied Latin Rp named ampicillin only — the partner now follows the Signa
+    rp_lines = cb["rp"].split("\n")
+    assert rp_lines[0].startswith("Rp.: Ampicillini") and rp_lines[2].startswith("S.: "), cb["rp"]
+    assert "Одновременно (компоненты комбинации, отдельные Rp.):" in rp_lines, cb["rp"]
+    partner = [ln for ln in rp_lines if ln.startswith("Gentamicini (Гентамицин) ")]
+    assert partner and "— по 350 мг 1 р/д" in partner[0] and "(сут. 350 мг)" in partner[0], cb["rp"]
 
 
 def test_switching_to_a_blocked_nosology_drops_the_previous_regimen(shell: dict) -> None:

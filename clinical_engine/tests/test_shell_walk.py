@@ -86,6 +86,8 @@ def test_walk_covers_every_computable_nosology_for_every_profile(walk: dict) -> 
     for name, stats in walk["profiles"].items():
         assert stats["doseOracle"] >= stats["computed"] - 1 and stats["rpDoseOracle"] >= stats["computed"] - 1, (name, stats)
     assert adult["partnerOracle"] >= 30, adult
+    # T83: every partner the screen lists is named (INN) in the MIS text AND the Latin Rp
+    assert adult["partnerExportOracle"] >= adult["partnerOracle"], adult
     # number-word grammar («1 раз / 2 раза / 5 раз в день», «2 дня / 5 дней») on every export,
     # and the large-volume warning shown on screen is also in the chart text (child profile)
     assert all(stats["grammarOracle"] == stats["computed"] for stats in walk["profiles"].values()), walk["profiles"]

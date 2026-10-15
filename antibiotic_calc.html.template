@@ -3832,6 +3832,7 @@ function renderDilutionBlock(ref, routeKey, singleMg, selectedVial, routeData){
 // ceftriaxone's 2000 mg for metronidazole; the validator rejects such records,
 // and the shell says so instead of inventing a number.
 const COMPONENT_REGIMEN_MISSING = 'режим компонента не задан в БД — дозу уточните по КР (расчёт не выполнен)';
+const RP_COMBO_HEADER = 'Одновременно (компоненты комбинации, отдельные Rp.):';
 function componentRegimen(reg, refKey){
   const compReg = reg && reg.component_regimens && reg.component_regimens[refKey];
   return compReg && typeof compReg === 'object' ? compReg : null;
@@ -4308,6 +4309,21 @@ function copyLatinRecipe(){
   let txt = 'Rp.: ' + latinName + ' ' + latinStrength(form.concentration) + '\n';
   txt += 'D.t.d. ' + packageDtd + ' in ' + latinForm + '\n';
   txt += 'S.: ' + signa;
+  // a combination regimen (ceftriaxone + metronidazole) is several products: the
+  // printed form and the MIS text list the partners, the copied Rp used to name the
+  // main drug only — the physician pasting it lost half of the therapy
+  if(refs.length > 1){
+    txt += '\n' + RP_COMBO_HEADER;
+    const componentLines = comboComponentLines(refs.slice(1), reg, w);
+    refs.slice(1).forEach((refKey, i)=>{
+      const cref = DB.drugs_reference[refKey];
+      if(!cref) return;
+      const clatin = LATIN_INN[refKey] || cref.inn;
+      const cform = cref.forms && cref.forms[0];
+      const dose = componentLines[i] ? componentLines[i].replace(/^Компонент комбинации: [^—]+— /, '') : COMPONENT_REGIMEN_MISSING;
+      txt += '\n' + clatin + ' (' + cref.inn + ') ' + latinStrength(cform ? cform.concentration : '') + ' — ' + dose;
+    });
+  }
   exportSafetyFlags(refs).forEach(f=>{
     txt += '\n' + (f.level === 'danger' ? '! ВНИМАНИЕ: ' : '! Предупреждение: ') + f.text;
   });
