@@ -584,3 +584,17 @@ def test_history_saved_after_a_reload_with_the_tab_store_is_visible(shell: dict)
     assert h["afterOptOut"] == "2|0|true", h
     assert h["afterSaveMemoryOnly"] == "3|0", h
 
+
+def test_history_restore_of_a_record_closed_by_the_source_gate_stays_closed(shell: dict) -> None:
+    """An entry saved before a later DB build closed its record («расчёт закрыт»):
+    «Открыть расчёт» opens the nosology under the block notice only, and the next
+    age input / chip keeps it closed; MIS refuses. Before T66 the stale result
+    stayed on screen after the restore and the next age input rebuilt the scenarios,
+    computed and printed «Amoxicillini 500 mg …» under the red notice."""
+    g = shell["historyGatedRestore"]
+    assert g["saved"] == "amoxicillin|true", g
+    closed = "cap_adult|null|null|0|false|РАСЧЁТ ЗАБЛОКИРОВАН: источник отозван"
+    assert g["restored"] == "false|Открыта нозология; сценарий из истории недоступен|" + closed, g
+    assert g["afterAge"] == closed, g
+    assert g["misToast"] == "Нет активного расчёта" and g["printed"] == "", g
+

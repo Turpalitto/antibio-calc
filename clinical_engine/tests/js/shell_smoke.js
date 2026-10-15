@@ -990,6 +990,37 @@ async function run() {
       w.loadHistory();
       out.historyReload = h;
     }
+    // 28. «Открыть расчёт» on an entry whose record has since been closed by the source
+    //     gate (a later DB build): the nosology opens under the block notice only — no
+    //     scenario / drug / dose, and the next age input keeps it closed
+    {
+      clickDisease('cap_adult');
+      type($('patient-age'), '40');
+      type($('weight'), '70');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const g = { saved: [w.eval('activeDrug && getDrugRefs(activeDrug).join("+")'), visible($('res-po'))].join('|') };
+      w.saveToHistory();
+      const entry = JSON.parse(w.eval('JSON.stringify(historyEntries[0])'));
+      const rec = w.eval("DB.recommendations.find(r => r.id === 'cap_adult')");
+      try {
+        rec.calculation_blocked = true; rec.calculation_block_reason = 'источник отозван';
+        w.resetDisease();
+        const ok = w.restoreHistoryEntry(entry);
+        const state = () => [String(w.eval('activeDisease && activeDisease.id')), String(w.eval('activeScenario && activeScenario.id')), String(w.eval('activeDrug && getDrugRefs(activeDrug).join("+")')), d.querySelectorAll('#scenario-list .scenario-card').length, visible($('res-po')) || visible($('res-inj')), visible($('source-calculation-block')) ? txt($('source-calculation-block')) : null].join('|');
+        g.restored = [ok, txt($('toast')), state()].join('|');
+        type($('patient-age'), '45');
+        d.querySelector('#age-group button[data-age="adult"]').click();
+        g.afterAge = state();
+        w.copyForMIS();
+        g.misToast = txt($('toast'));
+        w.dispatchEvent(new w.Event('beforeprint'));
+        g.printed = txt($('rx-drugs'));
+      } finally {
+        rec.calculation_blocked = false; delete rec.calculation_block_reason;
+        w.resetDisease();
+      }
+      out.historyGatedRestore = g;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

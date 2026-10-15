@@ -82,6 +82,9 @@ setTimeout(async()=>{
     regimen:()=>{ const c=q('#regimen-list button'); if(c.length) pick(c).click(); },
     vial:()=>{ const c=q('#vial-list button'); if(c.length) pick(c).click(); },
     newPatient:()=>$('new-patient').click(),
+    // a weight typed for a fresh patient (no explicit age yet) infers the group and shows
+    // the inference notice — the plain walk sets an explicit age early and rarely gets here
+    freshWeight:()=>{ $('new-patient').click(); type($('weight'),pick(['3.2','25','45','70'])); },
     resetDisease:()=>w.resetDisease(),
     search:()=>{ type($('search'),pick(['пневмония','цистит','отит','J18','амоксициллин','сепсис','ин'])); const hits=[...d.querySelectorAll('#results-box > div[role=button]')]; if(hits.length) pick(hits).click(); },
     hash:()=>{ const r=pick(computable); const sc=pick(r.scenarios||[]); w.location.hash='#'+r.id+(sc?'/'+sc.id+(rnd()<0.5?'/L'+pick(sc.lines).line_number:''):''); },
@@ -174,6 +177,40 @@ setTimeout(async()=>{
       const situational=/^(Для этого режима нужен вес|Группа «новорождённые» выбрана без указания возраста)/.test(wwText);
       if(exp){ tally('weight_warn_expected'); if(!wwVis||wwText!==exp) push('weight_warn_stale',`visible ${wwVis} «${wwText.slice(0,60)}» vs «${exp.slice(0,60)}»`); }
       if(!exp&&wwVis&&!situational) push('weight_warn_stale',`visible without a reason: «${wwText.slice(0,80)}»`);
+    }
+    // the explicit-age notice mirrors patientAgeDays / activeAge (its «не соответствует»
+    // flag must follow every chip click), the weight-inference notice never outlives a
+    // typed age or a chip click
+    {
+      const el=$('age-explicit-notice'); const vis=shown(el); const days=w.eval('patientAgeDays');
+      if(vis!==(days!=null)) push('age_explicit_notice_stale',`visible ${vis} patientAgeDays ${days}`);
+      else if(vis){
+        tally('age_explicit_notice');
+        const t=txt(el); const implausible=w.eval('ageInputBlockReason()||""').replace(/\s+/g,' ').trim();
+        if(implausible){ if(t!==implausible) push('age_explicit_notice_text',`«${t.slice(0,60)}» vs «${implausible.slice(0,60)}»`); }
+        else {
+          const g=w.eval('ageGroupFromDays(patientAgeDays)'); const flagged=/не соответствует/.test(t);
+          if(flagged!==(g!==S.age)) push('age_explicit_notice_mismatch_flag',`«${t.slice(0,80)}» group ${g} active ${S.age}`);
+          if(!t.includes('«'+w.eval('ageGroupLabel(ageGroupFromDays(patientAgeDays))')+'»')) push('age_explicit_notice_text',`«${t.slice(0,80)}» group ${g}`);
+        }
+      }
+      const inf=$('age-infer-notice');
+      if(shown(inf)) tally('age_infer_notice_shown');
+      if(shown(inf)&&(days!=null||w.eval('userPickedAge'))) push('age_infer_notice_stale',`«${txt(inf).slice(0,80)}» patientAgeDays ${days} userPickedAge ${w.eval('userPickedAge')}`);
+    }
+    // the patient-safety banners under the result are exactly collectPatientSafetyFlags()
+    // of the drug on screen (level + text) and never outlive the result
+    {
+      const box=$('patient-safety-banners'); const rows=[...box.querySelectorAll('[data-level]')].map(r=>r.dataset.level+':'+txt(r));
+      const resultVis=shown($('res-po'))||shown($('res-inj'));
+      if(!resultVis){ if(shown(box)) push('safety_banners_without_result',rows.join(' || ').slice(0,120)); }
+      else {
+        const exp=w.eval('JSON.stringify(collectPatientSafetyFlags(getDrugRefs(activeDrug)).map(f=>f.level+":"+f.text))');
+        const expRows=JSON.parse(exp).map(x=>x.replace(/\s+/g,' ').trim());
+        if(expRows.length) tally('safety_banners_expected');
+        if(expRows.join('|')!==rows.join('|')) push('safety_banners_mismatch',`${rows.length} rows vs ${expRows.length}: ${expRows.join(' || ').slice(0,100)}`);
+        if(shown(box)!==expRows.length>0) push('safety_banners_mismatch',`box visible ${shown(box)} expected ${expRows.length>0}`);
+      }
     }
     // the four steps are visible exactly when their state exists (a visible step with no
     // state = stale cards; a hidden step with state = a dead end for the physician)
