@@ -91,7 +91,7 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient",
         "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "childTablet", "noWeightExport", "resetDisease", "search", "hash", "history", "copy",
-        "print", "theme", "routeThenDrug", "name",
+        "print", "theme", "routeThenDrug", "name", "quickTag",
     }
     assert expected <= set(counts), sorted(expected - set(counts))
     assert all(counts[name] >= 10 for name in expected), counts
@@ -137,3 +137,5 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     assert totals.get("print_flags", 0) >= 6, totals
     assert totals.get("group_mismatch_export", 0) >= 6, totals
     assert totals.get("course_units", 0) >= 3, totals
+    # T84 quick-tag group invariant (old build: 6 findings on seed 11)
+    assert totals.get("quick_tag", 0) >= 20, totals

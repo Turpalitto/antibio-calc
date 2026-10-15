@@ -668,3 +668,28 @@ def test_an_mg_per_kg_regimen_without_a_weight_leaves_by_no_door(shell: dict) ->
     assert n["print"] == "||ПЕЧАТЬ НЕВОЗМОЖНА: введите вес пациента — доза этого режима ", n
     assert n["misWithWeight"].startswith("Схема приёма: по 1250 мг в/в 1 р/сут|"), n
     assert n["printWithWeight"] == "По 1250 мг внутривенно, 1 раз в день, медленно за 5 мин", n
+
+
+def test_quick_nosology_tags_follow_the_patient_group(shell: dict) -> None:
+    """T84: every quick tag code (H66, J18, J03, J01, N30, N10) has an adult AND a child
+    record; the tag used to open the first record in DB order (children's otitis for an
+    adult, adults' pneumonia / pyelonephritis for a child) and then showed the «нет схемы
+    для группы» block. Now the record for the patient's group opens; two equally fitting
+    records (adult + N30: cystitis vs prophylaxis) or no fitting record (neonate) go to the
+    search list for the physician to pick."""
+    qt = shell["quickTags"]
+    assert qt["tags"] == ["H66", "J18", "J03", "J01", "N30", "N10"]
+    for key, rec in (
+        ("adultH66", "otitis_media_adult"), ("childH66", "aom_child"),
+        ("adultJ18", "cap_adult"), ("childJ18", "cap_child"),
+        ("adultN10", "pyelonephritis_adult"), ("childN10", "ut_child"),
+    ):
+        assert qt[key]["picked"] == rec, (key, qt[key])
+        assert qt[key]["list"] == [] and qt[key]["search"] == "" and qt[key]["header"], (key, qt[key])
+    for key, names in (
+        ("adultN30", ["Профилактика рецидивирующих ИМ", "Острый неосложнённый цистит у "]),
+        ("neonateH66", ["Острый средний отит у детейH66", "Острый средний отит у взрослых"]),
+    ):
+        assert qt[key]["picked"] is None and qt[key]["header"] == "", (key, qt[key])
+        assert qt[key]["list"] == names and qt[key]["status"] == "Найдено: 2 нозологии.", (key, qt[key])
+        assert qt[key]["search"] == key[-3:], qt[key]

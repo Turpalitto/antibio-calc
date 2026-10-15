@@ -121,6 +121,8 @@ setTimeout(async()=>{
     // the inference notice — the plain walk sets an explicit age early and rarely gets here
     freshWeight:()=>{ $('new-patient').click(); type($('weight'),pick(['3.2','25','45','70'])); },
     resetDisease:()=>w.resetDisease(),
+    // a quick nosology tag («Отит (H66)»): the tag code is recorded for the group invariant
+    quickTag:()=>{ const tags=q('.quick-disease-tag'); if(!tags.length) return; const t=pick(tags); const m=(t.getAttribute('onclick')||'').match(/selectQuickDisease\('([^']+)'\)/); w.__quickTag=m?m[1]:null; t.click(); },
     // the query sometimes stays on screen (no click): the panel state is checked after the step
     search:()=>{ type($('search'),pick(['пневмония','цистит','отит','J18','амоксициллин','сепсис','ин','п','qwertyzzz','пневмания','  '])); if(rnd()<0.6){ const hits=[...d.querySelectorAll('#results-box > div[role=button]')]; if(hits.length) pick(hits).click(); } },
     hash:()=>{ const r=pick(computable); const sc=pick(r.scenarios||[]); w.location.hash='#'+r.id+(sc?'/'+sc.id+(rnd()<0.5?'/L'+pick(sc.lines).line_number:''):''); },
@@ -195,6 +197,25 @@ setTimeout(async()=>{
       const left=['res-po','res-inj','dose-block','patient-safety-banners','dilution-block','combo-block'].filter(id=>!$(id).classList.contains('hidden'));
       if(left.length) push('reset_leaves_result_rows',left.join(', '));
       if(w.eval('pickedRouteGroup')!==null) push('reset_keeps_route_pick',String(w.eval('pickedRouteGroup')));
+    }
+    if(name==='quickTag'&&w.__quickTag){
+      // T84: with an adult / child group set, the tag must not open a record written for
+      // the other group while a record for this group covers the code (it used to open the
+      // first record in DB order: children's otitis for an adult, adults' pneumonia for a
+      // child); several equally fitting records go to the search list instead
+      const code=w.__quickTag; w.__quickTag=null; tally('quick_tag');
+      const up=code.toUpperCase(); const group=w.eval('activeAge');
+      const covers=r=>(r.mkb10||[]).some(m=>String(m).toUpperCase().startsWith(up));
+      const fits=r=>(r.scenarios||[]).some(sc=>sc&&(!sc.age_group||sc.age_group==='all'||sc.age_group===group));
+      const cands=DB.recommendations.filter(covers); const fitting=cands.filter(fits);
+      const pickedId=w.eval('activeDisease ? activeDisease.id : null'); const picked=cands.find(r=>r.id===pickedId);
+      if(picked){
+        if(fitting.length&&!fits(picked)) push('quick_tag_wrong_group',`${code} as ${group}: opened ${pickedId}, fitting ${fitting.map(r=>r.id).join('/')}`);
+        if($('search').value.trim()||visible($('results-box'))) push('quick_tag_search_not_cleared',`${code}: «${$('search').value}» box ${visible($('results-box'))}`);
+      } else {
+        if(cands.length===1||fitting.length===1) push('quick_tag_not_opened',`${code} as ${group}: ${fitting.map(r=>r.id).join('/')||cands.map(r=>r.id).join('/')}`);
+        if(cands.length>1&&(!visible($('results-box'))||q('#results-box > div[role=button]').length<2)) push('quick_tag_no_list',`${code} as ${group}: ${q('#results-box > div[role=button]').length} rows`);
+      }
     }
     if(name==='dialog'&&w.__dialog){
       const r=w.__dialog; tally('dialog_'+r.which);

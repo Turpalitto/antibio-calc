@@ -2245,6 +2245,38 @@ def test_search_drug_text_includes_optional_trade_names() -> None:
     assert "не массив" not in text and " 7" not in text, text
 
 
+def test_quick_tag_candidates_prefer_the_patient_group_over_db_order() -> None:
+    """T84 over the shipped DB: for each quick tag code the candidate set narrows to the
+    patient's group, then to records written for that group (not only an «all» scenario),
+    then to records listing the exact code; one survivor opens, otherwise the list."""
+    db = _db()
+    expected = {
+        "adult": {"H66": ["otitis_media_adult"], "J18": ["cap_adult"], "J03": ["pharyngitis_adult"],
+                  "J01": ["sinusitis_adult"], "N30": ["uti_prophylaxis", "cystitis_female"], "N10": ["pyelonephritis_adult"]},
+        "child": {"H66": ["aom_child"], "J18": ["cap_child"], "J03": ["pharyngitis_child"],
+                  "J01": ["sinusitis_child"], "N30": ["uti_prophylaxis"], "N10": ["ut_child"]},
+        "neonate": {"H66": ["aom_child", "otitis_media_adult"], "J18": ["cap_adult", "cap_child"],
+                    "J03": ["pharyngitis_adult", "pharyngitis_child"], "J01": ["sinusitis_adult", "sinusitis_child"],
+                    "N30": ["uti_prophylaxis", "cystitis_female"], "N10": ["ut_child"]},
+    }
+    for group, table in expected.items():
+        body = (
+            "const out = {};"
+            f"for (const code of {_lit(list(table))}) out[code] = quickDiseaseCandidates(code).map(r => r.id);"
+            "out.blank = quickDiseaseCandidates('').length; out.lower = quickDiseaseCandidates('h66').map(r => r.id);"
+            "console.log(JSON.stringify(out));"
+        )
+        result = _run(["quickDiseaseCandidates"], _age_globals(db).replace("let activeAge = 'child';", f"let activeAge = '{group}';"), body)
+        lower = result.pop("lower")
+        assert result.pop("blank") == 0
+        assert result == table, (group, result)
+        assert lower == table["H66"], (group, lower)
+    # the shell opens a single survivor and sends anything else to the search list
+    source = _source()
+    body = _js_function(source, "selectQuickDisease")
+    assert "if(found.length === 1)" in body and "selectDisease(found[0])" in body and "handleSearch()" in body
+
+
 def test_times_a_day_declension() -> None:
     """Rp Signa / printed form said «1 раза в день» and «6 раза в день»."""
     result = _run(["timesADay"], "", "console.log(JSON.stringify([1,2,3,4,5,6,8,11,12,21,22,0].map(timesADay)));")

@@ -1118,6 +1118,36 @@ async function run() {
       w.fillPrescriptionForm(); n.printWithWeight = txt($('rx-signa-text'));
       out.noWeightExport = n;
     }
+    {
+      // 33. T84: the quick nosology tags follow the patient's group — «Отит (H66)» opens
+      // the adults' otitis for an adult and the children's for a child; a code with two
+      // equally fitting records («Цистит (N30)» for an adult: cystitis / prophylaxis) goes
+      // to the search list instead of silently opening the first one
+      const qt = {};
+      const tagCodes = [...d.querySelectorAll('.quick-disease-tag')].map((b) => ((b.getAttribute('onclick') || '').match(/selectQuickDisease\('([^']+)'\)/) || [])[1]);
+      qt.tags = tagCodes;
+      const probe = (age, code) => {
+        $('new-patient').click();
+        d.querySelector(`#age-group button[data-age="${age}"]`).click();
+        w.selectQuickDisease(code);
+        return {
+          picked: w.eval('activeDisease ? activeDisease.id : null'),
+          list: [...d.querySelectorAll('#results-box > div[role=button]')].filter((x) => visible($('results-box'))).map((x) => x.textContent.trim().slice(0, 30)),
+          status: txt($('search-status')),
+          search: $('search').value,
+          header: visible($('active-disease')) ? txt($('active-disease')).slice(0, 60) : '',
+        };
+      };
+      qt.adultH66 = probe('adult', 'H66');
+      qt.childH66 = probe('child', 'H66');
+      qt.adultJ18 = probe('adult', 'J18');
+      qt.childJ18 = probe('child', 'J18');
+      qt.adultN10 = probe('adult', 'N10');
+      qt.childN10 = probe('child', 'N10');
+      qt.adultN30 = probe('adult', 'N30');
+      qt.neonateH66 = probe('neonate', 'H66');
+      out.quickTags = qt;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }
