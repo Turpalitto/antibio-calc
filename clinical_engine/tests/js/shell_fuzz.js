@@ -152,6 +152,8 @@ setTimeout(async()=>{
       if(!S.blocked&&S.regimen&&!resVis&&!blockVis) push('no_result_no_block','');
       if(S.regimen&&S.regimen.age_group&&S.regimen.age_group!=='all'&&S.regimen.age_group!==S.age) push('regimen_age_mismatch',`${S.regimen.age_group} vs ${S.age}`);
       const all=txt($('result-step'))+' '+txt($('dose-block')); if(BAD.test(all)) push('bad_token',all.match(/.{0,30}(NaN|Infinity|undefined|\[object |null мг|null ЕД).{0,30}/)[0]);
+      // binary float noise («0.30000000000000004 мл») must never reach the screen or an export
+      const NOISE=/\d+[.,]\d{5,}/; if(NOISE.test(all)) push('float_noise',all.match(/.{0,30}\d+[.,]\d{5,}.{0,30}/)[0]);
       if(name==='copy'){
         if(S.blocked&&(w.__mis||w.__rp)) push('export_while_blocked','');
         if(!S.blocked&&w.__mis){
@@ -162,6 +164,7 @@ setTimeout(async()=>{
         }
         if(!S.blocked&&S.regimen&&resVis&&!(w.__mis&&w.__rp)) push('export_empty_while_computed',`mis ${!!w.__mis} rp ${!!w.__rp} toast ${txt($('toast'))}`);
         if(BAD.test((w.__mis||'')+(w.__rp||''))) push('export_bad_token','');
+        if(NOISE.test((w.__mis||'')+(w.__rp||''))) push('export_float_noise',((w.__mis||'')+(w.__rp||'')).match(/.{0,30}\d+[.,]\d{5,}.{0,30}/)[0]);
       }
       if(name==='print'){
         const rxd=txt($('rx-drugs')); const trust=txt($('rx-trust-line'));
