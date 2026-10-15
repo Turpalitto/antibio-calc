@@ -117,12 +117,24 @@ setTimeout(async()=>{
       const all=txt($('result-step'))+' '+txt($('dose-block')); if(BAD.test(all)) push('bad_token',all.match(/.{0,30}(NaN|Infinity|undefined|\[object |null мг|null ЕД).{0,30}/)[0]);
       if(name==='copy'){
         if(S.blocked&&(w.__mis||w.__rp)) push('export_while_blocked','');
+        if(!S.blocked&&w.__mis){
+          // the chart text names the drug on screen (INN) and the diagnosis
+          const inn=(DB.drugs_reference[w.eval('getDrugRefs(activeDrug)[0]')]||{}).inn||'';
+          if(inn&&!w.__mis.includes(inn)) push('mis_names_other_drug',`${inn} not in «${w.__mis.slice(0,100)}»`);
+          if(S.dis&&!w.__mis.includes(S.dis.name)) push('mis_names_other_diagnosis',`${S.dis.name} not in «${w.__mis.slice(0,100)}»`);
+        }
         if(!S.blocked&&S.regimen&&resVis&&!(w.__mis&&w.__rp)) push('export_empty_while_computed',`mis ${!!w.__mis} rp ${!!w.__rp} toast ${txt($('toast'))}`);
         if(BAD.test((w.__mis||'')+(w.__rp||''))) push('export_bad_token','');
       }
       if(name==='print'){
         const rxd=txt($('rx-drugs')); const trust=txt($('rx-trust-line'));
         if(S.blocked&&rxd) push('print_drugs_while_blocked',rxd.slice(0,60));
+        if(!S.blocked&&rxd){
+          const key=w.eval('getDrugRefs(activeDrug)[0]'); const inn=(DB.drugs_reference[key]||{}).inn||'';
+          const latin=w.eval('(typeof LATIN_INN !== "undefined" && LATIN_INN['+JSON.stringify(key)+']) || ""');
+          if(!(latin&&rxd.includes(latin))&&!(inn&&rxd.includes(inn))) push('print_names_other_drug',`${latin||inn} not in «${rxd.slice(0,80)}»`);
+          const wv=parseFloat($('weight').value); if(wv>0&&txt($('rx-weight'))!==String(wv)+' кг'&&!txt($('rx-weight')).startsWith(String(wv))) push('print_weight_mismatch',`${wv} vs ${txt($('rx-weight'))}`);
+        }
         if(!S.blocked&&S.regimen&&resVis&&!rxd) push('print_empty_while_computed',trust.slice(0,80));
         if(BAD.test(txt($('prescription-form')))) push('print_bad_token','');
       }
