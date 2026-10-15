@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T70: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency)
+## 2026-10-14 (round 6 continued, T51–T74: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants)
 
 - **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
   «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:
@@ -162,6 +162,47 @@
   profiles / 1777 states + 275 gated checks, fuzz 23 actions × 2 seeds × 800 steps + 6
   tests), validate 0 / 436, ruff clean, build fresh, axe 0; CI + CodeQL green through
   `56b32e2` (`1e6fecc` cancelled by the concurrency group — superseded by `64ddb96`).
+- **T71 `d479cef` (gates):** harness step 28 + jsdom — «Открыть расчёт» on an entry whose
+  record has since been closed by the source gate opens the nosology under the block notice
+  only, the next age input keeps it closed, MIS refuses (pre-T66 build: stale result, then a
+  computed and printed dose under the notice). Fuzz: `age_explicit_notice_*` (visible iff an
+  explicit age; the «не соответствует» flag follows the chip), `age_infer_notice_stale`,
+  `safety_banners_*` (rows == `collectPatientSafetyFlags()` of the drug on screen, never
+  without a result); steered `freshWeight` action (inference notice reached ~100× per 800
+  steps instead of 2). Mutants: 105 / 110 / 19 findings; real build 0.
+- **T72 `94c64ed` (REAL BUG, found by the new regimen invariants):** a group with no regimen
+  for the kept drug (amoxicillin for AOM → «новорождённые») showed the age block with the
+  three child regimen chips still under it — clickable and dead (a click only moved
+  `activeRegimenIdx`); `renderScenarios()` re-renders the regimens in the no-fit branch.
+  Fuzz: `regimen_selector_visibility` / `regimen_idx_out_of_range` / `regimen_chips_count` /
+  `regimen_chip_mismatch` / `regimen_chip_text` (chips == age-eligible regimens, label by
+  label) + `availability_note_stale`; harness step 29 + jsdom pin the sequence. Known /
+  accepted: the regimen pick is index 0 again after a group round-trip (the chip lists of
+  the two groups are different regimens).
+- **Fuzz `6a6abcb`, `82c3c38`, `19bf427` (invariant batches, all verified by mutants):**
+  injection panel (dilution route chip / label / vial chips == `activeRouteKey` /
+  `activeVialIdx`; `vial` / `injRoute` actions open an injectable tab first and the click
+  must be recorded — dead-handler mutants 3 / 1 findings); dialog sessions (КР modal /
+  history drawer opened through the visible button, 1–6 browser-like Tab presses with the
+  default focus move emulated, close by Escape / × / backdrop — `dialog_focus_escaped`,
+  `dialog_not_closed`, `dialog_focus_not_returned`, `dialog_left_open`, `drawer_not_inert`;
+  mutants 17 / 796 / 9); record header / empty state / active cards / weight chip / allergy
+  badge / result sub-blocks (mutants 352 / 62); search panel (× / list / status line /
+  «Найдено: N» == rows; queries now sometimes stay on screen).
+- **T74 `c80329c` (REAL BUG, found by the fuzz restore round-trip after the search change
+  reshuffled seed 23):** an entry saved at 150 months (12 y) with «взрослые» chosen by chip
+  over the typed age (the explicit-age notice flags the mismatch, the calculation is
+  allowed) re-opened as «дети»: `restoreHistoryEntry()` re-applied the age only (the chip
+  was clicked only when no age was saved), the adult scenario did not fit and the entry
+  could not be re-opened («препарат … недоступен для этой возрастной группы», no dose).
+  The saved group is now re-applied whenever it differs; the notice flags the mismatch
+  exactly as at save time. The restore toast names the real outcome when no scenario could
+  be opened. Harness step 30 + jsdom test (old build: `false|…|child|||…`).
+- **Verification (T71–T74):** 2811 passed / 28 skipped (jsdom 49, fuzz 26 actions, ~70
+  invariant kinds, 2 seeds × 800 steps + 6 tests), validate 0 / 436, ruff clean, build
+  fresh, axe 0; sweeps 303 / 404 / 505 × 2000 clean; CI + CodeQL green through `82c3c38`
+  at the time of writing (later commits pending). Pytest wall time grew to ≈ 3.7 min
+  locally (the fuzz evaluates ~40 state probes per step) — acceptable, noted for CI.
 - **Verification per push:** unchanged gates (`/tmp/gate.sh`-style: pytest rc, walk, ruff,
   freshness, validator before every commit). After T62: **2800 passed / 28 skipped**
   (jsdom 41, walk 2 / 14 oracles / 5 profiles / 1777 states / 0 findings, fuzz 4),

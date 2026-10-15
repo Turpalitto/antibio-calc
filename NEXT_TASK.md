@@ -1,4 +1,4 @@
-## 2026-10-14 (after round 6, T51–T70): remaining NEXT_TASK (work top-down)
+## 2026-10-14 (after round 6, T51–T74): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
    pass: change the allergy status / type an age after picking a non-first drug — the drug
@@ -39,6 +39,14 @@
      историю» adds a visible third row to the drawer; «Открыть расчёт» on an entry saved
      with a Ф.И.О. brings the name back into the field; «↺ Новый пациент» empties the
      Ф.И.О. and keeps «Врач» / «Дата».
+   - Real-browser pass additions (T71–T74): «Острый средний отит (дети)» → amoxicillin →
+     pick the second regimen chip → click «новорождённые»: the red block stands alone (no
+     regimen chips); back on «дети» the chips return (first regimen selected — the pick does
+     not survive the group round-trip, by design). Type 150 months, click «взрослые»
+     (notice «не соответствует»), CAP adults → comorbid → moxifloxacin → save → «Новый
+     пациент» → «Открыть расчёт»: the entry re-opens as «взрослые» with the notice and the
+     dose. Tab / Shift+Tab inside the КР modal and the history drawer never leaves them;
+     Escape / × / backdrop close and return focus to the opener.
 2. **Engineering candidates (none urgent):**
    - ~~`npm run check` convenience script~~ — done in T55 (`a86842a`).
    - The fuzz gate (`shell_fuzz.js`) runs 2 seeds × 800 steps in CI; a nightly / manual

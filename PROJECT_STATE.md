@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T70): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency
+## 2026-10-14 (round 6 continued, T51–T74): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants
 
 - Shell: changing the allergy status, the age group (chip, typed age or weight inference)
   no longer jumps to the first scenario / drug card — the physician's scenario, line, drug,
@@ -48,10 +48,18 @@
   store); «Открыть расчёт» brings the patient name back and «↺ Новый пациент» clears it
   (doctor / date stay). Fuzz: notice-staleness, step-visibility, name round-trip and
   new-patient-context invariants, `name` action; `#search-status` shortens long queries.
-- Tests: **2808 passed / 28 skipped / 0 failed** (jsdom 46, walk 17 oracles / 5 profiles /
-  1777 states + 275 gated checks, fuzz 23 actions, 2 seeds × 800 steps, 6 tests); validate
-  0 / 436; axe 0; ruff clean; build fresh; CI + CodeQL green per push (`d1d3be7` red — see
-  AI_LOG — fixed by `8b231e1`). DB unchanged (`56727a27f050…`).
+- State ⇔ DOM fuzz invariants (T71–T74): after every random step the shell is checked
+  against its own state — age notices, patient-safety banners, regimen chips, injection
+  panel (dilution route / vial chips), record header / empty state / active cards / weight
+  chip / allergy badge / result sub-blocks, search panel, dialog sessions (focus trap, close
+  paths, focus return, inert drawer). Two REAL BUGS surfaced and were fixed: regimen chips
+  of the previous group stayed under the age block (T72); «Открыть расчёт» lost the group
+  chosen by chip over a typed age and could not re-open the entry (T74). History restore of
+  a record closed by a later source gate is pinned (T71).
+- Tests: **2811 passed / 28 skipped / 0 failed** (jsdom 49, walk 17 oracles / 5 profiles /
+  1777 states + 275 gated checks, fuzz 26 actions / ~70 invariant kinds, 2 seeds × 800
+  steps, 6 tests); validate 0 / 436; axe 0; ruff clean; build fresh; CI + CodeQL green per
+  push (`d1d3be7` red — see AI_LOG — fixed by `8b231e1`). DB unchanged (`56727a27f050…`).
 
 ## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
 
