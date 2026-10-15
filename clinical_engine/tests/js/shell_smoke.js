@@ -950,6 +950,37 @@ async function run() {
       type($('patient-allergy'), 'none');
       out.allergyBannerFollowsDrug = b;
     }
+
+    // 27. history after a reload of a tab whose physician had enabled the tab store: the
+    //     consent box comes back checked and a new save is visible in the drawer (the
+    //     drawer used to keep showing the stored list without the new entry)
+    {
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      const stored = () => { try { return JSON.parse(w.sessionStorage.getItem('antibio_history') || '[]').length; } catch (e) { return -1; } };
+      // the drawer re-reads the list when it opens — count what the physician would see
+      const rows = () => { w.openHistory(); const n = d.querySelectorAll('#history-list [data-action="restore"]').length; w.closeHistory(); return n; };
+      const h = {};
+      // reload-like state: an entry already in the tab store, box unchecked, init runs again
+      w.sessionStorage.setItem('antibio_history', JSON.stringify([{ ts: Date.now() - 1000, patient: 'A', disease: 'X', drug: 'Y', singleMg: 500, freq: 2, duration: '7', ref: { disease: 'cap_adult' } }]));
+      $('history-persist').checked = false;
+      w.eval('historyEntries = []');
+      w.initHistoryStore();
+      w.loadHistory();
+      h.afterReload = [$('history-persist').checked, rows(), stored()].join('|');
+      w.saveToHistory();
+      h.afterSave = [rows(), stored(), txt($('toast'))].join('|');
+      $('history-persist').checked = false;
+      w.onHistoryPersistChange();
+      h.afterOptOut = [rows(), stored(), w.sessionStorage.getItem('antibio_history') === null].join('|');
+      w.saveToHistory();
+      h.afterSaveMemoryOnly = [rows(), stored()].join('|');
+      w.eval('historyEntries = []');
+      w.loadHistory();
+      out.historyReload = h;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

@@ -2004,7 +2004,9 @@ function nosologiesWord(n){
 // be the only sign that nothing matched; 110 hits for «ин» had no count either.
 function searchStatusText(q, hits){
   const n = hits.length;
-  if(n === 0) return 'Ничего не найдено по запросу «'+q+'». Попробуйте код МКБ-10 (например, J18), другое название или синоним.';
+  // a pasted paragraph is echoed shortened — the status line is not a second search box
+  const shownQ = q.length > 40 ? q.slice(0, 40).trim()+'…' : q;
+  if(n === 0) return 'Ничего не найдено по запросу «'+shownQ+'». Попробуйте код МКБ-10 (например, J18), другое название или синоним.';
   const blocked = hits.filter(d => d.calculation_blocked).length;
   let text = 'Найдено: '+n+' '+nosologiesWord(n);
   if(blocked) text += ' (с закрытым расчётом: '+blocked+')';
@@ -4371,6 +4373,11 @@ function initHistoryStore(){
     return;
   }
   if(note) note.textContent = 'История хранится только в памяти вкладки и исчезает при закрытии. Данные пациента на диск не попадают, пока вы не разрешите хранение во вкладке.';
+  // consent given earlier in THIS tab survives a reload together with the stored
+  // entries (sessionStorage is per tab): the box comes back checked, so saves and
+  // reads use the same list
+  const box = $('history-persist');
+  try{ if(box && sessionStorage.getItem(HISTORY_KEY)) box.checked = true; }catch(_){}
 }
 function onHistoryPersistChange(){
   const allowed = historyPersistAllowed();
@@ -4392,7 +4399,11 @@ function readHistoryEntries(){
   // is inline: the safety tests extract this function as-is.
   const cutoff = Date.now() - 86400000;
   const fresh = arr => arr.filter(e => e && typeof e.ts === 'number' && e.ts >= cutoff);
-  if(historySessionAvailable()){
+  // One source of truth: the tab store only while the consent box of the physician is on
+  // (writes go there too), memory otherwise. Reading the store regardless of the box
+  // made a save after a reload invisible — the entry went to memory, the drawer kept
+  // showing the stored list without it.
+  if(historyPersistAllowed()){
     try{
       const raw = sessionStorage.getItem(HISTORY_KEY);
       if(raw){

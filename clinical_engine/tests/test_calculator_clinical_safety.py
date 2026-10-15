@@ -883,7 +883,7 @@ XSS_PAYLOAD = '<img src=x onerror="globalThis.__pwned=1">'
 def test_history_rows_are_built_with_text_content_not_inner_html() -> None:
     """B2: a stored patient name must never be parsed as HTML."""
     result = _run(
-        ["historySessionAvailable", "readHistoryEntries", "loadHistory"],
+        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries", "loadHistory"],
         "let historyEntries = " + _lit(
             [
                 {

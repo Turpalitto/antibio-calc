@@ -564,3 +564,17 @@ def test_the_allergy_banner_leaves_with_the_drug_when_no_scenario_fits_the_group
     assert b["backWithAmoxicillin"] is True, b
     assert b["viaHash"] == "pyelonephritis_adult|null|false", b
 
+
+def test_history_saved_after_a_reload_with_the_tab_store_is_visible(shell: dict) -> None:
+    """readHistoryEntries() read the tab store whenever it existed while
+    writes went there only with the consent box on: after a reload (box off by
+    default, stored entries present) «Сохранить в историю» toasted success but the
+    drawer kept showing the stored list without the new entry. The consent given
+    earlier in the tab now comes back with its entries (box checked), and reads
+    follow the same rule as writes."""
+    h = shell["historyReload"]
+    assert h["afterReload"] == "true|1|1", h
+    assert h["afterSave"] == "2|2|Сохранено в историю (вкладка)", h
+    assert h["afterOptOut"] == "2|0|true", h
+    assert h["afterSaveMemoryOnly"] == "3|0", h
+

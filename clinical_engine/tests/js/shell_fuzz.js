@@ -166,6 +166,13 @@ setTimeout(async()=>{
       if(exp){ tally('weight_warn_expected'); if(!wwVis||wwText!==exp) push('weight_warn_stale',`visible ${wwVis} «${wwText.slice(0,60)}» vs «${exp.slice(0,60)}»`); }
       if(!exp&&wwVis&&!situational) push('weight_warn_stale',`visible without a reason: «${wwText.slice(0,80)}»`);
     }
+    // the four steps are visible exactly when their state exists (a visible step with no
+    // state = stale cards; a hidden step with state = a dead end for the physician)
+    {
+      const gatedNow=!!(S.dis&&S.dis.calculation_blocked);
+      const expectSteps={ 'scenario-step':!!S.dis&&!gatedNow, 'drug-step':!!S.sc, 'form-step':!!S.dr, 'result-step':!!S.dr };
+      Object.entries(expectSteps).forEach(([id,exp])=>{ if(shown($(id))!==exp) push('step_visibility',`${id} visible ${shown($(id))} expected ${exp}`); });
+    }
     // a record under the source gate (calculation_blocked) never gets a scenario / drug / result
     if(S.dis&&S.dis.calculation_blocked&&(S.sc||S.dr)) push('blocked_record_opened',`${S.dis.id} sc=${S.sc&&S.sc.id} dr=${S.dr&&getDrugRefsSafe(S.dr)}`);
     if(S.ln&&S.sc&&!(S.sc.lines||[]).includes(S.ln)) push('line_not_in_scenario','');
