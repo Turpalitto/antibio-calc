@@ -288,6 +288,17 @@ def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     assert r["амоксициллин"]["n"] >= 20, "drug-name search must list the nosologies using the drug"
     assert r["амоксициллин"]["blockedBeforeComputable"] is False, "computable records must come first"
     assert r["J18"]["n"] >= 2 and "пневмония" in r["J18"]["first"].lower()
+    # ICD-10 is hierarchical: the full code a physician types («J18.9», pneumonia
+    # unspecified) finds the records listed under the category «J18» — it used to find
+    # only the one record that spells «J18.9» out; a lone letter covers nothing
+    assert r["J18.9"]["n"] == r["J18"]["n"] and r["J18.9"]["names"] == r["J18"]["names"], (r["J18.9"], r["J18"])
+    assert r["j18.9 дети"]["n"] == 1 and r["j18.9 дети"]["first"].startswith("Внебольничная пневмония у детей"), r["j18.9 дети"]
+    # a sibling subcode is not covered: «J18.0» finds the two «J18» records, not the
+    # nosocomial record that spells «J18.9»
+    assert r["J18.0"]["n"] == 2 and all(n.startswith("Внебольничная пневмония") for n in r["J18.0"]["names"]), r["J18.0"]
+    assert r["J1"]["n"] >= r["J18"]["n"], r["J1"]
+    assert r["J"]["n"] == 0, r["J"]
+    assert r["N39.0"]["n"] >= 2 and all("N39" in n or "ИМП" in n or "цистит" in n.lower() or "пиелонефрит" in n.lower() or "мочев" in n.lower() for n in r["N39.0"]["names"]), r["N39.0"]
     assert r["отит взрослые"]["n"] == 1 and "у взрослых" in r["отит взрослые"]["first"]
     assert r["xyzzy"]["n"] == 0
     # one typo per word, only for tokens that match nothing exactly; ranked after exact hits

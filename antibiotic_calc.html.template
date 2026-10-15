@@ -2065,9 +2065,13 @@ function handleSearch(){
   // of the record): «пневмония дети», «h. pylori», «амоксициллин» all work;
   // the whole phrase still matches as before.
   const tokens = qLower.split(/\s+/).map(t => t.replace(/^[\.,;:]+|[\.,;:]+$/g, '')).filter(t => t.length >= 2);
+  // ICD-10 is hierarchical: a record listed under the category «J18» covers J18.0–J18.9,
+  // so the full code a physician types («J18.9») must find it — the record's code is a
+  // prefix of the query (a category of 3+ characters, never a lone letter).
+  const codeCovers = (mc, t) => mc.length >= 3 && t.length > mc.length && /^[a-z]\d{2}\d*$/.test(t) && t.startsWith(mc);
   const mkbHit = (d, t, tEn) => (d.mkb10 || []).some(m => {
     const mc = searchFold(m).replace(/[\.\s\-_]/g, '');
-    return mc.includes(t) || mc.includes(tEn);
+    return mc.includes(t) || mc.includes(tEn) || codeCovers(mc, t) || codeCovers(mc, tEn);
   });
   // Russian endings: «дети» must find «у детей», «взрослые» — «у взрослых»; a
   // token of 4+ letters also matches by its stem (last 1–2 letters dropped).
@@ -2137,8 +2141,8 @@ function handleSearch(){
     item.className = 'bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-700 transition-all font-bold text-slate-700 dark:text-slate-200 text-sm flex justify-between items-center';
     const matchedMkb = (d.mkb10 || []).find(m => {
       const mc = searchFold(m).replace(/[\.\s\-_]/g, '');
-      if(mc.includes(qClean) || mc.includes(qEn)) return true;
-      return tokens.some(t => { const tc = t.replace(/[\.\s\-_]/g, ''); return tc && mc.includes(tc); });
+      if(mc.includes(qClean) || mc.includes(qEn) || codeCovers(mc, qClean) || codeCovers(mc, qEn)) return true;
+      return tokens.some(t => { const tc = t.replace(/[\.\s\-_]/g, ''); return tc && (mc.includes(tc) || codeCovers(mc, tc)); });
     });
 
     // Название/МКБ приходят из БД: собираем через textContent, а не innerHTML,
