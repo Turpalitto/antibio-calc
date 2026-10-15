@@ -574,6 +574,15 @@ async function run() {
       out.plausibility.age150 = { notice: txt($('age-explicit-notice')), block: txt($('dose-block')), po: visible($('res-po')) };
       type($('patient-age'), '35');
       out.plausibility.age35 = { notice: txt($('age-explicit-notice')), block: txt($('dose-block')), po: visible($('res-po')) };
+      // «0 лет» / «0 мес» read as 0 days: the notice says how to enter an infant's age
+      type($('patient-age'), '0');
+      out.plausibility.age0years = { group: w.eval('activeAge'), notice: txt($('age-explicit-notice')) };
+      type($('patient-age-unit'), 'months');
+      out.plausibility.age0months = { group: w.eval('activeAge'), notice: txt($('age-explicit-notice')) };
+      type($('patient-age-unit'), 'days');
+      out.plausibility.age0days = { group: w.eval('activeAge'), notice: txt($('age-explicit-notice')) };
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '35');
       // no drug at all: pick nothing new, just an out-of-range weight on a fresh page state
       type($('weight'), '300');
       out.plausibility.w300 = warn();

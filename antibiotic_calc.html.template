@@ -1730,6 +1730,15 @@ function updateExplicitAgeNotice(){
   if(group !== activeAge){
     text += ' Сейчас выбрана группа «'+ageGroupLabel(activeAge)+'» — она не соответствует введённому возрасту, проверьте выбор.';
   }
+  // «0 лет» for an infant of a few months lands in «новорождённые» (0 days): say how
+  // to enter the age instead of quietly dosing a six-month-old as a newborn
+  const unitEl = $('patient-age-unit');
+  const unit = unitEl ? unitEl.value : 'years';
+  if(patientAgeDays === 0 && unit !== 'days'){
+    text += unit === 'years'
+      ? ' «0 лет» прочитано как 0 дней: если пациенту несколько месяцев или дней — укажите возраст в месяцах или днях.'
+      : ' «0 мес» прочитано как 0 дней: если пациенту несколько дней — укажите возраст в днях.';
+  }
   el.querySelector('span').textContent = text;
   el.classList.remove('hidden');
 }

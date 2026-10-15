@@ -120,6 +120,16 @@ def test_blocked_and_no_cr_records_show_their_banners(shell: dict) -> None:
     assert "Нет федеральной КР" in shell["noCr"]["banner"]
 
 
+def test_zero_years_notice_says_how_to_enter_an_infant_age(shell: dict) -> None:
+    """«0 лет» for a six-month-old lands in «новорождённые» (0 days) — the notice says to
+    use months or days; «0 мес» → days; «0 дн.» is a plain newborn."""
+    p = shell["plausibility"]
+    assert p["age0years"]["group"] == "neonate" and "«0 лет» прочитано как 0 дней" in p["age0years"]["notice"] and "в месяцах или днях" in p["age0years"]["notice"], p["age0years"]
+    assert p["age0months"]["group"] == "neonate" and "«0 мес» прочитано как 0 дней" in p["age0months"]["notice"] and "в днях" in p["age0months"]["notice"], p["age0months"]
+    assert p["age0days"]["group"] == "neonate" and "прочитано как 0 дней" not in p["age0days"]["notice"], p["age0days"]
+    assert "0 дн. → группа «новорождённые»" in p["age0days"]["notice"], p["age0days"]
+
+
 def test_theme_toggle_persists(shell: dict) -> None:
     assert shell["theme"] == {"before": False, "after": True, "stored": "dark"}
 
