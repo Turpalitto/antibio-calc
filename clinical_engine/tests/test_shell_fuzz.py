@@ -143,3 +143,6 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     assert totals.get("history_entry_content", 0) >= 15, totals
     # T86 «нет схемы для группы» note ⇔ state on the search rows (old build: 27 on seed 23)
     assert totals.get("search_group_note", 0) >= 20, totals
+    # the frequency printed in the MIS scheme / the Rp Signa == the regimen's freq_per_day
+    # (a mutant printing freq + 1 in the tablet scheme trips 11 on seed 11)
+    assert totals.get("export_freq", 0) >= 15, totals

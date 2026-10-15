@@ -598,6 +598,14 @@ setTimeout(async()=>{
             const wrong=Object.entries(ROUTE_WORDS).filter(([g,re])=>g!==S.route&&(g==='po'||S.route==='po')&&re.test(scheme+' '+signa));
             if(wrong.length) push('export_route_contradicts_screen',`${S.route} vs ${wrong.map(x=>x[0])}: «${scheme.slice(0,50)}» / «${signa.slice(0,50)}»`);
           }
+          // the frequency printed in both exports is the regimen's freq_per_day (a dose
+          // repeated the wrong number of times a day is as wrong as a wrong dose)
+          const freq=w.eval('(function(){ const r=getActiveRegimen(); return r&&r.freq_per_day>0?r.freq_per_day:0; })()');
+          if(freq&&/\d/.test(scheme)&&!/^наружно/.test(scheme)){
+            tally('export_freq');
+            const mf=/(\d+) р\/сут/.exec(scheme); if(!mf||+mf[1]!==freq) push('mis_freq_mismatch',`regimen ${freq} р/сут vs «${scheme.slice(0,80)}»`);
+            const rf=/(\d+) раза? в день/.exec(signa); if(signa&&(!rf||+rf[1]!==freq)) push('rp_freq_mismatch',`regimen ${freq} р/сут vs «${signa.slice(0,80)}»`);
+          }
           const misTotal=/суммарно (\d+) таб/.exec(w.__mis); const rpDtd=/D\.t\.d\. N\. (\d+)/.exec(rp);
           if(misTotal&&rpDtd){ tally('course_units'); if(misTotal[1]!==rpDtd[1]) push('course_units_mis_vs_rp',`MIS ${misTotal[1]} таб vs Rp N. ${rpDtd[1]}`); }
           const courseBad=/(хроническая|по ситуации|не указан[а-я]*|однократно) дн/.exec(w.__mis+'\n'+rp); if(courseBad) push('course_words_plus_days',courseBad[0]);
