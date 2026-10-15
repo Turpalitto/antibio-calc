@@ -1,4 +1,4 @@
-## 2026-10-14 (after round 6, T51–T77): remaining NEXT_TASK (work top-down)
+## 2026-10-14 (after round 6, T51–T83): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
    pass: change the allergy status / type an age after picking a non-first drug — the drug
@@ -60,12 +60,28 @@
      `duration_note: "Цефтриаксон"` — the shell prints it verbatim as «Указания:
      Цефтриаксон» in the MIS text and on the form; the validator now warns about it
      (`only repeats the drug name`). Replace with the actual instruction or drop the field.
+   - Real-browser pass additions (T78–T83): GFR 25 + a drug whose `renal_adjustment` has
+     two clauses («СКФ<30: …; СКФ<10: …») → the banner quotes the «СКФ<30» clause, GFR 8 →
+     the «СКФ<10» clause; a drug with a threshold-less string warns at GFR 45 but not at
+     GFR 70; after a full calculation click the nosology «✕» → no tiles / dose block /
+     banners remain in the collapsed steps, and the next nosology opens on its default
+     route; search «J18.9» → 3 pneumonia records, «J18.0» → 2, «J» → nothing; holecystitis
+     → ceftriaxone + metronidazole → «Копировать Rp» → the pasted text has the Metronidazoli
+     line after «S.:» under «Одновременно (компоненты комбинации, отдельные Rp.):».
+   - DB content (owner, optional): trade names for the search — add
+     `drugs_reference.<key>.synonyms: ["Амоксиклав", "Аугментин", …]` (array of non-empty
+     strings; the validator warns on any other shape, the shell indexes them as typed).
+   - DB content (owner): `renal_adjustment` strings without a GFR threshold (free text) now
+     warn only below 60 ml/min — confirm or add explicit thresholds (`node db/validate_db.js`
+     lists them).
 2. **Engineering candidates (none urgent):**
    - ~~`npm run check` convenience script~~ — done in T55 (`a86842a`).
    - The fuzz gate (`shell_fuzz.js`) runs 2 seeds × 800 steps in CI; a nightly / manual
      sweep with more seeds (`node clinical_engine/tests/js/shell_fuzz.js antibiotic_calc.html
      vendor/app.css <seed> 3000`) is cheap insurance after larger shell changes.
-   - Latin Rp for a combination regimen still names the main drug only (unchanged).
+   - ~~Latin Rp for a combination regimen still names the main drug only~~ — T83
+     (`63584a7`): the partners follow the Signa as plain lines; a formal second `Rp.:`
+     block per component is still the owner's format decision.
    - The MIS-only «разовый объём велик» caution is prescriber advice and is deliberately not
      on the Rp / printed form; if the owner wants it on the printed form too, the walk
      flags-parity oracle must then include it (one regex).
@@ -99,7 +115,7 @@
      walk) and a README section listing every gate added in rounds 5–6.
    - ~~History entries could store the patient context snapshot (GFR / pregnancy / allergy)~~
      — done in T51 (`1da3564`).
-   - Latin Rp for a combination regimen still names the main drug only (unchanged).
+   - ~~Latin Rp for a combination regimen still names the main drug only~~ — done in T83.
 3. Everything in the previous sections (§1–3, §6) that is marked **Owner** still stands.
 
 ## 2026-10-14 (after round 5): remaining NEXT_TASK (work top-down)
@@ -153,8 +169,8 @@
      volume, course-quantity arithmetic; the mg value does not depend on the rounding
      policy, which still belongs to the owner). ~~Combination-partner oracle, ЕД MIS/Rp
      oracle~~ DONE (T30), ~~grammar / volume-parity oracles~~ DONE (T32).
-   - Latin Rp for a combination regimen still names the main drug only (the printed form
-     and the MIS text carry the partner); a second `Rp.:` block per component is a small
+   - ~~Latin Rp for a combination regimen still names the main drug only~~ — T83 adds the
+     partner lines after the Signa; a second `Rp.:` block per component is a small
      follow-up once the owner confirms the wanted format.
    - When a form chip has no matching entry in the drug's dilution table (ceftriaxone
      «500 мг флакон» vs vials 1000/2000 mg) the vial selector keeps its previous choice;

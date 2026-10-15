@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T77: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate)
+## 2026-10-14 (round 6 continued, T51–T83: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp)
 
 - **T75 `d690334`:** the patient date field becomes `type=date` on focus, so a picked date
   arrived as ISO «2026-10-15» and the printed form said «Дата: 2026-10-15» while the
@@ -47,6 +47,52 @@
   (`build-f29c49610721`), axe 0 in 5 states; sweeps 303 / 404 × 2000 clean; CI + CodeQL
   green through `a57be20` at the time of writing (later commits pending). Pytest wall
   time ≈ 2.8 min after the concurrent fuzz / walk fixtures (`69df615`).
+
+- **T78 `7585cd3` (latent, data-contract):** `computeDose` already guards a regimen whose
+  `dose_mg × freq ≠ dose_mg_day` (it trusts the single dose and sets `regimenDataCaution`),
+  but the amber on-screen caution never reached the exports. `REGIMEN_INCONSISTENT_TEXT`
+  («Данные БД несогласованы: разовая × кратность ≠ суточной. Расчёт выполнен по разовой
+  дозе из КР — требуется проверка.») joins `exportSafetyFlags` → MIS / Rp / printed form /
+  history; the shipped DB has no such regimen (the validator forbids it), a mutant DB proves
+  the path (fuzz `regimen_caution_not_exported`, jsdom with an injected regimen).
+- **T79 `c628f1a` (latent, clause specificity):** `renalFlag` matched the FIRST clause of a
+  `renal_adjustment` string («СКФ<30: … ; СКФ<10: …») even when a more specific later clause
+  applied, and strings without any threshold warned at every GFR. Now the most specific
+  satisfied clause wins; threshold-less strings warn only below 60 ml/min; the text is
+  «СКФ G мл/мин: «INN» — <clause>. Расчёт выполнен БЕЗ почечной коррекции — скорректируйте
+  дозу/интервал вручную.». Unit table over the 47 shipped strings + the DB WARN list
+  (strings without thresholds — owner, NEXT_TASK §1).
+- **T80 `861fb85` (REAL BUG, fuzz `reset_leaves_result_rows`):** the nosology «✕»
+  (`resetDisease`) cleared the cards but left the result tiles (`#res-po` / `#res-inj`),
+  the dose block and the safety banners of the previous calculation visible inside the
+  hidden steps and kept the physician's route pick (`pickedRouteGroup`) for the next
+  nosology. It now calls `hideDoseResults()` + `hideDoseBlock()` and drops the pick; the
+  old build trips the new invariant 62 times in 800 steps, the fixed one 0.
+- **T81 `fa48400` (search, hierarchical ICD-10):** a physician typing the full code «J18.9»
+  found 1 record while «J18» found 3 — a category code in the DB (`J18`) did not cover the
+  subcode typed. `codeCovers(mc, t)` (category ≥ 3 chars, the query a longer code of the
+  shape letter + digits, same prefix) in `mkbHit` and in the result-list code echo; a
+  sibling subcode («J18.0» vs a record spelling «J18.9») and a lone letter cover nothing.
+  Harness query list +6, jsdom asserts, probe before / after.
+- **T82 `1bdc07f` (search, trade names — prepared for the owner):** «Амоксиклав» /
+  «Аугментин» / «Сумамед» find nothing because the DB lists INNs only. `diseaseDrugText`
+  now indexes an optional `drugs_reference[].synonyms` array (non-empty strings only) and
+  the validator WARNs on any other shape; no such field ships yet, so the behaviour is
+  unchanged until the owner adds the names (NEXT_TASK §1).
+- **T83 `63584a7` (REAL GAP, exports):** the copied Latin Rp of a combination regimen
+  (ceftriaxone + metronidazole, ampicillin + gentamicin, …) named the main drug only — the
+  printed form and the MIS text listed the partners, the Rp a physician pastes lost half of
+  the therapy. After the Signa: «Одновременно (компоненты комбинации, отдельные Rp.):» +
+  one line per partner «<Latin> (<INN>) <strength> — по N мг k р/д • course (сут. M мг)[;
+  note]» (the same `comboComponentLines` numbers as the screen card). Walk oracle
+  `partnerExportOracle`: every partner INN in both exports (`mis_partner_missing` /
+  `rp_partner_missing`; old build 36 findings, fixed build 0). The formal second `Rp.:`
+  block per component stays an owner format decision.
+- **Verification (T78–T83):** 2834 passed / 28 skipped (jsdom 53, clinical_safety 98,
+  validate_db rules 75, fuzz 33 actions / ~92 invariant kinds, walk 18 oracles), validate
+  0 / 437, ruff clean, build fresh (`build-4615782fc5f6`), axe 0 in 5 states; sweeps
+  505 / 606 × 2000 clean at `7585cd3`; CI + CodeQL green through `1bdc07f` at the time of
+  writing (`63584a7` pending).
 
 - **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
   «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:

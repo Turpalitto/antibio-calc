@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T77): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate
+## 2026-10-14 (round 6 continued, T51–T83): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 
 - Shell: changing the allergy status, the age group (chip, typed age or weight inference)
   no longer jumps to the first scenario / drug card — the physician's scenario, line, drug,
@@ -71,11 +71,21 @@
   `noWeightExport`; every oracle proven on a mutant; `FUZZ_DUMP_STEP` replay aid. axe-core
   in 5 states. Validator: WARN for a `duration_note` that only repeats the drug name
   (one shipped case — owner).
-- Tests: **2827 passed / 28 skipped / 0 failed** (jsdom 53, clinical_safety 96,
-  validate_db rules 70, walk 17 oracles / 5 profiles / 1777 states + 275 gated checks in
-  2 concurrent shards, fuzz 33 actions / ~90 invariant kinds, 2 seeds × 800 steps run
-  concurrently, 9 tests; pytest ≈ 2.8 min); validate 0 / 437; axe 0; ruff clean; build
-  fresh (`build-f29c49610721`); CI + CodeQL green per push (`d1d3be7` red — see AI_LOG —
+- T78–T83: the `dose × freq ≠ daily` data caution reaches the exports (latent — the
+  validator forbids such regimens in the shipped DB); `renalFlag` picks the most specific
+  satisfied `renal_adjustment` clause and threshold-less strings warn only below 60 ml/min;
+  the nosology «✕» hides the result tiles / dose block / banners of the previous
+  calculation and drops the route pick (REAL BUG, fuzz); ICD-10 search is hierarchical
+  («J18.9» finds the «J18» records; a sibling subcode or a lone letter covers nothing);
+  the search indexes optional `drugs_reference[].synonyms` (trade names — owner adds
+  them, validator checks the shape); the copied Latin Rp of a combination regimen lists
+  the partner components after the Signa (REAL GAP — the printed form and MIS already did;
+  walk oracle: partner INN in both exports).
+- Tests: **2834 passed / 28 skipped / 0 failed** (jsdom 53, clinical_safety 98,
+  validate_db rules 75, walk 18 oracles / 5 profiles / 1777 states + 275 gated checks in
+  2 concurrent shards, fuzz 33 actions / ~92 invariant kinds, 2 seeds × 800 steps run
+  concurrently, 9 tests; pytest ≈ 2.7 min); validate 0 / 437; axe 0; ruff clean; build
+  fresh (`build-4615782fc5f6`); CI + CodeQL green per push (`d1d3be7` red — see AI_LOG —
   fixed by `8b231e1`). DB unchanged (`56727a27f050…`).
 
 ## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
