@@ -1039,6 +1039,29 @@ async function run() {
       r.childAgain = st();
       out.regimenChipsFollowGroup = r;
     }
+    // 30. «Открыть расчёт» brings back the group the calculation was made in, also when
+    //     the physician chose it by chip over a typed age (12 y + «взрослые»): re-applying
+    //     the age alone switched the group back and the adult scenario was not re-opened
+    {
+      type($('patient-age-unit'), 'months');
+      type($('patient-age'), '150');
+      type($('weight'), '45');
+      d.querySelector('#age-group button[data-age="adult"]').click();
+      clickDisease('cap_adult');
+      const card = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => /коморбидный/i.test(txt(c)));
+      if (card) card.click();
+      clickDrug(/^Моксифлоксацин/i);
+      const st = () => [w.eval('activeAge'), w.eval('activeScenario && activeScenario.id'), w.eval('activeDrug && getDrugRefs(activeDrug).join("+")'), $('patient-age').value, $('patient-age-unit').value, visible($('res-po')) || visible($('res-inj')), /не соответствует/.test(txt($('age-explicit-notice')))].join('|');
+      const o = { saved: st() };
+      w.saveToHistory();
+      const entry = JSON.parse(w.eval('JSON.stringify(historyEntries[0])'));
+      o.entry = [entry.ageGroup, entry.ref.ageValue, entry.ref.ageUnit].join('|');
+      $('new-patient').click();
+      o.restored = [w.restoreHistoryEntry(entry), txt($('toast')), st()].join('|');
+      type($('patient-age-unit'), 'years');
+      $('new-patient').click();
+      out.historyRestoreGroupOverride = o;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

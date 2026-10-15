@@ -4565,7 +4565,11 @@ function restoreHistoryEntry(e){
   if('gfr' in ref && $('patient-gfr')) $('patient-gfr').value = ref.gfr || '';
   if('pregnancy' in ref && $('patient-pregnancy')) $('patient-pregnancy').value = ref.pregnancy || 'unknown';
   if('allergy' in ref && $('patient-allergy')){ $('patient-allergy').value = ref.allergy || 'none'; onAllergyChange(); }
-  if(!ref.ageValue && e.ageGroup && activeAge !== e.ageGroup){
+  // the saved group is the group the calculation was made in — also when the physician
+  // chose it by chip over a typed age (12 y + «взрослые»): re-applying the age
+  // alone switched the group back and the adult scenario could not be re-opened; the
+  // explicit-age notice flags the mismatch again exactly as it did when the entry was saved
+  if(e.ageGroup && activeAge !== e.ageGroup){
     const chip = document.querySelector('#age-group button[data-age="'+e.ageGroup+'"]');
     if(chip) chip.click();
   }
@@ -4580,6 +4584,10 @@ function restoreHistoryEntry(e){
   const line = lineIndex >= 0 ? scenario.lines[lineIndex] : null;
   const drugIndex = line ? (line.drugs || []).findIndex(dr=>getDrugRefs(dr).join('+') === ref.drug) : -1;
   renderScenarios(scenario, lineIndex >= 0 ? lineIndex : undefined, drugIndex >= 0 ? drugIndex : undefined, ref.route, Number.isInteger(ref.regimenIdx) ? ref.regimenIdx : undefined);
+  if(activeScenario !== scenario){
+    toast('Открыта нозология; сценарий из истории не подходит выбранной возрастной группе');
+    return false;
+  }
   if(!activeDrug || getDrugRefs(activeDrug).join('+') !== ref.drug){
     toast('Открыт сценарий; препарат из истории недоступен для этой возрастной группы');
     return false;

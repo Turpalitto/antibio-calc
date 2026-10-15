@@ -96,7 +96,8 @@ setTimeout(async()=>{
     // the inference notice — the plain walk sets an explicit age early and rarely gets here
     freshWeight:()=>{ $('new-patient').click(); type($('weight'),pick(['3.2','25','45','70'])); },
     resetDisease:()=>w.resetDisease(),
-    search:()=>{ type($('search'),pick(['пневмония','цистит','отит','J18','амоксициллин','сепсис','ин'])); const hits=[...d.querySelectorAll('#results-box > div[role=button]')]; if(hits.length) pick(hits).click(); },
+    // the query sometimes stays on screen (no click): the panel state is checked after the step
+    search:()=>{ type($('search'),pick(['пневмония','цистит','отит','J18','амоксициллин','сепсис','ин','п','qwertyzzz','пневмания','  '])); if(rnd()<0.6){ const hits=[...d.querySelectorAll('#results-box > div[role=button]')]; if(hits.length) pick(hits).click(); } },
     hash:()=>{ const r=pick(computable); const sc=pick(r.scenarios||[]); w.location.hash='#'+r.id+(sc?'/'+sc.id+(rnd()<0.5?'/L'+pick(sc.lines).line_number:''):''); },
     history:()=>{
       const n0=w.eval('historyEntries.length'); const blocked=w.eval('activeDrug ? !!calculationBlockReason(parseFloat($("weight").value)) : true');
@@ -335,6 +336,20 @@ setTimeout(async()=>{
         if(shown($('res-po'))&&shown($('res-inj'))) push('both_result_boxes_visible','');
         if(shown($('res-po'))!==(S.route==='po'||S.route==='topical')) push('result_box_route_mismatch',`po box ${shown($('res-po'))} route ${S.route}`);
       } else if(shown($('drug-meta'))||shown($('combo-block'))) push('result_sub_block_without_result',`meta ${shown($('drug-meta'))} combo ${shown($('combo-block'))}`);
+    }
+    // the search panel mirrors the query: the × only with text, the result list and the
+    // status line only for a query of 2+ characters, and «Найдено: N» counts the rows
+    {
+      const qv=$('search').value.trim(); const clearVis=shown($('search-clear')); const boxVis=shown($('results-box')); const stVis=shown($('search-status'));
+      if(clearVis!==(qv.length>0)) push('search_clear_stale',`× ${clearVis} query «${qv.slice(0,30)}»`);
+      if(qv.length<2&&(boxVis||stVis)) push('search_panel_without_query',`box ${boxVis} status ${stVis} query «${qv}»`);
+      if(qv.length>=2){
+        tally('search_panel');
+        if(!stVis) push('search_status_missing',`query «${qv.slice(0,30)}»`);
+        const m=/^Найдено: (\d+)/.exec(txt($('search-status'))); const rows=d.querySelectorAll('#results-box > div[role=button]').length;
+        if(m&&(!boxVis||rows!==+m[1])) push('search_count_mismatch',`status ${m[1]} rows ${rows} box ${boxVis}`);
+        if(!m&&(boxVis||rows)) push('search_count_mismatch',`«${txt($('search-status')).slice(0,40)}» rows ${rows} box ${boxVis}`);
+      }
     }
     // the four steps are visible exactly when their state exists (a visible step with no
     // state = stale cards; a hidden step with state = a dead end for the physician)

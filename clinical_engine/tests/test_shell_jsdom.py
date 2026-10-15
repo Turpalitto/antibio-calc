@@ -599,6 +599,18 @@ def test_history_restore_of_a_record_closed_by_the_source_gate_stays_closed(shel
     assert g["misToast"] == "Нет активного расчёта" and g["printed"] == "", g
 
 
+def test_history_restore_brings_back_the_group_chosen_over_a_typed_age(shell: dict) -> None:
+    """An entry saved at 150 months (12 y) with the «взрослые» chip chosen over the typed
+    age (the explicit-age notice flags the mismatch) must re-open as it was saved:
+    the restore used to re-apply the age only, the group fell back to «дети» and the
+    adult scenario was not re-opened («препарат … недоступен для этой возрастной
+    группы», no dose)."""
+    o = shell["historyRestoreGroupOverride"]
+    assert o["saved"] == "adult|cap_adult_out_comorbid|moxifloxacin|150|months|true|true", o
+    assert o["entry"] == "adult|150|months", o
+    assert o["restored"] == "true|Расчёт из истории открыт|adult|cap_adult_out_comorbid|moxifloxacin|150|months|true|true", o
+
+
 def test_regimen_chips_follow_the_age_group(shell: dict) -> None:
     """Amoxicillin for AOM has three child regimens and none for neonates: the
     «новорождённые» chip shows the age block alone — the three child chips used to
