@@ -204,6 +204,9 @@ PATIENT_CONTEXT_SUPPORT = [
     "makeActivatable",
     "allergyExportFlag",
     "exportSafetyFlags",
+    "ageGroupMismatchCaution",
+    "ageGroupFromDays",
+    "ageGroupLabel",
     "comboComponentLines",
     "componentRegimen",
     "searchFold",
@@ -663,6 +666,28 @@ def test_weight_caution_travels_with_the_exports() -> None:
     ), result["adult35"]
     assert result["adult70"] == []
     assert len(result["toddler28"]) == 1 and result["toddler28"][0]["text"].startswith("Вес 28 кг при возрасте 2 года — редкое сочетание"), result["toddler28"]
+
+
+def test_group_chosen_over_the_typed_age_travels_with_the_exports() -> None:
+    """12 years typed + «взрослые» chosen by chip: the screen notice says «не
+    соответствует»; the MIS text / Rp / printed form (exportSafetyFlags) carry the
+    same caution. No caution when the group matches the age, when no age is typed,
+    or when the age itself is implausible (that one is a block)."""
+    body = (
+        "const DB = {drugs_reference: {amoxicillin: {inn: 'Амоксициллин'}}};"
+        "let activeAge = 'adult'; $('weight').value = '45';"
+        "const noAge = exportSafetyFlags(['amoxicillin']);"
+        "patientAgeDays = 12 * DAYS_PER_YEAR;"
+        "const twelveAdult = exportSafetyFlags(['amoxicillin']);"
+        "activeAge = 'child';"
+        "const twelveChild = exportSafetyFlags(['amoxicillin']);"
+        "patientAgeDays = 150 * DAYS_PER_YEAR; activeAge = 'adult';"
+        "const implausible = exportSafetyFlags(['amoxicillin']);"
+        "console.log(JSON.stringify({noAge, twelveAdult, twelveChild, implausible}));"
+    )
+    result = _run([], "", body)
+    assert result["noAge"] == [] and result["twelveChild"] == [] and result["implausible"] == [], result
+    assert result["twelveAdult"] == [{"level": "warn", "text": "Возраст 12 лет соответствует группе «дети», расчёт выполнен для группы «взрослые» (выбрана вручную)."}], result
 
 
 def test_calculate_refuses_to_render_a_dose_for_out_of_range_weight() -> None:

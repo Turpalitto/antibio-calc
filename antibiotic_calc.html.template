@@ -1880,7 +1880,17 @@ function exportSafetyFlags(refs){
   const weightEl = $('weight');
   const caution = weightEl ? weightWarnReason(parseFloat(weightEl.value), activeAge) : '';
   if(caution) flags.push({level:'warn', text:caution});
+  // the group chosen by chip over the typed age is flagged on screen (#age-explicit-notice);
+  // the reader of the chart text / Rp / printed form must see it too
+  const groupCaution = ageGroupMismatchCaution();
+  if(groupCaution) flags.push({level:'warn', text:groupCaution});
   return flags;
+}
+function ageGroupMismatchCaution(){
+  if(patientAgeDays == null || ageInputBlockReason()) return '';
+  const group = ageGroupFromDays(patientAgeDays);
+  if(group === activeAge) return '';
+  return 'Возраст '+formatAgeDays(patientAgeDays)+' соответствует группе «'+ageGroupLabel(group)+'», расчёт выполнен для группы «'+ageGroupLabel(activeAge)+'» (выбрана вручную).';
 }
 // Баннеры строятся узлами: текст приходит из справочника препарата (БД).
 function renderPatientSafetyFlags(refs){

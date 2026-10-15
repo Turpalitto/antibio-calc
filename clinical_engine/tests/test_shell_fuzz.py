@@ -90,7 +90,7 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
     expected = {
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient",
-        "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "resetDisease", "search", "hash", "history", "copy",
+        "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "resetDisease", "search", "hash", "history", "copy",
         "print", "theme", "routeThenDrug", "name",
     }
     assert expected <= set(counts), sorted(expected - set(counts))

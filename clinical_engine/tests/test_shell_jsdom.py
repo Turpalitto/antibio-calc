@@ -609,6 +609,9 @@ def test_history_restore_brings_back_the_group_chosen_over_a_typed_age(shell: di
     assert o["saved"] == "adult|cap_adult_out_comorbid|moxifloxacin|150|months|true|true", o
     assert o["entry"] == "adult|150|months", o
     assert o["restored"] == "true|Расчёт из истории открыт|adult|cap_adult_out_comorbid|moxifloxacin|150|months|true|true", o
+    caution = "Возраст 12 лет соответствует группе «дети», расчёт выполнен для группы «взрослые» (выбрана вручную)."
+    assert o["misCaution"] == "Предупреждение: " + caution, o
+    assert o["printedCaution"] == "Предупреждение: " + caution, o
 
 
 def test_printed_date_uses_the_russian_format_for_a_picked_date(shell: dict) -> None:

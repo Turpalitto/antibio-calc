@@ -97,6 +97,9 @@ setTimeout(async()=>{
     ageUnit:()=>type($('patient-age-unit'),pick(['years','months','days'])),
     keyCard:()=>{ const c=q('#scenario-list .scenario-card, #drug-list .drug-card, #results-box > div[role=button]'); if(!c.length) return; const el=pick(c); el.focus(); el.dispatchEvent(new w.KeyboardEvent('keydown',{key:pick(['Enter',' ']),bubbles:true,cancelable:true})); },
     searchKeys:()=>{ const el=$('search'); type(el,pick(['пневмония','цистит','J18','сепсис','ин'])); el.focus(); const key=pick(['Enter','ArrowDown','Escape']); el.dispatchEvent(new w.KeyboardEvent('keydown',{key,bubbles:true,cancelable:true})); if(key==='ArrowDown'){ const n=1+Math.floor(rnd()*3); for(let i=0;i<n;i++) (d.activeElement||el).dispatchEvent(new w.KeyboardEvent('keydown',{key:rnd()<0.7?'ArrowDown':'ArrowUp',bubbles:true,cancelable:true})); if(rnd()<0.7&&d.activeElement&&d.activeElement!==el) d.activeElement.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true})); } },
+    // the group chosen by chip over a typed age (allowed, flagged): type an age and click
+    // the chip of another group — the plain walk resets the age too often to stay there
+    chipOverAge:()=>{ type($('patient-age-unit'),pick(['years','months'])); type($('patient-age'),pick(['12','150','20','2'])); const other=[...d.querySelectorAll('#age-group button')].filter(b=>!b.classList.contains('active')); if(other.length) pick(other).click(); actions.copy(); },
     newPatient:()=>$('new-patient').click(),
     // a weight typed for a fresh patient (no explicit age yet) infers the group and shows
     // the inference notice — the plain walk sets an explicit age early and rarely gets here
@@ -392,7 +395,7 @@ setTimeout(async()=>{
       const all=txt($('result-step'))+' '+txt($('dose-block')); if(BAD.test(all)) push('bad_token',all.match(/.{0,30}(NaN|Infinity|undefined|\[object |null мг|null ЕД).{0,30}/)[0]);
       // binary float noise («0.30000000000000004 мл») must never reach the screen or an export
       const NOISE=/\d+[.,]\d{5,}/; if(NOISE.test(all)) push('float_noise',all.match(/.{0,30}\d+[.,]\d{5,}.{0,30}/)[0]);
-      if(name==='copy'){
+      if(name==='copy'||name==='chipOverAge'){
         if(S.blocked&&(w.__mis||w.__rp)) push('export_while_blocked','');
         if(!S.blocked&&w.__mis){
           // the chart text names the drug on screen (INN) and the diagnosis
@@ -401,6 +404,18 @@ setTimeout(async()=>{
           if(S.dis&&!w.__mis.includes(S.dis.name)) push('mis_names_other_diagnosis',`${S.dis.name} not in «${w.__mis.slice(0,100)}»`);
         }
         if(!S.blocked&&S.regimen&&resVis&&!(w.__mis&&w.__rp)) push('export_empty_while_computed',`mis ${!!w.__mis} rp ${!!w.__rp} toast ${txt($('toast'))}`);
+        // every warning the physician sees travels with the chart text: the safety banners,
+        // a «противопоказан» allergy banner, the weight caution and the explicit-age / group
+        // mismatch notice must each have a flag line in the MIS text
+        if(!S.blocked&&w.__mis){
+          const misLines=w.__mis.split('\n').map(l=>l.trim()).filter(l=>/^(ВНИМАНИЕ|Предупреждение): /.test(l)).map(l=>l.replace(/^(ВНИМАНИЕ|Предупреждение): /,'').replace(/\s+/g,' ').trim());
+          const expected=JSON.parse(w.eval('JSON.stringify(exportSafetyFlags(getDrugRefs(activeDrug)).map(f=>f.text))')).map(x=>x.replace(/\s+/g,' ').trim());
+          expected.forEach(t=>{ if(!misLines.includes(t)) push('export_flag_missing',`«${t.slice(0,80)}»`); });
+          [...d.querySelectorAll('#patient-safety-banners [data-level]')].forEach(r=>{ if(shown(r)&&!misLines.includes(txt(r))) push('screen_banner_not_in_mis',txt(r).slice(0,80)); });
+          const notice=txt($('age-explicit-notice'));
+          if(shown($('age-explicit-notice'))&&/не соответствует/.test(notice)){ tally('group_mismatch_export'); if(!misLines.some(l=>/выбрана вручную/.test(l))) push('group_mismatch_not_in_mis',notice.slice(0,80)); }
+          if(shown($('weight-warn'))&&/редк/.test(txt($('weight-warn')))&&!misLines.some(l=>/редк/.test(l))) push('weight_caution_not_in_mis',txt($('weight-warn')).slice(0,80));
+        }
         if(BAD.test((w.__mis||'')+(w.__rp||''))) push('export_bad_token','');
         if(NOISE.test((w.__mis||'')+(w.__rp||''))) push('export_float_noise',((w.__mis||'')+(w.__rp||'')).match(/.{0,30}\d+[.,]\d{5,}.{0,30}/)[0]);
       }
@@ -418,7 +433,7 @@ setTimeout(async()=>{
       }
     } else {
       if(name==='print'&&txt($('rx-drugs'))) push('print_drugs_without_drug',txt($('rx-drugs')).slice(0,60));
-      if(name==='copy'&&(w.__mis||w.__rp)) push('export_without_drug','');
+      if((name==='copy'||name==='chipOverAge')&&(w.__mis||w.__rp)) push('export_without_drug','');
     }
   }
   console.log(JSON.stringify({seed,steps:STEPS,findings:findings.slice(0,40),nFindings:findings.length,kinds:findings.reduce((a,f)=>(a[f.kind]=(a[f.kind]||0)+1,a),{}),counts,checks},null,1));

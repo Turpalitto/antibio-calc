@@ -1058,6 +1058,12 @@ async function run() {
       o.entry = [entry.ageGroup, entry.ref.ageValue, entry.ref.ageUnit].join('|');
       $('new-patient').click();
       o.restored = [w.restoreHistoryEntry(entry), txt($('toast')), st()].join('|');
+      // the chip-over-age choice travels with the chart text and the printed form
+      w.__copied = null;
+      w.copyForMIS();
+      o.misCaution = ((w.__copied || '').split('\n').find((l) => /выбрана вручную/.test(l)) || '').trim();
+      w.dispatchEvent(new w.Event('beforeprint'));
+      o.printedCaution = (txt($('rx-safety-line')).match(/Предупреждение: Возраст[^.]*\./) || [''])[0];
       type($('patient-age-unit'), 'years');
       $('new-patient').click();
       out.historyRestoreGroupOverride = o;
