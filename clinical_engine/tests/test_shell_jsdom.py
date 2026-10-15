@@ -611,6 +611,16 @@ def test_history_restore_brings_back_the_group_chosen_over_a_typed_age(shell: di
     assert o["restored"] == "true|Расчёт из истории открыт|adult|cap_adult_out_comorbid|moxifloxacin|150|months|true|true", o
 
 
+def test_printed_date_uses_the_russian_format_for_a_picked_date(shell: dict) -> None:
+    """The date field becomes type=date on focus, so a picked date is ISO
+    «2026-10-15»; the printed form said «Дата: 2026-10-15» next to a default of
+    «15.10.2026». Both print as DD.MM.YYYY; «Новый пациент» keeps the date."""
+    pd = shell["printDate"]
+    assert pd["picked"] == "15.10.2026", pd
+    assert pd["keptAfterNewPatient"] == "2026-10-15", pd
+    assert pd["today"] == pd["todayExpected"], pd
+
+
 def test_regimen_chips_follow_the_age_group(shell: dict) -> None:
     """Amoxicillin for AOM has three child regimens and none for neonates: the
     «новорождённые» chip shows the age block alone — the three child chips used to

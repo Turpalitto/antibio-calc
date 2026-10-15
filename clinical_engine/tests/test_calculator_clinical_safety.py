@@ -1653,6 +1653,7 @@ def test_fill_prescription_form_never_parses_a_drug_name_or_solvent_as_markup() 
         "calculateCoursePackages",
         "clearPrescriptionForm",
         "fillPrescriptionForm",
+        "prescriptionDateText",
     ]
     result = _run_with_consts(
         funcs,
@@ -1934,7 +1935,7 @@ _RX_FUNCS = [
     "doseUnitOf", "computeDose", "formatUnits", "fmtDose", "diseaseSourceStatus",
     "diseaseCalculationGated", "sourceGateReason",
     "formatTablets", "getStandardBottleMl", "calculateCoursePackages",
-    "clearPrescriptionForm", "fillPrescriptionForm",
+    "clearPrescriptionForm", "fillPrescriptionForm", "prescriptionDateText",
 ]
 _RX_CONSTS = ["LATIN_INN", "LATIN_FORM", "LATIN_ROUTE", "LATIN_FREQ"]
 
@@ -1953,6 +1954,19 @@ def test_latin_rp_line_writes_the_strength_in_latin_units() -> None:
         "250 mg/5 ml", "1 200 000 ED", "1 000 000 ED", "3000 mg", "1000+200 mg",
         "600+42.9 mg/5 ml (14:1 ES)", "875+125 mg", "500 mg/2 ml", "40 mg/ml", "500 000 ED", "2% крем", "",
     ], result
+
+
+def test_prescription_date_is_printed_in_the_russian_format() -> None:
+    """The date field turns into type=date on focus, so a picked date arrives as ISO
+    «2026-10-15»; the printed form said «Дата: 2026-10-15» while the default (today)
+    was «15.10.2026». ISO → DD.MM.YYYY; free text stays; empty → today (ru-RU)."""
+    body = (
+        "console.log(JSON.stringify(['2026-10-15','15.10.2026','2026-1-5',' 2025-02-03 ','',null]"
+        ".map(prescriptionDateText)));"
+    )
+    result = _run(["prescriptionDateText"], "", body)
+    assert result[:4] == ["15.10.2026", "15.10.2026", "2026-1-5", "03.02.2025"], result
+    assert re.fullmatch(r"\d{2}\.\d{2}\.\d{4}", result[4]) and result[4] == result[5], result
 
 
 def _rx_globals(drug_ref: dict, active_drug: dict, route_group: str, route_key: str, weight: str = "70") -> str:

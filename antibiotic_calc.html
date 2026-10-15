@@ -3956,6 +3956,15 @@ function clearPrescriptionForm(reason){
   if($('rx-build-line')) $('rx-build-line').textContent = typeof buildIdentifier === 'function' ? buildIdentifier() : '';
 }
 const PRINT_NO_CALCULATION = 'ПЕЧАТЬ НЕВОЗМОЖНА: расчёт не выполнен — выберите нозологию, препарат и введите данные пациента. Бланк пуст намеренно.';
+// The date field becomes type=date on focus, so a picked date arrives as ISO
+// «2026-10-15»; the printed form (and the physician) expect «15.10.2026» — the same
+// format as the default (today, ru-RU). Free text stays as typed.
+function prescriptionDateText(raw){
+  const value = String(raw == null ? '' : raw).trim();
+  if(!value) return new Date().toLocaleDateString('ru-RU');
+  const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  return iso ? iso[3]+'.'+iso[2]+'.'+iso[1] : value;
+}
 function fillPrescriptionForm(){
   if(!activeDrug || !activeDisease){ clearPrescriptionForm(PRINT_NO_CALCULATION); return; }
   const w = parseFloat($('weight').value);
@@ -3993,8 +4002,7 @@ function fillPrescriptionForm(){
 
   // Header (Russian — as on real forms): patient, age, weight, date, doctor.
   // Ф.И.О. is raw user input → textContent only.
-  const dateStr = $('patient-date').value || new Date().toLocaleDateString('ru-RU');
-  $('rx-date').textContent = dateStr;
+  $('rx-date').textContent = prescriptionDateText($('patient-date').value);
   $('rx-doctor').textContent = $('doctor-name').value || '—';
   $('rx-patient').textContent = ($('patient-name') && $('patient-name').value.trim()) || '________________________';
   $('rx-age').textContent = patientAgeDays != null ? formatAgeDays(patientAgeDays)+' ('+ageGroupLabel(activeAge)+')' : ageGroupLabel(activeAge);

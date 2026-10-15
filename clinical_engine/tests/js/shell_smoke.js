@@ -1062,6 +1062,27 @@ async function run() {
       $('new-patient').click();
       out.historyRestoreGroupOverride = o;
     }
+    // 31. the printed date: a date picked in the (type=date) field arrives as ISO and must
+    //     print as DD.MM.YYYY like the default (today); «Новый пациент» keeps the date
+    {
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      clickDisease('cap_adult');
+      const pd = {};
+      $('patient-date').value = '2026-10-15';
+      w.dispatchEvent(new w.Event('beforeprint'));
+      pd.picked = txt($('rx-date'));
+      $('new-patient').click();
+      pd.keptAfterNewPatient = $('patient-date').value;
+      $('patient-date').value = '';
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      clickDisease('cap_adult');
+      w.dispatchEvent(new w.Event('beforeprint'));
+      pd.today = txt($('rx-date'));
+      pd.todayExpected = new Date().toLocaleDateString('ru-RU');
+      out.printDate = pd;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }
