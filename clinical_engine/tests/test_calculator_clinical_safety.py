@@ -213,6 +213,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "componentRegimen",
     "searchFold",
     "foldIcdHomoglyphs",
+    "dehyphenate",
     "diseaseDrugText",
     "daysWord",
     "timesADay",
@@ -1772,7 +1773,7 @@ def test_fill_prescription_form_never_parses_a_drug_name_or_solvent_as_markup() 
     ]
     result = _run_with_consts(
         funcs,
-        ["LATIN_INN", "LATIN_FORM", "LATIN_ROUTE", "LATIN_FREQ"],
+        ["LATIN_INN", "LATIN_FORM"],
         globals_js,
         _XSS_INSPECTOR + "fillPrescriptionForm();console.log(JSON.stringify({drugs:report($('rx-drugs')),"
         "inj:report($('rx-injection-details')),signa:$('rx-signa-text').textContent}));",
@@ -2053,7 +2054,7 @@ _RX_FUNCS = [
     "clearPrescriptionForm", "fillPrescriptionForm", "prescriptionDateText",
     "doseIncompleteReason", "componentRegimen",
 ]
-_RX_CONSTS = ["LATIN_INN", "LATIN_FORM", "LATIN_ROUTE", "LATIN_FREQ"]
+_RX_CONSTS = ["LATIN_INN", "LATIN_FORM"]
 
 
 def test_latin_rp_line_writes_the_strength_in_latin_units() -> None:
@@ -2327,6 +2328,16 @@ def test_icd_code_typed_with_a_cyrillic_look_alike_letter_is_the_latin_code() ->
     )
     result = _run(["foldIcdHomoglyphs"], "", body)
     assert result == ["h66", "b20", "o85.1", "k81", "a09", "x60", "y36", "пневмония h66", "н 66", "нет", "66н", "abc", "j18", "о", "он6"], result
+
+
+def test_hyphenated_names_are_searchable_without_the_hyphen() -> None:
+    """T93: «котримоксазол» finds «Ко-тримоксазол», «вичинфекция» «ВИЧ-инфекция»; a hyphen
+    between a letter and a digit or between digits is kept («J18-дети», «1-2 р/д»)."""
+    body = (
+        "console.log(JSON.stringify(['ко-тримоксазол','вич-инфекция','j18-дети','1-2 р/д','h.-pylori','a-b-c','-ко','ко-'].map(dehyphenate)));"
+    )
+    result = _run(["dehyphenate"], "", body)
+    assert result == ["котримоксазол", "вичинфекция", "j18-дети", "1-2 р/д", "h.-pylori", "abc", "-ко", "ко-"], result
 
 
 def test_times_a_day_declension() -> None:

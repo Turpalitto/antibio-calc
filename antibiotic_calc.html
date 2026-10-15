@@ -2034,9 +2034,17 @@ function diseaseDrugText(d){
       if(ref && Array.isArray(ref.synonyms)) ref.synonyms.forEach(syn=>{ if(typeof syn === 'string' && syn.trim()) names.add(searchFold(syn)); });
     });
   })));
+  // a hyphenated INN is typed without the hyphen as often as with it («котримоксазол»
+  // for «Ко-тримоксазол»): the joined spelling is searchable too
+  [...names].forEach(n=>{ const joined = dehyphenate(n); if(joined !== n) names.add(joined); });
   const text = [...names].join(' ');
   if(d && d.id) cache[d.id] = text;
   return text;
+}
+// «ко-тримоксазол» → «котримоксазол» (a hyphen between two letters only — «J18-дети»,
+// «1-2 р/д» keep theirs)
+function dehyphenate(x){
+  return String(x == null ? '' : x).replace(/([a-zа-яё])-(?=[a-zа-яё])/g, '$1');
 }
 // One typo per word («пневмания», «тонзилит», «амоксицилин», «синусид»): true
 // when a and b differ by a single substitution, insertion, deletion or swap of
@@ -2146,8 +2154,8 @@ function handleSearch(){
     const tClean = t.replace(/[\.\s\-_]/g, '');
     const tEn = t.split('').map(ch => KEY_MAP_RU_EN[ch] || HOMOGLYPHS_RU_EN[ch] || ch).join('').replace(/[\.\s\-_]/g, '');
     if(tClean && mkbHit(d, tClean, tEn)) return true;
-    if(stemHit(searchFold(d.name), t)) return true;
-    if(d.synonyms && d.synonyms.some(s=>stemHit(searchFold(s), t))) return true;
+    if(stemHit(searchFold(d.name), t) || stemHit(dehyphenate(searchFold(d.name)), t)) return true;
+    if(d.synonyms && d.synonyms.some(s=>stemHit(searchFold(s), t) || stemHit(dehyphenate(searchFold(s)), t))) return true;
     if(d.cr_id && searchFold(String(d.cr_id)).includes(t)) return true;
     if(stemHit(diseaseDrugText(d), t)) return true;
     return false;
@@ -4065,7 +4073,6 @@ const LATIN_FORM = {
   solution_iv:'sol. pro inject.', solution_im:'sol. pro inject.',
   granules:'gran.', topical:'ung.', drops:'gtt.', suppository:'supp.'
 };
-const LATIN_ROUTE = { po:'per os', im:'intramuscularis', iv:'intravenosus', topical:'ad usum externum' };
 // Strength for the Latin Rp line: «250 мг/5 мл» → «250 mg/5 ml», «1.2 млн ЕД флакон» →
 // «1 200 000 ED», «3000 мг пакет» → «3000 mg» (the package word is the D.t.d. form;
 // ratio notes like «(4:1)» / «(14:1 ES)» stay). The DB string itself is unchanged
@@ -4080,8 +4087,6 @@ function latinStrength(conc){
   s = s.replace(/\s*(?:флакон|пакет|саше|ампула|амп\.)(?![а-яё])\s*/gi, ' ').replace(/\s{2,}/g, ' ').trim();
   return s;
 }
-const LATIN_FREQ = { 1:'semel in die', 2:'bis in die', 3:'ter in die', 4:'quater in die', 6:'sexies in die' };
-
 // Every printable field back to «—»: the print stylesheet shows #prescription-form
 // alone, so a stale fill (previous patient / drug) must never survive into a
 // blocked or empty print (Ctrl+P bypasses the «Печать» button).

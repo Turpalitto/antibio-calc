@@ -349,6 +349,9 @@ def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     assert r["гепатит"]["names"] == ["Хронический вирусный гепатит B"], r["гепатит"]
     assert {"Helicobacter pylori-инфекция (язвенная болезнь)", "Язвенный колит", "Сибирская язва"} <= set(r["язва"]["names"]), r["язва"]
     assert "Укусы животных (профилактика и лечение раневой инфекции)" in r["рана"]["names"], r["рана"]
+    # T93: a hyphenated INN / name is found without the hyphen («котримоксазол» = «ко-тримоксазол»)
+    assert r["котримоксазол"]["n"] >= 10 and r["котримоксазол"]["names"] == r["ко-тримоксазол"]["names"], (r["котримоксазол"], r["ко-тримоксазол"])
+    assert r["вичинфекция"]["n"] == 1 and r["вичинфекция"]["names"][0].startswith("ВИЧ-инфекция у взрослых"), r["вичинфекция"]
 
 
 def test_search_status_counts_hits_and_says_when_nothing_matched(shell: dict) -> None:
