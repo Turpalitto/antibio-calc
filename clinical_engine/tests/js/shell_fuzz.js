@@ -130,7 +130,7 @@ setTimeout(async()=>{
     // a quick nosology tag («Отит (H66)»): the tag code is recorded for the group invariant
     quickTag:()=>{ const tags=q('.quick-disease-tag'); if(!tags.length) return; const t=pick(tags); const m=(t.getAttribute('onclick')||'').match(/selectQuickDisease\('([^']+)'\)/); w.__quickTag=m?m[1]:null; t.click(); },
     // the query sometimes stays on screen (no click): the panel state is checked after the step
-    search:()=>{ type($('search'),pick(['пневмония','цистит','отит','J18','амоксициллин','сепсис','ин','п','qwertyzzz','пневмания','  '])); if(rnd()<0.6){ const hits=[...d.querySelectorAll('#results-box > div[role=button]')]; if(hits.length) pick(hits).click(); } },
+    search:()=>{ type($('search'),pick(['пневмония','цистит','отит','J18','амоксициллин','сепсис','ин','п','qwertyzzz','пневмания','  ','Н66','В20','J 18','котримоксазол','ангина','таза','грипп'])); if(rnd()<0.6){ const hits=[...d.querySelectorAll('#results-box > div[role=button]')]; if(hits.length) pick(hits).click(); } },
     hash:()=>{ const r=pick(computable); const sc=pick(r.scenarios||[]); w.location.hash='#'+r.id+(sc?'/'+sc.id+(rnd()<0.5?'/L'+pick(sc.lines).line_number:''):''); },
     history:()=>{
       saveProbe(); w.__restored=null;
