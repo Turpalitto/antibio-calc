@@ -1991,6 +1991,9 @@ function diseaseDrugText(d){
       names.add(searchFold(k));
       const ref = (typeof DB !== 'undefined' && DB && DB.drugs_reference) ? DB.drugs_reference[k] : null;
       if(ref && ref.inn) names.add(searchFold(ref.inn));
+      // optional trade names / spellings the owner may list on the drug («Амоксиклав»,
+      // «Флемоксин»): no such field ships yet, the search is ready for it
+      if(ref && Array.isArray(ref.synonyms)) ref.synonyms.forEach(syn=>{ if(typeof syn === 'string' && syn.trim()) names.add(searchFold(syn)); });
     });
   })));
   const text = [...names].join(' ');

@@ -181,6 +181,11 @@ function validateDatabase(db) {
     if (ref.dose_unit != null && ref.dose_unit !== 'мг' && ref.dose_unit !== 'ЕД') {
       errors.push(`drugs_reference.${key}: dose_unit must be "мг" or "ЕД" (got "${ref.dose_unit}")`);
     }
+    // optional trade names / spellings the search indexes (diseaseDrugText): an array of
+    // non-empty strings, or absent
+    if (ref.synonyms != null && (!Array.isArray(ref.synonyms) || ref.synonyms.some((syn) => typeof syn !== 'string' || !syn.trim()))) {
+      warnings.push(`drugs_reference.${key}: synonyms must be an array of non-empty strings — the search ignores anything else (got ${JSON.stringify(ref.synonyms).slice(0, 60)})`);
+    }
     if (ref.age_restriction_min != null && String(ref.age_restriction_min).trim() !== ''
         && !AGE_RESTRICTION_RE.test(String(ref.age_restriction_min).toLowerCase())) {
       warnings.push(`drugs_reference.${key}: age_restriction_min "${ref.age_restriction_min}" is not «<N> лет/мес/нед/дн» — the shell cannot compare it with the patient's age and only shows a «проверьте вручную» flag (owner review)`);

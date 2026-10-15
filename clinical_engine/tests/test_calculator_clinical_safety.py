@@ -2228,6 +2228,23 @@ def test_search_typo_tolerance_is_one_edit_on_a_word_prefix() -> None:
     assert result["hits"] == [True, True, True, True, False, False, False]
 
 
+def test_search_drug_text_includes_optional_trade_names() -> None:
+    """«амоксиклав» / «аугментин» find nothing today because the DB lists INNs only.
+    When the owner adds `drugs_reference[].synonyms` (trade names), the search text of a
+    record carries them without a shell change; a missing or malformed field is ignored."""
+    body = (
+        "const DB = {drugs_reference: {"
+        "amoxiclav: {inn: 'Амоксициллин + Клавулановая кислота', synonyms: ['Амоксиклав', 'Аугментин', '', 7]},"
+        "amoxicillin: {inn: 'Амоксициллин'},"
+        "weird: {inn: 'Х', synonyms: 'не массив'}}};"
+        "const rec = {id: 'r1', scenarios: [{lines: [{drugs: [{drug_ref: 'amoxiclav'}, {drug_ref: 'amoxicillin'}, {drug_ref: 'weird'}, {drug_ref: 'missing'}]}]}]};"
+        "console.log(JSON.stringify(diseaseDrugText(rec)));"
+    )
+    text = _run(["diseaseDrugText", "searchFold"], "", body)
+    assert "амоксиклав" in text and "аугментин" in text and "амоксициллин" in text and "missing" in text, text
+    assert "не массив" not in text and " 7" not in text, text
+
+
 def test_times_a_day_declension() -> None:
     """Rp Signa / printed form said «1 раза в день» and «6 раза в день»."""
     result = _run(["timesADay"], "", "console.log(JSON.stringify([1,2,3,4,5,6,8,11,12,21,22,0].map(timesADay)));")

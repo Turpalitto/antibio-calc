@@ -534,6 +534,22 @@ def test_duration_note_that_only_repeats_the_drug_name_is_a_warning(note, flagge
         assert "«Указания: …»" in hits[0] and "(owner review)" in hits[0]
 
 
+@pytest.mark.parametrize(
+    ("synonyms", "flagged"),
+    [(["Амоксиклав", "Аугментин"], False), (None, False), ("Амоксиклав", True), (["Амоксиклав", ""], True), ([7], True)],
+)
+def test_drug_synonyms_must_be_an_array_of_non_empty_strings(synonyms, flagged) -> None:
+    """diseaseDrugText() indexes `drugs_reference[].synonyms` (trade names) for the
+    search and ignores anything that is not a non-empty string — the validator says so."""
+    db = _db()
+    if synonyms is not None:
+        db["drugs_reference"]["amoxicillin"]["synonyms"] = synonyms
+    result = _validate(db)
+    assert result["errors"] == []
+    hits = _warnings_matching(result, "synonyms must be an array of non-empty strings")
+    assert bool(hits) is flagged, (synonyms, result["warnings"])
+
+
 def test_shipped_database_has_no_shell_parity_warnings() -> None:
     db = json.loads((ROOT / "db" / "antibio_db.json").read_text(encoding="utf-8-sig"))
     result = _validate(db)
