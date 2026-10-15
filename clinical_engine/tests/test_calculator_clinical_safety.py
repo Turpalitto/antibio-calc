@@ -2296,6 +2296,27 @@ def test_search_status_names_a_typo_only_list() -> None:
     assert result[4].startswith("Ничего не найдено по запросу «холера»")
 
 
+def test_allergy_check_of_a_drug_missing_from_the_class_table_is_a_caution() -> None:
+    """A drugs_reference key that `DRUG_CLASSES` does not know used to come back as
+    «✅ Безопасно» for every allergy (the static consistency test guards the shipped DB; the
+    runtime must not degrade silently either). With no allergy on record it stays silent."""
+    body = (
+        "console.log(JSON.stringify(["
+        "checkAllergyStatus('brand_new_drug', 'penicillin_severe'),"
+        "checkAllergyStatus('brand_new_drug', 'penicillin_mild'),"
+        "checkAllergyStatus('brand_new_drug', 'cephalosporin'),"
+        "checkAllergyStatus('brand_new_drug', 'none'),"
+        "checkAllergyStatus('amoxicillin', 'penicillin_severe').status,"
+        "checkAllergyStatus('azithromycin', 'penicillin_severe').status]));"
+    )
+    result = _run_with_consts(["checkAllergyStatus"], ["DRUG_CLASSES"], "", body)
+    for res in result[:3]:
+        assert res["status"] == "caution" and res["label"] == "⚠ Класс не определён", res
+        assert res["alert"] == "Класс препарата «brand_new_drug» не задан в таблице классов калькулятора — совместимость с аллергоанамнезом проверьте вручную.", res
+    assert result[3] == {"status": "safe", "label": "", "alert": None}
+    assert result[4] == "contraindicated" and result[5] == "recommended"
+
+
 def test_times_a_day_declension() -> None:
     """Rp Signa / printed form said «1 раза в день» and «6 раза в день»."""
     result = _run(["timesADay"], "", "console.log(JSON.stringify([1,2,3,4,5,6,8,11,12,21,22,0].map(timesADay)));")

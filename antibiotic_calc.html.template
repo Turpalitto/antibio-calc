@@ -2500,6 +2500,15 @@ const DRUG_CLASSES = {
 function checkAllergyStatus(drugKey, allergy){
   if(!allergy || allergy === 'none') return { status: 'safe', label: '', alert: null };
   const cls = DRUG_CLASSES[drugKey] || '';
+  // a drug the class table does not know (a new drugs_reference key) must not degrade
+  // to «✅ Безопасно» with an allergy on record — it is a caution the physician resolves
+  if(!cls){
+    return {
+      status: 'caution',
+      label: '⚠ Класс не определён',
+      alert: 'Класс препарата «'+drugKey+'» не задан в таблице классов калькулятора — совместимость с аллергоанамнезом проверьте вручную.'
+    };
+  }
   if(allergy === 'penicillin_severe'){
     if(cls.startsWith('penicillin') || cls.startsWith('cephalosporin') || cls === 'carbapenem'){
       return {
