@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T65): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus
+## 2026-10-14 (round 6 continued, T51–T66): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render
 
 - Shell: changing the allergy status, the age group (chip, typed age or weight inference)
   no longer jumps to the first scenario / drug card — the physician's scenario, line, drug,
@@ -31,12 +31,20 @@
 - Robustness / a11y: a denied `history.replaceState` (sandboxed iframe, some file://
   viewers) never aborts a selection (T64); Tab stays inside the open guideline modal /
   history drawer and a backdrop click closes the modal (T65).
+- **Source gate on re-render (T66, REAL HAZARD):** a `calculation_blocked` record («расчёт
+  закрыт») used to open its scenarios, compute, export, print and save a dose as soon as
+  the physician typed an age / clicked an age chip / changed the allergy / followed a
+  `#hash` — under the red block notice. `renderScenarios()` is now the choke point and
+  `calculationBlockReason()` names the gate; walk oracle covers all 55 gated records × 5
+  profiles, fuzz invariant `blocked_record_opened`, jsdom step 25.
 - Fuzz invariants added after T62: history «Открыть расчёт» round-trip, MIS / print name
-  the drug on screen, no float noise, route order / preference (steered `routeThenDrug`).
-- Tests: **2803 passed / 28 skipped / 0 failed** (jsdom 42, walk 14 oracles / 5 profiles /
-  1777 states, fuzz 22 actions, 2 seeds × 800 steps); validate 0 / 436; axe 0; ruff clean;
-  build fresh; CI + CodeQL green per push (`f480406` last checked). DB unchanged
-  (`56727a27f050…`).
+  the drug on screen, no float noise, route order / preference (steered `routeThenDrug`),
+  gated record never opened. Walk oracles: default route / tab order for every drug state,
+  picked route on the next card, source gate.
+- Tests: **2804 passed / 28 skipped / 0 failed** (jsdom 43, walk 17 oracles / 5 profiles /
+  1777 states + 275 gated checks, fuzz 22 actions, 2 seeds × 800 steps); validate 0 / 436;
+  axe 0; ruff clean; build fresh; CI + CodeQL green per push (`d1d3be7` red — see AI_LOG —
+  fixed by `8b231e1`). DB unchanged (`56727a27f050…`).
 
 ## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
 

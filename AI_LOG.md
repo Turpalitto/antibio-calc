@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T65: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus)
+## 2026-10-14 (round 6 continued, T51–T66: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render)
 
 - **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
   «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:
@@ -100,6 +100,27 @@
   modal — delegated to `document` because the modal markup follows the script that runs
   `init()` (a direct listener on `#guideline-modal` at setup time found no element — the
   jsdom step caught that). Harness step 24 + jsdom test; axe still 0 in all three states.
+- **T63b `d1d3be7` + walk oracles:** a scenario card clicked afresh resets the route pick
+  (the first drug opens on the DB default, so a later card must not jump to an old pick);
+  the walk opens every drug card in its fresh state (scenario re-clicked first) and checks
+  the default route / tab order for all 569 drug states and the picked route on the next
+  card (mutants: dropped preference → 4 findings, groups order → 21). **`d1d3be7` went red
+  in CI** (gate output piped through `tail` swallowed the pytest rc — the failing fuzz seed
+  was the T66 hazard surfacing); fixed by `8b231e1`, gate script now checked via `rc`.
+- **T66 `8b231e1` (REAL HAZARD, found by the fuzz gate):** a record under the source gate
+  (`calculation_blocked` — «расчёт закрыт» until the owner verifies the source) opened with
+  no scenario cards, but the NEXT typed age / age chip / weight-inferred group / allergy
+  change / `#hash` deep link re-rendered the scenarios of the gated record, selected its
+  first drug and **computed, exported (MIS, Rp), printed and saved a dose under the red
+  block notice** (old build: `afterAge = prophylaxis_line|cefazolin|…|result visible`).
+  `diseaseCalculationGated()` / `sourceGateReason()`; `renderScenarios()` is the choke
+  point (a gated record clears scenario / line / drug / result and keeps the steps hidden;
+  `selectDisease` uses it on the gated path so the previous record's tiles go too);
+  `calculationBlockReason()` names the gate first, so MIS / Rp / print / history refuse
+  through the one shared gate. Gates: harness step 25 + jsdom test; fuzz invariant
+  `blocked_record_opened` (seed 11 × 800: 23 findings on the old build, 0 now); walk
+  source-gate oracle `1e6fecc` — all 55 gated records × 5 profiles through age chip /
+  allergy / typed age (old build: 55 findings). Sweeps: seeds 303/404/505/606 × 2000 clean.
 - **Sandbox note:** the environment was recreated mid-round (venv, `node_modules`, `/tmp`
   gone; `.git` back at the base while files kept the snapshot) — recovered with
   `git reset --soft origin/<branch>`, `npm ci`, a venv from `uv export --frozen`.

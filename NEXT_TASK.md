@@ -1,4 +1,4 @@
-## 2026-10-14 (after round 6, T51–T65): remaining NEXT_TASK (work top-down)
+## 2026-10-14 (after round 6, T51–T66): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
    pass: change the allergy status / type an age after picking a non-first drug — the drug
@@ -27,6 +27,11 @@
      per_os before iv). Tab inside the open КР modal cycles between its × and links; a click
      on the dimmed background closes it; Shift+Tab from the history drawer × lands on
      «Очистить историю».
+   - Real-browser pass addition (T66): open a record marked «расчёт закрыт» in the search
+     list (e.g. «Перелом дна глазницы»), then type an age, click an age chip, change the
+     allergy, paste its `#hash` — the red «РАСЧЁТ ЗАБЛОКИРОВАН» notice stays alone (no
+     scenario / drug cards, no dose); «Копировать для МИС» says «Нет активного расчёта»,
+     Ctrl+P prints «ПЕЧАТЬ НЕВОЗМОЖНА …».
 2. **Engineering candidates (none urgent):**
    - ~~`npm run check` convenience script~~ — done in T55 (`a86842a`).
    - The fuzz gate (`shell_fuzz.js`) runs 2 seeds × 800 steps in CI; a nightly / manual
