@@ -207,6 +207,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "ageGroupMismatchCaution",
     "ageGroupFromDays",
     "ageGroupLabel",
+    "doseIncompleteReason",
     "comboComponentLines",
     "componentRegimen",
     "searchFold",
@@ -238,7 +239,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "isTopicalForm",
     "latinStrength",
 ]
-PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR", "PRINT_NO_CALCULATION"]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR", "PRINT_NO_CALCULATION", "WEIGHT_NEEDED_FOR_EXPORT"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
 
 
@@ -688,6 +689,61 @@ def test_group_chosen_over_the_typed_age_travels_with_the_exports() -> None:
     result = _run([], "", body)
     assert result["noAge"] == [] and result["twelveChild"] == [] and result["implausible"] == [], result
     assert result["twelveAdult"] == [{"level": "warn", "text": "Возраст 12 лет соответствует группе «дети», расчёт выполнен для группы «взрослые» (выбрана вручную)."}], result
+
+
+def test_an_mg_per_kg_regimen_without_a_weight_is_not_exportable() -> None:
+    """T77: with no weight an mg/kg regimen shows «—» on screen (pending, not blocked),
+    but the chart text went out as «Схема приёма: 50-75 мг/кг/сут 1 р/сут», the Rp
+    with «N. ___», the printed form and the history with no dose. doseIncompleteReason
+    names the gap for the main regimen and for a per-kg combination partner; a fixed
+    dose, a given weight and a missing regimen are not «incomplete»."""
+    body = (
+        "const DB = {drugs_reference: {ceftriaxone: {inn: 'Цефтриаксон'}, amoxicillin: {inn: 'Амоксициллин'},"
+        " benzylpenicillin_na: {inn: 'Бензилпенициллин', dose_unit: 'ЕД'}}};"
+        "let activeDrug = {drug_ref: 'ceftriaxone'};"
+        "const perKg = {age_group: 'child', dose_mg_kg_day: 50, freq_per_day: 1, max_daily_mg: 2000, duration_note: '50-75 мг/кг/сут'};"
+        "const perKgDose = {age_group: 'child', dose_mg_kg_per_dose: 25, freq_per_day: 2};"
+        "const fixed = {age_group: 'adult', single_dose_mg: 1000, freq_per_day: 2};"
+        "const out = {};"
+        "out.perKgNoWeight = doseIncompleteReason(perKg, NaN);"
+        "out.perKgZero = doseIncompleteReason(perKg, 0);"
+        "out.perKgDoseNoWeight = doseIncompleteReason(perKgDose, NaN);"
+        "out.perKgWithWeight = doseIncompleteReason(perKg, 25);"
+        "out.fixedNoWeight = doseIncompleteReason(fixed, NaN);"
+        "out.noRegimen = doseIncompleteReason(null, NaN);"
+        "activeDrug = {combo_ref: ['amoxicillin', 'benzylpenicillin_na']};"
+        "const comboMainFixed = {age_group: 'child', single_dose_mg: 500, freq_per_day: 3,"
+        " component_regimens: {benzylpenicillin_na: {dose_mg_kg_day: 100000, freq_per_day: 4}}};"
+        "out.partnerPerKgNoWeight = doseIncompleteReason(comboMainFixed, NaN);"
+        "out.partnerPerKgWithWeight = doseIncompleteReason(comboMainFixed, 12);"
+        "const comboNoPartnerRegimen = {age_group: 'child', single_dose_mg: 500, freq_per_day: 3};"
+        "out.partnerMissing = doseIncompleteReason(comboNoPartnerRegimen, NaN);"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["doseIncompleteReason", "getDrugRefs", "doseUnitOf", "computeDose", "componentRegimen"], "", body)
+    reason = "введите вес пациента — доза этого режима рассчитывается по мг/кг и без веса не определена"
+    assert result["perKgNoWeight"] == reason, result
+    assert result["perKgZero"] == reason, result
+    assert result["perKgDoseNoWeight"] == reason, result
+    assert result["partnerPerKgNoWeight"] == reason, result
+    for key in ("perKgWithWeight", "fixedNoWeight", "noRegimen", "partnerPerKgWithWeight", "partnerMissing"):
+        assert result[key] == "", (key, result)
+
+
+def test_exports_refuse_an_mg_per_kg_regimen_without_a_weight() -> None:
+    """T77, the four doors: copyForMIS / copyLatinRecipe / saveToHistory toast the reason
+    and copy / save nothing; fillPrescriptionForm leaves the form empty with the reason in
+    the trust line. The source of the gate is one helper, so the four texts agree."""
+    source = _source()
+    for name in ("copyForMIS", "copyLatinRecipe", "saveToHistory", "fillPrescriptionForm"):
+        fn = _js_function(source, name)
+        assert "doseIncompleteReason(reg, w)" in fn, name
+        # the regimen gate (no regimen for the group) still comes first
+        assert fn.index("getActiveRegimen" if name == "fillPrescriptionForm" else "requireActiveRegimen") < fn.index("doseIncompleteReason"), name
+    assert "toast('Копирование заблокировано: '+incomplete)" in _js_function(source, "copyForMIS")
+    assert "toast('Копирование рецепта заблокировано: '+incomplete)" in _js_function(source, "copyLatinRecipe")
+    assert "toast('Сохранение заблокировано: '+incomplete)" in _js_function(source, "saveToHistory")
+    assert "clearPrescriptionForm('ПЕЧАТЬ НЕВОЗМОЖНА: '+incomplete+'. Бланк пуст намеренно.')" in _js_function(source, "fillPrescriptionForm")
 
 
 def test_calculate_refuses_to_render_a_dose_for_out_of_range_weight() -> None:
@@ -1679,6 +1735,8 @@ def test_fill_prescription_form_never_parses_a_drug_name_or_solvent_as_markup() 
         "clearPrescriptionForm",
         "fillPrescriptionForm",
         "prescriptionDateText",
+        "doseIncompleteReason",
+        "componentRegimen",
     ]
     result = _run_with_consts(
         funcs,
@@ -1961,6 +2019,7 @@ _RX_FUNCS = [
     "diseaseCalculationGated", "sourceGateReason",
     "formatTablets", "getStandardBottleMl", "calculateCoursePackages",
     "clearPrescriptionForm", "fillPrescriptionForm", "prescriptionDateText",
+    "doseIncompleteReason", "componentRegimen",
 ]
 _RX_CONSTS = ["LATIN_INN", "LATIN_FORM", "LATIN_ROUTE", "LATIN_FREQ"]
 

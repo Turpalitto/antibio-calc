@@ -3162,6 +3162,25 @@ function calculationBlockReason(w){
   if(ageReason) return ageReason;
   return '';
 }
+// An mg/kg regimen with no weight is a pending state on screen («—» in the dose
+// tiles + the amber «нужен вес» notice), not a block. The exports are another
+// matter: the chart text went out with the regimen note in place of a dose
+// («Схема приёма: 50-75 мг/кг/сут 1 р/сут»), the Rp with «N. ___» and a mg/kg
+// Signa, the printed form and the history with no dose at all. A combination
+// partner dosed per kg counts too.
+const WEIGHT_NEEDED_FOR_EXPORT = 'введите вес пациента — доза этого режима рассчитывается по мг/кг и без веса не определена';
+function doseIncompleteReason(reg, w){
+  if(!reg || !activeDrug) return '';
+  const refs = getDrugRefs(activeDrug);
+  const main = DB.drugs_reference[refs[0]];
+  if(!main) return '';
+  const parts = [{reg: reg, unit: doseUnitOf(main)}];
+  refs.slice(1).forEach(k=>{
+    const compReg = componentRegimen(reg, k);
+    if(compReg) parts.push({reg: compReg, unit: doseUnitOf(DB.drugs_reference[k])});
+  });
+  return parts.some(p => computeDose(p.reg, w, p.unit).needWeight) ? WEIGHT_NEEDED_FOR_EXPORT : '';
+}
 function calculate(){
   // The weight / age plausibility notice is shown as soon as the value is typed,
   // not only after a drug is chosen (300 kg used to sit silently until then).
@@ -3990,6 +4009,8 @@ function fillPrescriptionForm(){
   }
   const reg = getActiveRegimen();
   if(!reg){ clearPrescriptionForm(PRINT_NO_CALCULATION); return; }
+  const incomplete = doseIncompleteReason(reg, w);
+  if(incomplete){ clearPrescriptionForm('ПЕЧАТЬ НЕВОЗМОЖНА: '+incomplete+'. Бланк пуст намеренно.'); return; }
   const refs = getDrugRefs(activeDrug);
   // Patient-context warnings travel with the paper: the screen's allergy /
   // pregnancy / renal / age banners were missing from the printed form.
@@ -4143,6 +4164,8 @@ function copyForMIS(){
   if(block){ showDoseBlock(block); hideDoseResults(); toast('Копирование заблокировано: расчёт не выполнен'); return; }
   const reg = requireActiveRegimen('Копирование в МИС');
   if(!reg) return;
+  const incomplete = doseIncompleteReason(reg, w);
+  if(incomplete){ toast('Копирование заблокировано: '+incomplete); return; }
   const refs = getDrugRefs(activeDrug);
   const ref = DB.drugs_reference[refs[0]];
   const unit = doseUnitOf(ref);
@@ -4213,6 +4236,8 @@ function copyLatinRecipe(){
   if(block){ showDoseBlock(block); hideDoseResults(); toast('Копирование рецепта заблокировано: расчёт не выполнен'); return; }
   const reg = requireActiveRegimen('Копирование рецепта');
   if(!reg) return;
+  const incomplete = doseIncompleteReason(reg, w);
+  if(incomplete){ toast('Копирование рецепта заблокировано: '+incomplete); return; }
   const refs = getDrugRefs(activeDrug);
   const ref = DB.drugs_reference[refs[0]];
   const unit = doseUnitOf(ref);
@@ -4455,6 +4480,8 @@ function saveToHistory(){
   if(block){ showDoseBlock(block); hideDoseResults(); toast('Сохранение заблокировано: расчёт не выполнен'); return; }
   const reg = requireActiveRegimen('Сохранение в историю');
   if(!reg) return;
+  const incomplete = doseIncompleteReason(reg, w);
+  if(incomplete){ toast('Сохранение заблокировано: '+incomplete); return; }
   const ref = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
   const unit = doseUnitOf(ref);
   const {singleMg, dailyMg} = computeDose(reg, w, unit);

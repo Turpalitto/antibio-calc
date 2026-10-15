@@ -1094,6 +1094,26 @@ async function run() {
       pd.todayExpected = new Date().toLocaleDateString('ru-RU');
       out.printDate = pd;
     }
+    {
+      // T77: an mg/kg regimen with no weight is pending on screen («—»), but none of the
+      // four doors (MIS / Rp / history / print) may let it out as a prescription
+      $('new-patient').click();
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '7');
+      clickDisease('ut_child');
+      d.querySelectorAll('#scenario-list .scenario-card')[1].click();
+      clickDrug(/Цефтриаксон/);
+      const n = {};
+      n.state = [w.eval('activeScenario && activeScenario.id'), w.eval('getDrugRefs(activeDrug)[0]'), $('weight').value, w.eval('JSON.stringify(calculationBlockReason(parseFloat($("weight").value)))'), visible($('res-inj')), txt($('inj-mg')), visible($('weight-warn')) && txt($('weight-warn'))].join('|');
+      w.__copied = null; w.copyForMIS(); n.mis = [w.__copied, txt($('toast'))].join('|');
+      w.__copied = null; w.copyLatinRecipe(); n.rp = [w.__copied, txt($('toast'))].join('|');
+      const h0 = w.eval('historyEntries.length'); w.saveToHistory(); n.save = [w.eval('historyEntries.length') - h0, txt($('toast'))].join('|');
+      w.fillPrescriptionForm(); n.print = [txt($('rx-drugs')), txt($('rx-signa-text')), txt($('rx-trust-line')).slice(0, 60)].join('|');
+      type($('weight'), '25');
+      w.__copied = null; w.copyForMIS(); n.misWithWeight = [(w.__copied || '').split('\n').find((l) => l.startsWith('Схема приёма')), txt($('toast'))].join('|');
+      w.fillPrescriptionForm(); n.printWithWeight = txt($('rx-signa-text'));
+      out.noWeightExport = n;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

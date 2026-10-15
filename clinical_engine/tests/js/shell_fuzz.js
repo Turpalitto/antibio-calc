@@ -56,6 +56,13 @@ setTimeout(async()=>{
   // (hidden / inert subtrees skipped)
   const docFocusables=()=>[...d.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')].filter(el=>!el.closest('[hidden], .hidden, [inert]')&&w.getComputedStyle(el).display!=='none'&&w.getComputedStyle(el).visibility!=='hidden');
   const pressTab=(shift)=>{ const from=d.activeElement||d.body; const ev=new w.KeyboardEvent('keydown',{key:'Tab',shiftKey:!!shift,bubbles:true,cancelable:true}); from.dispatchEvent(ev); if(ev.defaultPrevented) return; const items=docFocusables(); const i=items.indexOf(from); const next=items.length?items[((i<0?(shift?0:-1):i)+(shift?-1:1)+items.length)%items.length]:null; if(next) next.focus(); else if(from.blur) from.blur(); };
+  // saveToHistory with the state it was called in (blocked / weight missing) recorded for
+  // the history invariants
+  const saveProbe=()=>{
+    const n0=w.eval('historyEntries.length'); const blocked=w.eval('activeDrug ? !!calculationBlockReason(parseFloat($("weight").value)) : true');
+    const incomplete=w.eval('activeDrug ? !!doseIncompleteReason(getActiveRegimen(), parseFloat($("weight").value)) : false');
+    w.saveToHistory(); const n1=w.eval('historyEntries.length'); w.__historyDelta={blocked, incomplete, added:n1-n0, toast:txt($('toast'))};
+  };
   const actions={
     weight:()=>type($('weight'),pick(['','3.2','7','12.5','25','39.9','45','70','95','0.5','300','12,5'])),
     name:()=>type($('patient-name'),pick(['','Иванов И.И.','Петрова А.','<b>x</b>'])),
@@ -106,6 +113,9 @@ setTimeout(async()=>{
     // a child on a solid form: mg/kg doses rarely land on a whole tablet, so the «~N таб
     // = M мг» rounding path (and its arithmetic) is reached on purpose
     childTablet:()=>{ type($('patient-age-unit'),'years'); type($('patient-age'),pick(['4','7','10','14'])); type($('weight'),pick(['14','18','22','25','33','38'])); if(childRecs.length) w.selectDisease(pick(childRecs)); const dc=q('#drug-list .drug-card'); if(dc.length&&rnd()<0.7) pick(dc).click(); const ref=w.eval('activeDrug ? getDrugRefs(activeDrug)[0] : null'); const forms=(ref&&DB.drugs_reference[ref]||{forms:[]}).forms||[]; const solid=q('#form-grid button[data-form-idx]').filter(b=>{ const f=forms[+b.dataset.formIdx]; return f&&(f.form_type==='tablet'||f.form_type==='capsule'); }); if(solid.length) pick(solid).click(); },
+    // T77: no weight + an mg/kg regimen («—» on screen) — then every door at once: the
+    // exports, the printed form and the history must all refuse and say why
+    noWeightExport:()=>{ type($('weight'),''); if(childRecs.length) w.selectDisease(pick(childRecs)); const sc=q('#scenario-list .scenario-card'); if(sc.length&&rnd()<0.5) pick(sc).click(); const dc=q('#drug-list .drug-card'); if(dc.length&&rnd()<0.5) pick(dc).click(); actions.copy(); w.dispatchEvent(new w.Event('beforeprint')); saveProbe(); w.__restored=null; },
     newPatient:()=>$('new-patient').click(),
     // a weight typed for a fresh patient (no explicit age yet) infers the group and shows
     // the inference notice — the plain walk sets an explicit age early and rarely gets here
@@ -115,8 +125,7 @@ setTimeout(async()=>{
     search:()=>{ type($('search'),pick(['пневмония','цистит','отит','J18','амоксициллин','сепсис','ин','п','qwertyzzz','пневмания','  '])); if(rnd()<0.6){ const hits=[...d.querySelectorAll('#results-box > div[role=button]')]; if(hits.length) pick(hits).click(); } },
     hash:()=>{ const r=pick(computable); const sc=pick(r.scenarios||[]); w.location.hash='#'+r.id+(sc?'/'+sc.id+(rnd()<0.5?'/L'+pick(sc.lines).line_number:''):''); },
     history:()=>{
-      const n0=w.eval('historyEntries.length'); const blocked=w.eval('activeDrug ? !!calculationBlockReason(parseFloat($("weight").value)) : true');
-      w.saveToHistory(); const n1=w.eval('historyEntries.length'); w.__historyDelta={blocked, added:n1-n0}; w.__restored=null;
+      saveProbe(); w.__restored=null;
       const btns=[...d.querySelectorAll('#history-list [data-action="restore"]')];
       if(btns.length&&rnd()<0.7){
         const i=Math.floor(rnd()*btns.length);
@@ -160,9 +169,15 @@ setTimeout(async()=>{
     try{ actions[name](); await new Promise(r=>setTimeout(r,0)); }catch(e){ findings.push({step:i,action:name,kind:'exception',msg:String(e&&e.stack||e).slice(0,300),before}); continue; }
     if(errors.length){ findings.push({step:i,action:name,kind:'console',msg:errors.splice(0).join(' || ').slice(0,300),before}); }
     // invariants
-    const S=w.eval('({age:activeAge, dis:activeDisease, sc:activeScenario, ln:activeLine, dr:activeDrug, form:activeFormIdx, reg:activeRegimenIdx, route:currentRouteGroup, blocked: activeDrug ? calculationBlockReason(parseFloat($("weight").value)) : null, regimen: activeDrug ? getActiveRegimen() : null})');
+    const S=w.eval('({age:activeAge, dis:activeDisease, sc:activeScenario, ln:activeLine, dr:activeDrug, form:activeFormIdx, reg:activeRegimenIdx, route:currentRouteGroup, blocked: activeDrug ? calculationBlockReason(parseFloat($("weight").value)) : null, regimen: activeDrug ? getActiveRegimen() : null, incomplete: activeDrug ? doseIncompleteReason(getActiveRegimen(), parseFloat($("weight").value)) : ""})');
     const where=`#${i} ${name} | ${before} → ${stateStr()}`;
     const push=(kind,msg)=>findings.push({step:i,action:name,kind,msg:String(msg).slice(0,300),where});
+    // FUZZ_DUMP_STEP=<n> prints the patient inputs, the result tiles and the exports of
+    // one step to stderr — to replay a finding without re-instrumenting the harness
+    if(String(i)===process.env.FUZZ_DUMP_STEP){
+      const ids=['weight','patient-age','patient-age-unit','patient-gfr','patient-pregnancy','patient-allergy'];
+      process.stderr.write(JSON.stringify({step:i,action:name,inputs:Object.fromEntries(ids.map(id=>[id,$(id).value])),chipAge:(d.querySelector('#age-group button.active')||{}).dataset,state:stateStr(),regimen:S.regimen,blocked:S.blocked,doseBlock:txt($('dose-block')),resPo:shown($('res-po'))&&txt($('res-po')).slice(0,300),resInj:shown($('res-inj'))&&txt($('res-inj')).slice(0,300),mis:w.__mis,rp:w.__rp},null,1)+'\n');
+    }
     const chipAge=d.querySelector('#age-group button.active'); if(chipAge&&chipAge.dataset.age!==S.age) push('age_chip_mismatch',`chip ${chipAge.dataset.age} vs ${S.age}`);
     if(S.dis&&w.location.hash&&!w.location.hash.startsWith('#'+S.dis.id)) push('hash_mismatch',`${w.location.hash.slice(0,60)} vs ${S.dis.id}`);
     if(!S.dis&&w.location.hash) push('hash_without_disease',w.location.hash.slice(0,60));
@@ -190,7 +205,12 @@ setTimeout(async()=>{
       if(modalOpen||drawerOpen) push('dialog_left_open',`modal ${modalOpen} drawer ${drawerOpen}`);
       if(!drawerOpen&&(!drawer.hasAttribute('inert')||drawer.getAttribute('aria-hidden')!=='true')) push('drawer_not_inert',`inert ${drawer.hasAttribute('inert')} aria-hidden ${drawer.getAttribute('aria-hidden')}`);
     }
-    if(name==='history'&&w.__historyDelta){ if(w.__historyDelta.blocked&&w.__historyDelta.added>0) push('history_saved_while_blocked',''); w.__historyDelta=null; }
+    if((name==='history'||name==='noWeightExport')&&w.__historyDelta){
+      if(w.__historyDelta.blocked&&w.__historyDelta.added>0) push('history_saved_while_blocked','');
+      // T77: an mg/kg regimen with no weight (dose «—») is not saved — the toast names the gap
+      if(!w.__historyDelta.blocked&&w.__historyDelta.incomplete){ tally('history_incomplete'); if(w.__historyDelta.added>0) push('history_saved_without_weight',''); if(!/Сохранение заблокировано: введите вес пациента/.test(w.__historyDelta.toast)) push('history_incomplete_toast',w.__historyDelta.toast.slice(0,80)); }
+      w.__historyDelta=null;
+    }
     if(name==='history'&&w.__restored){
       // «Открыть расчёт» must re-open exactly what was saved (same DB, same age group)
       const r=w.__restored, ref=r.ref;
@@ -454,15 +474,17 @@ setTimeout(async()=>{
       const all=txt($('result-step'))+' '+txt($('dose-block')); if(BAD.test(all)) push('bad_token',all.match(/.{0,30}(NaN|Infinity|undefined|\[object |null мг|null ЕД).{0,30}/)[0]);
       // binary float noise («0.30000000000000004 мл») must never reach the screen or an export
       const NOISE=/\d+[.,]\d{5,}/; if(NOISE.test(all)) push('float_noise',all.match(/.{0,30}\d+[.,]\d{5,}.{0,30}/)[0]);
-      if(name==='copy'||name==='chipOverAge'){
+      if(name==='copy'||name==='chipOverAge'||name==='noWeightExport'){
         if(S.blocked&&(w.__mis||w.__rp)) push('export_while_blocked','');
+        // T77: no weight for an mg/kg regimen — nothing is copied, the toast names the gap
+        if(!S.blocked&&S.incomplete){ tally('export_incomplete'); if(w.__mis||w.__rp) push('export_without_weight',`mis ${!!w.__mis} rp ${!!w.__rp}: ${S.incomplete.slice(0,60)}`); if(!/заблокировано: введите вес пациента/.test(txt($('toast')))) push('export_incomplete_toast',txt($('toast')).slice(0,80)); }
         if(!S.blocked&&w.__mis){
           // the chart text names the drug on screen (INN) and the diagnosis
           const inn=(DB.drugs_reference[w.eval('getDrugRefs(activeDrug)[0]')]||{}).inn||'';
           if(inn&&!w.__mis.includes(inn)) push('mis_names_other_drug',`${inn} not in «${w.__mis.slice(0,100)}»`);
           if(S.dis&&!w.__mis.includes(S.dis.name)) push('mis_names_other_diagnosis',`${S.dis.name} not in «${w.__mis.slice(0,100)}»`);
         }
-        if(!S.blocked&&S.regimen&&resVis&&!(w.__mis&&w.__rp)) push('export_empty_while_computed',`mis ${!!w.__mis} rp ${!!w.__rp} toast ${txt($('toast'))}`);
+        if(!S.blocked&&!S.incomplete&&S.regimen&&resVis&&!(w.__mis&&w.__rp)) push('export_empty_while_computed',`mis ${!!w.__mis} rp ${!!w.__rp} toast ${txt($('toast'))}`);
         // every warning the physician sees travels with the chart text: the safety banners,
         // a «противопоказан» allergy banner, the weight caution and the explicit-age / group
         // mismatch notice must each have a flag line in the MIS text
@@ -491,20 +513,38 @@ setTimeout(async()=>{
           const pat=(/Пациент: (.+)/.exec(w.__mis)||[])[1]||''; const wv=parseFloat($('weight').value);
           if(wv>0&&!pat.startsWith('вес '+wv+' кг')) push('mis_weight_mismatch',`${wv} vs «${pat.slice(0,60)}»`);
           const groupWord={child:'дети',neonate:'новорожденный',adult:'взрослый'}[S.age]; if(groupWord&&!pat.includes('('+groupWord+')')) push('mis_group_mismatch',`${S.age} vs «${pat.slice(0,60)}»`);
+          // the Latin recipe: the same drug (Latin INN), the same single dose in the Signa,
+          // the route words of the screen in both exports, D.t.d. N. == the MIS course total
+          const rp=w.__rp||''; const signa=(rp.split('\n').find(l=>l.startsWith('S.:'))||'');
+          const key=w.eval('getDrugRefs(activeDrug)[0]'); const latin=w.eval('(typeof LATIN_INN !== "undefined" && LATIN_INN['+JSON.stringify(key)+']) || ""'); const inn=(DB.drugs_reference[key]||{}).inn||'';
+          if(rp&&!(latin&&rp.includes(latin))&&!(inn&&rp.includes(inn))) push('rp_names_other_drug',`${latin||inn} not in «${rp.slice(0,80)}»`);
+          const rpDose=/по (?:\d+(?:[.,]\d+)? мл(?: суспензии)? \()?(\d+(?:[.,]\d+)?(?: (?:млн|тыс))?) (мг|ЕД)/.exec(signa);
+          if(rpDose&&Number.isFinite(single)&&S.route!=='topical'){ tally('rp_dose'); if(Math.abs(num(rpDose[1]+' '+rpDose[2])-single)>1) push('rp_single_dose_mismatch',`screen ${single} vs «${signa.slice(0,80)}»`); }
+          const ROUTE_WORDS={po:/внутрь/,im:/в\/м|внутримышечно/,iv:/в\/в|внутривенно/,topical:/наружно|местно/}; const want=ROUTE_WORDS[S.route];
+          if(want&&/\d/.test(scheme)){
+            if(!want.test(scheme)) push('mis_route_missing',`${S.route}: «${scheme.slice(0,80)}»`);
+            if(signa&&!want.test(signa)) push('rp_route_missing',`${S.route}: «${signa.slice(0,80)}»`);
+            const wrong=Object.entries(ROUTE_WORDS).filter(([g,re])=>g!==S.route&&(g==='po'||S.route==='po')&&re.test(scheme+' '+signa));
+            if(wrong.length) push('export_route_contradicts_screen',`${S.route} vs ${wrong.map(x=>x[0])}: «${scheme.slice(0,50)}» / «${signa.slice(0,50)}»`);
+          }
+          const misTotal=/суммарно (\d+) таб/.exec(w.__mis); const rpDtd=/D\.t\.d\. N\. (\d+)/.exec(rp);
+          if(misTotal&&rpDtd){ tally('course_units'); if(misTotal[1]!==rpDtd[1]) push('course_units_mis_vs_rp',`MIS ${misTotal[1]} таб vs Rp N. ${rpDtd[1]}`); }
+          const courseBad=/(хроническая|по ситуации|не указан[а-я]*|однократно) дн/.exec(w.__mis+'\n'+rp); if(courseBad) push('course_words_plus_days',courseBad[0]);
         }
         if(BAD.test((w.__mis||'')+(w.__rp||''))) push('export_bad_token','');
         if(NOISE.test((w.__mis||'')+(w.__rp||''))) push('export_float_noise',((w.__mis||'')+(w.__rp||'')).match(/.{0,30}\d+[.,]\d{5,}.{0,30}/)[0]);
       }
-      if(name==='print'){
+      if(name==='print'||name==='noWeightExport'){
         const rxd=txt($('rx-drugs')); const trust=txt($('rx-trust-line'));
         if(S.blocked&&rxd) push('print_drugs_while_blocked',rxd.slice(0,60));
+        if(!S.blocked&&S.incomplete){ tally('print_incomplete'); if(rxd||txt($('rx-signa-text'))) push('print_without_weight',(rxd+' '+txt($('rx-signa-text'))).slice(0,80)); if(!/^ПЕЧАТЬ НЕВОЗМОЖНА: введите вес пациента/.test(trust)) push('print_incomplete_reason',trust.slice(0,80)); }
         if(!S.blocked&&rxd){
           const key=w.eval('getDrugRefs(activeDrug)[0]'); const inn=(DB.drugs_reference[key]||{}).inn||'';
           const latin=w.eval('(typeof LATIN_INN !== "undefined" && LATIN_INN['+JSON.stringify(key)+']) || ""');
           if(!(latin&&rxd.includes(latin))&&!(inn&&rxd.includes(inn))) push('print_names_other_drug',`${latin||inn} not in «${rxd.slice(0,80)}»`);
           const wv=parseFloat($('weight').value); if(wv>0&&txt($('rx-weight'))!==String(wv)+' кг'&&!txt($('rx-weight')).startsWith(String(wv))) push('print_weight_mismatch',`${wv} vs ${txt($('rx-weight'))}`);
         }
-        if(!S.blocked&&S.regimen&&resVis&&!rxd) push('print_empty_while_computed',trust.slice(0,80));
+        if(!S.blocked&&!S.incomplete&&S.regimen&&resVis&&!rxd) push('print_empty_while_computed',trust.slice(0,80));
         // the printed safety line carries every export flag (the same set as the MIS text)
         if(!S.blocked&&rxd){
           const printed=($('rx-safety-line').textContent||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>l.replace(/^!?\s*(ВНИМАНИЕ|Предупреждение): /,'').replace(/\s+/g,' ').trim());

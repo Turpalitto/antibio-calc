@@ -90,7 +90,7 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
     expected = {
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient",
-        "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "childTablet", "resetDisease", "search", "hash", "history", "copy",
+        "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "childTablet", "noWeightExport", "resetDisease", "search", "hash", "history", "copy",
         "print", "theme", "routeThenDrug", "name",
     }
     assert expected <= set(counts), sorted(expected - set(counts))
@@ -109,20 +109,31 @@ def test_random_walk_notice_invariants_are_not_vacuous(fuzz: dict) -> None:
 
 def test_random_walk_reaches_the_arithmetic_and_export_oracles(fuzz: dict) -> None:
     """The dose arithmetic oracle (screen dose == regimen × the random weight, ml ==
-    dose / concentration) and the export-parity oracles (MIS text and the printed
-    safety line carry every export flag) must actually fire on computed states —
-    a mutant that inflates the mg/kg/day arithmetic by 20 % trips 100+ findings."""
+    dose / concentration), the tablets-per-dose oracle (the rounded path is steered by
+    childTablet) and the MIS-dose parity must actually fire on computed states — a
+    mutant that inflates the mg/kg/day arithmetic by 20 % trips 100+ findings, one that
+    rounds to whole tablets instead of halves 18, one that doubles the MIS daily dose 19."""
     checks = fuzz["checks"]
     assert checks.get("dose_arithmetic", 0) >= 100, checks
     assert checks.get("inj_volume", 0) >= 10, checks
     assert checks.get("po_volume", 0) >= 5, checks
-    assert checks.get("print_flags", 0) >= 3, checks
-    assert checks.get("group_mismatch_export", 0) >= 3, checks
-    # «(~N таб S мг = M мг)»: the rounded-tablet path is steered by childTablet; a mutant
-    # that rounds to whole tablets instead of halves trips tablet_units_arithmetic
     assert checks.get("tablet_units", 0) >= 10, checks
     assert checks.get("tablet_units_rounded", 0) >= 10, checks
-    # the daily ceiling is reached (amber cap row == the arithmetic) and the chart text
-    # repeats the screen dose on at least a few computed copies
-    assert checks.get("max_daily_capped", 0) >= 2, checks
     assert checks.get("mis_dose", 0) >= 4, checks
+    # T77: the no-weight mg/kg state is steered (noWeightExport) and all four doors are tried
+    for key in ("export_incomplete", "print_incomplete", "history_incomplete"):
+        assert checks.get(key, 0) >= 5, (key, checks)
+
+
+def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -> None:
+    """The daily ceiling (amber cap row == the arithmetic; a mutant with a silent cap trips
+    5), the printed safety line parity and the chip-over-age caution in the MIS text are
+    reached by the plain walk, but not reliably by every seed — the two seeds are summed."""
+    totals: dict[str, int] = {}
+    for run in _runs.values():
+        for key, value in run["checks"].items():
+            totals[key] = totals.get(key, 0) + value
+    assert totals.get("max_daily_capped", 0) >= 3, totals
+    assert totals.get("print_flags", 0) >= 6, totals
+    assert totals.get("group_mismatch_export", 0) >= 6, totals
+    assert totals.get("course_units", 0) >= 3, totals

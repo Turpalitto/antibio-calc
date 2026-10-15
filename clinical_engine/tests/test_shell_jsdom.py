@@ -634,3 +634,20 @@ def test_regimen_chips_follow_the_age_group(shell: dict) -> None:
     assert r["neonate"].startswith("false|0|0|0|false|РАСЧЁТ ЗАБЛОКИРОВАН: для препарата «Амоксициллин»"), r
     assert r["childAgain"] == "true|3|0|3|true|", r
 
+
+
+def test_an_mg_per_kg_regimen_without_a_weight_leaves_by_no_door(shell: dict) -> None:
+    """T77: ceftriaxone 50 mg/kg/day for a 7-year-old with no weight: the screen is a
+    pending state («—», the amber «нужен вес» notice, not a block), but the chart text
+    used to go out as «Схема приёма: 50-75 мг/кг/сут 1 р/сут», the Rp with «N. ___»
+    and a mg/kg Signa, the form printed and the history saved with no dose. Now all
+    four refuse and name the gap; with 25 kg typed they work again."""
+    n = shell["noWeightExport"]
+    reason = "введите вес пациента — доза этого режима рассчитывается по мг/кг и без веса не определена"
+    assert n["state"] == 'ut_child_in|ceftriaxone||""|true|—|Для этого режима нужен вес пациента — доза рассчитывается по мг/кг.', n
+    assert n["mis"] == "|Копирование заблокировано: " + reason, n
+    assert n["rp"] == "|Копирование рецепта заблокировано: " + reason, n
+    assert n["save"] == "0|Сохранение заблокировано: " + reason, n
+    assert n["print"] == "||ПЕЧАТЬ НЕВОЗМОЖНА: введите вес пациента — доза этого режима ", n
+    assert n["misWithWeight"].startswith("Схема приёма: по 1250 мг в/в 1 р/сут|"), n
+    assert n["printWithWeight"] == "По 1250 мг внутривенно, 1 раз в день, медленно за 5 мин", n
