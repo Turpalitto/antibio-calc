@@ -305,6 +305,37 @@ setTimeout(async()=>{
         if(!(vi>=0&&vi<vialsN)) push('vial_idx_out_of_range',`${vi} of ${vialsN}`);
       }
     }
+    // the record header names the active record (title / МКБ / source), the empty state
+    // shows exactly when there is none; the active scenario / drug cards are the ones in
+    // state; the quick-weight chip, the allergy badge and the result sub-blocks mirror
+    // their inputs
+    {
+      const hdrVis=shown($('active-disease')), emptyVis=shown($('empty-state'));
+      if(hdrVis!==!!S.dis) push('header_visibility',`header ${hdrVis} disease ${S.dis&&S.dis.id}`);
+      if(emptyVis!==!S.dis) push('empty_state_visibility',`empty ${emptyVis} disease ${S.dis&&S.dis.id}`);
+      if(S.dis){
+        if(txt($('active-title'))!==S.dis.name.replace(/\s+/g,' ').trim()) push('header_title_mismatch',`«${txt($('active-title')).slice(0,60)}» vs «${S.dis.name.slice(0,60)}»`);
+        const srcExp=w.eval('diseaseSourceLabel(activeDisease)').replace(/\s+/g,' ').trim(); if(txt($('active-cr'))!==srcExp) push('header_source_mismatch',`«${txt($('active-cr')).slice(0,60)}» vs «${srcExp.slice(0,60)}»`);
+        const sel=d.querySelector('#scenario-list .scenario-card.active');
+        if(S.sc){ const idx=S.dis.scenarios.indexOf(S.sc); if(sel&&+sel.dataset.idx!==idx) push('active_scenario_card_mismatch',`card ${sel.dataset.idx} vs ${idx}`); }
+        else if(sel) push('active_scenario_card_without_state',sel.dataset.idx);
+        const selDrug=d.querySelector('#drug-list .drug-card.active');
+        if(S.dr&&S.ln&&S.sc){ const li=S.sc.lines.indexOf(S.ln), di=S.ln.drugs.indexOf(S.dr); if(selDrug&&(+selDrug.dataset.lineIdx!==li||+selDrug.dataset.drugIdx!==di)) push('active_drug_card_mismatch',`card ${selDrug.dataset.lineIdx}/${selDrug.dataset.drugIdx} vs ${li}/${di}`); }
+        else if(selDrug) push('active_drug_card_without_state',`${selDrug.dataset.lineIdx}/${selDrug.dataset.drugIdx}`);
+      }
+      const wv=parseFloat($('weight').value); const activeChips=[...d.querySelectorAll('.quick-weight-chip.active')];
+      if(activeChips.length>1) push('weight_chip_mismatch',`${activeChips.length} active chips`);
+      if(activeChips.length===1&&parseFloat(activeChips[0].dataset.weight)!==wv) push('weight_chip_mismatch',`chip ${activeChips[0].dataset.weight} vs weight ${$('weight').value}`);
+      if(!activeChips.length&&[...d.querySelectorAll('.quick-weight-chip')].some(c=>parseFloat(c.dataset.weight)===wv)) push('weight_chip_mismatch',`no active chip for weight ${wv}`);
+      const badgeVis=shown($('allergy-badge')); if(badgeVis!==($('patient-allergy').value!=='none')) push('allergy_badge_stale',`visible ${badgeVis} allergy ${$('patient-allergy').value}`);
+      const resVisNow=shown($('res-po'))||shown($('res-inj'));
+      if(resVisNow){
+        if(!shown($('drug-meta'))) push('drug_meta_hidden_with_result','');
+        const comboExp=w.eval('getDrugRefs(activeDrug).length>1'); if(shown($('combo-block'))!==comboExp) push('combo_block_mismatch',`visible ${shown($('combo-block'))} expected ${comboExp}`);
+        if(shown($('res-po'))&&shown($('res-inj'))) push('both_result_boxes_visible','');
+        if(shown($('res-po'))!==(S.route==='po'||S.route==='topical')) push('result_box_route_mismatch',`po box ${shown($('res-po'))} route ${S.route}`);
+      } else if(shown($('drug-meta'))||shown($('combo-block'))) push('result_sub_block_without_result',`meta ${shown($('drug-meta'))} combo ${shown($('combo-block'))}`);
+    }
     // the four steps are visible exactly when their state exists (a visible step with no
     // state = stale cards; a hidden step with state = a dead end for the physician)
     {
