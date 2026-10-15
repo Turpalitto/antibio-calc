@@ -2064,7 +2064,7 @@ function nosologiesWord(n){
 }
 // Search outcome in words (and for screen readers): a silent empty list used to
 // be the only sign that nothing matched; 110 hits for «ин» had no count either.
-function searchStatusText(q, hits){
+function searchStatusText(q, hits, typoOnly){
   const n = hits.length;
   // a pasted paragraph is echoed shortened — the status line is not a second search box
   const shownQ = q.length > 40 ? q.slice(0, 40).trim()+'…' : q;
@@ -2072,14 +2072,17 @@ function searchStatusText(q, hits){
   const blocked = hits.filter(d => d.calculation_blocked).length;
   let text = 'Найдено: '+n+' '+nosologiesWord(n);
   if(blocked) text += ' (с закрытым расчётом: '+blocked+')';
+  // every hit came through the one-typo rule («холера» → «холецистит»): say so, the
+  // list is a guess at the spelling, not a match
+  if(typoOnly) text += ' — точного совпадения нет, показаны похожие названия; проверьте написание «'+shownQ+'»';
   if(n > 20) text += ' — уточните запрос';
   return text+'.';
 }
-function updateSearchStatus(q, hits){
+function updateSearchStatus(q, hits, typoOnly){
   const el = $('search-status');
   if(!el) return;
   if(hits == null){ el.classList.add('hidden'); el.textContent = ''; return; }
-  el.textContent = searchStatusText(q, hits);
+  el.textContent = searchStatusText(q, hits, !!typoOnly);
   el.classList.remove('hidden');
 }
 function handleSearch(){
@@ -2177,6 +2180,9 @@ function handleSearch(){
   const groupPenalty = d => (groupSet && groupOf && !fitsGroup(d)) ? 0.5 : 0;
   const rank = d => (phraseMatches(d) ? phraseRank(d) : 4 + 2 * diseaseLevel(d)) + (d.calculation_blocked ? 1 : 0) + groupPenalty(d);
   filtered.sort((a, b) => rank(a) - rank(b));
+  // a row that is only a one-typo guess is labelled; when every row is, the status says so
+  const typoHit = d => !phraseMatches(d) && diseaseLevel(d) === 3;
+  const typoOnly = filtered.length > 0 && filtered.every(typoHit);
 
   box.innerHTML = '';
   filtered.forEach(d=>{
@@ -2205,7 +2211,7 @@ function handleSearch(){
     }
     const meta = document.createElement('div');
     meta.className = 'text-[10px] text-slate-400 font-normal mt-0.5';
-    meta.textContent = 'МКБ: '+(d.mkb10 || []).slice(0,3).join(', ')+((d.mkb10 || []).length > 3 ? '…' : '')+(isFederalCrId(d.cr_id) ? ' • КР #'+d.cr_id : ' • без федеральной КР')+(d.calculation_blocked ? ' • расчёт закрыт' : '')+(groupPenalty(d) ? ' • нет схемы для группы «'+ageGroupLabel(groupOf)+'»' : '');
+    meta.textContent = 'МКБ: '+(d.mkb10 || []).slice(0,3).join(', ')+((d.mkb10 || []).length > 3 ? '…' : '')+(isFederalCrId(d.cr_id) ? ' • КР #'+d.cr_id : ' • без федеральной КР')+(d.calculation_blocked ? ' • расчёт закрыт' : '')+(groupPenalty(d) ? ' • нет схемы для группы «'+ageGroupLabel(groupOf)+'»' : '')+(typoHit(d) ? ' • похожее название, не точное совпадение' : '');
     left.append(topRow, meta);
     const code = document.createElement('span');
     code.className = 'text-blue-500 font-mono text-xs ml-2 font-bold';
@@ -2215,7 +2221,7 @@ function handleSearch(){
     box.appendChild(item);
   });
   box.classList.toggle('hidden', filtered.length === 0);
-  updateSearchStatus(rawQ, filtered);
+  updateSearchStatus(rawQ, filtered, typoOnly);
 }
 function selectDisease(d){
   activeDisease = d;

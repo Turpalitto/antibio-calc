@@ -110,6 +110,7 @@ async function run() {
         status: txt($('search-status')), statusVisible: visible($('search-status')), boxVisible: visible($('results-box')),
         first: items.length ? txt(items[0]).slice(0, 60) : null,
         names: items.slice(0, 5).map((i) => txt(i).split('МКБ')[0]),
+        rows: items.slice(0, 5).map((i) => txt(i)),
         blockedBeforeComputable: items.findIndex((i) => /расчёт закрыт/i.test(i.textContent)) >= 0
           && items.findIndex((i) => /расчёт закрыт/i.test(i.textContent)) < items.map((i) => !/расчёт закрыт/i.test(i.textContent)).lastIndexOf(true),
       };

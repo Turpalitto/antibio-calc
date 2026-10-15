@@ -303,6 +303,13 @@ def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     assert r["xyzzy"]["n"] == 0
     # one typo per word, only for tokens that match nothing exactly; ranked after exact hits
     assert r["пневмания дети"]["n"] == 1 and r["пневмания дети"]["first"].startswith("Внебольничная пневмония у детей")
+    # T88: a list made of one-typo guesses says so — in the status and on every row
+    assert r["пневмания дети"]["status"] == "Найдено: 1 нозология — точного совпадения нет, показаны похожие названия; проверьте написание «пневмания дети».", r["пневмания дети"]
+    assert all("• похожее название, не точное совпадение" in row for row in r["пневмания дети"]["rows"]), r["пневмания дети"]
+    assert r["пневмания дети"]["first"].startswith("Внебольничная пневмония у детей")
+    # … while stem / word-start hits are plain matches («тонзилит» → «тонзиллит», «отит»)
+    for q in ("тонзилит", "отит", "цистит", "J18", "амоксициллин"):
+        assert "похожие" not in r[q]["status"] and not any("похожее название" in row for row in r[q]["rows"]), (q, r[q])
     assert r["тонзилит"]["names"][:2] == ["Острый тонзиллит / фарингит (БГСА) у взрослых", "Острый тонзиллит / фарингит (БГСА) у детей"], r["тонзилит"]
     assert r["амоксицилин"]["n"] == r["амоксициллин"]["n"]
     # a word-start hit outranks a hit inside another word; an exact token is never widened
@@ -322,7 +329,7 @@ def test_search_status_counts_hits_and_says_when_nothing_matched(shell: dict) ->
     assert r["xyzzy"]["n"] == 0 and r["xyzzy"]["boxVisible"] is False and r["xyzzy"]["statusVisible"] is True
     assert r["xyzzy"]["status"] == "Ничего не найдено по запросу «xyzzy». Попробуйте код МКБ-10 (например, J18), другое название или синоним."
     assert r["ин"]["n"] > 20 and r["ин"]["status"].startswith(f"Найдено: {r['ин']['n']} нозологий (с закрытым расчётом: ") and r["ин"]["status"].endswith(") — уточните запрос.")
-    assert r["х"] == {"n": 0, "status": "", "statusVisible": False, "boxVisible": False, "first": None, "names": [], "blockedBeforeComputable": False}, "a single letter is not a query yet — and the previous list is cleared, not just hidden"
+    assert r["х"] == {"n": 0, "status": "", "statusVisible": False, "boxVisible": False, "first": None, "names": [], "rows": [], "blockedBeforeComputable": False}, "a single letter is not a query yet — and the previous list is cleared, not just hidden"
     assert r["J18"]["status"].startswith(f"Найдено: {r['J18']['n']} ") and "уточните" not in r["J18"]["status"]
 
 

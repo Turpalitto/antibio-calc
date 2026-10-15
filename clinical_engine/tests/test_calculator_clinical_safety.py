@@ -2277,6 +2277,25 @@ def test_quick_tag_candidates_prefer_the_patient_group_over_db_order() -> None:
     assert "if(found.length === 1)" in body and "selectDisease(found[0])" in body and "handleSearch()" in body
 
 
+def test_search_status_names_a_typo_only_list() -> None:
+    """T88: when every hit came through the one-typo rule the status line says the list is
+    a spelling guess; the «Найдено: N» prefix stays (the fuzz counts rows against it)."""
+    hits = "[{calculation_blocked:false},{calculation_blocked:true}]"
+    body = (
+        "console.log(JSON.stringify(["
+        f"searchStatusText('пневмания', {hits}, true),"
+        f"searchStatusText('пневмания', {hits}, false),"
+        f"searchStatusText('пневмания', {hits}),"
+        "searchStatusText('x'.repeat(50), [{}], true),"
+        "searchStatusText('холера', [], true)]));"
+    )
+    result = _run(["searchStatusText", "nosologiesWord"], "", body)
+    assert result[0] == "Найдено: 2 нозологии (с закрытым расчётом: 1) — точного совпадения нет, показаны похожие названия; проверьте написание «пневмания»."
+    assert result[1] == result[2] == "Найдено: 2 нозологии (с закрытым расчётом: 1)."
+    assert result[3] == "Найдено: 1 нозология — точного совпадения нет, показаны похожие названия; проверьте написание «" + "x" * 40 + "…»."
+    assert result[4].startswith("Ничего не найдено по запросу «холера»")
+
+
 def test_times_a_day_declension() -> None:
     """Rp Signa / printed form said «1 раза в день» and «6 раза в день»."""
     result = _run(["timesADay"], "", "console.log(JSON.stringify([1,2,3,4,5,6,8,11,12,21,22,0].map(timesADay)));")
