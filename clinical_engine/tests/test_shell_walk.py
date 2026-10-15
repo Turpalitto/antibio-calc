@@ -84,6 +84,12 @@ def test_walk_covers_every_computable_nosology_for_every_profile(walk: dict) -> 
         assert stats["defaultRouteOracle"] >= stats["drugs"] - 5, (name, stats)
     # picked-route oracle: the last tab clicked follows the physician to the next drug card
     assert adult["pickedRouteOracle"] >= 10, adult
+    # source-gate oracle (T66): every calculation_blocked record stays closed through the
+    # re-renders (age chip, allergy, typed age) for every profile
+    blocked_records = walk["blocked"]
+    assert blocked_records >= 40
+    for name, stats in walk["profiles"].items():
+        assert stats["gatedOracle"] == blocked_records, (name, stats)
 
 
 def test_no_state_shows_nan_undefined_or_an_empty_result(walk: dict) -> None:

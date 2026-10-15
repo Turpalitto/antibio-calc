@@ -77,6 +77,7 @@ setTimeout(() => {
   const DB = w.eval('DB');
   const computable = DB.recommendations.filter((r) => !r.calculation_blocked);
   out.computable = computable.length;
+  out.blocked = DB.recommendations.length - computable.length;
   for (const profile of PROFILES) {
     const stats = { diseases: 0, scenarios: 0, drugs: 0, forms: 0, blocked: 0, computed: 0, empty: 0, exports: 0 };
     type($('patient-age-unit'), profile.unit);
@@ -85,6 +86,27 @@ setTimeout(() => {
     type($('patient-gfr'), profile.gfr || '');
     type($('patient-pregnancy'), profile.pregnancy || 'unknown');
     type($('patient-allergy'), profile.allergy || 'none');
+    // source-gate oracle (T66): every record under the gate (calculation_blocked) stays
+    // closed through the re-renders a physician triggers next — the age chip of the
+    // current group, an allergy change and the age typed again — no scenario card, no
+    // drug, no result tile, the red block notice on screen, the exports refusing
+    for (const rec of DB.recommendations.filter((r) => r.calculation_blocked)) {
+      w.selectDisease(rec);
+      const activeChip = d.querySelector('#age-group button.active');
+      if (activeChip) activeChip.click();
+      type($('patient-allergy'), profile.allergy === 'penicillin_mild' ? 'none' : 'penicillin_mild');
+      type($('patient-allergy'), profile.allergy || 'none');
+      type($('patient-age'), profile.age);
+      const gatedState = [
+        d.querySelectorAll('#scenario-list .scenario-card').length, d.querySelectorAll('#drug-list .drug-card').length,
+        w.eval('String(activeScenario && activeScenario.id)'), w.eval('String(activeDrug && getDrugRefs(activeDrug)[0])'),
+        visible($('res-po')) || visible($('res-inj')), visible($('drug-step')),
+        visible($('source-calculation-block')) && txt($('source-calculation-block')).startsWith('РАСЧЁТ ЗАБЛОКИРОВАН'),
+        w.eval('calculationBlockReason(parseFloat($("weight").value))').startsWith('РАСЧЁТ ЗАБЛОКИРОВАН'),
+      ].join('|');
+      if (gatedState !== '0|0|null|null|false|false|true|true') out.findings.push({ kind: 'source_gate_bypassed', where: `${profile.name} › ${rec.id}`, detail: gatedState });
+      else stats.gatedOracle = (stats.gatedOracle || 0) + 1;
+    }
     for (const rec of computable) {
       w.selectDisease(rec);
       stats.diseases++;
