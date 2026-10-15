@@ -330,6 +330,16 @@ def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     # «некрОТИзирующий» / «антибиОТИкопрофилактика» (8 hits), «рожа» no longer «новоРОЖдённых» (7)
     assert r["отит"]["names"] == ["Острый средний отит у детей", "Острый средний отит у взрослых"], r["отит"]
     assert r["рожа"]["names"] == ["Рожа у взрослых"], r["рожа"]
+    # T91: a stem shorter than 6 letters counts only at a word start, and two letters are
+    # dropped only from a 6+ token — «ангина» no longer finds «холАНГИт», «ковид»
+    # «муКОВИсцидоз», «грипп» («гри») the mushroom-poisoning record, «колит» («кол»)
+    # «КОЛенного» / «КОЛьца» / «сКОЛиоз», «асцит» («асци») «фАСЦИит»; a long stem still
+    # matches inside a word («тонзиллита» → «паратонзиллит»)
+    assert [n.split("МКБ")[0] for n in r["ангина"]["names"]] == ["Острый тонзиллит / фарингит (БГСА) у взрослых", "Острый тонзиллит / фарингит (БГСА) у детей"], r["ангина"]
+    assert r["грипп"]["n"] == 0 and r["ковид"]["n"] == 0, (r["грипп"], r["ковид"])
+    assert r["колит"]["names"] == ["Clostridioides difficile-ассоциированная инфекция (псевдомембранозный колит)", "Язвенный колит", "Некротизирующий энтероколит (НЭК)"], r["колит"]
+    assert r["асцит"]["names"] == ["Спонтанный бактериальный перитонит (СБП)"], r["асцит"]
+    assert r["тонзиллита"]["names"] == ["Острый тонзиллит / фарингит (БГСА) у взрослых", "Острый тонзиллит / фарингит (БГСА) у детей", "Перитонзиллярный абсцесс (паратонзиллит)"], r["тонзиллита"]
 
 
 def test_search_status_counts_hits_and_says_when_nothing_matched(shell: dict) -> None:
