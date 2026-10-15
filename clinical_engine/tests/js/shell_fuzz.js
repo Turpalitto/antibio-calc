@@ -38,6 +38,7 @@ const type=(el,v)=>{el.value=v; el.dispatchEvent(new w.Event('input',{bubbles:tr
 const BAD=/NaN|Infinity|undefined|\[object |null мг|null ЕД/;
 setTimeout(async()=>{
   const DB=w.eval('DB'); const computable=DB.recommendations.filter(r=>!r.calculation_blocked);
+  const childRecs=computable.filter(r=>(r.scenarios||[]).some(sc=>(sc.lines||[]).some(l=>(l.drugs||[]).some(dr=>(dr.regimens||[]).some(reg=>reg.age_group==='child')))));
   const key=x=>x==='per_os'?'po':x;
   // scenarios where a route picked on drug A is offered by drug B in a NON-first position:
   // the only places where «the picked route follows the physician» is observable
@@ -100,6 +101,9 @@ setTimeout(async()=>{
     // the group chosen by chip over a typed age (allowed, flagged): type an age and click
     // the chip of another group — the plain walk resets the age too often to stay there
     chipOverAge:()=>{ type($('patient-age-unit'),pick(['years','months'])); type($('patient-age'),pick(['12','150','20','2'])); const other=[...d.querySelectorAll('#age-group button')].filter(b=>!b.classList.contains('active')); if(other.length) pick(other).click(); actions.copy(); },
+    // a child on a solid form: mg/kg doses rarely land on a whole tablet, so the «~N таб
+    // = M мг» rounding path (and its arithmetic) is reached on purpose
+    childTablet:()=>{ type($('patient-age-unit'),'years'); type($('patient-age'),pick(['4','7','10','14'])); type($('weight'),pick(['14','18','22','25','33','38'])); if(childRecs.length) w.selectDisease(pick(childRecs)); const dc=q('#drug-list .drug-card'); if(dc.length&&rnd()<0.7) pick(dc).click(); const ref=w.eval('activeDrug ? getDrugRefs(activeDrug)[0] : null'); const forms=(ref&&DB.drugs_reference[ref]||{forms:[]}).forms||[]; const solid=q('#form-grid button[data-form-idx]').filter(b=>{ const f=forms[+b.dataset.formIdx]; return f&&(f.form_type==='tablet'||f.form_type==='capsule'); }); if(solid.length) pick(solid).click(); },
     newPatient:()=>$('new-patient').click(),
     // a weight typed for a fresh patient (no explicit age yet) infers the group and shows
     // the inference notice — the plain walk sets an explicit age early and rarely gets here
@@ -392,6 +396,19 @@ setTimeout(async()=>{
           else tally('inj_volume');
         }
       } else if(daily!=null&&!shownSingle.startsWith('—')) push('dose_not_shown',`expected ${Math.round(daily/freq)}, screen «${shownSingle}»`);
+      // tablets per dose: «(N таб S мг)» means N × S == the single dose; «(~N таб S мг = M мг …)»
+      // means M == N × S and N is the nearest half tablet (whole capsule) to dose / S
+      const tabs=po?txt($('po-tabs')):'';
+      const tm=/^\((~?)([\d.,]+|½)\s+(таб|капс)\s+([\d.,+\s]+?)\s*мг(?:\s*=\s*([\d\s\u00a0]+)\s*мг)?/.exec(tabs);
+      if(tabs&&!tm) push('tablet_text_unreadable',tabs.slice(0,80));
+      if(tm&&Number.isFinite(num(shownSingle))){
+        tally(tm[1]?'tablet_units_rounded':'tablet_units');
+        const n=tm[2]==='½'?0.5:parseFloat(tm[2].replace(',','.')); const single=num(shownSingle);
+        const strengths=tm[4].split('+').map(x=>parseFloat(x.trim().replace(',','.'))).filter(x=>x>0);
+        const cands=strengths.length>1?[strengths[0],strengths[strengths.length-1]]:strengths;
+        const fits=cands.some(S=>{ const exact=single/S; const expectN=tm[3]==='капс'?Math.max(1,Math.round(exact)):Math.round(exact*2)/2; if(Math.abs(expectN-n)>1e-9) return false; if(!tm[1]) return Math.abs(n*S-single)<=1; const m=parseFloat(tm[5].replace(/[\s\u00a0]/g,'')); return Math.abs(n*S-m)<=1; });
+        if(!fits) push('tablet_units_arithmetic',`${tabs.slice(0,60)} for single ${shownSingle}`);
+      }
     }
     // the four steps are visible exactly when their state exists (a visible step with no
     // state = stale cards; a hidden step with state = a dead end for the physician)

@@ -90,7 +90,7 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
     expected = {
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient",
-        "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "resetDisease", "search", "hash", "history", "copy",
+        "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "childTablet", "resetDisease", "search", "hash", "history", "copy",
         "print", "theme", "routeThenDrug", "name",
     }
     assert expected <= set(counts), sorted(expected - set(counts))
@@ -118,3 +118,7 @@ def test_random_walk_reaches_the_arithmetic_and_export_oracles(fuzz: dict) -> No
     assert checks.get("po_volume", 0) >= 5, checks
     assert checks.get("print_flags", 0) >= 3, checks
     assert checks.get("group_mismatch_export", 0) >= 3, checks
+    # «(~N таб S мг = M мг)»: the rounded-tablet path is steered by childTablet; a mutant
+    # that rounds to whole tablets instead of halves trips tablet_units_arithmetic
+    assert checks.get("tablet_units", 0) >= 10, checks
+    assert checks.get("tablet_units_rounded", 0) >= 10, checks
