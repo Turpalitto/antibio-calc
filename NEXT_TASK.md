@@ -1,4 +1,4 @@
-## 2026-10-14 (after round 6, T51–T74): remaining NEXT_TASK (work top-down)
+## 2026-10-14 (after round 6, T51–T77): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
    pass: change the allergy status / type an age after picking a non-first drug — the drug
@@ -47,6 +47,19 @@
      пациент» → «Открыть расчёт»: the entry re-opens as «взрослые» with the notice and the
      dose. Tab / Shift+Tab inside the КР modal and the history drawer never leaves them;
      Escape / × / backdrop close and return focus to the opener.
+   - Real-browser pass additions (T75–T77): pick a date in the «Дата» field (it becomes a
+     date picker on focus) → Ctrl+P prints «Дата: 15.10.2026», not «2026-10-15»; type 12
+     years, click «взрослые», CAP adults → amoxicillin → «Копировать для МИС» / Rp / Ctrl+P:
+     every export carries «Предупреждение: Возраст 12 лет соответствует группе «дети»,
+     расчёт выполнен для группы «взрослые» (выбрана вручную).»; type age 7 and NO weight →
+     «Инфекции мочевых путей у детей» → stationary → ceftriaxone: the tiles show «—» with
+     the amber «нужен вес» notice, and «Копировать для МИС» / Rp / «Сохранить» toast
+     «… заблокировано: введите вес пациента …», Ctrl+P prints «ПЕЧАТЬ НЕВОЗМОЖНА: введите
+     вес пациента …»; type 25 kg → everything works again (1250 мг в/в 1 р/сут).
+   - DB content (owner): `cap_adult` → `cap_adult_in_severe` → ceftriaxone has
+     `duration_note: "Цефтриаксон"` — the shell prints it verbatim as «Указания:
+     Цефтриаксон» in the MIS text and on the form; the validator now warns about it
+     (`only repeats the drug name`). Replace with the actual instruction or drop the field.
 2. **Engineering candidates (none urgent):**
    - ~~`npm run check` convenience script~~ — done in T55 (`a86842a`).
    - The fuzz gate (`shell_fuzz.js`) runs 2 seeds × 800 steps in CI; a nightly / manual

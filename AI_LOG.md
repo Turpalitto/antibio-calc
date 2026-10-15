@@ -1,4 +1,52 @@
-## 2026-10-14 (round 6 continued, T51–T74: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants)
+## 2026-10-14 (round 6 continued, T51–T77: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate)
+
+- **T75 `d690334`:** the patient date field becomes `type=date` on focus, so a picked date
+  arrived as ISO «2026-10-15» and the printed form said «Дата: 2026-10-15» while the
+  default was «15.10.2026». `prescriptionDateText()` prints DD.MM.YYYY for ISO input, keeps
+  free text as typed, today (ru-RU) when empty; «Новый пациент» keeps the date. Harness
+  step 31 + jsdom + unit test.
+- **T76 `a57be20`:** the group chosen by chip over a typed age (12 y + «взрослые») showed
+  the on-screen notice but left no trace in the MIS text / Rp / printed form.
+  `ageGroupMismatchCaution()` joins `exportSafetyFlags` as a warn flag («Возраст 12 лет
+  соответствует группе «дети», расчёт выполнен для группы «взрослые» (выбрана
+  вручную)»); the choice itself stays allowed. Fuzz: export-parity invariants after every
+  copy (`export_flag_missing`, `screen_banner_not_in_mis`, `group_mismatch_not_in_mis`,
+  `weight_caution_not_in_mis`) + the steered `chipOverAge` action; mutant without the flag
+  → 4 findings.
+- **Fuzz oracles at random weights (`8dfb114`, `3885600`, `be1a567`, `47c7278`):** the
+  walk's arithmetic oracle ported to the fuzz (single / daily dose == regimen × the random
+  weight incl. the `max_daily_mg` ceiling, po ml == dose / suspension concentration, inj ml
+  == dose / vial solution concentration; mutant ×1.2 mg/kg/day → 117 findings); tablets
+  per dose («(N таб S мг)» == dose, «(~N таб S мг = M мг)» nearest half tablet / whole
+  capsule; `childTablet` steers the rounded path; mutant whole-tablet rounding → 18); the
+  amber «Превышена max суточная доза» row shown exactly when the ceiling cuts the dose
+  (mutant silent cap → 5); the MIS text repeats the screen single / daily dose, the cap
+  note, the weight and the group (mutant daily ×2 → 19); the Rp names the Latin INN and
+  the screen dose, route words in both exports, D.t.d. N. == the MIS course total; the
+  printed safety line == export flags (`print_flag_missing`); axe-core also in the
+  source-gated and computed-with-banners states (0 violations). `FUZZ_DUMP_STEP=<n>`
+  prints one step's inputs / tiles / exports to stderr for replays.
+- **T77 `e52c044` (REAL BUG, found by the new MIS-route oracle on seed 23):** an mg/kg
+  regimen with no weight is a pending state on screen («—» tiles + the amber «нужен вес»
+  notice — correctly not a block), but every door let it out: the MIS text as «Схема
+  приёма: 50-75 мг/кг/сут 1 р/сут» / «Схема приёма: По амоксициллину 2 р/сут» (the
+  regimen note in place of a dose), the Rp with «D.t.d. N. ___» and a mg/kg Signa, the
+  printed form with the note as the Signa, the history with `singleMg: 0`.
+  `doseIncompleteReason(reg, w)` (main regimen or a per-kg combination partner with
+  `computeDose(...).needWeight`) now gates `copyForMIS` / `copyLatinRecipe` /
+  `saveToHistory` (toast «… заблокировано: введите вес пациента — доза этого режима
+  рассчитывается по мг/кг и без веса не определена») and `fillPrescriptionForm` («ПЕЧАТЬ
+  НЕВОЗМОЖНА: …»). Unit tests (helper + the four doors), harness step 32 + jsdom, fuzz
+  `noWeightExport` action + 8 invariants (mutant with the gates removed → 94 findings).
+- **Validator (`ae36f2c`):** WARN when `duration_note` only repeats the drug name — the
+  shell prints it verbatim as «Указания: Цефтриаксон» (one case in the shipped DB:
+  `cap_adult_in_severe` ceftriaxone — owner review). 437 warnings now (436 + this one).
+- **Verification (T75–T77):** 2827 passed / 28 skipped (jsdom 53, clinical_safety 96,
+  validate_db rules 70, fuzz 33 actions / ~90 invariant kinds, 2 seeds × 800 steps run
+  concurrently + 9 tests, walk 2 shards), validate 0 / 437, ruff clean, build fresh
+  (`build-f29c49610721`), axe 0 in 5 states; sweeps 303 / 404 × 2000 clean; CI + CodeQL
+  green through `a57be20` at the time of writing (later commits pending). Pytest wall
+  time ≈ 2.8 min after the concurrent fuzz / walk fixtures (`69df615`).
 
 - **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
   «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:

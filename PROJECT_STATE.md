@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T74): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants
+## 2026-10-14 (round 6 continued, T51–T77): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate
 
 - Shell: changing the allergy status, the age group (chip, typed age or weight inference)
   no longer jumps to the first scenario / drug card — the physician's scenario, line, drug,
@@ -56,10 +56,27 @@
   of the previous group stayed under the age block (T72); «Открыть расчёт» lost the group
   chosen by chip over a typed age and could not re-open the entry (T74). History restore of
   a record closed by a later source gate is pinned (T71).
-- Tests: **2811 passed / 28 skipped / 0 failed** (jsdom 49, walk 17 oracles / 5 profiles /
-  1777 states + 275 gated checks, fuzz 26 actions / ~70 invariant kinds, 2 seeds × 800
-  steps, 6 tests); validate 0 / 436; axe 0; ruff clean; build fresh; CI + CodeQL green per
-  push (`d1d3be7` red — see AI_LOG — fixed by `8b231e1`). DB unchanged (`56727a27f050…`).
+- Exports (T75–T77): the printed date is DD.MM.YYYY for a picked date too; the group
+  chosen by chip over a typed age travels with the MIS text / Rp / printed form as a warn
+  flag; an mg/kg regimen with no weight (a pending «—» state on screen) leaves by no door —
+  MIS / Rp / history refuse with the reason («введите вес пациента — доза этого режима
+  рассчитывается по мг/кг и без веса не определена»), the printed form stays empty (it
+  used to go out as «Схема приёма: 50-75 мг/кг/сут 1 р/сут» / «По амоксициллину 2 р/сут»,
+  «D.t.d. N. ___», history with 0 mg — REAL BUG found by the new MIS-route oracle).
+- Fuzz oracles at random weights: dose / daily / ml arithmetic from the DB regimen
+  (ceiling included), tablets per dose incl. the «~N таб = M мг» rounding path, the cap
+  row shown exactly when the ceiling cuts, MIS text == screen (single / daily dose, cap
+  note, weight, group), Rp (Latin INN, dose, route words, D.t.d. N. == MIS total), printed
+  safety line == export flags; steered actions `chipOverAge`, `childTablet`,
+  `noWeightExport`; every oracle proven on a mutant; `FUZZ_DUMP_STEP` replay aid. axe-core
+  in 5 states. Validator: WARN for a `duration_note` that only repeats the drug name
+  (one shipped case — owner).
+- Tests: **2827 passed / 28 skipped / 0 failed** (jsdom 53, clinical_safety 96,
+  validate_db rules 70, walk 17 oracles / 5 profiles / 1777 states + 275 gated checks in
+  2 concurrent shards, fuzz 33 actions / ~90 invariant kinds, 2 seeds × 800 steps run
+  concurrently, 9 tests; pytest ≈ 2.8 min); validate 0 / 437; axe 0; ruff clean; build
+  fresh (`build-f29c49610721`); CI + CodeQL green per push (`d1d3be7` red — see AI_LOG —
+  fixed by `8b231e1`). DB unchanged (`56727a27f050…`).
 
 ## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
 
