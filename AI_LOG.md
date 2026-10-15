@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T62: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate)
+## 2026-10-14 (round 6 continued, T51–T65: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus)
 
 - **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
   «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:
@@ -69,6 +69,37 @@
   `activeLine`; a group change that left no fitting scenario showed a drug list next to an
   unmarked scenario list (the current card stays marked, dimmed, with the explicit age
   block). `test_shell_fuzz.py`: 2 seeds × 800 steps (≈ 28 s); `npm run check` includes it.
+- **`f480406` / `165c436` (fuzz invariants):** the MIS text names the INN of the drug on
+  screen and the diagnosis, the printed form names the drug and the typed weight; no binary
+  float noise («0.30000000000000004 мл») on screen or in an export. Extra sweeps: seeds
+  11/23/31/47 × 1000, 101/202 × 1500, 303/404/505/606 × 3000 — 0 findings.
+- **T63 `d0e3495` (REAL BUG):** route tabs were rendered in the fixed po / im / iv order
+  of the `groups` object, so the DEFAULT route ignored the record: ceftriaxone «iv, im» for
+  inpatient CAP (and for salmonellosis / typhoid / UTI in children) opened on **в/м**,
+  azithromycin «iv, per_os» for severe CAP opened on **per os**. Tabs and the default now
+  follow the order of the scenario route list (`intendedKeys.filter(groupKeys)`); the
+  salmonellosis expectations in the jsdom test moved im → iv accordingly. Second half: a
+  route tab the physician clicked follows them across the drug cards of the scenario
+  (`pickedRouteGroup`; a drug without it opens on its own first route and the preference
+  survives; a new scenario starts from the DB default). Fuzz: a steered `routeThenDrug`
+  action (the DB has only ~7 scenarios where the preference is observable) + invariants
+  `route_tab_order` / `route_pick_not_recorded` / `route_default_mismatch` /
+  `route_pick_survives_scenario_change` — a mutant that drops the preference yields 6
+  findings per seed, the real build 0.
+- **T64 `6f226ca`:** `history.replaceState` throws SecurityError in sandboxed documents
+  (srcdoc / sandboxed iframes, some file:// viewers, blob: URLs); `updateHash()` was the
+  last statement of `selectDisease` / `selectScenario` / `selectDrug` and the only one
+  after the render inside the personal-candidate `try` (a false «BLOCKED» status).
+  `replaceUrl()` swallows it — the deep link is a convenience. Harness step 23 + jsdom test
+  (a mutant without the guard aborts the harness with SecurityError).
+- **T65 `9f536ce` (a11y):** the guideline modal (`aria-modal`) and the history drawer had
+  Escape and a focus return but no focus trap — Tab wandered into the page behind the
+  backdrop (WCAG 2.4.3; ARIA APG modal dialog) and only the × closed the modal.
+  `trapTabInside()` / `focusableWithin()` cycle Tab / Shift+Tab inside the open dialog and
+  pull an escaped focus back; a click on the dimmed backdrop (not the panel) closes the
+  modal — delegated to `document` because the modal markup follows the script that runs
+  `init()` (a direct listener on `#guideline-modal` at setup time found no element — the
+  jsdom step caught that). Harness step 24 + jsdom test; axe still 0 in all three states.
 - **Sandbox note:** the environment was recreated mid-round (venv, `node_modules`, `/tmp`
   gone; `.git` back at the base while files kept the snapshot) — recovered with
   `git reset --soft origin/<branch>`, `npm ci`, a venv from `uv export --frozen`.

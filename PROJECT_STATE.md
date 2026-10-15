@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T62): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate
+## 2026-10-14 (round 6 continued, T51–T65): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus
 
 - Shell: changing the allergy status, the age group (chip, typed age or weight inference)
   no longer jumps to the first scenario / drug card — the physician's scenario, line, drug,
@@ -24,9 +24,19 @@
   print), stale cards after the nosology «✕», and an unmarked scenario list after a group
   change with no fitting scenario. Search folds «ё» → «е».
 - `npm run check` / `npm run check:all` run every gate in one go.
-- Tests: **2800 passed / 28 skipped / 0 failed** (jsdom 41, walk 14 oracles / 5 profiles /
-  1777 states, fuzz 2 seeds × 800 steps); validate 0 / 436; axe 0; ruff clean; build fresh;
-  CI + CodeQL green per push (`d32ba4a` last checked). DB unchanged (`56727a27f050…`).
+- Route default (T63, REAL BUG): tabs and the default route follow the ORDER of the scenario
+  route list — ceftriaxone «iv, im» no longer opens on в/м, azithromycin «iv, per_os» for
+  severe CAP no longer opens on per os; a route tab the physician clicked follows them across
+  the drug cards of the scenario (a new scenario starts from the DB default again).
+- Robustness / a11y: a denied `history.replaceState` (sandboxed iframe, some file://
+  viewers) never aborts a selection (T64); Tab stays inside the open guideline modal /
+  history drawer and a backdrop click closes the modal (T65).
+- Fuzz invariants added after T62: history «Открыть расчёт» round-trip, MIS / print name
+  the drug on screen, no float noise, route order / preference (steered `routeThenDrug`).
+- Tests: **2803 passed / 28 skipped / 0 failed** (jsdom 42, walk 14 oracles / 5 profiles /
+  1777 states, fuzz 22 actions, 2 seeds × 800 steps); validate 0 / 436; axe 0; ruff clean;
+  build fresh; CI + CodeQL green per push (`f480406` last checked). DB unchanged
+  (`56727a27f050…`).
 
 ## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
 

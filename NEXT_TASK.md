@@ -1,4 +1,4 @@
-## 2026-10-14 (after round 6, T51–T62): remaining NEXT_TASK (work top-down)
+## 2026-10-14 (after round 6, T51–T65): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
    pass: change the allergy status / type an age after picking a non-first drug — the drug
@@ -16,6 +16,17 @@
    - Real-browser pass additions (T61–T62): «лёгк» / «легк» give the same list; «Сохранить
      в историю» with 300 kg typed shows «Сохранение заблокировано: расчёт не выполнен» and
      adds nothing to the drawer.
+   - Real-browser pass additions (T63–T65): «Внебольничная пневмония (взрослые)» →
+     stationary non-severe scenario → ceftriaxone opens on **в/в** with tabs «в/в, в/м»;
+     click «в/м», then amoxiclav (в/в only), then ceftriaxone again → still в/м; open
+     another scenario → DB default again. **Owner check (T63):** the route ORDER in each
+     scenario record is now what the physician sees first — the 43 multi-route entries
+     (`('iv','im')` 24, `('per_os','iv')` 11, `('iv','per_os')` 6, `('im','iv')` 1,
+     `('per_os','topical')` / `('topical','per_os')` 1 each) deserve a one-pass review that
+     the first route is the intended default (e.g. `pid_inpatient` doxycycline lists
+     per_os before iv). Tab inside the open КР modal cycles between its × and links; a click
+     on the dimmed background closes it; Shift+Tab from the history drawer × lands on
+     «Очистить историю».
 2. **Engineering candidates (none urgent):**
    - ~~`npm run check` convenience script~~ — done in T55 (`a86842a`).
    - The fuzz gate (`shell_fuzz.js`) runs 2 seeds × 800 steps in CI; a nightly / manual
