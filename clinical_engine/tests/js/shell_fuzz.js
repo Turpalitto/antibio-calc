@@ -46,7 +46,7 @@ setTimeout(async()=>{
     const drugs=[]; (sc.lines||[]).forEach((ln,lineIdx)=>(ln.drugs||[]).forEach((dr,drugIdx)=>drugs.push({lineIdx,drugIdx,routes:(dr.route||[]).map(key)})));
     drugs.forEach(a=>drugs.forEach(b=>{ if(a!==b&&a.routes.length>1) a.routes.forEach(x=>{ if(b.routes.indexOf(x)>0) pairScenarios.push({r,scIdx,a,b,x}); }); }));
   }));
-  const findings=[]; const counts={};
+  const findings=[]; const counts={}; const checks={}; const tally=k=>{ checks[k]=(checks[k]||0)+1; };
   const actions={
     weight:()=>type($('weight'),pick(['','3.2','7','12.5','25','39.9','45','70','95','0.5','300','12,5'])),
     age:()=>{ type($('patient-age-unit'),pick(['years','months','days'])); type($('patient-age'),pick(['','0','5','10','18','3','7','12','35','70','150'])); },
@@ -135,8 +135,10 @@ setTimeout(async()=>{
     {
       const bannerVis=shown($('allergy-alert-banner'));
       const expectBanner=!!S.dr&&w.eval('getDrugRefs(activeDrug).some(r=>["contraindicated","caution"].includes(checkAllergyStatus(r,$("patient-allergy").value).status))');
+      if(expectBanner) tally('allergy_banner_expected');
       if(bannerVis!==expectBanner) push('allergy_banner_stale',`visible ${bannerVis} expected ${expectBanner} (${$('patient-allergy').value})`);
       const noteVis=shown($('scenario-hash-note')); const pending=!!w.eval('pendingHashScenario');
+      if(pending) tally('hash_note_expected');
       if(noteVis!==pending) push('hash_note_stale',`visible ${noteVis} pending ${pending}`);
       if(S.dr){
         const mmVis=shown($('route-mismatch-note'));
@@ -146,8 +148,23 @@ setTimeout(async()=>{
         const tabKeysMm=[...d.querySelectorAll('#route-tabs button')].map(b=>Object.keys(lblK).find(k=>lblK[k]===txt(b)));
         const intendedMm=(S.dr.route||[]).map(x=>x==='per_os'?'po':x);
         const expectMm=intendedMm.length>0&&tabKeysMm.length>0&&!tabKeysMm.some(k=>intendedMm.includes(k));
+        if(expectMm) tally('route_mismatch_note_expected');
         if(mmVis!==expectMm) push('route_mismatch_note_stale',`visible ${mmVis} expected ${expectMm}`);
       } else if(shown($('route-mismatch-note'))) push('route_mismatch_note_stale','visible without a drug');
+    }
+    // the block notice under the result shows the CURRENT reason (never a previous one),
+    // and the weight notice next to the weight field mirrors weightBlockReason / weightWarnReason
+    if(S.dr){
+      const blockVisNow=shown($('dose-block'));
+      if(S.blocked&&blockVisNow){ tally('dose_block_text'); if(txt($('dose-block'))!==S.blocked.replace(/\s+/g,' ').trim()) push('dose_block_text_stale',`«${txt($('dose-block')).slice(0,60)}» vs «${S.blocked.slice(0,60)}»`); }
+      if(!S.blocked&&blockVisNow&&S.regimen) push('dose_block_without_reason',txt($('dose-block')).slice(0,80));
+    }
+    {
+      const ww=$('weight-warn'); const wwVis=shown(ww); const wwText=txt(ww.querySelector('span'));
+      const exp=w.eval('(function(){ const wv=parseFloat($("weight").value); return weightBlockReason(wv, activeAge)||weightWarnReason(wv, activeAge)||badInputHint()||""; })()').replace(/\s+/g,' ').trim();
+      const situational=/^(Для этого режима нужен вес|Группа «новорождённые» выбрана без указания возраста)/.test(wwText);
+      if(exp){ tally('weight_warn_expected'); if(!wwVis||wwText!==exp) push('weight_warn_stale',`visible ${wwVis} «${wwText.slice(0,60)}» vs «${exp.slice(0,60)}»`); }
+      if(!exp&&wwVis&&!situational) push('weight_warn_stale',`visible without a reason: «${wwText.slice(0,80)}»`);
     }
     // a record under the source gate (calculation_blocked) never gets a scenario / drug / result
     if(S.dis&&S.dis.calculation_blocked&&(S.sc||S.dr)) push('blocked_record_opened',`${S.dis.id} sc=${S.sc&&S.sc.id} dr=${S.dr&&getDrugRefsSafe(S.dr)}`);
@@ -206,5 +223,5 @@ setTimeout(async()=>{
       if(name==='copy'&&(w.__mis||w.__rp)) push('export_without_drug','');
     }
   }
-  console.log(JSON.stringify({seed,steps:STEPS,findings:findings.slice(0,40),nFindings:findings.length,kinds:findings.reduce((a,f)=>(a[f.kind]=(a[f.kind]||0)+1,a),{}),counts},null,1));
+  console.log(JSON.stringify({seed,steps:STEPS,findings:findings.slice(0,40),nFindings:findings.length,kinds:findings.reduce((a,f)=>(a[f.kind]=(a[f.kind]||0)+1,a),{}),counts,checks},null,1));
 },300);

@@ -18,7 +18,10 @@ Found on the first runs: a weight- / age-blocked calculation was still saved
 to history with its doses (the block text promises «не может быть сохранён»),
 the nosology «✕» left live cards of the previous record in the hidden steps,
 and a group change that left no fitting scenario showed a drug list next to
-an unmarked scenario list. Two seeds × 800 steps ≈ 25 s in jsdom; skipped when
+an unmarked scenario list. Later invariants found the source-gate bypass on
+re-render (T66 — a «расчёт закрыт» record computed and exported a dose after
+the next typed age) and the allergy banner surviving a record with no scenario
+for the group (T67). Two seeds × 800 steps ≈ 30 s in jsdom; skipped when
 Node.js or the root devDependencies are absent (CI installs them).
 """
 
@@ -70,7 +73,17 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
     expected = {
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient", "resetDisease", "search", "hash", "history", "copy",
-        "print", "theme",
+        "print", "theme", "routeThenDrug",
     }
     assert expected <= set(counts), sorted(expected - set(counts))
     assert all(counts[name] >= 10 for name in expected), counts
+
+
+def test_random_walk_notice_invariants_are_not_vacuous(fuzz: dict) -> None:
+    """The «notice mirrors the state» invariants only mean something when the
+    walk actually reaches the states they guard: a visible block notice, a
+    weight notice with a reason, an allergy banner that must be on screen, a
+    pending «scenario from the link» note."""
+    checks = fuzz["checks"]
+    for key in ("dose_block_text", "weight_warn_expected", "allergy_banner_expected", "hash_note_expected"):
+        assert checks.get(key, 0) >= 10, (key, checks)
