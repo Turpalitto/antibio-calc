@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T60: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening)
+## 2026-10-14 (round 6 continued, T51–T62: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate)
 
 - **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
   «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:
@@ -52,11 +52,31 @@
   fill left the old drug lines under the block notice. `beforeprint` refills the form from
   the current state, `clearPrescriptionForm()` resets every field first, an empty state
   prints «ПЕЧАТЬ НЕВОЗМОЖНА: расчёт не выполнен …», a blocked one «ПЕЧАТЬ ЗАБЛОКИРОВАНА. …».
+- **T61 `d32ba4a`:** the search did not fold «ё» → «е»: «лёгк» found 1 nosology and
+  «легк» 3 (different sets), «трёх» nothing while «трех» found 4. `searchFold()` on both
+  sides (query, names, synonyms, CR ids, ICD codes, drug text).
+- **T62 `ec00338` + `69a14b7` (new gate class):** `clinical_engine/tests/js/shell_fuzz.js`
+  — a seeded random walk over every physician action (inputs, age chips, visible cards /
+  tabs / chips, «Новый пациент», nosology «✕», search + pick, `#hash`, history save /
+  restore, MIS / Rp copy, `beforeprint`, theme) with state invariants after every step
+  (cards / chips / tabs agree with the state; blocked ⇒ no result, no export, no printed
+  lines, no history entry; computed ⇒ result + exports; regimen fits the group; hash names
+  the nosology; «Открыть расчёт» re-opens exactly the saved ref incl. GFR / pregnancy /
+  allergy). First runs found three defects: **`saveToHistory()` checked only the age
+  regimen — a 300-kg or 25-kg-newborn calculation was saved with its doses although the
+  block text promises «не может быть сохранён»** (now the same gate as MIS / Rp / print);
+  the nosology «✕» left live cards of the previous record in the hidden steps and a stale
+  `activeLine`; a group change that left no fitting scenario showed a drug list next to an
+  unmarked scenario list (the current card stays marked, dimmed, with the explicit age
+  block). `test_shell_fuzz.py`: 2 seeds × 800 steps (≈ 28 s); `npm run check` includes it.
+- **Sandbox note:** the environment was recreated mid-round (venv, `node_modules`, `/tmp`
+  gone; `.git` back at the base while files kept the snapshot) — recovered with
+  `git reset --soft origin/<branch>`, `npm ci`, a venv from `uv export --frozen`.
 - **Verification per push:** unchanged gates (`/tmp/gate.sh`-style: pytest rc, walk, ruff,
-  freshness, validator before every commit). After T60: **2794 passed / 28 skipped**
-  (jsdom 39, walk 2 / 14 oracles / 5 profiles / 1777 states / 0 findings), validate 0 /
-  436, axe 0, CI + CodeQL green through `5473f11` (later commits pending at the time of
-  writing).
+  freshness, validator before every commit). After T62: **2800 passed / 28 skipped**
+  (jsdom 41, walk 2 / 14 oracles / 5 profiles / 1777 states / 0 findings, fuzz 4),
+  validate 0 / 436, axe 0, CI + CodeQL green through `d32ba4a` (later commits pending at
+  the time of writing).
 
 ## 2026-10-14 (round 6, autonomous loop continued, T45–T50)
 

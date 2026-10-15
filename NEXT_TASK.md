@@ -1,4 +1,4 @@
-## 2026-10-14 (after round 6, T51–T60): remaining NEXT_TASK (work top-down)
+## 2026-10-14 (after round 6, T51–T62): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
    pass: change the allergy status / type an age after picking a non-first drug — the drug
@@ -13,8 +13,14 @@
      toggles the theme; a deep link to an adult scenario in a fresh tab shows the «Сценарий
      из ссылки …» note and opens it once the weight is typed; typing the weight after the
      drug switches the suspension chip to the measurable strength.
+   - Real-browser pass additions (T61–T62): «лёгк» / «легк» give the same list; «Сохранить
+     в историю» with 300 kg typed shows «Сохранение заблокировано: расчёт не выполнен» and
+     adds nothing to the drawer.
 2. **Engineering candidates (none urgent):**
    - ~~`npm run check` convenience script~~ — done in T55 (`a86842a`).
+   - The fuzz gate (`shell_fuzz.js`) runs 2 seeds × 800 steps in CI; a nightly / manual
+     sweep with more seeds (`node clinical_engine/tests/js/shell_fuzz.js antibiotic_calc.html
+     vendor/app.css <seed> 3000`) is cheap insurance after larger shell changes.
    - Latin Rp for a combination regimen still names the main drug only (unchanged).
    - The MIS-only «разовый объём велик» caution is prescriber advice and is deliberately not
      on the Rp / printed form; if the owner wants it on the printed form too, the walk

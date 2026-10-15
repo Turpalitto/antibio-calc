@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T60): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening
+## 2026-10-14 (round 6 continued, T51–T62): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate
 
 - Shell: changing the allergy status, the age group (chip, typed age or weight inference)
   no longer jumps to the first scenario / drug card — the physician's scenario, line, drug,
@@ -18,10 +18,15 @@
   deep links keep working; deep links restore the line and wait for the patient data
   instead of losing the scenario; the default form chip follows the weight / age / regimen
   until the physician picks one (entry order no longer decides the suspension strength).
+- New gate class — random-walk fuzz (`test_shell_fuzz.py`, seeded, every physician action,
+  state invariants after each step); its first runs found that a weight- / age-blocked
+  calculation was still saved to history with its doses (fixed: same gate as MIS / Rp /
+  print), stale cards after the nosology «✕», and an unmarked scenario list after a group
+  change with no fitting scenario. Search folds «ё» → «е».
 - `npm run check` / `npm run check:all` run every gate in one go.
-- Tests: **2794 passed / 28 skipped / 0 failed** (jsdom 39, walk 14 oracles / 5 profiles /
-  1777 states); validate 0 / 436; axe 0; ruff clean; build fresh; CI + CodeQL green per
-  push (`5473f11` last checked). DB unchanged (`56727a27f050…`).
+- Tests: **2800 passed / 28 skipped / 0 failed** (jsdom 41, walk 14 oracles / 5 profiles /
+  1777 states, fuzz 2 seeds × 800 steps); validate 0 / 436; axe 0; ruff clean; build fresh;
+  CI + CodeQL green per push (`d32ba4a` last checked). DB unchanged (`56727a27f050…`).
 
 ## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
 
