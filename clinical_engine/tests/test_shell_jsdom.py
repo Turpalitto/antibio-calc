@@ -293,6 +293,16 @@ def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     # only the one record that spells «J18.9» out; a lone letter covers nothing
     assert r["J18.9"]["n"] == r["J18"]["n"] and r["J18.9"]["names"] == r["J18"]["names"], (r["J18.9"], r["J18"])
     assert r["j18.9 дети"]["n"] == 1 and r["j18.9 дети"]["first"].startswith("Внебольничная пневмония у детей"), r["j18.9 дети"]
+    # a space after the letter («J 18», «j 18.9») is still the code, not «j» + «18» (10 hits)
+    assert r["J 18"]["names"] == r["J18"]["names"] and r["j 18.9"]["names"] == r["J18.9"]["names"], (r["J 18"], r["j 18.9"])
+    # T90: a Cyrillic look-alike letter in front of the digits is the Latin one — «Н66» is
+    # H66 (otitis), «В20» is B20 (HIV), «О85» is O85 (postpartum endometritis); the keyboard
+    # map used to make them nothing / D20 (a tumour) / J85 (a lung abscess)
+    for cyr, lat in (("Н66", "H66"), ("В20", "B20"), ("О85", "O85")):
+        assert r[cyr]["n"] >= 1 and r[cyr]["names"] == r[lat]["names"], (cyr, r[cyr], r[lat])
+    assert r["В20"]["n"] == 1 and r["В20"]["names"][0].startswith("ВИЧ-инфекция у взрослых"), r["В20"]
+    assert r["О85"]["n"] == 1 and r["О85"]["names"][0].startswith("Послеродовой эндометрит"), r["О85"]
+    assert r["К81"]["n"] == 1 and r["К81"]["names"][0].startswith("Острый холецистит и холангит"), r["К81"]
     # a sibling subcode is not covered: «J18.0» finds the two «J18» records, not the
     # nosocomial record that spells «J18.9»
     assert r["J18.0"]["n"] == 2 and all(n.startswith("Внебольничная пневмония") for n in r["J18.0"]["names"]), r["J18.0"]

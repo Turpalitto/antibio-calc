@@ -104,3 +104,21 @@ def test_every_validator_form_type_is_routed_explicitly_by_the_shell() -> None:
     # and the Latin table knows every type the validator accepts
     latin = re.search(r"const LATIN_FORM = \{(.*?)\};", html, re.S).group(1)
     assert [t for t in form_types if f"{t}:" not in latin] == []
+
+
+def test_every_shipped_drug_has_a_latin_name_for_the_rp() -> None:
+    """`copyLatinRecipe` / the printed form write `LATIN_INN[key] || ref.inn`: a drug
+    missing from the table would print a Cyrillic INN on the Latin «Rp.:» line. Every
+    `drugs_reference` key must be in the table, and every table key must be a real drug."""
+    import json
+
+    db = json.loads((PROJECT_ROOT / "db" / "antibio_db.json").read_text(encoding="utf-8-sig"))
+    html = TEMPLATE.read_text(encoding="utf-8")
+    block = re.search(r"const LATIN_INN = \{(.*?)\};", html, re.S)
+    assert block, "LATIN_INN not found in the template"
+    latin = dict(re.findall(r"(\w+):'([^']+)'", block.group(1)))
+    drugs = [k for k in db["drugs_reference"] if isinstance(db["drugs_reference"][k], dict)]
+    assert [k for k in drugs if k not in latin] == [], "drugs without a Latin name for the Rp line"
+    assert [k for k in latin if k not in drugs] == [], "Latin names for drugs the DB does not ship"
+    # Latin genitive forms only — no Cyrillic slipped into the table
+    assert all(re.fullmatch(r"[A-Za-z\- ]+", name) for name in latin.values()), latin

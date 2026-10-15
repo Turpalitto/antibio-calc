@@ -212,6 +212,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "comboComponentLines",
     "componentRegimen",
     "searchFold",
+    "foldIcdHomoglyphs",
     "diseaseDrugText",
     "daysWord",
     "timesADay",
@@ -240,7 +241,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "isTopicalForm",
     "latinStrength",
 ]
-PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR", "PRINT_NO_CALCULATION", "WEIGHT_NEEDED_FOR_EXPORT", "REGIMEN_INCONSISTENT_TEXT"]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR", "PRINT_NO_CALCULATION", "WEIGHT_NEEDED_FOR_EXPORT", "REGIMEN_INCONSISTENT_TEXT", "ICD_HOMOGLYPHS_RU_EN"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
 
 
@@ -2315,6 +2316,17 @@ def test_allergy_check_of_a_drug_missing_from_the_class_table_is_a_caution() -> 
         assert res["alert"] == "Класс препарата «brand_new_drug» не задан в таблице классов калькулятора — совместимость с аллергоанамнезом проверьте вручную.", res
     assert result[3] == {"status": "safe", "label": "", "alert": None}
     assert result[4] == "contraindicated" and result[5] == "recommended"
+
+
+def test_icd_code_typed_with_a_cyrillic_look_alike_letter_is_the_latin_code() -> None:
+    """T90: «Н66» / «В20» / «О85» mean H66 / B20 / O85. Only a letter directly in front of
+    two digits is touched — Russian words keep their letters."""
+    body = (
+        "console.log(JSON.stringify(['н66','в20','о85.1','к81','а09','х60','у36','пневмония н66','н 66','нет','66н','abc','j18','о','он6']"
+        ".map(foldIcdHomoglyphs)));"
+    )
+    result = _run(["foldIcdHomoglyphs"], "", body)
+    assert result == ["h66", "b20", "o85.1", "k81", "a09", "x60", "y36", "пневмония h66", "н 66", "нет", "66н", "abc", "j18", "о", "он6"], result
 
 
 def test_times_a_day_declension() -> None:

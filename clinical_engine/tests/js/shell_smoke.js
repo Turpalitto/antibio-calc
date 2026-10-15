@@ -102,7 +102,7 @@ async function run() {
     out.search = { resultsVisible: visible($('results-box')), results: $('results-box').children.length, first: txt($('results-box').firstElementChild), status: txt($('search-status')), statusVisible: visible($('search-status')) };
     // recall: tokens + Russian endings + ICD + drug names, computable hits first
     out.searchRecall = {};
-    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'J18.9', 'j18.9 дети', 'J18.0', 'J1', 'J', 'N39.0', 'отит взрослые', 'отит', 'рожа', 'xyzzy', 'пневмания дети', 'тонзилит', 'амоксицилин', 'цистит', 'бронхит', 'ин', 'х', 'лёгк', 'легк', 'трёх', 'трех', 'НОВОРОЖДЁННЫЕ']) {
+    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'J18.9', 'j18.9 дети', 'J18.0', 'J1', 'J', 'N39.0', 'J 18', 'j 18.9', 'Н66', 'H66', 'В20', 'B20', 'О85', 'O85', 'К81', 'отит взрослые', 'отит', 'рожа', 'xyzzy', 'пневмания дети', 'тонзилит', 'амоксицилин', 'цистит', 'бронхит', 'ин', 'х', 'лёгк', 'легк', 'трёх', 'трех', 'НОВОРОЖДЁННЫЕ']) {
       type($('search'), q);
       const items = [...$('results-box').children];
       out.searchRecall[q] = {

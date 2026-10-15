@@ -1967,6 +1967,15 @@ const KEY_MAP_RU_EN = {
 const HOMOGLYPHS_RU_EN = {
   'х':'h','с':'c','а':'a','в':'b','е':'e','к':'k','м':'m','о':'o','р':'p','т':'t'
 };
+// An ICD-10 code typed with the Cyrillic look-alike letter («Н66», «А09», «В20», «О85»)
+// means the Latin letter it looks like — the keyboard-layout map would turn «В20» into
+// D20 (a tumour) and «О85» into J85 (a lung abscess): other diseases, silently.
+const ICD_HOMOGLYPHS_RU_EN = {
+  'а':'a','в':'b','е':'e','к':'k','м':'m','н':'h','о':'o','р':'p','с':'c','т':'t','х':'x','у':'y'
+};
+function foldIcdHomoglyphs(q){
+  return String(q == null ? '' : q).replace(/(^|[^a-zа-яё0-9])([а-яё])(?=\d{2})/g, (m, sp, ch) => sp + (ICD_HOMOGLYPHS_RU_EN[ch] || ch));
+}
 
 // Quick tags («Отит (H66)», «Пневмония (J18)» …): every tag code has an adult AND a
 // child record in the DB. The old «first record whose code starts with the tag» opened
@@ -2092,7 +2101,9 @@ function handleSearch(){
   const box = $('results-box');
   if(rawQ.length < 2){ box.classList.add('hidden'); box.innerHTML = ''; updateSearchStatus(rawQ, null); return; }
 
-  const qLower = searchFold(rawQ);
+  // «J 18» / «j 18.9» (a space after the letter) is the ICD code, not the tokens «j» + «18»;
+  // a Cyrillic look-alike letter in front of the digits («Н66») is the Latin one
+  const qLower = foldIcdHomoglyphs(searchFold(rawQ).replace(/^([a-zа-яё])\s+(?=\d{2})/, '$1'));
   const qClean = qLower.replace(/[\.\s\-_]/g, '');
   const qEn = qLower.split('').map(ch => KEY_MAP_RU_EN[ch] || HOMOGLYPHS_RU_EN[ch] || ch).join('').replace(/[\.\s\-_]/g, '');
 
