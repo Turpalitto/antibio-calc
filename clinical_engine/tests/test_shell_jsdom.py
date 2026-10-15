@@ -309,6 +309,10 @@ def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     assert r["цистит"]["names"][0] == "Острый неосложнённый цистит у женщин" and r["цистит"]["names"][-1] == "Острый холецистит и холангит", r["цистит"]
     assert "цистицеркоз" not in " ".join(r["цистит"]["names"]).lower()
     assert r["бронхит"]["names"] == ["Бронхит"], "«бронхит» has an exact hit, so бронхиолит must not be pulled in"
+    # T87: a stem shorter than 4 letters counts only at a word start — «отит» no longer pulls
+    # «некрОТИзирующий» / «антибиОТИкопрофилактика» (8 hits), «рожа» no longer «новоРОЖдённых» (7)
+    assert r["отит"]["names"] == ["Острый средний отит у детей", "Острый средний отит у взрослых"], r["отит"]
+    assert r["рожа"]["names"] == ["Рожа у взрослых"], r["рожа"]
 
 
 def test_search_status_counts_hits_and_says_when_nothing_matched(shell: dict) -> None:
@@ -326,8 +330,10 @@ def test_search_treats_yo_and_ye_as_the_same_letter(shell: dict) -> None:
     """Russian keyboards skip «ё»: «лёгк» found 1 nosology and «легк» 3 (different
     sets), «трёх» found nothing while «трех» found 4. Both sides are folded now."""
     r = shell["searchRecall"]
-    assert r["лёгк"]["n"] >= 4 and r["лёгк"]["names"] == r["легк"]["names"], (r["лёгк"], r["легк"])
-    assert r["трёх"]["n"] >= 4 and r["трёх"]["names"] == r["трех"]["names"], (r["трёх"], r["трех"])
+    # (T87 trimmed the 3-letter stems «лег» / «тре» to word starts: «фЛЕГмона» and
+    # «аортоЛЕГочной» are no longer hits, so the sets are smaller — and still identical)
+    assert r["лёгк"]["names"] == ["Абсцесс лёгкого / эмпиема плевры"] and r["лёгк"]["names"] == r["легк"]["names"], (r["лёгк"], r["легк"])
+    assert r["трёх"]["names"] == ["Трехпредсердное сердце"] and r["трёх"]["names"] == r["трех"]["names"], (r["трёх"], r["трех"])
     assert r["НОВОРОЖДЁННЫЕ"]["n"] >= 1, r["НОВОРОЖДЁННЫЕ"]
 
 

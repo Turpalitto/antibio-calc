@@ -2107,10 +2107,14 @@ function handleSearch(){
   });
   // Russian endings: «дети» must find «у детей», «взрослые» — «у взрослых»; a
   // token of 4+ letters also matches by its stem (last 1–2 letters dropped).
+  // Russian endings: «пневмонии» → «пневмони», «цистита» → «цистит». A stem shorter
+  // than 4 letters («отит» → «оти», «дети» → «дет») only counts at a word start —
+  // inside words it hit «некрОТИзирующий», «антибиОТИкопрофилактика», «ДЕТоксикация».
+  const stemAt = (text, st) => st.length >= 4 ? text.includes(st) : new RegExp('(^|[^a-zа-яё0-9])' + st.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(text);
   const stemHit = (text, t) => {
     if(text.includes(t)) return true;
-    if(t.length >= 5 && text.includes(t.slice(0, -2))) return true;
-    if(t.length >= 4 && text.includes(t.slice(0, -1))) return true;
+    if(t.length >= 5 && stemAt(text, t.slice(0, -2))) return true;
+    if(t.length >= 4 && stemAt(text, t.slice(0, -1))) return true;
     return false;
   };
   const exactHit = (d, t) => {
