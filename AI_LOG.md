@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T83: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp)
+## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)
 
 - **T75 `d690334`:** the patient date field becomes `type=date` on focus, so a picked date
   arrived as ISO «2026-10-15» and the printed form said «Дата: 2026-10-15» while the
@@ -93,6 +93,58 @@
   0 / 437, ruff clean, build fresh (`build-4615782fc5f6`), axe 0 in 5 states; sweeps
   505 / 606 × 2000 clean at `7585cd3`; CI + CodeQL green through `1bdc07f` at the time of
   writing (`63584a7` pending).
+
+- **T84 `ba2f582` (REAL BUG, quick tags):** every quick tag code («Отит (H66)», «Пневмония
+  (J18)», …) has an adult AND a child record; `selectQuickDisease` opened the first record
+  in DB order — the children's otitis for an adult, the adults' pneumonia / pyelonephritis
+  for a child — and then showed the «нет схемы для группы» block although the right record
+  existed. `quickDiseaseCandidates(code)` narrows to the patient's group, then to records
+  written for it (not only an «all» scenario), then to the exact code; one survivor opens,
+  anything else («Цистит (N30)» for an adult: cystitis vs prophylaxis; neonates) goes to the
+  search list. Fuzz action `quickTag` + group invariant (old build 6 findings), harness
+  step 33, unit table over the shipped DB (6 codes × 3 groups).
+- **T85 `8fa9e43` (history drawer):** entries named the main drug only («Ампициллин» for
+  ampicillin + gentamicin) and showed the raw DB course («курс 7-14», «курс 21») while every
+  export says «7–14 дней» / «21 день». `drug` carries the whole combination, `course`
+  stores `courseText(reg)`; fuzz: the saved entry == the screen (single dose, drug name,
+  course wording) and the drawer row repeats them (old build 24 findings on seed 23).
+- **T86 `aaefbba` (search ranking):** once the physician set the group (age typed or chip),
+  same-rank hits for that group lead («пневмония» for a child: «… у детей» first) and the
+  other rows say «• нет схемы для группы «дети»»; a list left on screen is re-ranked when
+  the group changes (`refreshSearchListForGroup`); «Новый пациент» returns to DB order.
+  Fuzz: row note ⇔ state (old build 27 findings; a mutant without the re-rank trips the
+  stale-note / order checks) + the steered `capDose` action (the daily-ceiling oracle went
+  from 2 to 76 hits over the two seeds — the T86 re-ranking had reshuffled seed 23 below
+  the old threshold, so the rare oracle now has its own action).
+- **T87 `8d4c201` (search noise):** a stem shorter than 4 letters («отит» → «оти», «рожа»
+  → «рож») counts only at a word start — «отит» no longer pulls «некрОТИзирующий» /
+  «антибиОТИкопрофилактика» / «псевдомембранозный кОЛИТ» (8 → 2 hits), «рожа» no longer
+  «новоРОЖдённых» (7 → 1); the ё/е pins were re-based on the clean sets («лёгк» used to
+  match «фЛЕГмона»).
+- **T88 `f883227` (search honesty):** a list made only of one-typo guesses («пневмания»)
+  says so — status «Найдено: N … — точного совпадения нет, показаны похожие названия;
+  проверьте написание «…»» and a per-row «• похожее название, не точное совпадение»; stem /
+  word-start hits («тонзилит», «отит») stay plain matches.
+- **Validator `ef616d6`:** `dose_mg_kg_day` must lie within its own `dose_range_mg_kg_day`
+  (the shell prints «Диапазон по КР: lo-hi» next to the computed dose) — error for a
+  computable record, warning for a blocked one; shipped DB clean.
+- **T89 `ea68168` (silent-safe guard):** a drug the shell's `DRUG_CLASSES` table does not
+  know came back «✅ Безопасно» for every allergy; it is now a caution («⚠ Класс не
+  определён», alert names the key) on the card, the banner and every export — the static
+  consistency test still guards the shipped DB.
+- **T90 `3b5969f` (REAL BUG, search):** an ICD-10 code typed with the Cyrillic look-alike
+  letter — the normal way on a Russian keyboard — went through the keyboard-layout map:
+  «В20» became D20 (a tumour record), «О85» became J85 (lung abscess), «Н66» / «К81» /
+  «М86» / «Е10» / «Р23» found nothing. `foldIcdHomoglyphs` maps a Cyrillic letter directly
+  in front of two digits to the Latin letter it looks like (а в е к м н о р с т х у) before
+  anything else; «J 18» / «j 18.9» with a space are the code too. Also a static test that
+  every shipped drug has a `LATIN_INN` entry (the Rp line falls back to the Cyrillic INN
+  otherwise).
+- **Verification (T84–T90):** 2846 passed / 28 skipped (jsdom 55, clinical_safety 102,
+  validate_db rules 80, static ids 7, fuzz 35 actions / ~100 invariant kinds, walk 18
+  oracles), validate 0 / 437, ruff clean, build fresh (`build-7a8f3d8a42f6`), axe 0 in 5
+  states; CI + CodeQL green through `8d4c201` at the time of writing (later commits
+  pending).
 
 - **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
   «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:

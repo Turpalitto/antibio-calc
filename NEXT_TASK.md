@@ -1,4 +1,4 @@
-## 2026-10-14 (after round 6, T51–T83): remaining NEXT_TASK (work top-down)
+## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
    pass: change the allergy status / type an age after picking a non-first drug — the drug
@@ -68,6 +68,18 @@
      route; search «J18.9» → 3 pneumonia records, «J18.0» → 2, «J» → nothing; holecystitis
      → ceftriaxone + metronidazole → «Копировать Rp» → the pasted text has the Metronidazoli
      line after «S.:» under «Одновременно (компоненты комбинации, отдельные Rp.):».
+   - Real-browser pass additions (T84–T90): with «взрослые» set click «👂 Отит (H66)» → the
+     adults' otitis opens; with a child's age typed → the children's; «💧 Цистит (N30)» for an
+     adult → a list of two (cystitis / prophylaxis); type a child's age and search
+     «пневмония» → «… у детей» first, the other rows end with «нет схемы для группы «дети»»;
+     click «взрослые» → the list re-ranks; search «Н66» typed in Cyrillic → otitis, «В20» →
+     HIV (not a tumour), «О85» → postpartum endometritis; «отит» → 2 rows only; «пневмания»
+     → the status says the rows are spelling guesses; save a ceftriaxone + metronidazole
+     calculation → the history row reads «Цефтриаксон + Метронидазол … курс 7–14 дней».
+   - DB content (owner): no pediatric cystitis record — `ut_child` lists N10/N11/N12/N13/
+     N39.0 but not N30.x, so «Цистит (N30)» for a child opens «Профилактика рецидивирующих
+     ИМП» (the only child-fitting record); adding N30.0 to `ut_child.mkb10` (or a pediatric
+     cystitis record) would make the tag list both.
    - DB content (owner, optional): trade names for the search — add
      `drugs_reference.<key>.synonyms: ["Амоксиклав", "Аугментин", …]` (array of non-empty
      strings; the validator warns on any other shape, the shell indexes them as typed).
