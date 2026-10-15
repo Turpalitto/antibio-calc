@@ -503,3 +503,18 @@ def test_default_route_follows_the_db_order_and_a_picked_route_follows_the_physi
     assert r["afterAllergy"] == "cap_adult_in_mild|ceftriaxone|im|im", "a context re-render keeps the picked route"
     assert r["newScenario"] == "cap_adult_in_severe|ceftriaxone|iv|null|в/в"
     assert r["azithromycinSevere"] == "cap_adult_in_severe|azithromycin|iv|null|в/в,per os"
+
+
+def test_a_denied_history_replace_state_does_not_abort_a_selection(shell: dict) -> None:
+    """history.replaceState throws SecurityError in sandboxed documents (srcdoc /
+    sandboxed iframes, some file:// viewers, blob: URLs). updateHash() was the
+    last statement of selectDisease / selectScenario / selectDrug and the only
+    statement inside the personal-candidate try block after the render — the
+    throw surfaced as a console error or a false «BLOCKED» status. The deep link
+    is a convenience: the selection and the reset must complete without it."""
+    r = shell["replaceStateDenied"]
+    assert r["state"] == "pyelonephritis_adult|apn_mild|true", r
+    assert r["resultVisible"] is True and r["drugCards"] > 1, r
+    assert r["afterReset"] == "null|null|null|empty", r
+    assert r["consoleErrors"] == 0, "a denied replaceState must stay silent"
+

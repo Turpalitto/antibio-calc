@@ -2248,7 +2248,7 @@ function resetDisease(){
   $('results-box').classList.add('hidden');
   updateSearchStatus('', null);
   updateAllergyBanner();
-  history.replaceState(null, '', window.location.pathname);
+  replaceUrl(window.location.pathname);
 }
 function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
   const list = $('scenario-list');
@@ -4527,7 +4527,15 @@ function updateHash(){
   // #disease[/scenario[/L<line>]] — a nosology without a chosen drug keeps only
   // its own id (never the previous nosology's scenario/line).
   const h = [activeDisease.id, activeScenario?activeScenario.id:'', activeLine?'L'+activeLine.line_number:''].join('/').replace(/\/+$/, '');
-  history.replaceState(null, '', '#'+h);
+  replaceUrl('#'+h);
+}
+// history.replaceState throws SecurityError in sandboxed documents (srcdoc / sandboxed
+// iframes, some file:// viewers, blob: URLs). The deep link is a convenience: it must
+// never abort selectDisease / selectScenario / selectDrug half-way or mark the personal
+// candidate «BLOCKED» after the calculation was already applied.
+function replaceUrl(url){
+  try{ history.replaceState(null, '', url); }
+  catch(e){ /* no deep link in this document */ }
 }
 function restoreFromHash(){
   const h = window.location.hash.slice(1);

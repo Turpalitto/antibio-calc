@@ -814,6 +814,32 @@ async function run() {
       r.azithromycinSevere = state() + '|' + tabs();
       out.routeFollows = r;
     }
+
+    // 23. history.replaceState throwing (sandboxed iframe, some file:// viewers) must not
+    //     abort a selection half-way: the nosology, scenario and drug still open and
+    //     «Сбросить» still clears the screen
+    {
+      const realReplace = w.history.replaceState;
+      w.history.replaceState = () => { throw new w.DOMException('denied', 'SecurityError'); };
+      const errBefore = errors.length;
+      try {
+        clickDisease('pyelonephritis_adult');
+        type($('patient-age'), '35');
+        type($('weight'), '70');
+        const drugs = drugCards();
+        if (drugs.length > 1) drugs[1].click();
+        out.replaceStateDenied = {
+          state: w.eval('[activeDisease && activeDisease.id, activeScenario && activeScenario.id, !!activeDrug].join("|")'),
+          resultVisible: visible($('res-po')) || visible($('res-inj')),
+          drugCards: drugs.length,
+        };
+        w.resetDisease();
+        out.replaceStateDenied.afterReset = w.eval('[activeDisease, activeScenario, activeDrug].map(String).join("|")') + '|' + (visible($('empty-state')) ? 'empty' : 'not-empty');
+        out.replaceStateDenied.consoleErrors = errors.length - errBefore;
+      } finally {
+        w.history.replaceState = realReplace;
+      }
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }
