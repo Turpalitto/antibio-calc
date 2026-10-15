@@ -2338,6 +2338,9 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
     const idx = activeDisease.scenarios.indexOf(activeScenario);
     const card = idx >= 0 ? list.children[idx] : null;
     if(card) card.classList.add('active');
+    // the regimen chips of the previous group must not stay under the age block
+    // (they looked clickable and did nothing)
+    if(activeDrug) renderRegimens(activeRegimenIdx);
   }
   // a record with no scenario for the current group selects no drug: the banner
   // «противопоказан по аллергоанамнезу» of the previous drug must not stay on screen

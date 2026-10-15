@@ -598,3 +598,14 @@ def test_history_restore_of_a_record_closed_by_the_source_gate_stays_closed(shel
     assert g["afterAge"] == closed, g
     assert g["misToast"] == "Нет активного расчёта" and g["printed"] == "", g
 
+
+def test_regimen_chips_follow_the_age_group(shell: dict) -> None:
+    """Amoxicillin for AOM has three child regimens and none for neonates: the
+    «новорождённые» chip shows the age block alone — the three child chips used to
+    stay under it, clickable and dead (a click only moved activeRegimenIdx). Back on
+    «дети» the chips return (first regimen selected again)."""
+    r = shell["regimenChipsFollowGroup"]
+    assert r["child"] == "true|3|1|3|true|", r
+    assert r["neonate"].startswith("false|0|0|0|false|РАСЧЁТ ЗАБЛОКИРОВАН: для препарата «Амоксициллин»"), r
+    assert r["childAgain"] == "true|3|0|3|true|", r
+

@@ -1021,6 +1021,24 @@ async function run() {
       }
       out.historyGatedRestore = g;
     }
+    // 29. the regimen chips follow the age group: a group with no regimen for the drug
+    //     shows the block alone (the chips of the previous group used to stay under it,
+    //     clickable and dead)
+    {
+      type($('patient-age'), '5');
+      type($('weight'), '18');
+      clickDisease('aom_child');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const chips = () => [...d.querySelectorAll('#regimen-list button')];
+      const st = () => [visible($('regimen-selector')), chips().length, w.eval('activeRegimenIdx'), w.eval('ageEligibleRegimens(activeDrug).length'), visible($('res-po')) || visible($('res-inj')), txt($('dose-block')).slice(0, 60)].join('|');
+      if (chips()[1]) chips()[1].click();
+      const r = { child: st() };
+      d.querySelector('#age-group button[data-age="neonate"]').click();
+      r.neonate = st();
+      d.querySelector('#age-group button[data-age="child"]').click();
+      r.childAgain = st();
+      out.regimenChipsFollowGroup = r;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

@@ -212,6 +212,26 @@ setTimeout(async()=>{
         if(shown(box)!==expRows.length>0) push('safety_banners_mismatch',`box visible ${shown(box)} expected ${expRows.length>0}`);
       }
     }
+    // the regimen chips are exactly the age-eligible regimens of the drug on screen (count,
+    // label, active chip = activeRegimenIdx, index in range — getActiveRegimen() falls back
+    // to the first regimen silently when the index is stale), the availability note mirrors
+    // the drug reference
+    if(S.dr){
+      const regsN=w.eval('ageEligibleRegimens(activeDrug).length'); const chips=[...d.querySelectorAll('#regimen-list button')];
+      const selVis=shown($('regimen-selector'));
+      if(selVis!==(regsN>1)) push('regimen_selector_visibility',`visible ${selVis} regimens ${regsN}`);
+      if(regsN>0&&!(S.reg>=0&&S.reg<regsN)) push('regimen_idx_out_of_range',`${S.reg} of ${regsN}`);
+      if(regsN>1){
+        tally('regimen_chips');
+        if(chips.length!==regsN) push('regimen_chips_count',`${chips.length} vs ${regsN}`);
+        const act=chips.findIndex(b=>b.classList.contains('active')); if(act!==S.reg) push('regimen_chip_mismatch',`chip ${act} vs ${S.reg}`);
+        const labels=JSON.parse(w.eval('JSON.stringify(ageEligibleRegimens(activeDrug).map(r=>regimenSummary(r, doseUnitOf(DB.drugs_reference[getDrugRefs(activeDrug)[0]]))))')).map(x=>x.replace(/\s+/g,' ').trim());
+        if(chips.map(txt).join('|')!==labels.join('|')) push('regimen_chip_text',`${chips.map(txt).join(' / ').slice(0,100)} vs ${labels.join(' / ').slice(0,100)}`);
+      }
+      const availVis=shown($('availability-note')); const availExp=!!w.eval('DB.drugs_reference[getDrugRefs(activeDrug)[0]].availability_note');
+      if(availExp) tally('availability_note_expected');
+      if(availVis!==availExp) push('availability_note_stale',`visible ${availVis} expected ${availExp}`);
+    } else if(shown($('regimen-selector'))) push('regimen_selector_visibility','visible without a drug');
     // the four steps are visible exactly when their state exists (a visible step with no
     // state = stale cards; a hidden step with state = a dead end for the physician)
     {
