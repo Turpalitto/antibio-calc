@@ -840,6 +840,48 @@ async function run() {
         w.history.replaceState = realReplace;
       }
     }
+
+    // 24. Tab stays inside an open dialog (guideline modal / history drawer): from the
+    //     last focusable element Tab wraps to the first, Shift+Tab from the first wraps to
+    //     the last; a click on the dimmed backdrop closes the modal and returns focus
+    {
+      clickDisease('cap_adult');
+      const tab = (shift) => d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Tab', shiftKey: !!shift, bubbles: true, cancelable: true }));
+      const focusable = (c) => w.focusableWithin(c);
+      const t = {};
+      w.openGuidelineModal();
+      const modal = $('guideline-modal');
+      const items = focusable(modal);
+      t.modalOpen = !modal.classList.contains('hidden');
+      t.modalItems = items.length;
+      t.initialFocusIsClose = d.activeElement === modal.querySelector('button[aria-label]');
+      items[items.length - 1].focus();
+      tab(false);
+      t.wrapForward = d.activeElement === items[0];
+      tab(true);
+      t.wrapBackward = d.activeElement === items[items.length - 1];
+      $('search').focus();
+      tab(false);
+      t.pulledBack = modal.contains(d.activeElement);
+      // a click on the panel does NOT close; a click on the backdrop does
+      modal.firstElementChild.click();
+      t.panelClickKeepsOpen = !modal.classList.contains('hidden');
+      modal.click();
+      t.backdropClickCloses = modal.classList.contains('hidden');
+      t.focusBackOnOpener = d.activeElement === $('btn-guideline-modal');
+      w.openHistory();
+      const drawer = $('history-drawer');
+      const ditems = focusable(drawer);
+      t.drawerItems = ditems.length;
+      t.drawerInitialFocus = d.activeElement === $('drawer-close');
+      tab(true);
+      t.drawerWrapBackward = d.activeElement === ditems[ditems.length - 1];
+      tab(false);
+      t.drawerWrapForward = d.activeElement === ditems[0];
+      key('Escape');
+      t.drawerClosedByEscape = !drawer.classList.contains('open') && d.activeElement === $('btn-history');
+      out.dialogFocus = t;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

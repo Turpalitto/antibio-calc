@@ -518,3 +518,17 @@ def test_a_denied_history_replace_state_does_not_abort_a_selection(shell: dict) 
     assert r["afterReset"] == "null|null|null|empty", r
     assert r["consoleErrors"] == 0, "a denied replaceState must stay silent"
 
+
+def test_tab_stays_inside_an_open_dialog_and_the_backdrop_closes_the_modal(shell: dict) -> None:
+    """The guideline modal (aria-modal) and the history drawer had Escape and a
+    focus return but no focus trap: Tab wandered into the page behind the dimmed
+    backdrop (WCAG 2.4.3; ARIA APG modal dialog), and only the × button closed
+    the modal. Tab now cycles inside the open dialog, a focus that escaped is
+    pulled back, and a click on the backdrop (not on the panel) closes the modal."""
+    t = shell["dialogFocus"]
+    assert t["modalOpen"] is True and t["modalItems"] >= 2 and t["initialFocusIsClose"] is True, t
+    assert t["wrapForward"] is True and t["wrapBackward"] is True and t["pulledBack"] is True, t
+    assert t["panelClickKeepsOpen"] is True and t["backdropClickCloses"] is True and t["focusBackOnOpener"] is True, t
+    assert t["drawerItems"] >= 3 and t["drawerInitialFocus"] is True, t
+    assert t["drawerWrapBackward"] is True and t["drawerWrapForward"] is True and t["drawerClosedByEscape"] is True, t
+
