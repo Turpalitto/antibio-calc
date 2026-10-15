@@ -207,6 +207,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "ageGroupMismatchCaution",
     "ageGroupFromDays",
     "ageGroupLabel",
+    "regimenDataCaution",
     "doseIncompleteReason",
     "comboComponentLines",
     "componentRegimen",
@@ -239,7 +240,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "isTopicalForm",
     "latinStrength",
 ]
-PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR", "PRINT_NO_CALCULATION", "WEIGHT_NEEDED_FOR_EXPORT"]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR", "PRINT_NO_CALCULATION", "WEIGHT_NEEDED_FOR_EXPORT", "REGIMEN_INCONSISTENT_TEXT"]
 PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
 
 
@@ -667,6 +668,36 @@ def test_weight_caution_travels_with_the_exports() -> None:
     ), result["adult35"]
     assert result["adult70"] == []
     assert len(result["toddler28"]) == 1 and result["toddler28"][0]["text"].startswith("Вес 28 кг при возрасте 2 года — редкое сочетание"), result["toddler28"]
+
+
+def test_inconsistent_regimen_caution_travels_with_the_exports() -> None:
+    """«Данные БД несогласованы: разовая × кратность ≠ суточной» was an amber row on
+    screen only (renderPO / renderInjection); exportSafetyFlags carries the same text so
+    the MIS text, Rp and printed form say it too. No shipped regimen is inconsistent
+    (the validator warns «disagrees with dose_mg_day_fixed»), so this is a latent-hazard
+    closure pinned by a fixture regimen: 1000 × 2 against a stored 3000 mg/day."""
+    body = (
+        "const DB = {drugs_reference: {amoxicillin: {inn: 'Амоксициллин'}}};"
+        "let activeAge = 'adult'; $('weight').value = '70';"
+        "let activeDrug = {drug_ref: 'amoxicillin', regimens: []};"
+        "let regimen = {age_group: 'adult', single_dose_mg: 1000, freq_per_day: 2, dose_mg_day_fixed: 3000};"
+        "function getActiveRegimen(){ return regimen; }"
+        "const inconsistent = exportSafetyFlags(['amoxicillin']);"
+        "regimen = {age_group: 'adult', single_dose_mg: 1000, freq_per_day: 2, dose_mg_day_fixed: 2000};"
+        "const consistent = exportSafetyFlags(['amoxicillin']);"
+        "regimen = {age_group: 'adult', dose_mg_kg_day: 40, freq_per_day: 2};"
+        "const perKg = exportSafetyFlags(['amoxicillin']);"
+        "regimen = null;"
+        "const noRegimen = exportSafetyFlags(['amoxicillin']);"
+        "console.log(JSON.stringify({inconsistent, consistent, perKg, noRegimen, screenText: REGIMEN_INCONSISTENT_TEXT}));"
+    )
+    result = _run(["getDrugRefs", "doseUnitOf", "computeDose"], "", body)
+    assert result["inconsistent"] == [{"level": "warn", "text": "Данные БД несогласованы: разовая × кратность ≠ суточной. Расчёт выполнен по разовой дозе из КР — требуется проверка."}], result
+    assert result["screenText"] == result["inconsistent"][0]["text"]
+    assert result["consistent"] == [] and result["perKg"] == [] and result["noRegimen"] == [], result
+    # the on-screen rows use the same constant (one text, three readers)
+    source = _source()
+    assert source.count("warnEl.querySelector('span').textContent = REGIMEN_INCONSISTENT_TEXT;") == 2
 
 
 def test_group_chosen_over_the_typed_age_travels_with_the_exports() -> None:

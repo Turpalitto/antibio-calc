@@ -1884,7 +1884,22 @@ function exportSafetyFlags(refs){
   // the reader of the chart text / Rp / printed form must see it too
   const groupCaution = ageGroupMismatchCaution();
   if(groupCaution) flags.push({level:'warn', text:groupCaution});
+  // the amber «Данные БД несогласованы» row (single × freq ≠ stored daily dose) was on
+  // screen only; no such regimen ships today (the validator warns), but the exports must
+  // not depend on that
+  const dataCaution = regimenDataCaution();
+  if(dataCaution) flags.push({level:'warn', text:dataCaution});
   return flags;
+}
+const REGIMEN_INCONSISTENT_TEXT = 'Данные БД несогласованы: разовая × кратность ≠ суточной. Расчёт выполнен по разовой дозе из КР — требуется проверка.';
+function regimenDataCaution(){
+  if(typeof activeDrug === 'undefined' || !activeDrug || typeof getActiveRegimen !== 'function') return '';
+  const reg = getActiveRegimen();
+  const ref = reg ? DB.drugs_reference[getDrugRefs(activeDrug)[0]] : null;
+  if(!ref) return '';
+  const weightEl = $('weight');
+  const w = weightEl ? parseFloat(weightEl.value) : NaN;
+  return computeDose(reg, w, doseUnitOf(ref)).inconsistent ? REGIMEN_INCONSISTENT_TEXT : '';
 }
 function ageGroupMismatchCaution(){
   if(patientAgeDays == null || ageInputBlockReason()) return '';
@@ -3453,7 +3468,7 @@ function renderPO(reg, form, ref, w, singleMg, dailyMg, capped, inconsistent){
 
   const warnEl = $('po-max-warn');
   if(inconsistent){
-    warnEl.querySelector('span').textContent = 'Данные БД несогласованы: разовая × кратность ≠ суточной. Расчёт выполнен по разовой дозе из КР — требуется проверка.';
+    warnEl.querySelector('span').textContent = REGIMEN_INCONSISTENT_TEXT;
     warnEl.classList.remove('hidden');
   } else if(capped){
     warnEl.querySelector('span').textContent = 'Превышена max суточная доза '+fmtDose(reg.max_daily_mg, unit)+'/сут — суточная и разовая дозы снижены до потолка ('+fmtDose(singleMg, unit)+' × '+reg.freq_per_day+' р/д). Проверьте режим по КР.';
@@ -3696,7 +3711,7 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
 
   const warnEl = $('inj-max-warn');
   if(inconsistent){
-    warnEl.querySelector('span').textContent = 'Данные БД несогласованы: разовая × кратность ≠ суточной. Расчёт выполнен по разовой дозе из КР — требуется проверка.';
+    warnEl.querySelector('span').textContent = REGIMEN_INCONSISTENT_TEXT;
     warnEl.classList.remove('hidden');
   } else if(capped){
     warnEl.querySelector('span').textContent = 'Превышена max суточная доза '+fmtDose(reg.max_daily_mg, unit)+'/сут — суточная и разовая дозы снижены до потолка ('+fmtDose(singleMg, unit)+' × '+reg.freq_per_day+' р/д). Проверьте режим по КР.';
