@@ -144,7 +144,7 @@ setTimeout(async()=>{
       const picked=w.eval('pickedRouteGroup');
       if(name==='route'&&picked!==S.route) push('route_pick_not_recorded',`${picked} vs ${S.route}`);
       if((name==='drug'||name==='routeThenDrug')&&S.sc===beforeSc&&tabKeys.length){ const pk=name==='routeThenDrug'?w.__pk:beforePicked; const exp=(pk&&tabKeys.includes(pk))?pk:tabKeys[0]; if(S.route!==exp) push('route_default_mismatch',`${S.route} vs ${exp} (picked ${pk})`); }
-      if(name==='scenario'&&S.sc!==beforeSc&&picked!==null) push('route_pick_survives_scenario_change',`${picked}`);
+      if(name==='scenario'&&picked!==null) push('route_pick_survives_scenario_click',`${picked}`);
       const sel=d.querySelector('#scenario-list .scenario-card.active'); if(!sel) push('no_active_scenario_card','');
       const selDrug=d.querySelector('#drug-list .drug-card.active'); if(!selDrug) push('no_active_drug_card','');
       const blockVis=visible($('dose-block')), resVis=visible($('res-po'))||visible($('res-inj'));

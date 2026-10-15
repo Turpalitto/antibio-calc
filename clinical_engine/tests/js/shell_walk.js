@@ -92,11 +92,33 @@ setTimeout(() => {
       for (const sc of scenarioCards) {
         sc.click();
         stats.scenarios++;
-        const drugCards = [...d.querySelectorAll('#drug-list .drug-card')];
-        for (const dc of drugCards) {
+        const drugCount = d.querySelectorAll('#drug-list .drug-card').length;
+        const ROUTE_LBL = { po: 'per os', im: 'в/м', iv: 'в/в', topical: 'местно' };
+        const routeState = () => {
+          const keys = [...d.querySelectorAll('#route-tabs button')].map((b) => Object.keys(ROUTE_LBL).find((k) => ROUTE_LBL[k] === txt(b)));
+          const intended = (w.eval('activeDrug && activeDrug.route') || []).map((x) => (x === 'per_os' ? 'po' : x)).filter((k) => keys.includes(k));
+          return { keys, intended, route: w.eval('currentRouteGroup') };
+        };
+        for (let di = 0; di < drugCount; di++) {
+          // re-open the scenario first: the drug cards are re-rendered and the route pick
+          // of the previous card is cleared, so every card is seen in its fresh state
+          sc.click();
+          const dc = [...d.querySelectorAll('#drug-list .drug-card')][di];
           dc.click();
           stats.drugs++;
           const tabs = [...d.querySelectorAll('#route-tabs button')];
+          const whereDrug = `${profile.name} › ${rec.id} › ${w.eval('activeScenario && activeScenario.id')} › ${txt(dc).slice(0, 40)}`;
+          // default-route oracle: a freshly opened drug card starts on the FIRST route of
+          // its scenario entry that has forms, and the tabs keep that order (T63 — the
+          // groups object used to put im before iv, so ceftriaxone «iv, im» opened on в/м)
+          {
+            const rs = routeState();
+            if (rs.intended.length) {
+              if (rs.route !== rs.intended[0]) out.findings.push({ kind: 'default_route_mismatch', where: whereDrug, detail: `${rs.route} vs ${rs.intended[0]} (record order ${rs.intended.join(',')})` });
+              else if (rs.keys.slice(0, rs.intended.length).join() !== rs.intended.join()) out.findings.push({ kind: 'route_tab_order', where: whereDrug, detail: `${rs.keys.join(',')} vs ${rs.intended.join(',')}` });
+              else stats.defaultRouteOracle = (stats.defaultRouteOracle || 0) + 1;
+            }
+          }
           const tabLoops = tabs.length ? tabs : [null];
           for (const tab of tabLoops) {
             if (tab) tab.click();
@@ -316,6 +338,21 @@ setTimeout(() => {
                 stats.exports++;
               }
             }
+          }
+          // picked-route oracle (T63): the LAST tab clicked above is the physician's pick;
+          // the next drug card of the scenario must open on it when it offers that route,
+          // otherwise on its own first route (and the pick must survive for the card after)
+          if (tabs.length > 1 && di + 1 < drugCount) {
+            const picked = w.eval('pickedRouteGroup');
+            const nextCard = [...d.querySelectorAll('#drug-list .drug-card')][di + 1];
+            nextCard.click();
+            const rs = routeState();
+            if (picked && rs.intended.length) {
+              const expected = rs.keys.includes(picked) ? picked : rs.intended[0];
+              if (rs.route !== expected) out.findings.push({ kind: 'picked_route_mismatch', where: `${whereDrug} → ${txt(nextCard).slice(0, 40)}`, detail: `${rs.route} vs ${expected} (picked ${picked})` });
+              else stats.pickedRouteOracle = (stats.pickedRouteOracle || 0) + 1;
+              if (w.eval('pickedRouteGroup') !== picked) out.findings.push({ kind: 'route_pick_lost', where: `${whereDrug} → ${txt(nextCard).slice(0, 40)}`, detail: `${picked} → ${w.eval('pickedRouteGroup')}` });
+            } else if (!picked) out.findings.push({ kind: 'route_pick_not_recorded', where: whereDrug, detail: 'a tab click left pickedRouteGroup null' });
           }
         }
       }

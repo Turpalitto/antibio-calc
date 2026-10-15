@@ -78,6 +78,12 @@ def test_walk_covers_every_computable_nosology_for_every_profile(walk: dict) -> 
     ctx = walk["profiles"]["adult_60_gfr25_pregnant_pen_allergy"]
     assert ctx["computed"] == adult["computed"] and ctx["blocked"] == adult["blocked"], ctx
     assert ctx["flagsOracle"] >= ctx["computed"] - 10 and ctx["dangerFlags"] >= 350, ctx
+    # default-route oracle (T63): every drug card with a route list opens on the first route
+    # of its scenario entry that has forms, tabs in record order (every profile, every drug)
+    for name, stats in walk["profiles"].items():
+        assert stats["defaultRouteOracle"] >= stats["drugs"] - 5, (name, stats)
+    # picked-route oracle: the last tab clicked follows the physician to the next drug card
+    assert adult["pickedRouteOracle"] >= 10, adult
 
 
 def test_no_state_shows_nan_undefined_or_an_empty_result(walk: dict) -> None:

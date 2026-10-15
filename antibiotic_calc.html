@@ -2309,7 +2309,9 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
   }
 }
 function selectScenario(s, card, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
-  if(s !== activeScenario) pickedRouteGroup = null;
+  // a scenario opened afresh (card click — no preferred route) starts from the DB default
+  // route; the keep-selection re-renders, hash and history pass the route they restore
+  if(s !== activeScenario || preferredRoute === undefined) pickedRouteGroup = null;
   activeScenario = s;
   document.querySelectorAll('#scenario-list .scenario-card').forEach(c=>c.classList.remove('active'));
   if(card) card.classList.add('active');
