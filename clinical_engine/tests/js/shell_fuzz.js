@@ -61,7 +61,8 @@ setTimeout(async()=>{
   const saveProbe=()=>{
     const n0=w.eval('historyEntries.length'); const blocked=w.eval('activeDrug ? !!calculationBlockReason(parseFloat($("weight").value)) : true');
     const incomplete=w.eval('activeDrug ? !!doseIncompleteReason(getActiveRegimen(), parseFloat($("weight").value)) : false');
-    w.saveToHistory(); const n1=w.eval('historyEntries.length'); w.__historyDelta={blocked, incomplete, added:n1-n0, toast:txt($('toast'))};
+    const expect=w.eval('(activeDrug && getActiveRegimen()) ? JSON.stringify({course: getActiveRegimen().duration_days ? courseText(getActiveRegimen()) : "", drug: getDrugRefs(activeDrug).map(k=>(DB.drugs_reference[k]||{}).inn||k).join(" + "), single: Math.round(computeDose(getActiveRegimen(), parseFloat($("weight").value), doseUnitOf(DB.drugs_reference[getDrugRefs(activeDrug)[0]])).singleMg)}) : null');
+    w.saveToHistory(); const n1=w.eval('historyEntries.length'); w.__historyDelta={blocked, incomplete, added:n1-n0, toast:txt($('toast')), expect:expect?JSON.parse(expect):null, last:n1>n0?JSON.parse(w.eval('JSON.stringify(historyEntries[0])')):null};
   };
   const actions={
     weight:()=>type($('weight'),pick(['','3.2','7','12.5','25','39.9','45','70','95','0.5','300','12,5'])),
@@ -238,6 +239,19 @@ setTimeout(async()=>{
       if(w.__historyDelta.blocked&&w.__historyDelta.added>0) push('history_saved_while_blocked','');
       // T77: an mg/kg regimen with no weight (dose «—») is not saved — the toast names the gap
       if(!w.__historyDelta.blocked&&w.__historyDelta.incomplete){ tally('history_incomplete'); if(w.__historyDelta.added>0) push('history_saved_without_weight',''); if(!/Сохранение заблокировано: введите вес пациента/.test(w.__historyDelta.toast)) push('history_incomplete_toast',w.__historyDelta.toast.slice(0,80)); }
+      // T85: the saved entry carries the screen's single dose, the full drug name
+      // (combination partners included) and the course worded as the exports word it;
+      // the drawer row repeats them
+      const hd=w.__historyDelta;
+      if(hd.added>0&&hd.last&&hd.expect){
+        tally('history_entry_content');
+        if(hd.last.singleMg!==hd.expect.single) push('history_dose_differs_from_screen',`${hd.last.singleMg} vs ${hd.expect.single}`);
+        if(hd.last.drug!==hd.expect.drug) push('history_drug_name',`«${hd.last.drug}» vs «${hd.expect.drug}»`);
+        if((hd.last.course||'')!==hd.expect.course) push('history_course_wording',`«${hd.last.course}» vs «${hd.expect.course}»`);
+        w.openHistory(); const row=txt(d.querySelector('#history-list .premium-card')||$('history-list')); w.closeHistory();
+        if(hd.expect.course&&!row.includes('курс '+hd.expect.course)) push('history_row_course',`row «${row.slice(0,120)}» lacks «курс ${hd.expect.course}»`);
+        if(!row.includes(hd.expect.drug)) push('history_row_drug',`row «${row.slice(0,120)}» lacks «${hd.expect.drug}»`);
+      }
       w.__historyDelta=null;
     }
     if(name==='history'&&w.__restored){

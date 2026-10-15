@@ -364,6 +364,12 @@ async function run() {
       w.copyLatinRecipe();
       await sleep(0);
       out.combo.rp = w.__copied || '';
+      // T85: the history row names the whole combination and words the course as the exports do
+      w.saveToHistory();
+      out.combo.historyEntry = JSON.parse(w.eval('JSON.stringify(historyEntries[0])'));
+      w.openHistory();
+      out.combo.historyRow = txt(d.querySelector('#history-list .premium-card'));
+      w.closeHistory();
     }
 
     // ---- 7e. default form = the strength that fits the single dose -------------

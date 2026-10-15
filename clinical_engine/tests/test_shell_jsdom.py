@@ -381,6 +381,13 @@ def test_combination_partner_dose_is_exported_not_only_shown(shell: dict) -> Non
     assert "Одновременно (компоненты комбинации, отдельные Rp.):" in rp_lines, cb["rp"]
     partner = [ln for ln in rp_lines if ln.startswith("Gentamicini (Гентамицин) ")]
     assert partner and "— по 350 мг 1 р/д" in partner[0] and "(сут. 350 мг)" in partner[0], cb["rp"]
+    # T85: the history entry / drawer row name the whole combination and word the course
+    # as the exports do («21 день», not the raw DB «21»)
+    he = cb["historyEntry"]
+    assert he["drug"] == "Ампициллин + Гентамицин" and he["course"] == "21 день" and he["duration"] == "21", he
+    assert he["singleMg"] == 2000 and he["freq"] == 6, he
+    row = cb["historyRow"]
+    assert "Ампициллин + Гентамицин" in row and "2000 мг × 6 р/д, курс 21 день" in row, row
 
 
 def test_switching_to_a_blocked_nosology_drops_the_previous_regimen(shell: dict) -> None:

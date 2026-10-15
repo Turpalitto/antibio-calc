@@ -139,3 +139,5 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     assert totals.get("course_units", 0) >= 3, totals
     # T84 quick-tag group invariant (old build: 6 findings on seed 11)
     assert totals.get("quick_tag", 0) >= 20, totals
+    # T85 history entry == screen (dose, full drug name, course wording; old build: 24 on seed 23)
+    assert totals.get("history_entry_content", 0) >= 15, totals

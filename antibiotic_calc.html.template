@@ -4550,19 +4550,26 @@ function saveToHistory(){
   if(!reg) return;
   const incomplete = doseIncompleteReason(reg, w);
   if(incomplete){ toast('Сохранение заблокировано: '+incomplete); return; }
-  const ref = DB.drugs_reference[getDrugRefs(activeDrug)[0]];
+  const refs = getDrugRefs(activeDrug);
+  const ref = DB.drugs_reference[refs[0]];
   const unit = doseUnitOf(ref);
   const {singleMg, dailyMg} = computeDose(reg, w, unit);
+  // a combination is named in full («Цефтриаксон + Метронидазол»); the dose line of
+  // the entry belongs to the main component, as on screen
+  const partnerInns = refs.slice(1).map(k=>(DB.drugs_reference[k] || {}).inn || k);
   const entry = {
     ts: Date.now(),
     patient: $('patient-name').value || '',
     disease: activeDisease.name,
-    drug: ref.inn,
+    drug: ref.inn + (partnerInns.length ? ' + ' + partnerInns.join(' + ') : ''),
     unit: unit,
     singleMg: Math.round(singleMg),
     dailyMg: Math.round(dailyMg),
     freq: reg.freq_per_day,
     duration: reg.duration_days || '—',
+    // the course as the exports word it («7–14 дней», «2 недели (14 дней)»), not the raw
+    // DB value «7-14» the drawer used to show
+    course: reg.duration_days ? courseText(reg) : '',
     durationNote: reg.duration_note || reg.regimen_label || '',
     weight: w,
     ageGroup: activeAge,
@@ -4636,7 +4643,8 @@ function loadHistory(){
       }
     }
     const doseStr = e.singleMg <= 0 ? (e.durationNote || 'По схеме КР') : (formattedDose + (e.freq ? ' × ' + e.freq + ' р/д' : ''));
-    dose.textContent = doseStr + (e.duration && e.duration !== '—' ? ', курс ' + e.duration : '') + (e.patient ? ' • ' + e.patient : '');
+    const course = e.course || (e.duration && e.duration !== '—' ? e.duration : '');
+    dose.textContent = doseStr + (course ? ', курс ' + course : '') + (e.patient ? ' • ' + e.patient : '');
     div.append(top, disease, dose);
     if(Array.isArray(e.flags) && e.flags.length){
       const warn = document.createElement('div');
