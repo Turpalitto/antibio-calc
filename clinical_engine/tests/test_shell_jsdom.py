@@ -236,6 +236,16 @@ def test_ctrl_p_prints_the_current_state_never_a_stale_prescription(shell: dict)
     assert p["blocked"]["trust"].startswith("ПЕЧАТЬ ЗАБЛОКИРОВАНА. РАСЧЁТ ЗАБЛОКИРОВАН: Вес 0.5 кг")
 
 
+def test_blocked_calculation_is_not_saved_to_history(shell: dict) -> None:
+    """saveToHistory() checked only the age regimen: a 300-kg (or 25 kg for a
+    10-day-old) calculation was saved with its doses while the block text
+    promised «не может быть сохранён». Found by the random-walk fuzz."""
+    h = shell["historyBlocked"]
+    assert h["added"] == 0 and h["toast"] == "Сохранение заблокировано: расчёт не выполнен", h
+    assert h["block"].startswith("РАСЧЁТ ЗАБЛОКИРОВАН: Вес 300 кг")
+    assert h["addedWhenValid"] == 1
+
+
 def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(shell: dict) -> None:
     h = shell["historyRestore"]
     assert h["button"] and h["button"].startswith("Открыть расчёт / Амоксициллин + Клавулановая кислота, Внебольничная пневмония у взрослых"), h

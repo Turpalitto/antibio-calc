@@ -2224,7 +2224,12 @@ function resetPatient(){
   toast('Данные пациента и расчёт сброшены');
 }
 function resetDisease(){
-  activeDisease = null; activeScenario = null; activeDrug = null;
+  activeDisease = null; activeScenario = null; activeLine = null; activeDrug = null;
+  activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0;
+  setPendingHashScenario(null);
+  // the hidden steps must not keep live cards of the previous nosology
+  $('scenario-list').innerHTML = '';
+  $('drug-list').innerHTML = '';
   $('active-disease').classList.add('hidden');
   $('source-calculation-block').classList.add('hidden');
   $('scenario-step').classList.add('hidden');
@@ -2275,6 +2280,14 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
   });
   if(preferredCard) selectScenario(preferredScenario, preferredCard, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx);
   else if(firstVisible) selectScenario(firstVisible, firstVisibleCard);
+  else if(activeScenario){
+    // no scenario of the record fits the new group: the current scenario stays
+    // selected (dimmed, its card still marked) and the drug shows the explicit
+    // age block — an unmarked list next to a visible drug list was incoherent
+    const idx = activeDisease.scenarios.indexOf(activeScenario);
+    const card = idx >= 0 ? list.children[idx] : null;
+    if(card) card.classList.add('active');
+  }
 }
 function selectScenario(s, card, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
   activeScenario = s;
@@ -4320,6 +4333,11 @@ function writeSessionHistory(list){
 function saveToHistory(){
   if(!activeDrug || !activeDisease){ toast('Нет активного расчёта'); return; }
   const w = parseFloat($('weight').value);
+  // Same gate as MIS / Rp / print: a weight- or age-blocked calculation (300 kg,
+  // 25 kg for a 10-day-old, 150 years) used to be saved with its doses anyway —
+  // the block text promises «не может быть сохранён».
+  const block = calculationBlockReason(w);
+  if(block){ showDoseBlock(block); hideDoseResults(); toast('Сохранение заблокировано: расчёт не выполнен'); return; }
   const reg = requireActiveRegimen('Сохранение в историю');
   if(!reg) return;
   const ref = DB.drugs_reference[getDrugRefs(activeDrug)[0]];

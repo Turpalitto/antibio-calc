@@ -39,7 +39,7 @@
 //   `#update-banner` ("new version — reload") when a new worker activates
 //   while a controller exists (registerServiceWorker in the template).
 
-const CACHE_VERSION = 'build-610d3b9f0d29';
+const CACHE_VERSION = 'build-a71a129c5ece';
 const CACHE_NAME = `antibio-shell-${CACHE_VERSION}`;
 const SHELL_URL = './antibiotic_calc.html';
 const PRECACHE_URLS = [

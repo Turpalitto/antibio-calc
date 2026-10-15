@@ -769,6 +769,19 @@ async function run() {
       type($('patient-name'), '');
       out.ctrlP = p;
     }
+    // 21. a weight-blocked calculation is not saved to history (the block text promises
+    //     «не может быть сохранён»; MIS / Rp / print already refused, history did not)
+    {
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('weight'), '300');
+      const n0 = w.eval('historyEntries.length');
+      w.saveToHistory();
+      out.historyBlocked = { added: w.eval('historyEntries.length') - n0, toast: txt($('toast')), block: txt($('dose-block')).slice(0, 50) };
+      type($('weight'), '70');
+      w.saveToHistory();
+      out.historyBlocked.addedWhenValid = w.eval('historyEntries.length') - n0;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

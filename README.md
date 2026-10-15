@@ -53,7 +53,11 @@ route word that contradicts the chosen route, course quantities that disagree
 between MIS / Rp / printed form, a course in words printed as «… дней»,
 number-word grammar («1 раза»), or patient-context warnings that differ between
 the MIS text, the Rp text and the printed form; `test_shell_static_ids.py` pins
-markup wiring (unique ids, every looked-up id exists); `test_service_worker.py`
+markup wiring (unique ids, every looked-up id exists); `test_shell_fuzz.py` is a
+seeded random walk over every physician action (inputs, chips, cards, search,
+`#hash`, history, exports, Ctrl+P) with state invariants checked after each
+step (a blocked state never exports, prints or saves; cards, chips and tabs
+agree with the state); `test_service_worker.py`
 runs the real `sw.js` in Node. `npm run check` runs the validator, the build
 freshness check and all of these shell gates in one go (`npm run check:all`
 adds the full pytest suite and `ruff`). CodeQL (`.github/workflows/codeql.yml`)
