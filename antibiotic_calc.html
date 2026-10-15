@@ -2126,7 +2126,16 @@ function handleSearch(){
   // only counts at a word start — inside words it hit «некрОТИзирующий»,
   // «антибиОТИкопрофилактика», «холАНГИт», «муКОВИсцидоз»; two letters are dropped only
   // from a token of 6+ («грипп» → «гри» found «ГРИбах»).
-  const stemAt = (text, st) => st.length >= 6 ? text.includes(st) : new RegExp('(^|[^a-zа-яё0-9])' + st.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).test(text);
+  // …and the word a short stem starts may go on for an ending or a suffix only (up to 5
+  // letters: «дет» → «детей», «язв» → «язвенная», «ран» → «раневой»), never for another
+  // word («холе» → «холецистит», «анги» → «ангиохолит», «таз» → «тазобактам»).
+  const stemAt = (text, st) => {
+    if(st.length >= 6) return text.includes(st);
+    const re = new RegExp('(^|[^a-zа-яё0-9])' + st.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([a-zа-яё0-9]*)', 'g');
+    let m;
+    while((m = re.exec(text)) !== null){ if(m[2].length <= 5) return true; }
+    return false;
+  };
   const stemHit = (text, t) => {
     if(text.includes(t)) return true;
     if(t.length >= 6 && stemAt(text, t.slice(0, -2))) return true;

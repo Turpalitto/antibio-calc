@@ -340,6 +340,15 @@ def test_search_matches_tokens_endings_icd_and_drug_names(shell: dict) -> None:
     assert r["колит"]["names"] == ["Clostridioides difficile-ассоциированная инфекция (псевдомембранозный колит)", "Язвенный колит", "Некротизирующий энтероколит (НЭК)"], r["колит"]
     assert r["асцит"]["names"] == ["Спонтанный бактериальный перитонит (СБП)"], r["асцит"]
     assert r["тонзиллита"]["names"] == ["Острый тонзиллит / фарингит (БГСА) у взрослых", "Острый тонзиллит / фарингит (БГСА) у детей", "Перитонзиллярный абсцесс (паратонзиллит)"], r["тонзиллита"]
+    # T92: the word a short stem starts may go on for an ending or a suffix only (≤ 5
+    # letters) — «таза» no longer finds every piperacillin/ТАЗобактам record (13 → 2),
+    # «холера» no longer «ХОЛЕцистит», «гепатит» no longer «ГЕПАТобластома»; derivations
+    # stay («язва» → «язвенная болезнь» / «Язвенный колит», «рана» → «раневой инфекции»)
+    assert r["таза"]["names"] == ["Воспалительные заболевания органов таза (ВЗОТ)", "Повреждения тазового кольца"], r["таза"]
+    assert r["холера"]["n"] == 0, r["холера"]
+    assert r["гепатит"]["names"] == ["Хронический вирусный гепатит B"], r["гепатит"]
+    assert {"Helicobacter pylori-инфекция (язвенная болезнь)", "Язвенный колит", "Сибирская язва"} <= set(r["язва"]["names"]), r["язва"]
+    assert "Укусы животных (профилактика и лечение раневой инфекции)" in r["рана"]["names"], r["рана"]
 
 
 def test_search_status_counts_hits_and_says_when_nothing_matched(shell: dict) -> None:
