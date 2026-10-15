@@ -2327,9 +2327,25 @@ def test_pregnancy_and_renal_flags() -> None:
         "$('patient-gfr').value=''; out.no_gfr=renalFlag(cotrim);"
         "$('patient-gfr').value='0'; out.gfr0=renalFlag(cotrim); out.gfr0_nodata=renalFlag({inn:'Клиндамицин',renal_adjustment:null});"
         "$('patient-gfr').value='-5'; out.gfr_neg=renalFlag(cotrim);"
+        # three nested thresholds: the most specific clause the GFR falls under speaks
+        "const tiers={inn:'Препарат',renal_adjustment:'СКФ<50: 75 % дозы; СКФ<30: 50 % дозы; СКФ<10: 25 % дозы'};"
+        "$('patient-gfr').value='5'; out.tier5=renalFlag(tiers);"
+        "$('patient-gfr').value='20'; out.tier20=renalFlag(tiers);"
+        "$('patient-gfr').value='40'; out.tier40=renalFlag(tiers);"
+        "$('patient-gfr').value='55'; out.tier55=renalFlag(tiers);"
+        "const reversed={inn:'Препарат',renal_adjustment:'СКФ<10 — противопоказан; СКФ<30: 50 % дозы'};"
+        "$('patient-gfr').value='5'; out.rev5=renalFlag(reversed);"
+        "$('patient-gfr').value='20'; out.rev20=renalFlag(reversed);"
         "console.log(JSON.stringify(out));"
     )
     result = _run([], "", body)
+    assert "СКФ<10: 25 % дозы" in result["tier5"]["text"] and result["tier5"]["level"] == "warn", result["tier5"]
+    assert "СКФ<30: 50 % дозы" in result["tier20"]["text"], result["tier20"]
+    assert "СКФ<50: 75 % дозы" in result["tier40"]["text"], result["tier40"]
+    assert result["tier55"] is None
+    assert result["rev5"]["level"] == "danger" and "противопоказан" in result["rev5"]["text"], result["rev5"]
+    assert result["rev20"]["level"] == "warn" and "СКФ<30: 50 % дозы" in result["rev20"]["text"], result["rev20"]
+    assert sorted(result["tier5"].keys()) == ["level", "text"], "the threshold is internal — the flag shape stays {level, text}"
     assert result["gfr0"]["level"] == "danger" and "СКФ 0 мл/мин" in result["gfr0"]["text"], "anuria is the lowest GFR, not an empty field"
     assert result["gfr0_nodata"]["level"] == "warn" and result["gfr_neg"] is None
     assert result["contra"]["level"] == "danger" and result["tri"]["level"] == "danger"

@@ -1820,18 +1820,23 @@ function renalFlag(ref){
     return gfr < 60 ? {level:'warn', text:'СКФ '+gfr+' мл/мин: в справочнике нет данных о почечной коррекции «'+ref.inn+'».'+tail} : null;
   }
   const clauses = txt.split(/;/).map(c=>c.trim()).filter(Boolean);
+  // Among the clauses the GFR falls under, the most specific one (the lowest
+  // threshold) speaks — «СКФ<30: 50 %; СКФ<10: 25 %» at 5 ml/min is the 25 % clause,
+  // not the first match; a «противопоказан» clause always wins.
   let worst = null;
   let hadThreshold = false;
   clauses.forEach(clause=>{
     const m = clause.match(/скф\s*[<≤]\s*(\d+)/i);
     if(!m) return;
     hadThreshold = true;
-    if(gfr < parseFloat(m[1])){
+    const threshold = parseFloat(m[1]);
+    if(gfr < threshold){
       const level = /противопоказан/i.test(clause) ? 'danger' : 'warn';
-      if(!worst || level === 'danger') worst = {level: level, text:'СКФ '+gfr+' мл/мин: «'+ref.inn+'» — '+clause+'.'+tail};
+      const better = !worst || (level === 'danger' && worst.level !== 'danger') || (level === worst.level && threshold < worst.threshold);
+      if(better) worst = {level: level, threshold: threshold, text:'СКФ '+gfr+' мл/мин: «'+ref.inn+'» — '+clause+'.'+tail};
     }
   });
-  if(worst) return worst;
+  if(worst) return {level: worst.level, text: worst.text};
   if(hadThreshold) return null;
   if(/не требуется|без коррекции/i.test(txt)) return null;
   return gfr < 60 ? {level:'warn', text:'СКФ '+gfr+' мл/мин: «'+ref.inn+'» — '+txt+'.'+tail} : null;
