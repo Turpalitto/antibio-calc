@@ -1,4 +1,4 @@
-## 2026-10-14 (after round 6, T51–T66): remaining NEXT_TASK (work top-down)
+## 2026-10-14 (after round 6, T51–T70): remaining NEXT_TASK (work top-down)
 
 1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
    pass: change the allergy status / type an age after picking a non-first drug — the drug
@@ -32,6 +32,13 @@
      allergy, paste its `#hash` — the red «РАСЧЁТ ЗАБЛОКИРОВАН» notice stays alone (no
      scenario / drug cards, no dose); «Копировать для МИС» says «Нет активного расчёта»,
      Ctrl+P prints «ПЕЧАТЬ НЕВОЗМОЖНА …».
+   - Real-browser pass additions (T67–T70): open «Внебольничная пневмония (взрослые)» →
+     amoxicillin with a penicillin allergy set (red banner), then type age 5 — the banner
+     disappears with the drug (no scenario for «дети»); save two calculations with the
+     consent box checked, reload the tab — the box is checked again and «Сохранить в
+     историю» adds a visible third row to the drawer; «Открыть расчёт» on an entry saved
+     with a Ф.И.О. brings the name back into the field; «↺ Новый пациент» empties the
+     Ф.И.О. and keeps «Врач» / «Дата».
 2. **Engineering candidates (none urgent):**
    - ~~`npm run check` convenience script~~ — done in T55 (`a86842a`).
    - The fuzz gate (`shell_fuzz.js`) runs 2 seeds × 800 steps in CI; a nightly / manual

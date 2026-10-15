@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T66): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render
+## 2026-10-14 (round 6 continued, T51–T70): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency
 
 - Shell: changing the allergy status, the age group (chip, typed age or weight inference)
   no longer jumps to the first scenario / drug card — the physician's scenario, line, drug,
@@ -41,10 +41,17 @@
   the drug on screen, no float noise, route order / preference (steered `routeThenDrug`),
   gated record never opened. Walk oracles: default route / tab order for every drug state,
   picked route on the next card, source gate.
-- Tests: **2804 passed / 28 skipped / 0 failed** (jsdom 43, walk 17 oracles / 5 profiles /
-  1777 states + 275 gated checks, fuzz 22 actions, 2 seeds × 800 steps); validate 0 / 436;
-  axe 0; ruff clean; build fresh; CI + CodeQL green per push (`d1d3be7` red — see AI_LOG —
-  fixed by `8b231e1`). DB unchanged (`56727a27f050…`).
+- Notice / store consistency (T67–T70): the allergy banner follows the drug through every
+  re-render (a record with no scenario for the group no longer keeps the previous drug's
+  «противопоказан» banner); history reads and writes share one consent predicate (an entry
+  saved after a reload is visible in the drawer, the consent box is restored from the
+  store); «Открыть расчёт» brings the patient name back and «↺ Новый пациент» clears it
+  (doctor / date stay). Fuzz: notice-staleness, step-visibility, name round-trip and
+  new-patient-context invariants, `name` action; `#search-status` shortens long queries.
+- Tests: **2808 passed / 28 skipped / 0 failed** (jsdom 46, walk 17 oracles / 5 profiles /
+  1777 states + 275 gated checks, fuzz 23 actions, 2 seeds × 800 steps, 6 tests); validate
+  0 / 436; axe 0; ruff clean; build fresh; CI + CodeQL green per push (`d1d3be7` red — see
+  AI_LOG — fixed by `8b231e1`). DB unchanged (`56727a27f050…`).
 
 ## 2026-10-14 (round 6, autonomous loop continued): reset button, validator shell-parity, course parsing, GFR / input safety, search status
 

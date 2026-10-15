@@ -1,4 +1,4 @@
-## 2026-10-14 (round 6 continued, T51–T66: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render)
+## 2026-10-14 (round 6 continued, T51–T70: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency)
 
 - **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
   «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:
@@ -124,6 +124,44 @@
 - **Sandbox note:** the environment was recreated mid-round (venv, `node_modules`, `/tmp`
   gone; `.git` back at the base while files kept the snapshot) — recovered with
   `git reset --soft origin/<branch>`, `npm ci`, a venv from `uv export --frozen`.
+- **T67 `5c29cc8` (REAL BUG, same «guard in one handler» class as T66):** a record with no
+  scenario for the current age group (adult-only CAP opened at a child age, or via `#hash`)
+  kept the previous drug's «противопоказан» allergy banner on screen with no drug — the
+  early `return` in `updateAllergyBanner()` skipped the clear. `renderScenarios()` now ends
+  with `updateAllergyBanner()` (every re-render path refreshes the banner); harness step 26
+  `out.allergyBannerFollowsDrug` + jsdom test; fuzz notice-staleness invariants `19adf21`
+  (`allergy_banner` / `hash_note` / `route_mismatch_note` / `dose_block_text` /
+  `dose_block_without_reason` / `weight_warn` mirror the state after every step; `checks`
+  tally shows each is reached: seed 11 × 800 → hash_note 66, dose_block_text 133,
+  weight_warn 86, allergy_banner 63).
+- **T68 `70f5607` (REAL BUG, two sources of truth):** after a reload with entries in the
+  tab store the consent box came back unchecked, so `saveToHistory()` wrote to memory while
+  `loadHistory()` read the store — the toast said «Сохранено в историю (вкладка)» and the
+  drawer did not show the new entry (jsdom probe: mem = 2, stored = 1). `readHistoryEntries()`
+  now reads the store only under the same predicate the writer uses
+  (`historyPersistAllowed()`), and `initHistoryStore()` restores the consent box when the
+  store already holds entries. Harness step 27 `out.historyReload` (`true|1|1`, `2|2|…`,
+  `2|0|true`, `3|0`; old build `false|1|1`, `1|1|…(только до закрытия вкладки)`) + jsdom
+  test. Same commit: fuzz `step_visibility` invariant (a visible later step with no state
+  behind it / a hidden step with state), `#search-status` echoes queries > 40 chars
+  shortened (a 500-char paste no longer fills the status line; regex specials / NUL /
+  `<script>` probed — no throws).
+- **T69 `56b32e2`:** «Открыть расчёт» restores the patient name saved with the entry (an
+  entry without a name clears the field) — a re-opened calculation printed with the NEXT
+  patient's name in the field and this patient's age / weight / regimen would be a mix-up on
+  paper. jsdom: field + printed «Пациент:» = «Иванов И.И. / Иванов И.И.»; fuzz: `name`
+  action (incl. `<b>x</b>` — DB/user strings are text, never markup) and the restore
+  round-trip compares the name.
+- **T70 `4cd949b`:** «↺ Новый пациент» also clears the Ф.И.О. field (doctor and date stay —
+  session-level); the previous name used to be printed on and saved with the next
+  calculation unless the physician remembered to clear it. jsdom step 15 asserts it; fuzz
+  invariant `new_patient_context_left` (name / weight / age / GFR / pregnancy / allergy /
+  disease / hash after the reset) — 15 and 8 findings on the previous build (seeds 11 /
+  23), 0 now.
+- **Verification (T67–T70):** 2808 passed / 28 skipped (jsdom 46, walk 17 oracles / 5
+  profiles / 1777 states + 275 gated checks, fuzz 23 actions × 2 seeds × 800 steps + 6
+  tests), validate 0 / 436, ruff clean, build fresh, axe 0; CI + CodeQL green through
+  `56b32e2` (`1e6fecc` cancelled by the concurrency group — superseded by `64ddb96`).
 - **Verification per push:** unchanged gates (`/tmp/gate.sh`-style: pytest rc, walk, ruff,
   freshness, validator before every commit). After T62: **2800 passed / 28 skipped**
   (jsdom 41, walk 2 / 14 oracles / 5 profiles / 1777 states / 0 findings, fuzz 4),
