@@ -188,6 +188,14 @@ setTimeout(async()=>{
       const left=[['patient-name',''],['weight',''],['patient-age',''],['patient-gfr',''],['patient-pregnancy','unknown'],['patient-allergy','none']].filter(([id,v])=>$(id).value!==v).map(([id])=>`${id}=«${$(id).value}»`);
       if(left.length||S.dis||w.location.hash) push('new_patient_context_left',left.join(', ')+(S.dis?' disease='+S.dis.id:'')+(w.location.hash?' hash='+w.location.hash:''));
     }
+    if(name==='newPatient'||name==='resetDisease'){
+      // the nosology «✕» / «Новый пациент» leave no result tiles, block text, safety banners
+      // or route preference behind inside the hidden steps (they used to stay un-hidden)
+      tally('reset_clean');
+      const left=['res-po','res-inj','dose-block','patient-safety-banners','dilution-block','combo-block'].filter(id=>!$(id).classList.contains('hidden'));
+      if(left.length) push('reset_leaves_result_rows',left.join(', '));
+      if(w.eval('pickedRouteGroup')!==null) push('reset_keeps_route_pick',String(w.eval('pickedRouteGroup')));
+    }
     if(name==='dialog'&&w.__dialog){
       const r=w.__dialog; tally('dialog_'+r.which);
       if(!r.opened) push('dialog_not_opened',r.which);

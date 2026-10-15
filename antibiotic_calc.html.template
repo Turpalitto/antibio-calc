@@ -2295,10 +2295,14 @@ function resetPatient(){
 function resetDisease(){
   activeDisease = null; activeScenario = null; activeLine = null; activeDrug = null;
   activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0;
+  pickedRouteGroup = null;
   setPendingHashScenario(null);
-  // the hidden steps must not keep live cards of the previous nosology
+  // the hidden steps must not keep live cards of the previous nosology — nor the
+  // result tiles, the block text and the safety banners inside the hidden result step
   $('scenario-list').innerHTML = '';
   $('drug-list').innerHTML = '';
+  hideDoseResults();
+  hideDoseBlock();
   $('active-disease').classList.add('hidden');
   $('source-calculation-block').classList.add('hidden');
   $('scenario-step').classList.add('hidden');
