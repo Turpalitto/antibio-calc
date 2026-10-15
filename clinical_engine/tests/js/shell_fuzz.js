@@ -429,6 +429,14 @@ setTimeout(async()=>{
           const wv=parseFloat($('weight').value); if(wv>0&&txt($('rx-weight'))!==String(wv)+' кг'&&!txt($('rx-weight')).startsWith(String(wv))) push('print_weight_mismatch',`${wv} vs ${txt($('rx-weight'))}`);
         }
         if(!S.blocked&&S.regimen&&resVis&&!rxd) push('print_empty_while_computed',trust.slice(0,80));
+        // the printed safety line carries every export flag (the same set as the MIS text)
+        if(!S.blocked&&rxd){
+          const printed=($('rx-safety-line').textContent||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>l.replace(/^!?\s*(ВНИМАНИЕ|Предупреждение): /,'').replace(/\s+/g,' ').trim());
+          const expected=JSON.parse(w.eval('JSON.stringify(exportSafetyFlags(getDrugRefs(activeDrug)).map(f=>f.text))')).map(x=>x.replace(/\s+/g,' ').trim());
+          if(expected.length) tally('print_flags');
+          expected.forEach(t=>{ if(!printed.includes(t)) push('print_flag_missing',`«${t.slice(0,80)}» not in ${printed.length} printed lines`); });
+          if(!expected.length&&!$('rx-safety-line').hidden&&printed.length) push('print_flag_without_reason',printed.join(' | ').slice(0,80));
+        }
         if(BAD.test(txt($('prescription-form')))) push('print_bad_token','');
       }
     } else {

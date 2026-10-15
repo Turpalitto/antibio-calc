@@ -932,6 +932,7 @@ async function run() {
       await sleep(200);
       g.afterHash = gstate();
       g.blockReason = w.eval('calculationBlockReason(25)').slice(0, 40);
+      await axeRun('source_gated', out);
       // a computable record right after the gated one computes normally
       clickDisease('aom_child');
       type($('patient-age'), '7');
@@ -949,6 +950,10 @@ async function run() {
       type($('patient-allergy'), 'penicillin_severe');
       clickDisease('cap_child');
       const b = { withAmoxicillin: visible($('allergy-alert-banner')) && txt($('allergy-alert-title')) };
+      // computed state with the allergy banner + safety banners + weight caution on screen
+      type($('patient-gfr'), '25');
+      await axeRun('computed_with_banners', out);
+      type($('patient-gfr'), '');
       w.selectDisease(find((r) => r.id === 'cap_adult'));
       b.noScenarioForGroup = [w.eval('String(activeDrug)'), d.querySelectorAll('#drug-list .drug-card').length, visible($('allergy-alert-banner'))].join('|');
       clickDisease('cap_child');

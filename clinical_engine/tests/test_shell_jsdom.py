@@ -397,7 +397,7 @@ def test_service_worker_update_banner_is_opt_in_reload(shell: dict) -> None:
     assert banner["role"] == "status"
 
 
-@pytest.mark.parametrize("state", ["main", "drawer_open", "modal_open"])
+@pytest.mark.parametrize("state", ["main", "drawer_open", "modal_open", "source_gated", "computed_with_banners"])
 def test_axe_core_reports_no_violations(shell: dict, state: str) -> None:
     report = shell["axe"][state]
     assert report["passes"] > 20, "axe did not actually run"
