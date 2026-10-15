@@ -700,3 +700,20 @@ def test_quick_nosology_tags_follow_the_patient_group(shell: dict) -> None:
         assert qt[key]["picked"] is None and qt[key]["header"] == "", (key, qt[key])
         assert qt[key]["list"] == names and qt[key]["status"] == "Найдено: 2 нозологии.", (key, qt[key])
         assert qt[key]["search"] == key[-3:], qt[key]
+
+
+def test_search_ranks_the_patient_group_first_once_it_is_set(shell: dict) -> None:
+    """T86: «пневмония» in a fresh tab lists the records in DB order (adults first); after
+    the physician types a child's age the children's record leads and the other rows say
+    «нет схемы для группы «дети»»; the adult chip re-ranks the list that is already on
+    screen; «Новый пациент» returns to DB order."""
+    gs = shell["groupSearch"]
+    assert gs["fresh"][:2] == ["Внебольничная пневмония у взрослых", "Внебольничная пневмония у детей"], gs["fresh"]
+    assert gs["childTyped"][:2] == ["Внебольничная пневмония у детей", "Внебольничная пневмония у взрослых"], gs["childTyped"]
+    assert "нет схемы для группы" not in gs["childRows"][0], gs["childRows"][0]
+    assert all("• нет схемы для группы «дети»" in row for row in gs["childRows"][1:]), gs["childRows"]
+    assert gs["adultChip"][:3] == ["Внебольничная пневмония у взрослых", "Нозокомиальная (внутрибольничная) пневмония", "Аспирационная пневмония"], gs["adultChip"]
+    assert gs["adultChip"].index("Внебольничная пневмония у детей") == 3, gs["adultChip"]
+    assert "• нет схемы для группы «взрослые»" in gs["adultRows"][3] and "нет схемы" not in gs["adultRows"][0], gs["adultRows"]
+    assert gs["adultOtitis"][:2] == ["Острый средний отит у взрослых", "Острый средний отит у детей"], gs["adultOtitis"]
+    assert gs["freshOtitis"][:2] == ["Острый средний отит у детей", "Острый средний отит у взрослых"], gs["freshOtitis"]

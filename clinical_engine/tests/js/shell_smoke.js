@@ -1154,6 +1154,30 @@ async function run() {
       qt.neonateH66 = probe('neonate', 'H66');
       out.quickTags = qt;
     }
+    {
+      // 34. T86: once the physician has set the group, same-rank search hits for that group
+      // come first and the other group's rows say «нет схемы для группы …»; a list left on
+      // screen is re-ranked when the group changes; «Новый пациент» returns to DB order
+      const gs = {};
+      const rows = () => [...d.querySelectorAll('#results-box > div[role=button]')].map((x) => txt(x));
+      const names = () => rows().map((t) => t.split('МКБ')[0]);
+      $('new-patient').click();
+      type($('search'), 'пневмония');
+      gs.fresh = names();
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '7');
+      gs.childTyped = names();
+      gs.childRows = rows();
+      d.querySelector('#age-group button[data-age="adult"]').click();
+      gs.adultChip = names();
+      gs.adultRows = rows();
+      type($('search'), 'отит');
+      gs.adultOtitis = names();
+      $('new-patient').click();
+      type($('search'), 'отит');
+      gs.freshOtitis = names();
+      out.groupSearch = gs;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

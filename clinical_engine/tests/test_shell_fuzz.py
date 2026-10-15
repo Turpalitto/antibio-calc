@@ -91,7 +91,7 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient",
         "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "childTablet", "noWeightExport", "resetDisease", "search", "hash", "history", "copy",
-        "print", "theme", "routeThenDrug", "name", "quickTag",
+        "print", "theme", "routeThenDrug", "name", "quickTag", "capDose",
     }
     assert expected <= set(counts), sorted(expected - set(counts))
     assert all(counts[name] >= 10 for name in expected), counts
@@ -133,7 +133,7 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     for run in _runs.values():
         for key, value in run["checks"].items():
             totals[key] = totals.get(key, 0) + value
-    assert totals.get("max_daily_capped", 0) >= 3, totals
+    assert totals.get("max_daily_capped", 0) >= 10, totals  # steered by capDose since T86
     assert totals.get("print_flags", 0) >= 6, totals
     assert totals.get("group_mismatch_export", 0) >= 6, totals
     assert totals.get("course_units", 0) >= 3, totals
@@ -141,3 +141,5 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     assert totals.get("quick_tag", 0) >= 20, totals
     # T85 history entry == screen (dose, full drug name, course wording; old build: 24 on seed 23)
     assert totals.get("history_entry_content", 0) >= 15, totals
+    # T86 «нет схемы для группы» note ⇔ state on the search rows (old build: 27 on seed 23)
+    assert totals.get("search_group_note", 0) >= 20, totals

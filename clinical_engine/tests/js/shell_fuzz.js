@@ -41,6 +41,8 @@ const BAD=/NaN|Infinity|undefined|\[object |null мг|null ЕД/;
 setTimeout(async()=>{
   const DB=w.eval('DB'); const computable=DB.recommendations.filter(r=>!r.calculation_blocked);
   const childRecs=computable.filter(r=>(r.scenarios||[]).some(sc=>(sc.lines||[]).some(l=>(l.drugs||[]).some(dr=>(dr.regimens||[]).some(reg=>reg.age_group==='child')))));
+  // child mg/kg regimens whose daily ceiling is reached below 39 kg (the cap row oracle)
+  const cappedRecs=computable.filter(r=>(r.scenarios||[]).some(sc=>(sc.lines||[]).some(l=>(l.drugs||[]).some(dr=>(dr.regimens||[]).some(reg=>reg.age_group==='child'&&reg.dose_mg_kg_day&&reg.max_daily_mg&&reg.max_daily_mg/reg.dose_mg_kg_day<39)))));
   const key=x=>x==='per_os'?'po':x;
   // scenarios where a route picked on drug A is offered by drug B in a NON-first position:
   // the only places where «the picked route follows the physician» is observable
@@ -118,6 +120,9 @@ setTimeout(async()=>{
     // exports, the printed form and the history must all refuse and say why
     noWeightExport:()=>{ type($('weight'),''); if(childRecs.length) w.selectDisease(pick(childRecs)); const sc=q('#scenario-list .scenario-card'); if(sc.length&&rnd()<0.5) pick(sc).click(); const dc=q('#drug-list .drug-card'); if(dc.length&&rnd()<0.5) pick(dc).click(); actions.copy(); w.dispatchEvent(new w.Event('beforeprint')); saveProbe(); w.__restored=null; },
     newPatient:()=>$('new-patient').click(),
+    // a heavy child on a record whose mg/kg regimen hits its daily ceiling below 39 kg:
+    // steers the amber cap row oracle (max_daily_capped), which the plain walk reaches rarely
+    capDose:()=>{ type($('patient-age-unit'),'years'); type($('patient-age'),pick(['9','11','13'])); type($('weight'),pick(['34','36','38','39.9'])); if(cappedRecs.length) w.selectDisease(pick(cappedRecs)); const sc=q('#scenario-list .scenario-card'); if(sc.length&&rnd()<0.5) pick(sc).click(); const dc=q('#drug-list .drug-card'); if(dc.length&&rnd()<0.7) pick(dc).click(); },
     // a weight typed for a fresh patient (no explicit age yet) infers the group and shows
     // the inference notice — the plain walk sets an explicit age early and rarely gets here
     freshWeight:()=>{ $('new-patient').click(); type($('weight'),pick(['3.2','25','45','70'])); },
@@ -427,6 +432,29 @@ setTimeout(async()=>{
         const m=/^Найдено: (\d+)/.exec(txt($('search-status'))); const rows=d.querySelectorAll('#results-box > div[role=button]').length;
         if(m&&(!boxVis||rows!==+m[1])) push('search_count_mismatch',`status ${m[1]} rows ${rows} box ${boxVis}`);
         if(!m&&(boxVis||rows)) push('search_count_mismatch',`«${txt($('search-status')).slice(0,40)}» rows ${rows} box ${boxVis}`);
+        // T86: the «нет схемы для группы «G»» note on a row ⇔ the record has no scenario for
+        // the CURRENT group, and only once the physician set the group; the list on screen is
+        // re-ranked when the group changes (a stale list would name the previous group)
+        if(boxVis&&rows){
+          const group=w.eval('activeAge'); const picked=w.eval('userPickedAge'); const label={neonate:'новорождённые',child:'дети',adult:'взрослые'}[group];
+          const byName=new Map(DB.recommendations.map(r=>[r.name,r]));
+          const fits=r=>(r.scenarios||[]).some(sc=>sc&&(!sc.age_group||sc.age_group==='all'||sc.age_group===group));
+          let checked=0, firstFit=-1, firstMiss=-1;
+          [...d.querySelectorAll('#results-box > div[role=button]')].forEach((row,i)=>{
+            const name=row.querySelector('span')?row.querySelector('span').textContent:''; const rec=byName.get(name); if(!rec) return;
+            checked++;
+            const note=/нет схемы для группы «([^»]+)»/.exec(txt(row));
+            const expectNote=picked&&!fits(rec);
+            if(!!note!==expectNote) push('search_group_note_mismatch',`«${name.slice(0,40)}» note ${note?note[1]:'-'} picked ${picked} group ${group} fits ${fits(rec)}`);
+            else if(note&&note[1]!==label) push('search_group_note_stale',`«${name.slice(0,40)}» says «${note[1]}», group is «${label}»`);
+            if(picked){ if(fits(rec)&&firstFit<0) firstFit=i; if(!fits(rec)&&firstMiss<0) firstMiss=i; }
+          });
+          if(checked) tally('search_group_note');
+          // the top row is for the patient's group whenever any row of the list is (phrase
+          // rank ties are broken by the group, token hits rank below phrase hits — so only
+          // the first row is asserted, and only when the query is a plain phrase hit)
+          if(picked&&firstFit>=0&&firstMiss===0){ const top=byName.get(d.querySelector('#results-box > div[role=button] span').textContent); const qf=qv.toLowerCase().replace(/ё/g,'е'); const fitRows=[...d.querySelectorAll('#results-box > div[role=button]')].map(r=>byName.get(r.querySelector('span').textContent)).filter(r=>r&&fits(r)&&!r.calculation_blocked&&r.name.toLowerCase().replace(/ё/g,'е').split(/[^a-zа-яё0-9]+/).some(wd=>wd.startsWith(qf))); if(top&&!top.calculation_blocked&&top.name.toLowerCase().replace(/ё/g,'е').split(/[^a-zа-яё0-9]+/).some(wd=>wd.startsWith(qf))&&fitRows.length) push('search_group_order',`top «${top.name.slice(0,40)}» does not fit «${label}» while «${fitRows[0].name.slice(0,40)}» does`); }
+        }
       }
     }
     // arithmetic oracle at the random weight (the walk checks five fixed weights): the

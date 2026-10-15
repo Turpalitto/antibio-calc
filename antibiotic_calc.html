@@ -1129,6 +1129,7 @@ function init(){
       lastPickedAge = activeAge;
       clearAgeInferenceNotice();
       updateExplicitAgeNotice();
+      refreshSearchListForGroup();
       rerenderScenariosKeepingSelection();
       calculate();
     };
@@ -1748,7 +1749,14 @@ function onPatientAgeChange(){
     clearAgeInferenceNotice();
   }
   updateExplicitAgeNotice();
+  refreshSearchListForGroup();
   calculate();
+}
+// A result list left on screen is re-ranked when the group changes (the group order
+// and the «нет схемы для группы» note depend on it).
+function refreshSearchListForGroup(){
+  const box = $('results-box');
+  if(box && !box.classList.contains('hidden') && $('search') && $('search').value.trim()) handleSearch();
 }
 function onPatientContextChange(){
   calculate();
@@ -2156,7 +2164,14 @@ function handleSearch(){
     if((d.synonyms || []).some(s => wordStartRe.test(searchFold(s))) || mkbHit(d, qClean, qEn)) return 2;
     return 4;
   };
-  const rank = d => (phraseMatches(d) ? phraseRank(d) : 4 + 2 * diseaseLevel(d)) + (d.calculation_blocked ? 1 : 0);
+  // Once the physician has set the group (age typed or chip clicked), records with a
+  // scenario for that group come before same-rank records written for another group
+  // («пневмония» for a child: «… у детей» above «… у взрослых»); the row says why.
+  const groupSet = (typeof userPickedAge !== 'undefined') && userPickedAge;
+  const groupOf = (typeof activeAge === 'undefined') ? null : activeAge;
+  const fitsGroup = d => (d.scenarios || []).some(sc => sc && (!sc.age_group || sc.age_group === 'all' || sc.age_group === groupOf));
+  const groupPenalty = d => (groupSet && groupOf && !fitsGroup(d)) ? 0.5 : 0;
+  const rank = d => (phraseMatches(d) ? phraseRank(d) : 4 + 2 * diseaseLevel(d)) + (d.calculation_blocked ? 1 : 0) + groupPenalty(d);
   filtered.sort((a, b) => rank(a) - rank(b));
 
   box.innerHTML = '';
@@ -2186,7 +2201,7 @@ function handleSearch(){
     }
     const meta = document.createElement('div');
     meta.className = 'text-[10px] text-slate-400 font-normal mt-0.5';
-    meta.textContent = 'МКБ: '+(d.mkb10 || []).slice(0,3).join(', ')+((d.mkb10 || []).length > 3 ? '…' : '')+(isFederalCrId(d.cr_id) ? ' • КР #'+d.cr_id : ' • без федеральной КР')+(d.calculation_blocked ? ' • расчёт закрыт' : '');
+    meta.textContent = 'МКБ: '+(d.mkb10 || []).slice(0,3).join(', ')+((d.mkb10 || []).length > 3 ? '…' : '')+(isFederalCrId(d.cr_id) ? ' • КР #'+d.cr_id : ' • без федеральной КР')+(d.calculation_blocked ? ' • расчёт закрыт' : '')+(groupPenalty(d) ? ' • нет схемы для группы «'+ageGroupLabel(groupOf)+'»' : '');
     left.append(topRow, meta);
     const code = document.createElement('span');
     code.className = 'text-blue-500 font-mono text-xs ml-2 font-bold';
