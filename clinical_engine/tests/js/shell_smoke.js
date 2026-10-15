@@ -628,9 +628,13 @@ async function run() {
       // GFR 0 (anuria) must run the renal rule («СКФ<30» for amoxicillin), not read as «empty»
       type($('patient-gfr'), '0');
       filled.gfrZeroFlags = txt($('patient-safety-banners'));
+      // the name must go with the patient; the physician and the date stay
+      type($('patient-name'), 'Сидоров С.С.');
+      type($('doctor-name'), 'Д-р Иванова');
       $('new-patient').click();
       out.newPatient = {
         filled,
+        name: $('patient-name').value, doctor: $('doctor-name').value,
         weight: $('weight').value, age: $('patient-age').value, unit: $('patient-age-unit').value,
         gfr: $('patient-gfr').value, pregnancy: $('patient-pregnancy').value, allergy: $('patient-allergy').value,
         group: w.eval('activeAge'), userPickedAge: w.eval('userPickedAge'), patientAgeDays: w.eval('patientAgeDays'),

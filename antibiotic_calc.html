@@ -2240,6 +2240,10 @@ function applyDiseaseSourceGate(d){
 // «Новый пациент»: the previous patient's GFR / pregnancy / allergy / age must
 // not leak into the next calculation — one action clears the whole context.
 function resetPatient(){
+  // the name belongs to the patient being reset: a name left in the field would be
+  // printed on (and saved in history with) the NEXT calculation; the physician and
+  // the date stay (same doctor, same day)
+  if($('patient-name')) $('patient-name').value = '';
   $('weight').value = '';
   if($('patient-age')) $('patient-age').value = '';
   if($('patient-age-unit')) $('patient-age-unit').value = 'years';

@@ -116,6 +116,13 @@ setTimeout(async()=>{
     const chipAge=d.querySelector('#age-group button.active'); if(chipAge&&chipAge.dataset.age!==S.age) push('age_chip_mismatch',`chip ${chipAge.dataset.age} vs ${S.age}`);
     if(S.dis&&w.location.hash&&!w.location.hash.startsWith('#'+S.dis.id)) push('hash_mismatch',`${w.location.hash.slice(0,60)} vs ${S.dis.id}`);
     if(!S.dis&&w.location.hash) push('hash_without_disease',w.location.hash.slice(0,60));
+    if(name==='newPatient'){
+      // «Новый пациент» resets the whole patient context: a name / weight / age / GFR /
+      // pregnancy / allergy left behind would colour the NEXT prescription
+      tally('new_patient_reset');
+      const left=[['patient-name',''],['weight',''],['patient-age',''],['patient-gfr',''],['patient-pregnancy','unknown'],['patient-allergy','none']].filter(([id,v])=>$(id).value!==v).map(([id])=>`${id}=«${$(id).value}»`);
+      if(left.length||S.dis||w.location.hash) push('new_patient_context_left',left.join(', ')+(S.dis?' disease='+S.dis.id:'')+(w.location.hash?' hash='+w.location.hash:''));
+    }
     if(name==='history'&&w.__historyDelta){ if(w.__historyDelta.blocked&&w.__historyDelta.added>0) push('history_saved_while_blocked',''); w.__historyDelta=null; }
     if(name==='history'&&w.__restored){
       // «Открыть расчёт» must re-open exactly what was saved (same DB, same age group)

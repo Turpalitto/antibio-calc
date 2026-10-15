@@ -488,6 +488,9 @@ def test_new_patient_clears_the_whole_context_and_the_stale_allergy_banner(shell
     assert npat["group"] == "child" and npat["activeChip"] == ["child"] and npat["userPickedAge"] is False and npat["patientAgeDays"] is None
     assert npat["resultHidden"] is True and npat["emptyState"] is True and npat["disease"] is None and npat["search"] == ""
     assert npat["allergyBanner"] is False and npat["weightWarnHidden"] is True
+    # the Ф.И.О. goes with the patient (it used to stay and be printed on the next
+    # prescription); the physician field is session-level and stays
+    assert npat["name"] == "" and npat["doctor"] == "Д-р Иванова"
     assert npat["toast"] == "Данные пациента и расчёт сброшены"
 
 
