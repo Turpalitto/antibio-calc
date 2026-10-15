@@ -47,6 +47,7 @@ setTimeout(async()=>{
     drugs.forEach(a=>drugs.forEach(b=>{ if(a!==b&&a.routes.length>1) a.routes.forEach(x=>{ if(b.routes.indexOf(x)>0) pairScenarios.push({r,scIdx,a,b,x}); }); }));
   }));
   const findings=[]; const counts={}; const checks={}; const tally=k=>{ checks[k]=(checks[k]||0)+1; };
+  const toInjectable=()=>{ if(shown($('res-inj'))) return; const inj=q('#route-tabs button').filter(b=>/^(в\/в|в\/м)$/.test(txt(b))&&!b.classList.contains('active')); if(inj.length) pick(inj).click(); };
   const actions={
     weight:()=>type($('weight'),pick(['','3.2','7','12.5','25','39.9','45','70','95','0.5','300','12,5'])),
     name:()=>type($('patient-name'),pick(['','Иванов И.И.','Петрова А.','<b>x</b>'])),
@@ -80,7 +81,11 @@ setTimeout(async()=>{
     },
     form:()=>{ const c=q('#form-grid button[data-form-idx]'); if(c.length) pick(c).click(); },
     regimen:()=>{ const c=q('#regimen-list button'); if(c.length) pick(c).click(); },
-    vial:()=>{ const c=q('#vial-list button'); if(c.length) pick(c).click(); },
+    // the injection panel is on screen in ~7 % of the states: open an injectable route tab
+    // first when there is one, and prefer a chip that is not the active one (a dead click on
+    // the active chip proves nothing)
+    vial:()=>{ w.__vialClick=null; toInjectable(); const all=q('#vial-list button'); const c=all.filter(b=>!b.classList.contains('active')); if(c.length||all.length){ const b=pick(c.length?c:all); w.__vialClick=[...b.parentElement.children].indexOf(b); tally('vial_clicked'); b.click(); } },
+    injRoute:()=>{ w.__injClick=null; toInjectable(); const all=q('#route-selector button'); const c=all.filter(b=>!b.classList.contains('active')); if(c.length||all.length){ const b=pick(c.length?c:all); w.__injClick=txt(b); tally('inj_route_clicked'); b.click(); } },
     newPatient:()=>$('new-patient').click(),
     // a weight typed for a fresh patient (no explicit age yet) infers the group and shows
     // the inference notice — the plain walk sets an explicit age early and rarely gets here
@@ -232,6 +237,31 @@ setTimeout(async()=>{
       if(availExp) tally('availability_note_expected');
       if(availVis!==availExp) push('availability_note_stale',`visible ${availVis} expected ${availExp}`);
     } else if(shown($('regimen-selector'))) push('regimen_selector_visibility','visible without a drug');
+    // the injection panel mirrors activeRouteKey / activeVialIdx: the active dilution chip
+    // and the route label name the same route, the vial chips are the solvent options of
+    // that route with the active one at activeVialIdx (the MIS text takes the vial from
+    // the same index)
+    if(name==='vial'&&w.__vialClick!=null){ if(w.eval('activeVialIdx')!==w.__vialClick) push('vial_click_not_recorded',`clicked ${w.__vialClick} activeVialIdx ${w.eval('activeVialIdx')}`); w.__vialClick=null; }
+    if(name==='injRoute'&&w.__injClick!=null){ if(w.eval('routeKeyLabel(activeRouteKey)').replace(/\s+/g,' ').trim()!==w.__injClick) push('inj_route_click_not_recorded',`clicked ${w.__injClick} activeRouteKey ${w.eval('activeRouteKey')}`); w.__injClick=null; }
+    if(shown($('res-inj'))){
+      tally('inj_panel');
+      const lbl=w.eval('routeKeyLabel(activeRouteKey)').replace(/\s+/g,' ').trim();
+      const act=d.querySelector('#route-selector button.active');
+      if(!act||txt(act)!==lbl) push('inj_route_chip_mismatch',`${act?txt(act):'none'} vs ${lbl}`);
+      if(txt($('inj-route-label'))!==lbl) push('inj_route_label_mismatch',`${txt($('inj-route-label'))} vs ${lbl}`);
+      const rk=w.eval('activeRouteKey');
+      if(S.route==='iv'&&!/^iv_/.test(rk)) push('inj_route_group_mismatch',`${rk} under ${S.route}`);
+      const vialsN=w.eval('(function(){ const ref=DB.drugs_reference[getDrugRefs(activeDrug)[0]]; const rd=ref&&ref.dilution&&ref.dilution[activeRouteKey]; return rd&&rd.solvent_options?rd.solvent_options.length:0; })()');
+      const vialVis=shown($('vial-selector'));
+      if(vialVis!==(vialsN>1)) push('vial_selector_visibility',`visible ${vialVis} vials ${vialsN}`);
+      if(vialsN>1){
+        tally('vial_chips');
+        const chips=[...d.querySelectorAll('#vial-list button')]; const vi=w.eval('activeVialIdx');
+        if(chips.length!==vialsN) push('vial_chips_count',`${chips.length} vs ${vialsN}`);
+        const ai=chips.findIndex(b=>b.classList.contains('active')); if(ai!==vi) push('vial_chip_mismatch',`chip ${ai} vs ${vi}`);
+        if(!(vi>=0&&vi<vialsN)) push('vial_idx_out_of_range',`${vi} of ${vialsN}`);
+      }
+    }
     // the four steps are visible exactly when their state exists (a visible step with no
     // state = stale cards; a hidden step with state = a dead end for the physician)
     {
