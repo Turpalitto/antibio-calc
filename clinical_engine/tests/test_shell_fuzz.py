@@ -105,3 +105,16 @@ def test_random_walk_notice_invariants_are_not_vacuous(fuzz: dict) -> None:
     checks = fuzz["checks"]
     for key in ("dose_block_text", "weight_warn_expected", "allergy_banner_expected", "hash_note_expected"):
         assert checks.get(key, 0) >= 10, (key, checks)
+
+
+def test_random_walk_reaches_the_arithmetic_and_export_oracles(fuzz: dict) -> None:
+    """The dose arithmetic oracle (screen dose == regimen × the random weight, ml ==
+    dose / concentration) and the export-parity oracles (MIS text and the printed
+    safety line carry every export flag) must actually fire on computed states —
+    a mutant that inflates the mg/kg/day arithmetic by 20 % trips 100+ findings."""
+    checks = fuzz["checks"]
+    assert checks.get("dose_arithmetic", 0) >= 100, checks
+    assert checks.get("inj_volume", 0) >= 10, checks
+    assert checks.get("po_volume", 0) >= 5, checks
+    assert checks.get("print_flags", 0) >= 3, checks
+    assert checks.get("group_mismatch_export", 0) >= 3, checks

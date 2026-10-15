@@ -360,6 +360,39 @@ setTimeout(async()=>{
         if(!m&&(boxVis||rows)) push('search_count_mismatch',`«${txt($('search-status')).slice(0,40)}» rows ${rows} box ${boxVis}`);
       }
     }
+    // arithmetic oracle at the random weight (the walk checks five fixed weights): the
+    // single / daily dose on screen is what the DB regimen gives for this weight, the ml
+    // tile is dose / concentration of the suspension or of the selected vial solution
+    if(S.dr&&S.regimen&&!S.blocked&&(shown($('res-po'))||shown($('res-inj')))){
+      const reg=S.regimen; const kg=parseFloat($('weight').value); const freq=reg.freq_per_day||1;
+      let daily=null;
+      if(reg.single_dose_mg!=null) daily=reg.single_dose_mg*freq;
+      else if(reg.dose_mg_kg_per_dose!=null&&kg>0) daily=kg*reg.dose_mg_kg_per_dose*freq;
+      else if(reg.dose_mg_kg_day!=null&&kg>0) daily=kg*reg.dose_mg_kg_day;
+      else if(reg.dose_mg_day_fixed!=null) daily=reg.dose_mg_day_fixed;
+      if(daily!=null&&reg.max_daily_mg!=null&&daily>reg.max_daily_mg) daily=reg.max_daily_mg;
+      const po=shown($('res-po')); const num=t=>{ const mul=/млн/.test(t)?1e6:(/тыс/.test(t)?1e3:1); return parseFloat(String(t).replace(/[\s\u00a0]/g,'').replace(/мг|ЕД|млн|тыс/g,'').replace(',','.'))*mul; };
+      const shownSingle=po?txt($('po-mg')):txt($('inj-mg')); const shownDay=po?txt($('po-day')):txt($('inj-day'));
+      if(daily!=null&&Number.isFinite(num(shownSingle))){
+        tally('dose_arithmetic');
+        const expectSingle=daily/freq;
+        if(Math.abs(num(shownSingle)-expectSingle)>1) push('dose_arithmetic',`screen ${shownSingle} vs ${Math.round(expectSingle)} (${kg} kg, ${JSON.stringify({s:reg.single_dose_mg,kgd:reg.dose_mg_kg_day,kgdose:reg.dose_mg_kg_per_dose,fx:reg.dose_mg_day_fixed,max:reg.max_daily_mg,f:freq})})`);
+        if(Number.isFinite(num(shownDay))&&Math.abs(num(shownDay)-daily)>1) push('daily_dose_arithmetic',`screen ${shownDay} vs ${Math.round(daily)}`);
+        const formNow=w.eval('(DB.drugs_reference[getDrugRefs(activeDrug)[0]]||{forms:[]}).forms[activeFormIdx]||null');
+        if(po&&txt($('po-unit'))==='мл'&&/^\d/.test(txt($('po-ml')))){
+          const conc=formNow&&formNow.concentration_mg_per_ml; const ml=parseFloat(txt($('po-ml')).replace(',','.'));
+          if(!(conc>0)) push('po_ml_without_concentration',txt($('po-ml')));
+          else if(Math.abs(ml-expectSingle/conc)>0.06) push('po_volume_arithmetic',`${ml} мл vs ${Math.round(expectSingle)} / ${conc} = ${(expectSingle/conc).toFixed(2)}`);
+          else tally('po_volume');
+        } else if(!po&&/^\d/.test(txt($('inj-ml')))){
+          const vial=w.eval('(function(){ const ref=DB.drugs_reference[getDrugRefs(activeDrug)[0]]||{}; const rd=(ref.dilution||{})[activeRouteKey]||{}; return (rd.solvent_options||[])[activeVialIdx]||null; })()');
+          const conc=vial&&(vial.final_concentration_mg_ml||vial.final_concentration_units_ml); const ml=parseFloat(txt($('inj-ml')).replace(',','.'));
+          if(!(conc>0)) push('inj_ml_without_concentration',txt($('inj-ml')));
+          else if(Math.abs(ml-expectSingle/conc)>0.006) push('inj_volume_arithmetic',`${ml} мл vs ${Math.round(expectSingle)} / ${conc} = ${(expectSingle/conc).toFixed(3)}`);
+          else tally('inj_volume');
+        }
+      } else if(daily!=null&&!shownSingle.startsWith('—')) push('dose_not_shown',`expected ${Math.round(daily/freq)}, screen «${shownSingle}»`);
+    }
     // the four steps are visible exactly when their state exists (a visible step with no
     // state = stale cards; a hidden step with state = a dead end for the physician)
     {
