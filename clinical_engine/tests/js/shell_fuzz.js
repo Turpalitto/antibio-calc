@@ -91,6 +91,12 @@ setTimeout(async()=>{
     // the active chip proves nothing)
     vial:()=>{ w.__vialClick=null; toInjectable(); const all=q('#vial-list button'); const c=all.filter(b=>!b.classList.contains('active')); if(c.length||all.length){ const b=pick(c.length?c:all); w.__vialClick=[...b.parentElement.children].indexOf(b); tally('vial_clicked'); b.click(); } },
     injRoute:()=>{ w.__injClick=null; toInjectable(); const all=q('#route-selector button'); const c=all.filter(b=>!b.classList.contains('active')); if(c.length||all.length){ const b=pick(c.length?c:all); w.__injClick=txt(b); tally('inj_route_clicked'); b.click(); } },
+    // the quick-weight chips, a unit change alone (same number, other unit), keyboard
+    // activation of the cards (Enter / Space) and the keyboard path of the search
+    weightChip:()=>{ const c=q('.quick-weight-chip'); if(c.length) pick(c).click(); },
+    ageUnit:()=>type($('patient-age-unit'),pick(['years','months','days'])),
+    keyCard:()=>{ const c=q('#scenario-list .scenario-card, #drug-list .drug-card, #results-box > div[role=button]'); if(!c.length) return; const el=pick(c); el.focus(); el.dispatchEvent(new w.KeyboardEvent('keydown',{key:pick(['Enter',' ']),bubbles:true,cancelable:true})); },
+    searchKeys:()=>{ const el=$('search'); type(el,pick(['пневмония','цистит','J18','сепсис','ин'])); el.focus(); const key=pick(['Enter','ArrowDown','Escape']); el.dispatchEvent(new w.KeyboardEvent('keydown',{key,bubbles:true,cancelable:true})); if(key==='ArrowDown'){ const n=1+Math.floor(rnd()*3); for(let i=0;i<n;i++) (d.activeElement||el).dispatchEvent(new w.KeyboardEvent('keydown',{key:rnd()<0.7?'ArrowDown':'ArrowUp',bubbles:true,cancelable:true})); if(rnd()<0.7&&d.activeElement&&d.activeElement!==el) d.activeElement.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true})); } },
     newPatient:()=>$('new-patient').click(),
     // a weight typed for a fresh patient (no explicit age yet) infers the group and shows
     // the inference notice — the plain walk sets an explicit age early and rarely gets here
