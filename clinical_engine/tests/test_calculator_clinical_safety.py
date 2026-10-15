@@ -1489,6 +1489,7 @@ def test_render_scenarios_never_parses_a_scenario_name_as_markup() -> None:
     globals_js = (
         "let activeAge='adult';\n"
         "function selectScenario(){}\n"
+        "function updateAllergyBanner(){}\n"
         "let activeDisease = " + _lit(
             {
                 "scenarios": [

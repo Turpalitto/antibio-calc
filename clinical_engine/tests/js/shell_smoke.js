@@ -929,6 +929,27 @@ async function run() {
       g.recovered = [w.eval('activeDisease && activeDisease.id'), visible($('res-po')) || visible($('res-inj')), visible($('source-calculation-block')) && txt($('source-calculation-block')).startsWith('РАСЧЁТ ЗАБЛОКИРОВАН')].join('|');
       out.sourceGate = g;
     }
+
+    // 26. the allergy banner belongs to the active drug: a record with no scenario for the
+    //     current group (cap_adult at a child's age — via the list or a #hash) selects no
+    //     drug, so the previous drug's «противопоказан» banner must leave the screen
+    {
+      $('new-patient').click();
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      type($('patient-allergy'), 'penicillin_severe');
+      clickDisease('cap_child');
+      const b = { withAmoxicillin: visible($('allergy-alert-banner')) && txt($('allergy-alert-title')) };
+      w.selectDisease(find((r) => r.id === 'cap_adult'));
+      b.noScenarioForGroup = [w.eval('String(activeDrug)'), d.querySelectorAll('#drug-list .drug-card').length, visible($('allergy-alert-banner'))].join('|');
+      clickDisease('cap_child');
+      b.backWithAmoxicillin = visible($('allergy-alert-banner'));
+      w.location.hash = '#pyelonephritis_adult';
+      await sleep(200);
+      b.viaHash = [w.eval('activeDisease && activeDisease.id'), w.eval('String(activeDrug)'), visible($('allergy-alert-banner'))].join('|');
+      type($('patient-allergy'), 'none');
+      out.allergyBannerFollowsDrug = b;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

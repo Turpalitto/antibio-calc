@@ -551,3 +551,16 @@ def test_the_source_gate_of_a_blocked_record_holds_for_every_re_render(shell: di
     assert g["blockReason"].startswith("РАСЧЁТ ЗАБЛОКИРОВАН"), g
     assert g["recovered"] == "aom_child|true|false", g
 
+
+def test_the_allergy_banner_leaves_with_the_drug_when_no_scenario_fits_the_group(shell: dict) -> None:
+    """Found by the fuzz notice invariants: selectDrug() refreshes the allergy
+    banner, resetDisease() hides it (T45), but a record with NO scenario for the
+    current age group (cap_adult at 7 y, via the list or a #hash) selects no drug
+    and left the previous drug's «Препарат противопоказан по аллергоанамнезу!»
+    banner on screen. renderScenarios() now refreshes it in every outcome."""
+    b = shell["allergyBannerFollowsDrug"]
+    assert b["withAmoxicillin"] == "Внимание: Препарат противопоказан по аллергоанамнезу!", b
+    assert b["noScenarioForGroup"] == "null|0|false", b
+    assert b["backWithAmoxicillin"] is True, b
+    assert b["viaHash"] == "pyelonephritis_adult|null|false", b
+

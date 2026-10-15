@@ -2161,8 +2161,8 @@ function selectDisease(d){
   $('active-indications').textContent = d.indications ? 'Показания: '+d.indications.join('; ') : '';
   $('empty-state').classList.add('hidden');
   if(!applyDiseaseSourceGate(d)){
-    // gated: the previous record's result tiles / allergy banner go too (renderScenarios
-    // is the choke point for a gated record and clears them)
+    // gated: the result tiles / allergy banner of the previous record go too
+    // (renderScenarios is the choke point for a gated record and clears them)
     renderScenarios();
     updateHash();
     return;
@@ -2333,6 +2333,10 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
     const card = idx >= 0 ? list.children[idx] : null;
     if(card) card.classList.add('active');
   }
+  // a record with no scenario for the current group selects no drug: the banner
+  // «противопоказан по аллергоанамнезу» of the previous drug must not stay on screen
+  // (selectDrug refreshes it only when a drug is selected)
+  updateAllergyBanner();
 }
 function selectScenario(s, card, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
   // a scenario opened afresh (card click — no preferred route) starts from the DB default

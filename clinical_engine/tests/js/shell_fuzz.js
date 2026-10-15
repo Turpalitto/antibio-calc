@@ -129,6 +129,26 @@ setTimeout(async()=>{
       w.__restored=null;
     }
     if(S.sc&&S.dis&&!(S.dis.scenarios||[]).includes(S.sc)) push('scenario_not_in_disease','');
+    // notices mirror the state: the allergy banner only for an active drug whose class is hit,
+    // the «scenario from the link» note only while a hash scenario is pending, the
+    // route-mismatch note only when the record lists a route without any form
+    {
+      const bannerVis=shown($('allergy-alert-banner'));
+      const expectBanner=!!S.dr&&w.eval('getDrugRefs(activeDrug).some(r=>["contraindicated","caution"].includes(checkAllergyStatus(r,$("patient-allergy").value).status))');
+      if(bannerVis!==expectBanner) push('allergy_banner_stale',`visible ${bannerVis} expected ${expectBanner} (${$('patient-allergy').value})`);
+      const noteVis=shown($('scenario-hash-note')); const pending=!!w.eval('pendingHashScenario');
+      if(noteVis!==pending) push('hash_note_stale',`visible ${noteVis} pending ${pending}`);
+      if(S.dr){
+        const mmVis=shown($('route-mismatch-note'));
+        // tabs are the record routes that have forms, or (fallback) every form group — the note
+        // must be on screen exactly in the fallback case
+        const lblK={po:'per os',im:'в/м',iv:'в/в',topical:'местно'};
+        const tabKeysMm=[...d.querySelectorAll('#route-tabs button')].map(b=>Object.keys(lblK).find(k=>lblK[k]===txt(b)));
+        const intendedMm=(S.dr.route||[]).map(x=>x==='per_os'?'po':x);
+        const expectMm=intendedMm.length>0&&tabKeysMm.length>0&&!tabKeysMm.some(k=>intendedMm.includes(k));
+        if(mmVis!==expectMm) push('route_mismatch_note_stale',`visible ${mmVis} expected ${expectMm}`);
+      } else if(shown($('route-mismatch-note'))) push('route_mismatch_note_stale','visible without a drug');
+    }
     // a record under the source gate (calculation_blocked) never gets a scenario / drug / result
     if(S.dis&&S.dis.calculation_blocked&&(S.sc||S.dr)) push('blocked_record_opened',`${S.dis.id} sc=${S.sc&&S.sc.id} dr=${S.dr&&getDrugRefsSafe(S.dr)}`);
     if(S.ln&&S.sc&&!(S.sc.lines||[]).includes(S.ln)) push('line_not_in_scenario','');
