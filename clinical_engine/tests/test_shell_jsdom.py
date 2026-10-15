@@ -180,8 +180,8 @@ def test_age_group_change_keeps_the_scenario_and_drug_when_the_scenario_fits(she
     assert k["adult"] == "salmonellosis_severe|2|ciprofloxacin|po|adult" and k["adultBlock"] == ""
     assert k["child"] == "salmonellosis_severe|2|ciprofloxacin|po|child" and k["childResultHidden"] is True
     assert k["childBlock"].startswith("РАСЧЁТ ЗАБЛОКИРОВАН: для препарата «Ципрофлоксацин» в БД нет ни одной схемы дозирования для возрастной группы «дети»")
-    assert k["childCeftriaxone"] == "salmonellosis_severe|1|ceftriaxone|im|child|1250"
-    assert k["backToAdult"] == "salmonellosis_severe|1|ceftriaxone|im|adult|2000" and k["backBlock"] == ""
+    assert k["childCeftriaxone"] == "salmonellosis_severe|1|ceftriaxone|iv|child|1250"
+    assert k["backToAdult"] == "salmonellosis_severe|1|ceftriaxone|iv|adult|2000" and k["backBlock"] == ""
     assert k["adultOnlyScenarioAtChildAge"].startswith("cap_adult_out_no_risk|1|amoxicillin|po|child|РАСЧЁТ ЗАБЛОКИРОВАН"), "an adult-only scenario still falls back to the first one, fail-visible"
     assert k["inferredChild"] == "aom_child_standard|1|amoxicillin|po|child|ok,ok"
     assert k["inferredAdult"].startswith("aom_child_standard|1|amoxicillin|po|adult|dim,dim|РАСЧЁТ ЗАБЛОКИРОВАН"), "a weight-inferred group change dims the child-only scenarios and blocks, fail-visible"
@@ -486,3 +486,20 @@ def test_new_patient_clears_the_whole_context_and_the_stale_allergy_banner(shell
     assert npat["resultHidden"] is True and npat["emptyState"] is True and npat["disease"] is None and npat["search"] == ""
     assert npat["allergyBanner"] is False and npat["weightWarnHidden"] is True
     assert npat["toast"] == "Данные пациента и расчёт сброшены"
+
+
+def test_default_route_follows_the_db_order_and_a_picked_route_follows_the_physician(shell: dict) -> None:
+    """Route tabs were rendered in the fixed po/im/iv order of the groups object, so
+    ceftriaxone «iv, im» for inpatient CAP opened on в/м and azithromycin «iv,
+    per_os» for severe CAP on per os. Now the tabs (and the default) follow the
+    order the scenario record lists; a route the physician clicked follows them
+    across the drug cards (a drug without it opens on its own default and the
+    preference survives) and a new scenario starts from the DB default again."""
+    r = shell["routeFollows"]
+    assert r["ceftriaxoneDefault"] == "cap_adult_in_mild|ceftriaxone|iv|null|в/в,в/м"
+    assert r["imPicked"] == "cap_adult_in_mild|ceftriaxone|im|im"
+    assert r["amoxiclavIvOnly"] == "cap_adult_in_mild|amoxiclav|iv|im|в/в"
+    assert r["ceftriaxoneAgain"] == "cap_adult_in_mild|ceftriaxone|im|im", "the picked route survives a drug that lacks it"
+    assert r["afterAllergy"] == "cap_adult_in_mild|ceftriaxone|im|im", "a context re-render keeps the picked route"
+    assert r["newScenario"] == "cap_adult_in_severe|ceftriaxone|iv|null|в/в"
+    assert r["azithromycinSevere"] == "cap_adult_in_severe|azithromycin|iv|null|в/в,per os"

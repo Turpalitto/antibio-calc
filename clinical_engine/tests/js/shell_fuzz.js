@@ -38,6 +38,14 @@ const type=(el,v)=>{el.value=v; el.dispatchEvent(new w.Event('input',{bubbles:tr
 const BAD=/NaN|Infinity|undefined|\[object |null мг|null ЕД/;
 setTimeout(async()=>{
   const DB=w.eval('DB'); const computable=DB.recommendations.filter(r=>!r.calculation_blocked);
+  const key=x=>x==='per_os'?'po':x;
+  // scenarios where a route picked on drug A is offered by drug B in a NON-first position:
+  // the only places where «the picked route follows the physician» is observable
+  const pairScenarios=[];
+  computable.forEach(r=>(r.scenarios||[]).forEach((sc,scIdx)=>{
+    const drugs=[]; (sc.lines||[]).forEach((ln,lineIdx)=>(ln.drugs||[]).forEach((dr,drugIdx)=>drugs.push({lineIdx,drugIdx,routes:(dr.route||[]).map(key)})));
+    drugs.forEach(a=>drugs.forEach(b=>{ if(a!==b&&a.routes.length>1) a.routes.forEach(x=>{ if(b.routes.indexOf(x)>0) pairScenarios.push({r,scIdx,a,b,x}); }); }));
+  }));
   const findings=[]; const counts={};
   const actions={
     weight:()=>type($('weight'),pick(['','3.2','7','12.5','25','39.9','45','70','95','0.5','300','12,5'])),
@@ -50,6 +58,25 @@ setTimeout(async()=>{
     scenario:()=>{ const c=q('#scenario-list .scenario-card'); if(c.length) pick(c).click(); },
     drug:()=>{ const c=q('#drug-list .drug-card'); if(c.length) pick(c).click(); },
     route:()=>{ const c=q('#route-tabs button'); if(c.length) pick(c).click(); },
+    // sharper probe for the route preference: pick a tab that is NOT the first one, then
+    // switch to another drug card of the scenario (a plain random walk hits this ~1/6000)
+    routeThenDrug:()=>{
+      w.__pk=undefined;
+      const cardOf=(lineIdx,drugIdx)=>q('#drug-list .drug-card').find(c=>+c.dataset.lineIdx===lineIdx&&+c.dataset.drugIdx===drugIdx);
+      const lbl={po:'per os',im:'в/м',iv:'в/в',topical:'местно'};
+      if(pairScenarios.length&&rnd()<0.6){
+        // steer to a scenario where the preference is observable, pick the route on A, open B
+        const pr=pick(pairScenarios); w.selectDisease(pr.r); const cards=q('#scenario-list .scenario-card'); if(cards[pr.scIdx]) cards[pr.scIdx].click();
+        const a=cardOf(pr.a.lineIdx,pr.a.drugIdx); if(a) a.click();
+        const tab=q('#route-tabs button').find(b=>txt(b)===lbl[pr.x]); if(tab) tab.click();
+        w.__pk=w.eval('pickedRouteGroup');
+        const b=cardOf(pr.b.lineIdx,pr.b.drugIdx); if(b) b.click();
+        return;
+      }
+      const t=q('#route-tabs button'); if(t.length>1) pick(t.slice(1)).click();
+      w.__pk=w.eval('pickedRouteGroup');
+      const c=q('#drug-list .drug-card').filter(x=>!x.classList.contains('active')); if(c.length) pick(c).click();
+    },
     form:()=>{ const c=q('#form-grid button[data-form-idx]'); if(c.length) pick(c).click(); },
     regimen:()=>{ const c=q('#regimen-list button'); if(c.length) pick(c).click(); },
     vial:()=>{ const c=q('#vial-list button'); if(c.length) pick(c).click(); },
@@ -77,6 +104,7 @@ setTimeout(async()=>{
   for(let i=0;i<STEPS;i++){
     const name=pick(names); counts[name]=(counts[name]||0)+1;
     const before=stateStr();
+    const beforePicked=w.eval('pickedRouteGroup'), beforeSc=w.eval('activeScenario');
     try{ actions[name](); await new Promise(r=>setTimeout(r,0)); }catch(e){ findings.push({step:i,action:name,kind:'exception',msg:String(e&&e.stack||e).slice(0,300),before}); continue; }
     if(errors.length){ findings.push({step:i,action:name,kind:'console',msg:errors.splice(0).join(' || ').slice(0,300),before}); }
     // invariants
@@ -108,6 +136,15 @@ setTimeout(async()=>{
       if(!(mainRef&&mainRef.forms&&S.form>=0&&S.form<mainRef.forms.length)) push('form_idx_out_of_range',`${S.form}`);
       const activeChip=d.querySelector('#form-grid button.active'); if(activeChip&&parseInt(activeChip.dataset.formIdx)!==S.form) push('form_chip_mismatch',`chip ${activeChip.dataset.formIdx} vs ${S.form}`);
       const activeTab=d.querySelector('#route-tabs button.active'); const lbl={po:'per os',im:'в/м',iv:'в/в',topical:'местно'}; if(activeTab&&txt(activeTab)!==lbl[S.route]) push('route_tab_mismatch',`${txt(activeTab)} vs ${S.route}`);
+      // route tabs keep the order of the scenario route list; a drug card opens on the
+      // route the physician picked when it offers it, otherwise on its first route
+      const tabKeys=[...d.querySelectorAll('#route-tabs button')].map(b=>Object.keys(lbl).find(k=>lbl[k]===txt(b)));
+      const intended=(S.dr.route||[]).map(x=>x==='per_os'?'po':x).filter(k=>tabKeys.includes(k));
+      if(intended.length&&tabKeys.slice(0,intended.length).join()!==intended.join()) push('route_tab_order',`${tabKeys} vs ${intended}`);
+      const picked=w.eval('pickedRouteGroup');
+      if(name==='route'&&picked!==S.route) push('route_pick_not_recorded',`${picked} vs ${S.route}`);
+      if((name==='drug'||name==='routeThenDrug')&&S.sc===beforeSc&&tabKeys.length){ const pk=name==='routeThenDrug'?w.__pk:beforePicked; const exp=(pk&&tabKeys.includes(pk))?pk:tabKeys[0]; if(S.route!==exp) push('route_default_mismatch',`${S.route} vs ${exp} (picked ${pk})`); }
+      if(name==='scenario'&&S.sc!==beforeSc&&picked!==null) push('route_pick_survives_scenario_change',`${picked}`);
       const sel=d.querySelector('#scenario-list .scenario-card.active'); if(!sel) push('no_active_scenario_card','');
       const selDrug=d.querySelector('#drug-list .drug-card.active'); if(!selDrug) push('no_active_drug_card','');
       const blockVis=visible($('dose-block')), resVis=visible($('res-po'))||visible($('res-inj'));

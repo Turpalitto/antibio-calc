@@ -782,6 +782,38 @@ async function run() {
       w.saveToHistory();
       out.historyBlocked.addedWhenValid = w.eval('historyEntries.length') - n0;
     }
+
+    // 22. the default route follows the ORDER of the scenario route list (ceftriaxone
+    //     «iv, im» opens on в/в, not on в/м because the groups object lists im first)
+    //     and an explicit route tab follows the physician across the drug cards of the
+    //     scenario; a new scenario starts from the DB default again
+    {
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      const cards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      const scenarioById = (id) => { const i = DB().recommendations.find((r) => r.id === 'cap_adult').scenarios.findIndex((x) => x.id === id); cards[i].click(); };
+      scenarioById('cap_adult_in_mild');
+      const tabs = () => [...d.querySelectorAll('#route-tabs button')].map((b) => txt(b)).join(',');
+      const state = () => w.eval('[activeScenario && activeScenario.id, activeDrug && getDrugRefs(activeDrug)[0], currentRouteGroup, String(pickedRouteGroup)].join("|")');
+      const r = {};
+      clickDrug(/^Цефтриаксон/i);
+      r.ceftriaxoneDefault = state() + '|' + tabs();
+      [...d.querySelectorAll('#route-tabs button')].find((b) => txt(b) === 'в/м').click();
+      r.imPicked = state();
+      clickDrug(/^Амоксициллин/i);
+      r.amoxiclavIvOnly = state() + '|' + tabs();
+      clickDrug(/^Цефтриаксон/i);
+      r.ceftriaxoneAgain = state();
+      type($('patient-allergy'), 'penicillin_mild');
+      r.afterAllergy = state();
+      type($('patient-allergy'), 'none');
+      scenarioById('cap_adult_in_severe');
+      r.newScenario = state() + '|' + tabs();
+      clickDrug(/^Азитромицин/i);
+      r.azithromycinSevere = state() + '|' + tabs();
+      out.routeFollows = r;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

@@ -923,6 +923,11 @@ let vialFollowsForm = true;
 // false until the physician clicks a form chip: the default chip (measurable
 // suspension strength, evenly dividing tablet) follows the weight / age / regimen
 let userPickedForm = false;
+// the route tab the physician clicked (null = none): it follows them across the
+// drug cards of the scenario (iv stays iv when the next drug offers it, a drug
+// without it opens on its own first route and the preference survives); without
+// a click every drug opens on the first route its scenario entry lists
+let pickedRouteGroup = null;
 let activeAge = 'child';
 let userPickedAge = false;
 let lastPickedAge = null;
@@ -2290,6 +2295,7 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
   }
 }
 function selectScenario(s, card, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
+  if(s !== activeScenario) pickedRouteGroup = null;
   activeScenario = s;
   document.querySelectorAll('#scenario-list .scenario-card').forEach(c=>c.classList.remove('active'));
   if(card) card.classList.add('active');
@@ -2568,7 +2574,7 @@ function renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, pre
       lineBadge.setAttribute('style', 'border:1px solid');
       lineBadge.textContent = lineLabel;
       card.append(main, lineBadge);
-      makeActivatable(card, ()=>selectDrug(drug, line, card));
+      makeActivatable(card, ()=>selectDrug(drug, line, card, pickedRouteGroup || undefined));
       list.appendChild(card);
       // a preferred line without a drug index (#hash L<n>) opens on the first drug of that line
       const drugMatch = Number.isInteger(preferredDrugIndex) ? drugIdx === preferredDrugIndex : drugIdx === 0;
@@ -2665,7 +2671,11 @@ function renderForms(preferredRoute){
   // который в этом сценарии клинически эффективен только в/в (напр. ванкомицин при сепсисе).
   const routeMap = {per_os:'po', iv:'iv', im:'im', topical:'topical'};
   const intendedKeys = (activeDrug.route || []).map(r=>routeMap[r]).filter(Boolean);
-  const restrictedKeys = groupKeys.filter(k=>intendedKeys.includes(k));
+  // Tabs (and the default route) follow the ORDER of the scenario route list:
+  // ceftriaxone «iv, im» for inpatient CAP opened on в/м and azithromycin «iv,
+  // per_os» for severe CAP on per os because the groups object listed po/im
+  // before iv regardless of what the record says.
+  const restrictedKeys = intendedKeys.filter(k=>groupKeys.includes(k));
   const finalKeys = restrictedKeys.length > 0 ? restrictedKeys : groupKeys;
   // Fallback to every form is a data gap, not a clinical choice — say so
   // (db/validate_db.js warns about the same mismatch at build time).
@@ -2690,6 +2700,7 @@ function renderForms(preferredRoute){
     tab.onclick = ()=>{
       currentRouteGroup = k;
       userPickedForm = false;
+      pickedRouteGroup = k;
       routeTabs.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
       tab.classList.add('active');
       renderFormChips(groups[k]);
