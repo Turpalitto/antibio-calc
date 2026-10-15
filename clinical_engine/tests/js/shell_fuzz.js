@@ -34,6 +34,8 @@ const txt=el=>el?el.textContent.replace(/\s+/g,' ').trim():'';
 const visible=el=>!!el&&!el.classList.contains('hidden')&&w.getComputedStyle(el).display!=='none';
 const shown=el=>{ for(let n=el;n&&n.nodeType===1;n=n.parentElement){ if(n.classList.contains('hidden')||n.hidden||n.style.display==='none'||w.getComputedStyle(n).display==='none') return false; } return true; };
 const q=sel=>[...d.querySelectorAll(sel)].filter(shown);
+// «1 050 000 ЕД» / «1,5 млн ЕД» / «500 мг» → number
+const num=t=>{ const mul=/млн/.test(t)?1e6:(/тыс/.test(t)?1e3:1); return parseFloat(String(t).replace(/[\s\u00a0]/g,'').replace(/мг|ЕД|млн|тыс/g,'').replace(',','.'))*mul; };
 const type=(el,v)=>{el.value=v; el.dispatchEvent(new w.Event('input',{bubbles:true})); el.dispatchEvent(new w.Event('change',{bubbles:true}));};
 const BAD=/NaN|Infinity|undefined|\[object |null мг|null ЕД/;
 setTimeout(async()=>{
@@ -374,8 +376,15 @@ setTimeout(async()=>{
       else if(reg.dose_mg_kg_per_dose!=null&&kg>0) daily=kg*reg.dose_mg_kg_per_dose*freq;
       else if(reg.dose_mg_kg_day!=null&&kg>0) daily=kg*reg.dose_mg_kg_day;
       else if(reg.dose_mg_day_fixed!=null) daily=reg.dose_mg_day_fixed;
-      if(daily!=null&&reg.max_daily_mg!=null&&daily>reg.max_daily_mg) daily=reg.max_daily_mg;
-      const po=shown($('res-po')); const num=t=>{ const mul=/млн/.test(t)?1e6:(/тыс/.test(t)?1e3:1); return parseFloat(String(t).replace(/[\s\u00a0]/g,'').replace(/мг|ЕД|млн|тыс/g,'').replace(',','.'))*mul; };
+      const rawDaily=daily; let cappedHere=false;
+      if(daily!=null&&reg.max_daily_mg!=null&&daily>reg.max_daily_mg){ daily=reg.max_daily_mg; cappedHere=true; }
+      const po=shown($('res-po'));
+      // the ceiling is announced exactly when it cuts the dose (the amber «Превышена max
+      // суточная доза» row); a silent cap or a stale row from the previous drug both count
+      const warnEl=po?$('po-max-warn'):$('inj-max-warn'); const warnText=txt(warnEl);
+      const capRow=shown(warnEl)&&/Превышена max суточная доза/.test(warnText);
+      if(cappedHere&&rawDaily>reg.max_daily_mg+1){ tally('max_daily_capped'); if(!capRow&&!/несогласованы/.test(warnText)) push('max_cap_silent',`${rawDaily} > max ${reg.max_daily_mg}, row «${warnText.slice(0,60)}»`); }
+      else if(capRow&&!cappedHere) push('max_cap_row_stale',`row «${warnText.slice(0,80)}» while daily ${rawDaily} ≤ max ${reg.max_daily_mg}`);
       const shownSingle=po?txt($('po-mg')):txt($('inj-mg')); const shownDay=po?txt($('po-day')):txt($('inj-day'));
       if(daily!=null&&Number.isFinite(num(shownSingle))){
         tally('dose_arithmetic');
@@ -465,6 +474,23 @@ setTimeout(async()=>{
           const notice=txt($('age-explicit-notice'));
           if(shown($('age-explicit-notice'))&&/не соответствует/.test(notice)){ tally('group_mismatch_export'); if(!misLines.some(l=>/выбрана вручную/.test(l))) push('group_mismatch_not_in_mis',notice.slice(0,80)); }
           if(shown($('weight-warn'))&&/редк/.test(txt($('weight-warn')))&&!misLines.some(l=>/редк/.test(l))) push('weight_caution_not_in_mis',txt($('weight-warn')).slice(0,80));
+        }
+        // the chart text repeats the screen: the same single dose («Схема приёма: по X …»),
+        // the same daily dose, the ceiling note exactly when the amber cap row is shown,
+        // the same weight and age group in the patient line
+        if(!S.blocked&&w.__mis&&resVis){
+          const po=shown($('res-po')); const single=num(po?txt($('po-mg')):txt($('inj-mg'))); const day=num(po?txt($('po-day')):txt($('inj-day')));
+          const DOSE=/(\d[\d\s\u00a0]*(?:[.,]\d+)?)\s*(млн|тыс)?\s*(мг|ЕД)/g;
+          const first=line=>{ const m=DOSE.exec(line); DOSE.lastIndex=0; return m?num(m[0]):NaN; };
+          const scheme=(/Схема приёма: (.+)/.exec(w.__mis)||[])[1]||''; const dailyLine=(/Суточная доза: (.+)/.exec(w.__mis)||[])[1]||'';
+          if(scheme&&!/^наружно/.test(scheme)&&Number.isFinite(single)){ tally('mis_dose'); const got=first(scheme); if(!Number.isFinite(got)||Math.abs(got-single)>1) push('mis_single_dose_mismatch',`screen ${single} vs «${scheme.slice(0,70)}»`); }
+          if(dailyLine&&Number.isFinite(day)){ const got=first(dailyLine); if(!Number.isFinite(got)||Math.abs(got-day)>1) push('mis_daily_dose_mismatch',`screen ${day} vs «${dailyLine.slice(0,70)}»`); }
+          const capRowNow=shown(po?$('po-max-warn'):$('inj-max-warn'))&&/Превышена max/.test(txt(po?$('po-max-warn'):$('inj-max-warn')));
+          if(capRowNow&&dailyLine&&!/ограничена максимумом/.test(dailyLine)) push('mis_cap_missing',dailyLine.slice(0,80));
+          if(!capRowNow&&/ограничена максимумом/.test(dailyLine)) push('mis_cap_stale',dailyLine.slice(0,80));
+          const pat=(/Пациент: (.+)/.exec(w.__mis)||[])[1]||''; const wv=parseFloat($('weight').value);
+          if(wv>0&&!pat.startsWith('вес '+wv+' кг')) push('mis_weight_mismatch',`${wv} vs «${pat.slice(0,60)}»`);
+          const groupWord={child:'дети',neonate:'новорожденный',adult:'взрослый'}[S.age]; if(groupWord&&!pat.includes('('+groupWord+')')) push('mis_group_mismatch',`${S.age} vs «${pat.slice(0,60)}»`);
         }
         if(BAD.test((w.__mis||'')+(w.__rp||''))) push('export_bad_token','');
         if(NOISE.test((w.__mis||'')+(w.__rp||''))) push('export_float_noise',((w.__mis||'')+(w.__rp||'')).match(/.{0,30}\d+[.,]\d{5,}.{0,30}/)[0]);

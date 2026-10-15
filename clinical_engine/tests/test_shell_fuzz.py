@@ -122,3 +122,7 @@ def test_random_walk_reaches_the_arithmetic_and_export_oracles(fuzz: dict) -> No
     # that rounds to whole tablets instead of halves trips tablet_units_arithmetic
     assert checks.get("tablet_units", 0) >= 10, checks
     assert checks.get("tablet_units_rounded", 0) >= 10, checks
+    # the daily ceiling is reached (amber cap row == the arithmetic) and the chart text
+    # repeats the screen dose on at least a few computed copies
+    assert checks.get("max_daily_capped", 0) >= 2, checks
+    assert checks.get("mis_dose", 0) >= 4, checks
