@@ -882,6 +882,53 @@ async function run() {
       t.drawerClosedByEscape = !drawer.classList.contains('open') && d.activeElement === $('btn-history');
       out.dialogFocus = t;
     }
+
+    // 25. the source gate of a record (calculation_blocked — «расчёт закрыт») holds for
+    //     every re-render: a typed age, an age chip, an allergy change, a #hash deep link
+    //     and the exports / history after them; a computable record still works afterwards
+    {
+      const gated = find((r) => r.calculation_blocked && (r.scenarios || []).some((sc) => sc.age_group !== 'adult'));
+      const g = { id: gated.id };
+      const gstate = () => [
+        w.eval('String(activeScenario && activeScenario.id)'), w.eval('String(activeDrug && getDrugRefs(activeDrug)[0])'),
+        d.querySelectorAll('#scenario-list .scenario-card').length, d.querySelectorAll('#drug-list .drug-card').length,
+        visible($('source-calculation-block')) && txt($('source-calculation-block')).startsWith('РАСЧЁТ ЗАБЛОКИРОВАН'),
+        visible($('drug-step')), visible($('res-po')) || visible($('res-inj')),
+      ].join('|');
+      $('new-patient').click();
+      type($('patient-age'), '30');
+      type($('weight'), '70');
+      w.selectDisease(gated);
+      g.opened = gstate();
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      g.afterAge = gstate();
+      d.querySelector('#age-group button[data-age="neonate"]').click();
+      g.afterChip = gstate();
+      type($('patient-allergy'), 'penicillin_mild');
+      g.afterAllergy = gstate();
+      type($('patient-allergy'), 'none');
+      const n0 = w.eval('historyEntries.length');
+      w.saveToHistory();
+      g.historyAdded = w.eval('historyEntries.length') - n0;
+      w.__copied = null;
+      w.copyForMIS();
+      g.misCopied = !!w.__copied;
+      g.misToast = txt($('toast'));
+      w.dispatchEvent(new w.Event('beforeprint'));
+      g.printDrugs = txt($('rx-drugs'));
+      g.printTrust = txt($('rx-trust-line')).slice(0, 40);
+      const sc = gated.scenarios[0];
+      w.location.hash = '#' + gated.id + '/' + sc.id + '/L' + sc.lines[0].line_number;
+      await sleep(200);
+      g.afterHash = gstate();
+      g.blockReason = w.eval('calculationBlockReason(25)').slice(0, 40);
+      // a computable record right after the gated one computes normally
+      clickDisease('aom_child');
+      type($('patient-age'), '7');
+      g.recovered = [w.eval('activeDisease && activeDisease.id'), visible($('res-po')) || visible($('res-inj')), visible($('source-calculation-block')) && txt($('source-calculation-block')).startsWith('РАСЧЁТ ЗАБЛОКИРОВАН')].join('|');
+      out.sourceGate = g;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }

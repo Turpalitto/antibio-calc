@@ -283,6 +283,7 @@ let DB = %s;
 let activeAge = 'child';
 let lastPickedAge = null;
 let dbBlockingErrors = [];
+let activeDisease = null;
 let activeDrug = null;
 let activeRegimenIdx = 0;
 """
@@ -379,6 +380,9 @@ def test_implausible_age_blocks_the_calculation_like_an_implausible_weight() -> 
         "weightWarnReason",
         "dbBlockReason",
         "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
         "parseAgeToDays",
         "readPatientAge",
         "ageGroupFromDays",
@@ -421,6 +425,9 @@ def test_age_regimen_block_reason_is_explicit_and_blocks() -> None:
         "weightWarnReason",
         "dbBlockReason",
         "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
     ]
     body = (
         "const reason = calculationBlockReason(30);"
@@ -682,6 +689,9 @@ def test_calculate_refuses_to_render_a_dose_for_out_of_range_weight() -> None:
         "weightWarnReason",
         "dbBlockReason",
         "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
         "showDoseBlock",
         "hideDoseBlock",
         "hideDoseResults",
@@ -730,6 +740,9 @@ def test_calculate_renders_normally_when_all_gates_pass() -> None:
         "weightWarnReason",
         "dbBlockReason",
         "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
         "showDoseBlock",
         "hideDoseBlock",
         "hideDoseResults",
@@ -830,7 +843,7 @@ def test_calculation_block_reason_prefers_database_integrity_failure() -> None:
     }
     globals_js = DOSE_BLOCK_GLOBALS + (
         f"const DB = {_lit(fixture)};\nlet activeAge='child';\nlet dbBlockingErrors=['нет freq_per_day'];\n"
-        f"let activeDrug={_lit(drug)};\n"
+        f"let activeDisease=null;\nlet activeDrug={_lit(drug)};\n"
     )
     result = _run(
         [
@@ -842,6 +855,9 @@ def test_calculation_block_reason_prefers_database_integrity_failure() -> None:
         "weightWarnReason",
             "dbBlockReason",
             "calculationBlockReason",
+            "diseaseSourceStatus",
+            "diseaseCalculationGated",
+            "sourceGateReason",
         ],
         globals_js,
         "console.log(JSON.stringify({reason:calculationBlockReason(20)}));",
@@ -1482,7 +1498,7 @@ def test_render_scenarios_never_parses_a_scenario_name_as_markup() -> None:
             }
         ) + ";\n"
     )
-    result = _run(["renderScenarios"], globals_js, _XSS_INSPECTOR + "renderScenarios();console.log(JSON.stringify(report($('scenario-list'))));")
+    result = _run(["diseaseSourceStatus", "diseaseCalculationGated", "renderScenarios"], globals_js, _XSS_INSPECTOR + "renderScenarios();console.log(JSON.stringify(report($('scenario-list'))));")
     _assert_payload_is_inert(result, "renderScenarios")
     assert "Не подходит для выбранной возрастной группы" in result["text"]
 
@@ -1620,6 +1636,9 @@ def test_fill_prescription_form_never_parses_a_drug_name_or_solvent_as_markup() 
         "weightWarnReason",
         "dbBlockReason",
         "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
         "dbTrustState",
         "buildFingerprint",
         "buildIdentifier",
@@ -1912,6 +1931,7 @@ _RX_FUNCS = [
     "ageRegimenBlockReason", "weightBlockReason", "weightWarnReason", "dbBlockReason",
     "calculationBlockReason", "dbTrustState", "buildFingerprint", "buildIdentifier",
     "doseUnitOf", "computeDose", "formatUnits", "fmtDose", "diseaseSourceStatus",
+    "diseaseCalculationGated", "sourceGateReason",
     "formatTablets", "getStandardBottleMl", "calculateCoursePackages",
     "clearPrescriptionForm", "fillPrescriptionForm",
 ]

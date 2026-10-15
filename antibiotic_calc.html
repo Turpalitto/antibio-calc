@@ -1073,6 +1073,17 @@ function diseaseSourceStatus(d){
   const raw = String(d.source_verification_status || 'UNVERIFIED').toUpperCase();
   return /^[A-Z0-9_]{1,64}$/.test(raw) ? raw : 'UNVERIFIED';
 }
+// The source gate of a record («расчёт закрыт» until the owner verifies the source).
+// selectDisease() hides the scenario step for such a record, but every later re-render
+// (typed age, age chip, weight-inferred group, allergy, hash / history restore) must
+// refuse as well — a re-render used to rebuild the scenario list of the gated record,
+// select its first drug and compute, export, print and save a dose under the block notice.
+function diseaseCalculationGated(d){
+  return !!d && diseaseSourceStatus(d) === 'blocked';
+}
+function sourceGateReason(d){
+  return 'РАСЧЁТ ЗАБЛОКИРОВАН: ' + ((d && d.calculation_block_reason) || 'источник требует повторной верификации');
+}
 function init(){
   try{
     const raw = $('db-data').textContent.trim();
@@ -2150,6 +2161,9 @@ function selectDisease(d){
   $('active-indications').textContent = d.indications ? 'Показания: '+d.indications.join('; ') : '';
   $('empty-state').classList.add('hidden');
   if(!applyDiseaseSourceGate(d)){
+    // gated: the previous record's result tiles / allergy banner go too (renderScenarios
+    // is the choke point for a gated record and clears them)
+    renderScenarios();
     updateHash();
     return;
   }
@@ -2267,6 +2281,18 @@ function resetDisease(){
 function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
   const list = $('scenario-list');
   list.innerHTML = '';
+  if(!activeDisease) return;
+  if(diseaseCalculationGated(activeDisease)){
+    // the gate is the ONLY thing this record shows — no scenario cards, no drug, no result
+    activeScenario = null; activeLine = null; activeDrug = null;
+    pickedRouteGroup = null;
+    $('drug-list').innerHTML = '';
+    $('scenario-step').classList.add('hidden'); $('drug-step').classList.add('hidden');
+    $('form-step').classList.add('hidden'); $('result-step').classList.add('hidden');
+    hideDoseResults();
+    updateAllergyBanner();
+    return;
+  }
   let firstVisible = null, firstVisibleCard = null, preferredCard = null;
   activeDisease.scenarios.forEach((s, idx)=>{
     const ageMatch = s.age_group === 'all' || s.age_group === activeAge;
@@ -3104,6 +3130,7 @@ function hideDoseResults(){
 function calculationBlockReason(w){
   const dbReason = dbBlockReason();
   if(dbReason) return 'РАСЧЁТ ЗАБЛОКИРОВАН: '+dbReason+'. Обратитесь к владельцу сборки БД.';
+  if(diseaseCalculationGated(activeDisease)) return sourceGateReason(activeDisease);
   const weightReason = weightBlockReason(w, activeAge);
   if(weightReason) return 'РАСЧЁТ ЗАБЛОКИРОВАН: '+weightReason;
   const ageInputReason = ageInputBlockReason();

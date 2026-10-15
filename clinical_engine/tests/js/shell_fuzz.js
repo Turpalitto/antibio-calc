@@ -99,6 +99,7 @@ setTimeout(async()=>{
     print:()=>w.dispatchEvent(new w.Event('beforeprint')),
     theme:()=>w.toggleTheme(),
   };
+  const getDrugRefsSafe=dr=>{ try{ return w.getDrugRefs(dr).join('+'); }catch(e){ return '?'; } };
   const names=Object.keys(actions);
   const stateStr=()=>w.eval('[activeAge, activeDisease&&activeDisease.id, activeScenario&&activeScenario.id, activeLine&&activeLine.line_number, activeDrug&&getDrugRefs(activeDrug).join("+"), currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
   for(let i=0;i<STEPS;i++){
@@ -128,6 +129,8 @@ setTimeout(async()=>{
       w.__restored=null;
     }
     if(S.sc&&S.dis&&!(S.dis.scenarios||[]).includes(S.sc)) push('scenario_not_in_disease','');
+    // a record under the source gate (calculation_blocked) never gets a scenario / drug / result
+    if(S.dis&&S.dis.calculation_blocked&&(S.sc||S.dr)) push('blocked_record_opened',`${S.dis.id} sc=${S.sc&&S.sc.id} dr=${S.dr&&getDrugRefsSafe(S.dr)}`);
     if(S.ln&&S.sc&&!(S.sc.lines||[]).includes(S.ln)) push('line_not_in_scenario','');
     if(S.dr&&S.ln&&!(S.ln.drugs||[]).includes(S.dr)) push('drug_not_in_line','');
     if(S.dr&&!S.sc) push('drug_without_scenario','');

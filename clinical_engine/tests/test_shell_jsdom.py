@@ -532,3 +532,22 @@ def test_tab_stays_inside_an_open_dialog_and_the_backdrop_closes_the_modal(shell
     assert t["drawerItems"] >= 3 and t["drawerInitialFocus"] is True, t
     assert t["drawerWrapBackward"] is True and t["drawerWrapForward"] is True and t["drawerClosedByEscape"] is True, t
 
+
+def test_the_source_gate_of_a_blocked_record_holds_for_every_re_render(shell: dict) -> None:
+    """REAL HAZARD found by the fuzz gate: a record under the source gate
+    (`calculation_blocked` — «расчёт закрыт» until the owner verifies the source)
+    opened with no scenario cards, but the next typed age / age chip / weight-
+    inferred group / allergy change re-rendered the scenarios of the gated record,
+    selected its first drug and computed, exported, printed and saved a dose under
+    the red block notice. renderScenarios() is now the choke point and
+    calculationBlockReason() names the gate for MIS / Rp / print / history."""
+    g = shell["sourceGate"]
+    gated = "null|null|0|0|true|false|false"
+    assert g["opened"] == gated, g
+    assert g["afterAge"] == gated and g["afterChip"] == gated and g["afterAllergy"] == gated, g
+    assert g["afterHash"] == gated, "a #hash deep link into a gated record must not open its scenario"
+    assert g["historyAdded"] == 0 and g["misCopied"] is False and g["misToast"] == "Нет активного расчёта", g
+    assert g["printDrugs"] == "" and g["printTrust"].startswith("ПЕЧАТЬ НЕВОЗМОЖНА"), g
+    assert g["blockReason"].startswith("РАСЧЁТ ЗАБЛОКИРОВАН"), g
+    assert g["recovered"] == "aom_child|true|false", g
+
