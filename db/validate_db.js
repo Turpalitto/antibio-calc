@@ -414,6 +414,10 @@ function validateDatabase(db) {
               const [lo, hi] = reg.dose_range_mg_kg_day;
               if (reg.dose_range_mg_kg_day.length !== 2 || !(isFiniteNumber(lo) && isFiniteNumber(hi) && lo > 0 && hi >= lo)) {
                 regimenIssues.push(`${where}: dose_range_mg_kg_day must be [low, high] positive numbers${tag}`);
+              } else if (isFiniteNumber(reg.dose_mg_kg_day) && (reg.dose_mg_kg_day < lo || reg.dose_mg_kg_day > hi)) {
+                // the shell computes with dose_mg_kg_day and prints «Диапазон по КР: lo-hi»
+                // next to it — a computed dose outside its own printed range contradicts itself
+                regimenIssues.push(`${where}: dose_mg_kg_day ${reg.dose_mg_kg_day} lies outside dose_range_mg_kg_day [${lo}, ${hi}]${tag}`);
               }
             }
           });

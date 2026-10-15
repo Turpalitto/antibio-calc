@@ -550,6 +550,31 @@ def test_drug_synonyms_must_be_an_array_of_non_empty_strings(synonyms, flagged) 
     assert bool(hits) is flagged, (synonyms, result["warnings"])
 
 
+@pytest.mark.parametrize(
+    ("dose", "rng", "flagged"),
+    [(50, [45, 50], False), (45, [45, 50], False), (40, [45, 50], True), (60, [45, 50], True), (50, None, False)],
+)
+def test_mg_kg_dose_outside_its_own_printed_range_blocks(dose, rng, flagged) -> None:
+    """The shell computes with dose_mg_kg_day and prints «Диапазон по КР: lo-hi» next to
+    the result — a dose outside that range contradicts itself on screen (error for a
+    computable record, warning for a blocked one like every regimen defect)."""
+    db = _db()
+    reg = _regimen(db)
+    reg.pop("dose_mg_day_fixed", None)
+    reg["dose_mg_kg_day"] = dose
+    reg["max_daily_mg"] = 3000
+    if rng is not None:
+        reg["dose_range_mg_kg_day"] = rng
+    result = _validate(db)
+    hits = _errors_matching(result, "lies outside dose_range_mg_kg_day")
+    assert bool(hits) is flagged, (dose, rng, result["errors"])
+    if flagged:
+        db["recommendations"][0]["calculation_blocked"] = True
+        db["recommendations"][0]["calculation_blocked_reason"] = "test"
+        blocked = _validate(db)
+        assert not _errors_matching(blocked, "lies outside") and _warnings_matching(blocked, "lies outside")
+
+
 def test_shipped_database_has_no_shell_parity_warnings() -> None:
     db = json.loads((ROOT / "db" / "antibio_db.json").read_text(encoding="utf-8-sig"))
     result = _validate(db)
