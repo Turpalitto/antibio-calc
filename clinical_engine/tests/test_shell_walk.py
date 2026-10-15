@@ -20,6 +20,7 @@ Node.js or the root devDependencies are absent (CI installs them).
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -33,19 +34,38 @@ JSDOM = PROJECT_ROOT / "node_modules" / "jsdom" / "package.json"
 HARNESS = Path(__file__).with_name("js") / "shell_walk.js"
 
 
+SHARDS = 2
+
+
 @pytest.fixture(scope="module")
 def walk() -> dict:
+    """The five profiles are independent: run them as SHARDS concurrent node
+    processes (``SHELL_WALK_SHARD=i/n``) and merge the outputs."""
     node = shutil.which("node")
     if not node:
         pytest.skip("Node.js is unavailable")
     if not JSDOM.is_file():
         pytest.skip("root devDependencies missing — run `npm ci` (jsdom)")
-    completed = subprocess.run(
-        [node, str(HARNESS), str(HTML), str(CSS)],
-        capture_output=True, text=True, check=False, timeout=600, cwd=PROJECT_ROOT,
-    )
-    assert completed.returncode == 0, completed.stderr[-3000:]
-    return json.loads(completed.stdout)
+    procs = [
+        subprocess.Popen(
+            [node, str(HARNESS), str(HTML), str(CSS)],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=PROJECT_ROOT,
+            env={**os.environ, "SHELL_WALK_SHARD": f"{i}/{SHARDS}"},
+        )
+        for i in range(SHARDS)
+    ]
+    merged: dict = {"profiles": {}, "consoleErrors": [], "findings": []}
+    for i, proc in enumerate(procs):
+        stdout, stderr = proc.communicate(timeout=600)
+        assert proc.returncode == 0, f"shard {i}: {stderr[-3000:]}"
+        part = json.loads(stdout)
+        merged["profiles"].update(part["profiles"])
+        merged["consoleErrors"].extend(part["consoleErrors"])
+        merged["findings"].extend(part["findings"])
+        for key, value in part.items():
+            if key not in ("profiles", "consoleErrors", "findings"):
+                assert merged.setdefault(key, value) == value, (key, merged[key], value)
+    return merged
 
 
 def test_walk_covers_every_computable_nosology_for_every_profile(walk: dict) -> None:

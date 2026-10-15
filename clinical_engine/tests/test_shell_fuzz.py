@@ -21,8 +21,11 @@ and a group change that left no fitting scenario showed a drug list next to
 an unmarked scenario list. Later invariants found the source-gate bypass on
 re-render (T66 — a «расчёт закрыт» record computed and exported a dose after
 the next typed age) and the allergy banner surviving a record with no scenario
-for the group (T67). Two seeds × 800 steps ≈ 30 s in jsdom; skipped when
-Node.js or the root devDependencies are absent (CI installs them).
+for the group (T67); the state ⇔ DOM invariants added later found the regimen
+chips of the previous group under the age block (T72) and the history restore
+losing the group chosen by chip over a typed age (T74). Two seeds × 800 steps,
+run concurrently (≈ 50 s wall time in jsdom); skipped when Node.js or the root
+devDependencies are absent (CI installs them).
 """
 
 from __future__ import annotations
@@ -43,23 +46,37 @@ SEEDS = (11, 23)
 STEPS = 800
 
 
-def _run(seed: int) -> dict:
+def _run_all(seeds: tuple[int, ...]) -> dict[int, dict]:
+    """Run every seed as its own node process, concurrently: the walks are
+    independent and each takes ~50 s in jsdom, so the wall time is one walk."""
     node = shutil.which("node")
     if not node:
         pytest.skip("Node.js is unavailable")
     if not JSDOM.is_file():
         pytest.skip("root devDependencies missing — run `npm ci` (jsdom)")
-    completed = subprocess.run(
-        [node, str(HARNESS), str(HTML), str(CSS), str(seed), str(STEPS)],
-        capture_output=True, text=True, check=False, timeout=600, cwd=PROJECT_ROOT,
-    )
-    assert completed.returncode == 0, completed.stderr[-3000:]
-    return json.loads(completed.stdout)
+    procs = {
+        seed: subprocess.Popen(
+            [node, str(HARNESS), str(HTML), str(CSS), str(seed), str(STEPS)],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=PROJECT_ROOT,
+        )
+        for seed in seeds
+    }
+    results: dict[int, dict] = {}
+    for seed, proc in procs.items():
+        stdout, stderr = proc.communicate(timeout=600)
+        assert proc.returncode == 0, f"seed {seed}: {stderr[-3000:]}"
+        results[seed] = json.loads(stdout)
+    return results
+
+
+@pytest.fixture(scope="module")
+def _runs() -> dict[int, dict]:
+    return _run_all(SEEDS)
 
 
 @pytest.fixture(scope="module", params=SEEDS, ids=[f"seed{s}" for s in SEEDS])
-def fuzz(request: pytest.FixtureRequest) -> dict:
-    return _run(request.param)
+def fuzz(request: pytest.FixtureRequest, _runs: dict[int, dict]) -> dict:
+    return _runs[request.param]
 
 
 def test_random_walk_keeps_every_shell_invariant(fuzz: dict) -> None:

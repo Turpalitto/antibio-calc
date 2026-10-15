@@ -54,14 +54,16 @@ const exportDose = (line, mlWord) => {
 };
 
 // Override for ad-hoc sweeps: SHELL_WALK_PROFILES='[{"name":"child_14.3","age":"3","unit":"years","weight":"14.3"}]'
+// (the two adult profiles walk ~3× more drug states than the others — they head the list
+// so that the 2-shard split of the pytest fixture is balanced)
 const PROFILES = process.env.SHELL_WALK_PROFILES ? JSON.parse(process.env.SHELL_WALK_PROFILES) : [
   { name: 'adult_70', age: '35', unit: 'years', weight: '70' },
-  { name: 'child_7y_25kg', age: '7', unit: 'years', weight: '25' },
-  { name: 'infant_6m_7kg', age: '6', unit: 'months', weight: '7' },
-  { name: 'neonate_10d_3kg', age: '10', unit: 'days', weight: '3.2' },
   // full patient context: renal + pregnancy + allergy flags on every state, so the
   // flags-parity oracle (screen = MIS = Rp = printed form) has something to compare
   { name: 'adult_60_gfr25_pregnant_pen_allergy', age: '29', unit: 'years', weight: '60', gfr: '25', pregnancy: 'yes', allergy: 'penicillin_severe' },
+  { name: 'child_7y_25kg', age: '7', unit: 'years', weight: '25' },
+  { name: 'infant_6m_7kg', age: '6', unit: 'months', weight: '7' },
+  { name: 'neonate_10d_3kg', age: '10', unit: 'days', weight: '3.2' },
 ];
 
 function resultSnapshot() {
@@ -78,7 +80,11 @@ setTimeout(() => {
   const computable = DB.recommendations.filter((r) => !r.calculation_blocked);
   out.computable = computable.length;
   out.blocked = DB.recommendations.length - computable.length;
-  for (const profile of PROFILES) {
+  // SHELL_WALK_SHARD='0/2' runs every second profile starting at 0 — the pytest fixture
+  // runs the shards concurrently and merges the outputs (same oracles, half the wall time)
+  const shard = /^(\d+)\/(\d+)$/.exec(process.env.SHELL_WALK_SHARD || '');
+  const profiles = shard ? PROFILES.filter((_, i) => i % Number(shard[2]) === Number(shard[1])) : PROFILES;
+  for (const profile of profiles) {
     const stats = { diseases: 0, scenarios: 0, drugs: 0, forms: 0, blocked: 0, computed: 0, empty: 0, exports: 0 };
     type($('patient-age-unit'), profile.unit);
     type($('patient-age'), profile.age);
