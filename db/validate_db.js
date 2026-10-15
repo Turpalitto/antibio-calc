@@ -347,6 +347,13 @@ function validateDatabase(db) {
               regimenIssues.push(`${where}: freq_per_day=${JSON.stringify(reg.freq_per_day)} is outside 1..6 per day (a "каждые N ч" parse defect?)${tag}`);
             }
             if (reg.duration_days == null) warnings.push(`${where}: missing duration_days`);
+            // a duration_note that only repeats the drug name is noise the shell prints
+            // verbatim («Указания: Цефтриаксон» in the MIS text, on the form, in history)
+            if (typeof reg.duration_note === 'string' && reg.duration_note.trim()) {
+              const note = reg.duration_note.trim().toLowerCase();
+              const inns = refs.map((k) => (drugsReference[k] && typeof drugsReference[k].inn === 'string') ? drugsReference[k].inn.trim().toLowerCase() : '').filter(Boolean);
+              if (inns.includes(note)) warnings.push(`${where}: duration_note "${reg.duration_note.trim()}" only repeats the drug name — the shell prints it as «Указания: …» (owner review)${tag}`);
+            }
             const courseMatch = reg.duration_days != null ? String(reg.duration_days).trim().match(COURSE_RE) : null;
             if (reg.duration_days != null && !isFiniteNumber(reg.duration_days) && !courseMatch) {
               warnings.push(`${where}: duration_days "${reg.duration_days}" is not a number, "a-b" range or «N дней/нед» — the shell cannot plan a course quantity for it`);

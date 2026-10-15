@@ -513,6 +513,27 @@ def test_component_regimen_keyed_by_a_non_partner_is_a_warning() -> None:
     assert len(stray) == 1 and "(not a combination)" in stray[0], result["warnings"]
 
 
+@pytest.mark.parametrize(
+    ("note", "flagged"),
+    [("Амоксициллин", True), ("  амоксициллин ", True), ("Строго 10 дней", False), ("", False), (None, False)],
+)
+def test_duration_note_that_only_repeats_the_drug_name_is_a_warning(note, flagged) -> None:
+    """copyForMIS()/fillPrescriptionForm() print duration_note verbatim as «Указания: …»;
+    a note that is just the INN tells the physician nothing (cap_adult_in_severe ceftriaxone)."""
+    db = _db()
+    reg = _regimen(db)
+    if note is None:
+        reg.pop("duration_note", None)
+    else:
+        reg["duration_note"] = note
+    result = _validate(db)
+    assert result["errors"] == []
+    hits = _warnings_matching(result, "only repeats the drug name")
+    assert bool(hits) is flagged, (note, result["warnings"])
+    if flagged:
+        assert "«Указания: …»" in hits[0] and "(owner review)" in hits[0]
+
+
 def test_shipped_database_has_no_shell_parity_warnings() -> None:
     db = json.loads((ROOT / "db" / "antibio_db.json").read_text(encoding="utf-8-sig"))
     result = _validate(db)
