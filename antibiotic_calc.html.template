@@ -4547,6 +4547,10 @@ function restoreHistoryEntry(e){
   if(!ref || !DB) return false;
   const disease = DB.recommendations.find(d=>d.id === ref.disease);
   if(!disease){ toast('Нозология из истории не найдена в текущей БД'); return false; }
+  // the whole patient context of the entry comes back — including the name: a re-opened
+  // calculation printed with the name of the NEXT patient in the field (and the age /
+  // weight / regimen of this one) would be a mix-up on paper; an entry without a name clears it
+  if($('patient-name') && 'patient' in e) $('patient-name').value = e.patient || '';
   if($('patient-age-unit') && ref.ageUnit) $('patient-age-unit').value = ref.ageUnit;
   if($('patient-age')){ $('patient-age').value = ref.ageValue || ''; onPatientAgeChange(); }
   if(e.weight > 0){ $('weight').value = e.weight; onWeightChange(); }

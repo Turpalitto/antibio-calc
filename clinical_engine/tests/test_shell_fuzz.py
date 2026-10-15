@@ -73,7 +73,7 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
     expected = {
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient", "resetDisease", "search", "hash", "history", "copy",
-        "print", "theme", "routeThenDrug",
+        "print", "theme", "routeThenDrug", "name",
     }
     assert expected <= set(counts), sorted(expected - set(counts))
     assert all(counts[name] >= 10 for name in expected), counts

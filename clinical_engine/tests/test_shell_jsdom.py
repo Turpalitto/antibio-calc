@@ -259,6 +259,9 @@ def test_history_open_restores_the_saved_calculation_and_hashchange_navigates(sh
     assert h["context"] == "25|no|cephalosporin", h["context"]
     assert "СКФ 25 мл/мин" in h["flagsBefore"] and h["flagsAfter"] == h["flagsBefore"], (h["flagsBefore"], h["flagsAfter"])
     assert h["allergyBadge"] is True
+    # the name is part of the entry too: the printed form of a re-opened calculation must
+    # not carry the NEXT patient's name with this patient's age / weight / regimen
+    assert h["patientName"] == "Иванов И.И. / Иванов И.И.", h["patientName"]
     hc = shell["hashchange"]
     assert hc["before"] != "cap_adult" and hc["after"] == "cap_adult" and hc["scenario"] == "cap_adult_out_no_risk", hc
     # the L<n> part opens that line (first drug); a scenario outside the current age group

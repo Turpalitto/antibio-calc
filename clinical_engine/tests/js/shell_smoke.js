@@ -398,11 +398,13 @@ async function run() {
       type($('patient-gfr'), '25');
       type($('patient-pregnancy'), 'no');
       type($('patient-allergy'), 'cephalosporin');
+      type($('patient-name'), 'Иванов И.И.');
       out.historyRestore = { before, doseBefore: txt($('po-mg')) + ' ' + txt($('po-tabs')), flagsBefore: txt($('patient-safety-banners')) };
       w.saveToHistory();
       type($('patient-gfr'), '');
       type($('patient-pregnancy'), 'unknown');
       type($('patient-allergy'), 'none');
+      type($('patient-name'), 'Петров П.П.');
       type($('patient-age'), '6');
       type($('weight'), '20');
       clickDisease('cap_child');
@@ -419,6 +421,9 @@ async function run() {
       out.historyRestore.context = [$('patient-gfr').value, $('patient-pregnancy').value, $('patient-allergy').value].join('|');
       out.historyRestore.flagsAfter = txt($('patient-safety-banners'));
       out.historyRestore.allergyBadge = visible($('allergy-badge'));
+      w.dispatchEvent(new w.Event('beforeprint'));
+      out.historyRestore.patientName = $('patient-name').value + ' / ' + txt($('rx-patient'));
+      type($('patient-name'), '');
       type($('patient-gfr'), '');
       type($('patient-pregnancy'), 'unknown');
       type($('patient-allergy'), 'none');

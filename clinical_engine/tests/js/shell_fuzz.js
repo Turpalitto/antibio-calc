@@ -49,6 +49,7 @@ setTimeout(async()=>{
   const findings=[]; const counts={}; const checks={}; const tally=k=>{ checks[k]=(checks[k]||0)+1; };
   const actions={
     weight:()=>type($('weight'),pick(['','3.2','7','12.5','25','39.9','45','70','95','0.5','300','12,5'])),
+    name:()=>type($('patient-name'),pick(['','Иванов И.И.','Петрова А.','<b>x</b>'])),
     age:()=>{ type($('patient-age-unit'),pick(['years','months','days'])); type($('patient-age'),pick(['','0','5','10','18','3','7','12','35','70','150'])); },
     ageChip:()=>pick([...d.querySelectorAll('#age-group button')]).click(),
     gfr:()=>type($('patient-gfr'),pick(['','0','15','25','45','90','1500','-5'])),
@@ -92,7 +93,7 @@ setTimeout(async()=>{
         const i=Math.floor(rnd()*btns.length);
         const entry=w.eval('JSON.stringify(historyEntries['+i+'])'); const e=JSON.parse(entry);
         const ok=w.restoreHistoryEntry(e);
-        w.__restored={ok, ref:e.ref, weight:e.weight, ageGroup:e.ageGroup, toast:txt($('toast'))};
+        w.__restored={ok, ref:e.ref, weight:e.weight, ageGroup:e.ageGroup, patient:e.patient, toast:txt($('toast'))};
       }
     },
     copy:()=>{ w.__copied=null; w.copyForMIS(); w.__mis=w.__copied; w.__copied=null; w.copyLatinRecipe(); w.__rp=w.__copied; },
@@ -125,6 +126,7 @@ setTimeout(async()=>{
       [['dis','disease'],['sc','scenario'],['ln','line'],['dr','drug'],['route','route'],['form','formIdx'],['reg','regimenIdx'],['gfr','gfr'],['preg','pregnancy'],['all','allergy']].forEach(([k,rk])=>{ if(String(now[k])!==String(ref[rk])) diffs.push(`${rk}: ${ref[rk]} → ${now[k]}`); });
       if(r.ageGroup&&now.age!==r.ageGroup) diffs.push(`ageGroup: ${r.ageGroup} → ${now.age}`);
       if(r.weight>0&&now.weight!==r.weight) diffs.push(`weight: ${r.weight} → ${now.weight}`);
+      if(r.ok&&$('patient-name').value!==(r.patient||'')) diffs.push(`patient: «${r.patient}» → «${$('patient-name').value}»`);
       if(diffs.length) push('history_restore_mismatch',diffs.join('; '));
       w.__restored=null;
     }
