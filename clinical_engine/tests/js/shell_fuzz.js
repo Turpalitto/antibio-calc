@@ -48,6 +48,11 @@ setTimeout(async()=>{
   }));
   const findings=[]; const counts={}; const checks={}; const tally=k=>{ checks[k]=(checks[k]||0)+1; };
   const toInjectable=()=>{ if(shown($('res-inj'))) return; const inj=q('#route-tabs button').filter(b=>/^(в\/в|в\/м)$/.test(txt(b))&&!b.classList.contains('active')); if(inj.length) pick(inj).click(); };
+  // Tab as a browser would do it: dispatch keydown on the focused element; when the shell
+  // did not preventDefault, move to the next / previous focusable element of the document
+  // (hidden / inert subtrees skipped)
+  const docFocusables=()=>[...d.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')].filter(el=>!el.closest('[hidden], .hidden, [inert]')&&w.getComputedStyle(el).display!=='none'&&w.getComputedStyle(el).visibility!=='hidden');
+  const pressTab=(shift)=>{ const from=d.activeElement||d.body; const ev=new w.KeyboardEvent('keydown',{key:'Tab',shiftKey:!!shift,bubbles:true,cancelable:true}); from.dispatchEvent(ev); if(ev.defaultPrevented) return; const items=docFocusables(); const i=items.indexOf(from); const next=items.length?items[((i<0?(shift?0:-1):i)+(shift?-1:1)+items.length)%items.length]:null; if(next) next.focus(); else if(from.blur) from.blur(); };
   const actions={
     weight:()=>type($('weight'),pick(['','3.2','7','12.5','25','39.9','45','70','95','0.5','300','12,5'])),
     name:()=>type($('patient-name'),pick(['','Иванов И.И.','Петрова А.','<b>x</b>'])),
@@ -106,6 +111,27 @@ setTimeout(async()=>{
     },
     copy:()=>{ w.__copied=null; w.copyForMIS(); w.__mis=w.__copied; w.__copied=null; w.copyLatinRecipe(); w.__rp=w.__copied; },
     print:()=>w.dispatchEvent(new w.Event('beforeprint')),
+    // a dialog session: open the КР modal or the history drawer, press Tab / Shift+Tab a
+    // few times (focus must stay inside), close it by Escape / its × / the backdrop — the
+    // dialog must be closed afterwards with the focus back on the opener
+    dialog:()=>{
+      w.__dialog=null;
+      const which=rnd()<0.5?'modal':'drawer';
+      // through the buttons the physician sees (the КР button lives in the result step)
+      if(which==='modal'){ if(!shown($('btn-guideline-modal'))) return; $('btn-guideline-modal').click(); } else { $('btn-history').click(); }
+      const box=which==='modal'?$('guideline-modal'):$('history-drawer');
+      const open=()=>which==='modal'?!box.classList.contains('hidden'):box.classList.contains('open');
+      const r={which, opened:open(), initialInside:box.contains(d.activeElement), escaped:[]};
+      const n=1+Math.floor(rnd()*6);
+      for(let i=0;i<n;i++){ const shift=rnd()<0.4; pressTab(shift); if(!box.contains(d.activeElement)) r.escaped.push((shift?'S':'')+'Tab#'+i+'→'+(d.activeElement&&(d.activeElement.id||d.activeElement.tagName))); }
+      r.tabs=n;
+      r.how=pick(['esc','button','backdrop']);
+      if(r.how==='esc') (d.activeElement||d).dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));
+      else if(r.how==='button'){ const b=which==='modal'?box.querySelector('button[aria-label]'):$('drawer-close'); b.click(); }
+      else { if(which==='modal') box.click(); else $('drawer-overlay').click(); }
+      r.closed=!open(); r.focusOnOpener=d.activeElement===(which==='modal'?$('btn-guideline-modal'):$('btn-history'));
+      w.__dialog=r;
+    },
     theme:()=>w.toggleTheme(),
   };
   const getDrugRefsSafe=dr=>{ try{ return w.getDrugRefs(dr).join('+'); }catch(e){ return '?'; } };
@@ -130,6 +156,23 @@ setTimeout(async()=>{
       tally('new_patient_reset');
       const left=[['patient-name',''],['weight',''],['patient-age',''],['patient-gfr',''],['patient-pregnancy','unknown'],['patient-allergy','none']].filter(([id,v])=>$(id).value!==v).map(([id])=>`${id}=«${$(id).value}»`);
       if(left.length||S.dis||w.location.hash) push('new_patient_context_left',left.join(', ')+(S.dis?' disease='+S.dis.id:'')+(w.location.hash?' hash='+w.location.hash:''));
+    }
+    if(name==='dialog'&&w.__dialog){
+      const r=w.__dialog; tally('dialog_'+r.which);
+      if(!r.opened) push('dialog_not_opened',r.which);
+      else {
+        if(!r.initialInside) push('dialog_focus_not_moved_in',`${r.which}: ${d.activeElement&&d.activeElement.id}`);
+        if(r.escaped.length) push('dialog_focus_escaped',`${r.which}: ${r.escaped.join(', ')}`);
+        if(!r.closed) push('dialog_not_closed',`${r.which} by ${r.how}`);
+        if(r.closed&&!r.focusOnOpener) push('dialog_focus_not_returned',`${r.which} by ${r.how} → ${d.activeElement&&(d.activeElement.id||d.activeElement.tagName)}`);
+      }
+      w.__dialog=null;
+    }
+    // no dialog stays open after an action, and the closed drawer is inert for assistive tech
+    {
+      const modalOpen=!$('guideline-modal').classList.contains('hidden'); const drawer=$('history-drawer'); const drawerOpen=drawer.classList.contains('open');
+      if(modalOpen||drawerOpen) push('dialog_left_open',`modal ${modalOpen} drawer ${drawerOpen}`);
+      if(!drawerOpen&&(!drawer.hasAttribute('inert')||drawer.getAttribute('aria-hidden')!=='true')) push('drawer_not_inert',`inert ${drawer.hasAttribute('inert')} aria-hidden ${drawer.getAttribute('aria-hidden')}`);
     }
     if(name==='history'&&w.__historyDelta){ if(w.__historyDelta.blocked&&w.__historyDelta.added>0) push('history_saved_while_blocked',''); w.__historyDelta=null; }
     if(name==='history'&&w.__restored){
