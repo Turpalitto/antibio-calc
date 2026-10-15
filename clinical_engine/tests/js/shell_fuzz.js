@@ -57,7 +57,17 @@ setTimeout(async()=>{
     resetDisease:()=>w.resetDisease(),
     search:()=>{ type($('search'),pick(['пневмония','цистит','отит','J18','амоксициллин','сепсис','ин'])); const hits=[...d.querySelectorAll('#results-box > div[role=button]')]; if(hits.length) pick(hits).click(); },
     hash:()=>{ const r=pick(computable); const sc=pick(r.scenarios||[]); w.location.hash='#'+r.id+(sc?'/'+sc.id+(rnd()<0.5?'/L'+pick(sc.lines).line_number:''):''); },
-    history:()=>{ const n0=w.eval('historyEntries.length'); const blocked=w.eval('activeDrug ? !!calculationBlockReason(parseFloat($("weight").value)) : true'); w.saveToHistory(); const n1=w.eval('historyEntries.length'); w.__historyDelta={blocked, added:n1-n0}; const btns=d.querySelectorAll('#history-list [data-action="restore"]'); if(btns.length&&rnd()<0.7) pick([...btns]).click(); },
+    history:()=>{
+      const n0=w.eval('historyEntries.length'); const blocked=w.eval('activeDrug ? !!calculationBlockReason(parseFloat($("weight").value)) : true');
+      w.saveToHistory(); const n1=w.eval('historyEntries.length'); w.__historyDelta={blocked, added:n1-n0}; w.__restored=null;
+      const btns=[...d.querySelectorAll('#history-list [data-action="restore"]')];
+      if(btns.length&&rnd()<0.7){
+        const i=Math.floor(rnd()*btns.length);
+        const entry=w.eval('JSON.stringify(historyEntries['+i+'])'); const e=JSON.parse(entry);
+        const ok=w.restoreHistoryEntry(e);
+        w.__restored={ok, ref:e.ref, weight:e.weight, ageGroup:e.ageGroup, toast:txt($('toast'))};
+      }
+    },
     copy:()=>{ w.__copied=null; w.copyForMIS(); w.__mis=w.__copied; w.__copied=null; w.copyLatinRecipe(); w.__rp=w.__copied; },
     print:()=>w.dispatchEvent(new w.Event('beforeprint')),
     theme:()=>w.toggleTheme(),
@@ -77,6 +87,18 @@ setTimeout(async()=>{
     if(S.dis&&w.location.hash&&!w.location.hash.startsWith('#'+S.dis.id)) push('hash_mismatch',`${w.location.hash.slice(0,60)} vs ${S.dis.id}`);
     if(!S.dis&&w.location.hash) push('hash_without_disease',w.location.hash.slice(0,60));
     if(name==='history'&&w.__historyDelta){ if(w.__historyDelta.blocked&&w.__historyDelta.added>0) push('history_saved_while_blocked',''); w.__historyDelta=null; }
+    if(name==='history'&&w.__restored){
+      // «Открыть расчёт» must re-open exactly what was saved (same DB, same age group)
+      const r=w.__restored, ref=r.ref;
+      const now=w.eval('({dis:activeDisease&&activeDisease.id, sc:activeScenario&&activeScenario.id, ln:activeLine&&activeLine.line_number, dr:activeDrug&&getDrugRefs(activeDrug).join("+"), route:currentRouteGroup, form:activeFormIdx, reg:activeRegimenIdx, age:activeAge, gfr:$("patient-gfr").value, preg:$("patient-pregnancy").value, all:$("patient-allergy").value, weight:parseFloat($("weight").value)})');
+      const diffs=[];
+      if(!r.ok) diffs.push('restore returned false: '+r.toast);
+      [['dis','disease'],['sc','scenario'],['ln','line'],['dr','drug'],['route','route'],['form','formIdx'],['reg','regimenIdx'],['gfr','gfr'],['preg','pregnancy'],['all','allergy']].forEach(([k,rk])=>{ if(String(now[k])!==String(ref[rk])) diffs.push(`${rk}: ${ref[rk]} → ${now[k]}`); });
+      if(r.ageGroup&&now.age!==r.ageGroup) diffs.push(`ageGroup: ${r.ageGroup} → ${now.age}`);
+      if(r.weight>0&&now.weight!==r.weight) diffs.push(`weight: ${r.weight} → ${now.weight}`);
+      if(diffs.length) push('history_restore_mismatch',diffs.join('; '));
+      w.__restored=null;
+    }
     if(S.sc&&S.dis&&!(S.dis.scenarios||[]).includes(S.sc)) push('scenario_not_in_disease','');
     if(S.ln&&S.sc&&!(S.sc.lines||[]).includes(S.ln)) push('line_not_in_scenario','');
     if(S.dr&&S.ln&&!(S.ln.drugs||[]).includes(S.dr)) push('drug_not_in_line','');
