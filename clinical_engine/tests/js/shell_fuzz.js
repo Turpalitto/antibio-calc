@@ -120,6 +120,19 @@ setTimeout(async()=>{
       actions.copy();
       w.dispatchEvent(new w.Event('beforeprint'));
     },
+    // T99: a low weight switches the selected group from adult to child even without
+    // an entered age; make sure that change-of-basis note survives every export.
+    ageInferenceExport:()=>{
+      $('new-patient').click(); // default child group, with no manually entered age
+      type($('weight'),'70'); // the weight switches child → adult
+      const rec=DB.recommendations.find(r=>r.id==='cap_adult'); if(!rec) return;
+      w.selectDisease(rec);
+      const scenario=q('#scenario-list .scenario-card'); if(scenario.length) scenario[0].click();
+      const drug=q('#drug-list .drug-card').find(c=>/Амоксициллин(?!\s*\+)/i.test(txt(c)));
+      if(drug) drug.click();
+      actions.copy();
+      w.dispatchEvent(new w.Event('beforeprint'));
+    },
     // the group chosen by chip over a typed age (allowed, flagged): type an age and click
     // the chip of another group — the plain walk resets the age too often to stay there
     chipOverAge:()=>{ type($('patient-age-unit'),pick(['years','months'])); type($('patient-age'),pick(['12','150','20','2'])); const other=[...d.querySelectorAll('#age-group button')].filter(b=>!b.classList.contains('active')); if(other.length) pick(other).click(); actions.copy(); },
@@ -217,7 +230,19 @@ setTimeout(async()=>{
         if(!txt($('rx-safety-line')).includes(caution)) push('zero_age_print_missing',txt($('rx-safety-line')).slice(0,120));
       }
     }
+    if(name==='ageInferenceExport'){
+      const caution=txt($('age-infer-notice'));
+      if(!caution) push('age_inference_notice_missing','weight did not leave a visible age-basis notice');
+      else {
+        tally('age_inference_export');
+        if(!txt($('patient-safety-banners')).includes(caution)) push('age_inference_banner_missing',txt($('patient-safety-banners')).slice(0,100));
+        if(!(w.__mis||'').includes(caution)) push('age_inference_mis_missing',(w.__mis||'').slice(-120));
+        if(!(w.__rp||'').includes(caution)) push('age_inference_rp_missing',(w.__rp||'').slice(-120));
+        if(!txt($('rx-safety-line')).includes(caution)) push('age_inference_print_missing',txt($('rx-safety-line')).slice(0,120));
+      }
+    }
     if(name==='theme'&&w.__themeExpected){
+
       let stored=null; try{ stored=w.localStorage.getItem('antibio_theme'); }catch(_){}
       if(stored!==w.__themeExpected) push('theme_toggle_not_persisted',`expected ${w.__themeExpected}, stored ${stored}`);
       const icon=$('theme-icon'); const wanted=w.__themeExpected==='dark'?'fa-sun':'fa-moon';

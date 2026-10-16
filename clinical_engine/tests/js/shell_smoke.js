@@ -616,6 +616,26 @@ async function run() {
       type($('weight'), '300');
       out.plausibility.w300 = warn();
       type($('weight'), '70');
+      // T99: the weight can auto-switch the dosing age group. Keep the visible
+      // «basis changed» notice in the result, MIS / Rp and printed form too.
+      $('new-patient').click(); // clears the prior manual group choice; default is child
+      type($('weight'), '70'); // weight inference switches child → adult
+      clickDisease('cap_adult');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      w.__copied = ''; w.copyForMIS(); await sleep(0); const inferenceMis = w.__copied || '';
+      w.__copied = ''; w.copyLatinRecipe(); await sleep(0); const inferenceRp = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.plausibility.ageInferenceExports = {
+        ageGroup: w.eval('activeAge'),
+        patientAgeDays: w.eval('patientAgeDays'),
+        notice: txt($('age-infer-notice')),
+        flags: txt($('patient-safety-banners')),
+        mis: inferenceMis,
+        rp: inferenceRp,
+        printed: txt($('rx-safety-line')),
+      };
+      type($('patient-age'), '35');
+      type($('weight'), '70');
     }
     // 13. keyboard search: Enter opens the top result, arrows walk the list, Escape clears
     {

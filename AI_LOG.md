@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T98): bounded morphology, age-entry/export safety, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T99): bounded morphology, patient-context export safety, fuzz oracles, theme persistence, CodeQL
 
 - **T91 `b50988d` (search):** stems of at least six letters may match after at most two deleted
   letters at the end; shorter stems stay word-start-only. The «отит» list remains clean while
@@ -60,11 +60,26 @@
   the action. A mutant that drops the flag produces 10 missing-banner / MIS / Rp / print
   findings in 800 steps. Six further 2,000-step seeds (3131–8181) have 0 findings and each
   reaches the warning 46–63 times.
-- **Verification at T98 locally:** 2850 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
-  436 warnings; ruff clean; axe 0; generated shell fresh (`build-6caea849d0ff`). CI + CodeQL
-  are green through `74b1dc8`; T98 passes the full local gate, with remote checks pending on
-  push. Extended fuzz seeds 1111–2222 and 3131–8181 × 2000 are clean; earlier 909 / 1010 are
-  clean as well. DB and frozen modules unchanged.
+- **T99 (patient-context notice export gap):** weight-based age inference can change the
+  dosing group («дети» → «взрослые» or vice versa) without an explicit age; the on-screen
+  «basis changed» note, the manual «новорождённые» group without an age, and an unparsed
+  numeric patient field were not carried into the result safety banner / MIS / Rp / print.
+  A single `patientEntryCautionTexts()` now repeats only visible, non-blocking notes; existing
+  weight cautions are not duplicated, and block / missing-weight gates stay unchanged. The
+  newborn no-age string is shared with `updateWeightWarn()` to avoid drift. Unit tests exercise
+  newborn / inference / bad-input notes and their flags; jsdom drives the built «Новый пациент»
+  → weight 70 kg → inferred adult → computable CAP regimen through MIS, Rp and print. Fuzz
+  steers and checks all four surfaces; fixed seeds 11 / 23 × 800 have 0 findings (15 / 26
+  inference exports). Four additional 2,000-step seeds (9191, 10202, 11313, 12424) have 0
+  findings and reach inference exports 32–61 times each. A mutant dropping the context flag
+  reports 60 findings; the first 10 forced cases independently detect missing banner, MIS, Rp
+  and print warnings.
+- **Verification at T99 locally:** 2852 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
+  436 warnings; ruff clean; axe 0; generated shell fresh (`build-f4b19b1b5908`). The full gate
+  passes after correcting an old smoke assertion to expect the newly intentional inference
+  banner. CI + CodeQL completed successfully for T98 at `b27ee62`; T99 remote checks are
+  pending push. Extended fuzz seeds 1111–2222, 3131–8181 and 9191–12424 × 2000 are clean;
+  earlier 909 / 1010 are clean as well. DB and frozen modules unchanged.
 
 ## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)
 

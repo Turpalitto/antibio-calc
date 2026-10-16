@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T98): search, age entry/exports, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T99): search, patient-context exports, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -13,7 +13,7 @@
   The oracle now models both cases; a steered cotrimoxazole 400+80-mg tablet path is reached
   by CI. Mutants that silently open an ambiguous tag (4 findings) or omit the sum basis (40
   arithmetic findings) are caught. Corrected CI seeds 11 / 23 and extended seeds 1111–2222
-  have 0 findings; each extended seed reaches the combo path 36–67 times.
+  have 0 findings and reach the combo path.
 - The random-walk fuzz gate compares displayed MIS / Rp frequency against the selected
   regimen's `freq_per_day`; a deliberate `freq + 1` mutant is caught (11 findings). Theme
   persistence now has reload-style jsdom coverage plus a random-walk invariant for storage /
@@ -26,11 +26,17 @@
   + jsdom end-to-end + fuzz test a computable neonatal regimen, all exports and no-warning
   boundaries; a mutant omitting the flag yields 10 findings. Six additional 2,000-step seeds
   3131–8181 are clean, reaching the age-zero export path 46–63 times each.
-- Tests: **2850 passed / 28 skipped / 0 failed** at the full local gate; validate 0 / 436; ruff
-  clean; axe 0; generated shell `build-6caea849d0ff`; DB unchanged (`56727a27f050…`). CI +
-  CodeQL are green through `74b1dc8`; T98 remote checks pending on push. Remaining skips require
-  owner-controlled clinical source or review-workbench artifacts. Real-browser / visual pass
-  remains for the owner.
+- T99 makes every visible, non-blocking patient-context caveat travel with a computed result:
+  weight-inferred age-group switches, newborn group without explicit age, and invalid numeric
+  input. A unit matrix verifies the three notices; jsdom verifies the auto-switch case in all
+  export paths. Fuzz seeds 11 / 23 × 800: 0 findings, 15 / 26 age-inference exports; omission
+  mutant is detected across banner / MIS / Rp / print. Four 2,000-step sweeps (9191, 10202,
+  11313, 12424) are clean and reach the inference path 32–61 times each.
+- Tests: **2852 passed / 28 skipped / 0 failed** at the full local gate; validate 0 / 436; ruff
+  clean; axe 0; generated shell `build-f4b19b1b5908`; DB unchanged (`56727a27f050…`). CI +
+  CodeQL are green through T98 commit `b27ee62`; T99 remote checks pending on push. Remaining
+  skips require owner-controlled clinical source or review-workbench artifacts. Real-browser /
+  visual pass remains for the owner.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 

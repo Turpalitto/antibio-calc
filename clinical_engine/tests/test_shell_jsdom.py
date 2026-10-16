@@ -71,7 +71,8 @@ def test_search_select_drug_weight_flow_through_the_dom(shell: dict) -> None:
     assert adult["ageGroup"] == "adult"
     assert adult["resultVisible"] is True
     assert adult["mg"] == "100 мг" and "1 таб" in adult["tabs"]
-    assert adult["flagsVisible"] is False
+    assert adult["flagsVisible"] is True
+    assert adult["flags"].startswith("Вес 70 кг автоматически переключил возрастную группу"), adult["flags"]
 
 
 def test_age_typed_next_to_the_unit_selector_drives_the_age_group(shell: dict) -> None:
@@ -137,6 +138,17 @@ def test_zero_years_age_caution_is_repeated_in_mis_rp_and_printed_form(shell: di
     assert "Предупреждение: «0 лет» прочитано как 0 дней" in p["mis"], p["mis"]
     assert "! Предупреждение: «0 лет» прочитано как 0 дней" in p["rp"], p["rp"]
     assert "Предупреждение: «0 лет» прочитано как 0 дней" in p["printed"], p["printed"]
+
+
+def test_weight_inferred_age_basis_caution_is_repeated_in_exports(shell: dict) -> None:
+    p = shell["plausibility"]["ageInferenceExports"]
+    assert p["ageGroup"] == "adult" and p["patientAgeDays"] is None, p
+    assert p["notice"].startswith("Вес 70 кг автоматически переключил возрастную группу")
+    assert "возрастную группу с «дети» на «взрослые»" in p["notice"], p["notice"]
+    assert p["notice"] in p["flags"], p["flags"]
+    assert "Предупреждение: " + p["notice"] in p["mis"], p["mis"]
+    assert "! Предупреждение: " + p["notice"] in p["rp"], p["rp"]
+    assert "Предупреждение: " + p["notice"] in p["printed"], p["printed"]
 
 
 def test_theme_toggle_persists_and_restores_after_reload(shell: dict) -> None:

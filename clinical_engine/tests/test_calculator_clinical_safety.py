@@ -206,6 +206,9 @@ PATIENT_CONTEXT_SUPPORT = [
     "exportSafetyFlags",
     "ageGroupMismatchCaution",
     "ageZeroEntryCaution",
+    "patientEntryCautionTexts",
+    "newbornAgeEntryCaution",
+    "showAgeInferenceNotice",
     "ageGroupFromDays",
     "ageGroupLabel",
     "regimenDataCaution",
@@ -2540,6 +2543,35 @@ def test_unparsed_number_input_is_named_instead_of_asking_for_a_weight() -> None
     assert result["badAll"]["bad"] == ["вес", "возраст", "СКФ"] and result["badAll"]["text"].startswith("Поле «вес», «возраст», «СКФ» содержит")
     assert result["clean"] == {"text": "Для этого режима нужен вес пациента — доза рассчитывается по мг/кг.", "hint": ""}
     assert result["blockWins"]["text"].startswith("Вес 300 кг") and result["blockWins"]["blocking"] == "true", "a plausibility block outranks the hint"
+
+
+def test_nonblocking_patient_entry_cautions_are_flags_and_exports() -> None:
+    """Age-group inference, an unconfirmed newborn group and invalid numeric input
+    are visible while a result may still be copied: keep those exact notes in the
+    shared safety flags and therefore in every export."""
+    db = _fixture_db()
+    db["drugs_reference"]["probe"] = {"inn": "Тестовый препарат", "forms": []}
+    body = (
+        "const out={}; const flags=()=>collectPatientSafetyFlags(['probe']).map(f=>f.level+':'+f.text);"
+        "activeAge='neonate'; patientAgeDays=null; $('weight').value='3.2'; updateWeightWarn(false);"
+        "out.newborn={notice:$('weight-warn').querySelector('span').textContent,flags:flags(),exports:exportSafetyFlags(['probe']).map(f=>f.text)};"
+        "$('weight-warn').classList.add('hidden'); activeAge='child'; lastPickedAge='adult'; showAgeInferenceNotice(20,'child','adult');"
+        "out.inference={notice:$('age-infer-notice').querySelector('span').textContent,flags:flags(),exports:exportSafetyFlags(['probe']).map(f=>f.text)};"
+        "$('age-infer-notice').classList.add('hidden'); $('weight').value=''; $('weight').validity={badInput:true};"
+        "$('patient-age').validity={badInput:true}; $('patient-gfr').validity={badInput:true}; updateWeightWarn(false);"
+        "out.invalid={notice:$('weight-warn').querySelector('span').textContent,flags:flags(),exports:exportSafetyFlags(['probe']).map(f=>f.text)};"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["updateWeightWarn"], _age_globals(db), body)
+    assert result["newborn"]["notice"].startswith("Группа «новорождённые» выбрана без указания возраста")
+    assert result["newborn"]["flags"] == ["warn:" + result["newborn"]["notice"]]
+    assert result["newborn"]["exports"] == [result["newborn"]["notice"]]
+    assert result["inference"]["notice"].startswith("Вес 20 кг автоматически переключил возрастную группу")
+    assert result["inference"]["flags"] == ["warn:" + result["inference"]["notice"]]
+    assert result["inference"]["exports"] == [result["inference"]["notice"]]
+    assert result["invalid"]["notice"].startswith("Поле «вес», «возраст», «СКФ» содержит нечисловое значение")
+    assert result["invalid"]["flags"] == ["warn:" + result["invalid"]["notice"]]
+    assert result["invalid"]["exports"] == [result["invalid"]["notice"]]
 
 
 def test_render_patient_safety_flags_builds_nodes_and_clears() -> None:

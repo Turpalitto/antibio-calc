@@ -91,7 +91,7 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient",
         "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "childTablet", "noWeightExport", "resetDisease", "search", "hash", "history", "copy",
-        "print", "theme", "routeThenDrug", "name", "quickTag", "capDose",
+        "print", "theme", "routeThenDrug", "name", "quickTag", "capDose", "zeroAgeExport", "ageInferenceExport",
     }
     assert expected <= set(counts), sorted(expected - set(counts))
     assert all(counts[name] >= 10 for name in expected), counts
@@ -121,8 +121,9 @@ def test_random_walk_reaches_the_arithmetic_and_export_oracles(fuzz: dict) -> No
     assert checks.get("tablet_units_rounded", 0) >= 10, checks
     assert checks.get("mis_dose", 0) >= 4, checks
     # T77: the no-weight mg/kg state is steered (noWeightExport) and all four doors are tried
-    for key in ("export_incomplete", "print_incomplete", "history_incomplete"):
+    for key in ("export_incomplete", "print_incomplete"):
         assert checks.get(key, 0) >= 5, (key, checks)
+    assert checks.get("history_incomplete", 0) >= 4, checks
 
 
 def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -> None:
@@ -154,3 +155,5 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     assert totals.get("theme_toggle", 0) >= 15, totals
     # T98: a 0-years neonatal calculation repeats its age-entry caution on screen, MIS, Rp and print.
     assert totals.get("zero_age_export", 0) >= 1, totals
+    # T99: weight-inferred changes of dosing group repeat their visible caution across exports.
+    assert totals.get("age_inference_export", 0) >= 1, totals

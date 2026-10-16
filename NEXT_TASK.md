@@ -1,21 +1,21 @@
-## 2026-10-16 (after round 6, T91–T98): next steps
+## 2026-10-16 (after round 6, T91–T99): next steps
 
 1. **Owner-physician / owner-browser work remains authoritative and unchanged.** No clinical
    DB values, blocked records, dose thresholds, route defaults, or source decisions were
-   changed in T91–T98. The open items below (DOSA review, missing evidence, max doses, dose
+   changed in T91–T99. The open items below (DOSA review, missing evidence, max doses, dose
    basis, forms/routes, pediatric cystitis, synonyms, etc.) stay with the owner.
 2. **Real-browser / visual pass (owner):** confirm that changing the age unit updates the
-   «0 лет» / «0 мес» notice immediately, «0 дней» remains an ordinary newborn entry, and the
-   non-blocking warning is legible both by the age field and on the result / copied MIS / Rp /
-   printed form for a computable neonatal regimen. jsdom covers the flows; no real browser is
-   available in this sandbox.
+   «0 лет» / «0 мес» notice immediately, «0 дней» remains an ordinary newborn entry, and a
+   weight-inferred age-group switch / newborn-without-age note is legible in the result and in
+   MIS / Rp / print. Also verify the non-blocking zero-age caution on a computable neonatal
+   regimen. jsdom covers these flows; no real browser is available in this sandbox.
 3. **Engineering continuation:** fuzz frequency parity, combined-tablet arithmetic, theme
-   storage / restore, and the age-zero export caution are reached in tests and proven against
-   mutants; the latest six 2,000-step seeds are clean. The quick-tag list oracle distinguishes
-   an ambiguous list from a one-record open. The CodeQL-reported script-tag test issue is fixed
-   with stdlib HTML parsing; CI + CodeQL were green through `74b1dc8`. T98 passes the full local
-   gate; remote checks are pending on push. No production DB / clinical data changed. Continue
-   only with independently demonstrated defects or testable robustness gaps. Do not merge PR #1,
+   storage / restore, age-zero exports, and inferred-age/context warnings are tested and proven
+   against mutants; four new 2,000-step sweeps are clean. The quick-tag oracle distinguishes
+   an ambiguous list from a one-record open. The CodeQL script-parser issue is fixed with stdlib
+   HTML parsing; CI + CodeQL are green through T98 (`b27ee62`). T99 passes the full local gate;
+   remote checks are pending on push. No production DB / clinical data changed. Continue only
+   with independently demonstrated defects or testable robustness gaps. Do not merge PR #1,
    choose a LICENSE, change `corpus_config`, or connect the Clinical Engine.
 
 ## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)
