@@ -1730,15 +1730,10 @@ function updateExplicitAgeNotice(){
   if(group !== activeAge){
     text += ' Сейчас выбрана группа «'+ageGroupLabel(activeAge)+'» — она не соответствует введённому возрасту, проверьте выбор.';
   }
-  // «0 лет» for an infant of a few months lands in «новорождённые» (0 days): say how
-  // to enter the age instead of quietly dosing a six-month-old as a newborn
-  const unitEl = $('patient-age-unit');
-  const unit = unitEl ? unitEl.value : 'years';
-  if(patientAgeDays === 0 && unit !== 'days'){
-    text += unit === 'years'
-      ? ' «0 лет» прочитано как 0 дней: если пациенту несколько месяцев или дней — укажите возраст в месяцах или днях.'
-      : ' «0 мес» прочитано как 0 дней: если пациенту несколько дней — укажите возраст в днях.';
-  }
+  // «0 лет» can mean an infant of several months, but the parser necessarily reads it as
+  // 0 days; keep the entry hint and every export flag on the same helper text.
+  const ageEntryCaution = ageZeroEntryCaution();
+  if(ageEntryCaution) text += ' ' + ageEntryCaution;
   el.querySelector('span').textContent = text;
   el.classList.remove('hidden');
 }
@@ -1868,6 +1863,11 @@ function collectPatientSafetyFlags(refs){
   // patient-level: an implausible GFR travels with the drug flags (screen + exports)
   const gfrCaution = (refs && refs.length) ? gfrInputCaution() : '';
   if(gfrCaution) flags.push({level:'warn', text:gfrCaution});
+  // «0 лет» / «0 мес» parse to 0 days and «новорождённые». The visible input hint
+  // must travel with MIS / Rp / print too: otherwise a six-month-old entered as 0 years
+  // could be copied as a neonatal regimen with no trace of the age-entry ambiguity.
+  const ageEntryCaution = (refs && refs.length) ? ageZeroEntryCaution() : '';
+  if(ageEntryCaution) flags.push({level:'warn', text:ageEntryCaution});
   return flags;
 }
 // Allergy status of the active drug(s) as an export flag. On screen it is the
@@ -1922,6 +1922,14 @@ function regimenDataCaution(){
   const weightEl = $('weight');
   const w = weightEl ? parseFloat(weightEl.value) : NaN;
   return computeDose(reg, w, doseUnitOf(ref)).inconsistent ? REGIMEN_INCONSISTENT_TEXT : '';
+}
+function ageZeroEntryCaution(){
+  if(patientAgeDays !== 0) return '';
+  const unitEl = $('patient-age-unit');
+  const unit = unitEl && unitEl.value ? unitEl.value : 'years';
+  if(unit === 'years') return '«0 лет» прочитано как 0 дней: если пациенту несколько месяцев или дней — укажите возраст в месяцах или днях и проверьте фактический возраст перед назначением.';
+  if(unit === 'months') return '«0 мес» прочитано как 0 дней: если пациенту несколько дней — укажите возраст в днях и проверьте фактический возраст перед назначением.';
+  return '';
 }
 function ageGroupMismatchCaution(){
   if(patientAgeDays == null || ageInputBlockReason()) return '';

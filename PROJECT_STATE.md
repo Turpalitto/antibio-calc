@@ -1,32 +1,34 @@
-## 2026-10-16 (round 6 continued, T91–T97): search, age entry, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T98): search, age entry/exports, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
   between letters without stripping code / dose hyphens. Lost search rows were reviewed
   against 517 representative probes; T93 changed 0/517 beyond the intended hyphen cases.
-- «0 лет» / «0 мес» still map to 0 days and «новорождённые», but the explicit-age notice now
-  explains that interpretation and says how to enter a patient measured in months/days; «0
-  дней» is unchanged. The message is advisory, not a block.
+- «0 лет» / «0 мес» still map to 0 days and «новорождённые». The explicit-age notice
+  explains that interpretation and directs the physician to enter a patient measured in
+  months/days; «0 дней» is unchanged. The message remains advisory, never a calculation block.
 - Six extended 2,000-step random walks exposed two false positives in the test oracle, not
   product defects: ambiguous quick tags can legitimately leave the current candidate active
   while showing the list, and a combined tablet's full strength is the sum of its components.
   The oracle now models both cases; a steered cotrimoxazole 400+80-mg tablet path is reached
   by CI. Mutants that silently open an ambiguous tag (4 findings) or omit the sum basis (40
-  arithmetic findings) are caught. Corrected CI seeds 11 / 23 and extended seeds 1111–1616
-  have 0 findings; each extended seed reaches the combo path 47–63 times.
-- The random-walk fuzz gate also compares displayed MIS / Rp frequency against the selected
-  regimen's `freq_per_day`; a deliberate `freq + 1` mutant is caught (11 findings), fixed
-  builds are clean (seed 11: 24 frequency checks; seed 23: 13).
-- Theme persistence now has both reload-style jsdom coverage and a random-walk state invariant
-  (toggle writes the current mode; stored mode / `.dark` class / icon agree). The no-op writer
-  mutant trips 31 findings; the no-op restore mutant fails the reload assertion.
+  arithmetic findings) are caught. Corrected CI seeds 11 / 23 and extended seeds 1111–2222
+  have 0 findings; each extended seed reaches the combo path 36–67 times.
+- The random-walk fuzz gate compares displayed MIS / Rp frequency against the selected
+  regimen's `freq_per_day`; a deliberate `freq + 1` mutant is caught (11 findings). Theme
+  persistence now has reload-style jsdom coverage plus a random-walk invariant for storage /
+  `.dark` class / icon; no-op writer mutant → 31 findings, no-op restore mutant → assertion fail.
 - CodeQL surfaced a HIGH test-helper issue in the inline-script regex (it missed uppercase
-  `<SCRIPT>` tags); the extractor now uses Python's stdlib HTML parser, covered by the existing static-ID test
-  with uppercase markup (7/7). CI passed at `13fb514`; the PR CodeQL finding is addressed in
-  the working tree and awaits the next remote analysis.
-- Tests: **2848 passed / 28 skipped / 0 failed** at the last full gate; validate 0 / 436; ruff
-  clean; axe 0; generated shell `build-90d894239075`; DB unchanged (`56727a27f050…`). The
-  changed theme/jsdom/fuzz and static-ID suites pass (65 + 7). Remaining skips require
+  `<SCRIPT>` tags); the extractor now uses Python's stdlib HTML parser, pinned with uppercase
+  markup (7 static-ID tests). CI + CodeQL are green through `74b1dc8`.
+- T98 closes the export gap for `«0 лет»` / `«0 мес»`: the same unit-aware hint is a non-blocking
+  safety flag on the result and in MIS / Rp / print. «0 дней» and non-zero ages add none. Unit
+  + jsdom end-to-end + fuzz test a computable neonatal regimen, all exports and no-warning
+  boundaries; a mutant omitting the flag yields 10 findings. Six additional 2,000-step seeds
+  3131–8181 are clean, reaching the age-zero export path 46–63 times each.
+- Tests: **2850 passed / 28 skipped / 0 failed** at the full local gate; validate 0 / 436; ruff
+  clean; axe 0; generated shell `build-6caea849d0ff`; DB unchanged (`56727a27f050…`). CI +
+  CodeQL are green through `74b1dc8`; T98 remote checks pending on push. Remaining skips require
   owner-controlled clinical source or review-workbench artifacts. Real-browser / visual pass
   remains for the owner.
 

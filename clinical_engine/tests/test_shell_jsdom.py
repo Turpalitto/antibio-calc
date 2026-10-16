@@ -130,6 +130,15 @@ def test_zero_years_notice_says_how_to_enter_an_infant_age(shell: dict) -> None:
     assert "0 дн. → группа «новорождённые»" in p["age0days"]["notice"], p["age0days"]
 
 
+def test_zero_years_age_caution_is_repeated_in_mis_rp_and_printed_form(shell: dict) -> None:
+    p = shell["plausibility"]["ageZeroExports"]
+    assert p["disease"] == "neonatal_sepsis" and p["ageGroup"] == "neonate" and "«0 лет» прочитано как 0 дней" in p["notice"], p
+    assert "0 лет» прочитано как 0 дней" in p["flags"], p["flags"]
+    assert "Предупреждение: «0 лет» прочитано как 0 дней" in p["mis"], p["mis"]
+    assert "! Предупреждение: «0 лет» прочитано как 0 дней" in p["rp"], p["rp"]
+    assert "Предупреждение: «0 лет» прочитано как 0 дней" in p["printed"], p["printed"]
+
+
 def test_theme_toggle_persists_and_restores_after_reload(shell: dict) -> None:
     # The harness removes the pre-paint class and runs setupTheme() again, modelling
     # the first-paint + init sequence of a fresh page after the toggle stored "dark".

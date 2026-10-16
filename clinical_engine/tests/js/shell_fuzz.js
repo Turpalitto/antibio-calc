@@ -110,6 +110,16 @@ setTimeout(async()=>{
     ageUnit:()=>type($('patient-age-unit'),pick(['years','months','days'])),
     keyCard:()=>{ const c=q('#scenario-list .scenario-card, #drug-list .drug-card, #results-box > div[role=button]'); if(!c.length) return; const el=pick(c); el.focus(); el.dispatchEvent(new w.KeyboardEvent('keydown',{key:pick(['Enter',' ']),bubbles:true,cancelable:true})); },
     searchKeys:()=>{ const el=$('search'); type(el,pick(['пневмония','цистит','J18','сепсис','ин'])); el.focus(); const key=pick(['Enter','ArrowDown','Escape']); el.dispatchEvent(new w.KeyboardEvent('keydown',{key,bubbles:true,cancelable:true})); if(key==='ArrowDown'){ const n=1+Math.floor(rnd()*3); for(let i=0;i<n;i++) (d.activeElement||el).dispatchEvent(new w.KeyboardEvent('keydown',{key:rnd()<0.7?'ArrowDown':'ArrowUp',bubbles:true,cancelable:true})); if(rnd()<0.7&&d.activeElement&&d.activeElement!==el) d.activeElement.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true})); } },
+    // T98: a zero-years newborn must carry the age-unit caution into all exports.
+    zeroAgeExport:()=>{
+      type($('patient-age-unit'),'years'); type($('patient-age'),'0'); type($('weight'),'3.2');
+      const rec=DB.recommendations.find(r=>r.id==='neonatal_sepsis'); if(!rec) return;
+      w.selectDisease(rec);
+      const drug=q('#drug-list .drug-card').find(c=>/Бензилпенициллин/i.test(txt(c)));
+      if(drug) drug.click();
+      actions.copy();
+      w.dispatchEvent(new w.Event('beforeprint'));
+    },
     // the group chosen by chip over a typed age (allowed, flagged): type an age and click
     // the chip of another group — the plain walk resets the age too often to stay there
     chipOverAge:()=>{ type($('patient-age-unit'),pick(['years','months'])); type($('patient-age'),pick(['12','150','20','2'])); const other=[...d.querySelectorAll('#age-group button')].filter(b=>!b.classList.contains('active')); if(other.length) pick(other).click(); actions.copy(); },
@@ -196,6 +206,17 @@ setTimeout(async()=>{
     const S=w.eval('({age:activeAge, dis:activeDisease, sc:activeScenario, ln:activeLine, dr:activeDrug, form:activeFormIdx, reg:activeRegimenIdx, route:currentRouteGroup, blocked: activeDrug ? calculationBlockReason(parseFloat($("weight").value)) : null, regimen: activeDrug ? getActiveRegimen() : null, incomplete: activeDrug ? doseIncompleteReason(getActiveRegimen(), parseFloat($("weight").value)) : ""})');
     const where=`#${i} ${name} | ${before} → ${stateStr()}`;
     const push=(kind,msg)=>findings.push({step:i,action:name,kind,msg:String(msg).slice(0,300),where});
+    if(name==='zeroAgeExport'){
+      const caution=w.eval('ageZeroEntryCaution()');
+      if(caution){
+        tally('zero_age_export');
+        if(!txt($('age-explicit-notice')).includes(caution)) push('zero_age_notice_missing',txt($('age-explicit-notice')).slice(0,100));
+        if(!txt($('patient-safety-banners')).includes(caution)) push('zero_age_banner_missing',txt($('patient-safety-banners')).slice(0,100));
+        if(!(w.__mis||'').includes(caution)) push('zero_age_mis_missing',(w.__mis||'').slice(-120));
+        if(!(w.__rp||'').includes(caution)) push('zero_age_rp_missing',(w.__rp||'').slice(-120));
+        if(!txt($('rx-safety-line')).includes(caution)) push('zero_age_print_missing',txt($('rx-safety-line')).slice(0,120));
+      }
+    }
     if(name==='theme'&&w.__themeExpected){
       let stored=null; try{ stored=w.localStorage.getItem('antibio_theme'); }catch(_){}
       if(stored!==w.__themeExpected) push('theme_toggle_not_persisted',`expected ${w.__themeExpected}, stored ${stored}`);

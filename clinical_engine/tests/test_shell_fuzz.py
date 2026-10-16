@@ -152,3 +152,5 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     # T96: theme toggle writes the current light/dark mode; storage and <html>.dark
     # remain aligned during the rest of the random walk (a no-op writer is a mutant).
     assert totals.get("theme_toggle", 0) >= 15, totals
+    # T98: a 0-years neonatal calculation repeats its age-entry caution on screen, MIS, Rp and print.
+    assert totals.get("zero_age_export", 0) >= 1, totals

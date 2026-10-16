@@ -1,24 +1,22 @@
-## 2026-10-16 (after round 6, T91–T97): next steps
+## 2026-10-16 (after round 6, T91–T98): next steps
 
 1. **Owner-physician / owner-browser work remains authoritative and unchanged.** No clinical
    DB values, blocked records, dose thresholds, route defaults, or source decisions were
-   changed in T91–T94. The open items below (DOSA review, missing evidence, max doses, dose
+   changed in T91–T98. The open items below (DOSA review, missing evidence, max doses, dose
    basis, forms/routes, pediatric cystitis, synonyms, etc.) stay with the owner.
-2. **Real-browser / visual pass (owner):** confirm that the «0 лет» and «0 мес» advisory is
-   legible and understandable at the actual age field on supported browsers, that changing
-   the unit updates the notice immediately, and that «0 дней» remains an ordinary newborn
-   entry. jsdom covers the three values; no real browser is available in this sandbox.
-3. **Engineering continuation:** fuzz frequency parity, combined-tablet arithmetic, and
-   theme storage / restore are reached in the tests and proven against mutants; six more
-   2,000-step seeds are clean. The quick-tag list oracle distinguishes an ambiguous list from
-   a one-record open. A CodeQL-reported case-sensitive regex in the static test helper was replaced with stdlib
-   HTML parsing and pinned for uppercase tags; remote re-analysis is pending. No production
-   DB / clinical data were changed. No urgent unverified engineering candidate remains. Continue
-   only with new, independently demonstrated defects or testable robustness gaps. The existing
-   high-value candidates (theme-storage persistence / edge-case fuzz, remaining fallback
-   tables, search recall probes) are exploratory—not known defects—and must not alter clinical
-   content or frozen modules. Do not merge PR #1, choose a LICENSE, change `corpus_config`, or
-   connect the Clinical Engine.
+2. **Real-browser / visual pass (owner):** confirm that changing the age unit updates the
+   «0 лет» / «0 мес» notice immediately, «0 дней» remains an ordinary newborn entry, and the
+   non-blocking warning is legible both by the age field and on the result / copied MIS / Rp /
+   printed form for a computable neonatal regimen. jsdom covers the flows; no real browser is
+   available in this sandbox.
+3. **Engineering continuation:** fuzz frequency parity, combined-tablet arithmetic, theme
+   storage / restore, and the age-zero export caution are reached in tests and proven against
+   mutants; the latest six 2,000-step seeds are clean. The quick-tag list oracle distinguishes
+   an ambiguous list from a one-record open. The CodeQL-reported script-tag test issue is fixed
+   with stdlib HTML parsing; CI + CodeQL were green through `74b1dc8`. T98 passes the full local
+   gate; remote checks are pending on push. No production DB / clinical data changed. Continue
+   only with independently demonstrated defects or testable robustness gaps. Do not merge PR #1,
+   choose a LICENSE, change `corpus_config`, or connect the Clinical Engine.
 
 ## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)
 

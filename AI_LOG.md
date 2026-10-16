@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T97): bounded morphology, age-entry notice, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T98): bounded morphology, age-entry/export safety, fuzz oracles, theme persistence, CodeQL
 
 - **T91 `b50988d` (search):** stems of at least six letters may match after at most two deleted
   letters at the end; shorter stems stay word-start-only. The «отит» list remains clean while
@@ -46,11 +46,25 @@
   a no-op `setupTheme` mutant returns `restored: false`. Focused jsdom + fuzz suite: 65 passed.
 - **T97 (CodeQL test-helper finding):** PR CodeQL flagged the static wiring test's
   `<script[^>]*>(.*?)</script>` extractor because HTML tag names are case-insensitive and it
-  missed `<SCRIPT>`. Replaced it with Python's stdlib `HTMLParser`, which follows HTML's case-insensitive tag parsing, and pinned uppercase markup in the existing test. `test_shell_static_ids` passes 7/7. The PR security gate on `13fb514` and `6430050` still failed on this test-helper alert; the parser replacement is in working tree and awaits re-analysis.
-- **Verification through T96 and local T97:** 2848 passed / 28 skipped / 0 failed at the last
-  full gate; `validate_db` 0 errors / 436 warnings; ruff clean; generated shell fresh
-  (`build-90d894239075`); CI passed for `13fb514`. CodeQL finding above is addressed using the stdlib HTML parser; re-analysis after push is pending. Search sweeps 909 / 1010 × 2000 on the T93 build and
-  1111–1616 × 2000 after T95: 0 findings. DB and frozen modules unchanged.
+  missed `<SCRIPT>`. Replaced it with Python's stdlib `HTMLParser`, which follows HTML's
+  case-insensitive tag parsing, and pinned uppercase markup. `test_shell_static_ids` passes
+  7/7. The PR CodeQL + CI gates are green at `74b1dc8`.
+- **T98 (REAL SAFETY GAP, age-zero exports):** T94's `«0 лет»` / `«0 мес»` explanation was
+  visible by the age field, but an active neonatal dose copied to MIS / Rp / print had no trace
+  of that ambiguity — `0 years` is necessarily parsed as 0 days and «новорождённые». The
+  same `ageZeroEntryCaution()` string now feeds the input notice and, as a non-blocking warn,
+  `collectPatientSafetyFlags()` → result banner / MIS / Rp / printed form. «0 дней» and
+  non-zero ages do not add this warning. Unit matrix covers years/months/days and the next day;
+  jsdom drives an actual `neonatal_sepsis` / benzylpenicillin regimen through all three export
+  paths. The fuzz walk steers this case and asserts notice + banner + MIS + Rp + print after
+  the action. A mutant that drops the flag produces 10 missing-banner / MIS / Rp / print
+  findings in 800 steps. Six further 2,000-step seeds (3131–8181) have 0 findings and each
+  reaches the warning 46–63 times.
+- **Verification at T98 locally:** 2850 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
+  436 warnings; ruff clean; axe 0; generated shell fresh (`build-6caea849d0ff`). CI + CodeQL
+  are green through `74b1dc8`; T98 passes the full local gate, with remote checks pending on
+  push. Extended fuzz seeds 1111–2222 and 3131–8181 × 2000 are clean; earlier 909 / 1010 are
+  clean as well. DB and frozen modules unchanged.
 
 ## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)
 

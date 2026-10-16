@@ -594,6 +594,24 @@ async function run() {
       out.plausibility.age0days = { group: w.eval('activeAge'), notice: txt($('age-explicit-notice')) };
       type($('patient-age-unit'), 'years');
       type($('patient-age'), '35');
+      // T98: the age-entry hint is not just a field note — a computable neonatal
+      // regimen entered as «0 лет» must carry the same caution through MIS / Rp / print.
+      type($('patient-age'), '0');
+      type($('weight'), '3.2');
+      clickDisease('neonatal_sepsis');
+      clickDrug(/Бензилпенициллин/i);
+      w.__copied = ''; w.copyForMIS(); await sleep(0); const ageZeroMis = w.__copied || '';
+      w.__copied = ''; w.copyLatinRecipe(); await sleep(0); const ageZeroRp = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.plausibility.ageZeroExports = {
+        disease: w.eval('activeDisease && activeDisease.id'),
+        ageGroup: w.eval('activeAge'),
+        notice: txt($('age-explicit-notice')),
+        flags: txt($('patient-safety-banners')),
+        mis: ageZeroMis,
+        rp: ageZeroRp,
+        printed: txt($('rx-safety-line'))
+      };
       // no drug at all: pick nothing new, just an out-of-range weight on a fresh page state
       type($('weight'), '300');
       out.plausibility.w300 = warn();

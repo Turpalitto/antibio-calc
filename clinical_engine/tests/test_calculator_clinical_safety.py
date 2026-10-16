@@ -205,6 +205,7 @@ PATIENT_CONTEXT_SUPPORT = [
     "allergyExportFlag",
     "exportSafetyFlags",
     "ageGroupMismatchCaution",
+    "ageZeroEntryCaution",
     "ageGroupFromDays",
     "ageGroupLabel",
     "regimenDataCaution",
@@ -700,6 +701,28 @@ def test_inconsistent_regimen_caution_travels_with_the_exports() -> None:
     # the on-screen rows use the same constant (one text, three readers)
     source = _source()
     assert source.count("warnEl.querySelector('span').textContent = REGIMEN_INCONSISTENT_TEXT;") == 2
+
+
+def test_zero_year_or_month_age_entry_caution_travels_with_the_exports() -> None:
+    """A zero years/months entry parses as 0 days; the input notice must not vanish
+    when a neonatal regimen is copied, printed or pasted into the chart."""
+    body = (
+        "const DB = {drugs_reference: {amoxicillin: {inn: 'Амоксициллин'}}};"
+        "let activeAge = 'neonate'; $('weight').value = '3.2';"
+        "$('patient-age-unit').value = 'years'; patientAgeDays = 0;"
+        "const years = exportSafetyFlags(['amoxicillin']);"
+        "$('patient-age-unit').value = 'months';"
+        "const months = exportSafetyFlags(['amoxicillin']);"
+        "$('patient-age-unit').value = 'days';"
+        "const days = exportSafetyFlags(['amoxicillin']);"
+        "$('patient-age-unit').value = 'years'; patientAgeDays = 1;"
+        "const oneDay = exportSafetyFlags(['amoxicillin']);"
+        "console.log(JSON.stringify({years, months, days, oneDay}));"
+    )
+    result = _run([], "", body)
+    assert result["years"] == [{"level": "warn", "text": "«0 лет» прочитано как 0 дней: если пациенту несколько месяцев или дней — укажите возраст в месяцах или днях и проверьте фактический возраст перед назначением."}], result
+    assert result["months"] == [{"level": "warn", "text": "«0 мес» прочитано как 0 дней: если пациенту несколько дней — укажите возраст в днях и проверьте фактический возраст перед назначением."}], result
+    assert result["days"] == [] and result["oneDay"] == [], result
 
 
 def test_group_chosen_over_the_typed_age_travels_with_the_exports() -> None:
