@@ -1,3 +1,27 @@
+## 2026-10-16 (round 6 continued, T91–T95): search, age-entry, and fuzz-oracle hardening
+
+- Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
+  may bridge at most two deleted letters and five remaining letters), and ignores hyphens
+  between letters without stripping code / dose hyphens. Lost search rows were reviewed
+  against 517 representative probes; T93 changed 0/517 beyond the intended hyphen cases.
+- «0 лет» / «0 мес» still map to 0 days and «новорождённые», but the explicit-age notice now
+  explains that interpretation and says how to enter a patient measured in months/days; «0
+  дней» is unchanged. The message is advisory, not a block.
+- Six extended 2,000-step random walks exposed two false positives in the test oracle, not
+  product defects: ambiguous quick tags can legitimately leave the current candidate active
+  while showing the list, and a combined tablet's full strength is the sum of its components.
+  The oracle now models both cases; a steered cotrimoxazole 400+80-mg tablet path is reached
+  by CI. Mutants that silently open an ambiguous tag (4 findings) or omit the sum basis (40
+  arithmetic findings) are caught. Corrected CI seeds 11 / 23 and extended seeds 1111–1616
+  have 0 findings; each extended seed reaches the combo path 47–63 times.
+- The random-walk fuzz gate also compares displayed MIS / Rp frequency against the selected
+  regimen's `freq_per_day`; a deliberate `freq + 1` mutant is caught (11 findings), fixed
+  builds are clean (seed 11: 24 frequency checks; seed 23: 13).
+- Tests: **2848 passed / 28 skipped / 0 failed**; validate 0 / 436; ruff clean; axe 0;
+  generated shell `build-90d894239075`; CI + CodeQL green through `be66fc2`; DB unchanged
+  (`56727a27f050…`). Remaining skipped tests require owner-controlled clinical source or
+  review-workbench artifacts. Real-browser / visual pass remains for the owner.
+
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 
 - Shell: changing the allergy status, the age group (chip, typed age or weight inference)

@@ -123,6 +123,22 @@ setTimeout(async()=>{
     // a heavy child on a record whose mg/kg regimen hits its daily ceiling below 39 kg:
     // steers the amber cap row oracle (max_daily_capped), which the plain walk reaches rarely
     capDose:()=>{ type($('patient-age-unit'),'years'); type($('patient-age'),pick(['9','11','13'])); type($('weight'),pick(['34','36','38','39.9'])); if(cappedRecs.length) w.selectDisease(pick(cappedRecs)); const sc=q('#scenario-list .scenario-card'); if(sc.length&&rnd()<0.5) pick(sc).click(); const dc=q('#drug-list .drug-card'); if(dc.length&&rnd()<0.7) pick(dc).click(); },
+    // T95: a combination tablet's product strength is the SUM (400+80 = 480 mg),
+    // unless the regimen explicitly doses by a component (TMP = 80 mg). Reach the
+    // full-product path deterministically so the independent arithmetic oracle covers it.
+    comboTablet:()=>{
+      type($('patient-age-unit'),'years'); type($('patient-age'),'35'); type($('weight'),'70');
+      const rec=DB.recommendations.find(r=>r.id==='uti_prophylaxis'); if(!rec) return;
+      w.selectDisease(rec);
+      const si=rec.scenarios.findIndex(s=>s.id==='uti_prophylaxis_female');
+      const sc=q('#scenario-list .scenario-card').find(c=>+c.dataset.idx===si); if(sc) sc.click();
+      const drug=q('#drug-list .drug-card').find(c=>+c.dataset.lineIdx===0&&+c.dataset.drugIdx===1); if(drug) drug.click();
+      const fi=(DB.drugs_reference.cotrimoxazole.forms||[]).findIndex(f=>f.form_type==='tablet'&&f.concentration==='400+80 мг');
+      const form=q('#form-grid button[data-form-idx]').find(b=>+b.dataset.formIdx===fi); if(form) form.click();
+      const refs=w.eval('activeDrug ? getDrugRefs(activeDrug) : []'), tabs=txt($('po-tabs'));
+      if(refs.includes('cotrimoxazole')&&tabs.includes('(1 таб 400+80 мг)')) tally('combo_tablet_steered');
+      else push('combo_tablet_not_reached',`refs ${refs.join('+')}: «${tabs.slice(0,60)}»`);
+    },
     // a weight typed for a fresh patient (no explicit age yet) infers the group and shows
     // the inference notice — the plain walk sets an explicit age early and rarely gets here
     freshWeight:()=>{ $('new-patient').click(); type($('weight'),pick(['3.2','25','45','70'])); },
@@ -211,16 +227,18 @@ setTimeout(async()=>{
       // child); several equally fitting records go to the search list instead
       const code=w.__quickTag; w.__quickTag=null; tally('quick_tag');
       const up=code.toUpperCase(); const group=w.eval('activeAge');
-      const covers=r=>(r.mkb10||[]).some(m=>String(m).toUpperCase().startsWith(up));
-      const fits=r=>(r.scenarios||[]).some(sc=>sc&&(!sc.age_group||sc.age_group==='all'||sc.age_group===group));
-      const cands=DB.recommendations.filter(covers); const fitting=cands.filter(fits);
-      const pickedId=w.eval('activeDisease ? activeDisease.id : null'); const picked=cands.find(r=>r.id===pickedId);
-      if(picked){
-        if(fitting.length&&!fits(picked)) push('quick_tag_wrong_group',`${code} as ${group}: opened ${pickedId}, fitting ${fitting.map(r=>r.id).join('/')}`);
+      const cands=JSON.parse(w.eval('JSON.stringify(quickDiseaseCandidates('+JSON.stringify(code)+').map(r=>r.id))'));
+      const pickedId=w.eval('activeDisease ? activeDisease.id : null');
+      if(cands.length===1){
+        if(pickedId!==cands[0]) push('quick_tag_not_opened',`${code} as ${group}: expected ${cands[0]}, got ${pickedId}`);
         if($('search').value.trim()||visible($('results-box'))) push('quick_tag_search_not_cleared',`${code}: «${$('search').value}» box ${visible($('results-box'))}`);
       } else {
-        if(cands.length===1||fitting.length===1) push('quick_tag_not_opened',`${code} as ${group}: ${fitting.map(r=>r.id).join('/')||cands.map(r=>r.id).join('/')}`);
-        if(cands.length>1&&(!visible($('results-box'))||q('#results-box > div[role=button]').length<2)) push('quick_tag_no_list',`${code} as ${group}: ${q('#results-box > div[role=button]').length} rows`);
+        // A multiple-candidate tag deliberately leaves the current disease selected while
+        // opening the filtered list. The previous oracle mistook that stale (but valid)
+        // activeDisease for a new selection whenever it happened to be one of the candidates.
+        const rows=q('#results-box > div[role=button]');
+        if($('search').value.trim()!==code||!visible($('results-box'))||cands.length>1&&rows.length<2)
+          push('quick_tag_no_list',`${code} as ${group}: expected ${cands.length} candidates, query «${$('search').value}», box ${visible($('results-box'))}, rows ${rows.length}`);
       }
     }
     if(name==='dialog'&&w.__dialog){
@@ -505,7 +523,10 @@ setTimeout(async()=>{
         tally(tm[1]?'tablet_units_rounded':'tablet_units');
         const n=tm[2]==='½'?0.5:parseFloat(tm[2].replace(',','.')); const single=num(shownSingle);
         const strengths=tm[4].split('+').map(x=>parseFloat(x.trim().replace(',','.'))).filter(x=>x>0);
-        const cands=strengths.length>1?[strengths[0],strengths[strengths.length-1]]:strengths;
+        // Product-form combination doses may use the sum (400+80 = 480 mg), a named
+        // component (amoxicillin / trimethoprim), or any individual component. Testing
+        // only the first and last components falsely rejected an exact 1-tablet dose.
+        const cands=[...new Set([...strengths,strengths.reduce((a,b)=>a+b,0)])];
         const fits=cands.some(S=>{ const exact=single/S; const expectN=tm[3]==='капс'?Math.max(1,Math.round(exact)):Math.round(exact*2)/2; if(Math.abs(expectN-n)>1e-9) return false; if(!tm[1]) return Math.abs(n*S-single)<=1; const m=parseFloat(tm[5].replace(/[\s\u00a0]/g,'')); return Math.abs(n*S-m)<=1; });
         if(!fits) push('tablet_units_arithmetic',`${tabs.slice(0,60)} for single ${shownSingle}`);
       }

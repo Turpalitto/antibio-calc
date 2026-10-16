@@ -1,3 +1,48 @@
+## 2026-10-16 (round 6 continued, T91–T95): bounded morphology, hyphen-insensitive search, age-zero notice, export / tablet fuzz oracles
+
+- **T91 `b50988d` (search):** stems of at least six letters may match after at most two deleted
+  letters at the end; shorter stems stay word-start-only. The «отит» list remains clean while
+  longer «тонзиллита» still finds its intended records. Probe diff: 9/416 changed; every lost
+  row reviewed as noise.
+- **T92 `a9df320` (search):** bound the remainder after a word-start stem to five letters;
+  «таза» no longer matches TAZO- compounds, «холера» no longer «холецистит», and
+  «гепатит» no longer «гепатобластома», while «язва» / «рана» derivations remain. Probe diff:
+  8/517 changed, all losses reviewed as noise.
+- **T93 `c9e1cd7` (search):** hyphenated INNs / names now match without the hyphen via
+  lookahead-based `dehyphenate` (so consecutive hyphens between letters work without
+  consuming the next character); «котримоксазол» and «вичинфекция» are found. Letter–digit
+  and digit–digit hyphens remain intact; diff 0/517 otherwise. Removed unused `LATIN_ROUTE`
+  / `LATIN_FREQ` tables (the Rp Signatura is Russian by design).
+- **Fuzz `a915f49`, `be66fc2`:** search pick-list now includes Cyrillic ICD, spaced ICD, the
+  hyphenless INN, short-stem and empty-result classes. A new invariant compares `freq_per_day`
+  with the frequency printed in both MIS scheme and Rp Signa; a deliberate `freq + 1` mutant
+  trips 11 findings on seed 11. Fixed builds: 0 findings, 19 checks on seed 11 and 15 on
+  seed 23.
+- **T94 `b10329a` (age entry clarity):** typing «0 лет» or «0 мес» parses to 0 days and thus
+  «новорождённые»; this could silently treat a six-month-old entered as «0 лет» as a neonate.
+  The existing explicit-age notice now says exactly how that value was read and directs the
+  physician to enter months/days (for «0 лет»), or days (for «0 мес»). «0 дней» remains a
+  plain newborn notice. Harness + jsdom test cover all three units; this is advisory, not a
+  clinical block.
+- **T95 (fuzz-oracle correction, no production behavior change):** six additional 2,000-step
+  walks found two invalid test findings, not shell defects. (1) The quick-tag oracle treated
+  an already-selected disease that happened to match one of several tag candidates as if the
+  tag had opened it; for ambiguous tags the correct behavior is to keep that current disease
+  and display the filtered candidate list. The oracle now derives the exact candidate set
+  from `quickDiseaseCandidates()` and distinguishes the unique-open / multi-candidate-list
+  contracts. (2) the tablet oracle tested only the first and last component of `400+80 мг`,
+  missing the full-product basis 480 mg. It now checks each component and their sum; a steered
+  `comboTablet` action reaches `uti_prophylaxis` / cotrimoxazole on the adult 400+80-mg tablet
+  and pins the arithmetic in CI. Evidence: the six original random walks had 5 quick-tag false flags
+  and 2 repeated tablet-arithmetic flags; ambiguous-tag mutant trips 4 `quick_tag_no_list`
+  findings; omitting the product-sum candidate trips 40 tablet findings on seed 11. The
+  corrected CI seeds 11 / 23 have 0 findings and reach the steered case 29 / 22 times;
+  extended seeds 1111–1616 × 2000 also 0 findings (combo path 47–63 times each).
+- **Verification at `be66fc2` + T95 working changes:** 2848 passed / 28 skipped / 0 failed;
+  `validate_db` 0 errors / 436 warnings; ruff clean; generated shell fresh
+  (`build-90d894239075`); CI + CodeQL green through `be66fc2`. Search sweeps 909 / 1010 × 2000
+  on the T93 build: 0 findings. DB and frozen modules unchanged.
+
 ## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)
 
 - **T75 `d690334`:** the patient date field becomes `type=date` on focus, so a picked date

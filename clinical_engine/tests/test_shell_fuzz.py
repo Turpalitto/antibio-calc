@@ -146,3 +146,6 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     # the frequency printed in the MIS scheme / the Rp Signa == the regimen's freq_per_day
     # (a mutant printing freq + 1 in the tablet scheme trips 11 on seed 11)
     assert totals.get("export_freq", 0) >= 15, totals
+    # T95: the full-strength cotrimoxazole tablet is exactly 400+80 = 480 mg; steered
+    # through the random walk so the independent arithmetic oracle checks this path.
+    assert totals.get("combo_tablet_steered", 0) >= 1, totals
