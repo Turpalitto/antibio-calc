@@ -52,9 +52,18 @@ def test_labels_and_aria_references_point_at_existing_ids() -> None:
                 assert target in defined, f'{attr}="{target}" has no element with that id'
 
 
+def _inline_script_bodies(html: str) -> list[str]:
+    # HTML tag names are case-insensitive. Keep a word boundary (not ``<scripture``)
+    # and accept harmless whitespace before the closing angle bracket.
+    return re.findall(r"<script\b[^>]*>(.*?)</script\s*>", html, flags=re.S | re.I)
+
+
 def test_inline_handlers_only_call_functions_the_script_defines() -> None:
     html = _template()
-    script = "\n".join(re.findall(r"<script[^>]*>(.*?)</script>", html, flags=re.S))
+    assert _inline_script_bodies('<SCRIPT TYPE="text/javascript">function smoke() {}</SCRIPT>') == [
+        "function smoke() {}"
+    ]
+    script = "\n".join(_inline_script_bodies(html))
     defined = set(re.findall(r"^\s*(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(", script, flags=re.M))
     defined |= set(re.findall(r"^\s*(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s*)?(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>", script, flags=re.M))
     calls = set()

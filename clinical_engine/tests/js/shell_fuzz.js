@@ -181,7 +181,7 @@ setTimeout(async()=>{
       r.closed=!open(); r.focusOnOpener=d.activeElement===(which==='modal'?$('btn-guideline-modal'):$('btn-history'));
       w.__dialog=r;
     },
-    theme:()=>w.toggleTheme(),
+    theme:()=>{ w.toggleTheme(); w.__themeExpected=d.documentElement.classList.contains('dark')?'dark':'light'; tally('theme_toggle'); },
   };
   const getDrugRefsSafe=dr=>{ try{ return w.getDrugRefs(dr).join('+'); }catch(e){ return '?'; } };
   const names=Object.keys(actions);
@@ -196,6 +196,20 @@ setTimeout(async()=>{
     const S=w.eval('({age:activeAge, dis:activeDisease, sc:activeScenario, ln:activeLine, dr:activeDrug, form:activeFormIdx, reg:activeRegimenIdx, route:currentRouteGroup, blocked: activeDrug ? calculationBlockReason(parseFloat($("weight").value)) : null, regimen: activeDrug ? getActiveRegimen() : null, incomplete: activeDrug ? doseIncompleteReason(getActiveRegimen(), parseFloat($("weight").value)) : ""})');
     const where=`#${i} ${name} | ${before} → ${stateStr()}`;
     const push=(kind,msg)=>findings.push({step:i,action:name,kind,msg:String(msg).slice(0,300),where});
+    if(name==='theme'&&w.__themeExpected){
+      let stored=null; try{ stored=w.localStorage.getItem('antibio_theme'); }catch(_){}
+      if(stored!==w.__themeExpected) push('theme_toggle_not_persisted',`expected ${w.__themeExpected}, stored ${stored}`);
+      const icon=$('theme-icon'); const wanted=w.__themeExpected==='dark'?'fa-sun':'fa-moon';
+      if(!icon.classList.contains(wanted)) push('theme_icon_mismatch',`expected ${wanted}, got ${icon.className}`);
+      w.__themeExpected=null;
+    }
+    // Once persisted, stored theme and document class must stay in agreement across
+    // unrelated random patient / calculation actions as well as subsequent theme toggles.
+    try{
+      const stored=w.localStorage.getItem('antibio_theme');
+      if((stored==='dark'||stored==='light')&&((stored==='dark')!==d.documentElement.classList.contains('dark')))
+        push('theme_storage_state_mismatch',`stored ${stored}, class ${d.documentElement.classList.contains('dark')}`);
+    }catch(_){}
     // FUZZ_DUMP_STEP=<n> prints the patient inputs, the result tiles and the exports of
     // one step to stderr — to replay a finding without re-instrumenting the harness
     if(String(i)===process.env.FUZZ_DUMP_STEP){

@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T95): search, age-entry, and fuzz-oracle hardening
+## 2026-10-16 (round 6 continued, T91–T97): search, age entry, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -17,10 +17,18 @@
 - The random-walk fuzz gate also compares displayed MIS / Rp frequency against the selected
   regimen's `freq_per_day`; a deliberate `freq + 1` mutant is caught (11 findings), fixed
   builds are clean (seed 11: 24 frequency checks; seed 23: 13).
-- Tests: **2848 passed / 28 skipped / 0 failed**; validate 0 / 436; ruff clean; axe 0;
-  generated shell `build-90d894239075`; CI + CodeQL green through `be66fc2`; DB unchanged
-  (`56727a27f050…`). Remaining skipped tests require owner-controlled clinical source or
-  review-workbench artifacts. Real-browser / visual pass remains for the owner.
+- Theme persistence now has both reload-style jsdom coverage and a random-walk state invariant
+  (toggle writes the current mode; stored mode / `.dark` class / icon agree). The no-op writer
+  mutant trips 31 findings; the no-op restore mutant fails the reload assertion.
+- CodeQL surfaced a HIGH test-helper issue in the inline-script regex (it missed uppercase
+  `<SCRIPT>` tags); the extractor now uses a tag boundary + case-insensitive match, covered by
+  the existing static-ID test (7/7). CI passed at `13fb514`; the PR CodeQL finding is fixed
+  locally and its rerun is pending.
+- Tests: **2848 passed / 28 skipped / 0 failed** at the last full gate; validate 0 / 436; ruff
+  clean; axe 0; generated shell `build-90d894239075`; DB unchanged (`56727a27f050…`). The
+  changed theme/jsdom/fuzz and static-ID suites pass (65 + 7). Remaining skips require
+  owner-controlled clinical source or review-workbench artifacts. Real-browser / visual pass
+  remains for the owner.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 

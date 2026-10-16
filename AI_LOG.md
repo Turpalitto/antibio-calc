@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T95): bounded morphology, hyphen-insensitive search, age-zero notice, export / tablet fuzz oracles
+## 2026-10-16 (round 6 continued, T91–T97): bounded morphology, age-entry notice, fuzz oracles, theme persistence, CodeQL
 
 - **T91 `b50988d` (search):** stems of at least six letters may match after at most two deleted
   letters at the end; shorter stems stay word-start-only. The «отит» list remains clean while
@@ -38,10 +38,23 @@
   findings; omitting the product-sum candidate trips 40 tablet findings on seed 11. The
   corrected CI seeds 11 / 23 have 0 findings and reach the steered case 29 / 22 times;
   extended seeds 1111–1616 × 2000 also 0 findings (combo path 47–63 times each).
-- **Verification at `be66fc2` + T95 working changes:** 2848 passed / 28 skipped / 0 failed;
-  `validate_db` 0 errors / 436 warnings; ruff clean; generated shell fresh
-  (`build-90d894239075`); CI + CodeQL green through `be66fc2`. Search sweeps 909 / 1010 × 2000
-  on the T93 build: 0 findings. DB and frozen modules unchanged.
+- **T96 (theme persistence coverage):** the existing smoke only checked that the toggle wrote
+  `antibio_theme=dark`. It now removes the pre-paint `.dark` class after the write and re-runs
+  `setupTheme()` to model a reload; the jsdom assertion checks restored class + sun icon. The
+  random walk checks every theme action against the stored mode and icon, and keeps storage / DOM
+  aligned after later actions. A no-op `themeStorageSet` mutant trips 31 findings on seed 11;
+  a no-op `setupTheme` mutant returns `restored: false`. Focused jsdom + fuzz suite: 65 passed.
+- **T97 (CodeQL test-helper finding):** PR CodeQL flagged the static wiring test's
+  `<script[^>]*>(.*?)</script>` extractor because HTML tag names are case-insensitive and it
+  missed `<SCRIPT>`. Replaced it with a boundary-aware, `re.IGNORECASE` extractor that accepts
+  closing-tag whitespace, and pinned uppercase markup in the existing test. `test_shell_static_ids`
+  passes 7/7. The PR security gate on `13fb514` failed only on this test-helper alert; rerun for
+  the fix is pending.
+- **Verification through T96 and local T97:** 2848 passed / 28 skipped / 0 failed at the last
+  full gate; `validate_db` 0 errors / 436 warnings; ruff clean; generated shell fresh
+  (`build-90d894239075`); CI passed for `13fb514`. CodeQL finding above is now fixed in working
+  tree and awaits pushed re-analysis. Search sweeps 909 / 1010 × 2000 on the T93 build and
+  1111–1616 × 2000 after T95: 0 findings. DB and frozen modules unchanged.
 
 ## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)
 

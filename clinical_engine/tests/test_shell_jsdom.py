@@ -130,8 +130,16 @@ def test_zero_years_notice_says_how_to_enter_an_infant_age(shell: dict) -> None:
     assert "0 дн. → группа «новорождённые»" in p["age0days"]["notice"], p["age0days"]
 
 
-def test_theme_toggle_persists(shell: dict) -> None:
-    assert shell["theme"] == {"before": False, "after": True, "stored": "dark"}
+def test_theme_toggle_persists_and_restores_after_reload(shell: dict) -> None:
+    # The harness removes the pre-paint class and runs setupTheme() again, modelling
+    # the first-paint + init sequence of a fresh page after the toggle stored "dark".
+    assert shell["theme"] == {
+        "before": False,
+        "after": True,
+        "stored": "dark",
+        "restored": True,
+        "icon": "sun",
+    }
 
 
 def test_history_drawer_is_a_keyboard_closable_dialog(shell: dict) -> None:

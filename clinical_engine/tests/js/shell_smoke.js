@@ -265,7 +265,18 @@ async function run() {
     // ---- 7. theme toggle, history drawer, guideline modal + keyboard ---------
     const darkBefore = d.documentElement.classList.contains('dark');
     $('btn-theme').click();
-    out.theme = { before: darkBefore, after: d.documentElement.classList.contains('dark'), stored: w.localStorage.getItem('antibio_theme') };
+    const storedTheme = w.localStorage.getItem('antibio_theme');
+    // Simulate a fresh page's pre-paint state, then replay setupTheme(): the previous
+    // test only proved the toggle wrote localStorage, not that a reload restored it.
+    d.documentElement.classList.remove('dark');
+    w.setupTheme();
+    out.theme = {
+      before: darkBefore,
+      after: storedTheme === 'dark',
+      stored: storedTheme,
+      restored: d.documentElement.classList.contains('dark'),
+      icon: $('theme-icon').classList.contains('fa-sun') ? 'sun' : 'moon'
+    };
     $('btn-theme').click();
 
     clickDisease('chlamydia_urogenital');

@@ -1,4 +1,4 @@
-## 2026-10-16 (after round 6, T91–T95): next steps
+## 2026-10-16 (after round 6, T91–T97): next steps
 
 1. **Owner-physician / owner-browser work remains authoritative and unchanged.** No clinical
    DB values, blocked records, dose thresholds, route defaults, or source decisions were
@@ -8,11 +8,12 @@
    legible and understandable at the actual age field on supported browsers, that changing
    the unit updates the notice immediately, and that «0 дней» remains an ordinary newborn
    entry. jsdom covers the three values; no real browser is available in this sandbox.
-3. **Engineering continuation:** fuzz frequency parity and combined-tablet arithmetic are
-   reached in the existing seeds and proven against mutants; six more 2,000-step seeds are
-   clean. The quick-tag list oracle now correctly distinguishes an ambiguous list from a
-   one-record open. No production DB / clinical data were changed. No urgent unverified
-   engineering candidate remains. Continue
+3. **Engineering continuation:** fuzz frequency parity, combined-tablet arithmetic, and
+   theme storage / restore are reached in the tests and proven against mutants; six more
+   2,000-step seeds are clean. The quick-tag list oracle distinguishes an ambiguous list from
+   a one-record open. A CodeQL-reported case-sensitive regex in the static test helper was
+   corrected and pinned for uppercase HTML tags; its remote rerun is pending. No production
+   DB / clinical data were changed. No urgent unverified engineering candidate remains. Continue
    only with new, independently demonstrated defects or testable robustness gaps. The existing
    high-value candidates (theme-storage persistence / edge-case fuzz, remaining fallback
    tables, search recall probes) are exploratory—not known defects—and must not alter clinical
