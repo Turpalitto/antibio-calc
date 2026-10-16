@@ -46,14 +46,10 @@
   a no-op `setupTheme` mutant returns `restored: false`. Focused jsdom + fuzz suite: 65 passed.
 - **T97 (CodeQL test-helper finding):** PR CodeQL flagged the static wiring test's
   `<script[^>]*>(.*?)</script>` extractor because HTML tag names are case-insensitive and it
-  missed `<SCRIPT>`. Replaced it with a boundary-aware, `re.IGNORECASE` extractor that accepts
-  closing-tag whitespace, and pinned uppercase markup in the existing test. `test_shell_static_ids`
-  passes 7/7. The PR security gate on `13fb514` failed only on this test-helper alert; rerun for
-  the fix is pending.
+  missed `<SCRIPT>`. Replaced it with Python's stdlib `HTMLParser`, which follows HTML's case-insensitive tag parsing, and pinned uppercase markup in the existing test. `test_shell_static_ids` passes 7/7. The PR security gate on `13fb514` and `6430050` still failed on this test-helper alert; the parser replacement is in working tree and awaits re-analysis.
 - **Verification through T96 and local T97:** 2848 passed / 28 skipped / 0 failed at the last
   full gate; `validate_db` 0 errors / 436 warnings; ruff clean; generated shell fresh
-  (`build-90d894239075`); CI passed for `13fb514`. CodeQL finding above is now fixed in working
-  tree and awaits pushed re-analysis. Search sweeps 909 / 1010 × 2000 on the T93 build and
+  (`build-90d894239075`); CI passed for `13fb514`. CodeQL finding above is addressed using the stdlib HTML parser; re-analysis after push is pending. Search sweeps 909 / 1010 × 2000 on the T93 build and
   1111–1616 × 2000 after T95: 0 findings. DB and frozen modules unchanged.
 
 ## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 from collections import Counter
+from html.parser import HTMLParser
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -52,10 +53,33 @@ def test_labels_and_aria_references_point_at_existing_ids() -> None:
                 assert target in defined, f'{attr}="{target}" has no element with that id'
 
 
+class _InlineScriptParser(HTMLParser):
+    """Collect inline script text with HTML's case-insensitive tag parsing rules."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=False)
+        self._active = False
+        self._parts: list[list[str]] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() == "script":
+            self._parts.append([])
+            self._active = True
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() == "script":
+            self._active = False
+
+    def handle_data(self, data: str) -> None:
+        if self._active and self._parts:
+            self._parts[-1].append(data)
+
+
 def _inline_script_bodies(html: str) -> list[str]:
-    # HTML tag names are case-insensitive. Keep a word boundary (not ``<scripture``)
-    # and accept harmless whitespace before the closing angle bracket.
-    return re.findall(r"<script\b[^>]*>(.*?)</script\s*>", html, flags=re.S | re.I)
+    parser = _InlineScriptParser()
+    parser.feed(html)
+    parser.close()
+    return ["".join(parts) for parts in parser._parts]
 
 
 def test_inline_handlers_only_call_functions_the_script_defines() -> None:

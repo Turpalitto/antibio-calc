@@ -21,9 +21,9 @@
   (toggle writes the current mode; stored mode / `.dark` class / icon agree). The no-op writer
   mutant trips 31 findings; the no-op restore mutant fails the reload assertion.
 - CodeQL surfaced a HIGH test-helper issue in the inline-script regex (it missed uppercase
-  `<SCRIPT>` tags); the extractor now uses a tag boundary + case-insensitive match, covered by
-  the existing static-ID test (7/7). CI passed at `13fb514`; the PR CodeQL finding is fixed
-  locally and its rerun is pending.
+  `<SCRIPT>` tags); the extractor now uses Python's stdlib HTML parser, covered by the existing static-ID test
+  with uppercase markup (7/7). CI passed at `13fb514`; the PR CodeQL finding is addressed in
+  the working tree and awaits the next remote analysis.
 - Tests: **2848 passed / 28 skipped / 0 failed** at the last full gate; validate 0 / 436; ruff
   clean; axe 0; generated shell `build-90d894239075`; DB unchanged (`56727a27f050…`). The
   changed theme/jsdom/fuzz and static-ID suites pass (65 + 7). Remaining skips require
