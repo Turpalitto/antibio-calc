@@ -893,6 +893,37 @@ async function run() {
       out.routeFollows = r;
     }
 
+    // 22b. route-specific preparation: the printed Signa used to hard-code «30 мин»
+    //      for every infusion, even when this azithromycin source says 60 minutes;
+    //      the screen's notes/steps must follow MIS, Rp and the printed form.
+    {
+      $('new-patient').click();
+      type($('patient-age-unit'), 'years'); type($('patient-age'), '35'); type($('weight'), '70');
+      const rec = find((r) => r.id === 'cap_adult');
+      w.selectDisease(rec);
+      const scenarioIndex = rec.scenarios.findIndex((s) => s.id === 'cap_adult_in_severe');
+      const scenarioCards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      if (scenarioCards[scenarioIndex]) scenarioCards[scenarioIndex].click();
+      clickDrug(/^Азитромицин/i);
+      const ivTab = [...d.querySelectorAll('#route-tabs button')].find((b) => txt(b) === 'в/в');
+      if (ivTab) ivTab.click();
+      w.__copied = ''; w.copyForMIS(); await sleep(0); const timingMis = w.__copied || '';
+      w.__copied = ''; w.copyLatinRecipe(); await sleep(0); const timingRp = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.injectionTiming = {
+        activeRoute: w.eval('activeRouteKey'),
+        routeData: DB().drugs_reference.azithromycin.dilution.iv_infusion,
+        screenSteps: txt($('dilution-steps')),
+        screenCaution: txt($('dilution-cautions-text')),
+        screenWarn: txt($('dilution-warn-text')),
+        mis: timingMis,
+        rp: timingRp,
+        signa: txt($('rx-signa-text')),
+        printedDetails: txt($('rx-injection-details')),
+        printedSafety: txt($('rx-safety-line')),
+      };
+    }
+
     // 23. history.replaceState throwing (sandboxed iframe, some file:// viewers) must not
     //     abort a selection half-way: the nosology, scenario and drug still open and
     //     «Сбросить» still clears the screen
@@ -1180,7 +1211,7 @@ async function run() {
       w.fillPrescriptionForm(); n.print = [txt($('rx-drugs')), txt($('rx-signa-text')), txt($('rx-trust-line')).slice(0, 60)].join('|');
       type($('weight'), '25');
       w.__copied = null; w.copyForMIS(); n.misWithWeight = [(w.__copied || '').split('\n').find((l) => l.startsWith('Схема приёма')), txt($('toast'))].join('|');
-      w.fillPrescriptionForm(); n.printWithWeight = txt($('rx-signa-text'));
+      w.fillPrescriptionForm(); n.printWithWeight = [txt($('rx-signa-text')), txt($('rx-injection-details'))].join('|');
       out.noWeightExport = n;
     }
     {

@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T99): bounded morphology, patient-context export safety, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T100): bounded morphology, patient-context and route-export safety, fuzz oracles, theme persistence, CodeQL
 
 - **T91 `b50988d` (search):** stems of at least six letters may match after at most two deleted
   letters at the end; shorter stems stay word-start-only. The «отит» list remains clean while
@@ -74,12 +74,26 @@
   findings and reach inference exports 32–61 times each. A mutant dropping the context flag
   reports 60 findings; the first 10 forced cases independently detect missing banner, MIS, Rp
   and print warnings.
-- **Verification at T99 locally:** 2852 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
-  436 warnings; ruff clean; axe 0; generated shell fresh (`build-f4b19b1b5908`). The full gate
-  passes after correcting an old smoke assertion to expect the newly intentional inference
-  banner. CI + CodeQL completed successfully for T98 at `b27ee62`; T99 remote checks are
-  pending push. Extended fuzz seeds 1111–2222, 3131–8181 and 9191–12424 × 2000 are clean;
-  earlier 909 / 1010 are clean as well. DB and frozen modules unchanged.
+- **T100 (REAL route/export discrepancy):** the paper Rp Signa hard-coded «капельно за 30 мин»
+  for every infusion and «медленно за 5 мин» for every IV bolus; e.g. azithromycin's selected
+  infusion route says 60 minutes in its source steps, while the print said 30 and MIS / Rp /
+  print omitted the route's preparation steps and route-specific cautions. `routeAdministrationNotes()`
+  is now the shared source for the screen's solvent / contraindication / interaction warnings
+  and the export safety flags. MIS, Rp and the printed form carry the selected route's numbered
+  source steps; the printed Signa says `в/в капельно` / `в/в струйно` without inventing timing.
+  An end-to-end azithromycin case asserts 60 minutes and the two-stage-dilution caution in all
+  relevant outputs; the existing ceftriaxone bolus case checks its 5-minute source instruction.
+  Fuzz action/oracle steers the azithro IV infusion. A mutant restoring universal 30 min and
+  dropping route flags/steps yields 280 findings across 14 forced cases, including missing route
+  steps in all three exports, omitted safety notes and hard-coded timing. Fixed seeds 11 / 23
+  are clean; four new 2,000-step seeds (13131, 14242, 15353, 16464) have 0 findings and reach
+  the route export
+  41–55 times each.
+- **Verification at T100 locally:** 2853 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
+  436 warnings; ruff clean; axe 0; generated shell fresh (`build-965663d87500`). CI + CodeQL
+  completed successfully for T99 at `ff2ee44`; T100 remote checks are pending push. Extended
+  fuzz seeds 1111–2222, 3131–8181, 9191–12424 and 13131–16464 × 2000 are clean; earlier 909 /
+  1010 are clean as well. DB and frozen modules unchanged.
 
 ## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)
 

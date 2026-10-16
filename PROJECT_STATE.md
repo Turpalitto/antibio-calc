@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T99): search, patient-context exports, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T100): search, patient-context / route exports, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -32,11 +32,18 @@
   export paths. Fuzz seeds 11 / 23 × 800: 0 findings, 15 / 26 age-inference exports; omission
   mutant is detected across banner / MIS / Rp / print. Four 2,000-step sweeps (9191, 10202,
   11313, 12424) are clean and reach the inference path 32–61 times each.
-- Tests: **2852 passed / 28 skipped / 0 failed** at the full local gate; validate 0 / 436; ruff
-  clean; axe 0; generated shell `build-f4b19b1b5908`; DB unchanged (`56727a27f050…`). CI +
-  CodeQL are green through T98 commit `b27ee62`; T99 remote checks pending on push. Remaining
-  skips require owner-controlled clinical source or review-workbench artifacts. Real-browser /
-  visual pass remains for the owner.
+- T100 fixes a source/export mismatch: all IV infusions printed a hard-coded 30 min and all
+  boluses 5 min; azithromycin's source says 60 min. Shared route notes now feed the on-screen
+  warnings and export flags; MIS / Rp / print repeat exact selected-route steps, while printed
+  Signa names infusion vs. bolus without inventing a duration. Azithromycin infusion / caution
+  and ceftriaxone bolus are pinned end-to-end; mutant dropping route data is caught (280 total
+  findings; 14 forced path reaches).
+- Tests: **2853 passed / 28 skipped / 0 failed** at the full local gate; validate 0 / 436; ruff
+  clean; axe 0; generated shell `build-965663d87500`; DB unchanged (`56727a27f050…`). CI +
+  CodeQL are green through T99 commit `ff2ee44`; T100 remote checks pending on push. Four new
+  2,000-step sweeps are clean (route export path 41–55 times each). Remaining skips require
+  owner-controlled clinical source or review-workbench artifacts. Real-browser / visual pass
+  remains for the owner.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 

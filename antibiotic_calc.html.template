@@ -1879,6 +1879,29 @@ function patientEntryCautionTexts(){
   }
   return [...new Set(texts)];
 }
+function routeAdministrationNotes(ref, routeKey, routeData){
+  routeData = routeData || {};
+  const warnings = [];
+  if(routeData.child_solvent_warning && activeAge !== 'adult') warnings.push(routeData.child_solvent_warning);
+  if(routeData.contraindications) warnings.push(routeData.contraindications);
+  if(ref && ref.interactions && ref.interactions.indexOf('Ca') >= 0 && routeKey !== 'im') warnings.push('Не смешивать с Ca-растворами.');
+  const steps = Array.isArray(routeData.steps)
+    ? routeData.steps.map(step=>String(step).replace(/^\d+\.\s*/, ''))
+    : [];
+  return {warnings:[...new Set(warnings)], caution:String(routeData.cautions || '').trim(), steps:steps};
+}
+function activeRouteAdministrationNotes(refs){
+  const empty = {warnings:[], caution:'', steps:[]};
+  if(typeof currentRouteGroup === 'undefined' || !['im','iv'].includes(currentRouteGroup)
+     || typeof activeRouteKey === 'undefined' || !activeRouteKey
+     || !refs || !refs.length || typeof DB === 'undefined' || !DB || !DB.drugs_reference) return empty;
+  const ref = DB.drugs_reference[refs[0]];
+  const routeData = ref && ref.dilution && ref.dilution[activeRouteKey];
+  return routeData ? routeAdministrationNotes(ref, activeRouteKey, routeData) : empty;
+}
+function routeAdministrationStepLines(refs){
+  return activeRouteAdministrationNotes(refs).steps.map((step,index)=>(index+1)+'. '+step);
+}
 function collectPatientSafetyFlags(refs){
   const flags = [];
   (refs || []).forEach(key=>{
@@ -1899,6 +1922,14 @@ function collectPatientSafetyFlags(refs){
   (refs && refs.length ? patientEntryCautionTexts() : []).forEach(text=>{
     if(!flags.some(flag=>flag.text === text)) flags.push({level:'warn', text:text});
   });
+  // Route-specific solvent, contraindication, interaction and dilution cautions are
+  // visible beside the injection panel; repeat them with MIS / Rp / print as well.
+  const routeNotes = refs && refs.length ? activeRouteAdministrationNotes(refs) : null;
+  if(routeNotes){
+    [...routeNotes.warnings, routeNotes.caution].filter(Boolean).forEach(text=>{
+      if(!flags.some(flag=>flag.text === text)) flags.push({level:'warn', text:text});
+    });
+  }
   return flags;
 }
 // Allergy status of the active drug(s) as an export flag. On screen it is the
@@ -3868,6 +3899,11 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
   } else warnEl.classList.add('hidden');
 
   renderDilutionBlock(ref, activeRouteKey, singleMg, selectedVial, routeData);
+  // Changing injection route can change solvent / contraindication cautions without
+  // running calculate(); keep the result-level safety banner in sync with that route.
+  if(typeof activeDrug !== 'undefined' && activeDrug && typeof getDrugRefs === 'function'){
+    renderPatientSafetyFlags(getDrugRefs(activeDrug));
+  }
 }
 function routeKeyLabel(k){
   return k === 'im' ? 'в/м' : (k === 'iv_bolus' ? 'в/в струйно' : 'в/в капельно');
@@ -3882,12 +3918,10 @@ function computeInjectableMl(singleMg, vial){
 }
 function renderDilutionBlock(ref, routeKey, singleMg, selectedVial, routeData){
   routeData = routeData || {};
+  const routeNotes = routeAdministrationNotes(ref, routeKey, routeData);
   const warn = $('dilution-warn');
   const warnText = $('dilution-warn-text');
-  let warnings = [];
-  if(routeData.child_solvent_warning && activeAge !== 'adult') warnings.push(routeData.child_solvent_warning);
-  if(routeData.contraindications) warnings.push(routeData.contraindications);
-  if(ref.interactions && ref.interactions.indexOf('Ca')>=0 && routeKey !== 'im') warnings.push('Не смешивать с Ca-растворами.');
+  const warnings = routeNotes.warnings;
   if(warnings.length){
     // Предупреждения приходят из БД, разделитель — настоящие <br>, а не строка
     // разметки, склеенная с данными.
@@ -3941,18 +3975,18 @@ function renderDilutionBlock(ref, routeKey, singleMg, selectedVial, routeData){
   }
 
   const caut = $('dilution-cautions');
-  if(routeData.cautions){
-    $('dilution-cautions-text').textContent = routeData.cautions;
+  if(routeNotes.caution){
+    $('dilution-cautions-text').textContent = routeNotes.caution;
     caut.classList.remove('hidden');
   } else caut.classList.add('hidden');
 
   const stepsEl = $('dilution-steps');
   stepsEl.innerHTML = '';
-  ((routeData.steps) || []).forEach(s=>{
+  routeNotes.steps.forEach(s=>{
     const li = document.createElement('li');
     li.className = 'step';
     const span = document.createElement('span');
-    span.textContent = s.replace(/^\d+\.\s*/, '');
+    span.textContent = s;
     li.appendChild(span);
     stepsEl.appendChild(li);
   });
@@ -4206,7 +4240,11 @@ function fillPrescriptionForm(){
   const drugsEl = $('rx-drugs');
   const latinName = LATIN_INN[refs[0]] || mainRef.inn;
   const latinForm = LATIN_FORM[form.form_type] || form.form_type;
-  const routeRu = currentRouteGroup === 'po' ? 'внутрь' : (currentRouteGroup === 'im' ? 'внутримышечно' : (currentRouteGroup === 'iv' ? 'внутривенно' : 'местно'));
+  const routeRu = currentRouteGroup === 'po' ? 'внутрь'
+    : (currentRouteGroup === 'im' ? 'внутримышечно'
+      : (currentRouteGroup === 'iv'
+        ? (activeRouteKey === 'iv_infusion' ? 'в/в капельно' : (activeRouteKey === 'iv_bolus' ? 'в/в струйно' : 'внутривенно'))
+        : 'местно'));
 
   const rxLine = (className, text) => {
     const div = document.createElement('div');
@@ -4279,40 +4317,52 @@ function fillPrescriptionForm(){
   } else {
     signa = 'По '+fmtDose(singleMg, unit)+' '+routeRu+', '+timesADay(reg.freq_per_day);
   }
-  if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_infusion') signa += ', капельно за 30 мин';
-  if(currentRouteGroup === 'iv' && activeRouteKey === 'iv_bolus') signa += ', медленно за 5 мин';
+  // Route-specific timing is not guessed here: the database's preparation steps
+  // carry dose-/age-dependent minutes and are printed below verbatim.
   signaEl.textContent = signa;
 
   // Course
   $('rx-course').textContent = 'Курс: '+courseText(reg)+(reg.duration_note?'. '+reg.duration_note:'');
 
-  // Injection preparation
+  // Injection preparation and administration steps come from the selected route's
+  // source record. Print those steps verbatim instead of inventing a universal 30/5 min.
   const injEl = $('rx-injection-details');
   injEl.innerHTML = '';
   if(currentRouteGroup === 'im' || currentRouteGroup === 'iv'){
-    const dil = mainRef.dilution;
-    if(dil){
-      const routeData = dil[activeRouteKey];
-      if(routeData && routeData.solvent_options && routeData.solvent_options[activeVialIdx]){
-        const v = routeData.solvent_options[activeVialIdx];
-        // Растворитель и характеристики флакона приходят из БД: узлы + textContent.
-        const injBlock = document.createElement('div');
-        injBlock.className = 'rx-inj-block';
-        const injLabel = document.createElement('b');
-        injLabel.textContent = 'Solutio pro injectione:';
-        injBlock.append(injLabel, document.createElement('br'));
-        const mlForDose = (v.final_concentration_mg_ml||v.final_concentration_units_ml) ? (singleMg/(v.final_concentration_mg_ml||v.final_concentration_units_ml)).toFixed(2)+' ml' : '—';
-        [
-          v.solvent+' — '+v.solvent_ml+' ml',
-          'Vial: '+(v.vial_mg?v.vial_mg+' mg':(v.vial_units?formatUnits(v.vial_units)+' ED':'')),
-          'Concentratio finalis: '+(v.final_concentration_mg_ml?v.final_concentration_mg_ml+' mg/ml':(v.final_concentration_units_ml?formatUnits(v.final_concentration_units_ml)+' ED/ml':'')),
-          'Volumen pro dosi: '+mlForDose
-        ].forEach((text, index)=>{
-          if(index > 0) injBlock.appendChild(document.createElement('br'));
-          injBlock.appendChild(document.createTextNode(text));
-        });
-        injEl.appendChild(injBlock);
-      }
+    const routeData = mainRef.dilution && mainRef.dilution[activeRouteKey];
+    const vial = routeData && routeData.solvent_options && routeData.solvent_options[activeVialIdx];
+    if(vial){
+      // Растворитель и характеристики флакона приходят из БД: узлы + textContent.
+      const injBlock = document.createElement('div');
+      injBlock.className = 'rx-inj-block';
+      const injLabel = document.createElement('b');
+      injLabel.textContent = 'Solutio pro injectione:';
+      injBlock.append(injLabel, document.createElement('br'));
+      const mlForDose = (vial.final_concentration_mg_ml||vial.final_concentration_units_ml) ? (singleMg/(vial.final_concentration_mg_ml||vial.final_concentration_units_ml)).toFixed(2)+' ml' : '—';
+      [
+        vial.solvent+' — '+vial.solvent_ml+' ml',
+        'Vial: '+(vial.vial_mg?vial.vial_mg+' mg':(vial.vial_units?formatUnits(vial.vial_units)+' ED':'')),
+        'Concentratio finalis: '+(vial.final_concentration_mg_ml?vial.final_concentration_mg_ml+' mg/ml':(vial.final_concentration_units_ml?formatUnits(vial.final_concentration_units_ml)+' ED/ml':'')),
+        'Volumen pro dosi: '+mlForDose
+      ].forEach((text, index)=>{
+        if(index > 0) injBlock.appendChild(document.createElement('br'));
+        injBlock.appendChild(document.createTextNode(text));
+      });
+      injEl.appendChild(injBlock);
+    }
+    const routeSteps = routeAdministrationStepLines(refs);
+    if(routeSteps.length){
+      const stepsBlock = document.createElement('div');
+      stepsBlock.className = 'rx-inj-block';
+      const stepsLabel = document.createElement('b');
+      stepsLabel.textContent = 'Приготовление и введение (по справочнику):';
+      stepsBlock.appendChild(stepsLabel);
+      routeSteps.forEach(step=>{
+        const row = document.createElement('div');
+        row.textContent = step;
+        stepsBlock.appendChild(row);
+      });
+      injEl.appendChild(stepsBlock);
     }
   }
 }
@@ -4380,6 +4430,10 @@ function copyForMIS(){
   }
   if(reg.duration_note){
     txt += 'Указания: '+reg.duration_note+'\n';
+  }
+  const routeSteps = routeAdministrationStepLines(refs);
+  if(routeSteps.length){
+    txt += 'Приготовление и введение (по справочнику):\n'+routeSteps.join('\n')+'\n';
   }
   exportSafetyFlags(refs).forEach(f=>{
     txt += (f.level === 'danger' ? 'ВНИМАНИЕ: ' : 'Предупреждение: ')+f.text+'\n';
@@ -4453,6 +4507,10 @@ function copyLatinRecipe(){
       const dose = componentLines[i] ? componentLines[i].replace(/^Компонент комбинации: [^—]+— /, '') : COMPONENT_REGIMEN_MISSING;
       txt += '\n' + clatin + ' (' + cref.inn + ') ' + latinStrength(cform ? cform.concentration : '') + ' — ' + dose;
     });
+  }
+  const routeSteps = routeAdministrationStepLines(refs);
+  if(routeSteps.length){
+    txt += '\nПриготовление и введение (по справочнику):\n'+routeSteps.join('\n');
   }
   exportSafetyFlags(refs).forEach(f=>{
     txt += '\n' + (f.level === 'danger' ? '! ВНИМАНИЕ: ' : '! Предупреждение: ') + f.text;

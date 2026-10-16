@@ -133,6 +133,20 @@ setTimeout(async()=>{
       actions.copy();
       w.dispatchEvent(new w.Event('beforeprint'));
     },
+    // T100: steer azithromycin to its IV-infusion route; the data's 60-minute
+    // steps and compatibility note must agree across screen, MIS, Rp and print.
+    injectableRouteExport:()=>{
+      $('new-patient').click();
+      type($('patient-age-unit'),'years'); type($('patient-age'),'35'); type($('weight'),'70');
+      const rec=DB.recommendations.find(r=>r.id==='cap_adult'); if(!rec) return;
+      w.selectDisease(rec);
+      const idx=rec.scenarios.findIndex(s=>s.id==='cap_adult_in_severe');
+      const cards=q('#scenario-list .scenario-card'); if(cards[idx]) cards[idx].click();
+      const drug=q('#drug-list .drug-card').find(c=>/Азитромицин/i.test(txt(c))); if(drug) drug.click();
+      const iv=q('#route-tabs button').find(b=>txt(b)==='в/в'); if(iv) iv.click();
+      actions.copy();
+      w.dispatchEvent(new w.Event('beforeprint'));
+    },
     // the group chosen by chip over a typed age (allowed, flagged): type an age and click
     // the chip of another group — the plain walk resets the age too often to stay there
     chipOverAge:()=>{ type($('patient-age-unit'),pick(['years','months'])); type($('patient-age'),pick(['12','150','20','2'])); const other=[...d.querySelectorAll('#age-group button')].filter(b=>!b.classList.contains('active')); if(other.length) pick(other).click(); actions.copy(); },
@@ -241,8 +255,31 @@ setTimeout(async()=>{
         if(!txt($('rx-safety-line')).includes(caution)) push('age_inference_print_missing',txt($('rx-safety-line')).slice(0,120));
       }
     }
+    if(name==='injectableRouteExport'){
+      const route=w.eval('activeRouteKey');
+      const refKey=w.eval('getDrugRefs(activeDrug)[0]');
+      const data=w.eval('(DB.drugs_reference['+JSON.stringify(refKey)+']||{}).dilution && DB.drugs_reference['+JSON.stringify(refKey)+'].dilution['+JSON.stringify(route)+']');
+      if(!data||route!=='iv_infusion') push('injectable_route_not_selected',`${refKey} / ${route}`);
+      else {
+        tally('injectable_route_export');
+        const steps=JSON.parse(w.eval('JSON.stringify(routeAdministrationStepLines(getDrugRefs(activeDrug)))'));
+        const notes=JSON.parse(w.eval('JSON.stringify(activeRouteAdministrationNotes(getDrugRefs(activeDrug)))'));
+        const screenSteps=txt($('dilution-steps'));
+        const exported=[w.__mis||'',w.__rp||'',txt($('rx-injection-details'))];
+        steps.forEach(step=>{
+          if(!screenSteps.includes(step.slice(step.indexOf('. ')+2))) push('injectable_screen_step_missing',step);
+          exported.forEach((text,i)=>{ if(!text.includes(step)) push(['injectable_mis_step_missing','injectable_rp_step_missing','injectable_print_step_missing'][i],step); });
+        });
+        [...notes.warnings,notes.caution].filter(Boolean).forEach(text=>{
+          if(!txt($('patient-safety-banners')).includes(text)) push('injectable_banner_note_missing',text);
+          if(!(w.__mis||'').includes(text)) push('injectable_mis_note_missing',text);
+          if(!(w.__rp||'').includes(text)) push('injectable_rp_note_missing',text);
+          if(!txt($('rx-safety-line')).includes(text)) push('injectable_print_note_missing',text);
+        });
+        if(/капельно за 30 мин/.test(txt($('rx-signa-text')))) push('injectable_hardcoded_time',txt($('rx-signa-text')));
+      }
+    }
     if(name==='theme'&&w.__themeExpected){
-
       let stored=null; try{ stored=w.localStorage.getItem('antibio_theme'); }catch(_){}
       if(stored!==w.__themeExpected) push('theme_toggle_not_persisted',`expected ${w.__themeExpected}, stored ${stored}`);
       const icon=$('theme-icon'); const wanted=w.__themeExpected==='dark'?'fa-sun':'fa-moon';

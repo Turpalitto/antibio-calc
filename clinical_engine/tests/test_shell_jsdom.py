@@ -151,6 +151,20 @@ def test_weight_inferred_age_basis_caution_is_repeated_in_exports(shell: dict) -
     assert "Предупреждение: " + p["notice"] in p["printed"], p["printed"]
 
 
+def test_infusion_time_and_route_notes_are_consistent_across_exports(shell: dict) -> None:
+    p = shell["injectionTiming"]
+    assert p["activeRoute"] == "iv_infusion", p
+    assert any("60 минут" in step for step in p["routeData"]["steps"]), p["routeData"]
+    assert "60 минут" in p["screenSteps"], p["screenSteps"]
+    assert "капельно за 30 мин" not in p["signa"], p["signa"]
+    assert "в/в капельно" in p["signa"], p["signa"]
+    assert "Строго 2-этапное разведение" in p["screenCaution"]
+    for name, text in (("MIS", p["mis"]), ("Rp", p["rp"]), ("print details", p["printedDetails"])):
+        assert "60 минут" in text, (name, text)
+    for name, text in (("MIS", p["mis"]), ("Rp", p["rp"]), ("print safety", p["printedSafety"])):
+        assert "Строго 2-этапное разведение" in text, (name, text)
+
+
 def test_theme_toggle_persists_and_restores_after_reload(shell: dict) -> None:
     # The harness removes the pre-paint class and runs setupTheme() again, modelling
     # the first-paint + init sequence of a fresh page after the toggle stored "dark".
@@ -758,7 +772,8 @@ def test_an_mg_per_kg_regimen_without_a_weight_leaves_by_no_door(shell: dict) ->
     assert n["save"] == "0|Сохранение заблокировано: " + reason, n
     assert n["print"] == "||ПЕЧАТЬ НЕВОЗМОЖНА: введите вес пациента — доза этого режима ", n
     assert n["misWithWeight"].startswith("Схема приёма: по 1250 мг в/в 1 р/сут|"), n
-    assert n["printWithWeight"] == "По 1250 мг внутривенно, 1 раз в день, медленно за 5 мин", n
+    assert n["printWithWeight"].startswith("По 1250 мг в/в струйно, 1 раз в день|"), n
+    assert "Ввести в/в медленно за 5 минут" in n["printWithWeight"], n
 
 
 def test_quick_nosology_tags_follow_the_patient_group(shell: dict) -> None:

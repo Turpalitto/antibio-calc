@@ -91,7 +91,7 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient",
         "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "childTablet", "noWeightExport", "resetDisease", "search", "hash", "history", "copy",
-        "print", "theme", "routeThenDrug", "name", "quickTag", "capDose", "zeroAgeExport", "ageInferenceExport",
+        "print", "theme", "routeThenDrug", "name", "quickTag", "capDose", "zeroAgeExport", "ageInferenceExport", "injectableRouteExport",
     }
     assert expected <= set(counts), sorted(expected - set(counts))
     assert all(counts[name] >= 10 for name in expected), counts
@@ -157,3 +157,5 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     assert totals.get("zero_age_export", 0) >= 1, totals
     # T99: weight-inferred changes of dosing group repeat their visible caution across exports.
     assert totals.get("age_inference_export", 0) >= 1, totals
+    # T100: source-route preparation steps and cautions reach MIS / Rp / print.
+    assert totals.get("injectable_route_export", 0) >= 1, totals
