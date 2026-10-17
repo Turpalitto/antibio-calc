@@ -1255,6 +1255,69 @@ def test_history_opt_in_write_failure_is_not_reported_as_success() -> None:
     assert result["stored"] is None
 
 
+def test_history_opt_out_remove_failure_is_not_reported_as_success() -> None:
+    result = _run_with_consts(
+        [
+            "historySessionAvailable",
+            "historyPersistAllowed",
+            "readHistoryEntries",
+            "writeSessionHistory",
+            "onHistoryPersistChange",
+            "loadHistory",
+        ],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + (
+            "let historyEntries = [{ts:Date.now(),patient:'Ann',disease:'X',drug:'Y',singleMg:500,freq:1,duration:'1'}];\n"
+        ),
+        (
+            "sessionStore.setItem('antibio_history',JSON.stringify(historyEntries));"
+            "$('history-persist').checked=false;"
+            "sessionStore.removeItem=function(){throw new Error('blocked')};"
+            "onHistoryPersistChange();"
+            "console.log(JSON.stringify({toast:TOASTS[TOASTS.length-1],"
+            "checked:$('history-persist').checked, allowed:historyPersistAllowed(),"
+            "stored:sessionStore.getItem('antibio_history')!==null, memory:historyEntries.length,"
+            "note:$('history-storage-note').textContent, warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert "Не удалось" in result["toast"] and "отключено" not in result["toast"].lower(), result
+    assert result["checked"] is False and result["allowed"] is False
+    assert result["stored"] is True and result["memory"] == 1
+    assert "Не удалось" in result["note"] and result["warn"]
+
+
+def test_clear_history_remove_failure_is_not_reported_as_success() -> None:
+    result = _run_with_consts(
+        [
+            "historySessionAvailable",
+            "historyPersistAllowed",
+            "readHistoryEntries",
+            "writeSessionHistory",
+            "clearHistory",
+            "loadHistory",
+        ],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + (
+            "let historyEntries = [];\n"
+            "globalThis.confirm = () => true;\n"
+        ),
+        (
+            "const entry={ts:Date.now(),patient:'Ann',disease:'X',drug:'Y',singleMg:500,freq:1,duration:'1'};"
+            "sessionStore.setItem('antibio_history',JSON.stringify([entry]));"
+            "$('history-persist').checked=true;"
+            "sessionStore.removeItem=function(){throw new Error('blocked')};"
+            "clearHistory();"
+            "console.log(JSON.stringify({toast:TOASTS[TOASTS.length-1],"
+            "stored:sessionStore.getItem('antibio_history')!==null, memory:historyEntries.length,"
+            "row:$('history-list').textContent.includes('Ann'),"
+            "note:$('history-storage-note').textContent, warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert "Не удалось" in result["toast"] and "История очищена" not in result["toast"], result
+    assert result["stored"] is True and result["memory"] == 1 and result["row"] is True
+    assert "Не удалось" in result["note"] and result["warn"]
+
+
 def test_history_degrades_honestly_when_session_storage_is_unavailable() -> None:
     result = _run_with_consts(
         [

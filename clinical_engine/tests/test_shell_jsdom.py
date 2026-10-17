@@ -857,6 +857,21 @@ def test_history_saved_after_a_reload_with_the_tab_store_is_visible(shell: dict)
     }, h
 
 
+def test_session_storage_removal_failures_are_reported_not_claimed_as_success(shell: dict) -> None:
+    """Opt-out and clear must verify that PHI actually left sessionStorage."""
+    result = shell["historyRemovalFailure"]
+    opt_out = result["optOut"]
+    assert opt_out["checked"] is False and opt_out["allowed"] is False, opt_out
+    assert opt_out["stored"] is True and opt_out["rowVisible"] is True, opt_out
+    assert "Не удалось" in opt_out["toast"] and "отключено" not in opt_out["toast"].lower(), opt_out
+    assert "Не удалось" in opt_out["note"] and opt_out["warn"], opt_out
+
+    clear = result["clear"]
+    assert clear["checked"] is True and clear["stored"] is True and clear["rowVisible"] is True, clear
+    assert "Не удалось" in clear["toast"] and "История очищена" not in clear["toast"], clear
+    assert "Не удалось" in clear["note"] and clear["warn"], clear
+
+
 def test_session_storage_write_failure_is_reported_as_memory_only(shell: dict) -> None:
     """A live sessionStorage object may still reject writes (for example, quota)."""
     failure = shell["historyWriteFailure"]

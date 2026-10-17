@@ -1524,6 +1524,55 @@ async function run() {
       out.groupSearch = gs;
     }
     {
+      // T112: a readable sessionStorage can also reject removeItem(). Exercise both visible
+      // controls: opting out and clearing must never claim that stored PHI was deleted unless
+      // a read-after-remove confirms it.
+      $('new-patient').click();
+      const removalEntry = {
+        ts: Date.now(), patient: 'T112 stored PHI', disease: 'Test', drug: 'Test',
+        singleMg: 500, freq: 1, duration: '1',
+      };
+      w.eval('historyEntries = []');
+      w.sessionStorage.setItem('antibio_history', JSON.stringify([removalEntry]));
+      $('history-persist').checked = true;
+      w.initHistoryStore();
+      $('btn-history').click();
+      const originalRemoveItem = w.Storage.prototype.removeItem;
+      w.Storage.prototype.removeItem = function () { throw new w.DOMException('blocked', 'SecurityError'); };
+      $('history-persist').checked = false;
+      fire($('history-persist'), 'change');
+      const optOutFailure = {
+        toast: txt($('toast')),
+        checked: $('history-persist').checked,
+        allowed: w.eval('historyPersistAllowed()'),
+        stored: JSON.parse(w.sessionStorage.getItem('antibio_history') || '[]').some((e) => e.patient === 'T112 stored PHI'),
+        rowVisible: txt($('history-list')).includes('T112 stored PHI'),
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      w.Storage.prototype.removeItem = originalRemoveItem;
+      $('history-persist').checked = true;
+      fire($('history-persist'), 'change');
+      w.Storage.prototype.removeItem = function () { throw new w.DOMException('blocked', 'SecurityError'); };
+      w.confirm = () => true;
+      $('history-clear').click();
+      const clearFailure = {
+        toast: txt($('toast')),
+        checked: $('history-persist').checked,
+        stored: JSON.parse(w.sessionStorage.getItem('antibio_history') || '[]').some((e) => e.patient === 'T112 stored PHI'),
+        rowVisible: txt($('history-list')).includes('T112 stored PHI'),
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      out.historyRemovalFailure = { optOut: optOutFailure, clear: clearFailure };
+      w.Storage.prototype.removeItem = originalRemoveItem;
+      w.sessionStorage.removeItem('antibio_history');
+      w.eval('historyEntries = []');
+      $('history-persist').checked = false;
+      $('drawer-close').click();
+      w.loadHistory();
+    }
+    {
       // T111: a readable sessionStorage can still reject writes (quota / policy). Exercise
       // the visible save button, not only the storage helper: a failed write must be
       // reported as memory-only, turn off the persistence opt-in, and leave the entry usable.
