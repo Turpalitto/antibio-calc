@@ -1,27 +1,27 @@
-## 2026-10-17 (after round 6, T103): next steps
+## 2026-10-17 (after round 6, T104): next steps
 
-1. **Owner-physician items remain untouched.** No clinical data, blocked-record status, dose
-   threshold, regimen, route default, source interpretation, or owner decision was changed.
+1. **Owner-physician decisions remain untouched.** No clinical data, blocked-record status,
+   dose threshold, regimen, route default, source interpretation, or owner decision was changed.
    Keep the DOSA review, source evidence, dose maxima/bases, pediatric edge cases, and other
-   clinical questions in the owner queue below; never infer approval from passing tests.
-2. **Owner browser / screen-reader pass:** verify the new named groups and pressed state with a
-   real browser and assistive technology. Check age, quick-weight, scenario, drug/line, route,
-   form, regimen, injection subroute and vial choices; exercise weight inference, manual changes,
-   resets, and IV bolus → infusion → bolus. Confirm spoken state tracks the visible active chip.
-   Automated jsdom + axe checks pass, but no real browser or screen reader was available here.
-   Also retain the earlier real-browser checks below (patient-entry cautions and route-specific
-   screen / MIS / Rp / print consistency).
-3. **Engineering continuation (autonomous):** T103 is locally verified (2855 passed / 28
-   skipped; validate 0 / 436; Ruff; build freshness; production npm audit 0). T102 `c27704f`
-   and T103 `6c65ed0` each have all 8 GitHub checks green (CI `39025820949`, CodeQL
-   `39025820919`). Refresh PR #1's summary for T103, but do not merge it. Then continue with a
-   bounded, evidence-led audit of
-   remaining dynamic controls and accessibility / keyboard state, adding only reproducible,
-   clinically neutral fixes with independent tests and mutation checks. Root `npm audit` still
-   reports five high findings in the Tailwind 3 build-only dev tree; production audit is clean.
-   Keep the report-only policy, do not run `npm audit fix --force`, and treat any Tailwind 4 move
-   as a separate CSS migration needing visual review. Do not change frozen modules, connect
-   Clinical Engine, choose a LICENSE, change `corpus_config`, or make clinical data decisions.
+   clinical questions in the owner queue below; tests are not medical approval.
+2. **Owner browser / assistive-technology pass:** check the named `aria-pressed` groups from T103
+   with a screen reader, including age inference, manual changes, reset and IV bolus → infusion →
+   bolus. Enable the operating system's “reduce motion” preference and verify smooth scrolling,
+   pulse, entrance animation, drawer/toast transitions and hover lift are removed while content,
+   focus and controls remain usable; confirm ordinary users still get the normal motion. CSSOM /
+   jsdom tests pass, but no real browser or assistive technology was available here. Keep the
+   earlier real-browser checks below (patient-entry cautions and route-specific screen / MIS / Rp /
+   print consistency).
+3. **Engineering continuation (autonomous):** T104 is locally verified (2856 passed / 28
+   skipped; validate 0 / 436; Ruff; build freshness; production npm audit 0); T103 `6c65ed0` and
+   its handoff `bd51256` are green on all 8 checks. T104 awaits push/CI. After its green checks,
+   refresh PR #1's description for T104 (already updated through T103), but do not merge. Continue
+   with an evidence-led audit of remaining interactive states and browser robustness, adding only
+   reproducible, clinically neutral fixes with independent tests / mutation checks. Root `npm
+   audit` still reports five high findings in Tailwind's build-only dev tree; production audit is
+   clean. Keep it report-only; no `npm audit fix --force`; any Tailwind 4 migration requires its
+   own CSS and visual review. Do not change frozen modules, connect Clinical Engine, choose a
+   LICENSE, change `corpus_config`, or make clinical data decisions.
 
 
 ## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)

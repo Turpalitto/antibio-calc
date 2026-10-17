@@ -1,3 +1,21 @@
+## 2026-10-17 (round 6 continued, T104): respect reduced-motion preferences
+
+- A targeted accessibility audit found that the shell's custom CSS always used smooth page
+  scrolling, a looping pulse, entrance fades, drawer/toast transitions and hover lift, with no
+  `prefers-reduced-motion` override. T104 adds an OS-preference media rule: auto scrolling,
+  effectively instant animations/transitions, a single animation iteration, and no hover/active
+  transform movement. Default motion for users without the preference is unchanged.
+- The jsdom smoke now reads the actual built stylesheet's CSSOM; a Python assertion pins the
+  media condition, important overrides, scroll behavior and motion transform reset. A temporary
+  `no-preference` mutant produces no reduced-motion rule in the smoke output, so the new check
+  fails as intended. This parses the stylesheet but does not replace a real OS/browser test.
+- Full suite: **2856 passed / 28 skipped / 0 failed / 5 existing warnings** in 267.93 s. `npm run
+  validate`: 0 errors / 436 warnings; Ruff, JS syntax, PyYAML workflow parse, `git diff --check`,
+  `python db/build_html.py --check`, and `npm audit --omit=dev` (0) pass. Build `build-f94676081a58`
+  (`db:56727a27f050`, template `3580498e82f6`); DB and Tailwind CSS are unchanged.
+- T103 `6c65ed0` + its handoff `bd51256` are CI / CodeQL green; T104 is local and awaiting push.
+  Real reduced-motion behavior on an actual device remains an owner-browser check.
+
 ## 2026-10-17 (round 6 continued, T103): accessible exclusive-selection states
 
 - T103 adds named `role="group"` containers and `aria-pressed` state for the nine exclusive

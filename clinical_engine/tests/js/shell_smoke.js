@@ -985,6 +985,22 @@ async function run() {
         injectionRoute: groupState('route-selector', '#route-selector button'),
         vial: groupState('vial-list', '#vial-list button'),
       };
+      const motionRule = [...d.styleSheets].flatMap(sheet=>[...sheet.cssRules])
+        .find(rule=>rule.conditionText&&rule.conditionText.replace(/\s/g,'')==='(prefers-reduced-motion:reduce)');
+      out.reducedMotion = {
+        condition: motionRule ? motionRule.conditionText : null,
+        rules: motionRule ? [...motionRule.cssRules].map(rule=>({
+          selector: rule.selectorText.replace(/\s/g,''),
+          animationDuration: rule.style.getPropertyValue('animation-duration').trim(),
+          animationDurationPriority: rule.style.getPropertyPriority('animation-duration'),
+          animationIterationCount: rule.style.getPropertyValue('animation-iteration-count').trim(),
+          transitionDuration: rule.style.getPropertyValue('transition-duration').trim(),
+          transitionDurationPriority: rule.style.getPropertyPriority('transition-duration'),
+          scrollBehavior: rule.style.getPropertyValue('scroll-behavior').trim(),
+          transform: rule.style.getPropertyValue('transform').trim(),
+          transformPriority: rule.style.getPropertyPriority('transform')
+        })) : []
+      };
     }
 
     // 23. history.replaceState throwing (sandboxed iframe, some file:// viewers) must not

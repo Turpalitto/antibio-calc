@@ -222,6 +222,22 @@ def test_exclusive_selection_controls_expose_accessible_pressed_state(shell: dic
             assert (control["pressed"] == "true") == control["active"], (key, control)
 
 
+def test_reduced_motion_preference_disables_nonessential_shell_motion(shell: dict) -> None:
+    motion = shell["reducedMotion"]
+    assert motion["condition"].replace(" ", "") == "(prefers-reduced-motion:reduce)"
+    rules = {rule["selector"]: rule for rule in motion["rules"]}
+    global_rule = rules["*,*::before,*::after"]
+    assert global_rule["animationDuration"] == "0.01ms"
+    assert global_rule["animationDurationPriority"] == "important"
+    assert global_rule["animationIterationCount"] == "1"
+    assert global_rule["transitionDuration"] == "0.01ms"
+    assert global_rule["transitionDurationPriority"] == "important"
+    assert rules["html"]["scrollBehavior"] == "auto"
+    motion_selector = next(selector for selector in rules if ".chip:hover" in selector)
+    assert rules[motion_selector]["transform"] == "none"
+    assert rules[motion_selector]["transformPriority"] == "important"
+
+
 def test_theme_toggle_persists_and_restores_after_reload(shell: dict) -> None:
     # The harness removes the pre-paint class and runs setupTheme() again, modelling
     # the first-paint + init sequence of a fresh page after the toggle stored "dark".

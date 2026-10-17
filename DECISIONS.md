@@ -1,3 +1,18 @@
+## 2026-10-17 — T104: honor the user's reduced-motion preference
+
+**Decision:** Keep the existing animation and transition design for the default experience, but
+add a `prefers-reduced-motion: reduce` override in the calculator shell. Under that OS preference,
+page scrolling becomes automatic, motion timing is reduced to effectively instant, looping
+animation is limited to one iteration, and hover/active lift transforms are removed.
+
+**Rationale:** No motion is required to understand a clinical result or operate the calculator.
+The override is progressive, CSS-only, and does not alter the normal-motion experience or any
+calculation / export / medical state. A CSSOM regression test verifies the emitted rules; actual
+OS/browser behavior still requires an owner device pass.
+
+**Scope:** `antibiotic_calc.html.template` and generated shell / service-worker build stamp; no
+Tailwind classes, static CSS, DB, dependencies, frozen module or calculation logic changed.
+
 ## 2026-10-17 — T103: expose selected state for exclusive shell controls
 
 **Decision:** Keep the existing button / button-like interaction model and visible `.active`

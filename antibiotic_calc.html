@@ -323,6 +323,21 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
 .dark .disclaimer-banner{background:#2a1a08;border-bottom-color:#b45309;color:#fef3c7}
 @media print{ .disclaimer-banner{display:none!important} }
 
+/* Honor the operating system's reduced-motion preference for all interactive UI. */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+  .chip:hover,.chip:active,.drug-card:hover,.drug-card:active,
+  .metric-tile:hover,.metric-tile:active,.quick-weight-chip:hover,.quick-weight-chip:active,
+  .quick-disease-tag:hover,.quick-disease-tag:active,.action-btn:hover,.action-btn:active{
+    transform:none!important;
+  }
+}
+
 /* Offline icon fallbacks */
 .fa-user-md:not(.fa-solid):not(.fa-regular)::before{content:"🩺\00a0"}
 .fa-history:not(.fa-solid):not(.fa-regular)::before{content:"⏱\00a0"}
