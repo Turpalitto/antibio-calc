@@ -1,3 +1,18 @@
+## 2026-10-17 (round 6 continued, T109): return the history drawer to its actual opener
+
+- Continued the modal focus audit on the small-screen path. At a 390 px viewport, the mobile
+  bottom-nav History button opened the drawer through a programmatic click on the desktop header
+  button; closing the drawer always focused that header control rather than the mobile trigger.
+- The mobile nav now opens the drawer directly with its event, and `openHistory()` records the
+  actual invoker. `closeHistory()` restores it if it remains focusable; otherwise it falls back to
+  the visible header action. Shared focus-target validation checks each ancestor's computed
+  visibility plus `hidden`, `inert`, and `aria-hidden`, including responsive inline display.
+- Built-shell smoke covers desktop header and mobile-nav close paths. A fixed-header-target mutant
+  fails the mobile trigger assertion. Verification: jsdom shell file **68 passed**; Ruff, JS syntax,
+  build freshness, `npm run validate` (0 errors / 436 warnings), production npm audit (0), and
+  `git diff --check` pass. Build `build-683e09a293b0`, template `4f931cab1879`, DB `56727a27f050`;
+  commit `64f26c7` is pushed, CI `39034116823` and CodeQL `39034113602` pass all 8 checks. PR #1 description is refreshed through T109; it remains open/unmerged.
+
 ## 2026-10-17 (round 6 continued, T108): restore focus to the actual guideline-modal trigger
 
 - Extended the modal keyboard audit beyond its close button and Tab trap. A built-shell probe found

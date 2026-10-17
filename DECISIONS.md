@@ -1,3 +1,17 @@
+## 2026-10-17 — T109: return from the history drawer to its actual trigger
+
+**Decision:** Save the history drawer's opener (desktop header or mobile bottom navigation) and
+restore focus to it on close when it remains connected, enabled, and visible. Use the desktop
+history action as fallback only when the original trigger is no longer focusable.
+
+**Rationale:** The mobile action previously clicked the desktop control programmatically, so the
+shared close handler lost the true source and focused the header after dismissal. On a scrolled
+small screen this can move focus away from the bottom-navigation context. The actual `click` event
+is passed through, and visibility validation accounts for responsive display state.
+
+**Scope:** `antibiotic_calc.html.template`, generated shell / service-worker build stamp, and jsdom
+smoke tests. No clinical data, calculation logic, CSS, dependency or frozen module changed.
+
 ## 2026-10-17 — T108: return from the guideline dialog to its actual trigger
 
 **Decision:** Save the guideline dialog's triggering element and restore focus to that same control

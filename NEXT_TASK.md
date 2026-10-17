@@ -1,4 +1,4 @@
-## 2026-10-17 (after round 6, T108): next steps
+## 2026-10-17 (after round 6, T109): next steps
 
 1. **Owner-physician decisions remain untouched.** No clinical data, blocked-record status, dose
    threshold, regimen, route default, source interpretation, or owner decision was changed. Keep
@@ -12,15 +12,16 @@
    results. For T107, activate the selected-disease reset and search-clear controls and confirm
    focus returns to the visible search field. For T108, open and dismiss the guideline dialog from
    both the disease summary and result action; focus should return to that same visible trigger.
-   Also enable OS “reduce motion” for T104 and verify smooth scroll / animation / hover movement
-   stop without hiding content, with ordinary motion unchanged. CSSOM / jsdom pass, but real
-   browser, screen reader and OS preference checks remain unavailable here. Keep the earlier
-   real-browser checks below (patient-entry cautions and route-specific screen / MIS / Rp / print
-   consistency).
-3. **Engineering continuation (autonomous):** T108 `80da809` is pushed and locally verified:
-   `test_shell_jsdom.py` **67 passed**, the fixed-result-target mutant is detected, validate 0 / 436,
-   Ruff, generated build check and production npm audit 0. CI `39033045689` and CodeQL `39033045742`
-   pass all 8 checks; PR #1's description is refreshed through T108. Keep PR #1 open for owner
+   For T109, open the history drawer from the mobile bottom navigation, close it, and confirm focus
+   returns to the mobile trigger rather than the header action. Also enable OS “reduce motion” for
+   T104 and verify smooth scroll / animation / hover movement stop without hiding content, with
+   ordinary motion unchanged. CSSOM / jsdom pass, but real browser, screen reader and OS preference
+   checks remain unavailable here. Keep the earlier real-browser checks below (patient-entry
+   cautions and route-specific screen / MIS / Rp / print consistency).
+3. **Engineering continuation (autonomous):** T109 `64f26c7` is pushed and locally verified:
+   `test_shell_jsdom.py` **68 passed**, the fixed-header-target mutant is detected, validate 0 / 436,
+   Ruff, generated build check and production npm audit 0. CI `39034116823` and CodeQL `39034113602`
+   pass all 8 checks; PR #1's description is refreshed through T109. Keep PR #1 open for owner
    review; do not merge. Continue with an evidence-led audit of remaining interactive states and
    browser robustness; only implement reproducible, clinically neutral fixes with independent
    tests / mutation checks. Root npm audit still has five high Tailwind build-only findings; keep
