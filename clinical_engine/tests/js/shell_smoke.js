@@ -1305,6 +1305,33 @@ async function run() {
       // the drawer re-reads the list when it opens — count what the physician would see
       const rows = () => { w.openHistory(); const n = d.querySelectorAll('#history-list [data-action="restore"]').length; w.closeHistory(); return n; };
       const h = {};
+      // 24-hour TTL is a storage cleanup boundary, not only a display filter: opening the
+      // drawer prunes expired PHI from sessionStorage, including when no fresh rows remain.
+      {
+        const now = Date.now();
+        const expired = { ts: now - 86400001, patient: 'Expired PHI', disease: 'Old', drug: 'Old', singleMg: 500, freq: 2, duration: '7', ref: { disease: 'cap_adult' } };
+        const fresh = { ts: now, patient: 'Fresh PHI', disease: 'Current', drug: 'Current', singleMg: 500, freq: 2, duration: '7', ref: { disease: 'cap_adult' } };
+        $('history-persist').checked = true;
+        w.eval('historyEntries = []');
+        w.sessionStorage.setItem('antibio_history', JSON.stringify([expired, fresh]));
+        $('btn-history').click();
+        const renderedMixed = txt($('history-list'));
+        const storedMixed = JSON.parse(w.sessionStorage.getItem('antibio_history')).map((e) => e.patient);
+        $('drawer-close').click();
+        w.sessionStorage.setItem('antibio_history', JSON.stringify([expired]));
+        $('btn-history').click();
+        const renderedExpired = txt($('history-list'));
+        const storedExpired = JSON.parse(w.sessionStorage.getItem('antibio_history')).map((e) => e.patient);
+        h.ttl = {
+          freshRendered: renderedMixed.includes('Fresh PHI'),
+          expiredRendered: renderedMixed.includes('Expired PHI'),
+          storedAfterMixed: storedMixed,
+          expiredOnlyRendered: renderedExpired.includes('Expired PHI'),
+          storedAfterAllExpired: storedExpired,
+          consentAfterAllExpired: $('history-persist').checked,
+        };
+        $('drawer-close').click();
+      }
       // reload-like state: an entry already in the tab store, box unchecked, init runs again
       w.sessionStorage.setItem('antibio_history', JSON.stringify([{ ts: Date.now() - 1000, patient: 'A', disease: 'X', drug: 'Y', singleMg: 500, freq: 2, duration: '7', ref: { disease: 'cap_adult' } }]));
       $('history-persist').checked = false;

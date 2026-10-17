@@ -1,4 +1,4 @@
-## 2026-10-17 (after round 6, T109): next steps
+## 2026-10-17 (after round 6, T110): next steps
 
 1. **Owner-physician decisions remain untouched.** No clinical data, blocked-record status, dose
    threshold, regimen, route default, source interpretation, or owner decision was changed. Keep
@@ -12,22 +12,26 @@
    results. For T107, activate the selected-disease reset and search-clear controls and confirm
    focus returns to the visible search field. For T108, open and dismiss the guideline dialog from
    both the disease summary and result action; focus should return to that same visible trigger.
-   For T109, open the history drawer from the mobile bottom navigation, close it, and confirm focus
-   returns to the mobile trigger rather than the header action. Also enable OS “reduce motion” for
-   T104 and verify smooth scroll / animation / hover movement stop without hiding content, with
-   ordinary motion unchanged. CSSOM / jsdom pass, but real browser, screen reader and OS preference
-   checks remain unavailable here. Keep the earlier real-browser checks below (patient-entry
-   cautions and route-specific screen / MIS / Rp / print consistency).
-3. **Engineering continuation (autonomous):** T109 `64f26c7` is pushed and locally verified:
-   `test_shell_jsdom.py` **68 passed**, the fixed-header-target mutant is detected, validate 0 / 436,
-   Ruff, generated build check and production npm audit 0. CI `39034116823` and CodeQL `39034113602`
-   pass all 8 checks; PR #1's description is refreshed through T109. Keep PR #1 open for owner
-   review; do not merge. Continue with an evidence-led audit of remaining interactive states and
-   browser robustness; only implement reproducible, clinically neutral fixes with independent
-   tests / mutation checks. Root npm audit still has five high Tailwind build-only findings; keep
-   report-only, never use `npm audit fix --force`, and treat Tailwind 4 as a separate CSS/visual
-   migration. Do not change frozen modules, connect Clinical Engine, choose a LICENSE, change
-   `corpus_config`, or make clinical decisions.
+   For T109, open the history drawer from mobile bottom navigation and verify focus returns to that
+   trigger. For T110, confirm an expired history entry is removed from sessionStorage after opening
+   the drawer, while an unexpired row stays visible and the opt-in remains checked. Also enable OS
+   “reduce motion” for T104 and verify smooth scroll / animation / hover movement stop without
+   hiding content, with ordinary motion unchanged. Real browser, screen reader and OS preference
+   checks remain unavailable here. Keep earlier real-browser checks below (patient-entry cautions
+   and route-specific screen / MIS / Rp / print consistency).
+3. **Engineering continuation (autonomous):** T110 enforces the existing 24-hour history TTL in
+   storage and memory; expired PHI is pruned on read while the `[]` sentinel preserves the explicit
+   consent state. The built-shell and extracted tests pass; both storage and memory mutants are
+   detected. Local shell-focused suite: **235 passed**; validate 0 / 436, Ruff, JS syntax, generated
+   build check and production npm audit 0. The Python 3.12 full suite and CI / CodeQL for the new
+   commit are pending. Keep PR #1 open for owner review; do not merge. Root npm audit still has five
+   high Tailwind build-only findings; keep report-only, never use `npm audit fix --force`, and treat
+   Tailwind 4 as a separate CSS/visual migration. Do not change frozen modules, connect Clinical
+   Engine, choose a LICENSE, change `corpus_config`, or make clinical decisions.
+4. **Next audit hypothesis (T111, not yet proven):** a readable but quota/write-denied
+   `sessionStorage` may make `writeSessionHistory()` silently fall back to memory while the UI still
+   says the entry was saved in the tab. Reproduce through a built-shell user action first; change
+   behavior only if the false-success state is observed, and keep the memory-only fallback usable.
 
 
 ## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)

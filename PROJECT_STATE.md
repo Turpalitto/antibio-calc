@@ -1,4 +1,4 @@
-## 2026-10-17 (round 6 continued, T91–T109): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, theme persistence, CodeQL
+## 2026-10-17 (round 6 continued, T91–T110): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -76,16 +76,19 @@
   drawer directly, and closing returns to the actual mobile trigger. The shared fallback checks
   ancestor visibility and falls back to the header action only if the saved trigger is unavailable.
   Desktop and mobile paths are smoke-tested; the old fixed-header-target mutant is detected.
+- T110 enforces the existing 24-hour history TTL in storage, not only the rendered list:
+  `readHistoryEntries()` now prunes expired / malformed patient rows from `sessionStorage` and
+  memory while retaining the opt-in sentinel `[]`. A built-shell drawer test checks rendered rows
+  and raw stored contents; independent storage and memory mutants are detected. No clinical data,
+  dose logic or consent default changed.
 - Latest local full-suite count is **2857 passed / 28 skipped / 0 failed / 5 existing warnings**
-  at T105; GitHub CI through T108 passed its full suite and validation. After T109, the complete
-  jsdom shell file is **68 passed**; validate 0 / 436; Ruff, JS syntax, build check and production
-  npm audit clean; axe has no violations in tested states. Generated shell `build-683e09a293b0`;
-  DB unchanged (`56727a27f050…`). T105 `c821548`, T106 `a1c52cf`, T107 `c7d3566`, and T108
-  `80da809` are green on all 8 GitHub checks. T109 CI `39034116823` and CodeQL `39034113602`
-  pass the full suite, validation, Ruff, dependency/secret checks and CodeQL. Remaining skips
-  require owner-controlled clinical source or review-workbench artifacts. Real browser /
-  screen-reader / OS motion preference verification remains for the owner; PR #1 is open, updated
-  through T109, and unmerged.
+  at T105; the current Python 3.11 environment cannot run the required Python 3.12 full suite.
+  T110 shell-focused suite is **235 passed**; validate 0 / 436, Ruff, JS syntax, generated build
+  check, production npm audit (0) and `git diff --check` pass. Build `build-a1c7152fc5eb`,
+  template `46bc544b5294`, DB unchanged (`56727a27f050…`). T109 CI `39034116823` and CodeQL
+  `39034113602` passed 8/8; T110 CI / CodeQL are pending. Remaining skips require owner-controlled
+  clinical source or review-workbench artifacts. Real browser / screen-reader / OS motion
+  preference verification remains for the owner; PR #1 stays open and unmerged.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 

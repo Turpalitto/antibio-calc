@@ -847,6 +847,14 @@ def test_history_saved_after_a_reload_with_the_tab_store_is_visible(shell: dict)
     assert h["afterSave"] == "2|2|Сохранено в историю (вкладка)", h
     assert h["afterOptOut"] == "2|0|true", h
     assert h["afterSaveMemoryOnly"] == "3|0", h
+    assert h["ttl"] == {
+        "freshRendered": True,
+        "expiredRendered": False,
+        "storedAfterMixed": ["Fresh PHI"],
+        "expiredOnlyRendered": False,
+        "storedAfterAllExpired": [],
+        "consentAfterAllExpired": True,
+    }, h
 
 
 def test_history_restore_of_a_record_closed_by_the_source_gate_stays_closed(shell: dict) -> None:

@@ -4779,10 +4779,12 @@ function onHistoryPersistChange(){
   loadHistory();
 }
 function readHistoryEntries(){
-  // S-3 PHI TTL: a stored patient history entry expires 24h after it was
-  // written. Filtering happens on read (storage AND memory) so expired
-  // Ф.И.О./diagnosis data stops being rendered or re-persisted. All logic
-  // is inline: the safety tests extract this function as-is.
+  // S-3 PHI TTL: a patient-history entry expires 24h after it was written.
+  // Every read prunes expired/malformed entries from the opt-in store as well as
+  // memory, so hidden rows do not remain accessible in sessionStorage. Keep an
+  // empty-array sentinel after pruning to retain the physician's explicit opt-in
+  // across reloads without retaining expired patient data. Kept inline because
+  // the safety tests extract this function as-is.
   const cutoff = Date.now() - 86400000;
   const fresh = arr => arr.filter(e => e && typeof e.ts === 'number' && e.ts >= cutoff);
   // One source of truth: the tab store only while the consent box of the physician is on
@@ -4793,12 +4795,23 @@ function readHistoryEntries(){
     try{
       const raw = sessionStorage.getItem(HISTORY_KEY);
       if(raw){
-        const parsed = JSON.parse(raw);
-        if(Array.isArray(parsed)) return fresh(parsed);
+        let parsed;
+        try{ parsed = JSON.parse(raw); }catch(_){}
+        if(Array.isArray(parsed)){
+          const entries = fresh(parsed);
+          historyEntries = entries.slice();
+          if(entries.length !== parsed.length){
+            try{ sessionStorage.setItem(HISTORY_KEY, JSON.stringify(entries)); }catch(_){}
+          }
+          return entries;
+        }
+        // Malformed legacy data may still contain PHI; replace it but keep consent.
+        try{ sessionStorage.setItem(HISTORY_KEY, '[]'); }catch(_){}
       }
     }catch(_){}
   }
-  return fresh(historyEntries.slice());
+  historyEntries = fresh(historyEntries.slice());
+  return historyEntries.slice();
 }
 function writeSessionHistory(list){
   historyEntries = list.slice(0, HISTORY_MAX);

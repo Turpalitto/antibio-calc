@@ -1,3 +1,23 @@
+## 2026-10-17 (round 6 continued, T110): enforce the 24-hour history TTL in storage
+
+- Created `docs/audits/MEGA_IMPROVEMENT_PROMPT_2026-10-17.md` first, then followed its evidence-led
+  cycle. A built-shell probe reproduced that `readHistoryEntries()` hid rows older than 24 hours
+  but left their patient names in `sessionStorage`; expired entries also remained in the in-memory
+  array. This violated the existing S-3 TTL decision while a tab stayed open.
+- `readHistoryEntries()` now removes expired / malformed rows from both stores on read. When the
+  consented store becomes empty it writes `[]`, retaining the explicit session opt-in without PHI.
+  The UI remains memory-only by default; the TTL remains 24 hours. No dose logic or clinical data
+  changed.
+- Added extracted-function tests for physical sessionStorage cleanup, memory cleanup, and retained
+  consent, plus a built-shell test that opens the history drawer and checks both rendering and the
+  actual stored value. Disabling either prune operation is caught by the corresponding mutation.
+  Verification: shell-focused suite **235 passed**; Ruff / JS syntax clean; `npm run validate`
+  **0 errors / 436 warnings**; generated build check fresh; `npm audit --omit=dev` **0**; diff check
+  clean. Full Python 3.12 suite is deferred to CI because only Python 3.11 is installed locally.
+- Build `build-a1c7152fc5eb`, template `46bc544b5294`, DB unchanged `56727a27f050`. Clinical DB,
+  frozen modules, CSS and dependency manifests are unchanged. CI / CodeQL for the T110 commit are
+  pending; PR #1 remains open and unmerged.
+
 ## 2026-10-17 (round 6 continued, T109): return the history drawer to its actual opener
 
 - Continued the modal focus audit on the small-screen path. At a 390 px viewport, the mobile

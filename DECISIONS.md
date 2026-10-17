@@ -1,3 +1,20 @@
+## 2026-10-17 — T110: enforce the 24-hour history TTL in storage
+
+**Decision:** Apply the existing 24-hour expiry to stored data as well as rendered history. On each
+read, prune expired or malformed entries from the opt-in `sessionStorage` array and the in-memory
+history. When pruning empties the stored list, retain an `[]` value so the physician's explicit
+session opt-in remains checked across reloads without retaining patient data.
+
+**Rationale:** Before T110, an expired row disappeared from the UI but its patient name, diagnosis,
+and regimen remained readable from `sessionStorage` until a later save or tab close. The existing
+S-3 decision defines history as a convenience log with a 24-hour TTL; display-only filtering did
+not enforce that retention boundary. The default remains memory-only, and the consent model / TTL
+length are unchanged.
+
+**Scope:** `readHistoryEntries()` in `antibiotic_calc.html.template`, its generated HTML / service
+worker cache stamp, and regression tests. This is privacy/storage behavior only; no clinical data,
+dose calculation, frozen module, dependency, or consent default changed.
+
 ## 2026-10-17 — T109: return from the history drawer to its actual trigger
 
 **Decision:** Save the history drawer's opener (desktop header or mobile bottom navigation) and

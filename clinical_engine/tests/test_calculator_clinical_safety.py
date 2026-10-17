@@ -1144,6 +1144,54 @@ def test_history_is_memory_only_unless_the_physician_opts_in() -> None:
     assert result["writtenWithConsent"] == '[{"ts":2,"patient":"Bob","drug":"y"}]'
 
 
+def test_expired_history_is_purged_from_consented_session_storage() -> None:
+    """The 24-hour TTL must delete expired PHI, not only hide it from the UI."""
+    result = _run_with_consts(
+        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries"],
+        [],
+        SESSION_STORE_GLOBALS + "let historyEntries = [];\n",
+        (
+            "const now=Date.now();"
+            "const fresh={ts:now,patient:'Fresh PHI'};"
+            "const expired={ts:now-86400001,patient:'Expired PHI'};"
+            "$('history-persist').checked=true;"
+            "sessionStore.setItem('antibio_history',JSON.stringify([expired,fresh]));"
+            "const mixed=readHistoryEntries();"
+            "const mixedStored=JSON.parse(sessionStore.getItem('antibio_history'));"
+            "sessionStore.setItem('antibio_history',JSON.stringify([expired]));"
+            "const empty=readHistoryEntries();"
+            "const emptyStored=JSON.parse(sessionStore.getItem('antibio_history'));"
+            "console.log(JSON.stringify({"
+            "mixedReturned:mixed.map(x=>x.patient), mixedStored:mixedStored.map(x=>x.patient),"
+            "emptyReturned:empty.map(x=>x.patient), emptyStored:emptyStored.map(x=>x.patient),"
+            "consentStillActive:historyPersistAllowed()"
+            "}));"
+        ),
+    )
+    assert result["mixedReturned"] == ["Fresh PHI"]
+    assert result["mixedStored"] == ["Fresh PHI"], "expired PHI remains physically stored after a read"
+    assert result["emptyReturned"] == []
+    assert result["emptyStored"] == [], "an all-expired history must be replaced by an empty array"
+    assert result["consentStillActive"] is True, "purging history must not revoke the session consent"
+
+
+def test_expired_memory_history_is_removed_on_read() -> None:
+    result = _run_with_consts(
+        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries"],
+        [],
+        SESSION_STORE_GLOBALS + "let historyEntries = [];\n",
+        (
+            "const now=Date.now();"
+            "historyEntries=[{ts:now-86400001,patient:'Expired PHI'},{ts:now,patient:'Fresh PHI'}];"
+            "$('history-persist').checked=false;"
+            "const returned=readHistoryEntries();"
+            "console.log(JSON.stringify({returned:returned.map(x=>x.patient),memory:historyEntries.map(x=>x.patient)}));"
+        ),
+    )
+    assert result["returned"] == ["Fresh PHI"]
+    assert result["memory"] == ["Fresh PHI"], "expired PHI remains in the in-memory history after a read"
+
+
 def test_history_degrades_honestly_when_session_storage_is_unavailable() -> None:
     result = _run_with_consts(
         [

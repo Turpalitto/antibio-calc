@@ -1,20 +1,22 @@
 # HANDOFF.md — ANTIBIO (Cross-IDE / Cross-AI Onboarding)
 
-## Current handoff — 2026-10-17 (calculator audit rounds T91–T109)
+## Current handoff — 2026-10-17 (calculator audit rounds T91–T110)
 
 The current engineering thread is the clinically neutral calculator shell hardening documented in
 `PROJECT_STATE.md`, `AI_LOG.md`, `NEXT_TASK.md`, `DECISIONS.md` and
 `docs/audits/AUDIT_2026-10-14_FIXES.md`. Do not treat the older dated handoff sections below as
 current test or branch status.
 
-- Branch: `arena/2013101a-antibio-calc`; PR #1 is open and unmerged. Latest code commit:
-  `64f26c7` (T109). PR description is updated through T109.
-- T109 CI `39034116823` and CodeQL `39034113602`: all 8 checks pass. The T109 jsdom shell suite
-  is 68 passed; latest local full-suite result remains T105: 2857 passed / 28 skipped / 0 failed
-  (5 existing warnings). Validation is 0 errors / 436 warnings; production npm audit is clean.
-- T106 repairs focus after search selection; T107 restores search focus after reset; T108 returns
-  focus to the guideline dialog's actual trigger; T109 returns the history drawer to the desktop
-  or mobile opener. No clinical data, dose logic, frozen modules, dependencies or CSS were changed.
+- Branch: `arena/2013101a-antibio-calc`; PR #1 remains open and unmerged. The local worktree is
+  aligned with PR head `4c3246c` plus the T110 changes; commit / CI are pending.
+- T110 closes a storage-retention gap in the existing 24-hour history TTL: reads now prune expired
+  and malformed rows from sessionStorage and memory, retaining `[]` to preserve consent without
+  PHI. The regression suite checks actual drawer rendering and raw storage, and both prune mutants
+  are detected. The shell-focused suite is **235 passed**; validate is 0 / 436, Ruff / JS syntax /
+  generated build check / diff checks pass, and production npm audit reports 0 vulnerabilities.
+- T110 build is `build-a1c7152fc5eb` (template `46bc544b5294`); the DB hash remains
+  `56727a27f050…`. Python 3.12 is unavailable locally, so the full suite will be verified by CI.
+  Clinical data, dose logic, frozen modules, CSS and dependency manifests were not changed.
 - Owner-physician decisions and real-browser / screen-reader / OS motion-preference checks remain
   pending. Never merge PR #1, approve medical content, or connect the Clinical Engine.
 
