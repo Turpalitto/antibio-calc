@@ -550,6 +550,19 @@ def test_enter_from_search_moves_focus_out_of_hidden_results(shell: dict) -> Non
     assert blocked["hiddenAncestor"] is False, blocked
 
 
+def test_disease_reset_controls_return_focus_to_search(shell: dict) -> None:
+    disease_reset = shell["keyboard"]["focusAfterDiseaseReset"]
+    assert disease_reset["activeDiseaseCleared"] is True, disease_reset
+    assert disease_reset["searchFocused"] is True, disease_reset
+    assert disease_reset["hiddenAncestor"] is False, disease_reset
+
+    search_clear = shell["keyboard"]["focusAfterSearchClear"]
+    assert search_clear["value"] == "", search_clear
+    assert search_clear["searchFocused"] is True, search_clear
+    assert search_clear["clearHidden"] is True, search_clear
+    assert search_clear["hiddenAncestor"] is False, search_clear
+
+
 def test_allergy_status_travels_with_every_export(shell: dict) -> None:
     """Regression: severe penicillin allergy + amoxicillin showed ⛔ on screen,
     but the MIS text, the Latin recipe, the printed form and the history entry

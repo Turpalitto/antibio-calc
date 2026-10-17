@@ -416,6 +416,25 @@ async function run() {
         hiddenAncestor: !!d.activeElement.closest('.hidden')
       };
 
+      const diseaseResetButton = d.querySelector('#active-disease button[aria-label="Сбросить выбранную нозологию"]');
+      diseaseResetButton.focus();
+      diseaseResetButton.click();
+      out.keyboard.focusAfterDiseaseReset = {
+        activeDiseaseCleared: w.eval('activeDisease === null'),
+        searchFocused: d.activeElement === $('search'),
+        hiddenAncestor: !!d.activeElement.closest('.hidden')
+      };
+      type($('search'), 'хламид');
+      const searchClearButton = $('search-clear');
+      searchClearButton.focus();
+      searchClearButton.click();
+      out.keyboard.focusAfterSearchClear = {
+        value: $('search').value,
+        searchFocused: d.activeElement === $('search'),
+        clearHidden: searchClearButton.classList.contains('hidden'),
+        hiddenAncestor: !!d.activeElement.closest('.hidden')
+      };
+
       // leave the harness in the doxycycline/70 kg state the later steps expect
       clickDisease('chlamydia_urogenital');
       clickDrug(/Доксициклин/i);

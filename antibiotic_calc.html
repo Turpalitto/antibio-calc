@@ -2513,6 +2513,9 @@ function resetPatient(){
   toast('Данные пациента и расчёт сброшены');
 }
 function resetDisease(){
+  const searchClear = $('search-clear');
+  const activeDiseaseReset = $('active-disease').querySelector('button[aria-label="Сбросить выбранную нозологию"]');
+  const focusShouldReturnToSearch = document.activeElement === searchClear || document.activeElement === activeDiseaseReset;
   activeDisease = null; activeScenario = null; activeLine = null; activeDrug = null;
   activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0;
   pickedRouteGroup = null;
@@ -2537,6 +2540,7 @@ function resetDisease(){
   updateSearchStatus('', null);
   updateAllergyBanner();
   replaceUrl(window.location.pathname);
+  if(focusShouldReturnToSearch) $('search').focus();
 }
 function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx){
   const list = $('scenario-list');
