@@ -11,11 +11,11 @@
    without hiding content, with ordinary motion unchanged. CSSOM / jsdom pass, but real browser,
    screen reader and OS preference checks remain unavailable here. Keep the earlier real-browser
    checks below (patient-entry cautions and route-specific screen / MIS / Rp / print consistency).
-3. **Engineering continuation (autonomous):** T105 is locally verified (2857 passed / 28
-   skipped; validate 0 / 436; Ruff; build freshness; production npm audit 0); T104 `018fac8` and
-   handoff `91da6dd` are green on all 8 checks. T105 awaits push/CI. After green checks, refresh
-   PR #1's description through T105 (currently through T104), but do not merge. Continue with an
-   evidence-led audit of remaining interactive states and browser robustness; only implement
+3. **Engineering continuation (autonomous):** T105 commit `c821548` is pushed and verified
+   locally (2857 passed / 28 skipped; validate 0 / 436; Ruff; build freshness; production npm
+   audit 0); GitHub CI `39030028566` and CodeQL `39030028541` pass all 8 checks. PR #1's
+   description is refreshed through T105; keep it open for owner review and do not merge. Continue
+   with an evidence-led audit of remaining interactive states and browser robustness; only implement
    reproducible, clinically neutral fixes with independent tests / mutation checks. Root npm audit
    still has five high Tailwind build-only findings; keep report-only, never use `npm audit fix
    --force`, and treat Tailwind 4 as a separate CSS/visual migration. Do not change frozen modules,

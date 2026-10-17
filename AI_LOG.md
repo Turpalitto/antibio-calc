@@ -15,7 +15,8 @@
 - `ruff check .`, JS syntax, `npm run validate` (0 errors / 436 warnings), generated build check,
   `npm audit --omit=dev` (0) and `git diff --check` pass. Build `build-3c2319a61f87` (template
   `8eb7f4a9cf90`, DB `56727a27f050`); clinical data, CSS, dependencies and frozen modules are
-  unchanged. T104 `018fac8` and handoff `91da6dd` are green on all 8 checks; T105 awaits push.
+  unchanged. T105 commit `c821548` is pushed; CI `39030028566` and CodeQL `39030028541` pass
+  all 8 checks. PR #1 description is refreshed through T105; it remains open and unmerged.
 
 ## 2026-10-17 (round 6 continued, T104): respect reduced-motion preferences
 
