@@ -253,7 +253,15 @@ def test_theme_toggle_persists_and_restores_after_reload(shell: dict) -> None:
 def test_history_drawer_is_a_keyboard_closable_dialog(shell: dict) -> None:
     drawer = shell["drawer"]
     assert drawer == {"openClass": True, "inert": False, "ariaHidden": "false", "focusOnClose": "drawer-close"}
-    assert shell["drawerAfterEscape"] == {"openClass": False, "inert": True}
+    assert shell["drawerAfterEscape"] == {"openClass": False, "inert": True, "focusId": "btn-history"}
+
+
+def test_history_drawer_returns_focus_to_mobile_navigation_trigger(shell: dict) -> None:
+    result = shell["mobileDrawerFocus"]
+    assert result["navVisible"] is True, result
+    assert result["drawerInitialFocus"] is True, result
+    assert result["triggerRestored"] is True, result
+    assert result["hiddenAncestor"] is False, result
 
 
 def test_guideline_modal_is_a_labelled_dialog(shell: dict) -> None:

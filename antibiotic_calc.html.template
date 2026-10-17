@@ -857,7 +857,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
 
 <div class="mobile-nav hidden md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 px-2 py-2 justify-around no-print z-50" style="display:none">
   <button onclick="document.getElementById('search').focus()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-search mb-1"></i>Поиск</button>
-  <button onclick="document.getElementById('btn-history').click()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-history mb-1"></i>История</button>
+  <button onclick="openHistory(event)" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-history mb-1"></i>История</button>
   <button onclick="copyForMIS()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-copy mb-1"></i>Копир</button>
   <button onclick="document.getElementById('btn-print').click()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-print mb-1"></i>Печать</button>
   <button onclick="document.getElementById('btn-theme').click()" class="flex flex-col items-center text-slate-500 dark:text-slate-400 text-[10px] font-bold"><i class="fas fa-moon mb-1" id="theme-icon-m"></i>Тема</button>
@@ -4689,10 +4689,14 @@ function openGuidelineModal(event){
   if(closeBtn) closeBtn.focus();
 }
 
-function guidelineModalTargetCanReceiveFocus(target){
-  if(!target || !target.isConnected || target.disabled || target.closest('[hidden], .hidden, [aria-hidden="true"]')) return false;
-  const style = window.getComputedStyle(target);
-  return style.display !== 'none' && style.visibility !== 'hidden';
+function returnFocusTargetCanReceiveFocus(target){
+  if(!target || !target.isConnected || target.disabled) return false;
+  for(let node=target; node && node.nodeType === 1; node=node.parentElement){
+    if(node.hasAttribute('hidden') || node.hasAttribute('inert') || node.getAttribute('aria-hidden') === 'true') return false;
+    const style = window.getComputedStyle(node);
+    if(style.display === 'none' || style.visibility === 'hidden') return false;
+  }
+  return true;
 }
 function closeGuidelineModal(){
   const modal = $('guideline-modal');
@@ -4703,7 +4707,7 @@ function closeGuidelineModal(){
   const fallback = $('btn-guideline-modal');
   const diseaseTrigger = document.querySelector('#active-disease button[type="button"]');
   const searchInput = $('search');
-  const target = [preferred, fallback, diseaseTrigger, searchInput].find(guidelineModalTargetCanReceiveFocus);
+  const target = [preferred, fallback, diseaseTrigger, searchInput].find(returnFocusTargetCanReceiveFocus);
   if(target) target.focus();
 }
 // Focusable descendants of an open dialog, in tab order (visible, enabled, not tabindex=-1)
@@ -4982,9 +4986,15 @@ function restoreHistoryEntry(e){
   toast('Расчёт из истории открыт');
   return true;
 }
-function openHistory(){
-  loadHistory();
+let historyDrawerReturnFocus = null;
+function openHistory(event){
   const drawer = $('history-drawer');
+  if(!drawer) return;
+  const trigger = event && event.currentTarget
+    ? event.currentTarget
+    : (document.activeElement === $('btn-history') ? document.activeElement : null);
+  if(!drawer.classList.contains('open') && trigger && !drawer.contains(trigger)) historyDrawerReturnFocus = trigger;
+  loadHistory();
   drawer.classList.add('open');
   drawer.removeAttribute('inert'); drawer.setAttribute('aria-hidden', 'false');
   $('drawer-overlay').classList.add('open');
@@ -4992,10 +5002,14 @@ function openHistory(){
 }
 function closeHistory(){
   const drawer = $('history-drawer');
+  if(!drawer || !drawer.classList.contains('open')) return;
   drawer.classList.remove('open');
   drawer.setAttribute('inert', ''); drawer.setAttribute('aria-hidden', 'true');
   $('drawer-overlay').classList.remove('open');
-  if($('btn-history')) $('btn-history').focus();
+  const preferred = historyDrawerReturnFocus;
+  historyDrawerReturnFocus = null;
+  const target = [preferred, $('btn-history')].find(returnFocusTargetCanReceiveFocus);
+  if(target) target.focus();
 }
 function clearHistory(){
   if(confirm('Очистить всю историю?')){

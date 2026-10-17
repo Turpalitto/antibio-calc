@@ -289,7 +289,30 @@ async function run() {
     };
     await axeRun('drawer_open', out);
     key('Escape');
-    out.drawerAfterEscape = { openClass: $('history-drawer').classList.contains('open'), inert: $('history-drawer').hasAttribute('inert') };
+    out.drawerAfterEscape = {
+      openClass: $('history-drawer').classList.contains('open'),
+      inert: $('history-drawer').hasAttribute('inert'),
+      focusId: d.activeElement && d.activeElement.id,
+    };
+
+    const originalWidth = w.innerWidth;
+    Object.defineProperty(w, 'innerWidth', { configurable: true, writable: true, value: 390 });
+    w.dispatchEvent(new w.Event('resize'));
+    const mobileNav = d.querySelector('.mobile-nav');
+    const mobileHistoryTrigger = mobileNav.querySelectorAll('button')[1];
+    mobileHistoryTrigger.focus();
+    mobileHistoryTrigger.click();
+    const mobileDrawerInitialFocus = d.activeElement === $('drawer-close');
+    $('drawer-close').click();
+    out.mobileDrawerFocus = {
+      navVisible: w.getComputedStyle(mobileNav).display === 'flex',
+      drawerInitialFocus: mobileDrawerInitialFocus,
+      triggerRestored: d.activeElement === mobileHistoryTrigger,
+      hiddenAncestor: !!d.activeElement.closest('[hidden], [aria-hidden="true"]') ||
+        w.getComputedStyle(mobileNav).display === 'none' || w.getComputedStyle(d.activeElement).display === 'none',
+    };
+    Object.defineProperty(w, 'innerWidth', { configurable: true, writable: true, value: originalWidth });
+    w.dispatchEvent(new w.Event('resize'));
 
     const diseaseGuidelineTrigger = d.querySelector('#active-disease button[type="button"]');
     diseaseGuidelineTrigger.focus();
