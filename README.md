@@ -29,7 +29,10 @@ and, on pull requests, a gate that fails
 when `db/antibio_db.json` changes without a `CHANGELOG_DB.md` entry
 (`python db/db_diff.py --git origin/main` writes it). A red core audit is fixed
 with `uv lock --upgrade-package <name>`; accepting an advisory needs
-`--ignore-vuln <ID>` in `ci.yml` with a written reason. The shell's CSS is a
+`--ignore-vuln <ID>` in `ci.yml` with a written reason. `npm audit --omit=dev` is clean;
+full root `npm audit` reports known advisories in the Tailwind 3 build-only dev tree (no fixed
+v3 release; a Tailwind 4 move is a separate CSS migration and real-browser review, see
+`NEXT_TASK.md` C-4). The shell's CSS is a
 static Tailwind 3.4.17 build (`vendor/app.css`, config `db/tailwind.config.cjs`):
 after changing classes in the template run `npm run build:css`, then
 `npm run build` — `test_tailwind_static_css.py` fails CI on a stale or

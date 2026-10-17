@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T101): bounded morphology, patient-context and route-export safety, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T102): bounded morphology, patient-context and route-export safety, fuzz oracles, theme persistence, CodeQL
 
 - **T91 `b50988d` (search):** stems of at least six letters may match after at most two deleted
   letters at the end; shorter stems stay word-start-only. The «отит» list remains clean while
@@ -99,11 +99,22 @@
   223 findings in 400 steps (11 route-switch reaches), including wrong / missing infusion steps
   and caution. Fixed seeds 11 / 23 × 800 have 0 findings; four new 2,000-step sweeps (17171,
   18181, 19191, 20202) are clean and reach route-switch 46–55 times each.
-- **Verification at T101 locally:** 2854 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
+- **T102 (dependency audit triage + route-oracle sequencing):** fresh `npm ci` reports five
+  high advisories only in the Tailwind 3 build-time dev tree; `npm audit --omit=dev` reports 0.
+  npm registry lists 3.4.19 as the latest Tailwind 3 release (still in the affected range); the
+  audit's proposed fix is Tailwind 4.3.3, a major CSS/build migration, and `braces` has no fixed
+  release. Keep the existing report-only policy; do not apply an unsafe `--force` or change the
+  static CSS without a separate migration and owner browser pass. The CI warning now describes
+  the complete Tailwind build-time tree instead of implying a single advisory. Fuzz route
+  switching now asserts the exact bolus → infusion → bolus sequence, so repeated bolus snapshots
+  cannot satisfy the route-switch coverage oracle. No package lock, runtime dependency, CSS or
+  clinical data changed.
+- **Verification at T102 locally:** 2854 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
   436 warnings; ruff clean; axe 0; generated shell fresh (`build-965663d87500`). CI + CodeQL
-  completed successfully for T100 at `fbf928c`; T101 remote checks are pending push. Extended
-  fuzz seeds 1111–2222, 3131–8181, 9191–12424, 13131–16464 and 17171–20202 × 2000 are clean;
-  earlier 909 / 1010 are clean as well. DB and frozen modules unchanged.
+  completed successfully for T100 at `fbf928c` and T101 at `e53dc2e`; T102 remote checks are
+  pending push. Extended fuzz seeds 1111–2222, 3131–8181, 9191–12424,
+  13131–16464 and 17171–20202 × 2000 are clean; earlier 909 / 1010 are clean as well. DB and
+  frozen modules unchanged.
 
 ## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)
 

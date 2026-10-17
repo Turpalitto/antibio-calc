@@ -333,8 +333,10 @@ setTimeout(async()=>{
       else {
         tally('injectable_route_switch_export');
         const ref=JSON.parse(w.eval('JSON.stringify(DB.drugs_reference.amoxiclav)'));
+        const wantedRoutes=['iv_bolus','iv_infusion','iv_bolus'];
         snapshots.forEach((snapshot,index)=>{
           const route=snapshot.route, data=snapshot.routeData;
+          if(route!==wantedRoutes[index]) push('injectable_route_switch_wrong_sequence',`${index}: expected ${wantedRoutes[index]}, got ${route}`);
           if(!data||!['iv_bolus','iv_infusion'].includes(route)){
             push('injectable_route_switch_data_missing',`${index}: ${route}`); return;
           }

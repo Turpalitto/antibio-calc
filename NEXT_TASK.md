@@ -1,8 +1,8 @@
-## 2026-10-16 (after round 6, T91–T101): next steps
+## 2026-10-16 (after round 6, T91–T102): next steps
 
 1. **Owner-physician / owner-browser work remains authoritative and unchanged.** No clinical
    DB values, blocked records, dose thresholds, route defaults, or source decisions were
-   changed in T91–T101. The open items below (DOSA review, missing evidence, max doses, dose
+   changed in T91–T102. The open items below (DOSA review, missing evidence, max doses, dose
    basis, forms/routes, pediatric cystitis, synonyms, etc.) stay with the owner.
 2. **Real-browser / visual pass (owner):** confirm that changing the age unit updates the
    «0 лет» / «0 мес» notice immediately, «0 дней» remains an ordinary newborn entry, and a
@@ -15,10 +15,12 @@
    storage / restore, age-zero and inferred-context exports, plus route-specific infusion /
    bolus steps and cautions; four new 2,000-step sweeps are clean. The quick-tag oracle
    distinguishes an ambiguous list from a one-record open. The CodeQL script-parser issue is
-   fixed with stdlib HTML parsing; CI + CodeQL are green through T100 (`fbf928c`). T101 passes
+   fixed with stdlib HTML parsing; CI + CodeQL are green through T101 (`e53dc2e`). T102 passes
    the full local gate; remote checks are pending on push. No production DB / clinical data changed.
-   `npm audit` also reports five high advisories in the Tailwind v3 build-time dependency tree;
-   investigate a patched v3 update without changing runtime code or accepting a major version jump.
+   Root `npm audit` reports five high advisories only in the Tailwind 3 build-time dev tree;
+   `npm audit --omit=dev` is clean, npm publishes no patched Tailwind v3, and the audit's suggested
+   fix is major Tailwind 4.3.3. CI correctly keeps that build-time tree report-only. Any v4 move
+   needs a separate CSS migration and real-browser visual sign-off; do not use `npm audit fix --force`.
    Continue only
    with independently demonstrated defects or testable robustness gaps. Do not merge PR #1,
    choose a LICENSE, change `corpus_config`, or connect the Clinical Engine.
@@ -246,7 +248,11 @@
      loading; transformers fix exists only in 5.x; docling ≥ 2.120.3; mineru —
      upgrade on the Windows/CUDA machine with the extraction smoke, then `uv lock`.
      `wheel` 0.40 is held by `table-transformer`, `accelerate` 1.14 has no fix,
-     npm `braces` has no fixed release (root devDependency tree and audit-site).
+     root `npm audit` has five High entries in the Tailwind 3 build-time tree (`braces`,
+     `chokidar`, `fast-glob`, `micromatch`, `tailwindcss`); `npm audit --omit=dev` = 0, registry
+     has no fixed Tailwind 3 release, and the available `4.3.3` fix is a major migration. Keep
+     report-only until the owner authorizes the separate v4 CSS / browser pass. `braces` also
+     has no fixed release in the audit-site tree.
    - ~~H-1 static Tailwind~~ DONE (`vendor/app.css`, Tailwind 3.4.17 CLI, config
      `db/tailwind.config.cjs`, `npm run build:css`; `test_tailwind_static_css.py`
      proves every template class has a rule + byte-exact rebuild in CI; jsdom

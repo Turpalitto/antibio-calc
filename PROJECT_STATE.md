@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T101): search, patient-context / route exports, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T102): search, patient-context / route exports, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -42,12 +42,16 @@
   screen / MIS / Rp / print; warnings follow the selected subroute and disappear on switch-back.
   Fuzz expectations are independently derived from DB source data (not the production helper);
   a helper locked to bolus yields 223 findings / 400 steps, including 11 steered route switches.
+- T102 cross-checked the root npm audit: five high findings are in Tailwind 3's build-only dev
+  tree, while `npm audit --omit=dev` is clean; no patched v3 is published and the suggested fix
+  is a v4 major migration requiring CSS / visual review. Kept the report-only policy and clarified
+  the CI warning. Fuzz now pins bolus → infusion → bolus sequence, not only snapshot count.
 - Tests: **2854 passed / 28 skipped / 0 failed** at the full local gate; validate 0 / 436; ruff
   clean; axe 0; generated shell `build-965663d87500`; DB unchanged (`56727a27f050…`). CI +
-  CodeQL are green through T100 commit `fbf928c`; T101 remote checks pending on push. Four new
-  2,000-step sweeps are clean (route-switch path 46–55 times each). Remaining skips require
-  owner-controlled clinical source or review-workbench artifacts. Real-browser / visual pass
-  remains for the owner.
+  CodeQL are green through T101 commit `e53dc2e`; T102 remote checks pending on push. Four new
+  2,000-step sweeps are clean (route-switch path 46–55
+  times each). Remaining skips require owner-controlled clinical source or review-workbench
+  artifacts. Real-browser / visual pass remains for the owner.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 

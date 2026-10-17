@@ -147,15 +147,16 @@ jobs:
           uvx --from "pip-audit==2.10.1" pip-audit -r /tmp/req_all.txt --no-deps --disable-pip \
             || echo "::warning title=pip-audit (extras)::known vulnerabilities in the ML extras — see the step log; pins are an owner decision (NEXT_TASK.md C-4)"
 
-      # Root package.json: no runtime deps; the only devDependency is the
-      # Tailwind 3.4.17 CLI that builds vendor/app.css (H-1). The remaining
-      # advisory there is the same `braces` DoS as in audit-site (no fixed
-      # release; build-time tool, never shipped to the browser).
+      # Root package.json has no runtime deps; its only devDependency is the
+      # Tailwind 3.4.17 CLI that builds vendor/app.css (H-1). npm audit may report
+      # multiple connected advisories in this build-only tree (braces/chokidar/
+      # fast-glob/micromatch/Tailwind); no patched Tailwind 3 is published, and
+      # Tailwind 4 is a separate CSS migration requiring visual review.
       - name: npm audit — root (Tailwind CLI, build-time only) — report only
         continue-on-error: true
         run: |
           npm audit \
-            || echo "::warning title=npm audit (root devDependencies)::build-time Tailwind CLI tree — braces has no fixed release; see README.md"
+            || echo "::warning title=npm audit (root devDependencies)::known Tailwind 3 build-time advisories; no patched v3 release, v4 requires CSS/browser migration — see NEXT_TASK.md C-4"
 
       - name: npm audit — audit-site (archival dashboard) — report only
         continue-on-error: true
