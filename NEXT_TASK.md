@@ -1,4 +1,4 @@
-## 2026-10-17 (after round 6, T105): next steps
+## 2026-10-17 (after round 6, T106): next steps
 
 1. **Owner-physician decisions remain untouched.** No clinical data, blocked-record status, dose
    threshold, regimen, route default, source interpretation, or owner decision was changed. Keep
@@ -6,15 +6,18 @@
    questions in the owner queue below; tests are not medical approval.
 2. **Owner browser / assistive-technology pass:** check T103's named `aria-pressed` groups with a
    screen reader and T105's custom card buttons using real key holds: Space must act on release,
-   not while held; repeat must not double activate; moving focus before release cancels it. Also
-   enable OS “reduce motion” for T104 and verify smooth scroll / animation / hover movement stop
-   without hiding content, with ordinary motion unchanged. CSSOM / jsdom pass, but real browser,
-   screen reader and OS preference checks remain unavailable here. Keep the earlier real-browser
-   checks below (patient-entry cautions and route-specific screen / MIS / Rp / print consistency).
-3. **Engineering continuation (autonomous):** T105 commit `c821548` is pushed and verified
-   locally (2857 passed / 28 skipped; validate 0 / 436; Ruff; build freshness; production npm
-   audit 0); GitHub CI `39030028566` and CodeQL `39030028541` pass all 8 checks. PR #1's
-   description is refreshed through T105; keep it open for owner review and do not merge. Continue
+   not while held; repeat must not double activate; moving focus before release cancels it. For
+   T106, select a normal disease and a source-gated disease from search with Enter and confirm
+   focus moves to the selected scenario / visible gate message rather than staying in hidden
+   results. Also enable OS “reduce motion” for T104 and verify smooth scroll / animation / hover
+   movement stop without hiding content, with ordinary motion unchanged. CSSOM / jsdom pass, but
+   real browser, screen reader and OS preference checks remain unavailable here. Keep the earlier
+   real-browser checks below (patient-entry cautions and route-specific screen / MIS / Rp / print
+   consistency).
+3. **Engineering continuation (autonomous):** T106 is locally verified: `test_shell_jsdom.py`
+   **65 passed**, both keyboard/focus mutants are detected, validate 0 / 436, Ruff, generated
+   build check and production npm audit 0. T105 commit `c821548` remains green on all 8 checks;
+   T106 needs push/CI and handoff refresh. Keep PR #1 open for owner review; do not merge. Continue
    with an evidence-led audit of remaining interactive states and browser robustness; only implement
    reproducible, clinically neutral fixes with independent tests / mutation checks. Root npm audit
    still has five high Tailwind build-only findings; keep report-only, never use `npm audit fix

@@ -338,15 +338,22 @@ async function run() {
       probe.remove();
 
       const key = (el, k) => {
+        el.focus();
         el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
         if (k === ' ') el.dispatchEvent(new w.KeyboardEvent('keyup', { key: k, bubbles: true, cancelable: true }));
       };
+      d.querySelector('[data-age="adult"]').click();
       type($('search'), 'хламид');
       const hits = [...$('results-box').children];
       const hit = hits.find((c) => /Урогенитальный хламидиоз/i.test(c.textContent)) || hits[0];
       out.keyboard = { hits: hits.length, hitRole: hit.getAttribute('role'), hitTabindex: hit.getAttribute('tabindex') };
       key(hit, 'Enter');
       out.keyboard.diseaseAfterEnter = w.eval('activeDisease && activeDisease.id');
+      out.keyboard.focusAfterDiseaseEnter = {
+        focusedSelectedScenario: d.activeElement === d.querySelector('#scenario-list .scenario-card.active'),
+        hiddenAncestor: !!d.activeElement.closest('.hidden'),
+        activeRole: d.activeElement.getAttribute('role')
+      };
       const scCards = [...d.querySelectorAll('#scenario-list .scenario-card')];
       out.keyboard.scenarioRoles = scCards.map((c) => c.getAttribute('role') + '/' + c.getAttribute('tabindex'));
       const target = scCards.find((c) => !c.classList.contains('opacity-50')) || scCards[0];
@@ -364,6 +371,51 @@ async function run() {
       w.eval('activeScenario = null; activeDisease = null;');
       w.eval('restoreFromHash()');
       out.keyboard.restoredScenario = w.eval('activeScenario && activeScenario.id');
+
+      // T106: exercise the installed Space handlers on a real, focused card.
+      // Chlamydia has only one scenario, already auto-selected on entry, so its
+      // old assertion could pass without Space activating anything.
+      d.querySelector('[data-age="adult"]').click();
+      type($('search'), 'послеродовой мастит');
+      const mastitisHit = [...$('results-box').children].find((c) => /Послеродовой мастит/i.test(c.textContent));
+      if (!mastitisHit) throw new Error('keyboard regression fixture not found: puerperal mastitis');
+      key(mastitisHit, 'Enter');
+      const mastitisCards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      const secondScenario = mastitisCards.find((c) => c.dataset.idx === '1');
+      if (!secondScenario) throw new Error('keyboard regression fixture needs a second scenario card');
+      const scenarioBeforeSpace = w.eval('activeScenario && activeScenario.id');
+      secondScenario.focus();
+      const realSpaceDown = new w.KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+      secondScenario.dispatchEvent(realSpaceDown);
+      const realAfterSpaceDown = w.eval('activeScenario && activeScenario.id');
+      const realSpaceRepeat = new w.KeyboardEvent('keydown', { key: ' ', repeat: true, bubbles: true, cancelable: true });
+      secondScenario.dispatchEvent(realSpaceRepeat);
+      const realAfterSpaceRepeat = w.eval('activeScenario && activeScenario.id');
+      const realSpaceUp = new w.KeyboardEvent('keyup', { key: ' ', bubbles: true, cancelable: true });
+      secondScenario.dispatchEvent(realSpaceUp);
+      out.keyboard.realSpaceCard = {
+        scenarioBeforeSpace, afterSpaceDown: realAfterSpaceDown, afterSpaceRepeat: realAfterSpaceRepeat,
+        afterSpaceUp: w.eval('activeScenario && activeScenario.id'),
+        downPrevented: realSpaceDown.defaultPrevented,
+        repeatPrevented: realSpaceRepeat.defaultPrevented,
+        upPrevented: realSpaceUp.defaultPrevented,
+        pressed: secondScenario.getAttribute('aria-pressed'),
+        active: secondScenario.classList.contains('active'),
+        focusStayed: d.activeElement === secondScenario
+      };
+
+      const blockedForKeyboard = find((r) => r.calculation_blocked);
+      type($('search'), blockedForKeyboard.name);
+      const blockedHit = [...$('results-box').children].find((c) => c.textContent.includes(blockedForKeyboard.name));
+      if (!blockedHit) throw new Error('keyboard regression fixture not found: blocked result');
+      key(blockedHit, 'Enter');
+      out.keyboard.focusAfterBlockedDiseaseEnter = {
+        id: w.eval('activeDisease && activeDisease.id'),
+        expectedId: blockedForKeyboard.id,
+        focusedSourceBlock: d.activeElement === $('source-calculation-block'),
+        hiddenAncestor: !!d.activeElement.closest('.hidden')
+      };
+
       // leave the harness in the doxycycline/70 kg state the later steps expect
       clickDisease('chlamydia_urogenital');
       clickDrug(/Доксициклин/i);

@@ -526,6 +526,30 @@ def test_cards_are_keyboard_activatable_and_deep_link_restores_scenario(shell: d
     assert kb["restoredScenario"] == kb["scenarioAfterSpace"]
 
 
+def test_space_on_a_focused_scenario_card_activates_once_on_release(shell: dict) -> None:
+    result = shell["keyboard"]["realSpaceCard"]
+    assert result["scenarioBeforeSpace"] == "mastitis_cellulitis"
+    assert result["afterSpaceDown"] == result["scenarioBeforeSpace"]
+    assert result["afterSpaceRepeat"] == result["scenarioBeforeSpace"]
+    assert result["afterSpaceUp"] == "mastitis_abscess"
+    assert result["downPrevented"] is True and result["repeatPrevented"] is True
+    assert result["upPrevented"] is True
+    assert result["pressed"] == "true" and result["active"] is True
+    assert result["focusStayed"] is True
+
+
+def test_enter_from_search_moves_focus_out_of_hidden_results(shell: dict) -> None:
+    result = shell["keyboard"]["focusAfterDiseaseEnter"]
+    assert result["focusedSelectedScenario"] is True, result
+    assert result["hiddenAncestor"] is False, result
+    assert result["activeRole"] == "button", result
+
+    blocked = shell["keyboard"]["focusAfterBlockedDiseaseEnter"]
+    assert blocked["id"] == blocked["expectedId"], blocked
+    assert blocked["focusedSourceBlock"] is True, blocked
+    assert blocked["hiddenAncestor"] is False, blocked
+
+
 def test_allergy_status_travels_with_every_export(shell: dict) -> None:
     """Regression: severe penicillin allergy + amoxicillin showed ⛔ on screen,
     but the MIS text, the Latin recipe, the printed form and the history entry

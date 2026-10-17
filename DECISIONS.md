@@ -1,3 +1,20 @@
+## 2026-10-17 — T106: preserve visible focus after keyboard disease selection
+
+**Decision:** When a focused button inside the search-results container selects a disease and that
+container is hidden, move focus into the newly revealed content: to the selected scenario card (or
+first available scenario / active title), and to the visible source-gate message for a blocked
+record. Give the non-button fallbacks `tabindex="-1"`; do not move focus for selections originating
+elsewhere.
+
+**Rationale:** Leaving focus inside a hidden result list strands keyboard / assistive-technology
+users after Enter. The smoke test now verifies the actual focus lifecycle, including a blocked
+record, rather than dispatching events at unfocused nodes or relying on an auto-selected singleton.
+This affects navigation only; calculations, selected defaults, medical content and data are
+unchanged.
+
+**Scope:** `antibiotic_calc.html.template`, generated shell / service-worker build stamp, and
+jsdom keyboard tests. No clinical data, calculation logic, CSS, dependency or frozen module changed.
+
 ## 2026-10-17 — T105: match native keyboard activation timing for custom buttons
 
 **Decision:** For custom `role="button"` cards, Enter activates once on non-repeating `keydown`;

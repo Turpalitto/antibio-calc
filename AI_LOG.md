@@ -1,3 +1,10 @@
+## 2026-10-17 (round 6 continued, T106): restore focus after keyboard disease selection
+
+- A cross-check of the built-shell keyboard smoke found a false-positive T105 assertion: the helper dispatched events without focusing the target, and the one-scenario chlamydia record auto-selected its only scenario. A real focused-card probe also found that selecting a search result hid its ancestor while leaving `document.activeElement` inside that hidden results container.
+- `selectDisease()` now detects focus originating in the search results and moves it to the selected scenario card (or the first scenario / active title when no selection exists); a source-gated record focuses its visible block. The two text fallbacks are programmatically focusable with `tabindex="-1"`. Selection from elsewhere does not steal focus; calculations/data are unchanged.
+- The built-shell smoke now focuses keyboard targets and exercises Space on a second real scenario card: no selection on keydown or repeat, one change on keyup, synchronized pressed/active state and retained focus. It also checks focus after normal and source-gated disease selection. A T104 keyboard mutant and a no-focus mutant both fail the new oracle.
+- Verification: `clinical_engine/tests/test_shell_jsdom.py` **65 passed**; `ruff check .`, JS syntax, `npm run validate` (**0 errors / 436 warnings**), `python db/build_html.py --check`, `npm audit --omit=dev` (**0 vulnerabilities**) and `git diff --check` pass. Build `build-a3d5b8242cc0`, template `1c7b4a124f48`, DB `56727a27f050`; CI on T106 is pending push. The last full suite at T105 was **2857 passed / 28 skipped / 0 failed / 5 existing warnings**.
+
 ## 2026-10-17 (round 6 continued, T105): native-like keyboard activation for custom buttons
 
 - Accessibility review of `makeActivatable()` found that custom `role="button"` cards ran both
