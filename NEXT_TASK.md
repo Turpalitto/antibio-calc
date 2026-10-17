@@ -23,8 +23,9 @@
    storage and memory; expired PHI is pruned on read while the `[]` sentinel preserves the explicit
    consent state. The built-shell and extracted tests pass; both storage and memory mutants are
    detected. Local shell-focused suite: **235 passed**; validate 0 / 436, Ruff, JS syntax, generated
-   build check and production npm audit 0. The Python 3.12 full suite and CI / CodeQL for the new
-   commit are pending. Keep PR #1 open for owner review; do not merge. Root npm audit still has five
+   build check and production npm audit 0. Commit `90e9b36` CI `39039491802` and CodeQL
+   `39039491925` pass all 8 checks, including the Python 3.12 full suite. Keep PR #1 open for owner
+   review; do not merge. Root npm audit still has five
    high Tailwind build-only findings; keep report-only, never use `npm audit fix --force`, and treat
    Tailwind 4 as a separate CSS/visual migration. Do not change frozen modules, connect Clinical
    Engine, choose a LICENSE, change `corpus_config`, or make clinical decisions.

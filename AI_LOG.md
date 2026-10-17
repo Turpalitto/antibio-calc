@@ -15,8 +15,9 @@
   **0 errors / 436 warnings**; generated build check fresh; `npm audit --omit=dev` **0**; diff check
   clean. Full Python 3.12 suite is deferred to CI because only Python 3.11 is installed locally.
 - Build `build-a1c7152fc5eb`, template `46bc544b5294`, DB unchanged `56727a27f050`. Clinical DB,
-  frozen modules, CSS and dependency manifests are unchanged. CI / CodeQL for the T110 commit are
-  pending; PR #1 remains open and unmerged.
+  frozen modules, CSS and dependency manifests are unchanged. Commit `90e9b36` is pushed; CI
+  `39039491802` and CodeQL `39039491925` pass all 8 checks. PR #1 is open, unmerged, and its
+  description is refreshed through T110.
 
 ## 2026-10-17 (round 6 continued, T109): return the history drawer to its actual opener
 

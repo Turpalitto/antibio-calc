@@ -7,16 +7,17 @@ The current engineering thread is the clinically neutral calculator shell harden
 `docs/audits/AUDIT_2026-10-14_FIXES.md`. Do not treat the older dated handoff sections below as
 current test or branch status.
 
-- Branch: `arena/2013101a-antibio-calc`; PR #1 remains open and unmerged. The local worktree is
-  aligned with PR head `4c3246c` plus the T110 changes; commit / CI are pending.
+- Branch: `arena/2013101a-antibio-calc`; PR #1 is open and unmerged. Latest commit is `90e9b36`
+  (T110); the PR head matches it and the worktree is clean.
 - T110 closes a storage-retention gap in the existing 24-hour history TTL: reads now prune expired
   and malformed rows from sessionStorage and memory, retaining `[]` to preserve consent without
   PHI. The regression suite checks actual drawer rendering and raw storage, and both prune mutants
   are detected. The shell-focused suite is **235 passed**; validate is 0 / 436, Ruff / JS syntax /
   generated build check / diff checks pass, and production npm audit reports 0 vulnerabilities.
-- T110 build is `build-a1c7152fc5eb` (template `46bc544b5294`); the DB hash remains
-  `56727a27f050…`. Python 3.12 is unavailable locally, so the full suite will be verified by CI.
-  Clinical data, dose logic, frozen modules, CSS and dependency manifests were not changed.
+- T110 CI `39039491802` and CodeQL `39039491925` pass all 8 checks, including the Python 3.12 full
+  suite. Build is `build-a1c7152fc5eb` (template `46bc544b5294`); the DB hash remains
+  `56727a27f050…`. Clinical data, dose logic, frozen modules, CSS and dependency manifests were
+  not changed.
 - Owner-physician decisions and real-browser / screen-reader / OS motion-preference checks remain
   pending. Never merge PR #1, approve medical content, or connect the Clinical Engine.
 

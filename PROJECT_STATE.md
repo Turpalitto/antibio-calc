@@ -86,9 +86,10 @@
   T110 shell-focused suite is **235 passed**; validate 0 / 436, Ruff, JS syntax, generated build
   check, production npm audit (0) and `git diff --check` pass. Build `build-a1c7152fc5eb`,
   template `46bc544b5294`, DB unchanged (`56727a27f050…`). T109 CI `39034116823` and CodeQL
-  `39034113602` passed 8/8; T110 CI / CodeQL are pending. Remaining skips require owner-controlled
-  clinical source or review-workbench artifacts. Real browser / screen-reader / OS motion
-  preference verification remains for the owner; PR #1 stays open and unmerged.
+  `39034113602` passed 8/8; T110 commit `90e9b36` CI `39039491802` and CodeQL `39039491925`
+  pass all 8 checks. Remaining skips require owner-controlled clinical source or review-workbench
+  artifacts. Real browser / screen-reader / OS motion preference verification remains for the owner;
+  PR #1 stays open and unmerged.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 
