@@ -202,6 +202,8 @@ PATIENT_CONTEXT_SUPPORT = [
     "regimenSummary",
     "solidUnitsPerDose",
     "makeActivatable",
+    "syncPressedGroup",
+    "syncQuickWeightGroup",
     "allergyExportFlag",
     "exportSafetyFlags",
     "ageGroupMismatchCaution",

@@ -1,3 +1,19 @@
+## 2026-10-17 — T103: expose selected state for exclusive shell controls
+
+**Decision:** Keep the existing button / button-like interaction model and visible `.active`
+classes; expose each choice set as a named `role="group"` and each selected control as a
+pressed toggle (`aria-pressed="true"` / `false`). Synchronize the accessibility state from the
+same selection transitions rather than deriving it from color alone.
+
+**Rationale:** These controls already activate as buttons (including Enter/Space for custom
+cards). `aria-pressed` communicates the current state without changing the calculator's
+navigation, calculation, medical behavior, styling, or introducing a new widget pattern. A
+real-browser / screen-reader pass remains an owner check; automated jsdom and axe tests are not
+clinical or assistive-technology approval.
+
+**Scope:** Age, quick weight, scenario, drug/line, route, form, regimen, injection subroute and
+vial groups. No DB, frozen module, CSS, dependency, or calculation logic changed.
+
 ## 2026-10-14 — Audit fix round (AUDIT_2026-10-14.md): data trust, patient context, loopback policy
 
 Context: independent audit `docs/audits/AUDIT_2026-10-14.md` (27 findings) on

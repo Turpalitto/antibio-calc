@@ -964,6 +964,27 @@ async function run() {
         infusion: await capture('в/в капельно'),
         bolusAfterInfusion: await capture('в/в струйно'),
       };
+      const groupState = (container, controls) => {
+        const el = $(container);
+        return {
+          role: el.getAttribute('role'), label: el.getAttribute('aria-label'),
+          controls: [...d.querySelectorAll(controls)].map(button=>({
+            label: txt(button), active: button.classList.contains('active'),
+            pressed: button.getAttribute('aria-pressed')
+          }))
+        };
+      };
+      out.selectionSemantics = {
+        age: groupState('age-group', '#age-group button'),
+        quickWeight: groupState('quick-weights', '#quick-weights button'),
+        scenario: groupState('scenario-list', '#scenario-list .scenario-card'),
+        drug: groupState('drug-list', '#drug-list .drug-card'),
+        route: groupState('route-tabs', '#route-tabs button'),
+        form: groupState('form-grid', '#form-grid button[data-form-idx]'),
+        regimen: groupState('regimen-list', '#regimen-list button'),
+        injectionRoute: groupState('route-selector', '#route-selector button'),
+        vial: groupState('vial-list', '#vial-list button'),
+      };
     }
 
     // 23. history.replaceState throwing (sandboxed iframe, some file:// viewers) must not

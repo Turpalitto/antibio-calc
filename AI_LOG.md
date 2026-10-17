@@ -1,3 +1,26 @@
+## 2026-10-17 (round 6 continued, T103): accessible exclusive-selection states
+
+- T103 adds named `role="group"` containers and `aria-pressed` state for the nine exclusive
+  selection areas: age, quick weight, scenario, drug/line, route, form, regimen, injection
+  subroute, and vial. `syncPressedGroup()` / `syncQuickWeightGroup()` keep assistive-technology
+  state in step with `.active` on clicks, age inference, weight edits, re-renders and resets;
+  the existing visual controls and clinical calculations are unchanged.
+- Regression coverage snapshots all nine groups in the jsdom smoke, checks group names / role /
+  exactly-one-active and pressed/class parity in Python, and runs the same invariants after every
+  random-walk action. The CI fuzz seeds 11 / 23 × 800 pass with 0 findings. Fault injection
+  (omit route-tab state sync) is detected: seed 11 × 400 yields 8 aria-pressed mismatches.
+- First full-suite attempt found two assumptions in the minimal function-test DOM (no
+  `querySelectorAll` and no extracted sync helper), not product failures. The UI helpers now
+  safely tolerate absent DOM in isolated tests, and the extracted-function support list includes
+  them. Final full suite: **2855 passed / 28 skipped / 0 failed / 5 existing warnings** in
+  254.55 s. Axe remains clean in its tested states.
+- `npm run validate`: 0 errors / 436 warnings; `ruff check .`, JS syntax, `git diff --check`,
+  PyYAML workflow parse, `python db/build_html.py --check` and `npm audit --omit=dev` (0) pass.
+  Generated build is `build-b7c876eebdde` (`db:56727a27f050`, template `14e58fd31965`);
+  clinical DB, CSS, dependencies and frozen modules are unchanged.
+- T102 commit `c27704f` is confirmed green on all 8 GitHub checks. T103 remote checks await its
+  push; PR #1 remains open and unmerged.
+
 ## 2026-10-16 (round 6 continued, T91–T102): bounded morphology, patient-context and route-export safety, fuzz oracles, theme persistence, CodeQL
 
 - **T91 `b50988d` (search):** stems of at least six letters may match after at most two deleted
@@ -111,8 +134,8 @@
   clinical data changed.
 - **Verification at T102 locally:** 2854 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
   436 warnings; ruff clean; axe 0; generated shell fresh (`build-965663d87500`). CI + CodeQL
-  completed successfully for T100 at `fbf928c` and T101 at `e53dc2e`; T102 remote checks are
-  pending push. Extended fuzz seeds 1111–2222, 3131–8181, 9191–12424,
+  completed successfully for T100 at `fbf928c`, T101 at `e53dc2e` and T102 at `c27704f`
+  (all 8 checks). Extended fuzz seeds 1111–2222, 3131–8181, 9191–12424,
   13131–16464 and 17171–20202 × 2000 are clean; earlier 909 / 1010 are clean as well. DB and
   frozen modules unchanged.
 

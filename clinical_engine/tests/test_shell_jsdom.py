@@ -196,6 +196,32 @@ def test_iv_subroute_switch_updates_screen_mis_rp_and_print(shell: dict) -> None
     assert "Не смешивать с глюкозой" not in p["bolusAfterInfusion"]["printedSafety"]
 
 
+def test_exclusive_selection_controls_expose_accessible_pressed_state(shell: dict) -> None:
+    groups = shell["selectionSemantics"]
+    labels = {
+        "age": "Возрастная группа",
+        "quickWeight": "Быстрый выбор массы тела",
+        "scenario": "Клинический сценарий",
+        "drug": "Препарат и линия терапии",
+        "route": "Путь введения",
+        "form": "Лекарственная форма",
+        "regimen": "Режим дозирования",
+        "injectionRoute": "Способ введения",
+        "vial": "Размер флакона",
+    }
+    for key, label in labels.items():
+        group = groups[key]
+        assert group["role"] == "group" and group["label"] == label, (key, group)
+        controls = group["controls"]
+        active = [control for control in controls if control["active"]]
+        assert len(active) <= 1, (key, active)
+        if controls:
+            assert len(active) == 1, (key, controls)
+        for control in controls:
+            assert control["pressed"] in {"true", "false"}, (key, control)
+            assert (control["pressed"] == "true") == control["active"], (key, control)
+
+
 def test_theme_toggle_persists_and_restores_after_reload(shell: dict) -> None:
     # The harness removes the pre-paint class and runs setupTheme() again, modelling
     # the first-paint + init sequence of a fresh page after the toggle stored "dark".

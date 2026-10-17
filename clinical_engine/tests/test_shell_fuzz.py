@@ -163,3 +163,6 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     assert totals.get("injectable_route_export", 0) >= 1, totals
     # T101: the same drug's bolus / infusion / bolus-again switch stays in sync.
     assert totals.get("injectable_route_switch_export", 0) >= 10, totals
+    # T103: each random action checks labels, role and aria-pressed parity for every
+    # exclusive selection group; the active state must not be visual-only.
+    assert totals.get("selection_aria_state", 0) >= 1500, totals

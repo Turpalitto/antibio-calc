@@ -1,29 +1,27 @@
-## 2026-10-16 (after round 6, T91–T102): next steps
+## 2026-10-17 (after round 6, T103): next steps
 
-1. **Owner-physician / owner-browser work remains authoritative and unchanged.** No clinical
-   DB values, blocked records, dose thresholds, route defaults, or source decisions were
-   changed in T91–T102. The open items below (DOSA review, missing evidence, max doses, dose
-   basis, forms/routes, pediatric cystitis, synonyms, etc.) stay with the owner.
-2. **Real-browser / visual pass (owner):** confirm that changing the age unit updates the
-   «0 лет» / «0 мес» notice immediately, «0 дней» remains an ordinary newborn entry, and a
-   weight-inferred age-group switch / newborn-without-age note is legible in the result and in
-   MIS / Rp / print. Verify the zero-age caution on a computable neonatal regimen and that
-   injection route steps / cautions in MIS, Rp and print match the selected route (including
-   azithromycin timing and an amoxiclav bolus → infusion → bolus switch-back). jsdom covers these
-   flows; no real browser is available here.
-3. **Engineering continuation:** fuzz frequency parity, combined-tablet arithmetic, theme
-   storage / restore, age-zero and inferred-context exports, plus route-specific infusion /
-   bolus steps and cautions; four new 2,000-step sweeps are clean. The quick-tag oracle
-   distinguishes an ambiguous list from a one-record open. The CodeQL script-parser issue is
-   fixed with stdlib HTML parsing; CI + CodeQL are green through T101 (`e53dc2e`). T102 passes
-   the full local gate; remote checks are pending on push. No production DB / clinical data changed.
-   Root `npm audit` reports five high advisories only in the Tailwind 3 build-time dev tree;
-   `npm audit --omit=dev` is clean, npm publishes no patched Tailwind v3, and the audit's suggested
-   fix is major Tailwind 4.3.3. CI correctly keeps that build-time tree report-only. Any v4 move
-   needs a separate CSS migration and real-browser visual sign-off; do not use `npm audit fix --force`.
-   Continue only
-   with independently demonstrated defects or testable robustness gaps. Do not merge PR #1,
-   choose a LICENSE, change `corpus_config`, or connect the Clinical Engine.
+1. **Owner-physician items remain untouched.** No clinical data, blocked-record status, dose
+   threshold, regimen, route default, source interpretation, or owner decision was changed.
+   Keep the DOSA review, source evidence, dose maxima/bases, pediatric edge cases, and other
+   clinical questions in the owner queue below; never infer approval from passing tests.
+2. **Owner browser / screen-reader pass:** verify the new named groups and pressed state with a
+   real browser and assistive technology. Check age, quick-weight, scenario, drug/line, route,
+   form, regimen, injection subroute and vial choices; exercise weight inference, manual changes,
+   resets, and IV bolus → infusion → bolus. Confirm spoken state tracks the visible active chip.
+   Automated jsdom + axe checks pass, but no real browser or screen reader was available here.
+   Also retain the earlier real-browser checks below (patient-entry cautions and route-specific
+   screen / MIS / Rp / print consistency).
+3. **Engineering continuation (autonomous):** T103 is locally verified (2855 passed / 28
+   skipped; validate 0 / 436; Ruff; build freshness; production npm audit 0). T102 `c27704f`
+   has all 8 GitHub checks green; T103 remote checks are pending its push. Update PR #1's summary
+   after the T103 push, but do not merge it. Then continue with a bounded, evidence-led audit of
+   remaining dynamic controls and accessibility / keyboard state, adding only reproducible,
+   clinically neutral fixes with independent tests and mutation checks. Root `npm audit` still
+   reports five high findings in the Tailwind 3 build-only dev tree; production audit is clean.
+   Keep the report-only policy, do not run `npm audit fix --force`, and treat any Tailwind 4 move
+   as a separate CSS migration needing visual review. Do not change frozen modules, connect
+   Clinical Engine, choose a LICENSE, change `corpus_config`, or make clinical data decisions.
+
 
 ## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)
 

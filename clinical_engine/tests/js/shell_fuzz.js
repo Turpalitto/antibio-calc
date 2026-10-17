@@ -261,6 +261,17 @@ setTimeout(async()=>{
     return {warnings:[...new Set(warnings)],caution:String(data.cautions||'').trim()};
   };
   const names=Object.keys(actions);
+  const selectionGroups=[
+    ['age','#age-group','#age-group button',true],
+    ['quick_weight','#quick-weights','#quick-weights button',false],
+    ['scenario','#scenario-list','#scenario-list .scenario-card',false],
+    ['drug','#drug-list','#drug-list .drug-card',false],
+    ['route','#route-tabs','#route-tabs button',false],
+    ['form','#form-grid','#form-grid button[data-form-idx]',false],
+    ['regimen','#regimen-list','#regimen-list button',false],
+    ['injection_route','#route-selector','#route-selector button',false],
+    ['vial','#vial-list','#vial-list button',false]
+  ];
   const stateStr=()=>w.eval('[activeAge, activeDisease&&activeDisease.id, activeScenario&&activeScenario.id, activeLine&&activeLine.line_number, activeDrug&&getDrugRefs(activeDrug).join("+"), currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
   for(let i=0;i<STEPS;i++){
     const name=pick(names); counts[name]=(counts[name]||0)+1;
@@ -366,6 +377,23 @@ setTimeout(async()=>{
         });
       }
     }
+    // Selection styling is also exposed as a named group and aria-pressed state;
+    // colour alone must not be the only way to learn the active patient / regimen choice.
+    selectionGroups.forEach(([kind,containerSelector,controlsSelector,required])=>{
+      const container=d.querySelector(containerSelector), controls=q(controlsSelector);
+      if(!container) { push('selection_group_missing',kind); return; }
+      if(container.getAttribute('role')!=='group'||!container.getAttribute('aria-label'))
+        push('selection_group_unlabelled',`${kind}: ${container.getAttribute('role')} / ${container.getAttribute('aria-label')}`);
+      let activeCount=0;
+      controls.forEach(el=>{
+        const active=el.classList.contains('active'), pressed=el.getAttribute('aria-pressed');
+        if(active) activeCount++;
+        if(pressed!=='true'&&pressed!=='false') push('selection_pressed_state_missing',`${kind}: ${txt(el).slice(0,60)} / ${pressed}`);
+        else if((pressed==='true')!==active) push('selection_pressed_state_mismatch',`${kind}: active=${active}, pressed=${pressed}, ${txt(el).slice(0,60)}`);
+      });
+      if(activeCount>1||required&&activeCount!==1) push('selection_group_active_count',`${kind}: ${activeCount}/${controls.length}`);
+    });
+    tally('selection_aria_state');
     if(name==='theme'&&w.__themeExpected){
       let stored=null; try{ stored=w.localStorage.getItem('antibio_theme'); }catch(_){}
       if(stored!==w.__themeExpected) push('theme_toggle_not_persisted',`expected ${w.__themeExpected}, stored ${stored}`);

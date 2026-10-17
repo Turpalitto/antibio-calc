@@ -504,27 +504,27 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
             <div class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-black text-sm">кг</div>
           </div>
           <!-- Quick weight presets for instant clinical testing -->
-          <div class="flex items-center gap-1.5 mt-2.5 flex-wrap" id="quick-weights">
-            <button type="button" class="quick-weight-chip" data-weight="5" onclick="setQuickWeight(5)">5 кг</button>
-            <button type="button" class="quick-weight-chip" data-weight="10" onclick="setQuickWeight(10)">10 кг</button>
-            <button type="button" class="quick-weight-chip" data-weight="15" onclick="setQuickWeight(15)">15 кг</button>
-            <button type="button" class="quick-weight-chip" data-weight="20" onclick="setQuickWeight(20)">20 кг</button>
-            <button type="button" class="quick-weight-chip" data-weight="30" onclick="setQuickWeight(30)">30 кг</button>
-            <button type="button" class="quick-weight-chip" data-weight="70" onclick="setQuickWeight(70)">70 кг</button>
+          <div class="flex items-center gap-1.5 mt-2.5 flex-wrap" id="quick-weights" role="group" aria-label="Быстрый выбор массы тела">
+            <button type="button" class="quick-weight-chip" data-weight="5" aria-pressed="false" onclick="setQuickWeight(5)">5 кг</button>
+            <button type="button" class="quick-weight-chip" data-weight="10" aria-pressed="false" onclick="setQuickWeight(10)">10 кг</button>
+            <button type="button" class="quick-weight-chip" data-weight="15" aria-pressed="false" onclick="setQuickWeight(15)">15 кг</button>
+            <button type="button" class="quick-weight-chip" data-weight="20" aria-pressed="false" onclick="setQuickWeight(20)">20 кг</button>
+            <button type="button" class="quick-weight-chip" data-weight="30" aria-pressed="false" onclick="setQuickWeight(30)">30 кг</button>
+            <button type="button" class="quick-weight-chip" data-weight="70" aria-pressed="false" onclick="setQuickWeight(70)">70 кг</button>
           </div>
         </div>
         <div>
           <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Возрастная группа</label>
-          <div id="age-group" class="grid grid-cols-3 gap-1.5">
-            <button data-age="neonate" class="chip rounded-2xl py-2 px-1 text-center flex flex-col items-center justify-center">
+          <div id="age-group" class="grid grid-cols-3 gap-1.5" role="group" aria-label="Возрастная группа">
+            <button data-age="neonate" aria-pressed="false" class="chip rounded-2xl py-2 px-1 text-center flex flex-col items-center justify-center">
               <span class="text-xs font-black">0-28д</span>
               <span class="text-[9px] opacity-75 font-semibold">Новорожд.</span>
             </button>
-            <button data-age="child" class="chip active rounded-2xl py-2 px-1 text-center flex flex-col items-center justify-center">
+            <button data-age="child" aria-pressed="true" class="chip active rounded-2xl py-2 px-1 text-center flex flex-col items-center justify-center">
               <span class="text-xs font-black">1м-17л</span>
               <span class="text-[9px] opacity-75 font-semibold">Дети</span>
             </button>
-            <button data-age="adult" class="chip rounded-2xl py-2 px-1 text-center flex flex-col items-center justify-center">
+            <button data-age="adult" aria-pressed="false" class="chip rounded-2xl py-2 px-1 text-center flex flex-col items-center justify-center">
               <span class="text-xs font-black">≥18л</span>
               <span class="text-[9px] opacity-75 font-semibold">Взрослые</span>
             </button>
@@ -624,29 +624,29 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
 
     <div id="scenario-step" class="hidden animate-in no-print">
       <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2 block">3. Клинический сценарий</label>
-      <div id="scenario-list" class="space-y-2"></div>
+      <div id="scenario-list" class="space-y-2" role="group" aria-label="Клинический сценарий"></div>
       <p id="scenario-hash-note" class="hidden text-[10px] text-amber-700 dark:text-amber-400 font-bold mt-2 ml-2" role="status"></p>
     </div>
 
     <div id="drug-step" class="hidden animate-in no-print">
       <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2 block">4. Препарат (линии КР)</label>
-      <div id="drug-list" class="space-y-2"></div>
+      <div id="drug-list" class="space-y-2" role="group" aria-label="Препарат и линия терапии"></div>
     </div>
 
     <div id="form-step" class="hidden animate-in space-y-4 no-print">
       <section class="premium-card p-4 md:p-6">
         <div class="flex items-center justify-between mb-3">
           <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">5. Лекарственная форма</label>
-          <div id="route-tabs" class="flex gap-1"></div>
+          <div id="route-tabs" class="flex gap-1" role="group" aria-label="Путь введения"></div>
         </div>
-        <div id="form-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+        <div id="form-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2" role="group" aria-label="Лекарственная форма"></div>
         <!-- fail-visible: the scenario names a route for which drugs_reference has no form -->
         <div id="route-mismatch-note" class="hidden mt-3 text-[11px] font-semibold bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 rounded-xl px-3 py-2" role="status"><i class="fas fa-triangle-exclamation mr-1"></i><span></span></div>
         <div id="availability-note" class="hidden mt-3 text-[11px] font-semibold bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 rounded-xl px-3 py-2"><i class="fas fa-circle-info mr-1"></i><span></span></div>
 
         <div id="regimen-selector" class="hidden mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
           <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Режим дозирования</label>
-          <div id="regimen-list" class="flex flex-wrap gap-2"></div>
+          <div id="regimen-list" class="flex flex-wrap gap-2" role="group" aria-label="Режим дозирования"></div>
         </div>
       </section>
     </div>
@@ -762,12 +762,12 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
         <div class="flex items-center gap-2 mb-3 flex-wrap">
           <i class="fas fa-syringe text-orange-600 text-lg"></i>
           <h2 class="text-base font-black text-slate-800 dark:text-slate-200">Приготовление и введение</h2>
-          <div id="route-selector" class="ml-auto flex gap-1"></div>
+          <div id="route-selector" class="ml-auto flex gap-1" role="group" aria-label="Способ введения"></div>
         </div>
 
         <div id="vial-selector" class="mb-4 hidden">
           <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Размер флакона</label>
-          <div id="vial-list" class="flex flex-wrap gap-2"></div>
+          <div id="vial-list" class="flex flex-wrap gap-2" role="group" aria-label="Размер флакона"></div>
         </div>
 
         <div id="dilution-warn" class="hidden mb-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-3">
@@ -956,6 +956,12 @@ function makeActivatable(el, handler, label){
     if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){ ev.preventDefault(); handler(ev); }
   };
 }
+function syncPressedGroup(group, selected){
+  if(!group || typeof group.querySelectorAll !== 'function') return;
+  group.querySelectorAll('button,[role="button"]').forEach(el=>{
+    el.setAttribute('aria-pressed', el===selected ? 'true' : 'false');
+  });
+}
 // Service worker registration + update notice. sw.js activates a new build
 // immediately (skipWaiting + clients.claim), so a page that was already
 // controlled keeps running the OLD shell and DB until it is reloaded. A worker
@@ -1120,20 +1126,25 @@ function init(){
     box.appendChild(note);
     return;
   }
-  document.querySelectorAll('#age-group button').forEach(b=>{
-    b.onclick = ()=>{
-      document.querySelectorAll('#age-group button').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      activeAge = b.dataset.age;
-      userPickedAge = true;
-      lastPickedAge = activeAge;
-      clearAgeInferenceNotice();
-      updateExplicitAgeNotice();
-      refreshSearchListForGroup();
-      rerenderScenariosKeepingSelection();
-      calculate();
-    };
-  });
+  const ageGroup = $('age-group');
+  if(ageGroup && typeof ageGroup.querySelectorAll === 'function'){
+    syncPressedGroup(ageGroup, ageGroup.querySelector('button[data-age="'+activeAge+'"]'));
+    ageGroup.querySelectorAll('button').forEach(b=>{
+      b.onclick = ()=>{
+        ageGroup.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        syncPressedGroup(ageGroup, b);
+        activeAge = b.dataset.age;
+        userPickedAge = true;
+        lastPickedAge = activeAge;
+        clearAgeInferenceNotice();
+        updateExplicitAgeNotice();
+        refreshSearchListForGroup();
+        rerenderScenariosKeepingSelection();
+        calculate();
+      };
+    });
+  }
   // Optional steps run one by one: a browser that denies storage access (blocked
   // cookies / site data) used to throw inside setupTheme() and take the history
   // store, the service worker and the #hash deep link down with it.
@@ -1557,18 +1568,23 @@ function toggleTheme(){
   $('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
   const m = $('theme-icon-m'); if(m) m.className = (isDark ? 'fas fa-sun' : 'fas fa-moon') + ' mb-1';
 }
+function syncQuickWeightGroup(weight){
+  const group = $('quick-weights');
+  if(!group || typeof group.querySelectorAll !== 'function') return;
+  group.querySelectorAll('button').forEach(chip=>{
+    const selected = Number.isFinite(weight) && parseFloat(chip.dataset.weight) === weight;
+    chip.classList.toggle('active', selected);
+    chip.setAttribute('aria-pressed', String(selected));
+  });
+}
 function setQuickWeight(w){
   $('weight').value = w;
-  document.querySelectorAll('.quick-weight-chip').forEach(c => {
-    c.classList.toggle('active', parseFloat(c.dataset.weight) === w);
-  });
+  syncQuickWeightGroup(Number(w));
   onWeightChange();
 }
 function onWeightChange(){
   const w = parseFloat($('weight').value);
-  document.querySelectorAll('.quick-weight-chip').forEach(c => {
-    c.classList.toggle('active', parseFloat(c.dataset.weight) === w);
-  });
+  syncQuickWeightGroup(w);
   if(w && !userPickedAge){
     const before = activeAge;
     if(w > 0 && w < 40 && activeAge !== 'neonate') setActiveAge('child', {w:w});
@@ -1660,9 +1676,12 @@ function setActiveAge(a, inferredFromWeight){
   // Вывод из веса остаётся, но он больше не меняет основание дозирования молча.
   const previous = activeAge;
   activeAge = a;
-  document.querySelectorAll('#age-group button').forEach(b=>{
-    b.classList.toggle('active', b.dataset.age === a);
-  });
+  const ageGroup = $('age-group');
+  if(ageGroup && typeof ageGroup.querySelectorAll === 'function'){
+    const selected = ageGroup.querySelector('button[data-age="'+a+'"]');
+    ageGroup.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===selected));
+    syncPressedGroup(ageGroup, selected);
+  }
   if(inferredFromWeight && previous !== a) showAgeInferenceNotice(inferredFromWeight.w, a, previous);
 }
 // ---- Контекст пациента: возраст, беременность, СКФ -------------------------------
@@ -2448,7 +2467,7 @@ function resetPatient(){
   setActiveAge('child');
   clearAgeInferenceNotice();
   updateExplicitAgeNotice();
-  document.querySelectorAll('.quick-weight-chip').forEach(c => c.classList.remove('active'));
+  syncQuickWeightGroup(NaN);
   resetDisease();
   updateWeightWarn(false);
   onAllergyChange();
@@ -2521,6 +2540,7 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
     row.append(col, chevron);
     card.appendChild(row);
     makeActivatable(card, ()=>{ setPendingHashScenario(null); selectScenario(s, card); });
+    card.setAttribute('aria-pressed', 'false');
     list.appendChild(card);
     if(ageMatch && !firstVisible){ firstVisible = s; firstVisibleCard = card; }
     if(ageMatch && s === preferredScenario) preferredCard = card;
@@ -2534,6 +2554,7 @@ function renderScenarios(preferredScenario, preferredLineIndex, preferredDrugInd
     const idx = activeDisease.scenarios.indexOf(activeScenario);
     const card = idx >= 0 ? list.children[idx] : null;
     if(card) card.classList.add('active');
+    syncPressedGroup(list, card);
     // the regimen chips of the previous group must not stay under the age block
     // (they looked clickable and did nothing)
     if(activeDrug) renderRegimens(activeRegimenIdx);
@@ -2548,8 +2569,10 @@ function selectScenario(s, card, preferredLineIndex, preferredDrugIndex, preferr
   // route; the keep-selection re-renders, hash and history pass the route they restore
   if(s !== activeScenario || preferredRoute === undefined) pickedRouteGroup = null;
   activeScenario = s;
-  document.querySelectorAll('#scenario-list .scenario-card').forEach(c=>c.classList.remove('active'));
+  const scenarioList = $('scenario-list');
+  scenarioList.querySelectorAll('.scenario-card').forEach(c=>c.classList.remove('active'));
   if(card) card.classList.add('active');
+  syncPressedGroup(scenarioList, card);
   $('drug-step').classList.remove('hidden');
   renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, preferredRegimenIdx);
   updateHash();
@@ -2835,6 +2858,7 @@ function renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, pre
       lineBadge.textContent = lineLabel;
       card.append(main, lineBadge);
       makeActivatable(card, ()=>selectDrug(drug, line, card, pickedRouteGroup || undefined));
+      card.setAttribute('aria-pressed', 'false');
       list.appendChild(card);
       // a preferred line without a drug index (#hash L<n>) opens on the first drug of that line
       const drugMatch = Number.isInteger(preferredDrugIndex) ? drugIdx === preferredDrugIndex : drugIdx === 0;
@@ -2849,8 +2873,10 @@ function renderLines(preferredLineIndex, preferredDrugIndex, preferredRoute, pre
 }
 function selectDrug(drug, line, card, preferredRoute, preferredRegimenIdx){
   activeDrug = drug; activeLine = line; activeFormIdx = 0; activeRegimenIdx = 0; activeRouteKey = null; activeVialIdx = 0; vialFollowsForm = true; userPickedForm = false;
-  document.querySelectorAll('#drug-list .drug-card').forEach(c=>c.classList.remove('active'));
+  const drugList = $('drug-list');
+  drugList.querySelectorAll('.drug-card').forEach(c=>c.classList.remove('active'));
   card.classList.add('active');
+  syncPressedGroup(drugList, card);
   $('form-step').classList.remove('hidden');
   $('result-step').classList.remove('hidden');
   // regimens first: the default form chip is derived from the active regimen
@@ -2955,6 +2981,7 @@ function renderForms(preferredRoute){
   finalKeys.forEach(k=>{
     const tab = document.createElement('button');
     tab.className = 'route-tab chip text-[10px] font-black uppercase rounded-lg px-2 py-1'+(k===currentRouteGroup?' active':'');
+    tab.setAttribute('aria-pressed', String(k===currentRouteGroup));
     const label = k==='po'?'per os':(k==='im'?'в/м':(k==='iv'?'в/в':'местно'));
     tab.textContent = label;
     tab.onclick = ()=>{
@@ -2963,6 +2990,7 @@ function renderForms(preferredRoute){
       pickedRouteGroup = k;
       routeTabs.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
       tab.classList.add('active');
+      syncPressedGroup(routeTabs, tab);
       renderFormChips(groups[k]);
       calculate();
     };
@@ -3083,6 +3111,7 @@ function renderFormChips(group){
     const idx = entry.idx;
     const btn = document.createElement('button');
     btn.className = 'chip rounded-xl py-2 md:py-3 px-2 text-[10px] font-black uppercase tracking-wider text-left'+(i===defaultIdx?' active':'');
+    btn.setAttribute('aria-pressed', String(i===defaultIdx));
     btn.dataset.formIdx = String(idx);
     let routeIcon = 'fa-pill';
     if(f.form_type === 'tablet' || f.form_type === 'capsule') routeIcon = 'fa-pills';
@@ -3108,6 +3137,7 @@ function renderFormChips(group){
       userPickedForm = true;
       grid.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
+      syncPressedGroup(grid, btn);
       calculate();
     };
     grid.appendChild(btn);
@@ -3127,11 +3157,13 @@ function renderRegimens(preferredRegimenIdx){
     regimens.forEach((r, idx)=>{
       const btn = document.createElement('button');
       btn.className = 'chip text-[10px] font-black rounded-lg px-3 py-2'+(idx===selectedIdx?' active':'');
+      btn.setAttribute('aria-pressed', String(idx===selectedIdx));
       btn.textContent = regimenSummary(r, doseUnitOf(DB.drugs_reference[getDrugRefs(activeDrug)[0]]));
       btn.onclick = ()=>{
         activeRegimenIdx = idx;
         list.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
+        syncPressedGroup(list, btn);
         refreshDefaultForm();
         calculate();
       };
@@ -3809,11 +3841,13 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
   availableRoutes.forEach(k=>{
     const btn = document.createElement('button');
     btn.className = 'chip text-[10px] font-black uppercase rounded-lg px-2 py-1'+(k===activeRouteKey?' active':'');
+    btn.setAttribute('aria-pressed', String(k===activeRouteKey));
     btn.textContent = routeKeyLabel(k);
     btn.onclick = ()=>{
       activeRouteKey = k; activeVialIdx = 0;
       routeSel.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
+      syncPressedGroup(routeSel, btn);
       renderInjection(reg, form, ref, w, singleMg, dailyMg, capped);
     };
     routeSel.appendChild(btn);
@@ -3842,6 +3876,7 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
     vials.forEach((v, idx)=>{
       const btn = document.createElement('button');
       btn.className = 'chip text-[10px] font-black rounded-lg px-2 py-1'+(idx===activeVialIdx?' active':'');
+      btn.setAttribute('aria-pressed', String(idx===activeVialIdx));
       const label = v.vial_mg ? v.vial_mg+' мг' : (v.vial_units ? formatUnits(v.vial_units)+' ЕД' : v.solvent);
       btn.textContent = label;
       btn.onclick = ()=>{
@@ -3849,6 +3884,7 @@ function renderInjection(reg, form, ref, w, singleMg, dailyMg, capped, inconsist
         vialFollowsForm = false;
         vialList.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
+        syncPressedGroup(vialList, btn);
         renderInjection(reg, form, ref, w, singleMg, dailyMg, capped);
       };
       vialList.appendChild(btn);

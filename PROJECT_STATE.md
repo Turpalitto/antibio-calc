@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T102): search, patient-context / route exports, fuzz oracles, theme persistence, CodeQL
+## 2026-10-17 (round 6 continued, T91–T103): search, patient-context / route exports, accessibility, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -46,12 +46,17 @@
   tree, while `npm audit --omit=dev` is clean; no patched v3 is published and the suggested fix
   is a v4 major migration requiring CSS / visual review. Kept the report-only policy and clarified
   the CI warning. Fuzz now pins bolus → infusion → bolus sequence, not only snapshot count.
-- Tests: **2854 passed / 28 skipped / 0 failed** at the full local gate; validate 0 / 436; ruff
-  clean; axe 0; generated shell `build-965663d87500`; DB unchanged (`56727a27f050…`). CI +
-  CodeQL are green through T101 commit `e53dc2e`; T102 remote checks pending on push. Four new
-  2,000-step sweeps are clean (route-switch path 46–55
-  times each). Remaining skips require owner-controlled clinical source or review-workbench
-  artifacts. Real-browser / visual pass remains for the owner.
+- T103 gives the nine mutually exclusive patient / regimen choices named groups and explicit
+  `aria-pressed` states synchronized with their existing `.active` styling, including inferred
+  age, typed/quick weight, route switching and resets. jsdom checks all groups; the seeded fuzz
+  oracle checks after every action. A route-tab sync mutant is caught (8 findings / 400 steps).
+  No calculation, medical data, CSS, dependency or frozen module changed.
+- Tests: **2855 passed / 28 skipped / 0 failed / 5 existing warnings**; validate 0 / 436; Ruff,
+  JS syntax, workflow YAML, build check and production npm audit clean; axe has no violations in
+  tested states. Generated shell `build-b7c876eebdde`; DB unchanged (`56727a27f050…`). All 8
+  GitHub checks for T102 `c27704f` are green; T103 awaits push/CI. Remaining skips require
+  owner-controlled clinical source or review-workbench artifacts. Real browser/screen-reader
+  verification remains for the owner.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 
