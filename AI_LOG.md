@@ -13,8 +13,9 @@
   validate`: 0 errors / 436 warnings; Ruff, JS syntax, PyYAML workflow parse, `git diff --check`,
   `python db/build_html.py --check`, and `npm audit --omit=dev` (0) pass. Build `build-f94676081a58`
   (`db:56727a27f050`, template `3580498e82f6`); DB and Tailwind CSS are unchanged.
-- T103 `6c65ed0` + its handoff `bd51256` are CI / CodeQL green; T104 is local and awaiting push.
-  Real reduced-motion behavior on an actual device remains an owner-browser check.
+- T103 `6c65ed0` + handoff `bd51256` and T104 `018fac8` are CI / CodeQL green; T104 CI run
+  `39026862359` and CodeQL run `39026862328` passed all 8 checks. Real reduced-motion behavior
+  on an actual device remains an owner-browser check.
 
 ## 2026-10-17 (round 6 continued, T103): accessible exclusive-selection states
 

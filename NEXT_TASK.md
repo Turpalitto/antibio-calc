@@ -13,9 +13,9 @@
    earlier real-browser checks below (patient-entry cautions and route-specific screen / MIS / Rp /
    print consistency).
 3. **Engineering continuation (autonomous):** T104 is locally verified (2856 passed / 28
-   skipped; validate 0 / 436; Ruff; build freshness; production npm audit 0); T103 `6c65ed0` and
-   its handoff `bd51256` are green on all 8 checks. T104 awaits push/CI. After its green checks,
-   refresh PR #1's description for T104 (already updated through T103), but do not merge. Continue
+   skipped; validate 0 / 436; Ruff; build freshness; production npm audit 0); T103 `6c65ed0` +
+   handoff `bd51256` and T104 `018fac8` are green on all 8 checks (CI `39026862359`, CodeQL
+   `39026862328`). PR #1's description has been refreshed through T104; do not merge. Continue
    with an evidence-led audit of remaining interactive states and browser robustness, adding only
    reproducible, clinically neutral fixes with independent tests / mutation checks. Root `npm
    audit` still reports five high findings in Tailwind's build-only dev tree; production audit is
