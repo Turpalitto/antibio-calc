@@ -1,3 +1,18 @@
+## 2026-10-17 (round 6 continued, T108): restore focus to the actual guideline-modal trigger
+
+- Extended the modal keyboard audit beyond its close button and Tab trap. A built-shell probe found
+  that opening the guideline dialog from the disease-summary button and closing it focused the
+  result-step button even though that whole step was hidden; the active disease-section trigger
+  was not restored.
+- The dialog now remembers the actual event/current-focus invoker, restores it if still visible and
+  focusable, and otherwise chooses a visible fallback (result action, disease-summary action, then
+  search). Both UI entry points pass the event through; programmatic opens retain a safe fallback.
+- Smoke coverage checks focus return from the disease-summary trigger and the visible result action,
+  plus the existing Escape/backdrop paths. A mutant restoring only to the fixed result button fails
+  the new assertion. Verification: jsdom shell file **67 passed**; Ruff, JS syntax, build freshness,
+  `npm run validate` (0 errors / 436 warnings), production npm audit (0), and `git diff --check`
+  pass. Build `build-3a27169a6cbc`, template `3188e3933cf4`, DB `56727a27f050`; commit `80da809` is pushed, CI `39033045689` and CodeQL `39033045742` pass all 8 checks. PR #1 description is refreshed through T108; it remains open/unmerged.
+
 ## 2026-10-17 (round 6 continued, T107): restore focus after disease reset controls
 
 - Continued the hidden-focus audit through reset actions. A built-shell probe showed that clicking

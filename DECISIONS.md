@@ -1,3 +1,17 @@
+## 2026-10-17 — T108: return from the guideline dialog to its actual trigger
+
+**Decision:** Save the guideline dialog's triggering element and restore focus to that same control
+on close, provided it remains connected, enabled, and visible. If it no longer qualifies, choose a
+visible fallback rather than focusing a control in a hidden step.
+
+**Rationale:** The dialog has multiple launch points. A fixed return target in the results step is
+hidden when the dialog opens from the disease summary, leaving keyboard focus outside the visible
+UI. Returning to the actual invoker preserves the user's place; the fallback handles a trigger that
+was removed or hidden while the dialog was open.
+
+**Scope:** `antibiotic_calc.html.template`, generated shell / service-worker build stamp, and jsdom
+smoke tests. No clinical data, calculation logic, CSS, dependency or frozen module changed.
+
 ## 2026-10-17 — T107: return focus after a disease-reset control hides
 
 **Decision:** If `resetDisease()` is activated while focus is on either the selected-disease reset

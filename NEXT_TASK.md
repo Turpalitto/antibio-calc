@@ -1,4 +1,4 @@
-## 2026-10-17 (after round 6, T107): next steps
+## 2026-10-17 (after round 6, T108): next steps
 
 1. **Owner-physician decisions remain untouched.** No clinical data, blocked-record status, dose
    threshold, regimen, route default, source interpretation, or owner decision was changed. Keep
@@ -10,21 +10,23 @@
    T106, select a normal disease and a source-gated disease from search with Enter and confirm
    focus moves to the selected scenario / visible gate message rather than staying in hidden
    results. For T107, activate the selected-disease reset and search-clear controls and confirm
-   focus returns to the visible search field. Also enable OS “reduce motion” for T104 and verify
-   smooth scroll / animation / hover movement stop without hiding content, with ordinary motion
-   unchanged. CSSOM / jsdom pass, but real browser, screen reader and OS preference checks remain
-   unavailable here. Keep the earlier real-browser checks below (patient-entry cautions and
-   route-specific screen / MIS / Rp / print consistency).
-3. **Engineering continuation (autonomous):** T107 `c7d3566` is pushed and locally verified:
-   `test_shell_jsdom.py` **66 passed**, the reset no-focus mutant is detected for both controls,
-   validate 0 / 436, Ruff, generated build check and production npm audit 0. CI `39032009993` and
-   CodeQL `39032010150` pass all 8 checks; PR #1's description is refreshed through T107. Keep PR
-   #1 open for owner review; do not merge. Continue with an evidence-led audit of remaining
-   interactive states and browser robustness; only implement reproducible, clinically neutral
-   fixes with independent tests / mutation checks. Root npm audit still has five high Tailwind
-   build-only findings; keep report-only, never use `npm audit fix --force`, and treat Tailwind 4
-   as a separate CSS/visual migration. Do not change frozen modules, connect Clinical Engine,
-   choose a LICENSE, change `corpus_config`, or make clinical decisions.
+   focus returns to the visible search field. For T108, open and dismiss the guideline dialog from
+   both the disease summary and result action; focus should return to that same visible trigger.
+   Also enable OS “reduce motion” for T104 and verify smooth scroll / animation / hover movement
+   stop without hiding content, with ordinary motion unchanged. CSSOM / jsdom pass, but real
+   browser, screen reader and OS preference checks remain unavailable here. Keep the earlier
+   real-browser checks below (patient-entry cautions and route-specific screen / MIS / Rp / print
+   consistency).
+3. **Engineering continuation (autonomous):** T108 `80da809` is pushed and locally verified:
+   `test_shell_jsdom.py` **67 passed**, the fixed-result-target mutant is detected, validate 0 / 436,
+   Ruff, generated build check and production npm audit 0. CI `39033045689` and CodeQL `39033045742`
+   pass all 8 checks; PR #1's description is refreshed through T108. Keep PR #1 open for owner
+   review; do not merge. Continue with an evidence-led audit of remaining interactive states and
+   browser robustness; only implement reproducible, clinically neutral fixes with independent
+   tests / mutation checks. Root npm audit still has five high Tailwind build-only findings; keep
+   report-only, never use `npm audit fix --force`, and treat Tailwind 4 as a separate CSS/visual
+   migration. Do not change frozen modules, connect Clinical Engine, choose a LICENSE, change
+   `corpus_config`, or make clinical decisions.
 
 
 ## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)

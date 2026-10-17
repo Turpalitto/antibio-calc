@@ -1,4 +1,4 @@
-## 2026-10-17 (round 6 continued, T91–T107): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, theme persistence, CodeQL
+## 2026-10-17 (round 6 continued, T91–T108): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -68,16 +68,19 @@
   focused when `resetDisease()` hides it, focus returns to the visible search input. Programmatic
   and unrelated reset calls do not steal focus. Smoke checks both controls; a no-focus mutant is
   detected.
-- Latest full suite before T107: GitHub CI through T106 passed all tests and validation; the last
-  local full-suite count is **2857 passed / 28 skipped / 0 failed / 5 existing warnings** at T105.
-  After T107, the complete jsdom shell file is **66 passed**; validate 0 / 436; Ruff, JS syntax,
-  build check and production npm audit clean; axe has no violations in tested states. Generated
-  shell `build-c8b0814dfc4c`; DB unchanged (`56727a27f050…`). T105 `c821548`, T106 `a1c52cf`
-  and T107 `c7d3566` are green on all 8 GitHub checks; T107 CI `39032009993` and CodeQL
-  `39032010150` pass the full suite, validation, Ruff, dependency/secret checks and CodeQL.
-  Remaining skips require owner-controlled clinical source or review-workbench artifacts. Real
-  browser / screen-reader / OS motion preference verification remains for the owner; PR #1 is
-  open, updated through T107, and unmerged.
+- T108 fixes focus return from the guideline dialog: the actual invoker is restored when it
+  remains available, rather than a fixed result-step button that is hidden when the dialog opens
+  from the disease summary. Tests cover both visible triggers plus Escape / backdrop dismissal;
+  a mutant using the fixed return target fails the disease-trigger assertion.
+- Latest local full-suite count is **2857 passed / 28 skipped / 0 failed / 5 existing warnings**
+  at T105; GitHub CI through T107 passed its full suite and validation. After T108, the complete
+  jsdom shell file is **67 passed**; validate 0 / 436; Ruff, JS syntax, build check and production
+  npm audit clean; axe has no violations in tested states. Generated shell `build-3a27169a6cbc`;
+  DB unchanged (`56727a27f050…`). T105 `c821548`, T106 `a1c52cf`, and T107 `c7d3566` are green on
+  all 8 GitHub checks. T108 CI `39033045689` and CodeQL `39033045742` pass the full suite,
+  validation, Ruff, dependency/secret checks and CodeQL. Remaining skips require owner-controlled
+  clinical source or review-workbench artifacts. Real browser / screen-reader / OS motion
+  preference verification remains for the owner; PR #1 is open, updated through T108, and unmerged.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 
