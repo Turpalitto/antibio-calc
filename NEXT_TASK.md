@@ -1,4 +1,4 @@
-## 2026-10-17 (after round 6, T111): next steps
+## 2026-10-17 (after round 6, T112): next steps
 
 1. **Owner-physician decisions remain untouched.** No clinical data, blocked-record status, dose
    threshold, regimen, route default, source interpretation, or owner decision was changed. Keep
@@ -8,34 +8,35 @@
    screen reader and T105's custom card buttons using real key holds: Space must act on release,
    not while held; repeat must not double activate; moving focus before release cancels it. For
    T106, select a normal disease and a source-gated disease from search with Enter and confirm
-   focus moves to the selected scenario / visible gate message rather than staying in hidden
-   results. For T107, activate the selected-disease reset and search-clear controls and confirm
-   focus returns to the visible search field. For T108, open and dismiss the guideline dialog from
-   both the disease summary and result action; focus should return to that same visible trigger.
-   For T109, open the history drawer from mobile bottom navigation and verify focus returns to that
-   trigger. For T110, confirm expired entries are removed from sessionStorage on drawer open while
-   fresh entries remain and consent stays checked. For T111, force a sessionStorage write failure
-   and verify the save toast says memory-only, the opt-in becomes unchecked/disabled, the entry
-   stays visible until reload, and it is not restored after reload. Also enable OS “reduce motion”
-   for T104 and verify smooth scroll / animation / hover movement stop without hiding content.
-   Real browser, screen reader and OS checks remain unavailable here; keep the earlier real-browser
-   checks below (patient-entry cautions and route-specific screen / MIS / Rp / print consistency).
-3. **Engineering status (autonomous):** T111 is complete. A built-shell save reproduced a false
-   «Сохранено в историю (вкладка)» after `sessionStorage.setItem()` threw. Failed writes now disable
-   the opt-in, attempt to remove old storage, preserve the current list in memory, and report the
-   fallback. Local shell/history files: **178 passed**; build reproducibility: **15 passed**;
-   validate 0 / 436, Ruff, JS syntax, build check and production npm audit 0. Implementation commit
-   `539db4a`; CI `39040895009` and CodeQL `39040894996` pass all 8 checks, including full Python
-   3.12. Keep PR #1 open for owner review; do not merge. Root npm audit still has five high
-   Tailwind build-only findings; keep report-only, never use `npm audit fix --force`, and treat
-   Tailwind 4 as a separate CSS/visual migration. Do not change frozen modules, connect Clinical
-   Engine, choose a LICENSE, change `corpus_config`, or make clinical decisions.
-4. **Next confirmed audit (T112):** a built-shell probe set `sessionStorage` history, made
-   `Storage.prototype.removeItem()` throw, and clicked the clear-history control. The row and raw
-   PHI remained, but the UI said «История очищена». Audit the opt-out checkbox path as well. Add
-   built-shell and extracted tests, then make deletion/opt-out failures explicit without claiming
-   success; preserve the user's memory-only fallback, keep the default consent off, and do not add
-   a consent/storage schema or new function.
+   focus moves to the selected scenario / visible gate message. For T107, activate reset and
+   search-clear and confirm focus returns to the visible search field. For T108, open and dismiss
+   the guideline dialog from the disease summary and result action; focus should return to the same
+   trigger. For T109, open the history drawer from mobile bottom navigation and verify focus returns
+   there. For T110, confirm expired session entries are removed while fresh entries and consent
+   remain. For T111, force a `sessionStorage.setItem()` failure and verify memory-only wording,
+   disabled unchecked opt-in, and no restored row after reload. For T112, force `removeItem()` to
+   throw separately for session and legacy storage; verify opt-out / clear never claims success,
+   the warning remains until deletion is confirmed, and startup warns if legacy cleanup cannot be
+   verified. Also enable OS “reduce motion” for T104 and check that motion stops without hiding
+   content. Real browser, screen reader and OS checks remain owner-controlled; retain the earlier
+   browser checks below for patient-entry cautions and route-specific screen / MIS / Rp / print.
+3. **Engineering status (autonomous):** T112 is complete. Four extracted regression cases and
+   built-shell checkbox / clear / startup-warning checks cover session and legacy deletion failures,
+   including absence verified after a thrown remove. Local shell/history files: **183 passed**;
+   build reproducibility: **15 passed**; Ruff, JS syntax, build check, `git diff --check`, validate
+   (**0 errors / 436 warnings**) and production npm audit (**0 vulnerabilities**) pass. CI
+   `39059621448` and CodeQL `39059621410` are green for `d3c5ef1`, including Python 3.12. Build
+   `build-7befe719ac94`; DB unchanged. The user explicitly requested merging PR #1, superseding the
+   earlier no-merge hold; this authorization applies only to this requested PR, not future merges.
+   Root npm audit still has known high Tailwind build-only findings; keep report-only, never use
+   `npm audit fix --force`, and treat Tailwind 4 as a separate CSS/visual migration. Do not change
+   frozen modules, connect Clinical Engine, choose a LICENSE, change `corpus_config`, or make
+   clinical decisions.
+4. **Next engineering audit candidate (T113, not yet a confirmed defect):** probe how history
+   loading behaves if `sessionStorage` exists and a write succeeds but `getItem()` throws on read.
+   Establish whether in-memory rows are lost or the UI implies persistence that cannot be verified.
+   Reproduce with a built-shell test before changing code; keep default consent off and do not add a
+   storage schema. If no user-visible issue is demonstrated, record the probe and move on.
 
 
 ## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)

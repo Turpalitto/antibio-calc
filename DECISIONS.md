@@ -1,3 +1,25 @@
+## 2026-10-17 — T112: verify all history deletion before reporting success
+
+**Decision:** Treat opt-out and clear as successful only when absence is confirmed in both the
+opt-in `sessionStorage` history and the legacy `localStorage` history. `purgeLegacyHistory()` now
+checks the key after attempting removal, including a read-back after `removeItem()` throws; if the
+initial read or final confirmation fails, the operation remains unconfirmed. `initHistoryStore()`
+shows a persistent warning when cleanup of legacy history cannot be verified. On opt-out or clear,
+if either store still contains the key or cannot be checked, show an explicit error in the toast and
+history drawer instead of claiming deletion. Keep opt-out unchecked so no further session writes
+are consented to; when persistence is still enabled, re-render any session row that remains stored.
+Clear failure warnings only after both removals are confirmed.
+
+**Rationale:** Built-shell probes showed the clear action could leave patient-history rows in either
+store while saying «История очищена»; the opt-out handler had the same unverified-removal assumption.
+A swallowed exception alone cannot establish that data is gone, while read-after-remove can confirm
+absence even if an API throws after deletion. A success message must not imply history was removed
+when any affected store is unreadable or still contains the key.
+
+**Scope:** Existing history functions in `antibiotic_calc.html.template`, generated HTML / service
+worker cache stamp, and extracted / built-shell tests. No new storage/consent schema, default consent
+behavior, clinical data, dose logic, frozen module, CSS, or dependency changed.
+
 ## 2026-10-17 — T111: fail visibly when session-history writes are rejected
 
 **Decision:** Treat a rejected `sessionStorage.setItem()` as a persistence failure even when the

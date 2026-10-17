@@ -1,4 +1,4 @@
-## 2026-10-17 (round 6 continued, T91–T111): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, history-storage failures, theme persistence, CodeQL
+## 2026-10-17 (round 6 continued, T91–T112): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, history-storage failures, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -86,16 +86,24 @@
   uncheck and disable the opt-in, try to remove old stored PHI, keep the in-memory list, and report
   the persistence failure; TTL / malformed-data rewrites share that handling. The prior behavior
   was caught by three failing-before-fix tests and is covered by extracted and built-shell tests.
-- Latest local full-suite count is **2857 passed / 28 skipped / 0 failed / 5 existing warnings**
-  at T105; the current Python 3.11 environment cannot run the required Python 3.12 full suite.
-  T111 shell/history files are **178 passed** and build reproducibility is **15 passed**; validate
-  0 / 436, Ruff, JS syntax, generated build check, production npm audit (0) and diff check pass.
-  Build `build-53bdfa1b6d62`, template `21660a441ee0`, DB unchanged (`56727a27f050…`). T111
-  implementation commit `539db4a` CI `39040895009` and CodeQL `39040894996` pass all 8 checks,
-  including the Python 3.12 full suite. Remaining skips and real-browser / screen-reader / OS
-  motion-preference checks require owner-controlled artifacts or devices. T112 is the next
-  confirmed privacy follow-up: a denied `sessionStorage.removeItem()` left the history stored and
-  rendered after `clearHistory()` displayed «История очищена». PR #1 stays open and unmerged.
+- T112 first reproduced false-success removal in `sessionStorage`, then a follow-up audit exposed
+  the same defect in legacy `localStorage` cleanup. `purgeLegacyHistory()` now confirms absence with
+  read-after-remove, including after a throwing `removeItem()`; initialization warns if that legacy
+  cleanup cannot be confirmed. Opt-out and clear only report success after both stores are confirmed
+  empty. Otherwise the UI shows a toast plus persistent warning and does not claim deletion; the
+  opt-out remains off, and any still-stored session row is shown when persistence is enabled. Four
+  extracted regression cases plus built-shell checkbox / clear / startup-warning tests cover the
+  failures and the remove-then-throw confirmation case.
+- Latest focused shell/history files: **183 passed**; build reproducibility: **15 passed**. Local
+  Ruff, JS syntax, generated-build check, `git diff --check`, and production npm audit pass;
+  `npm run validate` reports **0 errors / 436 non-blocking warnings**. The current Python 3.11
+  environment cannot run the full suite; CI run `39059621448` and CodeQL run `39059621410` pass all
+  checks for implementation head `d3c5ef1`, including the Python 3.12 suite. Build
+  `build-7befe719ac94`, template `3bd613028207`, DB unchanged (`56727a27f050…`). No clinical data,
+  dose logic, frozen module, CSS, dependency, consent default or storage schema changed. Earlier
+  user hold on merging PR #1 was explicitly superseded by the later request to merge after checks;
+  this authorization does not constitute medical approval. Remaining skips and real-browser /
+  screen-reader / OS motion-preference checks require owner-controlled artifacts or devices.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 

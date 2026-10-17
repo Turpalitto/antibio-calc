@@ -1,31 +1,35 @@
 # HANDOFF.md — ANTIBIO (Cross-IDE / Cross-AI Onboarding)
 
-## Current handoff — 2026-10-17 (calculator audit rounds T91–T110)
+## Current handoff — 2026-10-17 (calculator audit rounds T91–T112)
 
-The current engineering thread is the clinically neutral calculator shell hardening documented in
+The current engineering thread is the clinically neutral calculator-shell hardening documented in
 `PROJECT_STATE.md`, `AI_LOG.md`, `NEXT_TASK.md`, `DECISIONS.md` and
-`docs/audits/AUDIT_2026-10-14_FIXES.md`. Do not treat the older dated handoff sections below as
+`docs/audits/AUDIT_2026-10-14_FIXES.md`. Older dated handoff sections below are historical, not
 current test or branch status.
 
-- Branch: `arena/2013101a-antibio-calc`; PR #1 is open, unmerged, and `CLEAN`. T111 implementation
-  commit `539db4a` is pushed; this handoff records its verification and next confirmed task.
+- Branch: `arena/2013101a-antibio-calc`; PR #1 includes implementation commits `9e3a22e` and
+  `d3c5ef1`. CI `39059621448` and CodeQL `39059621410` are green for `d3c5ef1`; documentation is
+  being completed before the user-requested merge.
 - T110 applies the existing 24-hour TTL to stored and in-memory history, retaining `[]` after an
-  all-expired purge to preserve explicit consent without patient data. T111 reproduced and fixed a
-  false persistent-success message when `sessionStorage.setItem()` throws: the opt-in is turned off
-  and disabled, the stored list is removed when possible, the current entry remains usable in
-  memory, and the UI reports that persistence failed. Cleanup writes use the same failure path.
-- Local T111 verification: **178** shell/history tests passed; **15** build-reproducibility tests
-  passed; Ruff / JS syntax / generated-build freshness pass; validate is **0 errors / 436
-  warnings**; production npm audit reports **0 vulnerabilities**. CI `39040895009` and CodeQL
-  `39040894996` pass all 8 checks, including the Python 3.12 full suite. Build
-  `build-53bdfa1b6d62` (template `21660a441ee0`); DB unchanged `56727a27f050…`. T110 CI
-  `39039491802` / CodeQL `39039491925` also passed all checks.
-- A separate T112 probe found that a denied `sessionStorage.removeItem()` can leave history in
-  storage after `clearHistory()` says «История очищена»; verify opt-out deletion too. Next step is
-  to make removal failures truthful and fail-visible without changing the consent model or adding
-  a new storage schema.
-- Owner-physician decisions and real-browser / screen-reader / OS motion-preference checks remain
-  pending. Never merge PR #1, approve medical content, or connect the Clinical Engine.
+  all-expired purge to preserve explicit consent without patient data. T111 makes rejected
+  `sessionStorage.setItem()` a visible persistence failure: opt-in is turned off and disabled,
+  existing data is removed where possible, the current list remains in memory, and the UI does not
+  claim it was saved persistently.
+- T112 covers both session history and legacy `localStorage`. `purgeLegacyHistory()` verifies key
+  absence after removal (including after a throwing `removeItem()`); startup warns when legacy
+  cleanup cannot be confirmed. Opt-out and clear only report success if both stores are confirmed
+  empty. Otherwise a toast and persistent warning are shown, opt-out stays off, and any still-stored
+  session row is re-rendered when persistence is enabled. Default consent remains off; no new
+  storage schema was introduced.
+- Local T112 verification: **183** shell/history tests and **15** build-reproducibility tests pass;
+  Ruff / JS syntax / generated-build freshness / `git diff --check` pass; validate is **0 errors /
+  436 non-blocking warnings**; production npm audit reports **0 vulnerabilities**. The local
+  Python 3.11 environment cannot run the full suite; the green CI run covers Python 3.12. Build
+  `build-7befe719ac94` (template `3bd613028207`); DB unchanged `56727a27f050…`.
+- The user's latest explicit request authorizes merging PR #1 and supersedes the earlier hold against
+  merging. This authorization is for the requested repository change only; it is not medical
+  approval. Owner-physician decisions and real-browser / screen-reader / OS motion-preference checks
+  remain pending. Do not connect the Clinical Engine.
 
 ## PERSONAL_PHYSICIAN implementation — 2026-08-01
 

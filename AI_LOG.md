@@ -1,3 +1,31 @@
+## 2026-10-17 (round 6 continued, T112): verify history deletion outcomes
+
+- The built-shell probe reproduced a false-success clear: `sessionStorage.removeItem()` could throw
+  while the stored PHI and drawer row remained, yet the UI said «История очищена». The opt-out
+  checkbox had the same unchecked-removal assumption. Extending the audit to legacy migration
+  uncovered a second false success: `purgeLegacyHistory()` silently swallowed a failed
+  `localStorage.removeItem()`, allowing both opt-out and clear to claim success while old persistent
+  history remained.
+- `purgeLegacyHistory()` now returns success only if absence is confirmed by a read-back, including
+  when `removeItem()` throws after actually deleting the key. `initHistoryStore()` warns when old
+  localStorage cleanup cannot be confirmed. Both opt-out and clear require confirmed deletion in
+  sessionStorage and the legacy store; otherwise the app shows a toast plus persistent drawer
+  warning and does not claim success. Opt-out stays unchecked (no new writes); clear re-renders any
+  still-stored session row when persistence is enabled. Successful removal resets stale warning text.
+- Four extracted regression cases cover rejected session removals, rejected legacy removal, and
+  read-after-throw confirmation; the built-shell test uses the real checkbox and clear button for
+  both storage failures and verifies the startup warning. Session and legacy failure probes failed
+  before the corresponding fixes. The full shell/history files now report **183 passed**.
+- Local verification: build reproducibility **15 passed**; Ruff, JS syntax, generated-build check,
+  `git diff --check`, `npm run validate` (**0 errors / 436 warnings**) and production
+  `npm audit --omit=dev` (**0 vulnerabilities**) pass. CI run `39059621448` and CodeQL run
+  `39059621410` pass all 8 checks, including the Python 3.12 suite.
+- Build `build-7befe719ac94`, template `3bd613028207`, HTML SHA-256
+  `89e779c48deac773…`, DB unchanged `56727a27f050…`. No clinical data, dose logic, frozen module,
+  CSS, dependency, consent default or storage schema changed. Implementation commits `9e3a22e`
+  and `d3c5ef1` are pushed; CI / CodeQL are green. The latest explicit user request authorizes
+  merging PR #1 after the earlier no-merge hold; the merge remains conditional on final docs checks.
+
 ## 2026-10-17 (round 6 continued, T111): fail visibly on history-storage write errors
 
 - A built-shell click on «Сохранить» reproduced the planned T111 bug: after `sessionStorage.setItem`
