@@ -67,10 +67,12 @@
 - Latest full suite before T106: **2857 passed / 28 skipped / 0 failed / 5 existing warnings**.
   After T106, the complete jsdom shell file is **65 passed**; validate 0 / 436; Ruff, JS syntax,
   build check and production npm audit clean; axe has no violations in tested states. Generated
-  shell `build-a3d5b8242cc0`; DB unchanged (`56727a27f050…`). All 8 GitHub checks through T105
-  `c821548` are green (CI `39030028566`, CodeQL `39030028541`); T106 CI awaits push. Remaining
-  skips require owner-controlled clinical source or review-workbench artifacts. Real browser /
-  screen-reader / OS motion preference verification remains for the owner; PR #1 is open and unmerged.
+  shell `build-a3d5b8242cc0`; DB unchanged (`56727a27f050…`). T105 `c821548` and T106 `a1c52cf`
+  are green on all 8 GitHub checks; T106 CI `39031229274` and CodeQL `39031229265` passed the
+  full suite, validation, Ruff, dependency/secret checks and CodeQL. Remaining skips require
+  owner-controlled clinical source or review-workbench artifacts. Real browser / screen-reader /
+  OS motion preference verification remains for the owner; PR #1 is open, updated through T106,
+  and unmerged.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 

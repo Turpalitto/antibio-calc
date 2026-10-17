@@ -14,15 +14,16 @@
    real browser, screen reader and OS preference checks remain unavailable here. Keep the earlier
    real-browser checks below (patient-entry cautions and route-specific screen / MIS / Rp / print
    consistency).
-3. **Engineering continuation (autonomous):** T106 is locally verified: `test_shell_jsdom.py`
+3. **Engineering continuation (autonomous):** T106 `a1c52cf` is pushed; `test_shell_jsdom.py`
    **65 passed**, both keyboard/focus mutants are detected, validate 0 / 436, Ruff, generated
-   build check and production npm audit 0. T105 commit `c821548` remains green on all 8 checks;
-   T106 needs push/CI and handoff refresh. Keep PR #1 open for owner review; do not merge. Continue
-   with an evidence-led audit of remaining interactive states and browser robustness; only implement
-   reproducible, clinically neutral fixes with independent tests / mutation checks. Root npm audit
-   still has five high Tailwind build-only findings; keep report-only, never use `npm audit fix
-   --force`, and treat Tailwind 4 as a separate CSS/visual migration. Do not change frozen modules,
-   connect Clinical Engine, choose a LICENSE, change `corpus_config`, or make clinical decisions.
+   build check and production npm audit 0. CI `39031229274` and CodeQL `39031229265` pass all 8
+   checks; PR #1's description is refreshed through T106. Keep it open for owner review; do not
+   merge. Continue with an evidence-led audit of remaining interactive states and browser
+   robustness; only implement reproducible, clinically neutral fixes with independent tests /
+   mutation checks. Root npm audit still has five high Tailwind build-only findings; keep
+   report-only, never use `npm audit fix --force`, and treat Tailwind 4 as a separate CSS/visual
+   migration. Do not change frozen modules, connect Clinical Engine, choose a LICENSE, change
+   `corpus_config`, or make clinical decisions.
 
 
 ## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)
