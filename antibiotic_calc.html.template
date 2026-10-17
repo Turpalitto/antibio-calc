@@ -615,7 +615,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
             <div class="flex flex-wrap items-center gap-2">
               <span id="active-mkb" class="text-[10px] font-black text-blue-400 uppercase"></span>
               <span id="active-cr" class="text-[10px] font-bold text-slate-400"></span>
-              <button type="button" onclick="openGuidelineModal()" class="text-[10px] font-bold text-blue-600 dark:text-blue-400 underline hover:text-blue-800 flex items-center gap-1">
+              <button type="button" onclick="openGuidelineModal(event)" class="text-[10px] font-bold text-blue-600 dark:text-blue-400 underline hover:text-blue-800 flex items-center gap-1">
                 <i class="fas fa-book-open"></i>Выписка из КР
               </button>
             </div>
@@ -680,7 +680,7 @@ button:focus-visible,[role="button"]:focus-visible,a:focus-visible,select:focus-
         <button id="btn-copy-rx" onclick="copyLatinRecipe()" class="action-btn text-[11px] font-black uppercase tracking-wider text-indigo-700 bg-white dark:bg-slate-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/60 rounded-xl px-3.5 py-2.5 hover:bg-indigo-50 dark:hover:bg-slate-700 flex items-center gap-2 shadow-sm">
           <i class="fas fa-receipt text-indigo-600 dark:text-indigo-400"></i>Рецепт (Rp:)
         </button>
-        <button id="btn-guideline-modal" onclick="openGuidelineModal()" class="action-btn text-[11px] font-black uppercase tracking-wider text-purple-700 bg-white dark:bg-slate-800 dark:text-purple-300 border border-purple-200 dark:border-purple-700/60 rounded-xl px-3.5 py-2.5 hover:bg-purple-50 dark:hover:bg-slate-700 flex items-center gap-2 shadow-sm">
+        <button id="btn-guideline-modal" onclick="openGuidelineModal(event)" class="action-btn text-[11px] font-black uppercase tracking-wider text-purple-700 bg-white dark:bg-slate-800 dark:text-purple-300 border border-purple-200 dark:border-purple-700/60 rounded-xl px-3.5 py-2.5 hover:bg-purple-50 dark:hover:bg-slate-700 flex items-center gap-2 shadow-sm">
           <i class="fas fa-book-medical text-purple-600 dark:text-purple-400"></i>Выписка КР
         </button>
         <button id="btn-save-history" class="action-btn text-[11px] font-black uppercase tracking-wider text-emerald-700 bg-white dark:bg-slate-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700/60 rounded-xl px-3.5 py-2.5 hover:bg-emerald-50 dark:hover:bg-slate-700 flex items-center gap-2 shadow-sm">
@@ -4625,8 +4625,13 @@ function copyTextToClipboard(txt, okMsg){
   if(legacyCopyText(txt)) toast(okMsg); else toast(failMsg);
 }
 
-function openGuidelineModal(){
+let guidelineModalReturnFocus = null;
+function openGuidelineModal(event){
   if(!activeDisease) return;
+  const modal = $('guideline-modal');
+  if(!modal) return;
+  const trigger = event && event.currentTarget ? event.currentTarget : document.activeElement;
+  if(trigger && trigger !== document.body && !modal.contains(trigger)) guidelineModalReturnFocus = trigger;
   $('modal-cr-title').textContent = activeDisease.name + ' (' + diseaseSourceLabel(activeDisease) + ')';
   $('modal-cr-meta').textContent = 'Год утверждения: ' + (activeDisease.cr_year || 'не указан') + ' • МКБ-10: ' + (activeDisease.mkb10 || []).join(', ');
 
@@ -4679,14 +4684,27 @@ function openGuidelineModal(){
     : 'https://cr.minzdrav.gov.ru';
   $('modal-cr-rubricator-link').href = url;
 
-  $('guideline-modal').classList.remove('hidden');
-  const closeBtn = $('guideline-modal').querySelector('button[aria-label]');
+  modal.classList.remove('hidden');
+  const closeBtn = modal.querySelector('button[aria-label]');
   if(closeBtn) closeBtn.focus();
 }
 
+function guidelineModalTargetCanReceiveFocus(target){
+  if(!target || !target.isConnected || target.disabled || target.closest('[hidden], .hidden, [aria-hidden="true"]')) return false;
+  const style = window.getComputedStyle(target);
+  return style.display !== 'none' && style.visibility !== 'hidden';
+}
 function closeGuidelineModal(){
-  $('guideline-modal').classList.add('hidden');
-  if($('btn-guideline-modal')) $('btn-guideline-modal').focus();
+  const modal = $('guideline-modal');
+  if(!modal || modal.classList.contains('hidden')) return;
+  modal.classList.add('hidden');
+  const preferred = guidelineModalReturnFocus;
+  guidelineModalReturnFocus = null;
+  const fallback = $('btn-guideline-modal');
+  const diseaseTrigger = document.querySelector('#active-disease button[type="button"]');
+  const searchInput = $('search');
+  const target = [preferred, fallback, diseaseTrigger, searchInput].find(guidelineModalTargetCanReceiveFocus);
+  if(target) target.focus();
 }
 // Focusable descendants of an open dialog, in tab order (visible, enabled, not tabindex=-1)
 function focusableWithin(container){

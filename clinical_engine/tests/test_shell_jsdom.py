@@ -256,13 +256,24 @@ def test_history_drawer_is_a_keyboard_closable_dialog(shell: dict) -> None:
     assert shell["drawerAfterEscape"] == {"openClass": False, "inert": True}
 
 
-def test_guideline_modal_is_a_labelled_dialog_with_focus_return(shell: dict) -> None:
+def test_guideline_modal_is_a_labelled_dialog(shell: dict) -> None:
     modal = shell["modal"]
     assert modal["visible"] is True
     assert modal["role"] == "dialog" and modal["labelledBy"] == "modal-cr-title"
     assert modal["title"].startswith("Урогенитальный хламидиоз")
     assert modal["focusTag"] == "BUTTON"
-    assert shell["modalAfterEscape"] == {"visible": False, "focusId": "btn-guideline-modal"}
+
+
+def test_guideline_modal_returns_focus_to_each_visible_trigger(shell: dict) -> None:
+    disease_trigger = shell["modalAfterEscape"]
+    assert disease_trigger["visible"] is False, disease_trigger
+    assert disease_trigger["triggerRestored"] is True, disease_trigger
+    assert disease_trigger["hiddenAncestor"] is False, disease_trigger
+
+    result_trigger = shell["modalResultFocus"]
+    assert result_trigger["resultVisible"] is True, result_trigger
+    assert result_trigger["triggerRestored"] is True, result_trigger
+    assert result_trigger["hiddenAncestor"] is False, result_trigger
 
 
 def test_course_units_agree_across_exports_and_course_is_in_days(shell: dict) -> None:

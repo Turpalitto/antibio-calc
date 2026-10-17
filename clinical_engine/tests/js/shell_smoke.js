@@ -291,7 +291,9 @@ async function run() {
     key('Escape');
     out.drawerAfterEscape = { openClass: $('history-drawer').classList.contains('open'), inert: $('history-drawer').hasAttribute('inert') };
 
-    $('btn-guideline-modal').click();
+    const diseaseGuidelineTrigger = d.querySelector('#active-disease button[type="button"]');
+    diseaseGuidelineTrigger.focus();
+    diseaseGuidelineTrigger.click();
     out.modal = {
       visible: visible($('guideline-modal')),
       role: $('guideline-modal').getAttribute('role'),
@@ -301,7 +303,23 @@ async function run() {
     };
     await axeRun('modal_open', out);
     key('Escape');
-    out.modalAfterEscape = { visible: visible($('guideline-modal')), focusId: d.activeElement && d.activeElement.id };
+    out.modalAfterEscape = {
+      visible: visible($('guideline-modal')),
+      triggerRestored: d.activeElement === diseaseGuidelineTrigger,
+      hiddenAncestor: !!d.activeElement.closest('.hidden'),
+    };
+
+    clickDrug(/Доксициклин/i);
+    type($('weight'), '70');
+    const resultGuidelineTrigger = $('btn-guideline-modal');
+    resultGuidelineTrigger.focus();
+    resultGuidelineTrigger.click();
+    $('guideline-modal').querySelector('button[aria-label="Закрыть окно клинической рекомендации"]').click();
+    out.modalResultFocus = {
+      resultVisible: visible($('result-step')),
+      triggerRestored: d.activeElement === resultGuidelineTrigger,
+      hiddenAncestor: !!d.activeElement.closest('.hidden'),
+    };
 
     // ---- 7a. keyboard: custom buttons mirror native Enter / Space behavior ----
     {
@@ -1143,7 +1161,9 @@ async function run() {
       const tab = (shift) => d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Tab', shiftKey: !!shift, bubbles: true, cancelable: true }));
       const focusable = (c) => w.focusableWithin(c);
       const t = {};
-      w.openGuidelineModal();
+      const guidelineTrigger = d.querySelector('#active-disease button[type="button"]');
+      guidelineTrigger.focus();
+      guidelineTrigger.click();
       const modal = $('guideline-modal');
       const items = focusable(modal);
       t.modalOpen = !modal.classList.contains('hidden');
@@ -1162,7 +1182,7 @@ async function run() {
       t.panelClickKeepsOpen = !modal.classList.contains('hidden');
       modal.click();
       t.backdropClickCloses = modal.classList.contains('hidden');
-      t.focusBackOnOpener = d.activeElement === $('btn-guideline-modal');
+      t.focusBackOnOpener = d.activeElement === guidelineTrigger && !d.activeElement.closest('.hidden');
       w.openHistory();
       const drawer = $('history-drawer');
       const ditems = focusable(drawer);
