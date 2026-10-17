@@ -8,7 +8,7 @@ Per Phase 11 of the physician-review-pilot mandate: the Golden Dataset is **not*
 
 ## Current approved-object count
 
-**0** (verified in [PHYSICIAN_PILOT_ACTIVATION_BASELINE.md](PHYSICIAN_PILOT_ACTIVATION_BASELINE.md) — database-wide, across all 9,153 review tasks, not just the 30-task pilot). No `ClinicalRegimen` in the system currently qualifies as approved data by any legitimate governed decision, because no human review decision of any kind has yet been recorded.
+**0** (verified in [PHYSICIAN_PILOT_ACTIVATION_BASELINE.md](docs/history/PHYSICIAN_PILOT_ACTIVATION_BASELINE.md) — database-wide, across all 9,153 review tasks, not just the 30-task pilot). No `ClinicalRegimen` in the system currently qualifies as approved data by any legitimate governed decision, because no human review decision of any kind has yet been recorded.
 
 ## Classification of all 7 Golden Dataset cases
 

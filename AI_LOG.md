@@ -1,3 +1,1140 @@
+## 2026-10-17 (round 6 continued, T112): verify history deletion outcomes
+
+- The built-shell probe reproduced a false-success clear: `sessionStorage.removeItem()` could throw
+  while the stored PHI and drawer row remained, yet the UI said «История очищена». The opt-out
+  checkbox had the same unchecked-removal assumption. Extending the audit to legacy migration
+  uncovered a second false success: `purgeLegacyHistory()` silently swallowed a failed
+  `localStorage.removeItem()`, allowing both opt-out and clear to claim success while old persistent
+  history remained.
+- `purgeLegacyHistory()` now returns success only if absence is confirmed by a read-back, including
+  when `removeItem()` throws after actually deleting the key. `initHistoryStore()` warns when old
+  localStorage cleanup cannot be confirmed. Both opt-out and clear require confirmed deletion in
+  sessionStorage and the legacy store; otherwise the app shows a toast plus persistent drawer
+  warning and does not claim success. Opt-out stays unchecked (no new writes); clear re-renders any
+  still-stored session row when persistence is enabled. Successful removal resets stale warning text.
+- Four extracted regression cases cover rejected session removals, rejected legacy removal, and
+  read-after-throw confirmation; the built-shell test uses the real checkbox and clear button for
+  both storage failures and verifies the startup warning. Session and legacy failure probes failed
+  before the corresponding fixes. The full shell/history files now report **183 passed**.
+- Local verification: build reproducibility **15 passed**; Ruff, JS syntax, generated-build check,
+  `git diff --check`, `npm run validate` (**0 errors / 436 warnings**) and production
+  `npm audit --omit=dev` (**0 vulnerabilities**) pass. CI run `39059621448` and CodeQL run
+  `39059621410` pass all 8 checks, including the Python 3.12 suite.
+- Build `build-7befe719ac94`, template `3bd613028207`, HTML SHA-256
+  `89e779c48deac773…`, DB unchanged `56727a27f050…`. No clinical data, dose logic, frozen module,
+  CSS, dependency, consent default or storage schema changed. Implementation commits `9e3a22e`
+  and `d3c5ef1` are pushed; CI / CodeQL are green. The latest explicit user request authorizes
+  merging PR #1 after the earlier no-merge hold; the merge remains conditional on final docs checks.
+
+## 2026-10-17 (round 6 continued, T111): fail visibly on history-storage write errors
+
+- A built-shell click on «Сохранить» reproduced the planned T111 bug: after `sessionStorage.setItem`
+  threw `QuotaExceededError`, `saveToHistory()` still said «Сохранено в историю (вкладка)»,
+  `historyPersistAllowed()` stayed true, and the new entry existed only in memory. All three new
+  regression tests failed against that behavior before the fix.
+- `writeSessionHistory()` now handles rejected writes as loss of session persistence: it attempts
+  to remove the prior stored list, unchecks and disables the opt-in control, updates the drawer
+  warning, and leaves the current list usable in memory. The save and opt-in handlers report the
+  memory-only fallback instead of persistent success. TTL and malformed-data rewrites use the same
+  writer so failed cleanup also fails visibly and attempts to purge the stored value.
+- Local verification: shell/history-focused files **178 passed**; build reproducibility tests
+  **15 passed**; `ruff check .`, JS syntax, generated build check, `npm run validate` (**0 errors /
+  436 warnings**), production `npm audit --omit=dev` (**0 vulnerabilities**), and `git diff --check`
+  pass. The three T111 regressions pass after having failed pre-fix. Full Python 3.12 suite passes
+  in CI; local Python is 3.11.
+- Build `build-53bdfa1b6d62`, template `21660a441ee0`, HTML SHA-256
+  `c78f78a79c1b1ed9…`, DB unchanged `56727a27f050…`. No clinical data, dose logic, frozen module,
+  CSS, dependency manifest, or consent default changed. T111 implementation commit `539db4a` is
+  pushed; CI `39040895009` and CodeQL `39040894996` pass all 8 checks. PR #1 remains open and
+  unmerged.
+
+## 2026-10-17 (round 6 continued, T110): enforce the 24-hour history TTL in storage
+
+- Created `docs/audits/MEGA_IMPROVEMENT_PROMPT_2026-10-17.md` first, then followed its evidence-led
+  cycle. A built-shell probe reproduced that `readHistoryEntries()` hid rows older than 24 hours
+  but left their patient names in `sessionStorage`; expired entries also remained in the in-memory
+  array. This violated the existing S-3 TTL decision while a tab stayed open.
+- `readHistoryEntries()` now removes expired / malformed rows from both stores on read. When the
+  consented store becomes empty it writes `[]`, retaining the explicit session opt-in without PHI.
+  The UI remains memory-only by default; the TTL remains 24 hours. No dose logic or clinical data
+  changed.
+- Added extracted-function tests for physical sessionStorage cleanup, memory cleanup, and retained
+  consent, plus a built-shell test that opens the history drawer and checks both rendering and the
+  actual stored value. Disabling either prune operation is caught by the corresponding mutation.
+  Verification: shell-focused suite **235 passed**; Ruff / JS syntax clean; `npm run validate`
+  **0 errors / 436 warnings**; generated build check fresh; `npm audit --omit=dev` **0**; diff check
+  clean. Full Python 3.12 suite is deferred to CI because only Python 3.11 is installed locally.
+- Build `build-a1c7152fc5eb`, template `46bc544b5294`, DB unchanged `56727a27f050`. Clinical DB,
+  frozen modules, CSS and dependency manifests are unchanged. Commit `90e9b36` is pushed; CI
+  `39039491802` and CodeQL `39039491925` pass all 8 checks. PR #1 is open, unmerged, and its
+  description is refreshed through T110.
+
+## 2026-10-17 (round 6 continued, T109): return the history drawer to its actual opener
+
+- Continued the modal focus audit on the small-screen path. At a 390 px viewport, the mobile
+  bottom-nav History button opened the drawer through a programmatic click on the desktop header
+  button; closing the drawer always focused that header control rather than the mobile trigger.
+- The mobile nav now opens the drawer directly with its event, and `openHistory()` records the
+  actual invoker. `closeHistory()` restores it if it remains focusable; otherwise it falls back to
+  the visible header action. Shared focus-target validation checks each ancestor's computed
+  visibility plus `hidden`, `inert`, and `aria-hidden`, including responsive inline display.
+- Built-shell smoke covers desktop header and mobile-nav close paths. A fixed-header-target mutant
+  fails the mobile trigger assertion. Verification: jsdom shell file **68 passed**; Ruff, JS syntax,
+  build freshness, `npm run validate` (0 errors / 436 warnings), production npm audit (0), and
+  `git diff --check` pass. Build `build-683e09a293b0`, template `4f931cab1879`, DB `56727a27f050`;
+  commit `64f26c7` is pushed, CI `39034116823` and CodeQL `39034113602` pass all 8 checks. PR #1 description is refreshed through T109; it remains open/unmerged.
+
+## 2026-10-17 (round 6 continued, T108): restore focus to the actual guideline-modal trigger
+
+- Extended the modal keyboard audit beyond its close button and Tab trap. A built-shell probe found
+  that opening the guideline dialog from the disease-summary button and closing it focused the
+  result-step button even though that whole step was hidden; the active disease-section trigger
+  was not restored.
+- The dialog now remembers the actual event/current-focus invoker, restores it if still visible and
+  focusable, and otherwise chooses a visible fallback (result action, disease-summary action, then
+  search). Both UI entry points pass the event through; programmatic opens retain a safe fallback.
+- Smoke coverage checks focus return from the disease-summary trigger and the visible result action,
+  plus the existing Escape/backdrop paths. A mutant restoring only to the fixed result button fails
+  the new assertion. Verification: jsdom shell file **67 passed**; Ruff, JS syntax, build freshness,
+  `npm run validate` (0 errors / 436 warnings), production npm audit (0), and `git diff --check`
+  pass. Build `build-3a27169a6cbc`, template `3188e3933cf4`, DB `56727a27f050`; commit `80da809` is pushed, CI `39033045689` and CodeQL `39033045742` pass all 8 checks. PR #1 description is refreshed through T108; it remains open/unmerged.
+
+## 2026-10-17 (round 6 continued, T107): restore focus after disease reset controls
+
+- Continued the hidden-focus audit through reset actions. A built-shell probe showed that clicking
+  the selected-disease reset button or the search-clear button hid the focused control but left
+  `document.activeElement` inside its hidden ancestor.
+- `resetDisease()` now returns focus to the search input only when the active element is one of
+  those two controls. Programmatic / patient reset calls and unrelated focus are left untouched.
+- The smoke runs both reset paths through the built UI and asserts the disease/search state and
+  visible focus destination. A no-focus mutant reproduces hidden focus in both paths. Verification:
+  jsdom shell file **66 passed**; Ruff, JS syntax, `npm run validate` (0 errors / 436 warnings),
+  build freshness, production npm audit (0) and `git diff --check` pass. Build `build-c8b0814dfc4c`,
+  template `bd0d488748fb`, DB `56727a27f050`; commit `c7d3566` is pushed, CI `39032009993` and CodeQL `39032010150` pass all 8 checks. PR #1 description is refreshed through T107; it remains open/unmerged.
+
+## 2026-10-17 (round 6 continued, T106): restore focus after keyboard disease selection
+
+- A cross-check of the built-shell keyboard smoke found a false-positive T105 assertion: the helper dispatched events without focusing the target, and the one-scenario chlamydia record auto-selected its only scenario. A real focused-card probe also found that selecting a search result hid its ancestor while leaving `document.activeElement` inside that hidden results container.
+- `selectDisease()` now detects focus originating in the search results and moves it to the selected scenario card (or the first scenario / active title when no selection exists); a source-gated record focuses its visible block. The two text fallbacks are programmatically focusable with `tabindex="-1"`. Selection from elsewhere does not steal focus; calculations/data are unchanged.
+- The built-shell smoke now focuses keyboard targets and exercises Space on a second real scenario card: no selection on keydown or repeat, one change on keyup, synchronized pressed/active state and retained focus. It also checks focus after normal and source-gated disease selection. A T104 keyboard mutant and a no-focus mutant both fail the new oracle.
+- Verification: `clinical_engine/tests/test_shell_jsdom.py` **65 passed**; `ruff check .`, JS syntax, `npm run validate` (**0 errors / 436 warnings**), `python db/build_html.py --check`, `npm audit --omit=dev` (**0 vulnerabilities**) and `git diff --check` pass. Build `build-a3d5b8242cc0`, template `1c7b4a124f48`, DB `56727a27f050`; T106 commit `a1c52cf` is pushed, CI `39031229274` and CodeQL `39031229265` pass all 8 checks. PR #1 description is refreshed through T106 and remains open/unmerged. The last full local suite at T105 was **2857 passed / 28 skipped / 0 failed / 5 existing warnings**.
+
+## 2026-10-17 (round 6 continued, T105): native-like keyboard activation for custom buttons
+
+- Accessibility review of `makeActivatable()` found that custom `role="button"` cards ran both
+  Enter and Space on `keydown`. Space therefore activated before release, repeated `keydown`
+  events could repeat activation, and leaving focus before release had no cancellation behavior.
+- T105 matches native button timing: Enter activates once on non-repeating `keydown`; Space
+  prevents scroll on `keydown`, activates once on `keyup` only while the same element retains
+  focus, and pending activation is cleared on blur. Legacy `Spacebar` / `Space` key names are
+  accepted. Pointer clicks and application selection behavior are unchanged.
+- Added an end-to-end keyboard timing probe for the built shell (Space down / repeat / up, stray
+  keyup, blur-before-release, Enter repeat) and updated the random-walk keyboard action to send
+  keydown + keyup. The regression test failed against the old behavior (`spacePrevented=false`),
+  then passes after the fix. Full suite: **2857 passed / 28 skipped / 0 failed / 5 existing
+  warnings** in 273.44 s.
+- `ruff check .`, JS syntax, `npm run validate` (0 errors / 436 warnings), generated build check,
+  `npm audit --omit=dev` (0) and `git diff --check` pass. Build `build-3c2319a61f87` (template
+  `8eb7f4a9cf90`, DB `56727a27f050`); clinical data, CSS, dependencies and frozen modules are
+  unchanged. T105 commit `c821548` is pushed; CI `39030028566` and CodeQL `39030028541` pass
+  all 8 checks. PR #1 description is refreshed through T105; it remains open and unmerged.
+
+## 2026-10-17 (round 6 continued, T104): respect reduced-motion preferences
+
+- A targeted accessibility audit found that the shell's custom CSS always used smooth page
+  scrolling, a looping pulse, entrance fades, drawer/toast transitions and hover lift, with no
+  `prefers-reduced-motion` override. T104 adds an OS-preference media rule: auto scrolling,
+  effectively instant animations/transitions, a single animation iteration, and no hover/active
+  transform movement. Default motion for users without the preference is unchanged.
+- The jsdom smoke now reads the actual built stylesheet's CSSOM; a Python assertion pins the
+  media condition, important overrides, scroll behavior and motion transform reset. A temporary
+  `no-preference` mutant produces no reduced-motion rule in the smoke output, so the new check
+  fails as intended. This parses the stylesheet but does not replace a real OS/browser test.
+- Full suite: **2856 passed / 28 skipped / 0 failed / 5 existing warnings** in 267.93 s. `npm run
+  validate`: 0 errors / 436 warnings; Ruff, JS syntax, PyYAML workflow parse, `git diff --check`,
+  `python db/build_html.py --check`, and `npm audit --omit=dev` (0) pass. Build `build-f94676081a58`
+  (`db:56727a27f050`, template `3580498e82f6`); DB and Tailwind CSS are unchanged.
+- T103 `6c65ed0` + handoff `bd51256` and T104 `018fac8` are CI / CodeQL green; T104 CI run
+  `39026862359` and CodeQL run `39026862328` passed all 8 checks. Real reduced-motion behavior
+  on an actual device remains an owner-browser check.
+
+## 2026-10-17 (round 6 continued, T103): accessible exclusive-selection states
+
+- T103 adds named `role="group"` containers and `aria-pressed` state for the nine exclusive
+  selection areas: age, quick weight, scenario, drug/line, route, form, regimen, injection
+  subroute, and vial. `syncPressedGroup()` / `syncQuickWeightGroup()` keep assistive-technology
+  state in step with `.active` on clicks, age inference, weight edits, re-renders and resets;
+  the existing visual controls and clinical calculations are unchanged.
+- Regression coverage snapshots all nine groups in the jsdom smoke, checks group names / role /
+  exactly-one-active and pressed/class parity in Python, and runs the same invariants after every
+  random-walk action. The CI fuzz seeds 11 / 23 × 800 pass with 0 findings. Fault injection
+  (omit route-tab state sync) is detected: seed 11 × 400 yields 8 aria-pressed mismatches.
+- First full-suite attempt found two assumptions in the minimal function-test DOM (no
+  `querySelectorAll` and no extracted sync helper), not product failures. The UI helpers now
+  safely tolerate absent DOM in isolated tests, and the extracted-function support list includes
+  them. Final full suite: **2855 passed / 28 skipped / 0 failed / 5 existing warnings** in
+  254.55 s. Axe remains clean in its tested states.
+- `npm run validate`: 0 errors / 436 warnings; `ruff check .`, JS syntax, `git diff --check`,
+  PyYAML workflow parse, `python db/build_html.py --check` and `npm audit --omit=dev` (0) pass.
+  Generated build is `build-b7c876eebdde` (`db:56727a27f050`, template `14e58fd31965`);
+  clinical DB, CSS, dependencies and frozen modules are unchanged.
+- T102 commit `c27704f` and T103 commit `6c65ed0` are confirmed green on all 8 GitHub checks.
+  T103 CI run `39025820949` and CodeQL run `39025820919` passed; PR #1 remains open and unmerged.
+
+## 2026-10-16 (round 6 continued, T91–T102): bounded morphology, patient-context and route-export safety, fuzz oracles, theme persistence, CodeQL
+
+- **T91 `b50988d` (search):** stems of at least six letters may match after at most two deleted
+  letters at the end; shorter stems stay word-start-only. The «отит» list remains clean while
+  longer «тонзиллита» still finds its intended records. Probe diff: 9/416 changed; every lost
+  row reviewed as noise.
+- **T92 `a9df320` (search):** bound the remainder after a word-start stem to five letters;
+  «таза» no longer matches TAZO- compounds, «холера» no longer «холецистит», and
+  «гепатит» no longer «гепатобластома», while «язва» / «рана» derivations remain. Probe diff:
+  8/517 changed, all losses reviewed as noise.
+- **T93 `c9e1cd7` (search):** hyphenated INNs / names now match without the hyphen via
+  lookahead-based `dehyphenate` (so consecutive hyphens between letters work without
+  consuming the next character); «котримоксазол» and «вичинфекция» are found. Letter–digit
+  and digit–digit hyphens remain intact; diff 0/517 otherwise. Removed unused `LATIN_ROUTE`
+  / `LATIN_FREQ` tables (the Rp Signatura is Russian by design).
+- **Fuzz `a915f49`, `be66fc2`:** search pick-list now includes Cyrillic ICD, spaced ICD, the
+  hyphenless INN, short-stem and empty-result classes. A new invariant compares `freq_per_day`
+  with the frequency printed in both MIS scheme and Rp Signa; a deliberate `freq + 1` mutant
+  trips 11 findings on seed 11. Fixed builds: 0 findings, 19 checks on seed 11 and 15 on
+  seed 23.
+- **T94 `b10329a` (age entry clarity):** typing «0 лет» or «0 мес» parses to 0 days and thus
+  «новорождённые»; this could silently treat a six-month-old entered as «0 лет» as a neonate.
+  The existing explicit-age notice now says exactly how that value was read and directs the
+  physician to enter months/days (for «0 лет»), or days (for «0 мес»). «0 дней» remains a
+  plain newborn notice. Harness + jsdom test cover all three units; this is advisory, not a
+  clinical block.
+- **T95 (fuzz-oracle correction, no production behavior change):** six additional 2,000-step
+  walks found two invalid test findings, not shell defects. (1) The quick-tag oracle treated
+  an already-selected disease that happened to match one of several tag candidates as if the
+  tag had opened it; for ambiguous tags the correct behavior is to keep that current disease
+  and display the filtered candidate list. The oracle now derives the exact candidate set
+  from `quickDiseaseCandidates()` and distinguishes the unique-open / multi-candidate-list
+  contracts. (2) the tablet oracle tested only the first and last component of `400+80 мг`,
+  missing the full-product basis 480 mg. It now checks each component and their sum; a steered
+  `comboTablet` action reaches `uti_prophylaxis` / cotrimoxazole on the adult 400+80-mg tablet
+  and pins the arithmetic in CI. Evidence: the six original random walks had 5 quick-tag false flags
+  and 2 repeated tablet-arithmetic flags; ambiguous-tag mutant trips 4 `quick_tag_no_list`
+  findings; omitting the product-sum candidate trips 40 tablet findings on seed 11. The
+  corrected CI seeds 11 / 23 have 0 findings and reach the steered case 29 / 22 times;
+  extended seeds 1111–1616 × 2000 also 0 findings (combo path 47–63 times each).
+- **T96 (theme persistence coverage):** the existing smoke only checked that the toggle wrote
+  `antibio_theme=dark`. It now removes the pre-paint `.dark` class after the write and re-runs
+  `setupTheme()` to model a reload; the jsdom assertion checks restored class + sun icon. The
+  random walk checks every theme action against the stored mode and icon, and keeps storage / DOM
+  aligned after later actions. A no-op `themeStorageSet` mutant trips 31 findings on seed 11;
+  a no-op `setupTheme` mutant returns `restored: false`. Focused jsdom + fuzz suite: 65 passed.
+- **T97 (CodeQL test-helper finding):** PR CodeQL flagged the static wiring test's
+  `<script[^>]*>(.*?)</script>` extractor because HTML tag names are case-insensitive and it
+  missed `<SCRIPT>`. Replaced it with Python's stdlib `HTMLParser`, which follows HTML's
+  case-insensitive tag parsing, and pinned uppercase markup. `test_shell_static_ids` passes
+  7/7. The PR CodeQL + CI gates are green at `74b1dc8`.
+- **T98 (REAL SAFETY GAP, age-zero exports):** T94's `«0 лет»` / `«0 мес»` explanation was
+  visible by the age field, but an active neonatal dose copied to MIS / Rp / print had no trace
+  of that ambiguity — `0 years` is necessarily parsed as 0 days and «новорождённые». The
+  same `ageZeroEntryCaution()` string now feeds the input notice and, as a non-blocking warn,
+  `collectPatientSafetyFlags()` → result banner / MIS / Rp / printed form. «0 дней» and
+  non-zero ages do not add this warning. Unit matrix covers years/months/days and the next day;
+  jsdom drives an actual `neonatal_sepsis` / benzylpenicillin regimen through all three export
+  paths. The fuzz walk steers this case and asserts notice + banner + MIS + Rp + print after
+  the action. A mutant that drops the flag produces 10 missing-banner / MIS / Rp / print
+  findings in 800 steps. Six further 2,000-step seeds (3131–8181) have 0 findings and each
+  reaches the warning 46–63 times.
+- **T99 (patient-context notice export gap):** weight-based age inference can change the
+  dosing group («дети» → «взрослые» or vice versa) without an explicit age; the on-screen
+  «basis changed» note, the manual «новорождённые» group without an age, and an unparsed
+  numeric patient field were not carried into the result safety banner / MIS / Rp / print.
+  A single `patientEntryCautionTexts()` now repeats only visible, non-blocking notes; existing
+  weight cautions are not duplicated, and block / missing-weight gates stay unchanged. The
+  newborn no-age string is shared with `updateWeightWarn()` to avoid drift. Unit tests exercise
+  newborn / inference / bad-input notes and their flags; jsdom drives the built «Новый пациент»
+  → weight 70 kg → inferred adult → computable CAP regimen through MIS, Rp and print. Fuzz
+  steers and checks all four surfaces; fixed seeds 11 / 23 × 800 have 0 findings (15 / 26
+  inference exports). Four additional 2,000-step seeds (9191, 10202, 11313, 12424) have 0
+  findings and reach inference exports 32–61 times each. A mutant dropping the context flag
+  reports 60 findings; the first 10 forced cases independently detect missing banner, MIS, Rp
+  and print warnings.
+- **T100 (REAL route/export discrepancy):** the paper Rp Signa hard-coded «капельно за 30 мин»
+  for every infusion and «медленно за 5 мин» for every IV bolus; e.g. azithromycin's selected
+  infusion route says 60 minutes in its source steps, while the print said 30 and MIS / Rp /
+  print omitted the route's preparation steps and route-specific cautions. `routeAdministrationNotes()`
+  is now the shared source for the screen's solvent / contraindication / interaction warnings
+  and the export safety flags. MIS, Rp and the printed form carry the selected route's numbered
+  source steps; the printed Signa says `в/в капельно` / `в/в струйно` without inventing timing.
+  An end-to-end azithromycin case asserts 60 minutes and the two-stage-dilution caution in all
+  relevant outputs; the existing ceftriaxone bolus case checks its 5-minute source instruction.
+  Fuzz action/oracle steers the azithro IV infusion. A mutant restoring universal 30 min and
+  dropping route flags/steps yields 280 findings across 14 forced cases, including missing route
+  steps in all three exports, omitted safety notes and hard-coded timing. Fixed seeds 11 / 23
+  are clean; four new 2,000-step seeds (13131, 14242, 15353, 16464) have 0 findings and reach
+  the route export
+  41–55 times each.
+- **T101 (route-switch oracle hardening):** the T100 infusion smoke exercised only a drug with
+  one IV subroute. A separate end-to-end amoxiclav scenario now switches IV bolus → infusion →
+  bolus and checks the selected source steps, route-specific caution, patient banner, MIS, Rp,
+  Signa and print after each selection (including that the infusion caution disappears when
+  returning to bolus). The fuzz oracle independently derives expected instructions / notes from
+  the selected DB route rather than calling the production helper; a steered route-switch action
+  checks bolus → infusion → bolus. A mutant that locks export lookup to `iv_bolus` is caught by
+  223 findings in 400 steps (11 route-switch reaches), including wrong / missing infusion steps
+  and caution. Fixed seeds 11 / 23 × 800 have 0 findings; four new 2,000-step sweeps (17171,
+  18181, 19191, 20202) are clean and reach route-switch 46–55 times each.
+- **T102 (dependency audit triage + route-oracle sequencing):** fresh `npm ci` reports five
+  high advisories only in the Tailwind 3 build-time dev tree; `npm audit --omit=dev` reports 0.
+  npm registry lists 3.4.19 as the latest Tailwind 3 release (still in the affected range); the
+  audit's proposed fix is Tailwind 4.3.3, a major CSS/build migration, and `braces` has no fixed
+  release. Keep the existing report-only policy; do not apply an unsafe `--force` or change the
+  static CSS without a separate migration and owner browser pass. The CI warning now describes
+  the complete Tailwind build-time tree instead of implying a single advisory. Fuzz route
+  switching now asserts the exact bolus → infusion → bolus sequence, so repeated bolus snapshots
+  cannot satisfy the route-switch coverage oracle. No package lock, runtime dependency, CSS or
+  clinical data changed.
+- **Verification at T102 locally:** 2854 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
+  436 warnings; ruff clean; axe 0; generated shell fresh (`build-965663d87500`). CI + CodeQL
+  completed successfully for T100 at `fbf928c`, T101 at `e53dc2e` and T102 at `c27704f`
+  (all 8 checks). Extended fuzz seeds 1111–2222, 3131–8181, 9191–12424,
+  13131–16464 and 17171–20202 × 2000 are clean; earlier 909 / 1010 are clean as well. DB and
+  frozen modules unchanged.
+
+## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)
+
+- **T75 `d690334`:** the patient date field becomes `type=date` on focus, so a picked date
+  arrived as ISO «2026-10-15» and the printed form said «Дата: 2026-10-15» while the
+  default was «15.10.2026». `prescriptionDateText()` prints DD.MM.YYYY for ISO input, keeps
+  free text as typed, today (ru-RU) when empty; «Новый пациент» keeps the date. Harness
+  step 31 + jsdom + unit test.
+- **T76 `a57be20`:** the group chosen by chip over a typed age (12 y + «взрослые») showed
+  the on-screen notice but left no trace in the MIS text / Rp / printed form.
+  `ageGroupMismatchCaution()` joins `exportSafetyFlags` as a warn flag («Возраст 12 лет
+  соответствует группе «дети», расчёт выполнен для группы «взрослые» (выбрана
+  вручную)»); the choice itself stays allowed. Fuzz: export-parity invariants after every
+  copy (`export_flag_missing`, `screen_banner_not_in_mis`, `group_mismatch_not_in_mis`,
+  `weight_caution_not_in_mis`) + the steered `chipOverAge` action; mutant without the flag
+  → 4 findings.
+- **Fuzz oracles at random weights (`8dfb114`, `3885600`, `be1a567`, `47c7278`):** the
+  walk's arithmetic oracle ported to the fuzz (single / daily dose == regimen × the random
+  weight incl. the `max_daily_mg` ceiling, po ml == dose / suspension concentration, inj ml
+  == dose / vial solution concentration; mutant ×1.2 mg/kg/day → 117 findings); tablets
+  per dose («(N таб S мг)» == dose, «(~N таб S мг = M мг)» nearest half tablet / whole
+  capsule; `childTablet` steers the rounded path; mutant whole-tablet rounding → 18); the
+  amber «Превышена max суточная доза» row shown exactly when the ceiling cuts the dose
+  (mutant silent cap → 5); the MIS text repeats the screen single / daily dose, the cap
+  note, the weight and the group (mutant daily ×2 → 19); the Rp names the Latin INN and
+  the screen dose, route words in both exports, D.t.d. N. == the MIS course total; the
+  printed safety line == export flags (`print_flag_missing`); axe-core also in the
+  source-gated and computed-with-banners states (0 violations). `FUZZ_DUMP_STEP=<n>`
+  prints one step's inputs / tiles / exports to stderr for replays.
+- **T77 `e52c044` (REAL BUG, found by the new MIS-route oracle on seed 23):** an mg/kg
+  regimen with no weight is a pending state on screen («—» tiles + the amber «нужен вес»
+  notice — correctly not a block), but every door let it out: the MIS text as «Схема
+  приёма: 50-75 мг/кг/сут 1 р/сут» / «Схема приёма: По амоксициллину 2 р/сут» (the
+  regimen note in place of a dose), the Rp with «D.t.d. N. ___» and a mg/kg Signa, the
+  printed form with the note as the Signa, the history with `singleMg: 0`.
+  `doseIncompleteReason(reg, w)` (main regimen or a per-kg combination partner with
+  `computeDose(...).needWeight`) now gates `copyForMIS` / `copyLatinRecipe` /
+  `saveToHistory` (toast «… заблокировано: введите вес пациента — доза этого режима
+  рассчитывается по мг/кг и без веса не определена») and `fillPrescriptionForm` («ПЕЧАТЬ
+  НЕВОЗМОЖНА: …»). Unit tests (helper + the four doors), harness step 32 + jsdom, fuzz
+  `noWeightExport` action + 8 invariants (mutant with the gates removed → 94 findings).
+- **Validator (`ae36f2c`):** WARN when `duration_note` only repeats the drug name — the
+  shell prints it verbatim as «Указания: Цефтриаксон» (one case in the shipped DB:
+  `cap_adult_in_severe` ceftriaxone — owner review). 437 warnings now (436 + this one).
+- **Verification (T75–T77):** 2827 passed / 28 skipped (jsdom 53, clinical_safety 96,
+  validate_db rules 70, fuzz 33 actions / ~90 invariant kinds, 2 seeds × 800 steps run
+  concurrently + 9 tests, walk 2 shards), validate 0 / 437, ruff clean, build fresh
+  (`build-f29c49610721`), axe 0 in 5 states; sweeps 303 / 404 × 2000 clean; CI + CodeQL
+  green through `a57be20` at the time of writing (later commits pending). Pytest wall
+  time ≈ 2.8 min after the concurrent fuzz / walk fixtures (`69df615`).
+
+- **T78 `7585cd3` (latent, data-contract):** `computeDose` already guards a regimen whose
+  `dose_mg × freq ≠ dose_mg_day` (it trusts the single dose and sets `regimenDataCaution`),
+  but the amber on-screen caution never reached the exports. `REGIMEN_INCONSISTENT_TEXT`
+  («Данные БД несогласованы: разовая × кратность ≠ суточной. Расчёт выполнен по разовой
+  дозе из КР — требуется проверка.») joins `exportSafetyFlags` → MIS / Rp / printed form /
+  history; the shipped DB has no such regimen (the validator forbids it), a mutant DB proves
+  the path (fuzz `regimen_caution_not_exported`, jsdom with an injected regimen).
+- **T79 `c628f1a` (latent, clause specificity):** `renalFlag` matched the FIRST clause of a
+  `renal_adjustment` string («СКФ<30: … ; СКФ<10: …») even when a more specific later clause
+  applied, and strings without any threshold warned at every GFR. Now the most specific
+  satisfied clause wins; threshold-less strings warn only below 60 ml/min; the text is
+  «СКФ G мл/мин: «INN» — <clause>. Расчёт выполнен БЕЗ почечной коррекции — скорректируйте
+  дозу/интервал вручную.». Unit table over the 47 shipped strings + the DB WARN list
+  (strings without thresholds — owner, NEXT_TASK §1).
+- **T80 `861fb85` (REAL BUG, fuzz `reset_leaves_result_rows`):** the nosology «✕»
+  (`resetDisease`) cleared the cards but left the result tiles (`#res-po` / `#res-inj`),
+  the dose block and the safety banners of the previous calculation visible inside the
+  hidden steps and kept the physician's route pick (`pickedRouteGroup`) for the next
+  nosology. It now calls `hideDoseResults()` + `hideDoseBlock()` and drops the pick; the
+  old build trips the new invariant 62 times in 800 steps, the fixed one 0.
+- **T81 `fa48400` (search, hierarchical ICD-10):** a physician typing the full code «J18.9»
+  found 1 record while «J18» found 3 — a category code in the DB (`J18`) did not cover the
+  subcode typed. `codeCovers(mc, t)` (category ≥ 3 chars, the query a longer code of the
+  shape letter + digits, same prefix) in `mkbHit` and in the result-list code echo; a
+  sibling subcode («J18.0» vs a record spelling «J18.9») and a lone letter cover nothing.
+  Harness query list +6, jsdom asserts, probe before / after.
+- **T82 `1bdc07f` (search, trade names — prepared for the owner):** «Амоксиклав» /
+  «Аугментин» / «Сумамед» find nothing because the DB lists INNs only. `diseaseDrugText`
+  now indexes an optional `drugs_reference[].synonyms` array (non-empty strings only) and
+  the validator WARNs on any other shape; no such field ships yet, so the behaviour is
+  unchanged until the owner adds the names (NEXT_TASK §1).
+- **T83 `63584a7` (REAL GAP, exports):** the copied Latin Rp of a combination regimen
+  (ceftriaxone + metronidazole, ampicillin + gentamicin, …) named the main drug only — the
+  printed form and the MIS text listed the partners, the Rp a physician pastes lost half of
+  the therapy. After the Signa: «Одновременно (компоненты комбинации, отдельные Rp.):» +
+  one line per partner «<Latin> (<INN>) <strength> — по N мг k р/д • course (сут. M мг)[;
+  note]» (the same `comboComponentLines` numbers as the screen card). Walk oracle
+  `partnerExportOracle`: every partner INN in both exports (`mis_partner_missing` /
+  `rp_partner_missing`; old build 36 findings, fixed build 0). The formal second `Rp.:`
+  block per component stays an owner format decision.
+- **Verification (T78–T83):** 2834 passed / 28 skipped (jsdom 53, clinical_safety 98,
+  validate_db rules 75, fuzz 33 actions / ~92 invariant kinds, walk 18 oracles), validate
+  0 / 437, ruff clean, build fresh (`build-4615782fc5f6`), axe 0 in 5 states; sweeps
+  505 / 606 × 2000 clean at `7585cd3`; CI + CodeQL green through `1bdc07f` at the time of
+  writing (`63584a7` pending).
+
+- **T84 `ba2f582` (REAL BUG, quick tags):** every quick tag code («Отит (H66)», «Пневмония
+  (J18)», …) has an adult AND a child record; `selectQuickDisease` opened the first record
+  in DB order — the children's otitis for an adult, the adults' pneumonia / pyelonephritis
+  for a child — and then showed the «нет схемы для группы» block although the right record
+  existed. `quickDiseaseCandidates(code)` narrows to the patient's group, then to records
+  written for it (not only an «all» scenario), then to the exact code; one survivor opens,
+  anything else («Цистит (N30)» for an adult: cystitis vs prophylaxis; neonates) goes to the
+  search list. Fuzz action `quickTag` + group invariant (old build 6 findings), harness
+  step 33, unit table over the shipped DB (6 codes × 3 groups).
+- **T85 `8fa9e43` (history drawer):** entries named the main drug only («Ампициллин» for
+  ampicillin + gentamicin) and showed the raw DB course («курс 7-14», «курс 21») while every
+  export says «7–14 дней» / «21 день». `drug` carries the whole combination, `course`
+  stores `courseText(reg)`; fuzz: the saved entry == the screen (single dose, drug name,
+  course wording) and the drawer row repeats them (old build 24 findings on seed 23).
+- **T86 `aaefbba` (search ranking):** once the physician set the group (age typed or chip),
+  same-rank hits for that group lead («пневмония» for a child: «… у детей» first) and the
+  other rows say «• нет схемы для группы «дети»»; a list left on screen is re-ranked when
+  the group changes (`refreshSearchListForGroup`); «Новый пациент» returns to DB order.
+  Fuzz: row note ⇔ state (old build 27 findings; a mutant without the re-rank trips the
+  stale-note / order checks) + the steered `capDose` action (the daily-ceiling oracle went
+  from 2 to 76 hits over the two seeds — the T86 re-ranking had reshuffled seed 23 below
+  the old threshold, so the rare oracle now has its own action).
+- **T87 `8d4c201` (search noise):** a stem shorter than 4 letters («отит» → «оти», «рожа»
+  → «рож») counts only at a word start — «отит» no longer pulls «некрОТИзирующий» /
+  «антибиОТИкопрофилактика» / «псевдомембранозный кОЛИТ» (8 → 2 hits), «рожа» no longer
+  «новоРОЖдённых» (7 → 1); the ё/е pins were re-based on the clean sets («лёгк» used to
+  match «фЛЕГмона»).
+- **T88 `f883227` (search honesty):** a list made only of one-typo guesses («пневмания»)
+  says so — status «Найдено: N … — точного совпадения нет, показаны похожие названия;
+  проверьте написание «…»» and a per-row «• похожее название, не точное совпадение»; stem /
+  word-start hits («тонзилит», «отит») stay plain matches.
+- **Validator `ef616d6`:** `dose_mg_kg_day` must lie within its own `dose_range_mg_kg_day`
+  (the shell prints «Диапазон по КР: lo-hi» next to the computed dose) — error for a
+  computable record, warning for a blocked one; shipped DB clean.
+- **T89 `ea68168` (silent-safe guard):** a drug the shell's `DRUG_CLASSES` table does not
+  know came back «✅ Безопасно» for every allergy; it is now a caution («⚠ Класс не
+  определён», alert names the key) on the card, the banner and every export — the static
+  consistency test still guards the shipped DB.
+- **T90 `3b5969f` (REAL BUG, search):** an ICD-10 code typed with the Cyrillic look-alike
+  letter — the normal way on a Russian keyboard — went through the keyboard-layout map:
+  «В20» became D20 (a tumour record), «О85» became J85 (lung abscess), «Н66» / «К81» /
+  «М86» / «Е10» / «Р23» found nothing. `foldIcdHomoglyphs` maps a Cyrillic letter directly
+  in front of two digits to the Latin letter it looks like (а в е к м н о р с т х у) before
+  anything else; «J 18» / «j 18.9» with a space are the code too. Also a static test that
+  every shipped drug has a `LATIN_INN` entry (the Rp line falls back to the Cyrillic INN
+  otherwise).
+- **Verification (T84–T90):** 2846 passed / 28 skipped (jsdom 55, clinical_safety 102,
+  validate_db rules 80, static ids 7, fuzz 35 actions / ~100 invariant kinds, walk 18
+  oracles), validate 0 / 437, ruff clean, build fresh (`build-7a8f3d8a42f6`), axe 0 in 5
+  states; CI + CodeQL green through `8d4c201` at the time of writing (later commits
+  pending).
+
+- **T51+T52 `1da3564`:** history entries snapshot `gfr` / `pregnancy` / `allergy` and
+  «Открыть расчёт» restores them (old entries keep the current inputs). REAL BUG on the way:
+  changing the allergy status re-rendered the drug cards without a preference, so the
+  physician's levofloxacin (form 2) silently became the first card (amoxiclav, form 1) and
+  the history restore never matched its saved form. `rerenderLinesKeepingSelection()`
+  re-selects line / drug / route / regimen and re-clicks the form chip.
+- **T53 `fccbf4b` + T53b `5c62161`:** same class for the age group — the age chip,
+  `onPatientAgeChange` and the weight inference re-rendered the scenarios from scratch
+  (first eligible scenario, first drug): on an «all»-age scenario ciprofloxacin became
+  ceftriaxone when a child's age was typed. `rerenderScenariosKeepingSelection()` keeps the
+  scenario / line / drug / route when the scenario fits the new group, re-derives the
+  regimen and default form, and shows the explicit age block for a drug without a regimen
+  for that group; a scenario that no longer fits still falls back to the first eligible one
+  (fail-visible). Weight-inferred group changes now re-mark the scenario cards too.
+  (`6ebee14` was red: an apostrophe in a JS comment broke the test extractor — fixed in
+  `5c62161`; the commit gate now runs through `/tmp/gate.sh`-style `rc` checks.)
+- **T54 `7b863fa`:** walk profile 5 — adult 60 kg, GFR 25, pregnancy, anaphylactic
+  penicillin allergy (536 / 542 computed states carry warnings) — and a **flags-parity
+  oracle**: the «ВНИМАНИЕ / Предупреждение» set must be identical in the MIS text, the Rp
+  text and the printed form, and every danger banner on screen must reach the exports.
+  1 524 computed states, 0 findings (the MIS-only large-volume prescriber caution is
+  excluded by design; the printed form is `white-space: pre-line`, so the oracle reads
+  raw `textContent`).
+- **T55 `a86842a`:** `npm run check` (validator + build freshness + every shell gate) and
+  `npm run check:all` (+ full pytest + ruff); README gate list refreshed (five walk
+  profiles, 1777 states, flags parity).
+- **T56 `8b9cdd0`:** the default form chip followed the dose only at render time, so the
+  entry order decided it — a 25-kg child typed AFTER the drug stayed on «125 мг/5 мл»
+  (45 ml per dose + the large-volume warning) while the same child typed first opened on
+  «250 мг/5 мл» (22.5 ml). `userPickedForm` + `refreshDefaultForm()`: weight / same-group
+  age / regimen changes re-derive the default; an explicit chip survives; a new drug card
+  or route tab starts from the default again; `selectDrug` renders regimens before forms.
+- **T57 `7838606`:** `navigator.clipboard` is undefined outside secure contexts (plain-http
+  intranet host) — «Копировать для МИС» / Rp threw a TypeError before the `.catch` and the
+  physician saw nothing. `copyTextToClipboard()` falls back to a hidden textarea +
+  `execCommand('copy')` and always toasts the outcome.
+- **T58 `5473f11`:** when the browser blocks site data, touching `localStorage` throws
+  SecurityError: `setupTheme()` threw inside `init()`, so the history store, the service
+  worker and the `#hash` deep link never initialised and the theme toggle threw on every
+  click. Theme reads/writes are try/catch helpers; optional init steps run one by one.
+- **T59 `1f62843`:** `restoreFromHash()` ignored the `L<n>` part and silently dropped a
+  scenario outside the default age group (a fresh tab opens as «дети»): an adult deep link
+  showed every card dimmed and, once the weight moved the group to adults, opened the FIRST
+  adult scenario — not the linked one. The line is restored; a scenario outside the group
+  is kept pending with a note («Сценарий из ссылки «…» рассчитан на группу «взрослые» — он
+  откроется, когда …») and opens with its line when the patient data moves into its group.
+- **T60 `3aa0adf` (REAL HAZARD):** the print stylesheet shows `#prescription-form` alone,
+  but only the «Печать» button filled it — **Ctrl+P / the browser print menu printed
+  whatever the form held: the previous patient's prescription, or nothing**; a blocked
+  fill left the old drug lines under the block notice. `beforeprint` refills the form from
+  the current state, `clearPrescriptionForm()` resets every field first, an empty state
+  prints «ПЕЧАТЬ НЕВОЗМОЖНА: расчёт не выполнен …», a blocked one «ПЕЧАТЬ ЗАБЛОКИРОВАНА. …».
+- **T61 `d32ba4a`:** the search did not fold «ё» → «е»: «лёгк» found 1 nosology and
+  «легк» 3 (different sets), «трёх» nothing while «трех» found 4. `searchFold()` on both
+  sides (query, names, synonyms, CR ids, ICD codes, drug text).
+- **T62 `ec00338` + `69a14b7` (new gate class):** `clinical_engine/tests/js/shell_fuzz.js`
+  — a seeded random walk over every physician action (inputs, age chips, visible cards /
+  tabs / chips, «Новый пациент», nosology «✕», search + pick, `#hash`, history save /
+  restore, MIS / Rp copy, `beforeprint`, theme) with state invariants after every step
+  (cards / chips / tabs agree with the state; blocked ⇒ no result, no export, no printed
+  lines, no history entry; computed ⇒ result + exports; regimen fits the group; hash names
+  the nosology; «Открыть расчёт» re-opens exactly the saved ref incl. GFR / pregnancy /
+  allergy). First runs found three defects: **`saveToHistory()` checked only the age
+  regimen — a 300-kg or 25-kg-newborn calculation was saved with its doses although the
+  block text promises «не может быть сохранён»** (now the same gate as MIS / Rp / print);
+  the nosology «✕» left live cards of the previous record in the hidden steps and a stale
+  `activeLine`; a group change that left no fitting scenario showed a drug list next to an
+  unmarked scenario list (the current card stays marked, dimmed, with the explicit age
+  block). `test_shell_fuzz.py`: 2 seeds × 800 steps (≈ 28 s); `npm run check` includes it.
+- **`f480406` / `165c436` (fuzz invariants):** the MIS text names the INN of the drug on
+  screen and the diagnosis, the printed form names the drug and the typed weight; no binary
+  float noise («0.30000000000000004 мл») on screen or in an export. Extra sweeps: seeds
+  11/23/31/47 × 1000, 101/202 × 1500, 303/404/505/606 × 3000 — 0 findings.
+- **T63 `d0e3495` (REAL BUG):** route tabs were rendered in the fixed po / im / iv order
+  of the `groups` object, so the DEFAULT route ignored the record: ceftriaxone «iv, im» for
+  inpatient CAP (and for salmonellosis / typhoid / UTI in children) opened on **в/м**,
+  azithromycin «iv, per_os» for severe CAP opened on **per os**. Tabs and the default now
+  follow the order of the scenario route list (`intendedKeys.filter(groupKeys)`); the
+  salmonellosis expectations in the jsdom test moved im → iv accordingly. Second half: a
+  route tab the physician clicked follows them across the drug cards of the scenario
+  (`pickedRouteGroup`; a drug without it opens on its own first route and the preference
+  survives; a new scenario starts from the DB default). Fuzz: a steered `routeThenDrug`
+  action (the DB has only ~7 scenarios where the preference is observable) + invariants
+  `route_tab_order` / `route_pick_not_recorded` / `route_default_mismatch` /
+  `route_pick_survives_scenario_change` — a mutant that drops the preference yields 6
+  findings per seed, the real build 0.
+- **T64 `6f226ca`:** `history.replaceState` throws SecurityError in sandboxed documents
+  (srcdoc / sandboxed iframes, some file:// viewers, blob: URLs); `updateHash()` was the
+  last statement of `selectDisease` / `selectScenario` / `selectDrug` and the only one
+  after the render inside the personal-candidate `try` (a false «BLOCKED» status).
+  `replaceUrl()` swallows it — the deep link is a convenience. Harness step 23 + jsdom test
+  (a mutant without the guard aborts the harness with SecurityError).
+- **T65 `9f536ce` (a11y):** the guideline modal (`aria-modal`) and the history drawer had
+  Escape and a focus return but no focus trap — Tab wandered into the page behind the
+  backdrop (WCAG 2.4.3; ARIA APG modal dialog) and only the × closed the modal.
+  `trapTabInside()` / `focusableWithin()` cycle Tab / Shift+Tab inside the open dialog and
+  pull an escaped focus back; a click on the dimmed backdrop (not the panel) closes the
+  modal — delegated to `document` because the modal markup follows the script that runs
+  `init()` (a direct listener on `#guideline-modal` at setup time found no element — the
+  jsdom step caught that). Harness step 24 + jsdom test; axe still 0 in all three states.
+- **T63b `d1d3be7` + walk oracles:** a scenario card clicked afresh resets the route pick
+  (the first drug opens on the DB default, so a later card must not jump to an old pick);
+  the walk opens every drug card in its fresh state (scenario re-clicked first) and checks
+  the default route / tab order for all 569 drug states and the picked route on the next
+  card (mutants: dropped preference → 4 findings, groups order → 21). **`d1d3be7` went red
+  in CI** (gate output piped through `tail` swallowed the pytest rc — the failing fuzz seed
+  was the T66 hazard surfacing); fixed by `8b231e1`, gate script now checked via `rc`.
+- **T66 `8b231e1` (REAL HAZARD, found by the fuzz gate):** a record under the source gate
+  (`calculation_blocked` — «расчёт закрыт» until the owner verifies the source) opened with
+  no scenario cards, but the NEXT typed age / age chip / weight-inferred group / allergy
+  change / `#hash` deep link re-rendered the scenarios of the gated record, selected its
+  first drug and **computed, exported (MIS, Rp), printed and saved a dose under the red
+  block notice** (old build: `afterAge = prophylaxis_line|cefazolin|…|result visible`).
+  `diseaseCalculationGated()` / `sourceGateReason()`; `renderScenarios()` is the choke
+  point (a gated record clears scenario / line / drug / result and keeps the steps hidden;
+  `selectDisease` uses it on the gated path so the previous record's tiles go too);
+  `calculationBlockReason()` names the gate first, so MIS / Rp / print / history refuse
+  through the one shared gate. Gates: harness step 25 + jsdom test; fuzz invariant
+  `blocked_record_opened` (seed 11 × 800: 23 findings on the old build, 0 now); walk
+  source-gate oracle `1e6fecc` — all 55 gated records × 5 profiles through age chip /
+  allergy / typed age (old build: 55 findings). Sweeps: seeds 303/404/505/606 × 2000 clean.
+- **Sandbox note:** the environment was recreated mid-round (venv, `node_modules`, `/tmp`
+  gone; `.git` back at the base while files kept the snapshot) — recovered with
+  `git reset --soft origin/<branch>`, `npm ci`, a venv from `uv export --frozen`.
+- **T67 `5c29cc8` (REAL BUG, same «guard in one handler» class as T66):** a record with no
+  scenario for the current age group (adult-only CAP opened at a child age, or via `#hash`)
+  kept the previous drug's «противопоказан» allergy banner on screen with no drug — the
+  early `return` in `updateAllergyBanner()` skipped the clear. `renderScenarios()` now ends
+  with `updateAllergyBanner()` (every re-render path refreshes the banner); harness step 26
+  `out.allergyBannerFollowsDrug` + jsdom test; fuzz notice-staleness invariants `19adf21`
+  (`allergy_banner` / `hash_note` / `route_mismatch_note` / `dose_block_text` /
+  `dose_block_without_reason` / `weight_warn` mirror the state after every step; `checks`
+  tally shows each is reached: seed 11 × 800 → hash_note 66, dose_block_text 133,
+  weight_warn 86, allergy_banner 63).
+- **T68 `70f5607` (REAL BUG, two sources of truth):** after a reload with entries in the
+  tab store the consent box came back unchecked, so `saveToHistory()` wrote to memory while
+  `loadHistory()` read the store — the toast said «Сохранено в историю (вкладка)» and the
+  drawer did not show the new entry (jsdom probe: mem = 2, stored = 1). `readHistoryEntries()`
+  now reads the store only under the same predicate the writer uses
+  (`historyPersistAllowed()`), and `initHistoryStore()` restores the consent box when the
+  store already holds entries. Harness step 27 `out.historyReload` (`true|1|1`, `2|2|…`,
+  `2|0|true`, `3|0`; old build `false|1|1`, `1|1|…(только до закрытия вкладки)`) + jsdom
+  test. Same commit: fuzz `step_visibility` invariant (a visible later step with no state
+  behind it / a hidden step with state), `#search-status` echoes queries > 40 chars
+  shortened (a 500-char paste no longer fills the status line; regex specials / NUL /
+  `<script>` probed — no throws).
+- **T69 `56b32e2`:** «Открыть расчёт» restores the patient name saved with the entry (an
+  entry without a name clears the field) — a re-opened calculation printed with the NEXT
+  patient's name in the field and this patient's age / weight / regimen would be a mix-up on
+  paper. jsdom: field + printed «Пациент:» = «Иванов И.И. / Иванов И.И.»; fuzz: `name`
+  action (incl. `<b>x</b>` — DB/user strings are text, never markup) and the restore
+  round-trip compares the name.
+- **T70 `4cd949b`:** «↺ Новый пациент» also clears the Ф.И.О. field (doctor and date stay —
+  session-level); the previous name used to be printed on and saved with the next
+  calculation unless the physician remembered to clear it. jsdom step 15 asserts it; fuzz
+  invariant `new_patient_context_left` (name / weight / age / GFR / pregnancy / allergy /
+  disease / hash after the reset) — 15 and 8 findings on the previous build (seeds 11 /
+  23), 0 now.
+- **Verification (T67–T70):** 2808 passed / 28 skipped (jsdom 46, walk 17 oracles / 5
+  profiles / 1777 states + 275 gated checks, fuzz 23 actions × 2 seeds × 800 steps + 6
+  tests), validate 0 / 436, ruff clean, build fresh, axe 0; CI + CodeQL green through
+  `56b32e2` (`1e6fecc` cancelled by the concurrency group — superseded by `64ddb96`).
+- **T71 `d479cef` (gates):** harness step 28 + jsdom — «Открыть расчёт» on an entry whose
+  record has since been closed by the source gate opens the nosology under the block notice
+  only, the next age input keeps it closed, MIS refuses (pre-T66 build: stale result, then a
+  computed and printed dose under the notice). Fuzz: `age_explicit_notice_*` (visible iff an
+  explicit age; the «не соответствует» flag follows the chip), `age_infer_notice_stale`,
+  `safety_banners_*` (rows == `collectPatientSafetyFlags()` of the drug on screen, never
+  without a result); steered `freshWeight` action (inference notice reached ~100× per 800
+  steps instead of 2). Mutants: 105 / 110 / 19 findings; real build 0.
+- **T72 `94c64ed` (REAL BUG, found by the new regimen invariants):** a group with no regimen
+  for the kept drug (amoxicillin for AOM → «новорождённые») showed the age block with the
+  three child regimen chips still under it — clickable and dead (a click only moved
+  `activeRegimenIdx`); `renderScenarios()` re-renders the regimens in the no-fit branch.
+  Fuzz: `regimen_selector_visibility` / `regimen_idx_out_of_range` / `regimen_chips_count` /
+  `regimen_chip_mismatch` / `regimen_chip_text` (chips == age-eligible regimens, label by
+  label) + `availability_note_stale`; harness step 29 + jsdom pin the sequence. Known /
+  accepted: the regimen pick is index 0 again after a group round-trip (the chip lists of
+  the two groups are different regimens).
+- **Fuzz `6a6abcb`, `82c3c38`, `19bf427` (invariant batches, all verified by mutants):**
+  injection panel (dilution route chip / label / vial chips == `activeRouteKey` /
+  `activeVialIdx`; `vial` / `injRoute` actions open an injectable tab first and the click
+  must be recorded — dead-handler mutants 3 / 1 findings); dialog sessions (КР modal /
+  history drawer opened through the visible button, 1–6 browser-like Tab presses with the
+  default focus move emulated, close by Escape / × / backdrop — `dialog_focus_escaped`,
+  `dialog_not_closed`, `dialog_focus_not_returned`, `dialog_left_open`, `drawer_not_inert`;
+  mutants 17 / 796 / 9); record header / empty state / active cards / weight chip / allergy
+  badge / result sub-blocks (mutants 352 / 62); search panel (× / list / status line /
+  «Найдено: N» == rows; queries now sometimes stay on screen).
+- **T74 `c80329c` (REAL BUG, found by the fuzz restore round-trip after the search change
+  reshuffled seed 23):** an entry saved at 150 months (12 y) with «взрослые» chosen by chip
+  over the typed age (the explicit-age notice flags the mismatch, the calculation is
+  allowed) re-opened as «дети»: `restoreHistoryEntry()` re-applied the age only (the chip
+  was clicked only when no age was saved), the adult scenario did not fit and the entry
+  could not be re-opened («препарат … недоступен для этой возрастной группы», no dose).
+  The saved group is now re-applied whenever it differs; the notice flags the mismatch
+  exactly as at save time. The restore toast names the real outcome when no scenario could
+  be opened. Harness step 30 + jsdom test (old build: `false|…|child|||…`).
+- **Verification (T71–T74):** 2811 passed / 28 skipped (jsdom 49, fuzz 26 actions, ~70
+  invariant kinds, 2 seeds × 800 steps + 6 tests), validate 0 / 436, ruff clean, build
+  fresh, axe 0; sweeps 303 / 404 / 505 × 2000 clean; CI + CodeQL green through `82c3c38`
+  at the time of writing (later commits pending). Pytest wall time grew to ≈ 3.7 min
+  locally (the fuzz evaluates ~40 state probes per step) — acceptable, noted for CI.
+- **Verification per push:** unchanged gates (`/tmp/gate.sh`-style: pytest rc, walk, ruff,
+  freshness, validator before every commit). After T62: **2800 passed / 28 skipped**
+  (jsdom 41, walk 2 / 14 oracles / 5 profiles / 1777 states / 0 findings, fuzz 4),
+  validate 0 / 436, axe 0, CI + CodeQL green through `d32ba4a` (later commits pending at
+  the time of writing).
+
+## 2026-10-14 (round 6, autonomous loop continued, T45–T50)
+
+- **Scope rule unchanged:** engineering only; DB sha `56727a27f050…` unchanged, FROZEN
+  modules untouched, owner decisions left in NEXT_TASK.
+- **T45 `0be78ef`:** «↺ Новый пациент» (`#new-patient`) clears weight, age (unit back to
+  years), GFR, pregnancy, allergy, the sticky explicit age and age group, notices, chips and
+  the calculation in one action (toast). REAL BUG on the way: `updateAllergyBanner()`
+  returned early with no active drug, so the nosology «✕» left the previous drug's
+  «противопоказан» allergy banner on screen — fixed (`resetDisease()` now refreshes it).
+- **T46 `822436f` (validator shell-parity):** WARN for `age_restriction_min` the shell's
+  `parseAgeRestrictionDays()` cannot parse (regex pinned equal to the shell's), for
+  `component_regimens` keys that are not combination partners (misspelt drug key = dead
+  data), for zero / inverted («14-7») / > 365-day courses, and for `single_dose_mg ×
+  freq_per_day` disagreeing with `dose_mg_day_fixed` beyond `computeDose()`'s 5 % + 1
+  tolerance. 24 rule tests; the shipped DB raises none of them.
+- **T47 `70f3315`:** `parseCourse()` / `COURSE_RE` — a course given as «7 дней», «7–14
+  дней», «21 день», «3 сут» or «3 недели» (90+ regimens in the gated records) now yields a
+  course quantity (D.t.d. N, «на курс … мл») and consistent wording («7–14 дней», «3 недели
+  (21 день)»); «однократно», «10!», «7 дней (минимальный курс)» stay words. Partner lines use
+  `courseText()` (no «7 дней дн»). Validator uses the same literal (pinned sample by
+  sample): 528 → 436 warnings, all in blocked records.
+- **T48 `b4bda08` (input safety):** GFR > 200 ml/min («1500» — a creatinine typed in the
+  wrong field?) or negative → patient-level «warn» flag on screen and in MIS / Rp / print /
+  history. REAL GAP: `renalFlag()` treated «0» as an empty field (`gfr > 0`) — anuria /
+  dialysis produced **no renal warning at all**; it now runs the thresholds («СКФ 0 мл/мин:
+  «Амоксициллин» — СКФ<30 …»).
+- **T49 `7aca0c8`:** a `type=number` field holding «12,5» in a dot-decimal locale reports
+  `value ''` + `validity.badInput` — the physician saw a weight, the shell said «нужен вес».
+  `badInputHint()` names the field(s) and the separator; a plausibility block still outranks
+  it. `inputmode` decimal/numeric on weight / age / GFR.
+- **T50 `f802248`:** `#search-status` (role=status, aria-live): «Найдено: 5 нозологий (с
+  закрытым расчётом: 2).», «— уточните запрос» above 20 hits, «Ничего не найдено по запросу
+  «…». Попробуйте код МКБ-10 …» where the only sign used to be a hidden list; a too-short
+  query empties the list instead of hiding stale cards.
+- **Verification per push:** full pytest, `ruff check .`, `npm run validate`,
+  `build_html.py --check`, walk gate 0 findings, axe 0 violations, CI + CodeQL green.
+  After T50: **2788 passed / 28 skipped** (jsdom 32, validate_db rules 65,
+  clinical_safety 92), validate 0 errors / 436 warnings (blocked records + 9 owner).
+
+## 2026-10-14 (round 5, autonomous «доведи до совершенства», self-generated tasks)
+
+- **Scope rule unchanged:** engineering only; clinical data, FROZEN modules, LICENSE,
+  `corpus_config` default, PR #1 merge untouched. DB sha `56727a27f050…` unchanged.
+- **T4 infra, `9d4c92e`:** `.github/dependabot.yml` (actions / uv / root npm; ML pins and
+  Tailwind 4 ignored), `.github/workflows/codeql.yml` (python + javascript + actions),
+  CI `concurrency`, `.gitattributes` (LF build contract), `SECURITY.md`.
+- **T1 sw.js harness, `4e4a1b1`:** `clinical_engine/tests/js/sw_harness.js` runs the real
+  worker in Node (FakeRequest — Node's `Request` rejects relative URLs);
+  `test_service_worker.py` (13): install/activate/version purge, navigation
+  network-first + offline shell fallback, SWR for `/vendor`, never caches `/v1/`, `/v2/`.
+- **T2 server.js, `3eadcf2`:** strong ETag + `If-None-Match` 304, gzip for text assets
+  (`Vary`, q-values, HEAD parity); `test_static_server_policy.py` +3 (26).
+- **T3 a11y + REAL BUG, `3b45ce8`:** duplicate `id="patient-age"` — the header metadata
+  card had a second, unused age input with the same id, so `getElementById` returned
+  it and the age typed next to the years/months/days selector was **ignored in real
+  browsers** (age-group / child-scheme / notices from round 1 partly dead). Found only
+  because the new jsdom harness drives the visible controls with real DOM events.
+  Fixed (header field removed); a11y pass: `button-name`, `select-name`,
+  `heading-order`, 24× `region`, `empty-heading` → axe-core **0 violations** in main /
+  drawer / modal states. `clinical_engine/tests/js/shell_smoke.js` +
+  `test_shell_jsdom.py` (now 17): search → disease → drug → weight through the DOM,
+  age 7 / 7 мес / 19, pregnancy + GFR flags in banner and MIS text, allergy card,
+  blocked DOSA banner, «БЕЗ КР» banner, theme persistence, drawer/modal Escape +
+  focus return, 0 duplicate ids, landmarks. Root devDeps `jsdom`, `axe-core` (CI `npm ci`).
+- **CodeQL, `688e57a`:** 2 high alerts on `3b45ce8` fixed — rubricator link built from
+  digits only (`js/xss-through-dom`), `src/pipeline/database.py` logs the kind of a
+  non-finite value, not the value (`py/clear-text-logging`). Check-run: «No new alerts».
+- **API headers, `000701b`:** `clinical_engine/api/app.py` middleware mirrors
+  `server.js` (nosniff, Referrer-Policy, X-Frame-Options DENY, CSP on HTML);
+  `test_api_static_assets.py` extracts both literals from `server.js` and pins parity.
+- **SW update notice, `b694202` + `12fdad5`:** `#update-banner` («Доступна новая версия
+  … Перезагрузить») when a new worker activates over a controlled page
+  (`registerServiceWorker`); explicit reload, never mid-calculation.
+- **Validator + shell, `54c43d4`:** new `validate_db.js` rule — a scenario route with no
+  matching form in `drugs_reference` (mirrors `renderRouteTabs` grouping incl. dilution
+  rules); 9 warnings, **all in blocked records** (owner queue below). Shell no longer
+  falls back to every form silently: `#route-mismatch-note`. `test_validate_db_rules.py` +3.
+- **REAL BUG (clinical safety), `fbc4048`:** after a calculation, selecting a nosology
+  that the source gate blocks (or one without an age-matching scenario) left
+  `activeDrug`/`activeScenario` from the previous nosology; the always-visible header
+  «Печать» then printed the **old regimen under the new (blocked) diagnosis** (jsdom
+  reproduction: doxycycline/chlamydia → LGV blocked → prescription form filled with
+  doxycycline, trust line «status blocked»). `selectDisease` now resets
+  scenario/line/drug + clears both card lists; hash is `#disease` until a drug is chosen.
+  Same commit: disease hits / scenario / drug cards are `role=button tabindex=0` with
+  Enter/Space (`makeActivatable`) and a visible focus ring; deep link
+  `#disease/scenario` restores the scenario; mobile-nav «Копир» called a non-existent
+  `btn-copy` (dead button) → `copyForMIS()`; history cards no longer pretend to be clickable.
+- **`968b0d2`:** saved dark theme applied in `<head>` before first paint (no flash);
+  `server.js` SIGTERM/SIGINT graceful close, EADDRINUSE exits 1 loudly; tests.
+- **`2068492`:** `test_shell_static_ids.py` — unique markup ids, every `$('id')` exists,
+  `for=`/`aria-*` targets exist, inline `on*=` handlers call defined functions.
+- **REAL DEFECT (exports), `5d16c40`:** topical forms (2 % clindamycin cream carries
+  `concentration_mg_per_ml`) got a bottle course from the ORAL mg regimen: MIS
+  «Потребность на курс: 210 мл → 3 фл.», Latin Rp «D.t.d. N. 3». `calculateCoursePackages`
+  returns null for `topical`/`drops`; result-card label follows the route; MIS marks a
+  systemic regimen under a topical form. New `clinical_engine/tests/js/shell_walk.js` +
+  `test_shell_walk.py`: every computable nosology × age-matching scenario × drug × route
+  tab × form chip for adult 70 kg / child 7 y 25 kg / infant 6 mo 7 kg / neonate 10 d
+  3.2 kg = 1220 states, 982 computed + exported (MIS + prescription form): no NaN /
+  Infinity / undefined / empty result, regimen age_group == patient group (`fa60736`).
+- **REAL DEFECT (exports), T10 `7589b29`:** severe penicillin allergy + amoxicillin (and
+  the pregnancy / renal / age flags) were shown on screen only — MIS text, Latin Rp,
+  printed form and history carried nothing. `exportSafetyFlags(refs)` =
+  `collectPatientSafetyFlags` + `allergyExportFlag` («Аллергия («<option>»): препарат
+  ПРОТИВОПОКАЗАН по аллергоанамнезу…» / «осторожно…»); MIS prefixes `ВНИМАНИЕ:` /
+  `Предупреждение:`, Rp appends `! ВНИМАНИЕ: …`, printed form `#rx-safety-line`,
+  history `flags` + «⚠ …». jsdom step 5 + 2 tests.
+- **REAL DEFECT (exports), T11 `e045729`:** combination partner (listeriosis ampicillin +
+  gentamicin 350 mg × 1 = 5 mg/kg × 70 kg) lived on screen only; MIS / printed form named
+  ampicillin alone. `comboComponentLines` → MIS «Компонент комбинации: Гентамицин — по
+  350 мг 1 р/д • 14 дн (сут. 350 мг); …», printed form «Компоненты комбинации
+  (одновременно):» + Latin name + dose line. jsdom step 7d + test.
+- **Walk oracle, `1ebcbd6`:** `shell_walk.js` compares the single dose on screen
+  (`po-mg` / `inj-mg`) with the MIS «Схема приёма: по N мг» in every computed state —
+  960 states, 0 mismatches.
+- **Search recall, T12 `c771822`:** `handleSearch` matched the whole phrase only, so
+  «пневмония дети», «h. pylori», «амоксициллин» returned nothing. Tokens (≥2 chars) must
+  each match name / synonyms / CR id / ICD-10 / the record's drug INNs+keys
+  (`diseaseDrugText`, cached); 4+-letter tokens also match by stem («дети» → «у детей»);
+  phrase hits rank first, computable records before blocked. jsdom `searchRecall` + test.
+- **REAL DEFECTS (exports), T13 `2f71425` — found by four new walk oracles (route words,
+  Rp dose, course units, course wording; 395 findings on the previous build, 0 after):**
+  (1) **115 adult states** — any PO form that is not a tablet/capsule (oral suspensions
+  for w ≥ 40 kg, fosfomycin granules) fell through to the injection branch of
+  `copyForMIS` / `copyLatinRecipe`: «Схема приёма: по 500 мг **в/в**», «**Вводить
+  внутривенно** по 3000 мг» for a sachet taken by mouth. Route words now come from
+  `currentRouteGroup` (`routeWordsRu`, `isOralLiquid`). (2) **Combination strengths**:
+  «875+125 мг» / «400+80 мг» were parsed as the component printed before «мг», so one
+  amoxiclav 875+125 tablet was shown as «7 таб 125 мг» and 480 mg co-trimoxazole as «6 таб
+  80 мг» on screen, in MIS, Rp, printed form and package maths. `unitStrengthMg`: regimen
+  says «по триметоприму / TMP» → last component; otherwise whichever of {first, sum} is a
+  whole number of units with the fewest units; otherwise first; «млн ЕД» parsed too.
+  (3) **D.t.d. N.** was the number of PACKS in the Rp («N. 5» for 84 tablets) and the units
+  PER DOSE in the printed form («N 4»); both are now the course quantity
+  (`unitsForCourse`: tablets / capsules / sachets / vials, upper bound of a range), «N. ___»
+  when the course is given in words; MIS package maths reuses the same arithmetic.
+  (4) **Course wording**: «Курс лечения: хроническая дней», «курс по ситуации дней.»
+  (asplenia prophylaxis, post-coital fosfomycin) → `courseText` / `daysWord` («7 дней»,
+  «1 день», «2–3 дня», «хроническая», «длительность: по ситуации»); a course in words no
+  longer gets a fabricated 7-day package plan. Unit tests for `unitStrengthMg`,
+  `courseText`, `unitsForCourse`; capsule test moved to the course quantity; jsdom
+  `courseUnits` test.
+- **T14 `b23178c`:** default form chip = the strength that fits the single dose
+  (`bestSolidFormIndex`: whole units, fewest units; half tablets only when nothing
+  divides the dose; DB order breaks ties) — 500 mg amoxicillin opened on the 125 mg
+  dispersible tablet («4 таб 125 мг»), 2000 mg ceftriaxone on the 500 mg vial. The
+  paediatric liquid-form preference is unchanged. jsdom step 7e + test.
+- **T15 `73db627`:** the dilution vial size follows the chosen form («2000 мг флакон» →
+  2000 mg vial in the dilution table and the printed injection details) until the
+  physician picks a vial by hand (`vialFollowsForm`).
+- **T18 `d2e24a4`:** history entries carry a reference (`disease / scenario / line / drug /
+  route / form / regimen / age`) and a button «Открыть расчёт» restores the calculation
+  (`restoreHistoryEntry`); `restoreFromHash` also runs on `hashchange` (back/forward,
+  pasted links). Accessible name = visible text + `aria-describedby` (an `aria-label`
+  that differs from the text makes axe's `label-content-name-mismatch` hit jsdom's
+  missing canvas). jsdom steps 7f/10 + 2 tests.
+- **T19 `08714d4`:** when rounding to whole units moves the dose by ≥ 10 % the text says
+  so everywhere the dose is shown («~2 таб 500 мг = 1000 мг, +14 % к расчётной» on screen
+  / MIS / Rp / printed Signa) — `roundingDeviationText`; golden labels updated (numbers
+  unchanged), unit test.
+- **T20 `02403a2`:** printed form header «Пациент / Возраст / Вес» (text nodes only,
+  blank underscores when empty) — jsdom test types a name with markup and checks the
+  printed header is plain text.
+- **T21 `a959f90`:** validator WARN when a tablet / capsule / sachet / vial concentration
+  has no readable unit strength («<N> мг», «<N>+<M> мг», «<N> млн ЕД») or an oral liquid
+  lacks `concentration_mg_per_ml` — the shell could not count units per dose or D.t.d. N
+  for such a form. Shipped DB: 0 new warnings; test.
+- **REAL DEFECT (display/exports, ЕД drugs), T22 `dac3bd6`:** `formatUnits` used
+  `(n/1e6).toString().replace('.0','')`, so 1 050 000 ЕД (150 000 ЕД/кг/сут × 7 кг,
+  diphtheria benzylpenicillin for an infant) rendered «15 млн ЕД» in the daily tile —
+  14× the true value (1 005 000 → «105 млн», 1 030 000 → «13 млн», 20 050 → «205 тыс»).
+  Now a value is scaled only when two decimals reproduce it exactly («1.05 млн»),
+  otherwise printed in full with thousand spaces («1 005 000»). Found by the new walk
+  oracle, not by any existing test.
+- **Walk oracles, T22/T23 `dac3bd6` `1f87c28` `eb48c01`:** dose arithmetic re-derived
+  from the DB regimen × profile weight independently of `computeDose` (single and
+  daily tiles; flags the old build, clean on the new one); volume = dose ÷ concentration
+  (suspension ml / selected vial ml); printed «D.t.d. N» = per dose × р/д × days;
+  `SHELL_WALK_PROFILES` env override — 7 awkward-weight profiles (120 / 45 / 14.3 / 39.9 /
+  4.6 / 2.1 / 38 kg) ran clean.
+- **T24 `73e5c4e`:** «1 раз / 2 раза / 6 раз в день» (`timesADay`) in Rp Signa and the
+  printed form — seven hand-built strings said «раза» for every frequency («1 раза»).
+- **T25 `30de925`:** printed Signa always names the mg per dose («По 2 tab. (= 500 мг)»,
+  «По 25.0 мл (100 мг/5 мл = 500 мг)»); the on-screen oral instruction no longer ends in a
+  bare strength («… 4 р/д 250 мг» read like a second dose → «… (2 капс 250 мг) 4 р/д •
+  форма: 250 мг»).
+- **T26 `b8d8fed`:** `bestLiquidFormIndex` — children open on the suspension whose
+  single-dose volume is measurable (2.5–10 ml, lower concentration breaks ties; above that
+  the smallest volume): a 25-kg child on 1125 mg opened on «125 мг/5 мл» = 45 ml. MIS text
+  gains «Суточная доза: …(ограничена максимумом …)» and «Предупреждение: разовый объём N мл
+  велик …» (> 15 ml, < 40 kg) — the screen had the warning, the chart text did not.
+- **T27 `13eeca3`:** printed form dispenses bottles for a suspension («D.t.d. N 5 in pulv.
+  pro susp. (фл. по 100 мл; на курс 450.0 мл, 10 дн.)») — the Rp text had «N. 5», the
+  printed form had no quantity line for liquids.
+- **T28 `98b234e`:** typo-tolerant search (`withinOneEdit` / `fuzzyWordHit`: one edit on a
+  word prefix for tokens of 5+ letters, applied only to tokens with no exact hit anywhere
+  — «цистит» never drags in цистицеркоз) and word-start ranking («Острый цистит» before
+  «холецистит», «Острый тонзиллит» before «паратонзиллит»).
+- **T29 `c0ff6e8` (latent hazard):** combination partners were dosed from the main drug's
+  regimen when `component_regimens[partner]` was absent (`|| reg`) — ceftriaxone's 2000 mg
+  would have been printed for metronidazole. Validator ERROR for such records (all 16
+  shipped combination regimens pass), shell fail-visible («режим компонента не задан в
+  БД …»). T21 `a959f90`: validator WARN for unit forms without a readable strength / oral
+  liquids without mg/ml (0 on the shipped DB).
+- **T30 `7a34643`:** walk MIS/Rp dose oracle covers ЕД drugs («по 175 тыс ЕД», 529 → 541
+  of 542 adult states) and re-derives every combination-partner card from
+  `component_regimens × weight` (36 checks).
+- **T31 `7f3852e` (input safety):** age > 120 years («150» for 15, or a birth year) blocks
+  the calculation like an implausible weight — the result area, MIS copy, Rp copy and the
+  printed form all say «РАСЧЁТ ЗАБЛОКИРОВАН: Возраст 150 лет — неправдоподобное значение»;
+  119/120 still compute. Static test: `@media print` contract (`#prescription-form` must stay
+  a direct child of `<body>`).
+- **T32 `0e8c416`:** walk grammar oracle («1 раз / 2 раза / 5 раз в день», «2 дня / 5 дней»)
+  over every export + screen/MIS large-volume-warning parity. Mutation check against the
+  pre-T24 build: 457 grammar findings, 19 parity findings; current build clean.
+- **T33 `d4d8ac4` (latent):** JS `\b` never matches after Cyrillic — two dead regex
+  alternatives: `parseAgeRestrictionDays` («12 г» / «6 м» limits fell through to «проверьте
+  вручную») and `unitStrengthMg` («\bТМП\b» — a regimen marked only «(по ТМП)» would have
+  been dosed by the sulfamethoxazole strength). No shipped record affected; both pinned.
+- **T34 `2a559ac` (input safety):** weight is checked against the entered age — «25» typed
+  for «2.5» at 10 days passed every gate (the only neonate rule was ≥ 40 kg) and gave a 10×
+  mg/kg dose everywhere. Block for a newborn > 7 kg or an infant > 20 kg, warning for 1–3
+  years > 25 kg; the notice renders while typing (it used to wait for a drug); the «<40 кг
+  при группе новорождённые» hint only when no age was entered.
+- **T35 `504339e`:** the non-blocking weight caution travels with the MIS text, Rp and
+  printed form (`exportSafetyFlags`). **T36 `4a812e4`:** dead `formTypeRussian` /
+  `copyPrescription` removed. **T37 `9df259f`:** combination tablets are named by the
+  product strength in every dose line («1 таб 875+125 мг», «~4.5 таб 400+80 мг = 360 мг по
+  триметоприму» — the physician no longer reads «таб 80 мг»).
+- **T38 `65af0ad`:** keyboard search — Enter opens the top-ranked result, ArrowDown/ArrowUp
+  walk the list and return to the input, Escape clears the query (the calculation stays).
+- **T39 `d4b149a`:** older children (≥ 6 years, or ≥ 20 kg without an age) whose best
+  suspension still means > 15 ml per dose open on a tablet/capsule that divides into ≤ 3
+  units (12 y / 39.9 kg amoxicillin 1500 mg: «500 мг» × 3 instead of 30 ml); a 7-year-old
+  on 1125 mg stays on the suspension («9 таб 125 мг» is not a default).
+- **T40 `9841333` + `a7d2824` (latent):** `drops` is a validator-accepted form type but the
+  shell's route grouping fell through to per os for it (ear drops would have been offered
+  as an oral dose) — now topical via `isTopicalForm()` (six scattered checks unified),
+  Latin «gtt.»; static test: every validator FORM_TYPE is routed explicitly and has a
+  Latin form.
+- **T43 `6d6355e`:** Latin Rp line writes the strength in Latin units — «Amoxicillini 250
+  mg/5 ml», «Benzylpenicillini natrici 1 000 000 ED», «Fosfomycini trometamoli 3000 mg» (the
+  package word belongs to the D.t.d. form); DB strings unchanged elsewhere.
+- **Verification per push:** full pytest, `ruff check .`, `npm run validate`,
+  `build_html.py --check`, CI + CodeQL green (one red run `b694202` fixed by `12fdad5`).
+  Final: **2755 passed / 28 skipped** (jsdom suite 30 tests, walk gate with 13 oracles),
+  validate 0 errors (+9 owner warnings), html/sw rebuilt.
+
+## 2026-10-14 (round 4, autonomous backlog «без моих решений»): C-4, E-2, G-1, F-2, F-3, H-1
+
+- **Scope rule:** every engineering item left in NEXT_TASK §6 that needs no
+  physician decision; clinical data, FROZEN modules, LICENSE, `corpus_config`
+  default, PR merge untouched. Python 3.12 is unavailable in the sandbox, so a
+  CPython 3.12.15 was built from source *only* to drive `uv lock`/`uv export`
+  (no ssl/sqlite); tests ran on the 3.11 venv, CI (3.12) is the authority.
+- **F-3 + C-4 (audit-site), commit `e610549`:** `audit-site/README.md`
+  (archival React-19/Vite-7 dashboard, not part of the calculator), package
+  renamed `antibio-audit-site`, `dist/` ignored; `npm audit fix` without
+  `--force` — residual `braces` (no fixed release).
+- **C-4 (lock), commit `c851105`:** `uv lock --upgrade-package …` on the
+  transitive tree only: all-extras pip-audit 65 → 44 advisories, core
+  (clinical+tests+development) 0. CI job `dependency audit`: core blocking,
+  extras report-only (`::warning`), `npm audit` report-only. NOT bumped
+  (owner's Windows/CUDA machine): torch 2.4.1 (≥ 2.6 → `torch.load
+  weights_only=True` breaks doclayout-yolo 0.0.4 weight loading), torchvision,
+  transformers (fix only in 5.x), docling (≥ 2.120.3), mineru; `wheel` 0.40 held
+  by `table-transformer`; `accelerate` 1.14 no fix. README documents the job.
+- **E-2, commit `83d29e6`:** `src/tests/table_pdf_fixture.py` renders a
+  deterministic CR-like guideline PDF (PyMuPDF, DejaVu, regimen table) and
+  `test_document_extraction.py` (UTF-8 BOM kept) runs the extraction router end
+  to end on it (PDF → table → regimen candidates), cache isolated per test.
+  Skips 30 → 28; the rest need real CR snapshots / `normalized_regimens.sqlite`
+  / review-workbench artifacts — fabricating them would be fabricating sources.
+- **G-1, commit `7b9efaa`:** 199 root files → `docs/history/` (68) and
+  `docs/history/rc030/` (131) with `git mv`. Selection: not referenced from
+  code/tests/config/workflows/entry docs/sub-dir docs **and** history-pattern
+  name (REPORT/RCA/AUDIT/BASELINE/ANALYSIS/VERIFICATION/SUMMARY/RESULT/REVIEW/
+  CHECKLIST/SESSION/date/ALLOWLIST/INVENTORY/…/RC03x) **and not** POLICY/MODEL/
+  GUIDE/SPEC/RFC/CONTRACT/RULES/GATES/REGISTER/PLAN/PROGRAM/FRAMEWORK/MANIFEST/
+  ARCHITECTURE_V/SCORECARD/PROPOSAL. 81 root files stay because `tests/`
+  (RC030 archive suite), `generated/` scripts, `server.js` or docstrings name
+  them. 10 markdown links rewritten; link check 4 broken before = 4 after;
+  `docs/history/README.md` index; README pointer. Root 416 → 208 entries.
+- **F-2, commit `9277ff7`:** `AGENTS.md` 633 → 88 lines: authority chain,
+  absolute prohibitions, FROZEN/may-change, traceability + optimisation laws,
+  hand-off protocol, repo map, commands/CI, playbooks, owner-queue pointer. Old
+  text byte-identical at `docs/history/AGENTS_2026-10-14_full.md`; references
+  in `HANDOFF.md`, `pyproject.toml`, `GOVERNANCE_SOURCE_OF_TRUTH.md` updated;
+  forbidden-path tests for `/AGENTS.md` still pass.
+- **H-1 (this commit):** the Play-CDN bundle was Tailwind **3.4.17** — so the
+  static build uses exactly that CLI (`devDependencies`, root
+  `package-lock.json`; override `postcss-selector-parser ^7.1.6` closes the
+  moderate advisory, output byte-identical). `db/tailwind.config.cjs`
+  (`content: template`, `darkMode: "class"` = the inline CDN config),
+  `db/tailwind.input.css`, `npm run build:css` → `vendor/app.css` (30.8 KB vs
+  407 KB JS). Template: CDN `<script>` + `tailwind.config` → `<link app.css>`;
+  `sw.js` precache swapped; `vendor/tailwind.js` deleted; server allowlist test
+  → `/vendor/app.css`. Equivalence check (the CDN compiled from the live DOM,
+  the CLI from the template text): the template never builds class names from
+  fragments (13 concatenations, all whole literals: `active`, `fas …`,
+  `cardAllergyClass`, `lineCls`); static scan = 491 tokens; a jsdom walk over
+  all 120 nosologies × every drug card (370) × every form/route button (1673)
+  + theme toggle + penicillin allergy recorded 433 distinct DOM classes, all
+  inside the static scan; uncovered = `md:pl-13` (not in Tailwind's spacing
+  scale), `no-print`, `num-glow` (defined nowhere) — no-ops under the CDN as
+  well, left untouched to keep the visuals identical. The jsdom smoke's former
+  console error `tailwind is not defined` is gone (0 console errors).
+  New `clinical_engine/tests/test_tailwind_static_css.py` (6) guards link /
+  no CDN / config / precache / **every template class has a rule** / CLI
+  rebuild == committed CSS (CI test job now runs `npm ci`; audit job runs root
+  `npm audit` report-only — `braces`). README/AGENTS: `npm ci`, `npm run
+  build:css` after editing classes in the template.
+- **Verification (HEAD):** `pytest -q` **2684 passed / 28 skipped / 0 failed**;
+  `pytest tests` 404; `npm run validate` 0 errors; `ruff check .` clean;
+  `build_html.py --check` fresh (html `39bfdff1ad35…`, sw `build-d6312f5e52bb`;
+  DB unchanged `56727a27f050…`). CI ✅ 38572809113 (C-4), 38574220002 (E-2 +
+  G-1); F-2 and H-1 runs: see PR #1 checks.
+- **Owner follow-ups recorded in NEXT_TASK §6:** browser visual pass after
+  H-1 (sandbox has no browser; rollback = revert of the H-1 commit), ML pin
+  upgrades, real-corpus fixtures for the 28 skips, `audit-site/` keep/delete.
+
+## 2026-10-14 (round 3): pyflakes debt cleared, full `F` gate, DB-changelog CI gate, D-2 logging
+
+- **D-1 phase 2:** `ruff --fix --select F401,F541,F811` with `medical_normalizer/`
+  excluded (FROZEN, 0 files touched there) — 156 fixes, all import-line reflows or
+  `f"…"` → `"…"`. Manual: `src/pipeline/main.py` relative-import blocks lose
+  `LLM_DELAY`/`LLM_PROVIDER_CHAIN`/`save_progress`; `extraction/__init__.py` gets an
+  explicit `__all__` (same 10 names); F841 dead locals removed in
+  `section_detector.py`, `extractor_llm.py`, `extraction/router.py`;
+  `db/build_db.py::_run_validate` checks `validator.is_file()` and runs it by
+  absolute path. `pyproject.toml`: `select = ["E9", "F"]` + `per-file-ignores`
+  (`medical_normalizer/**` F401/F541/F811/F841; tests F841; `main.py`,
+  `generated/**`, `dose_verification_sandbox/**`, `extraction/layout.py` F841).
+  Commits `f0cd140`, `eea3035`.
+- **CI (I-6 follow-up):** test job step "Clinical DB change requires a
+  CHANGELOG_DB.md entry" (`pull_request` only; `git diff --name-only
+  origin/<base>...HEAD`; fails with `::error` + first 40 lines of
+  `db_diff.py --git origin/<base>`); `checkout` `fetch-depth: 0`; lint job renamed
+  "ruff (pyflakes + syntax)". Commit `2017982`.
+- **D-2:** 5 tolerant `except Exception: pass/continue` in `src/pipeline` now log
+  (`router.py` OCR fallback → warning with extractor/PDF/page; `extractor_llm.py`
+  JSON salvage → warning; `main.py` resume filter → warning; `reporter.py` SQLite
+  count → warning; `extraction/cache.py` corrupt entry → debug). Control flow
+  unchanged; `config.py` and `extraction/layout.py` left. Commit `8882a04`.
+- Verification: pytest **2671 passed / 30 skipped**, `tests/` 404/3, `src/tests`
+  501/13, `ruff check .` clean, `python -m src.pipeline.main --help` OK, full
+  `db/build_db.py` → DB byte-identical, `build_html.py --check` fresh.
+  **CI ✅ run 38570533400** — pytest + validate (incl. step 10 changelog gate), ruff, secret scan.
+- **I-4 (partial):** `clinical_engine/tests/test_allergy_class_consistency.py` —
+  shell `DRUG_CLASSES` (template) vs engine `allergy_class_hierarchy` vs shipped DB:
+  computable drugs complete in both tables, β-lactam membership identical, no
+  β-lactam under a non-β-lactam class, 6 blocked-only engine gaps pinned
+  (netilmicin, ofloxacin, rifaximin, tetracycline, tinidazole, tobramycin). Found
+  isoniazid/ethambutol/pyrazinamide (computable TB records) missing from
+  `DRUG_CLASSES` → added as `antituberculous`; `checkAllergyStatus` output
+  verified identical under all 4 allergy settings. Rebuilt html `8169d2df3e70…`,
+  sw `build-65c03b25f9dd`. pytest **2675 / 30**. Commit `29a540b`.
+  Lesson: `db/build_db.py --skip-source-gate` rewrites `db/antibio_db.json`
+  without gate statuses — never use it for smoke tests (restored by a full run).
+
+## 2026-10-14 (round 2): CI hardening, freshness gate, DB changelog, favicon, pipeline entry points
+
+- **CI (A-4/D-1):** `.github/workflows/ci.yml` — `runs-on: ubuntu-24.04` (the
+  `ubuntu-latest` → 26.04 migration starts 2026-10-19 and the PDF fixture depends
+  on image fonts), actions on Node 24 (`checkout@v7`, `setup-node@v7`,
+  `setup-python@v7`, `setup-uv@1c37ad0…` = v10.3.0 by SHA — no floating major tag
+  after v7, `gitleaks-action@v3`), new step `python db/build_html.py --check`, new
+  job `lint` = `uv sync --frozen --extra development` + `ruff check .`.
+  `pyproject.toml` `[tool.ruff]`: critical rules only (`E9, F63, F7, F82`) — green
+  today; F401/F541/F811/F841 (~200, incl. FROZEN `medical_normalizer/`) stay backlog.
+- **Freshness gate (I-7):** `db/build_html.py --check` (`check_build()`): rebuilds
+  into a temp dir, compares bytes with the committed html and the expected
+  `sw.js` `CACHE_VERSION`, never writes; also fixed the `--node <path>` argv parse
+  bug. `.pre-commit-config.yaml` (gitleaks v8.30.1, ruff-pre-commit v0.15.21,
+  `validate_db.js`, `build_html.py --check`). 3 tests in
+  `test_build_reproducibility.py` (15 total).
+- **DB changelog (I-6):** `db/db_diff.py` (`--git REV` | OLD NEW, `--json`,
+  `--fail-on-change`): records added/removed, record fields (blocking, status,
+  cr_id/year, mkb10…), drugs/routes per scenario-line, regimen dose fields per
+  age group (duplicate groups kept apart as `child#2`), drug-reference keys;
+  distinguishes a true→false unblock from a missing flag made explicit.
+  `src/tests/test_db_diff.py` (7). `CHANGELOG_DB.md` created with the 1885894 →
+  current diff: 84 records changed, 51 newly blocked, **0 regimen dose changes**,
+  2 drug refs (tobramycin/netilmicin forms).
+- **H-3:** `favicon.ico` (16/32/48 from `icons/icon-512.png`), `<link rel="icon">`
+  + apple-touch-icon in the template, served by `app.py` (`PWA_ASSETS` + route)
+  and `server.js` (already allow-listed), precached by `sw.js`; test added.
+  Rebuild → html sha `5cb3e30f7758…`, sw `build-d6e42e706f0c`.
+- **A-3:** `src/pipeline/main.py` bootstraps `sys.path` (repo root, `src`,
+  `src/pipeline`) exactly like pytest's `pythonpath`; all four documented
+  invocations work from a clean checkout (`-m src.pipeline.main`, script path,
+  `cd src/pipeline`); `verify` reports the missing external corpus honestly.
+- **Docs:** README (build/check/diff/pre-commit, CI description), `AGENTS.md`
+  header dated 2026-10-14, `ROADMAP_STATUS.md` marked as historical snapshot with
+  pointers to current facts.
+- **Left as is, on purpose:** `corpus_config.json` Windows default (G-5) — it is a
+  documented default with `ANTIBIO_CORPUS_DIR` override, owner's call; H-1 static
+  Tailwind — needs a visual check that this sandbox cannot do (dynamic class
+  names in JS); C-4 extras CVEs — needs a re-lock on 3.12.
+- **Verification:** `pytest -q` → **2671 passed, 30 skipped**; `pytest tests` 404
+  passed; `npm run validate` 0 errors; `build_html.py --check` fresh; `ruff check .`
+  clean; `node --check` ok; jsdom smoke unchanged (65/55 header, 48 мг / 2.4 мл,
+  flags). CI run id for this round: see PROJECT_STATE after push.
+
+## 2026-10-14: Audit fix round — AUDIT_2026-10-14.md findings fixed, calculator completed with patient context
+
+Scope: `docs/audits/AUDIT_PROMPT_2026-10-14.md` (methodology) + `docs/audits/AUDIT_2026-10-14.md`
+(27 findings on HEAD 1885894) were delivered first; then, on owner instruction, the
+findings were fixed and the shell completed. Environment deviation: Python 3.12
+cannot be installed in the sandbox (GitHub release blob storage unreachable), so
+everything below ran on a Python 3.11 venv built from `uv.lock` deps; CI runs 3.12.
+
+- **Data (B-1/B-2/B-7):** `db/diseases/extended_dosa.json` — all 48 DOSA records
+  `calculation_blocked: true`, `mkb10` split into arrays; `db/index.json` —
+  `concentration_mg_per_ml` for tobramycin 40 мг/мл and netilmicin 25 мг/мл.
+  `calculator_source_gate.py` rewritten: `is_federal_cr_id`, `has_documented_basis`,
+  statuses `NO_FEDERAL_CR_EXPERT_BASIS` (computable, 32) / `SOURCE_BASIS_MISSING`
+  (blocked, 3: erysipelas, pneumococcal_meningitis, brucellosis), `--block-no-cr`,
+  idempotent, always writes `calculation_blocked` explicitly. Result: 120 records,
+  **65 computable / 55 blocked** (50 extraction-pending, 3 no basis, 2 PDF pending).
+- **Mapper (B-1 root cause):** `dosa_to_db_mapper.py` — `каждые N ч` → 24/N per day,
+  `г` → mg, per-dose mg/kg → `dose_mg_kg_per_dose` (never a `*_day` field);
+  14 tests appended to `src/tests/test_dosa_to_db_mapper.py`. No regeneration.
+- **Validator (B-3):** `db/validate_db.js` rewritten (module + CLI, `--json`):
+  plausibility rules, per-unit limits (мг / ЕД), blocked-record context on
+  warnings, exit code semantics; `src/tests/test_validate_db_rules.py` (33 tests)
+  exercises every rule via `node -e`; `build_html.py` still fails on any error.
+- **Shell (`antibiotic_calc.html.template`):** patient inputs grid (weight, age
+  д/нед/мес/лет, pregnancy/lactation, GFR); `parseAgeToDays`, `ageGroupFromDays`,
+  `parseAgeRestrictionDays`, `ageRestrictionFlag` (certain violations only),
+  `pregnancyFlag`, `renalFlag`, `collect/renderPatientSafetyFlags`; honest source
+  labels (`isFederalCrId`, `diseaseSourceLabel`, `applyDiseaseSourceGate` clears
+  before append, amber "БЕЗ КР" badge); `copyForMIS` no longer fabricates
+  "КР МЗ РФ #— (2024)" and includes the patient context + flags; guideline modal
+  prints mg/kg units correctly; `computeDose` handles `dose_mg_kg_per_dose`;
+  `regimenSummary` unit-honest; `solidUnitsPerDose`/`formatTablets` (capsules whole,
+  tablets 0.5); injectable signa uses the real route; `renderDrugMeta` shows
+  `age_restriction_min`; header stats "65 расчётных, 55 закрыто до верификации";
+  in-page `validateDB` mirrors the Node rules. Harness
+  `test_calculator_clinical_safety.py` → 78 passed (14 audit tests added).
+- **Server (`server.js`, C-1/C-3):** proxy only for loopback peers (403
+  `PROXY_LOOPBACK_ONLY`, override `ENGINE_PROXY_ALLOW_LAN=1`), `X-Forwarded-For`,
+  `ENGINE_MAX_BODY_BYTES` (1 MiB → 413), `ROOT_FILES` + `ALLOWED_DIRS` allowlist,
+  `module.exports` + `require.main` guard; `src/tests/test_static_server_policy.py`
+  (23 tests, real server on an ephemeral port, loopback and LAN bind).
+- **Engine API (`clinical_engine/api/app.py`, C-2):** `_peer_is_loopback` (XFF-aware)
+  shared by v1/v2; `/v1/recommend` 403 `NON_LOOPBACK_REQUEST` for non-loopback peers;
+  413 `PAYLOAD_TOO_LARGE` over 1 MiB on v1 and v2; `test_api_peer_policy.py` (8 tests).
+  Health/version stay open. Engine logic untouched.
+- **CI (A-2):** `src/tests/table_pdf_fixture.py` shrinks cell text to the column
+  width (DejaVu 9 pt overflowed 200 pt → "или внутрь" read as dose text);
+  `test_regimen_candidates.py` 33 passed on Linux fonts.
+- **Golden cases (E-3/I-5):** `clinical_engine/tests/golden/calculator_dose_golden.json`
+  + `test_calculator_dose_golden.py` (23 tests; negative check: 3 injected drifts
+  → 3 failures).
+- **sw.js (H-2):** `CACHE_VERSION` generated by `build_html.py`
+  (`service_worker_cache_version`, `sync_service_worker`); now `build-ff813dcc5750`;
+  4 tests in `test_build_reproducibility.py` incl. "stale version fails".
+- **Hygiene:** E-1 POSIX paths in `generated/*/…manifest.json` + generators
+  (`tests/` 404 passed, was 2 failed); E-4 F821 = 0 (`TYPE_CHECKING` imports,
+  `pytest`/`Path` in `test_stage_hard_safety_filter.py`); G-2 `.gitignore`
+  += `node_modules/`, `.npmrc`; G-3 home paths/e-mail redacted in 6 docs + 1
+  docstring; D-3 `db/build_db.ps1` → thin wrapper over `build_db.py`.
+- **Not changed on purpose:** `db/schema.json` (AGENTS.md: "без обсуждения" — owner
+  decision pending, see NEXT_TASK); B-6 regimen-level `dose_unit` (model change,
+  owner decision); extras CVEs (C-4), Tailwind Play bundle (H-1), repo-root archive
+  (G-1), `audit-site/` (F-3) — tracked in NEXT_TASK.
+- **Verification:** canonical `pytest -q` → **2660 passed, 30 skipped, 0 failed**
+  (baseline 2526 passed / 1 failed); `pytest tests` 404 passed / 3 skipped;
+  `npm run validate` → 0 errors, 518 warnings, 120 recs / 55 blocked;
+  `python db/build_db.py` + `python db/build_html.py` deterministic (db sha
+  `56727a27f05071fd…`, html sha `3e8b5af9d4e7f533…`, 765 620 B); `node --check`
+  server.js/sw.js/validate_db.js OK; `ruff --select F821,E9` clean; jsdom
+  end-to-end smoke of the built shell: blocked record → "РАСЧЁТ ЗАБЛОКИРОВАН",
+  prostatitis → "БЕЗ КР" banner, ut_child cefixime 6 kg / 3 мес → 48 мг / 2.4 мл +
+  red age flag, 2 года → 96 мг no flag, lyme doxycycline 5 лет → red flag,
+  pregnancy + СКФ 25 → flags reach the MIS text; reset clears everything.
+
 ## 2026-10-05: S-3 done — third-party assets self-hosted, PHI history TTL
 
 - **New:** `vendor/` (committed, 864K): `tailwind.js` (Play CDN bundle),
@@ -91,7 +1228,7 @@
   `Path(__file__).resolve().parent.parent.parent.parent / "clinrec_downloader"` — `parents[3]`
   is the PARENT of the repository root, a Windows-layout leftover (repo at `C:\ANTIBIO` →
   `C:\clinrec_downloader`, which happened to be right). On this macOS checkout it resolved to
-  `/Users/turpal/Documents/antibiocalc/clinrec_downloader`, which does not exist (checked:
+  `<repo-root>/clinrec_downloader`, which does not exist (checked:
   `exists: False`), so `BASE_DIR` and the 20 pipeline modules importing it pointed at nothing
   silently. Also depth-dependent: moving the file changed the meaning (same defect class as
   `L-31` in `src/pipeline/extraction/config.py`).
@@ -448,7 +1585,7 @@ data or calculation-status changes were made. No commit.
 
 After request to do all remaining work (including physician-attested parts), an
 audit was made of every still-open NEXT_TASK workstream on the fresh macOS clone
-(`/Users/turpal/Documents/antibio-calc`, Python 3.12.14 venv). Result:
+(`<repo-root>`, Python 3.12.14 venv). Result:
 no further clinically-valid work is currently possible; two local bookkeeping
 deliverables were produced.
 
@@ -509,7 +1646,7 @@ Engine to change clinical-approval state. Only the owner/physician may do this.
 ## 2026-09-02: scenario-to-dose-row binding artifacts for CAP (654_2, 714_2)
 
 Implemented NEXT_TASK workstream 2 on a fresh macOS clone
-(`/Users/turpal/Documents/antibio-calc`, Python 3.12.14 venv).
+(`<repo-root>`, Python 3.12.14 venv).
 Minzdrav endpoints (`apicr.minzdrav.gov.ru`, `cr.minzdrav.gov.ru`) are
 network-unreachable from this machine (TCP connect fails; other internet
 works), so live PDF/JSON acquisition for `898_1`, `912_1`, `629_2` and the full
@@ -997,7 +2134,7 @@ table-label-only per-administration equivalents, zero substantive
 mismatches, and one quarantined extraction defect (`6068`).
 
 Wrote final artifacts under
-`C:\Users\TURPAL\Downloads\RC030_C7_FINAL_2026-07-30`. No production DB/PDF
+`C:\Users\<user>\Downloads\RC030_C7_FINAL_2026-07-30`. No production DB/PDF
 was changed, no Clinical Engine was connected, and no clinical approval was
 granted.
 
@@ -1106,7 +2243,7 @@ Live correction progress is `0/2`; target records are `6296` and `6550`.
 ## 2026-07-30: Unit-basis correction export ingested
 
 Validated
-`C:\Users\TURPAL\Downloads\rc030_owner_review_c5_range-unit-basis-review_export_2026-07-30T05-48-17-122Z.json`
+`C:\Users\<user>\Downloads\rc030_owner_review_c5_range-unit-basis-review_export_2026-07-30T05-48-17-122Z.json`
 (SHA-256
 `5501995A13AA9406F20381947D6AFA5F438506E3AE2775946D66E5450B267ECF`):
 77 events, 43 unique regimens, zero validator issues.
@@ -1160,7 +2297,7 @@ Verification:
 Recovered the completed browser-local owner history without changing any
 owner verdict: 157 append-only events covering 113/113 unique regimens.
 Saved one consolidated export plus 11 batch exports under
-`C:\Users\TURPAL\Downloads\RC030_C7_owner_exports_2026-07-30T05-33-36-881Z`.
+`C:\Users\<user>\Downloads\RC030_C7_owner_exports_2026-07-30T05-33-36-881Z`.
 `dose_verification_sandbox.owner_fidelity_events.validate_events` returned
 zero issues; every regimen has one terminal event.
 
@@ -2407,7 +3544,7 @@ PyMuPDF primary (speed) → quality gate (per page) → if bad: MinerU or Doclin
 - Verification only real execution (no mock).
 
 **Installation:**
-- Command: python -m pip install docling (via full python C:\Users\TURPAL\AppData\Local\Programs\Python\Python312\python.exe)
+- Command: python -m pip install docling (via full python C:\Users\<user>\AppData\Local\Programs\Python\Python312\python.exe)
 - Version: 2.112.0 (pip show + importlib.metadata)
 - Deps: docling-slim + models (RapidOCR etc. auto on first use)
 

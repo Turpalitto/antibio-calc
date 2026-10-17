@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.extraction.regimen_candidates import GuidelineCandidateSpec, load_candidate_spec
+from src.pipeline.extraction.regimen_candidates import load_candidate_spec
 from src.pipeline.extraction.source_fetch_verify import (
     dest_magic_is_pdf,
     fetch_and_verify_spec,

@@ -7,7 +7,6 @@ synthetic; no real owner or AI event is used. This is a readiness
 simulation, not an activation — nothing here writes to
 TYPES_MEETING_PRECISION_THRESHOLD, any database, or the Clinical Engine.
 """
-import pytest
 
 from dose_verification_sandbox.owner_fidelity_events import GENUINE_OWNER_REVIEWER_ID
 from dose_verification_sandbox.precision_calculator import (

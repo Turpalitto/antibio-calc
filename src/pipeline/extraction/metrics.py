@@ -1,6 +1,5 @@
 """Lightweight metrics for extraction. Used by benchmark and monitoring."""
 
-import time
 from dataclasses import dataclass, field
 from typing import List, Dict, Any
 

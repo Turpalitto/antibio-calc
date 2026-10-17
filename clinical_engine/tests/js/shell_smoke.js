@@ -1,0 +1,1656 @@
+'use strict';
+/**
+ * End-to-end smoke of the BUILT calculator shell (antibiotic_calc.html) in jsdom.
+ *
+ * Drives the page the way a physician does — through the DOM and real events
+ * (`input`, `change`, `click`, `keydown`), never by calling internal handlers
+ * with hand-picked arguments — and reports what the page shows. The clinical
+ * numbers themselves are pinned elsewhere (golden cases, clinical-safety
+ * harness); this file checks the WIRING: that typing in the visible controls
+ * drives the result, that flags / banners / MIS text follow the context, and
+ * that the page stays accessible (axe-core) in its main states.
+ *
+ * Usage: node shell_smoke.js <built html> <vendor/app.css> <axe.min.js>
+ * Output: one JSON object on stdout.
+ */
+
+const fs = require('fs');
+const { JSDOM, VirtualConsole } = require('jsdom');
+
+const [htmlPath, cssPath, axePath] = process.argv.slice(2);
+const html = fs.readFileSync(htmlPath, 'utf-8');
+const errors = [];
+const vc = new VirtualConsole();
+vc.on('jsdomError', (e) => errors.push(String((e && e.message) || e)));
+vc.on('error', (...a) => errors.push(a.map(String).join(' ')));
+
+const dom = new JSDOM(html, {
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  url: 'http://127.0.0.1:8080/antibiotic_calc.html',
+  virtualConsole: vc,
+});
+const w = dom.window;
+const d = w.document;
+// jsdom does not fetch external stylesheets; inline the static Tailwind build
+// so `hidden`, `dark:` etc. are real for getComputedStyle and for axe.
+const style = d.createElement('style');
+style.textContent = fs.readFileSync(cssPath, 'utf-8');
+d.head.appendChild(style);
+w.navigator.clipboard = { writeText: (t) => ((w.__copied = t), Promise.resolve()) };
+
+const $ = (id) => d.getElementById(id);
+const txt = (el) => (el ? el.textContent.replace(/\s+/g, ' ').trim() : null);
+const visible = (el) => !!el && !el.classList.contains('hidden') && w.getComputedStyle(el).display !== 'none';
+const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
+const type = (el, value) => {
+  el.value = value;
+  fire(el, 'input');
+  fire(el, 'change');
+};
+const key = (name) => d.dispatchEvent(new w.KeyboardEvent('keydown', { key: name, bubbles: true }));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const DB = () => w.eval('DB');
+const find = (pred) => DB().recommendations.find(pred);
+const clickDisease = (id) => {
+  // the search box lists matches; pick by id through the public selector the list uses
+  const rec = find((r) => r.id === id);
+  w.selectDisease(rec);
+  // a nosology opens with its scenario cards; the first one is what a physician clicks
+  const scenario = d.querySelector('#scenario-list .scenario-card');
+  if (scenario) scenario.click();
+  return rec;
+};
+const drugCards = () => [...d.querySelectorAll('#drug-list .drug-card')];
+const clickDrug = (re) => {
+  const card = drugCards().find((c) => re.test(c.textContent));
+  if (!card) throw new Error('drug card not found: ' + re);
+  card.click();
+  return card;
+};
+
+async function axeRun(label, out) {
+  if (!w.axe) w.eval(fs.readFileSync(axePath, 'utf-8'));
+  const res = await w.axe.run(d, { rules: { 'color-contrast': { enabled: false } } });
+  out.axe[label] = {
+    violations: res.violations.map((v) => ({
+      id: v.id,
+      impact: v.impact,
+      nodes: v.nodes.length,
+      sample: v.nodes.slice(0, 3).map((n) => n.html.slice(0, 160)),
+    })),
+    passes: res.passes.length,
+  };
+}
+
+async function run() {
+  const out = { axe: {} };
+  try {
+    if (!DB()) w.eval('init()');
+    out.header = txt($('header-stats'));
+    out.dbBlockingErrors = w.eval('dbBlockingErrors.length');
+    out.duplicateIds = (() => {
+      const seen = {};
+      d.querySelectorAll('[id]').forEach((el) => (seen[el.id] = (seen[el.id] || 0) + 1));
+      return Object.entries(seen).filter(([, n]) => n > 1).map(([id]) => id);
+    })();
+    out.landmarks = { main: d.querySelectorAll('main').length, header: d.querySelectorAll('header').length, h1: d.querySelectorAll('h1').length };
+
+    // ---- 1. search → disease → drug → weight (all through the DOM) ----------
+    type($('search'), 'хламид');
+    out.search = { resultsVisible: visible($('results-box')), results: $('results-box').children.length, first: txt($('results-box').firstElementChild), status: txt($('search-status')), statusVisible: visible($('search-status')) };
+    // recall: tokens + Russian endings + ICD + drug names, computable hits first
+    out.searchRecall = {};
+    for (const q of ['пневмония дети', 'h. pylori', 'амоксициллин', 'J18', 'J18.9', 'j18.9 дети', 'J18.0', 'J1', 'J', 'N39.0', 'J 18', 'j 18.9', 'Н66', 'H66', 'В20', 'B20', 'О85', 'O85', 'К81', 'отит взрослые', 'отит', 'рожа', 'ангина', 'грипп', 'ковид', 'колит', 'асцит', 'тонзиллита', 'таза', 'холера', 'гепатит', 'язва', 'рана', 'котримоксазол', 'ко-тримоксазол', 'вичинфекция', 'xyzzy', 'пневмания дети', 'тонзилит', 'амоксицилин', 'цистит', 'бронхит', 'ин', 'х', 'лёгк', 'легк', 'трёх', 'трех', 'НОВОРОЖДЁННЫЕ']) {
+      type($('search'), q);
+      const items = [...$('results-box').children];
+      out.searchRecall[q] = {
+        n: items.length,
+        status: txt($('search-status')), statusVisible: visible($('search-status')), boxVisible: visible($('results-box')),
+        first: items.length ? txt(items[0]).slice(0, 60) : null,
+        names: items.slice(0, 5).map((i) => txt(i).split('МКБ')[0]),
+        rows: items.slice(0, 5).map((i) => txt(i)),
+        blockedBeforeComputable: items.findIndex((i) => /расчёт закрыт/i.test(i.textContent)) >= 0
+          && items.findIndex((i) => /расчёт закрыт/i.test(i.textContent)) < items.map((i) => !/расчёт закрыт/i.test(i.textContent)).lastIndexOf(true),
+      };
+    }
+    const chl = clickDisease('chlamydia_urogenital');
+    out.disease = { name: chl.name, status: $('source-calculation-block').dataset.sourceStatus, activeCr: txt($('active-cr')), searchStatusVisible: visible($('search-status')) };
+    clickDrug(/Доксициклин/i);
+    type($('weight'), '70');
+    out.adult = {
+      ageGroup: w.eval('activeAge'),
+      mg: txt($('po-mg')),
+      tabs: txt($('po-tabs')),
+      resultVisible: visible($('result-step')),
+      flags: txt($('patient-safety-banners')),
+      flagsVisible: visible($('patient-safety-banners')),
+    };
+
+    // ---- 2. the age typed next to the unit selector must drive the age group --
+    //      (regression: a duplicate id="patient-age" in the header card used to
+    //       swallow the input — getElementById returned the other field)
+    type($('patient-age'), '7');
+    out.age7 = {
+      ageGroup: w.eval('activeAge'),
+      notice: txt($('age-explicit-notice')),
+      noticeVisible: visible($('age-explicit-notice')),
+      flags: txt($('patient-safety-banners')),
+      doseBlock: txt($('dose-block')),
+      resultVisible: visible($('result-step')),
+      scenarioCards: [...d.querySelectorAll('#scenario-list .scenario-card')].map((c) => c.className),
+    };
+    $('patient-age-unit').value = 'months';
+    fire($('patient-age-unit'), 'change');
+    out.age7months = { ageGroup: w.eval('activeAge'), notice: txt($('age-explicit-notice')) };
+    $('patient-age-unit').value = 'years';
+    fire($('patient-age-unit'), 'change');
+    type($('patient-age'), '19');
+    out.age19 = { ageGroup: w.eval('activeAge'), flags: txt($('patient-safety-banners')), flagsVisible: visible($('patient-safety-banners')) };
+
+    // ---- 3. pregnancy + GFR → advisory flags + MIS text ----------------------
+    $('patient-pregnancy').value = 'yes';
+    fire($('patient-pregnancy'), 'change');
+    type($('patient-gfr'), '25');
+    out.pregGfr = { flags: txt($('patient-safety-banners')), flagsVisible: visible($('patient-safety-banners')) };
+    ($('btn-copy-mis') || $('btn-copy')).click();
+    await sleep(0);
+    out.mis = { text: w.__copied || '', lines: (w.__copied || '').split('\n').length };
+    w.fillPrescriptionForm();
+    out.rxPregGfr = { safetyHidden: $('rx-safety-line').hidden, safety: txt($('rx-safety-line')) };
+    // course units + wording: MIS «суммарно N таб.» == Rp «D.t.d. N. N» == printed «D.t.d. N N»,
+    // and the course is «N дней», never «<words> дней»
+    w.__copied = '';
+    w.copyLatinRecipe();
+    await sleep(0);
+    out.courseUnits = {
+      misTotal: ((w.__copied && out.mis.text.match(/суммарно (\d+) таб/)) || [])[1] || null,
+      rpDtd: ((w.__copied || '').match(/D\.t\.d\. N\. (\d+)/) || [])[1] || null,
+      rxDtd: (txt($('rx-drugs')).match(/D\.t\.d\. N (\d+)/) || [])[1] || null,
+      rpSigna: ((w.__copied || '').split('\n').find((l) => l.startsWith('S.:')) || ''),
+      misCourse: (out.mis.text.split('\n').find((l) => l.startsWith('Курс лечения:')) || ''),
+      rxCourse: txt($('rx-course')),
+      screenCourse: txt($('po-dur')),
+      perDose: txt($('po-tabs')),
+    };
+    // printed header: patient (raw input, text only), age, weight
+    type($('patient-name'), 'Иванова А.<img src=x onerror=alert(1)>');
+    w.fillPrescriptionForm();
+    out.rxHeader = { text: txt($('rx-header-row')), html: $('rx-header-row').innerHTML.includes('<img') };
+    type($('patient-name'), '');
+
+    // ---- 3b. implausible GFR («1500» = a creatinine?) → patient-level caution on
+    // screen and in the MIS text; GFR 0 (anuria) runs the renal rule, not silence
+    type($('patient-gfr'), '1500');
+    ($('btn-copy-mis') || $('btn-copy')).click();
+    await sleep(0);
+    out.gfrHigh = { flags: txt($('patient-safety-banners')), mis: (w.__copied || '').split('\n').filter((l) => l.includes('СКФ 1500')) };
+    type($('patient-gfr'), '0');
+    out.gfrZero = { flags: txt($('patient-safety-banners')) };  // doxycycline: «Не требуется» → nothing
+
+    // ---- 4. reset context → flags disappear ------------------------------------
+    $('patient-pregnancy').value = 'unknown';
+    fire($('patient-pregnancy'), 'change');
+    type($('patient-gfr'), '');
+    type($('patient-age'), '');
+    out.afterReset = { flagsVisible: visible($('patient-safety-banners')), noticeVisible: visible($('age-explicit-notice')) };
+
+    // ---- 5. allergy: penicillin → amoxicillin card flagged -------------------
+    type($('patient-age'), '7');
+    clickDisease('aom_child');
+    $('patient-allergy').value = 'penicillin_severe';
+    fire($('patient-allergy'), 'change');
+    const amox = drugCards().find((c) => /Амоксициллин/i.test(c.textContent));
+    out.allergy = {
+      badgeVisible: visible($('allergy-badge')),
+      amoxCardClass: amox ? amox.className : null,
+      amoxText: amox ? txt(amox).slice(0, 120) : null,
+    };
+    // selecting the contraindicated drug anyway: every export must say so
+    amox.click();
+    type($('weight'), '25');
+    out.allergy.bannerVisible = visible($('allergy-alert-banner'));
+    out.allergy.bannerTitle = txt($('allergy-alert-title'));
+    w.__copied = '';
+    w.copyForMIS();
+    await sleep(0);
+    out.allergy.mis = w.__copied || '';
+    w.__copied = '';
+    w.copyLatinRecipe();
+    await sleep(0);
+    out.allergy.rp = w.__copied || '';
+    w.fillPrescriptionForm();
+    out.allergy.rxSafety = { hidden: $('rx-safety-line').hidden, text: txt($('rx-safety-line')) };
+    w.saveToHistory();
+    w.loadHistory();
+    out.allergy.history = txt($('history-list'));
+    $('patient-allergy').value = 'none';
+    fire($('patient-allergy'), 'change');
+    w.fillPrescriptionForm();
+    out.allergy.rxSafetyAfterReset = { hidden: $('rx-safety-line').hidden, text: txt($('rx-safety-line')) };
+    out.allergy.toast = txt($('toast'));
+    // changing the allergy status must keep the physician's place: the NON-first drug,
+    // its non-default form chip and regimen (it used to jump to the first card)
+    {
+      const cards = [...d.querySelectorAll('#drug-list .drug-card')];
+      const second = cards.find((c) => !c.classList.contains('active') && !/Амоксициллин/i.test(c.textContent)) || cards[cards.length - 1];
+      second.click();
+      const chips = [...d.querySelectorAll('#form-grid button[data-form-idx]')];
+      if (chips.length > 1) chips[chips.length - 1].click();
+      const state = () => w.eval('[getDrugRefs(activeDrug).join("+"), activeLine.line_number, currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
+      const keep = { before: state(), firstCard: txt(cards[0]).slice(0, 30), chips: chips.length };
+      type($('patient-allergy'), 'penicillin_severe');
+      keep.afterSevere = state();
+      keep.flaggedCards = [...d.querySelectorAll('#drug-list .drug-card')].filter((c) => /border-red-300/.test(c.className)).map((c) => txt(c).slice(0, 20));
+      keep.activeCard = txt(d.querySelector('#drug-list .drug-card.active')).slice(0, 30);
+      type($('patient-allergy'), 'none');
+      keep.afterNone = state();
+      out.allergy.keepSelection = keep;
+    }
+    type($('weight'), '');
+    type($('patient-age'), '');
+    // the explicit age is sticky (clearing it keeps «дети»): go back to adults via the chip
+    d.querySelector('[data-age="adult"]').click();
+    out.allergy.ageGroupAfterChip = w.eval('activeAge');
+
+    // ---- 6. blocked and no-CR records --------------------------------------------
+    const blocked = find((r) => r.calculation_blocked);
+    clickDisease(blocked.id);
+    out.blocked = { id: blocked.id, resultVisible: visible($('result-step')), banner: txt($('source-calculation-block')).slice(0, 160) };
+    const noCr = find((r) => r.source_verification_status === 'NO_FEDERAL_CR_EXPERT_BASIS');
+    clickDisease(noCr.id);
+    out.noCr = { id: noCr.id, status: $('source-calculation-block').dataset.sourceStatus, banner: txt($('source-calculation-block')).slice(0, 160) };
+
+    // ---- 7. theme toggle, history drawer, guideline modal + keyboard ---------
+    const darkBefore = d.documentElement.classList.contains('dark');
+    $('btn-theme').click();
+    const storedTheme = w.localStorage.getItem('antibio_theme');
+    // Simulate a fresh page's pre-paint state, then replay setupTheme(): the previous
+    // test only proved the toggle wrote localStorage, not that a reload restored it.
+    d.documentElement.classList.remove('dark');
+    w.setupTheme();
+    out.theme = {
+      before: darkBefore,
+      after: storedTheme === 'dark',
+      stored: storedTheme,
+      restored: d.documentElement.classList.contains('dark'),
+      icon: $('theme-icon').classList.contains('fa-sun') ? 'sun' : 'moon'
+    };
+    $('btn-theme').click();
+
+    clickDisease('chlamydia_urogenital');
+    $('btn-history').click();
+    out.drawer = {
+      openClass: $('history-drawer').classList.contains('open'),
+      inert: $('history-drawer').hasAttribute('inert'),
+      ariaHidden: $('history-drawer').getAttribute('aria-hidden'),
+      focusOnClose: d.activeElement && d.activeElement.id,
+    };
+    await axeRun('drawer_open', out);
+    key('Escape');
+    out.drawerAfterEscape = {
+      openClass: $('history-drawer').classList.contains('open'),
+      inert: $('history-drawer').hasAttribute('inert'),
+      focusId: d.activeElement && d.activeElement.id,
+    };
+
+    const originalWidth = w.innerWidth;
+    Object.defineProperty(w, 'innerWidth', { configurable: true, writable: true, value: 390 });
+    w.dispatchEvent(new w.Event('resize'));
+    const mobileNav = d.querySelector('.mobile-nav');
+    const mobileHistoryTrigger = mobileNav.querySelectorAll('button')[1];
+    mobileHistoryTrigger.focus();
+    mobileHistoryTrigger.click();
+    const mobileDrawerInitialFocus = d.activeElement === $('drawer-close');
+    $('drawer-close').click();
+    out.mobileDrawerFocus = {
+      navVisible: w.getComputedStyle(mobileNav).display === 'flex',
+      drawerInitialFocus: mobileDrawerInitialFocus,
+      triggerRestored: d.activeElement === mobileHistoryTrigger,
+      hiddenAncestor: !!d.activeElement.closest('[hidden], [aria-hidden="true"]') ||
+        w.getComputedStyle(mobileNav).display === 'none' || w.getComputedStyle(d.activeElement).display === 'none',
+    };
+    Object.defineProperty(w, 'innerWidth', { configurable: true, writable: true, value: originalWidth });
+    w.dispatchEvent(new w.Event('resize'));
+
+    const diseaseGuidelineTrigger = d.querySelector('#active-disease button[type="button"]');
+    diseaseGuidelineTrigger.focus();
+    diseaseGuidelineTrigger.click();
+    out.modal = {
+      visible: visible($('guideline-modal')),
+      role: $('guideline-modal').getAttribute('role'),
+      labelledBy: $('guideline-modal').getAttribute('aria-labelledby'),
+      title: txt($('modal-cr-title')),
+      focusTag: d.activeElement && d.activeElement.tagName,
+    };
+    await axeRun('modal_open', out);
+    key('Escape');
+    out.modalAfterEscape = {
+      visible: visible($('guideline-modal')),
+      triggerRestored: d.activeElement === diseaseGuidelineTrigger,
+      hiddenAncestor: !!d.activeElement.closest('.hidden'),
+    };
+
+    clickDrug(/Доксициклин/i);
+    type($('weight'), '70');
+    const resultGuidelineTrigger = $('btn-guideline-modal');
+    resultGuidelineTrigger.focus();
+    resultGuidelineTrigger.click();
+    $('guideline-modal').querySelector('button[aria-label="Закрыть окно клинической рекомендации"]').click();
+    out.modalResultFocus = {
+      resultVisible: visible($('result-step')),
+      triggerRestored: d.activeElement === resultGuidelineTrigger,
+      hiddenAncestor: !!d.activeElement.closest('.hidden'),
+    };
+
+    // ---- 7a. keyboard: custom buttons mirror native Enter / Space behavior ----
+    {
+      const probe = d.createElement('div');
+      d.body.appendChild(probe);
+      let activations = 0;
+      w.makeActivatable(probe, () => activations++);
+      probe.focus();
+      const send = (type, key, repeat=false) => {
+        const ev = new w.KeyboardEvent(type, { key, repeat, bubbles: true, cancelable: true });
+        probe.dispatchEvent(ev);
+        return ev;
+      };
+      const spaceDown = send('keydown', ' ');
+      const afterSpaceDown = activations;
+      const repeatSpaceDown = send('keydown', ' ', true);
+      const afterRepeatSpaceDown = activations;
+      const spaceUp = send('keyup', ' ');
+      const afterSpaceUp = activations;
+      send('keyup', ' '); // stray keyup without a matching keydown must do nothing
+      const afterStraySpaceUp = activations;
+      probe.focus(); send('keydown', ' '); probe.blur(); send('keyup', ' ');
+      const afterBlurBeforeSpaceUp = activations;
+      probe.focus();
+      const enterDown = send('keydown', 'Enter');
+      const afterEnterDown = activations;
+      send('keydown', 'Enter', true);
+      const afterRepeatEnterDown = activations;
+      out.keyboardActivation = {
+        spacePrevented: spaceDown.defaultPrevented && repeatSpaceDown.defaultPrevented && spaceUp.defaultPrevented,
+        afterSpaceDown, afterRepeatSpaceDown, afterSpaceUp, afterStraySpaceUp, afterBlurBeforeSpaceUp,
+        enterPrevented: enterDown.defaultPrevented, afterEnterDown, afterRepeatEnterDown
+      };
+      probe.remove();
+
+      const key = (el, k) => {
+        el.focus();
+        el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+        if (k === ' ') el.dispatchEvent(new w.KeyboardEvent('keyup', { key: k, bubbles: true, cancelable: true }));
+      };
+      d.querySelector('[data-age="adult"]').click();
+      type($('search'), 'хламид');
+      const hits = [...$('results-box').children];
+      const hit = hits.find((c) => /Урогенитальный хламидиоз/i.test(c.textContent)) || hits[0];
+      out.keyboard = { hits: hits.length, hitRole: hit.getAttribute('role'), hitTabindex: hit.getAttribute('tabindex') };
+      key(hit, 'Enter');
+      out.keyboard.diseaseAfterEnter = w.eval('activeDisease && activeDisease.id');
+      out.keyboard.focusAfterDiseaseEnter = {
+        focusedSelectedScenario: d.activeElement === d.querySelector('#scenario-list .scenario-card.active'),
+        hiddenAncestor: !!d.activeElement.closest('.hidden'),
+        activeRole: d.activeElement.getAttribute('role')
+      };
+      const scCards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      out.keyboard.scenarioRoles = scCards.map((c) => c.getAttribute('role') + '/' + c.getAttribute('tabindex'));
+      const target = scCards.find((c) => !c.classList.contains('opacity-50')) || scCards[0];
+      key(target, ' ');
+      out.keyboard.scenarioAfterSpace = w.eval('activeScenario && activeScenario.id');
+      out.keyboard.scenarioCardActive = target.classList.contains('active');
+      const drugCard = d.querySelector('#drug-list .drug-card');
+      out.keyboard.drugRole = drugCard && drugCard.getAttribute('role');
+      key(drugCard, 'Enter');
+      out.keyboard.drugAfterEnter = w.eval('activeDrug && (activeDrug.drug_ref || (activeDrug.combo_ref || []).join("+"))');
+      out.keyboard.resultVisible = visible($('result-step'));
+      // deep link: #disease/scenario restores the scenario, not only the disease
+      const hash = w.location.hash;
+      out.keyboard.hash = hash;
+      w.eval('activeScenario = null; activeDisease = null;');
+      w.eval('restoreFromHash()');
+      out.keyboard.restoredScenario = w.eval('activeScenario && activeScenario.id');
+
+      // T106: exercise the installed Space handlers on a real, focused card.
+      // Chlamydia has only one scenario, already auto-selected on entry, so its
+      // old assertion could pass without Space activating anything.
+      d.querySelector('[data-age="adult"]').click();
+      type($('search'), 'послеродовой мастит');
+      const mastitisHit = [...$('results-box').children].find((c) => /Послеродовой мастит/i.test(c.textContent));
+      if (!mastitisHit) throw new Error('keyboard regression fixture not found: puerperal mastitis');
+      key(mastitisHit, 'Enter');
+      const mastitisCards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      const secondScenario = mastitisCards.find((c) => c.dataset.idx === '1');
+      if (!secondScenario) throw new Error('keyboard regression fixture needs a second scenario card');
+      const scenarioBeforeSpace = w.eval('activeScenario && activeScenario.id');
+      secondScenario.focus();
+      const realSpaceDown = new w.KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+      secondScenario.dispatchEvent(realSpaceDown);
+      const realAfterSpaceDown = w.eval('activeScenario && activeScenario.id');
+      const realSpaceRepeat = new w.KeyboardEvent('keydown', { key: ' ', repeat: true, bubbles: true, cancelable: true });
+      secondScenario.dispatchEvent(realSpaceRepeat);
+      const realAfterSpaceRepeat = w.eval('activeScenario && activeScenario.id');
+      const realSpaceUp = new w.KeyboardEvent('keyup', { key: ' ', bubbles: true, cancelable: true });
+      secondScenario.dispatchEvent(realSpaceUp);
+      out.keyboard.realSpaceCard = {
+        scenarioBeforeSpace, afterSpaceDown: realAfterSpaceDown, afterSpaceRepeat: realAfterSpaceRepeat,
+        afterSpaceUp: w.eval('activeScenario && activeScenario.id'),
+        downPrevented: realSpaceDown.defaultPrevented,
+        repeatPrevented: realSpaceRepeat.defaultPrevented,
+        upPrevented: realSpaceUp.defaultPrevented,
+        pressed: secondScenario.getAttribute('aria-pressed'),
+        active: secondScenario.classList.contains('active'),
+        focusStayed: d.activeElement === secondScenario
+      };
+
+      const blockedForKeyboard = find((r) => r.calculation_blocked);
+      type($('search'), blockedForKeyboard.name);
+      const blockedHit = [...$('results-box').children].find((c) => c.textContent.includes(blockedForKeyboard.name));
+      if (!blockedHit) throw new Error('keyboard regression fixture not found: blocked result');
+      key(blockedHit, 'Enter');
+      out.keyboard.focusAfterBlockedDiseaseEnter = {
+        id: w.eval('activeDisease && activeDisease.id'),
+        expectedId: blockedForKeyboard.id,
+        focusedSourceBlock: d.activeElement === $('source-calculation-block'),
+        hiddenAncestor: !!d.activeElement.closest('.hidden')
+      };
+
+      const diseaseResetButton = d.querySelector('#active-disease button[aria-label="Сбросить выбранную нозологию"]');
+      diseaseResetButton.focus();
+      diseaseResetButton.click();
+      out.keyboard.focusAfterDiseaseReset = {
+        activeDiseaseCleared: w.eval('activeDisease === null'),
+        searchFocused: d.activeElement === $('search'),
+        hiddenAncestor: !!d.activeElement.closest('.hidden')
+      };
+      type($('search'), 'хламид');
+      const searchClearButton = $('search-clear');
+      searchClearButton.focus();
+      searchClearButton.click();
+      out.keyboard.focusAfterSearchClear = {
+        value: $('search').value,
+        searchFocused: d.activeElement === $('search'),
+        clearHidden: searchClearButton.classList.contains('hidden'),
+        hiddenAncestor: !!d.activeElement.closest('.hidden')
+      };
+
+      // leave the harness in the doxycycline/70 kg state the later steps expect
+      clickDisease('chlamydia_urogenital');
+      clickDrug(/Доксициклин/i);
+      type($('weight'), '70');
+    }
+
+    // ---- 7c. switching to a gate-blocked nosology must drop the previous
+    //          drug: the always-visible header "Печать" used to print the OLD
+    //          regimen under the NEW (blocked) diagnosis ------------------------
+    {
+      w.print = () => { w.__printed = (w.__printed || 0) + 1; };
+      $('rx-drugs').textContent = '';
+      $('rx-trust-line').textContent = '';
+      out.stale = { drugBefore: w.eval('activeDrug && activeDrug.drug_ref') };
+      const blocked = find((r) => r.calculation_blocked && r.id !== 'chlamydia_urogenital');
+      w.selectDisease(blocked);
+      out.stale.blockedId = blocked.id;
+      out.stale.gate = $('source-calculation-block').dataset.sourceStatus;
+      out.stale.drugAfter = w.eval('activeDrug && activeDrug.drug_ref');
+      out.stale.scenarioAfter = w.eval('activeScenario && activeScenario.id');
+      out.stale.hash = w.location.hash;
+      out.stale.staleCards = d.querySelectorAll('#scenario-list .scenario-card, #drug-list .drug-card').length;
+      $('btn-print').click();
+      out.stale.printed = w.__printed || 0;
+      out.stale.rxDrugs = txt($('rx-drugs'));
+      out.stale.toast = txt($('toast'));
+      // back to the working state for the remaining steps
+      clickDisease('chlamydia_urogenital');
+      clickDrug(/Доксициклин/i);
+      type($('weight'), '70');
+    }
+
+    // ---- 7d. combination: the partner drug's computed dose reaches the exports --
+    {
+      w.selectDisease(find((r) => r.id === 'listeriosis'));
+      type($('weight'), '70');
+      out.combo = { drug: w.eval('JSON.stringify(activeDrug.combo_ref)'), screen: txt($('combo-block')) };
+      w.__copied = '';
+      w.copyForMIS();
+      await sleep(0);
+      out.combo.mis = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.combo.rx = txt($('rx-drugs'));
+      w.__copied = '';
+      w.copyLatinRecipe();
+      await sleep(0);
+      out.combo.rp = w.__copied || '';
+      // T85: the history row names the whole combination and words the course as the exports do
+      w.saveToHistory();
+      out.combo.historyEntry = JSON.parse(w.eval('JSON.stringify(historyEntries[0])'));
+      w.openHistory();
+      out.combo.historyRow = txt(d.querySelector('#history-list .premium-card'));
+      w.closeHistory();
+    }
+
+    // ---- 7e. default form = the strength that fits the single dose -------------
+    {
+      w.selectDisease(find((r) => r.id === 'cap_adult'));
+      type($('weight'), '70');
+      const sc = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc) sc.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const chips = [...d.querySelectorAll('#form-grid button')];
+      out.defaultForm = {
+        drug: w.eval('activeDrug && activeDrug.drug_ref'),
+        chips: chips.map((c) => txt(c)),
+        active: chips.filter((c) => c.classList.contains('active')).map((c) => txt(c)),
+        dose: txt($('po-mg')),
+        perDose: txt($('po-tabs')),
+      };
+      // amoxiclav 875 mg → the 875+125 tablet, one per dose
+      const amc = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => /коморбидный/i.test(c.textContent) && !c.classList.contains('opacity-50'));
+      if (amc) { amc.click(); clickDrug(/Амоксициллин\s*\+|клавулан/i); }
+      out.defaultForm.amoxiclav = {
+        drug: w.eval('activeDrug && activeDrug.drug_ref'),
+        active: [...d.querySelectorAll('#form-grid button.active')].map((c) => txt(c)),
+        dose: txt($('po-mg')),
+        perDose: txt($('po-tabs')),
+      };
+    }
+
+    // ---- 7f. history «Открыть расчёт» re-opens the saved calculation ------------
+    {
+      // pick the NON-default 500+125 tablet, save, go somewhere else, restore
+      const other = [...d.querySelectorAll('#form-grid button')].find((c) => /^500\+125/.test(txt(c)));
+      if (other) other.click();
+      const before = w.eval('[activeDisease.id, activeScenario.id, activeLine.line_number, activeDrug.drug_ref, currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
+      // the rest of the patient context (GFR / pregnancy / allergy) is saved with the entry
+      type($('patient-gfr'), '25');
+      type($('patient-pregnancy'), 'no');
+      type($('patient-allergy'), 'cephalosporin');
+      type($('patient-name'), 'Иванов И.И.');
+      out.historyRestore = { before, doseBefore: txt($('po-mg')) + ' ' + txt($('po-tabs')), flagsBefore: txt($('patient-safety-banners')) };
+      w.saveToHistory();
+      type($('patient-gfr'), '');
+      type($('patient-pregnancy'), 'unknown');
+      type($('patient-allergy'), 'none');
+      type($('patient-name'), 'Петров П.П.');
+      type($('patient-age'), '6');
+      type($('weight'), '20');
+      clickDisease('cap_child');
+      out.historyRestore.elsewhere = w.eval('activeDisease.id + "|" + activeAge');
+      w.openHistory();
+      const open = d.querySelector('#history-list button[data-action="restore"]');
+      out.historyRestore.button = open ? txt(open) + ' / ' + (open.getAttribute('aria-describedby') || '').split(' ').map((id) => txt($(id))).join(', ') : null;
+      if (open) open.click();
+      out.historyRestore.after = w.eval('[activeDisease.id, activeScenario.id, activeLine.line_number, activeDrug.drug_ref, currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
+      out.historyRestore.doseAfter = txt($('po-mg')) + ' ' + txt($('po-tabs'));
+      out.historyRestore.age = $('patient-age').value + '|' + w.eval('activeAge') + '|' + $('weight').value;
+      out.historyRestore.drawerOpen = $('history-drawer').classList.contains('open');
+      out.historyRestore.toast = txt($('toast'));
+      out.historyRestore.context = [$('patient-gfr').value, $('patient-pregnancy').value, $('patient-allergy').value].join('|');
+      out.historyRestore.flagsAfter = txt($('patient-safety-banners'));
+      out.historyRestore.allergyBadge = visible($('allergy-badge'));
+      w.dispatchEvent(new w.Event('beforeprint'));
+      out.historyRestore.patientName = $('patient-name').value + ' / ' + txt($('rx-patient'));
+      type($('patient-name'), '');
+      type($('patient-gfr'), '');
+      type($('patient-pregnancy'), 'unknown');
+      type($('patient-allergy'), 'none');
+      clickDisease('chlamydia_urogenital');
+      clickDrug(/Доксициклин/i);
+      type($('weight'), '70');
+    }
+
+    // ---- 7b. route/form mismatch is fail-visible: doxycycline (tablets only)
+    //          asked for iv → tabs fall back to all forms + amber notice ---------
+    out.routeMismatch = { noteHiddenBefore: !visible($('route-mismatch-note')) };
+    w.eval("activeDrug.route = ['iv']; renderForms();");
+    out.routeMismatch.noteVisible = visible($('route-mismatch-note'));
+    out.routeMismatch.noteText = txt($('route-mismatch-note'));
+    out.routeMismatch.tabs = [...$('route-tabs').querySelectorAll('button')].map((b) => txt(b));
+    w.eval("activeDrug.route = ['per_os']; renderForms();");
+    out.routeMismatch.noteHiddenAfter = !visible($('route-mismatch-note'));
+
+    // ---- 8. service-worker update notice (jsdom has no serviceWorker; the
+    //         banner path is exercised directly) ------------------------------------
+    out.updateBanner = { hiddenBefore: !visible($('update-banner')) };
+    w.showUpdateBanner();
+    out.updateBanner.visibleAfter = visible($('update-banner'));
+    out.updateBanner.text = txt($('update-banner'));
+    out.updateBanner.role = $('update-banner').getAttribute('role');
+
+    // ---- 9. accessibility of the main state ----------------------------------------
+    type($('weight'), '70');
+    await axeRun('main', out);
+    $('update-banner').classList.add('hidden');
+
+    // ---- 10. a hand-edited hash re-opens that nosology (hashchange) ----------------
+    {
+      const beforeHash = w.eval('activeDisease && activeDisease.id');
+      w.location.hash = '#cap_adult/cap_adult_out_no_risk';
+      await sleep(20);
+      out.hashchange = { before: beforeHash, after: w.eval('activeDisease && activeDisease.id'), scenario: w.eval('activeScenario && activeScenario.id') };
+      // the hash line is restored too, and a scenario that does not fit the current age
+      // group waits (note under the list) until the patient data moves into its group
+      const hs = () => w.eval('[activeAge, activeScenario && activeScenario.id, activeLine && activeLine.line_number, activeDrug && getDrugRefs(activeDrug)[0]].join("|")');
+      w.location.hash = '#salmonellosis/salmonellosis_severe/L2';
+      await sleep(20);
+      out.hashchange.line = hs();
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      w.location.hash = '#cap_adult/cap_adult_out_comorbid/L1';
+      await sleep(20);
+      out.hashchange.pendingState = hs();
+      out.hashchange.pendingNote = visible($('scenario-hash-note')) ? txt($('scenario-hash-note')) : '';
+      type($('patient-age'), '40');
+      type($('weight'), '70');
+      out.hashchange.resolvedState = hs();
+      out.hashchange.resolvedNote = visible($('scenario-hash-note'));
+      // a scenario picked by hand drops the pending link
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      w.location.hash = '#cap_adult/cap_adult_out_comorbid/L1';
+      await sleep(20);
+      w.location.hash = '#cap_child/cap_child_out/L1';
+      await sleep(20);
+      out.hashchange.otherDiseaseClearsNote = !visible($('scenario-hash-note'));
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
+
+    // ---- 11. children open on the suspension whose dose volume is measurable ------
+    {
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      clickDisease('cap_child');
+      const sc = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc) sc.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const active = () => [...d.querySelectorAll('#form-grid button.active')].map((c) => txt(c));
+      out.liquidDefault = { child25: { active: active(), dose: txt($('po-mg')), ml: txt($('po-ml')) + ' ' + txt($('po-unit')) } };
+      w.__copied = '';
+      w.copyForMIS();
+      await sleep(0);
+      out.liquidDefault.child25.mis = w.__copied || '';
+      w.__copied = '';
+      w.copyLatinRecipe();
+      await sleep(0);
+      out.liquidDefault.child25.rp = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.liquidDefault.child25.rxDtd = [...d.querySelectorAll('#rx-drugs .rx-dtd')].map((e) => txt(e));
+      // the same drug for a 7-kg infant: the low concentration is the measurable one
+      type($('patient-age-unit'), 'months');
+      type($('patient-age'), '6');
+      type($('weight'), '7');
+      clickDisease('cap_child');
+      const sc2 = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc2) sc2.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      out.liquidDefault.infant7 = { active: active(), dose: txt($('po-mg')), ml: txt($('po-ml')) + ' ' + txt($('po-unit')) };
+      // hand-picked low concentration → the MIS text carries the volume warning
+      // (the chips are re-rendered when the weight changes the default — find it afterwards)
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      const low = [...d.querySelectorAll('#form-grid button')].find((c) => /^125 мг\/5 мл/.test(txt(c)));
+      if (low) low.click();
+      w.__copied = '';
+      w.copyForMIS();
+      await sleep(0);
+      out.liquidDefault.lowPicked = { active: active(), ml: txt($('po-ml')), mis: w.__copied || '' };
+      // a 12-year-old at 39.9 kg: 1500 mg per dose = 30 ml of the strongest suspension →
+      // opens on «500 мг» tablets (3 per dose); the 7-year-old above stays on the suspension
+      // because no tablet divides 1125 mg into ≤ 3 units
+      type($('patient-age'), '12');
+      type($('weight'), '39.9');
+      clickDisease('cap_child');
+      const sc3 = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc3) sc3.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      out.liquidDefault.teen40 = { active: active(), dose: txt($('po-mg')), tabs: txt($('po-tabs')) };
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
+    // 12. weight / age plausibility: the notice appears while typing (drug or not),
+    //     a weight impossible for the entered age blocks every output
+    {
+      const warn = () => ({ text: txt($('weight-warn')), hidden: !visible($('weight-warn')), blocking: $('weight-warn').dataset.blocking });
+      type($('patient-age-unit'), 'days');
+      type($('patient-age'), '10');
+      type($('weight'), '25');
+      w.__copied = '';
+      w.copyForMIS();
+      await sleep(0);
+      out.plausibility = { neonate25: Object.assign(warn(), { mis: w.__copied || '', toast: txt($('toast')), block: txt($('dose-block')) }) };
+      type($('weight'), '3.2');
+      out.plausibility.neonate32 = warn();
+      type($('patient-age'), '150');
+      type($('patient-age-unit'), 'years');
+      type($('weight'), '70');
+      out.plausibility.age150 = { notice: txt($('age-explicit-notice')), block: txt($('dose-block')), po: visible($('res-po')) };
+      type($('patient-age'), '35');
+      out.plausibility.age35 = { notice: txt($('age-explicit-notice')), block: txt($('dose-block')), po: visible($('res-po')) };
+      // «0 лет» / «0 мес» read as 0 days: the notice says how to enter an infant's age
+      type($('patient-age'), '0');
+      out.plausibility.age0years = { group: w.eval('activeAge'), notice: txt($('age-explicit-notice')) };
+      type($('patient-age-unit'), 'months');
+      out.plausibility.age0months = { group: w.eval('activeAge'), notice: txt($('age-explicit-notice')) };
+      type($('patient-age-unit'), 'days');
+      out.plausibility.age0days = { group: w.eval('activeAge'), notice: txt($('age-explicit-notice')) };
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '35');
+      // T98: the age-entry hint is not just a field note — a computable neonatal
+      // regimen entered as «0 лет» must carry the same caution through MIS / Rp / print.
+      type($('patient-age'), '0');
+      type($('weight'), '3.2');
+      clickDisease('neonatal_sepsis');
+      clickDrug(/Бензилпенициллин/i);
+      w.__copied = ''; w.copyForMIS(); await sleep(0); const ageZeroMis = w.__copied || '';
+      w.__copied = ''; w.copyLatinRecipe(); await sleep(0); const ageZeroRp = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.plausibility.ageZeroExports = {
+        disease: w.eval('activeDisease && activeDisease.id'),
+        ageGroup: w.eval('activeAge'),
+        notice: txt($('age-explicit-notice')),
+        flags: txt($('patient-safety-banners')),
+        mis: ageZeroMis,
+        rp: ageZeroRp,
+        printed: txt($('rx-safety-line'))
+      };
+      // no drug at all: pick nothing new, just an out-of-range weight on a fresh page state
+      type($('weight'), '300');
+      out.plausibility.w300 = warn();
+      type($('weight'), '70');
+      // T99: the weight can auto-switch the dosing age group. Keep the visible
+      // «basis changed» notice in the result, MIS / Rp and printed form too.
+      $('new-patient').click(); // clears the prior manual group choice; default is child
+      type($('weight'), '70'); // weight inference switches child → adult
+      clickDisease('cap_adult');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      w.__copied = ''; w.copyForMIS(); await sleep(0); const inferenceMis = w.__copied || '';
+      w.__copied = ''; w.copyLatinRecipe(); await sleep(0); const inferenceRp = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.plausibility.ageInferenceExports = {
+        ageGroup: w.eval('activeAge'),
+        patientAgeDays: w.eval('patientAgeDays'),
+        notice: txt($('age-infer-notice')),
+        flags: txt($('patient-safety-banners')),
+        mis: inferenceMis,
+        rp: inferenceRp,
+        printed: txt($('rx-safety-line')),
+      };
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
+    // 13. keyboard search: Enter opens the top result, arrows walk the list, Escape clears
+    {
+      const key = (el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+      type($('search'), 'тонзилит');
+      const items = [...$('results-box').querySelectorAll('[role="button"]')];
+      out.keyboardSearch = { n: items.length, first: items[0] ? txt(items[0]).split('МКБ')[0].trim() : null };
+      key($('search'), 'ArrowDown');
+      out.keyboardSearch.focusAfterDown = d.activeElement === items[0];
+      key(items[0], 'ArrowDown');
+      out.keyboardSearch.focusAfterDown2 = d.activeElement === items[1];
+      key(items[1], 'ArrowUp');
+      key(items[0], 'ArrowUp');
+      out.keyboardSearch.backToInput = d.activeElement === $('search');
+      key($('search'), 'Escape');
+      out.keyboardSearch.clearedValue = $('search').value;
+      out.keyboardSearch.boxHiddenAfterEscape = !visible($('results-box'));
+      type($('search'), 'тонзилит');
+      key($('search'), 'Enter');
+      out.keyboardSearch.openedDisease = w.eval('activeDisease && activeDisease.name');
+    }
+    // 14. a validator-accepted «drops» form belongs with the topical route, never per os
+    {
+      clickDisease('cap_adult');
+      const sc = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => !c.classList.contains('opacity-50'));
+      if (sc) sc.click();
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const before = [...d.querySelectorAll('#route-tabs button')].map((b) => txt(b));
+      w.eval("DB.drugs_reference[getDrugRefs(activeDrug)[0]].forms.push({form_type:'drops', concentration:'0.3 % капли ушные', notes:'тест'})");
+      w.eval("activeDrug.route = (activeDrug.route || []).concat(['topical'])");
+      w.renderForms();
+      const tabs = [...d.querySelectorAll('#route-tabs button')];
+      const topicalTab = tabs.find((b) => /наружно|местно|топик/i.test(txt(b)));
+      if (topicalTab) topicalTab.click();
+      out.dropsForm = {
+        before,
+        tabs: tabs.map((b) => txt(b)),
+        topicalForms: [...d.querySelectorAll('#form-grid button')].map((b) => txt(b)),
+        poHasDrops: (() => { const po = tabs.find((b) => /per os|внутрь/i.test(txt(b))); if (po) po.click(); return [...d.querySelectorAll('#form-grid button')].some((b) => /капли/.test(txt(b))); })(),
+      };
+      w.eval("DB.drugs_reference[getDrugRefs(activeDrug)[0]].forms.pop(); activeDrug.route = activeDrug.route.filter(r => r !== 'topical')");
+      w.renderForms();
+    }
+    // 15. «Новый пациент» clears the whole patient context and the calculation in one action
+    {
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '78');
+      type($('weight'), '58');
+      type($('patient-gfr'), '25');
+      type($('patient-pregnancy'), 'yes');
+      type($('patient-allergy'), 'penicillin_severe');
+      const filled = { po: visible($('res-po')) || visible($('res-inj')), allergyBanner: visible($('allergy-alert-banner')), group: w.eval('activeAge') };
+      // the nosology «✕» alone used to leave the allergy banner on screen with no drug
+      w.resetDisease();
+      filled.allergyBannerAfterDiseaseReset = visible($('allergy-alert-banner'));
+      clickDisease('cap_adult');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      filled.allergyBannerAgain = visible($('allergy-alert-banner'));
+      // GFR 0 (anuria) must run the renal rule («СКФ<30» for amoxicillin), not read as «empty»
+      type($('patient-gfr'), '0');
+      filled.gfrZeroFlags = txt($('patient-safety-banners'));
+      // the name must go with the patient; the physician and the date stay
+      type($('patient-name'), 'Сидоров С.С.');
+      type($('doctor-name'), 'Д-р Иванова');
+      $('new-patient').click();
+      out.newPatient = {
+        filled,
+        name: $('patient-name').value, doctor: $('doctor-name').value,
+        weight: $('weight').value, age: $('patient-age').value, unit: $('patient-age-unit').value,
+        gfr: $('patient-gfr').value, pregnancy: $('patient-pregnancy').value, allergy: $('patient-allergy').value,
+        group: w.eval('activeAge'), userPickedAge: w.eval('userPickedAge'), patientAgeDays: w.eval('patientAgeDays'),
+        activeChip: [...d.querySelectorAll('#age-group button.active')].map((b) => b.dataset.age),
+        resultHidden: !visible($('result-step')), emptyState: visible($('empty-state')), disease: w.eval('activeDisease'),
+        allergyBanner: visible($('allergy-alert-banner')), weightWarnHidden: !visible($('weight-warn')), toast: txt($('toast')),
+        search: $('search').value,
+      };
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
+    // 16. an age-group change keeps the physician's scenario / drug when the scenario
+    //     fits both groups; a drug without a regimen for the new group shows the explicit
+    //     age block instead of silently jumping to the first scenario's first drug
+    {
+      clickDisease('salmonellosis');
+      const state = () => w.eval('[activeScenario && activeScenario.id, activeLine && activeLine.line_number, activeDrug && getDrugRefs(activeDrug).join("+"), currentRouteGroup, activeAge].join("|")');
+      clickDrug(/^Ципрофлоксацин/i);
+      const keep = { adult: state(), adultBlock: txt($('dose-block')) };
+      type($('weight'), '25');
+      type($('patient-age'), '7');
+      keep.child = state();
+      keep.childBlock = txt($('dose-block'));
+      keep.childResultHidden = !visible($('res-po')) && !visible($('res-inj'));
+      clickDrug(/^Цефтриаксон/i);
+      keep.childCeftriaxone = state() + '|' + txt($('inj-mg') || $('po-mg'));
+      type($('patient-age'), '40');
+      type($('weight'), '70');
+      keep.backToAdult = state() + '|' + txt($('inj-mg') || $('po-mg'));
+      keep.backBlock = txt($('dose-block'));
+      // a scenario that does NOT fit the new group still falls back to the first eligible one
+      clickDisease('cap_adult');
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      keep.adultOnlyScenarioAtChildAge = state() + '|' + txt($('dose-block')).slice(0, 60);
+      // weight-inferred group change re-marks the scenario cards as well (sticky explicit
+      // age disables inference — start from «Новый пациент»)
+      $('new-patient').click();
+      clickDisease('aom_child');
+      type($('weight'), '25');
+      keep.inferredChild = state() + '|' + [...d.querySelectorAll('#scenario-list .scenario-card')].map((c) => (c.classList.contains('opacity-50') ? 'dim' : 'ok')).join(',');
+      type($('weight'), '70');
+      keep.inferredAdult = state() + '|' + [...d.querySelectorAll('#scenario-list .scenario-card')].map((c) => (c.classList.contains('opacity-50') ? 'dim' : 'ok')).join(',') + '|' + txt($('dose-block')).slice(0, 40);
+      out.ageKeepsSelection = keep;
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
+    // 17. the default form chip follows the weight (and the age / regimen) until the
+    //     physician picks one: a 25-kg child typed AFTER the drug used to stay on
+    //     «125 мг/5 мл» = 45 ml per dose, the same child typed first opened on «250 мг/5 мл»
+    {
+      const formState = () => w.eval('activeFormIdx') + '|' + txt(d.querySelector('#form-grid button.active')).slice(0, 12) + '|' + txt($('po-ml'));
+      $('new-patient').click();
+      type($('patient-age'), '7');
+      clickDisease('cap_child');
+      const def = { noWeight: formState() };
+      type($('weight'), '25');
+      def.weightAfterDrug = formState();
+      $('new-patient').click();
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      clickDisease('cap_child');
+      def.weightBeforeDrug = formState();
+      // an explicit chip survives weight changes; the next drug card starts from the default again
+      d.querySelector('#form-grid button[data-form-idx="4"]').click();
+      type($('weight'), '8');
+      def.pickedStays = formState() + '|' + w.eval('userPickedForm');
+      clickDrug(/^Амоксициллин \+ Клав/i);
+      def.nextDrugPicked = w.eval('userPickedForm');
+      out.formFollowsWeight = def;
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+    }
+    // 18. no navigator.clipboard (plain-http intranet host): the legacy execCommand copy
+    //     is used and the physician is always told the outcome (it used to throw silently)
+    {
+      clickDisease('cap_adult');
+      const clip = w.navigator.clipboard;
+      w.navigator.clipboard = undefined;
+      let legacy = '';
+      w.document.execCommand = (cmd) => { legacy = cmd === 'copy' ? (d.activeElement && d.activeElement.value) || '' : ''; return true; };
+      w.copyForMIS();
+      await sleep(0);
+      const viaLegacy = { toast: txt($('toast')), copiedLines: legacy.split('\n').length, startsWith: legacy.slice(0, 20), leftover: d.querySelectorAll('textarea[aria-hidden="true"]').length };
+      w.document.execCommand = () => false;
+      w.copyLatinRecipe();
+      await sleep(0);
+      viaLegacy.failToast = txt($('toast'));
+      delete w.document.execCommand;
+      w.navigator.clipboard = clip;
+      out.clipboardFallback = viaLegacy;
+    }
+    // 19. a browser that denies storage access (blocked site data): a second window where
+    //     localStorage / sessionStorage getters throw SecurityError — init() must still
+    //     restore the #hash deep link, the theme toggle must work, no uncaught errors
+    {
+      const errors2 = [];
+      const vc2 = new VirtualConsole();
+      vc2.on('jsdomError', (e) => errors2.push(String((e && e.message) || e)));
+      vc2.on('error', (...a) => errors2.push(a.map(String).join(' ')));
+      const dom2 = new JSDOM(html, {
+        runScripts: 'dangerously',
+        pretendToBeVisual: true,
+        url: 'http://10.0.0.5:8080/antibiotic_calc.html#cap_adult/cap_adult_out_comorbid/L1',
+        virtualConsole: vc2,
+        beforeParse(window) {
+          const deny = () => { throw new window.DOMException('Access is denied for this document.', 'SecurityError'); };
+          Object.defineProperty(window, 'localStorage', { get: deny, configurable: true });
+          Object.defineProperty(window, 'sessionStorage', { get: deny, configurable: true });
+        },
+      });
+      await sleep(400);
+      const w2 = dom2.window;
+      const d2 = w2.document;
+      const denied = { errors: errors2.slice(0, 5), dbLoaded: !!w2.eval('DB'), hashDisease: w2.eval('activeDisease && activeDisease.id'), hashScenario: w2.eval('activeScenario && activeScenario.id') };
+      try { w2.toggleTheme(); denied.toggleTheme = d2.documentElement.classList.contains('dark') ? 'dark' : 'light'; } catch (e) { denied.toggleTheme = 'threw: ' + e.message; }
+      try { w2.openHistory(); denied.historyOpens = !d2.getElementById('history-drawer').classList.contains('hidden'); } catch (e) { denied.historyOpens = 'threw: ' + e.message; }
+      out.storageDenied = denied;
+      dom2.window.close();
+    }
+    // 20. Ctrl+P bypasses the «Печать» button: beforeprint refills the form from the current
+    //     state — a valid calculation prints, an empty or blocked state prints the reason and
+    //     never the previous patient's lines
+    {
+      const beforeprint = () => w.dispatchEvent(new w.Event('beforeprint'));
+      const rx = () => ({ drugs: txt($('rx-drugs')), trust: txt($('rx-trust-line')).slice(0, 60), signa: txt($('rx-signa-text')), patient: txt($('rx-patient')) });
+      type($('patient-name'), 'Петров П.П.');
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      beforeprint();
+      const p = { filled: rx() };
+      w.resetDisease();
+      beforeprint();
+      p.afterReset = rx();
+      clickDisease('cap_adult');
+      type($('weight'), '0.5');
+      beforeprint();
+      p.blocked = rx();
+      type($('weight'), '70');
+      type($('patient-name'), '');
+      out.ctrlP = p;
+    }
+    // 21. a weight-blocked calculation is not saved to history (the block text promises
+    //     «не может быть сохранён»; MIS / Rp / print already refused, history did not)
+    {
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('weight'), '300');
+      const n0 = w.eval('historyEntries.length');
+      w.saveToHistory();
+      out.historyBlocked = { added: w.eval('historyEntries.length') - n0, toast: txt($('toast')), block: txt($('dose-block')).slice(0, 50) };
+      type($('weight'), '70');
+      w.saveToHistory();
+      out.historyBlocked.addedWhenValid = w.eval('historyEntries.length') - n0;
+    }
+
+    // 22. the default route follows the ORDER of the scenario route list (ceftriaxone
+    //     «iv, im» opens on в/в, not on в/м because the groups object lists im first)
+    //     and an explicit route tab follows the physician across the drug cards of the
+    //     scenario; a new scenario starts from the DB default again
+    {
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      const cards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      const scenarioById = (id) => { const i = DB().recommendations.find((r) => r.id === 'cap_adult').scenarios.findIndex((x) => x.id === id); cards[i].click(); };
+      scenarioById('cap_adult_in_mild');
+      const tabs = () => [...d.querySelectorAll('#route-tabs button')].map((b) => txt(b)).join(',');
+      const state = () => w.eval('[activeScenario && activeScenario.id, activeDrug && getDrugRefs(activeDrug)[0], currentRouteGroup, String(pickedRouteGroup)].join("|")');
+      const r = {};
+      clickDrug(/^Цефтриаксон/i);
+      r.ceftriaxoneDefault = state() + '|' + tabs();
+      [...d.querySelectorAll('#route-tabs button')].find((b) => txt(b) === 'в/м').click();
+      r.imPicked = state();
+      clickDrug(/^Амоксициллин/i);
+      r.amoxiclavIvOnly = state() + '|' + tabs();
+      clickDrug(/^Цефтриаксон/i);
+      r.ceftriaxoneAgain = state();
+      type($('patient-allergy'), 'penicillin_mild');
+      r.afterAllergy = state();
+      type($('patient-allergy'), 'none');
+      scenarioById('cap_adult_in_severe');
+      r.newScenario = state() + '|' + tabs();
+      clickDrug(/^Азитромицин/i);
+      r.azithromycinSevere = state() + '|' + tabs();
+      out.routeFollows = r;
+    }
+
+    // 22b. route-specific preparation: the printed Signa used to hard-code «30 мин»
+    //      for every infusion, even when this azithromycin source says 60 minutes;
+    //      the screen's notes/steps must follow MIS, Rp and the printed form.
+    {
+      $('new-patient').click();
+      type($('patient-age-unit'), 'years'); type($('patient-age'), '35'); type($('weight'), '70');
+      const rec = find((r) => r.id === 'cap_adult');
+      w.selectDisease(rec);
+      const scenarioIndex = rec.scenarios.findIndex((s) => s.id === 'cap_adult_in_severe');
+      const scenarioCards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      if (scenarioCards[scenarioIndex]) scenarioCards[scenarioIndex].click();
+      clickDrug(/^Азитромицин/i);
+      const ivTab = [...d.querySelectorAll('#route-tabs button')].find((b) => txt(b) === 'в/в');
+      if (ivTab) ivTab.click();
+      w.__copied = ''; w.copyForMIS(); await sleep(0); const timingMis = w.__copied || '';
+      w.__copied = ''; w.copyLatinRecipe(); await sleep(0); const timingRp = w.__copied || '';
+      w.fillPrescriptionForm();
+      out.injectionTiming = {
+        activeRoute: w.eval('activeRouteKey'),
+        routeData: DB().drugs_reference.azithromycin.dilution.iv_infusion,
+        screenSteps: txt($('dilution-steps')),
+        screenCaution: txt($('dilution-cautions-text')),
+        screenWarn: txt($('dilution-warn-text')),
+        mis: timingMis,
+        rp: timingRp,
+        signa: txt($('rx-signa-text')),
+        printedDetails: txt($('rx-injection-details')),
+        printedSafety: txt($('rx-safety-line')),
+      };
+    }
+
+    // 22c. switching the same drug between IV bolus and infusion must make every
+    //      on-screen and exported instruction follow the selected subroute.
+    {
+      $('new-patient').click();
+      type($('patient-age-unit'), 'years'); type($('patient-age'), '35'); type($('weight'), '70');
+      const rec = find((r) => r.id === 'cap_adult');
+      w.selectDisease(rec);
+      const scenarioIndex = rec.scenarios.findIndex((s) => s.id === 'cap_adult_in_mild');
+      const scenarioCards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      if (scenarioCards[scenarioIndex]) scenarioCards[scenarioIndex].click();
+      clickDrug(/^Амоксициллин\s*\+\s*Клав/i);
+      const ivTab = [...d.querySelectorAll('#route-tabs button')].find((b) => txt(b) === 'в/в');
+      if (ivTab) ivTab.click();
+      const capture = async (label) => {
+        const routeButton = [...d.querySelectorAll('#route-selector button')].find((b) => txt(b) === label);
+        if (!routeButton) throw new Error('IV subroute not found: ' + label);
+        routeButton.click();
+        w.__copied = ''; w.copyForMIS(); await sleep(0); const mis = w.__copied || '';
+        w.__copied = ''; w.copyLatinRecipe(); await sleep(0); const rp = w.__copied || '';
+        w.dispatchEvent(new w.Event('beforeprint'));
+        const routeKey = w.eval('activeRouteKey');
+        const routeData = DB().drugs_reference.amoxiclav.dilution[routeKey];
+        return {
+          route: routeKey,
+          routeData,
+          screenSteps: txt($('dilution-steps')),
+          screenCaution: visible($('dilution-cautions')) ? txt($('dilution-cautions-text')) : '',
+          banner: txt($('patient-safety-banners')),
+          mis,
+          rp,
+          signa: txt($('rx-signa-text')),
+          printedDetails: txt($('rx-injection-details')),
+          printedSafety: txt($('rx-safety-line')),
+        };
+      };
+      out.injectionRouteSwitch = {
+        bolus: await capture('в/в струйно'),
+        infusion: await capture('в/в капельно'),
+        bolusAfterInfusion: await capture('в/в струйно'),
+      };
+      const groupState = (container, controls) => {
+        const el = $(container);
+        return {
+          role: el.getAttribute('role'), label: el.getAttribute('aria-label'),
+          controls: [...d.querySelectorAll(controls)].map(button=>({
+            label: txt(button), active: button.classList.contains('active'),
+            pressed: button.getAttribute('aria-pressed')
+          }))
+        };
+      };
+      out.selectionSemantics = {
+        age: groupState('age-group', '#age-group button'),
+        quickWeight: groupState('quick-weights', '#quick-weights button'),
+        scenario: groupState('scenario-list', '#scenario-list .scenario-card'),
+        drug: groupState('drug-list', '#drug-list .drug-card'),
+        route: groupState('route-tabs', '#route-tabs button'),
+        form: groupState('form-grid', '#form-grid button[data-form-idx]'),
+        regimen: groupState('regimen-list', '#regimen-list button'),
+        injectionRoute: groupState('route-selector', '#route-selector button'),
+        vial: groupState('vial-list', '#vial-list button'),
+      };
+      const motionRule = [...d.styleSheets].flatMap(sheet=>[...sheet.cssRules])
+        .find(rule=>rule.conditionText&&rule.conditionText.replace(/\s/g,'')==='(prefers-reduced-motion:reduce)');
+      out.reducedMotion = {
+        condition: motionRule ? motionRule.conditionText : null,
+        rules: motionRule ? [...motionRule.cssRules].map(rule=>({
+          selector: rule.selectorText.replace(/\s/g,''),
+          animationDuration: rule.style.getPropertyValue('animation-duration').trim(),
+          animationDurationPriority: rule.style.getPropertyPriority('animation-duration'),
+          animationIterationCount: rule.style.getPropertyValue('animation-iteration-count').trim(),
+          transitionDuration: rule.style.getPropertyValue('transition-duration').trim(),
+          transitionDurationPriority: rule.style.getPropertyPriority('transition-duration'),
+          scrollBehavior: rule.style.getPropertyValue('scroll-behavior').trim(),
+          transform: rule.style.getPropertyValue('transform').trim(),
+          transformPriority: rule.style.getPropertyPriority('transform')
+        })) : []
+      };
+    }
+
+    // 23. history.replaceState throwing (sandboxed iframe, some file:// viewers) must not
+    //     abort a selection half-way: the nosology, scenario and drug still open and
+    //     «Сбросить» still clears the screen
+    {
+      const realReplace = w.history.replaceState;
+      w.history.replaceState = () => { throw new w.DOMException('denied', 'SecurityError'); };
+      const errBefore = errors.length;
+      try {
+        clickDisease('pyelonephritis_adult');
+        type($('patient-age'), '35');
+        type($('weight'), '70');
+        const drugs = drugCards();
+        if (drugs.length > 1) drugs[1].click();
+        out.replaceStateDenied = {
+          state: w.eval('[activeDisease && activeDisease.id, activeScenario && activeScenario.id, !!activeDrug].join("|")'),
+          resultVisible: visible($('res-po')) || visible($('res-inj')),
+          drugCards: drugs.length,
+        };
+        w.resetDisease();
+        out.replaceStateDenied.afterReset = w.eval('[activeDisease, activeScenario, activeDrug].map(String).join("|")') + '|' + (visible($('empty-state')) ? 'empty' : 'not-empty');
+        out.replaceStateDenied.consoleErrors = errors.length - errBefore;
+      } finally {
+        w.history.replaceState = realReplace;
+      }
+    }
+
+    // 24. Tab stays inside an open dialog (guideline modal / history drawer): from the
+    //     last focusable element Tab wraps to the first, Shift+Tab from the first wraps to
+    //     the last; a click on the dimmed backdrop closes the modal and returns focus
+    {
+      clickDisease('cap_adult');
+      const tab = (shift) => d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Tab', shiftKey: !!shift, bubbles: true, cancelable: true }));
+      const focusable = (c) => w.focusableWithin(c);
+      const t = {};
+      const guidelineTrigger = d.querySelector('#active-disease button[type="button"]');
+      guidelineTrigger.focus();
+      guidelineTrigger.click();
+      const modal = $('guideline-modal');
+      const items = focusable(modal);
+      t.modalOpen = !modal.classList.contains('hidden');
+      t.modalItems = items.length;
+      t.initialFocusIsClose = d.activeElement === modal.querySelector('button[aria-label]');
+      items[items.length - 1].focus();
+      tab(false);
+      t.wrapForward = d.activeElement === items[0];
+      tab(true);
+      t.wrapBackward = d.activeElement === items[items.length - 1];
+      $('search').focus();
+      tab(false);
+      t.pulledBack = modal.contains(d.activeElement);
+      // a click on the panel does NOT close; a click on the backdrop does
+      modal.firstElementChild.click();
+      t.panelClickKeepsOpen = !modal.classList.contains('hidden');
+      modal.click();
+      t.backdropClickCloses = modal.classList.contains('hidden');
+      t.focusBackOnOpener = d.activeElement === guidelineTrigger && !d.activeElement.closest('.hidden');
+      w.openHistory();
+      const drawer = $('history-drawer');
+      const ditems = focusable(drawer);
+      t.drawerItems = ditems.length;
+      t.drawerInitialFocus = d.activeElement === $('drawer-close');
+      tab(true);
+      t.drawerWrapBackward = d.activeElement === ditems[ditems.length - 1];
+      tab(false);
+      t.drawerWrapForward = d.activeElement === ditems[0];
+      key('Escape');
+      t.drawerClosedByEscape = !drawer.classList.contains('open') && d.activeElement === $('btn-history');
+      out.dialogFocus = t;
+    }
+
+    // 25. the source gate of a record (calculation_blocked — «расчёт закрыт») holds for
+    //     every re-render: a typed age, an age chip, an allergy change, a #hash deep link
+    //     and the exports / history after them; a computable record still works afterwards
+    {
+      const gated = find((r) => r.calculation_blocked && (r.scenarios || []).some((sc) => sc.age_group !== 'adult'));
+      const g = { id: gated.id };
+      const gstate = () => [
+        w.eval('String(activeScenario && activeScenario.id)'), w.eval('String(activeDrug && getDrugRefs(activeDrug)[0])'),
+        d.querySelectorAll('#scenario-list .scenario-card').length, d.querySelectorAll('#drug-list .drug-card').length,
+        visible($('source-calculation-block')) && txt($('source-calculation-block')).startsWith('РАСЧЁТ ЗАБЛОКИРОВАН'),
+        visible($('drug-step')), visible($('res-po')) || visible($('res-inj')),
+      ].join('|');
+      $('new-patient').click();
+      type($('patient-age'), '30');
+      type($('weight'), '70');
+      w.selectDisease(gated);
+      g.opened = gstate();
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      g.afterAge = gstate();
+      d.querySelector('#age-group button[data-age="neonate"]').click();
+      g.afterChip = gstate();
+      type($('patient-allergy'), 'penicillin_mild');
+      g.afterAllergy = gstate();
+      type($('patient-allergy'), 'none');
+      const n0 = w.eval('historyEntries.length');
+      w.saveToHistory();
+      g.historyAdded = w.eval('historyEntries.length') - n0;
+      w.__copied = null;
+      w.copyForMIS();
+      g.misCopied = !!w.__copied;
+      g.misToast = txt($('toast'));
+      w.dispatchEvent(new w.Event('beforeprint'));
+      g.printDrugs = txt($('rx-drugs'));
+      g.printTrust = txt($('rx-trust-line')).slice(0, 40);
+      const sc = gated.scenarios[0];
+      w.location.hash = '#' + gated.id + '/' + sc.id + '/L' + sc.lines[0].line_number;
+      await sleep(200);
+      g.afterHash = gstate();
+      g.blockReason = w.eval('calculationBlockReason(25)').slice(0, 40);
+      await axeRun('source_gated', out);
+      // a computable record right after the gated one computes normally
+      clickDisease('aom_child');
+      type($('patient-age'), '7');
+      g.recovered = [w.eval('activeDisease && activeDisease.id'), visible($('res-po')) || visible($('res-inj')), visible($('source-calculation-block')) && txt($('source-calculation-block')).startsWith('РАСЧЁТ ЗАБЛОКИРОВАН')].join('|');
+      out.sourceGate = g;
+    }
+
+    // 26. the allergy banner belongs to the active drug: a record with no scenario for the
+    //     current group (cap_adult at a child's age — via the list or a #hash) selects no
+    //     drug, so the previous drug's «противопоказан» banner must leave the screen
+    {
+      $('new-patient').click();
+      type($('patient-age'), '7');
+      type($('weight'), '25');
+      type($('patient-allergy'), 'penicillin_severe');
+      clickDisease('cap_child');
+      const b = { withAmoxicillin: visible($('allergy-alert-banner')) && txt($('allergy-alert-title')) };
+      // computed state with the allergy banner + safety banners + weight caution on screen
+      type($('patient-gfr'), '25');
+      await axeRun('computed_with_banners', out);
+      type($('patient-gfr'), '');
+      w.selectDisease(find((r) => r.id === 'cap_adult'));
+      b.noScenarioForGroup = [w.eval('String(activeDrug)'), d.querySelectorAll('#drug-list .drug-card').length, visible($('allergy-alert-banner'))].join('|');
+      clickDisease('cap_child');
+      b.backWithAmoxicillin = visible($('allergy-alert-banner'));
+      w.location.hash = '#pyelonephritis_adult';
+      await sleep(200);
+      b.viaHash = [w.eval('activeDisease && activeDisease.id'), w.eval('String(activeDrug)'), visible($('allergy-alert-banner'))].join('|');
+      type($('patient-allergy'), 'none');
+      out.allergyBannerFollowsDrug = b;
+    }
+
+    // 27. history after a reload of a tab whose physician had enabled the tab store: the
+    //     consent box comes back checked and a new save is visible in the drawer (the
+    //     drawer used to keep showing the stored list without the new entry)
+    {
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      const stored = () => { try { return JSON.parse(w.sessionStorage.getItem('antibio_history') || '[]').length; } catch (e) { return -1; } };
+      // the drawer re-reads the list when it opens — count what the physician would see
+      const rows = () => { w.openHistory(); const n = d.querySelectorAll('#history-list [data-action="restore"]').length; w.closeHistory(); return n; };
+      const h = {};
+      // 24-hour TTL is a storage cleanup boundary, not only a display filter: opening the
+      // drawer prunes expired PHI from sessionStorage, including when no fresh rows remain.
+      {
+        const now = Date.now();
+        const expired = { ts: now - 86400001, patient: 'Expired PHI', disease: 'Old', drug: 'Old', singleMg: 500, freq: 2, duration: '7', ref: { disease: 'cap_adult' } };
+        const fresh = { ts: now, patient: 'Fresh PHI', disease: 'Current', drug: 'Current', singleMg: 500, freq: 2, duration: '7', ref: { disease: 'cap_adult' } };
+        $('history-persist').checked = true;
+        w.eval('historyEntries = []');
+        w.sessionStorage.setItem('antibio_history', JSON.stringify([expired, fresh]));
+        $('btn-history').click();
+        const renderedMixed = txt($('history-list'));
+        const storedMixed = JSON.parse(w.sessionStorage.getItem('antibio_history')).map((e) => e.patient);
+        $('drawer-close').click();
+        w.sessionStorage.setItem('antibio_history', JSON.stringify([expired]));
+        $('btn-history').click();
+        const renderedExpired = txt($('history-list'));
+        const storedExpired = JSON.parse(w.sessionStorage.getItem('antibio_history')).map((e) => e.patient);
+        h.ttl = {
+          freshRendered: renderedMixed.includes('Fresh PHI'),
+          expiredRendered: renderedMixed.includes('Expired PHI'),
+          storedAfterMixed: storedMixed,
+          expiredOnlyRendered: renderedExpired.includes('Expired PHI'),
+          storedAfterAllExpired: storedExpired,
+          consentAfterAllExpired: $('history-persist').checked,
+        };
+        $('drawer-close').click();
+      }
+      // reload-like state: an entry already in the tab store, box unchecked, init runs again
+      w.sessionStorage.setItem('antibio_history', JSON.stringify([{ ts: Date.now() - 1000, patient: 'A', disease: 'X', drug: 'Y', singleMg: 500, freq: 2, duration: '7', ref: { disease: 'cap_adult' } }]));
+      $('history-persist').checked = false;
+      w.eval('historyEntries = []');
+      w.initHistoryStore();
+      w.loadHistory();
+      h.afterReload = [$('history-persist').checked, rows(), stored()].join('|');
+      w.saveToHistory();
+      h.afterSave = [rows(), stored(), txt($('toast'))].join('|');
+      $('history-persist').checked = false;
+      w.onHistoryPersistChange();
+      h.afterOptOut = [rows(), stored(), w.sessionStorage.getItem('antibio_history') === null].join('|');
+      w.saveToHistory();
+      h.afterSaveMemoryOnly = [rows(), stored()].join('|');
+      w.eval('historyEntries = []');
+      w.loadHistory();
+      out.historyReload = h;
+    }
+    // 28. «Открыть расчёт» on an entry whose record has since been closed by the source
+    //     gate (a later DB build): the nosology opens under the block notice only — no
+    //     scenario / drug / dose, and the next age input keeps it closed
+    {
+      clickDisease('cap_adult');
+      type($('patient-age'), '40');
+      type($('weight'), '70');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const g = { saved: [w.eval('activeDrug && getDrugRefs(activeDrug).join("+")'), visible($('res-po'))].join('|') };
+      w.saveToHistory();
+      const entry = JSON.parse(w.eval('JSON.stringify(historyEntries[0])'));
+      const rec = w.eval("DB.recommendations.find(r => r.id === 'cap_adult')");
+      try {
+        rec.calculation_blocked = true; rec.calculation_block_reason = 'источник отозван';
+        w.resetDisease();
+        const ok = w.restoreHistoryEntry(entry);
+        const state = () => [String(w.eval('activeDisease && activeDisease.id')), String(w.eval('activeScenario && activeScenario.id')), String(w.eval('activeDrug && getDrugRefs(activeDrug).join("+")')), d.querySelectorAll('#scenario-list .scenario-card').length, visible($('res-po')) || visible($('res-inj')), visible($('source-calculation-block')) ? txt($('source-calculation-block')) : null].join('|');
+        g.restored = [ok, txt($('toast')), state()].join('|');
+        type($('patient-age'), '45');
+        d.querySelector('#age-group button[data-age="adult"]').click();
+        g.afterAge = state();
+        w.copyForMIS();
+        g.misToast = txt($('toast'));
+        w.dispatchEvent(new w.Event('beforeprint'));
+        g.printed = txt($('rx-drugs'));
+      } finally {
+        rec.calculation_blocked = false; delete rec.calculation_block_reason;
+        w.resetDisease();
+      }
+      out.historyGatedRestore = g;
+    }
+    // 29. the regimen chips follow the age group: a group with no regimen for the drug
+    //     shows the block alone (the chips of the previous group used to stay under it,
+    //     clickable and dead)
+    {
+      type($('patient-age'), '5');
+      type($('weight'), '18');
+      clickDisease('aom_child');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      const chips = () => [...d.querySelectorAll('#regimen-list button')];
+      const st = () => [visible($('regimen-selector')), chips().length, w.eval('activeRegimenIdx'), w.eval('ageEligibleRegimens(activeDrug).length'), visible($('res-po')) || visible($('res-inj')), txt($('dose-block')).slice(0, 60)].join('|');
+      if (chips()[1]) chips()[1].click();
+      const r = { child: st() };
+      d.querySelector('#age-group button[data-age="neonate"]').click();
+      r.neonate = st();
+      d.querySelector('#age-group button[data-age="child"]').click();
+      r.childAgain = st();
+      out.regimenChipsFollowGroup = r;
+    }
+    // 30. «Открыть расчёт» brings back the group the calculation was made in, also when
+    //     the physician chose it by chip over a typed age (12 y + «взрослые»): re-applying
+    //     the age alone switched the group back and the adult scenario was not re-opened
+    {
+      type($('patient-age-unit'), 'months');
+      type($('patient-age'), '150');
+      type($('weight'), '45');
+      d.querySelector('#age-group button[data-age="adult"]').click();
+      clickDisease('cap_adult');
+      const card = [...d.querySelectorAll('#scenario-list .scenario-card')].find((c) => /коморбидный/i.test(txt(c)));
+      if (card) card.click();
+      clickDrug(/^Моксифлоксацин/i);
+      const st = () => [w.eval('activeAge'), w.eval('activeScenario && activeScenario.id'), w.eval('activeDrug && getDrugRefs(activeDrug).join("+")'), $('patient-age').value, $('patient-age-unit').value, visible($('res-po')) || visible($('res-inj')), /не соответствует/.test(txt($('age-explicit-notice')))].join('|');
+      const o = { saved: st() };
+      w.saveToHistory();
+      const entry = JSON.parse(w.eval('JSON.stringify(historyEntries[0])'));
+      o.entry = [entry.ageGroup, entry.ref.ageValue, entry.ref.ageUnit].join('|');
+      $('new-patient').click();
+      o.restored = [w.restoreHistoryEntry(entry), txt($('toast')), st()].join('|');
+      // the chip-over-age choice travels with the chart text and the printed form
+      w.__copied = null;
+      w.copyForMIS();
+      o.misCaution = ((w.__copied || '').split('\n').find((l) => /выбрана вручную/.test(l)) || '').trim();
+      w.dispatchEvent(new w.Event('beforeprint'));
+      o.printedCaution = (txt($('rx-safety-line')).match(/Предупреждение: Возраст[^.]*\./) || [''])[0];
+      type($('patient-age-unit'), 'years');
+      $('new-patient').click();
+      out.historyRestoreGroupOverride = o;
+    }
+    // 31. the printed date: a date picked in the (type=date) field arrives as ISO and must
+    //     print as DD.MM.YYYY like the default (today); «Новый пациент» keeps the date
+    {
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      clickDisease('cap_adult');
+      const pd = {};
+      $('patient-date').value = '2026-10-15';
+      w.dispatchEvent(new w.Event('beforeprint'));
+      pd.picked = txt($('rx-date'));
+      $('new-patient').click();
+      pd.keptAfterNewPatient = $('patient-date').value;
+      $('patient-date').value = '';
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      clickDisease('cap_adult');
+      w.dispatchEvent(new w.Event('beforeprint'));
+      pd.today = txt($('rx-date'));
+      pd.todayExpected = new Date().toLocaleDateString('ru-RU');
+      out.printDate = pd;
+    }
+    {
+      // T77: an mg/kg regimen with no weight is pending on screen («—»), but none of the
+      // four doors (MIS / Rp / history / print) may let it out as a prescription
+      $('new-patient').click();
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '7');
+      clickDisease('ut_child');
+      d.querySelectorAll('#scenario-list .scenario-card')[1].click();
+      clickDrug(/Цефтриаксон/);
+      const n = {};
+      n.state = [w.eval('activeScenario && activeScenario.id'), w.eval('getDrugRefs(activeDrug)[0]'), $('weight').value, w.eval('JSON.stringify(calculationBlockReason(parseFloat($("weight").value)))'), visible($('res-inj')), txt($('inj-mg')), visible($('weight-warn')) && txt($('weight-warn'))].join('|');
+      w.__copied = null; w.copyForMIS(); n.mis = [w.__copied, txt($('toast'))].join('|');
+      w.__copied = null; w.copyLatinRecipe(); n.rp = [w.__copied, txt($('toast'))].join('|');
+      const h0 = w.eval('historyEntries.length'); w.saveToHistory(); n.save = [w.eval('historyEntries.length') - h0, txt($('toast'))].join('|');
+      w.fillPrescriptionForm(); n.print = [txt($('rx-drugs')), txt($('rx-signa-text')), txt($('rx-trust-line')).slice(0, 60)].join('|');
+      type($('weight'), '25');
+      w.__copied = null; w.copyForMIS(); n.misWithWeight = [(w.__copied || '').split('\n').find((l) => l.startsWith('Схема приёма')), txt($('toast'))].join('|');
+      w.fillPrescriptionForm(); n.printWithWeight = [txt($('rx-signa-text')), txt($('rx-injection-details'))].join('|');
+      out.noWeightExport = n;
+    }
+    {
+      // 33. T84: the quick nosology tags follow the patient's group — «Отит (H66)» opens
+      // the adults' otitis for an adult and the children's for a child; a code with two
+      // equally fitting records («Цистит (N30)» for an adult: cystitis / prophylaxis) goes
+      // to the search list instead of silently opening the first one
+      const qt = {};
+      const tagCodes = [...d.querySelectorAll('.quick-disease-tag')].map((b) => ((b.getAttribute('onclick') || '').match(/selectQuickDisease\('([^']+)'\)/) || [])[1]);
+      qt.tags = tagCodes;
+      const probe = (age, code) => {
+        $('new-patient').click();
+        d.querySelector(`#age-group button[data-age="${age}"]`).click();
+        w.selectQuickDisease(code);
+        return {
+          picked: w.eval('activeDisease ? activeDisease.id : null'),
+          list: [...d.querySelectorAll('#results-box > div[role=button]')].filter((x) => visible($('results-box'))).map((x) => x.textContent.trim().slice(0, 30)),
+          status: txt($('search-status')),
+          search: $('search').value,
+          header: visible($('active-disease')) ? txt($('active-disease')).slice(0, 60) : '',
+        };
+      };
+      qt.adultH66 = probe('adult', 'H66');
+      qt.childH66 = probe('child', 'H66');
+      qt.adultJ18 = probe('adult', 'J18');
+      qt.childJ18 = probe('child', 'J18');
+      qt.adultN10 = probe('adult', 'N10');
+      qt.childN10 = probe('child', 'N10');
+      qt.adultN30 = probe('adult', 'N30');
+      qt.neonateH66 = probe('neonate', 'H66');
+      out.quickTags = qt;
+    }
+    {
+      // 34. T86: once the physician has set the group, same-rank search hits for that group
+      // come first and the other group's rows say «нет схемы для группы …»; a list left on
+      // screen is re-ranked when the group changes; «Новый пациент» returns to DB order
+      const gs = {};
+      const rows = () => [...d.querySelectorAll('#results-box > div[role=button]')].map((x) => txt(x));
+      const names = () => rows().map((t) => t.split('МКБ')[0]);
+      $('new-patient').click();
+      type($('search'), 'пневмония');
+      gs.fresh = names();
+      type($('patient-age-unit'), 'years');
+      type($('patient-age'), '7');
+      gs.childTyped = names();
+      gs.childRows = rows();
+      d.querySelector('#age-group button[data-age="adult"]').click();
+      gs.adultChip = names();
+      gs.adultRows = rows();
+      type($('search'), 'отит');
+      gs.adultOtitis = names();
+      $('new-patient').click();
+      type($('search'), 'отит');
+      gs.freshOtitis = names();
+      out.groupSearch = gs;
+    }
+    {
+      // T112: a readable sessionStorage can also reject removeItem(). Exercise both visible
+      // controls: opting out and clearing must never claim that stored PHI was deleted unless
+      // a read-after-remove confirms it.
+      $('new-patient').click();
+      const removalEntry = {
+        ts: Date.now(), patient: 'T112 stored PHI', disease: 'Test', drug: 'Test',
+        singleMg: 500, freq: 1, duration: '1',
+      };
+      w.eval('historyEntries = []');
+      w.sessionStorage.setItem('antibio_history', JSON.stringify([removalEntry]));
+      $('history-persist').checked = true;
+      w.initHistoryStore();
+      $('btn-history').click();
+      const originalRemoveItem = w.Storage.prototype.removeItem;
+      w.Storage.prototype.removeItem = function () { throw new w.DOMException('blocked', 'SecurityError'); };
+      $('history-persist').checked = false;
+      fire($('history-persist'), 'change');
+      const optOutFailure = {
+        toast: txt($('toast')),
+        checked: $('history-persist').checked,
+        allowed: w.eval('historyPersistAllowed()'),
+        stored: JSON.parse(w.sessionStorage.getItem('antibio_history') || '[]').some((e) => e.patient === 'T112 stored PHI'),
+        rowVisible: txt($('history-list')).includes('T112 stored PHI'),
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      w.Storage.prototype.removeItem = originalRemoveItem;
+      $('history-persist').checked = true;
+      fire($('history-persist'), 'change');
+      w.Storage.prototype.removeItem = function () { throw new w.DOMException('blocked', 'SecurityError'); };
+      w.confirm = () => true;
+      $('history-clear').click();
+      const clearFailure = {
+        toast: txt($('toast')),
+        checked: $('history-persist').checked,
+        stored: JSON.parse(w.sessionStorage.getItem('antibio_history') || '[]').some((e) => e.patient === 'T112 stored PHI'),
+        rowVisible: txt($('history-list')).includes('T112 stored PHI'),
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      w.Storage.prototype.removeItem = originalRemoveItem;
+
+      // The app also removes history written by older builds from localStorage. A successful
+      // sessionStorage deletion must not mask a failed legacy-store purge.
+      const legacyEntry = { ...removalEntry, patient: 'T112 legacy PHI' };
+      w.localStorage.setItem('antibio_history', JSON.stringify([legacyEntry]));
+      w.sessionStorage.setItem('antibio_history', JSON.stringify([legacyEntry]));
+      w.eval('historyEntries = []');
+      $('history-persist').checked = true;
+      const legacyRemoveItem = w.Storage.prototype.removeItem;
+      w.Storage.prototype.removeItem = function (key) {
+        if (this === w.localStorage && key === 'antibio_history') throw new w.DOMException('blocked', 'SecurityError');
+        return legacyRemoveItem.call(this, key);
+      };
+      w.initHistoryStore();
+      const legacyInitFailure = {
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+        legacyStored: w.localStorage.getItem('antibio_history') !== null,
+      };
+      w.loadHistory();
+      $('history-persist').checked = false;
+      fire($('history-persist'), 'change');
+      const legacyOptOutFailure = {
+        toast: txt($('toast')),
+        checked: $('history-persist').checked,
+        sessionStored: w.sessionStorage.getItem('antibio_history') !== null,
+        legacyStored: w.localStorage.getItem('antibio_history') !== null,
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      $('history-persist').checked = true;
+      w.sessionStorage.setItem('antibio_history', JSON.stringify([legacyEntry]));
+      $('history-clear').click();
+      const legacyClearFailure = {
+        toast: txt($('toast')),
+        sessionStored: w.sessionStorage.getItem('antibio_history') !== null,
+        legacyStored: w.localStorage.getItem('antibio_history') !== null,
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      out.historyRemovalFailure = {
+        optOut: optOutFailure, clear: clearFailure,
+        legacyInit: legacyInitFailure,
+        legacyOptOut: legacyOptOutFailure, legacyClear: legacyClearFailure,
+      };
+      w.Storage.prototype.removeItem = originalRemoveItem;
+      w.sessionStorage.removeItem('antibio_history');
+      w.localStorage.removeItem('antibio_history');
+      w.eval('historyEntries = []');
+      $('history-persist').checked = false;
+      $('drawer-close').click();
+      w.loadHistory();
+    }
+    {
+      // T111: a readable sessionStorage can still reject writes (quota / policy). Exercise
+      // the visible save button, not only the storage helper: a failed write must be
+      // reported as memory-only, turn off the persistence opt-in, and leave the entry usable.
+      $('new-patient').click();
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      w.eval('historyEntries = []');
+      $('history-persist').checked = true;
+      fire($('history-persist'), 'change');
+      const originalSetItem = w.Storage.prototype.setItem;
+      w.Storage.prototype.setItem = function () { throw new w.DOMException('quota', 'QuotaExceededError'); };
+      $('btn-save-history').click();
+      const saved = JSON.parse(w.eval('JSON.stringify(historyEntries)'));
+      out.historyWriteFailure = {
+        toast: txt($('toast')),
+        checked: $('history-persist').checked,
+        disabled: $('history-persist').disabled,
+        allowed: w.eval('historyPersistAllowed()'),
+        memoryCount: saved.length,
+        stored: w.sessionStorage.getItem('antibio_history'),
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      w.Storage.prototype.setItem = originalSetItem;
+    }
+  } catch (e) {
+    out.exception = String((e && e.stack) || e);
+  }
+  out.consoleErrors = errors.slice(0, 10);
+  process.stdout.write(JSON.stringify(out));
+}
+
+d.addEventListener('DOMContentLoaded', run);

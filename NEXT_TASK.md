@@ -1,3 +1,305 @@
+## 2026-10-17 (after round 6, T112): next steps
+
+1. **Owner-physician decisions remain untouched.** No clinical data, blocked-record status, dose
+   threshold, regimen, route default, source interpretation, or owner decision was changed. Keep
+   the DOSA review, source evidence, dose maxima/bases, pediatric edge cases, and other clinical
+   questions in the owner queue below; tests are not medical approval.
+2. **Owner browser / assistive-technology pass:** check T103's named `aria-pressed` groups with a
+   screen reader and T105's custom card buttons using real key holds: Space must act on release,
+   not while held; repeat must not double activate; moving focus before release cancels it. For
+   T106, select a normal disease and a source-gated disease from search with Enter and confirm
+   focus moves to the selected scenario / visible gate message. For T107, activate reset and
+   search-clear and confirm focus returns to the visible search field. For T108, open and dismiss
+   the guideline dialog from the disease summary and result action; focus should return to the same
+   trigger. For T109, open the history drawer from mobile bottom navigation and verify focus returns
+   there. For T110, confirm expired session entries are removed while fresh entries and consent
+   remain. For T111, force a `sessionStorage.setItem()` failure and verify memory-only wording,
+   disabled unchecked opt-in, and no restored row after reload. For T112, force `removeItem()` to
+   throw separately for session and legacy storage; verify opt-out / clear never claims success,
+   the warning remains until deletion is confirmed, and startup warns if legacy cleanup cannot be
+   verified. Also enable OS “reduce motion” for T104 and check that motion stops without hiding
+   content. Real browser, screen reader and OS checks remain owner-controlled; retain the earlier
+   browser checks below for patient-entry cautions and route-specific screen / MIS / Rp / print.
+3. **Engineering status (autonomous):** T112 is complete. Four extracted regression cases and
+   built-shell checkbox / clear / startup-warning checks cover session and legacy deletion failures,
+   including absence verified after a thrown remove. Local shell/history files: **183 passed**;
+   build reproducibility: **15 passed**; Ruff, JS syntax, build check, `git diff --check`, validate
+   (**0 errors / 436 warnings**) and production npm audit (**0 vulnerabilities**) pass. CI
+   `39059621448` and CodeQL `39059621410` are green for `d3c5ef1`, including Python 3.12. Build
+   `build-7befe719ac94`; DB unchanged. The user explicitly requested merging PR #1, superseding the
+   earlier no-merge hold; this authorization applies only to this requested PR, not future merges.
+   Root npm audit still has known high Tailwind build-only findings; keep report-only, never use
+   `npm audit fix --force`, and treat Tailwind 4 as a separate CSS/visual migration. Do not change
+   frozen modules, connect Clinical Engine, choose a LICENSE, change `corpus_config`, or make
+   clinical decisions.
+4. **Next engineering audit candidate (T113, not yet a confirmed defect):** probe how history
+   loading behaves if `sessionStorage` exists and a write succeeds but `getItem()` throws on read.
+   Establish whether in-memory rows are lost or the UI implies persistence that cannot be verified.
+   Reproduce with a built-shell test before changing code; keep default consent off and do not add a
+   storage schema. If no user-visible issue is demonstrated, record the probe and move on.
+
+
+## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)
+
+1. **Owner-physician queue** — unchanged (see the sections below); new for the real-browser
+   pass: change the allergy status / type an age after picking a non-first drug — the drug
+   must stay (ciprofloxacin at a child's age shows the «нет схемы для группы «дети»» block
+   instead of switching to ceftriaxone); «Открыть расчёт» on an entry saved with GFR 25 /
+   pregnancy / allergy must bring those inputs and banners back.
+   - Real-browser pass additions (T55–T60): Ctrl+P with no calculation prints «ПЕЧАТЬ
+     НЕВОЗМОЖНА …», Ctrl+P after a block prints «ПЕЧАТЬ ЗАБЛОКИРОВАНА …», Ctrl+P after a
+     valid calculation prints the CURRENT drug (open a second nosology without clicking
+     «Печать» first); «Копировать для МИС» over plain http (intranet IP) copies via the
+     legacy path and toasts; Chrome with «block all cookies» still opens `#hash` links and
+     toggles the theme; a deep link to an adult scenario in a fresh tab shows the «Сценарий
+     из ссылки …» note and opens it once the weight is typed; typing the weight after the
+     drug switches the suspension chip to the measurable strength.
+   - Real-browser pass additions (T61–T62): «лёгк» / «легк» give the same list; «Сохранить
+     в историю» with 300 kg typed shows «Сохранение заблокировано: расчёт не выполнен» and
+     adds nothing to the drawer.
+   - Real-browser pass additions (T63–T65): «Внебольничная пневмония (взрослые)» →
+     stationary non-severe scenario → ceftriaxone opens on **в/в** with tabs «в/в, в/м»;
+     click «в/м», then amoxiclav (в/в only), then ceftriaxone again → still в/м; open
+     another scenario → DB default again. **Owner check (T63):** the route ORDER in each
+     scenario record is now what the physician sees first — the 43 multi-route entries
+     (`('iv','im')` 24, `('per_os','iv')` 11, `('iv','per_os')` 6, `('im','iv')` 1,
+     `('per_os','topical')` / `('topical','per_os')` 1 each) deserve a one-pass review that
+     the first route is the intended default (e.g. `pid_inpatient` doxycycline lists
+     per_os before iv). Tab inside the open КР modal cycles between its × and links; a click
+     on the dimmed background closes it; Shift+Tab from the history drawer × lands on
+     «Очистить историю».
+   - Real-browser pass addition (T66): open a record marked «расчёт закрыт» in the search
+     list (e.g. «Перелом дна глазницы»), then type an age, click an age chip, change the
+     allergy, paste its `#hash` — the red «РАСЧЁТ ЗАБЛОКИРОВАН» notice stays alone (no
+     scenario / drug cards, no dose); «Копировать для МИС» says «Нет активного расчёта»,
+     Ctrl+P prints «ПЕЧАТЬ НЕВОЗМОЖНА …».
+   - Real-browser pass additions (T67–T70): open «Внебольничная пневмония (взрослые)» →
+     amoxicillin with a penicillin allergy set (red banner), then type age 5 — the banner
+     disappears with the drug (no scenario for «дети»); save two calculations with the
+     consent box checked, reload the tab — the box is checked again and «Сохранить в
+     историю» adds a visible third row to the drawer; «Открыть расчёт» on an entry saved
+     with a Ф.И.О. brings the name back into the field; «↺ Новый пациент» empties the
+     Ф.И.О. and keeps «Врач» / «Дата».
+   - Real-browser pass additions (T71–T74): «Острый средний отит (дети)» → amoxicillin →
+     pick the second regimen chip → click «новорождённые»: the red block stands alone (no
+     regimen chips); back on «дети» the chips return (first regimen selected — the pick does
+     not survive the group round-trip, by design). Type 150 months, click «взрослые»
+     (notice «не соответствует»), CAP adults → comorbid → moxifloxacin → save → «Новый
+     пациент» → «Открыть расчёт»: the entry re-opens as «взрослые» with the notice and the
+     dose. Tab / Shift+Tab inside the КР modal and the history drawer never leaves them;
+     Escape / × / backdrop close and return focus to the opener.
+   - Real-browser pass additions (T75–T77): pick a date in the «Дата» field (it becomes a
+     date picker on focus) → Ctrl+P prints «Дата: 15.10.2026», not «2026-10-15»; type 12
+     years, click «взрослые», CAP adults → amoxicillin → «Копировать для МИС» / Rp / Ctrl+P:
+     every export carries «Предупреждение: Возраст 12 лет соответствует группе «дети»,
+     расчёт выполнен для группы «взрослые» (выбрана вручную).»; type age 7 and NO weight →
+     «Инфекции мочевых путей у детей» → stationary → ceftriaxone: the tiles show «—» with
+     the amber «нужен вес» notice, and «Копировать для МИС» / Rp / «Сохранить» toast
+     «… заблокировано: введите вес пациента …», Ctrl+P prints «ПЕЧАТЬ НЕВОЗМОЖНА: введите
+     вес пациента …»; type 25 kg → everything works again (1250 мг в/в 1 р/сут).
+   - DB content (owner): `cap_adult` → `cap_adult_in_severe` → ceftriaxone has
+     `duration_note: "Цефтриаксон"` — the shell prints it verbatim as «Указания:
+     Цефтриаксон» in the MIS text and on the form; the validator now warns about it
+     (`only repeats the drug name`). Replace with the actual instruction or drop the field.
+   - Real-browser pass additions (T78–T83): GFR 25 + a drug whose `renal_adjustment` has
+     two clauses («СКФ<30: …; СКФ<10: …») → the banner quotes the «СКФ<30» clause, GFR 8 →
+     the «СКФ<10» clause; a drug with a threshold-less string warns at GFR 45 but not at
+     GFR 70; after a full calculation click the nosology «✕» → no tiles / dose block /
+     banners remain in the collapsed steps, and the next nosology opens on its default
+     route; search «J18.9» → 3 pneumonia records, «J18.0» → 2, «J» → nothing; holecystitis
+     → ceftriaxone + metronidazole → «Копировать Rp» → the pasted text has the Metronidazoli
+     line after «S.:» under «Одновременно (компоненты комбинации, отдельные Rp.):».
+   - Real-browser pass additions (T84–T90): with «взрослые» set click «👂 Отит (H66)» → the
+     adults' otitis opens; with a child's age typed → the children's; «💧 Цистит (N30)» for an
+     adult → a list of two (cystitis / prophylaxis); type a child's age and search
+     «пневмония» → «… у детей» first, the other rows end with «нет схемы для группы «дети»»;
+     click «взрослые» → the list re-ranks; search «Н66» typed in Cyrillic → otitis, «В20» →
+     HIV (not a tumour), «О85» → postpartum endometritis; «отит» → 2 rows only; «пневмания»
+     → the status says the rows are spelling guesses; save a ceftriaxone + metronidazole
+     calculation → the history row reads «Цефтриаксон + Метронидазол … курс 7–14 дней».
+   - DB content (owner): no pediatric cystitis record — `ut_child` lists N10/N11/N12/N13/
+     N39.0 but not N30.x, so «Цистит (N30)» for a child opens «Профилактика рецидивирующих
+     ИМП» (the only child-fitting record); adding N30.0 to `ut_child.mkb10` (or a pediatric
+     cystitis record) would make the tag list both.
+   - DB content (owner, optional): trade names for the search — add
+     `drugs_reference.<key>.synonyms: ["Амоксиклав", "Аугментин", …]` (array of non-empty
+     strings; the validator warns on any other shape, the shell indexes them as typed).
+   - DB content (owner): `renal_adjustment` strings without a GFR threshold (free text) now
+     warn only below 60 ml/min — confirm or add explicit thresholds (`node db/validate_db.js`
+     lists them).
+2. **Engineering candidates (none urgent):**
+   - ~~`npm run check` convenience script~~ — done in T55 (`a86842a`).
+   - The fuzz gate (`shell_fuzz.js`) runs 2 seeds × 800 steps in CI; a nightly / manual
+     sweep with more seeds (`node clinical_engine/tests/js/shell_fuzz.js antibiotic_calc.html
+     vendor/app.css <seed> 3000`) is cheap insurance after larger shell changes.
+   - ~~Latin Rp for a combination regimen still names the main drug only~~ — T83
+     (`63584a7`): the partners follow the Signa as plain lines; a formal second `Rp.:`
+     block per component is still the owner's format decision.
+   - The MIS-only «разовый объём велик» caution is prescriber advice and is deliberately not
+     on the Rp / printed form; if the owner wants it on the printed form too, the walk
+     flags-parity oracle must then include it (one regex).
+   - Other `if(!activeX) return` guards / preference-less re-render callers were audited:
+     the remaining `renderScenarios(` callers (search / hash resolve, `selectDisease`,
+     history restore, `restoreFromHash`) all pass preferences or intentionally start fresh.
+3. Everything below that is marked **Owner** still stands.
+
+## 2026-10-14 (after round 6, T45–T50): remaining NEXT_TASK (work top-down)
+
+1. **Owner-physician queue** — everything in the «after round 5» section still stands, plus:
+   - **GFR plausibility (T48):** `MAX_PLAUSIBLE_GFR = 200` ml/min is a typo/creatinine
+     catcher, not a clinical bound; GFR «0» now runs the renal thresholds (anuria /
+     dialysis). If dialysis patients need their own wording («на диализе — доза после
+     сеанса»), that is a `renal_adjustment` text item per drug in `drugs_reference`.
+   - **Courses in words (T47):** «однократно» (24 regimens), «не указано», «по ситуации»,
+     «хроническая» and the perioperative free text still export as «длительность: …» with
+     no quantity. «однократно» could be encoded as `duration_days "1"` with
+     `freq_per_day 1` (then the course quantity = one dose) when those records are
+     reviewed; the shell does not guess it.
+   - `duration_days` written as «7 дней» / «3 недели» is parsed now, but normalising the
+     gated records to plain numbers («7», «7-14») keeps the DB uniform; the validator no
+     longer warns about the parseable suffix forms (436 warnings left, all blocked records
+     or owner items).
+   - Real-browser pass additions: the «↺ Новый пациент» button, the «Найдено: N …» /
+     «Ничего не найдено …» status under the search field, the «Поле «вес» содержит
+     нечисловое значение …» hint when typing «12,5» (Chrome en-US / Firefox), the
+     «СКФ 1500 мл/мин — неправдоподобно …» banner.
+2. **Engineering candidates (none urgent):**
+   - `npm run check` convenience script (validate + `build_html.py --check` + jsdom smoke +
+     walk) and a README section listing every gate added in rounds 5–6.
+   - ~~History entries could store the patient context snapshot (GFR / pregnancy / allergy)~~
+     — done in T51 (`1da3564`).
+   - ~~Latin Rp for a combination regimen still names the main drug only~~ — done in T83.
+3. Everything in the previous sections (§1–3, §6) that is marked **Owner** still stands.
+
+## 2026-10-14 (after round 5): remaining NEXT_TASK (work top-down)
+
+1. **Owner-physician queue (unchanged items from the previous section, plus):**
+   - `bacterial_vaginosis` → metronidazole (gel 0.75 %) and clindamycin (cream 2 %):
+     `route` lists `topical` but the only regimens are the oral ones (500 mg × 2 /
+     300 mg × 2); the shell now labels this honestly («в записи БД задана системная
+     схема»), but the record needs a topical regimen (e.g. 5 g cream на ночь × 7) or
+     `topical` removed from `route`.
+   - 9 validator warnings «route … has no matching form in drugs_reference» — all in
+     blocked records (PCP prophylaxis ×5 cotrimoxazole «iv» with oral-only forms; cataract
+     prophylaxis fosfomycin iv; ТКИН / congenital pneumonia amikacin iv and pelvic
+     fracture gentamicin iv with `dilution.im` only). Fix the route or add the
+     iv form/dilution when those records are reviewed.
+   - **B-6 dose basis per regimen (now visible in the shell):** co-trimoxazole regimens
+     mix bases — `uti_prophylaxis` adult 480 mg (= one 400+80 tablet), `cellulitis` /
+     `skin_abscess` 800 mg (= SMX component, «800/160 мг»), `uti_prophylaxis` child and
+     `listeriosis` «по триметоприму». The shell reads «по триметоприму / TMP» from the
+     regimen wording and otherwise picks the component that divides the dose
+     (`unitStrengthMg`); a `dose_basis` field (`sum` / `first_component` /
+     `trimethoprim`) per regimen + validator rule would make this explicit. Same for
+     amoxiclav (dose = amoxicillin component) and piperacillin/tazobactam.
+   - Benzathine benzylpenicillin (syphilis): «2.4 млн ЕД однократно / × 2 с интервалом
+     7 дней» is encoded as `duration_days "1-3"`, `freq_per_day 1`, so the course
+     quantity reads 3 doses × 2 vials. Encode weekly schedules explicitly (e.g.
+     `doses_total`) or set `duration_days` to the number of injections.
+   - Real-browser pass (sandbox has none): keyboard focus ring on cards, the SW update
+     banner after a deploy, dark theme without flash, print preview after switching
+     nosologies, the new «D.t.d. N <course quantity> (по K на приём, …)» line, the
+     «Компоненты комбинации» block and the «Пациент / Возраст / Вес» header on the printed
+     form, the «+14 % к расчётной» wording next to rounded doses, history «Открыть расчёт»,
+     the suspension default for children (250 мг/5 мл for a 25-kg child), «1.05 млн ЕД»,
+     the plausibility gates (age > 120 y; newborn > 7 kg / infant > 20 kg block, 1–3 y
+     > 25 kg warns — thresholds are generous typo catchers, tighten or loosen as you see
+     fit), «~4.5 таб 400+80 мг = 360 мг по триметоприму», the «tablets from 6 years when the
+     suspension dose is > 15 ml» default, the Latin Rp strength («250 mg/5 ml»,
+     «1 000 000 ED» — ED vs UI vs ЕД is your house style).
+   - Tablet divisibility is not in the DB: the shell allows half tablets for every tablet
+     form («0.5 таб 875+125 мг»). A per-form `divisible: false` (or `scored: true`) field
+     plus a validator rule would let the shell round film-coated tablets to whole units.
+   - GitHub → Settings → Security: enable private vulnerability reporting
+     (`SECURITY.md` points there); review the CodeQL tab once (should be empty).
+2. **Engineering candidates (no physician decision needed, none urgent):**
+   - ~~History restore / `hashchange`~~ DONE (T18 `d2e24a4`: «Открыть расчёт» restores
+     disease/scenario/line/drug/route/form/regimen/age; `hashchange` re-reads the link).
+     Still conservative: the hash itself stores disease/scenario/line only.
+   - ~~Typo-tolerant search~~ DONE (T28 `98b234e`, one edit per word for tokens with no
+     exact hit; word-start ranking).
+   - ~~`shell_walk.js` independent dose oracle~~ DONE (T22/T23: single + daily arithmetic,
+     volume, course-quantity arithmetic; the mg value does not depend on the rounding
+     policy, which still belongs to the owner). ~~Combination-partner oracle, ЕД MIS/Rp
+     oracle~~ DONE (T30), ~~grammar / volume-parity oracles~~ DONE (T32).
+   - ~~Latin Rp for a combination regimen still names the main drug only~~ — T83 adds the
+     partner lines after the Signa; a second `Rp.:` block per component is a small
+     follow-up once the owner confirms the wanted format.
+   - When a form chip has no matching entry in the drug's dilution table (ceftriaxone
+     «500 мг флакон» vs vials 1000/2000 mg) the vial selector keeps its previous choice;
+     adding the 500 mg vial to `dilution.*.solvent_options` is a DB (owner) item.
+3. Everything in the previous section (§1–3, §6) that is marked **Owner** still stands.
+
+## 2026-10-14: after the audit fix round — remaining NEXT_TASK (work top-down)
+
+1. **Owner-physician review queue (clinical, not engineering):**
+   - 50 DOSA records blocked as `EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW` — the
+     mapper defects are fixed; regenerate into quarantine
+     (`dosa_to_db_mapper.py`), review per record, unblock only by explicit mark.
+   - 3 `SOURCE_BASIS_MISSING` (erysipelas, pneumococcal_meningitis, brucellosis):
+     add `cr_id` or a documented `cr_note`, otherwise they stay blocked.
+   - 32 `NO_FEDERAL_CR_EXPERT_BASIS`: confirm each basis text or switch the build to
+     `python db/build_db.py --block-no-cr`.
+   - validator "owner review" warnings in computable records: 4 children's mg/kg
+     regimens without `max_daily_mg` (aom_child amoxiclav, ut_child cefotaxime,
+     diphtheria benzylpenicillin, pertussis azithromycin).
+2. **`db/schema.json` (B-3, needs owner decision — AGENTS.md "без обсуждения"):**
+   either regenerate it from the `validate_db.js` rules (and add a jsonschema test to
+   the `tests` extra) or delete it and point docs at the validator. Currently dead.
+3. **B-6 `dose_unit` on the regimen level** with validator consistency check (model
+   change — owner decision; today unit comes from `drugs_reference.*.dose_unit`).
+4. ~~CI: first green run 38563366043; A-4 (ubuntu-24.04, Node-24 actions)~~ DONE
+   2026-10-14 round 2. Keep `setup-uv` SHA current (no floating major tag).
+5. ~~A-3 pipeline entry points~~ DONE (sys.path bootstrap in `src/pipeline/main.py`);
+   A-1: `.python-version` optional, `requires-python` unchanged.
+6. **Hygiene backlog — round 4 (2026-10-14, autonomous) closed the engineering
+   part;** what remains is owner-only:
+   - ~~C-4 transitive pins~~ DONE (`uv.lock` bumps: all-extras 65 → 44 advisories,
+     core clinical+tests+development = 0; CI job `dependency audit`: core pip-audit
+     **blocking**, extras / root `npm audit` / audit-site report-only).
+     **Owner:** direct ML pins — torch 2.4.1 → ≥ 2.6 switches `torch.load` to
+     `weights_only=True` and most likely breaks doclayout-yolo 0.0.4 weights
+     loading; transformers fix exists only in 5.x; docling ≥ 2.120.3; mineru —
+     upgrade on the Windows/CUDA machine with the extraction smoke, then `uv lock`.
+     `wheel` 0.40 is held by `table-transformer`, `accelerate` 1.14 has no fix,
+     root `npm audit` has five High entries in the Tailwind 3 build-time tree (`braces`,
+     `chokidar`, `fast-glob`, `micromatch`, `tailwindcss`); `npm audit --omit=dev` = 0, registry
+     has no fixed Tailwind 3 release, and the available `4.3.3` fix is a major migration. Keep
+     report-only until the owner authorizes the separate v4 CSS / browser pass. `braces` also
+     has no fixed release in the audit-site tree.
+   - ~~H-1 static Tailwind~~ DONE (`vendor/app.css`, Tailwind 3.4.17 CLI, config
+     `db/tailwind.config.cjs`, `npm run build:css`; `test_tailwind_static_css.py`
+     proves every template class has a rule + byte-exact rebuild in CI; jsdom
+     walk over all 120 nosologies found no class outside the static scan).
+     **Owner:** one visual pass in a real browser (light + dark theme) — the
+     sandbox has no browser; rollback = `git revert` of the H-1 commit.
+   - ~~G-1 root archive~~ DONE (199 files → `docs/history/` + `docs/history/rc030/`,
+     index in `docs/history/README.md`, root 416 → 208 entries).
+   - ~~F-2 slim AGENTS.md~~ DONE (88 lines; full text in
+     `docs/history/AGENTS_2026-10-14_full.md`).
+   - ~~F-3 audit-site~~ DONE (README, package name, dist ignored). **Owner:** keep or
+     delete `audit-site/` (archival, not part of the calculator).
+   - ~~E-2 fixture corpus~~ DONE for the synthetic router path
+     (`src/tests/table_pdf_fixture.py` + 3 e2e tests, skips 30 → 28). **Owner:**
+     the 28 remaining skips need real CR snapshots, `normalized_regimens.sqlite`
+     and review-workbench artifacts that only exist on the owner's machine —
+     drop a small anonymised set under `src/tests/fixtures/` and the tests run.
+   - ~~D-1 phase 2 lint~~ DONE round 3 (`select = ["E9", "F"]`), ~~D-2 pipeline
+     `except Exception` review~~ DONE round 3.
+   - G-4 LICENSE, G-5 `corpus_config.json` default (env override exists) — owner.
+   - I-4 shared cross-allergy table (round 3 pinned both tables with
+     `test_allergy_class_consistency.py`; merging them, the class of the 6
+     blocked-only drugs and the engine hierarchy gaps `netilmicin, ofloxacin,
+     rifaximin, tetracycline, tinidazole, tobramycin` = owner decision).
+     Owner note from the I-4 check: `checkAllergyStatus` gives carbapenems
+     "recommended" under mild penicillin allergy and penicillins "safe" under
+     cephalosporin allergy (no side-chain cross-reactivity rule) — clinical policy,
+     not changed.
+   CI also fails a PR that changes `db/antibio_db.json` without a
+   `CHANGELOG_DB.md` entry (generate it with `python db/db_diff.py --git origin/main`).
+7. After each task: prepend AI_LOG/PROJECT_STATE/NEXT_TASK(/DECISIONS), run
+   `python -m pytest -q` + `npm run validate` + `python db/build_html.py`, commit + push.
+
 ## 2026-10-05: S-3 done — remaining NEXT_TASK (work top-down)
 
 1. ~~F1, D2, S-1 CI (bb6bcce), D4 (85c8ba3), S-3 CDN/PHI~~ ALL DONE 2026-10-05.

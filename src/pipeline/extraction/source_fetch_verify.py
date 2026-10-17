@@ -16,9 +16,8 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Awaitable, Callable, Mapping
+from typing import Any, Awaitable, Callable
 
 from .regimen_candidates import GuidelineCandidateSpec, load_candidate_spec, sha256_file
 
@@ -56,7 +55,6 @@ async def fetch_and_verify_spec(
     or the sha256 does not match ``expected_pdf_sha256``, the report records the
     mismatch and nothing is treated as verified.  Never approves regimens.
     """
-    import hashlib
 
     code_version = spec.guideline_id
     destination = Path(outdir) / f"CR_{code_version}.pdf"

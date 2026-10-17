@@ -1,5 +1,36 @@
 # HANDOFF.md — ANTIBIO (Cross-IDE / Cross-AI Onboarding)
 
+## Current handoff — 2026-10-17 (calculator audit rounds T91–T112)
+
+The current engineering thread is the clinically neutral calculator-shell hardening documented in
+`PROJECT_STATE.md`, `AI_LOG.md`, `NEXT_TASK.md`, `DECISIONS.md` and
+`docs/audits/AUDIT_2026-10-14_FIXES.md`. Older dated handoff sections below are historical, not
+current test or branch status.
+
+- Branch: `arena/2013101a-antibio-calc`; PR #1 includes implementation commits `9e3a22e` and
+  `d3c5ef1`. CI `39059621448` and CodeQL `39059621410` are green for `d3c5ef1`; documentation is
+  being completed before the user-requested merge.
+- T110 applies the existing 24-hour TTL to stored and in-memory history, retaining `[]` after an
+  all-expired purge to preserve explicit consent without patient data. T111 makes rejected
+  `sessionStorage.setItem()` a visible persistence failure: opt-in is turned off and disabled,
+  existing data is removed where possible, the current list remains in memory, and the UI does not
+  claim it was saved persistently.
+- T112 covers both session history and legacy `localStorage`. `purgeLegacyHistory()` verifies key
+  absence after removal (including after a throwing `removeItem()`); startup warns when legacy
+  cleanup cannot be confirmed. Opt-out and clear only report success if both stores are confirmed
+  empty. Otherwise a toast and persistent warning are shown, opt-out stays off, and any still-stored
+  session row is re-rendered when persistence is enabled. Default consent remains off; no new
+  storage schema was introduced.
+- Local T112 verification: **183** shell/history tests and **15** build-reproducibility tests pass;
+  Ruff / JS syntax / generated-build freshness / `git diff --check` pass; validate is **0 errors /
+  436 non-blocking warnings**; production npm audit reports **0 vulnerabilities**. The local
+  Python 3.11 environment cannot run the full suite; the green CI run covers Python 3.12. Build
+  `build-7befe719ac94` (template `3bd613028207`); DB unchanged `56727a27f050…`.
+- The user's latest explicit request authorizes merging PR #1 and supersedes the earlier hold against
+  merging. This authorization is for the requested repository change only; it is not medical
+  approval. Owner-physician decisions and real-browser / screen-reader / OS motion-preference checks
+  remain pending. Do not connect the Clinical Engine.
+
 ## PERSONAL_PHYSICIAN implementation — 2026-08-01
 
 `PERSONAL_PHYSICIAN_MODE_RFC.md` was explicitly accepted and implemented on
@@ -43,7 +74,8 @@ then `NEXT_TASK.md`.
 Read **`docs/governance/AUTONOMOUS_ENGINEERING_KERNEL.md` first** — it is the single master entry
 point and points to the six governing documents (Constitution, Engineering Playbook, Current
 Project State, AI Operating System, Clinical Governance, Repository Intelligence), read in that
-order. These supersede the old Reviewer-only role in AGENTS.md §0.1. Frozen technical scope
+order. These supersede the old Reviewer-only role (historical AGENTS.md §0.1, now archived in
+`docs/history/AGENTS_2026-10-14_full.md`; the slim `AGENTS.md` holds only the rules in force). Frozen technical scope
 unchanged. Prioritized debt lives in `TECH_DEBT_BACKLOG.md`. To start work: "Read
 `docs/governance/`, adopt them as governing documents, continue with the active milestone."
 Then continue with the state/plan docs below.

@@ -1,0 +1,93 @@
+{
+  "$comment": "Golden cases for the shipped calculator (audit 2026-10-14, E-3 / I-5). Each case pins (a) the regimen as it is stored in db/antibio_db.json and (b) the numbers the template's computeDose / formatTablets / computeInjectableMl / suspension maths must produce for it. A diff here is a clinical change: update only after the owner-physician re-checked the source regimen. Expected values were hand-computed from the regimen fields: daily = weight × mg/kg/day (or fixed / single × freq), capped at max_daily_mg; single = daily / freq; ml = single / concentration.",
+  "cases": [
+    {
+      "id": "ut_child_cefixime_6kg_suspension",
+      "record": "ut_child", "scenario": "ut_child_out", "line_number": 1, "drug_ref": "cefixime", "regimen_age_group": "child",
+      "regimen": {"dose_mg_kg_day": 8, "freq_per_day": 1, "max_daily_mg": 400},
+      "weight_kg": 6, "unit": "мг",
+      "expect": {"daily": 48, "single": 48, "capped": false},
+      "suspension": {"concentration": "100 мг/5 мл", "concentration_mg_per_ml": 20, "single_ml": 2.4}
+    },
+    {
+      "id": "ut_child_cefixime_60kg_hits_max_daily",
+      "record": "ut_child", "scenario": "ut_child_out", "line_number": 1, "drug_ref": "cefixime", "regimen_age_group": "child",
+      "regimen": {"dose_mg_kg_day": 8, "freq_per_day": 1, "max_daily_mg": 400},
+      "weight_kg": 60, "unit": "мг",
+      "expect": {"daily": 400, "single": 400, "capped": true}
+    },
+    {
+      "id": "cap_child_amoxicillin_20kg_three_times_daily",
+      "record": "cap_child", "scenario": "cap_child_out", "line_number": 1, "drug_ref": "amoxicillin", "regimen_age_group": "child", "regimen_index": 1,
+      "regimen": {"dose_mg_kg_day": 90, "freq_per_day": 3, "max_daily_mg": 3000},
+      "weight_kg": 20, "unit": "мг",
+      "expect": {"daily": 1800, "single": 600, "capped": false},
+      "suspension": {"concentration": "250 мг/5 мл", "concentration_mg_per_ml": 50, "single_ml": 12.0},
+      "solid": {"form_type": "tablet", "concentration": "500 мг", "label": "(~1 таб 500 мг = 500 мг, -17 % к расчётной)"}
+    },
+    {
+      "id": "cap_child_amoxicillin_40kg_capped_and_half_tablet",
+      "record": "cap_child", "scenario": "cap_child_out", "line_number": 1, "drug_ref": "amoxicillin", "regimen_age_group": "child", "regimen_index": 0,
+      "regimen": {"dose_mg_kg_day": 90, "freq_per_day": 2, "max_daily_mg": 3000},
+      "weight_kg": 40, "unit": "мг",
+      "expect": {"daily": 3000, "single": 1500, "capped": true},
+      "solid": {"form_type": "tablet", "concentration": "1000 мг", "label": "(1.5 таб 1000 мг)"}
+    },
+    {
+      "id": "mastitis_clindamycin_adult_capsules",
+      "record": "mastitis_puerperal", "scenario": "mastitis_cellulitis", "line_number": 0, "drug_ref": "clindamycin", "regimen_age_group": "adult",
+      "regimen": {"dose_mg_day_fixed": 1200, "single_dose_mg": 300, "freq_per_day": 4, "max_daily_mg": 1800},
+      "weight_kg": 70, "unit": "мг",
+      "expect": {"daily": 1200, "single": 300, "capped": false, "inconsistent": false},
+      "solid": {"form_type": "capsule", "concentration": "150 мг", "label": "(2 капс 150 мг)"}
+    },
+    {
+      "id": "mastitis_clindamycin_adult_capsule_rounding_is_whole",
+      "record": "mastitis_puerperal", "scenario": "mastitis_cellulitis", "line_number": 0, "drug_ref": "clindamycin", "regimen_age_group": "adult",
+      "regimen": {"dose_mg_day_fixed": 1200, "single_dose_mg": 300, "freq_per_day": 4, "max_daily_mg": 1800},
+      "weight_kg": 70, "unit": "мг",
+      "expect": {"daily": 1200, "single": 300, "capped": false},
+      "solid": {"form_type": "capsule", "concentration": "250 мг", "label": "(~1 капс 250 мг = 250 мг, -17 % к расчётной; капсулы не делятся)"}
+    },
+    {
+      "id": "ut_child_ceftriaxone_10kg_im_lidocaine",
+      "record": "ut_child", "scenario": "ut_child_in", "line_number": 1, "drug_ref": "ceftriaxone", "regimen_age_group": "child",
+      "regimen": {"dose_mg_kg_day": 50, "freq_per_day": 1, "max_daily_mg": 2000},
+      "weight_kg": 10, "unit": "мг",
+      "expect": {"daily": 500, "single": 500, "capped": false},
+      "injectable": {"vial": {"vial_mg": 1000, "final_concentration_mg_ml": 250}, "ml_text": "2.00 мл"}
+    },
+    {
+      "id": "ut_child_ceftriaxone_50kg_capped_at_2g",
+      "record": "ut_child", "scenario": "ut_child_in", "line_number": 1, "drug_ref": "ceftriaxone", "regimen_age_group": "child",
+      "regimen": {"dose_mg_kg_day": 50, "freq_per_day": 1, "max_daily_mg": 2000},
+      "weight_kg": 50, "unit": "мг",
+      "expect": {"daily": 2000, "single": 2000, "capped": true},
+      "injectable": {"vial": {"vial_mg": 1000, "final_concentration_mg_ml": 250}, "ml_text": "8.00 мл"}
+    },
+    {
+      "id": "postop_cefazolin_child_30kg_iv_bolus",
+      "record": "postop_prophylaxis", "scenario": "clean_surgery", "line_number": 1, "drug_ref": "cefazolin", "regimen_age_group": "child",
+      "regimen": {"dose_mg_kg_day": 50, "freq_per_day": 1, "max_daily_mg": 2000},
+      "weight_kg": 30, "unit": "мг",
+      "expect": {"daily": 1500, "single": 1500, "capped": false},
+      "injectable": {"vial": {"vial_mg": 1000, "final_concentration_mg_ml": 100}, "ml_text": "15.00 мл"}
+    },
+    {
+      "id": "meningococcal_benzylpenicillin_child_20kg_units",
+      "record": "meningococcal_disease", "scenario": "md_empirical", "line_number": 1, "drug_ref": "benzylpenicillin_na", "regimen_age_group": "child",
+      "regimen": {"dose_mg_kg_day": 300000, "freq_per_day": 6, "max_daily_mg": 24000000},
+      "weight_kg": 20, "unit": "ЕД",
+      "expect": {"daily": 6000000, "single": 1000000, "capped": false},
+      "injectable": {"vial": {"vial_units": 1000000, "final_concentration_units_ml": 100000}, "ml_text": "10.00 мл"}
+    },
+    {
+      "id": "scarlet_fever_adult_amoxicillin_fixed_dose_no_weight_dependence",
+      "record": "scarlet_fever", "scenario": "scarlet_std", "line_number": 1, "drug_ref": "amoxicillin", "regimen_age_group": "adult",
+      "regimen": {"dose_mg_day_fixed": 1000, "single_dose_mg": 500, "freq_per_day": 2, "max_daily_mg": 1500},
+      "weight_kg": 95, "unit": "мг",
+      "expect": {"daily": 1000, "single": 500, "capped": false, "inconsistent": false},
+      "solid": {"form_type": "tablet", "concentration": "500 мг", "label": "(1 таб 500 мг)"}
+    }
+  ]
+}

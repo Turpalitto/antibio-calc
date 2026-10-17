@@ -1,5 +1,4 @@
 import sqlite3
-from pathlib import Path
 
 import pytest
 
@@ -15,6 +14,16 @@ def cyrillic_font() -> str:
     from src.tests.table_pdf_fixture import resolve_cyrillic_font
 
     return resolve_cyrillic_font()
+
+
+@pytest.fixture(scope="session")
+def synthetic_guideline_pdf(tmp_path_factory, cyrillic_font: str):
+    """E-2: three-page synthetic guideline PDF (text page, dosing table, image-only
+    "scan") so the extraction router has an end-to-end path on every machine."""
+    from src.tests.table_pdf_fixture import build_guideline_pdf
+
+    target = tmp_path_factory.mktemp("synthetic_guideline") / "synthetic_guideline.pdf"
+    return build_guideline_pdf(target, cyrillic_font)
 
 
 @pytest.fixture(autouse=True)

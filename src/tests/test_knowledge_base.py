@@ -2,13 +2,11 @@
 
 import pytest
 from pathlib import Path
-import tempfile
-import shutil
 import sys
 sys.path.insert(0, '.')
 
 from src.pipeline.extraction.base import Document, Page
-from src.pipeline.knowledge_base import KnowledgeBase, _stable_id, _content_key
+from src.pipeline.knowledge_base import KnowledgeBase
 
 
 class _Spy:

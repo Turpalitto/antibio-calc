@@ -20,7 +20,7 @@ from clinical_engine.regimen.clinical_regimen import ClinicalRegimen
 from clinical_engine.regimen.field_normalization import (
     NormalizationRunMetrics, canonicalize_unit, recover_route_from_quote,
 )
-from clinical_engine.regimen.validator import GateReport, RegimenValidator
+from clinical_engine.regimen.validator import RegimenValidator
 
 
 @dataclass

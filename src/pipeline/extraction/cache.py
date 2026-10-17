@@ -17,14 +17,17 @@ cannot leave a truncated cache entry that later reads as a hit.
 
 import hashlib
 import json
+import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 import time
 
 from .base import BoundingBox, Document, Page, TableCell, TableObject
 from .config import get_config
+
+logger = logging.getLogger(__name__)
 
 # Bump when the serialised shape changes, so old entries are ignored rather than
 # misread.
@@ -217,8 +220,8 @@ class ExtractionCache:
                 doc.metadata.setdefault("cache_hit", True)
                 doc.metadata["cache_hit_time"] = time.time()
                 return doc
-        except Exception:
-            pass
+        except Exception as exc:  # D-2: a corrupt entry is a miss, but say so
+            logger.debug("Extraction cache entry unreadable for %s: %s", pdf_path.name, exc)
         return None
 
     def put(self, pdf_path: Path, doc: Document) -> None:

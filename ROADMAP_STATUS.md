@@ -2,7 +2,11 @@
 
 **Progress overview. Evidence-based where possible.**
 
-**Date:** 2026-07-10
+**Date:** 2026-07-10 (historical snapshot). **Current facts (2026-10-14):**
+`GOVERNANCE_SOURCE_OF_TRUTH.md` → «current canonical test run» (2660 passed,
+30 skipped), calculator DB 65 computable / 55 blocked, CI green (run
+38563366043); audit + fix round: `docs/audits/AUDIT_2026-10-14*.md`. Figures
+below were measured on 2026-07-10 and are kept as history.
 
 ## Architecture
 - v3 — **FROZEN** (100%)

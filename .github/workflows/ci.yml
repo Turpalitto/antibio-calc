@@ -8,23 +8,43 @@ on:
 permissions:
   contents: read
 
+# A newer push to the same branch / PR supersedes the running checks.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# Audit 2026-10-14 (A-4): actions pinned to their Node 24 releases (Node 20 is
+# removed from hosted runners) and the runner image pinned to ubuntu-24.04 —
+# `ubuntu-latest` migrates to Ubuntu 26.04 from 2026-10-19 and the PDF fixture
+# depends on the fonts shipped by the image. `astral-sh/setup-uv` publishes no
+# floating major tag after v7, hence the commit SHA.
+
 jobs:
   test:
     name: pytest + validate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # the changelog gate below diffs against the PR base
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
+          cache: npm
 
-      - uses: actions/setup-python@v5
+      # Only devDependency: the pinned Tailwind 3.4.17 CLI (vendor/app.css,
+      # audit H-1) — lets test_tailwind_static_css rebuild the committed
+      # stylesheet and prove it is not stale.
+      - name: Install the Tailwind CLI (npm ci)
+        run: npm ci --no-fund --no-audit
+
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
 
       # pyproject [tool.uv] package=false: deps only, project is imported via
       # pytest pythonpath. --frozen guarantees the committed uv.lock is used.
@@ -33,22 +53,127 @@ jobs:
 
       # testpaths (pyproject.toml) = medical_normalizer, clinical_engine,
       # regimen, review_workbench, src/tests — includes
-      # test_build_reproducibility (antibiotic_calc.html rebuild gate).
+      # test_build_reproducibility (antibiotic_calc.html + sw.js rebuild gate),
+      # the calculator golden cases and the static-server / API peer policies.
       - name: Run test suite
         run: uv run --no-sync python -m pytest -q
 
       - name: Validate shipped DB (120 recs / regimens / scenarios)
         run: npm run validate
 
-  gitleaks:
-    name: secret scan
-    runs-on: ubuntu-latest
+      # The committed artifact must be what the inputs produce (belt and braces
+      # next to test_build_reproducibility: this also catches a stale sw.js).
+      - name: Check the committed build is fresh
+        run: uv run --no-sync python db/build_html.py --check
+
+      # Audit 2026-10-14 (I-6): a change to the embedded clinical DB must come
+      # with a CHANGELOG_DB.md entry (generate it with db/db_diff.py).
+      - name: Clinical DB change requires a CHANGELOG_DB.md entry
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          changed="$(git diff --name-only "origin/${BASE_REF}...HEAD")"
+          if printf '%s\n' "$changed" | grep -qx 'db/antibio_db.json'; then
+            if printf '%s\n' "$changed" | grep -qx 'CHANGELOG_DB.md'; then
+              echo "db/antibio_db.json changed and CHANGELOG_DB.md was updated — ok"
+            else
+              echo "::error file=CHANGELOG_DB.md::db/antibio_db.json changed in this PR but CHANGELOG_DB.md has no new entry. Generate one: python db/db_diff.py --git origin/${BASE_REF} >> CHANGELOG_DB.md (and describe why)."
+              uv run --no-sync python db/db_diff.py --git "origin/${BASE_REF}" | head -40 || true
+              exit 1
+            fi
+          else
+            echo "db/antibio_db.json unchanged — nothing to log"
+          fi
+
+  lint:
+    name: ruff (pyflakes + syntax)
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      # ruff is pinned in uv.lock through the `development` extra; the rule set
+      # lives in pyproject [tool.ruff.lint] (E9 + full pyflakes F).
+      - name: Install locked ruff
+        run: uv sync --frozen --extra development
+
+      - name: ruff check
+        run: uv run --no-sync ruff check .
+
+  # Audit 2026-10-14 (C-4): known-vulnerability scan of the locked dependency
+  # tree. The core (what the calculator API and the test suite actually run on)
+  # is BLOCKING; the ML extras (torch / docling / transformers — pinned, owner
+  # environment) and the archival audit-site are REPORT-ONLY until the owner
+  # re-pins them. To accept a specific advisory in the core, add
+  # `--ignore-vuln <ID>` with a comment explaining why.
+  audit:
+    name: dependency audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      - name: Export locked requirements
+        run: |
+          uv export --frozen --no-hashes --no-emit-project \
+            --extra clinical --extra tests --extra development -o /tmp/req_core.txt
+          uv export --frozen --no-hashes --no-emit-project --all-extras -o /tmp/req_all.txt
+
+      - name: pip-audit — core (clinical + tests + development) — blocking
+        run: uvx --from "pip-audit==2.10.1" pip-audit -r /tmp/req_core.txt --no-deps --disable-pip
+
+      - name: pip-audit — all extras incl. ML pipeline — report only
+        continue-on-error: true
+        run: |
+          uvx --from "pip-audit==2.10.1" pip-audit -r /tmp/req_all.txt --no-deps --disable-pip \
+            || echo "::warning title=pip-audit (extras)::known vulnerabilities in the ML extras — see the step log; pins are an owner decision (NEXT_TASK.md C-4)"
+
+      # Root package.json has no runtime deps; its only devDependency is the
+      # Tailwind 3.4.17 CLI that builds vendor/app.css (H-1). npm audit may report
+      # multiple connected advisories in this build-only tree (braces/chokidar/
+      # fast-glob/micromatch/Tailwind); no patched Tailwind 3 is published, and
+      # Tailwind 4 is a separate CSS migration requiring visual review.
+      - name: npm audit — root (Tailwind CLI, build-time only) — report only
+        continue-on-error: true
+        run: |
+          npm audit \
+            || echo "::warning title=npm audit (root devDependencies)::known Tailwind 3 build-time advisories; no patched v3 release, v4 requires CSS/browser migration — see NEXT_TASK.md C-4"
+
+      - name: npm audit — audit-site (archival dashboard) — report only
+        continue-on-error: true
+        working-directory: audit-site
+        run: |
+          npm audit \
+            || echo "::warning title=npm audit (audit-site)::see audit-site/README.md — braces <=3.0.3 has no fixed release"
+
+  gitleaks:
+    name: secret scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: gitleaks/gitleaks-action@v2
+      - uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

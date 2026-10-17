@@ -2,7 +2,7 @@
 false-positive classes found during Phase 3/4/6 manual and automated audit."""
 from dose_verification_sandbox.semantics_parser import classify_regimen
 from dose_verification_sandbox.semantics_risk_audit import assess_risk, RISK_ALTERNATIVE_BOUNDARY, \
-    RISK_SENTENCE_BOUNDARY, RISK_AGE_GROUP_MIX, RISK_DRUG_BOUNDARY
+    RISK_DRUG_BOUNDARY
 from dose_verification_sandbox.validation_status import validate
 
 

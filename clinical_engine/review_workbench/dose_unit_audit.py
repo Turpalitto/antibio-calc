@@ -8,7 +8,10 @@ import sqlite3
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:  # annotation only
+    from clinical_engine.review_workbench.storage import ReviewStore
 
 _SIMPLE_UNIT = re.compile(r"(?<![\w/])(мг|mg|г|g|мкг|mcg|µg|мл|ml|ед|ме|iu)(?![\w/])", re.I)
 # A unit is only "recoverable" by attaching the unit the source already states

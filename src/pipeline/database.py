@@ -7,13 +7,11 @@ import math
 import os
 import sqlite3
 import tempfile
-import time
 from pathlib import Path
 from typing import Any, Optional
 
-import orjson
 
-from config import ABX_JSON, DB_PATH, DOWNLOADS_ABX, DOWNLOADS_ALL, DOWNLOADS_OTHER
+from config import ABX_JSON, DB_PATH, DOWNLOADS_ABX, DOWNLOADS_OTHER
 from downloader import sanitize_filename, unique_destination
 
 logger = logging.getLogger(__name__)
@@ -285,7 +283,9 @@ def _sanitize(v: Any) -> Any:
     regimen is worse than an obviously invalid one.
     """
     if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
-        logger.warning("Rejected non-finite numeric value %r for SQLite storage", v)
+        # log the kind, not the value: this helper sees every column, so the
+        # value itself is treated as potentially sensitive (CodeQL py/clear-text-logging)
+        logger.warning("Rejected non-finite numeric value (%s) for SQLite storage", "nan" if math.isnan(v) else "inf")
         return None
     if v is None or isinstance(v, (int, float, str, bool)):
         return v

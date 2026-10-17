@@ -15,7 +15,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
-from .semantics_parser import _find_dose_window, _detect_period_signal, WINDOW_CHARS
+from .semantics_parser import _find_dose_window, _detect_period_signal
 from .parser import parse_dose_expression
 from .models import UNPARSED
 

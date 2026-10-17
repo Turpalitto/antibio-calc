@@ -72,7 +72,7 @@ Not applicable — no reviewer has been registered or has interacted with the sy
 
 ## 16. Golden Dataset eligibility
 
-See [GOLDEN_DATASET_APPROVED_ELIGIBILITY.md](GOLDEN_DATASET_APPROVED_ELIGIBILITY.md). All 7 cases: `APPROVED_DATA_NOT_AVAILABLE` (approved-object count is 0). None run. No expected answer changed.
+See [GOLDEN_DATASET_APPROVED_ELIGIBILITY.md](../../GOLDEN_DATASET_APPROVED_ELIGIBILITY.md). All 7 cases: `APPROVED_DATA_NOT_AVAILABLE` (approved-object count is 0). None run. No expected answer changed.
 
 ## 17. Remaining P5.6 blockers
 

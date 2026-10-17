@@ -31,7 +31,7 @@ Generated: 2026-07-15. Repository-side scan only. Provider-side revocation canno
 | Documentation contains no live credentials | **Confirmed** — pattern scan across all `*.md` returned no matches |
 | Generated logs/reports contain no live credentials | **Confirmed** — no `.log` files present in working tree; JSON/CSV reports scanned, no matches |
 | Currently staged content | **N/A** — `git diff --cached` is empty; nothing is staged |
-| `.gitleaks.toml` present and scoped | **Confirmed** — [.gitleaks.toml](.gitleaks.toml) extends default gitleaks ruleset plus a custom `antibio-provider-key` rule; no `gitleaks` binary available in this environment to run it directly, so the manual regex scan above is a substitute, not a replacement |
+| `.gitleaks.toml` present and scoped | **Confirmed** — [.gitleaks.toml](../../.gitleaks.toml) extends default gitleaks ruleset plus a custom `antibio-provider-key` rule; no `gitleaks` binary available in this environment to run it directly, so the manual regex scan above is a substitute, not a replacement |
 
 ## Owner attestation received (2026-07-15)
 

@@ -19,8 +19,7 @@ import logging
 import tempfile
 from collections import defaultdict
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Tuple
-import time
+from typing import List, Dict, Any, Tuple
 
 import fitz  # PyMuPDF
 from PIL import Image
@@ -90,7 +89,7 @@ if _external_site_packages:
 
 # Import our structured models (additive)
 from .base import (
-    Document, Page, BoundingBox, TableCell, TableObject,
+    Document, BoundingBox, TableCell, TableObject,
 )
 
 
@@ -336,7 +335,6 @@ class LayoutProcessor:
 
         try:
             import torch
-            from transformers import TableTransformerForObjectDetection
 
             # Detection
             inputs = self.table_detector_processor(images=image, return_tensors="pt")

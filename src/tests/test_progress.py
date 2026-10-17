@@ -1,7 +1,4 @@
-from pathlib import Path
-from unittest.mock import patch
 
-import pytest
 
 from progress import (
     load_progress,

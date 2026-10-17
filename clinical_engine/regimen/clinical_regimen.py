@@ -13,7 +13,7 @@ No LLM. No inference. Pure data + provenance.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, replace
 from enum import Enum
 from typing import Optional
 

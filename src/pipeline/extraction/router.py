@@ -5,7 +5,6 @@ import time
 from pathlib import Path
 from typing import Optional, List
 import tempfile
-import shutil
 
 from .base import Document, Page
 from .pymupdf import PyMuPDFExtractor
@@ -82,15 +81,12 @@ class ExtractorRouter:
     def extract(self, pdf_path: Path) -> Document:
         t0 = time.time()
         metrics = get_metrics()
-        used_cache = False
-
         # Transparent cache check
         cache = get_cache()
         cached = cache.get(pdf_path)
         if cached:
             logger.info(f"Cache hit for {pdf_path.name}")
             self._last_source = cached.source + "+cache"
-            used_cache = True
             elapsed = time.time() - t0
             metrics.record_document(cached, elapsed, used_cache=True)
             self._apply_layout(cached, pdf_path)
@@ -274,7 +270,9 @@ class ExtractorRouter:
                             fb_doc = fb.extract(single_pdf)
                             ocr_text = fb_doc.full_text
                             break
-                        except Exception:
+                        except Exception as exc:  # D-2: never silent — the page keeps its bad text
+                            logger.warning("OCR fallback %s failed on %s p.%s: %s",
+                                           fb.name, pdf_path.name, page.page_num, exc)
                             continue
                     if not ocr_text:
                         # keep the original text, but say so

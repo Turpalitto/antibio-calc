@@ -27,6 +27,14 @@ BLOCKED.
   per-administration label equivalents, 0 substantive mismatches;
 - proposed-boundary canonical test run: 1499 passed, 11 skipped, 1 xfailed,
   0 failed (1511 collected; 2026-07-30);
+- current canonical test run (2026-10-14, `python -m pytest -q`, testpaths from
+  `pyproject.toml`): 2729 passed, 28 skipped, 0 failed (after rounds 1–5 of the
+  fix work, 2026-10-14); `npm run validate`
+  0 errors; shipped calculator DB 120 records = 65 computable / 55 blocked
+  (`docs/audits/AUDIT_2026-10-14.md`, fix round in `DECISIONS.md` 2026-10-14);
+- calculator shell and engine API are loopback-only at every hop
+  (`server.js` proxy peer gate + `/v1/recommend` peer gate); the Engine is
+  still NOT connected to the calculator;
 - P6: BLOCKED;
 - Clinical Decision Engine integration: запрещена до P6 entry gates;
 - `PERSONAL_PHYSICIAN_MODE_RFC.md`: ACCEPTED on 2026-08-01 for additive,

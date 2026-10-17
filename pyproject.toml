@@ -66,6 +66,32 @@ override-dependencies = [
     "tqdm>=4.67.1,<5",
 ]
 
+[tool.ruff]
+# Audit 2026-10-14 (D-1): the CI lint gate is pyflakes (`F`) + syntax errors
+# (`E9`). Round 3 removed every unused import / redefinition / placeholder-less
+# f-string outside the FROZEN `medical_normalizer/` (which is excluded from the
+# style rules below rather than auto-fixed). Dead local assignments (F841) are
+# enforced for engine and pipeline code; legacy tooling and tests carry
+# documented exceptions.
+line-length = 120
+target-version = "py312"
+extend-exclude = ["tmp", "generated/*/page_*", "audit-site"]
+
+[tool.ruff.lint]
+select = ["E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# FROZEN — must not be edited for style (AGENTS.md §1); F821/F7/E9 still apply.
+"medical_normalizer/**" = ["F401", "F541", "F811", "F841"]
+# Test idioms: `fastapi = pytest.importorskip(...)`, side-effect calls kept by name.
+"**/tests/**" = ["F841"]
+"tests/**" = ["F841"]
+# Legacy / archival tooling with dead locals that is not worth touching.
+"main.py" = ["F841"]
+"generated/**" = ["F841"]
+"dose_verification_sandbox/**" = ["F841"]
+"src/pipeline/extraction/layout.py" = ["F841"]
+
 [tool.pytest.ini_options]
 # Milestone 13: repo root on the path so `clinical_engine` / `medical_normalizer`
 # import under a bare `pytest` run.

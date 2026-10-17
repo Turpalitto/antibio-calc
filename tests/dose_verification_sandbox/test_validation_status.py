@@ -1,11 +1,10 @@
 """RC-030 Evidence Validation, Phase 9/11 tests for the status model."""
-import sqlite3
 from pathlib import Path
 
 from dose_verification_sandbox.semantics_parser import classify_regimen
 from dose_verification_sandbox.semantics_risk_audit import assess_risk
 from dose_verification_sandbox.validation_status import (
-    validate, TYPES_MEETING_PRECISION_THRESHOLD, ValidatedDoseSemantics,
+    validate, TYPES_MEETING_PRECISION_THRESHOLD,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]

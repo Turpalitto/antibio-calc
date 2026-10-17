@@ -1,7 +1,7 @@
 """Regression tests for the ANTIBIO_EXTERNAL_SITE_PACKAGES portability fix.
 
 Root cause (fixed 2026-07-15, P5.6 owner recovery): layout.py and semantic.py
-hard-coded a single workstation's site-packages path (C:\\Users\\TURPAL\\...),
+hard-coded a single workstation's site-packages path (C:\\Users\\<user>\\...),
 which meant the literal username was baked into tracked production source and
 the path only ever did anything useful on that one machine. Replaced with an
 opt-in ANTIBIO_EXTERNAL_SITE_PACKAGES environment variable: absent by default

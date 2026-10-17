@@ -17,11 +17,9 @@ import json
 import hashlib
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import List, Dict, Any, Optional
-import time
 
-from .extraction.base import Document, TableCell
+from .extraction.base import Document
 from .knowledge_identity import build_identity, content_hash
 
 # ============================================================

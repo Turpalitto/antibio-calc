@@ -13,10 +13,21 @@ from hashlib import sha256 as _sha256
 from pathlib import Path
 from typing import Any
 
-import httpx
 import orjson
 from rich.console import Console
 from rich.logging import RichHandler
+
+# A-3 (audit 2026-10-14): the pipeline mixes package-relative imports (main.py)
+# with flat ones (`from config import …` in api_client.py & co.), so from a clean
+# checkout only pytest — which sets `pythonpath = [".", "src/pipeline", "src"]`
+# in pyproject.toml — could import it. Mirror that contract here so every
+# documented invocation works: `python -m src.pipeline.main`,
+# `python src/pipeline/main.py`, `cd src/pipeline && python main.py`.
+_PIPELINE_DIR = Path(__file__).resolve().parent
+for _entry in (_PIPELINE_DIR.parent.parent, _PIPELINE_DIR.parent, _PIPELINE_DIR):
+    if str(_entry) not in sys.path:
+        sys.path.insert(0, str(_entry))
+del _entry
 
 
 # L-5: there were TWO locks for the same file -- a module-level ``_write_lock`` and
@@ -79,8 +90,6 @@ try:  # package import: `python -m src.pipeline.main`, pytest
         EXTRACTION_VERSION,
         KNOWLEDGE_BASE_JSON,
         LLM_CONCURRENCY,
-        LLM_DELAY,
-        LLM_PROVIDER_CHAIN,
         REVIEW_REQUIRED_JSON,
         VALIDATION_MODEL,
     )
@@ -105,7 +114,6 @@ try:  # package import: `python -m src.pipeline.main`, pytest
         mark_extraction_incomplete,
         mark_validation_done,
         needs_reprocessing,
-        save_progress,
     )
     from .reporter import generate_report
     from .section_detector import detect_sections
@@ -124,8 +132,6 @@ except ImportError:  # pragma: no cover - legacy `cd src/pipeline && python main
         EXTRACTION_VERSION,
         KNOWLEDGE_BASE_JSON,
         LLM_CONCURRENCY,
-        LLM_DELAY,
-        LLM_PROVIDER_CHAIN,
         REVIEW_REQUIRED_JSON,
         VALIDATION_MODEL,
     )
@@ -150,7 +156,6 @@ except ImportError:  # pragma: no cover - legacy `cd src/pipeline && python main
         mark_extraction_incomplete,
         mark_validation_done,
         needs_reprocessing,
-        save_progress,
     )
     from reporter import generate_report
     from section_detector import detect_sections
@@ -175,8 +180,6 @@ except ModuleNotFoundError as _exc:  # legacy flat import
         EXTRACTION_VERSION,
         KNOWLEDGE_BASE_JSON,
         LLM_CONCURRENCY,
-        LLM_DELAY,
-        LLM_PROVIDER_CHAIN,
         REVIEW_REQUIRED_JSON,
         VALIDATION_MODEL,
     )
@@ -201,7 +204,6 @@ except ModuleNotFoundError as _exc:  # legacy flat import
         mark_extraction_incomplete,
         mark_validation_done,
         needs_reprocessing,
-        save_progress,
     )
     from reporter import generate_report
 from section_detector import detect_sections
@@ -413,8 +415,9 @@ async def cmd_extract_raw(args: argparse.Namespace) -> None:
                     # Filter out items that are already in raw output
                     # but NOT in progress (e.g., from a previous --force run)
                     pending = [i for i in pending if i.get("Id", 0) not in raw_ids]
-            except Exception:
-                pass
+            except Exception as exc:  # D-2: visible, since every item would be re-extracted
+                logger.warning("Could not read %s to filter already-extracted items: %s",
+                               EXTRACTION_RAW_JSON, exc)
 
     if args.limit and len(pending) > args.limit:
         pending = pending[:args.limit]
@@ -908,7 +911,7 @@ async def cmd_verify(args: argparse.Namespace) -> None:
     if corrupted:
         console.print(f"  [yellow]Corrupted/missing: {corrupted}[/]")
     else:
-        console.print(f"  [green]All PDFs present and non-empty[/]")
+        console.print("  [green]All PDFs present and non-empty[/]")
 
     report = generate_report(items)
     console.print("\n" + report)

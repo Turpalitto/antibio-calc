@@ -11,7 +11,7 @@ not modified and not repointed here; this is validation-only.
 from __future__ import annotations
 
 import sqlite3
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 

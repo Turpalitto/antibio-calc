@@ -5,7 +5,6 @@ import json
 from src.pipeline.extraction.dosa_source_contract import (
     MATCH_BY_CR_ID,
     MATCH_BY_MKB,
-    MATCH_BY_NAME,
     NO_MATCH,
     build_dosa_index,
     build_source_contract,

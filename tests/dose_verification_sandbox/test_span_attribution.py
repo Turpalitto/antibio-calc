@@ -5,11 +5,10 @@ full clinical excerpts) — see RC030_C6 golden fixtures in this file's
 docstrings for what each one demonstrates. No real database touched, no
 network access, no Clinical Engine import, no calculation activation.
 """
-import pytest
 
 from dose_verification_sandbox.span_attribution import (
-    AMBIGUOUS_ALTERNATIVE_BOUNDARY, AMBIGUOUS_LOADING_MAINTENANCE, AMBIGUOUS_MULTIPLE_DRUGS,
-    AMBIGUOUS_MULTIPLE_RANGES, AMBIGUOUS_TABLE_CONTEXT, NOT_A_DOSE_RANGE, SAFE_EXACT_LINK,
+    AMBIGUOUS_MULTIPLE_DRUGS,
+    AMBIGUOUS_TABLE_CONTEXT, NOT_A_DOSE_RANGE, SAFE_EXACT_LINK,
     SAFE_SINGLE_CANDIDATE, SOURCE_INCOMPLETE, WRONG_RANGE_ANCHOR,
     attribute, canonical_result_hash, find_antibiotic_spans, find_range_spans, normalize_text,
 )
@@ -267,7 +266,6 @@ def test_expected_antibiotic_not_in_dictionary_is_dictionary_gap_not_wrong_ancho
 
 
 def test_dictionary_gap_is_never_safe():
-    from dose_verification_sandbox.span_attribution import DICTIONARY_GAP
     nt = normalize_text("Неизвестный препарат 20-50 мг/кг.")
     r = attribute(nt.normalized, "Неизвестный препарат", 20.0, "мг/кг")
     assert r.classification not in ("SAFE_EXACT_LINK", "SAFE_TABLE_LINK", "SAFE_SINGLE_CANDIDATE")

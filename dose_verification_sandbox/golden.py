@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from dataclasses import asdict
 
 from .models import DoseExpression, PARSED
 from .calculator import calculate

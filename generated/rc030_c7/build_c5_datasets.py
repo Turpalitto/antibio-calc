@@ -85,7 +85,7 @@ def main() -> None:
         out_path = OUT_DIR / f"{bid}_dataset.json"
         out_path.write_text(json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8")
         category = list(b["category_counts"].keys())[0]
-        written.append({"batch_id": bid, "dataset_path": str(out_path.relative_to(ROOT)),
+        written.append({"batch_id": bid, "dataset_path": out_path.relative_to(ROOT).as_posix(),
                          "mode": MODE_BY_CATEGORY[category], "record_count": len(records)})
 
     (OUT_DIR / "datasets_manifest.json").write_text(

@@ -434,7 +434,7 @@ def stage_context(
     from clinical_engine.config import EngineConfig
     from clinical_engine.engine import _load_clinical_constants
     from clinical_engine.pipeline import ScoreWeights, StageContext
-    from clinical_engine.readers.diagnosis_reader import DiagnosisProviderAdapter, JsonDiagnosisProvider
+    from clinical_engine.readers.diagnosis_reader import JsonDiagnosisProvider
     from clinical_engine.readers.drug_reference_reader import DrugReferenceReader, DrugSafetyProviderAdapter
     from clinical_engine.readers.sqlite_reader import RegimenProviderAdapter, SQLiteReader
     from clinical_engine.terminology import BasicTerminologyProvider

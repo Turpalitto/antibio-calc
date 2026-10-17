@@ -18,7 +18,6 @@ from clinical_engine.corpus.locator import CorpusLocator
 from clinical_engine.api.service import ApiContext
 from clinical_engine.models import SafetyAction, SafetyLevel
 
-import pytest
 
 
 _Q = {"api_version": "1", "query": {"diagnosis": "острый гайморит", "patient": {"age": 35}}}

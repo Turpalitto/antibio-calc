@@ -53,7 +53,7 @@ Every current Git status entry is classified in generated `REPOSITORY_UNTRACKED_
 
 ## P5.6 Phase 6 refresh — 2026-07-15 (this program)
 
-`REPOSITORY_UNTRACKED_INVENTORY.json` above is stale (424 files, generated earlier this day). The canonical, current count is **519 files** (19 tracked + 500 untracked non-ignored), machine-classified with SHA-256 hashes in [REPOSITORY_MANIFEST.json](REPOSITORY_MANIFEST.json) (mapped onto this document's A–J policy scheme) and, at finer granularity, in [REPOSITORY_RECOVERY_CLASSIFICATION.csv](REPOSITORY_RECOVERY_CLASSIFICATION.csv) (Phase 3, using an internal A–T taxonomy cross-referenced in [REPOSITORY_RECOVERY_CLASSIFICATION.md](REPOSITORY_RECOVERY_CLASSIFICATION.md)).
+`REPOSITORY_UNTRACKED_INVENTORY.json` above is stale (424 files, generated earlier this day). The canonical, current count is **519 files** (19 tracked + 500 untracked non-ignored), machine-classified with SHA-256 hashes in [REPOSITORY_MANIFEST.json](REPOSITORY_MANIFEST.json) (mapped onto this document's A–J policy scheme) and, at finer granularity, in [REPOSITORY_RECOVERY_CLASSIFICATION.csv](REPOSITORY_RECOVERY_CLASSIFICATION.csv) (Phase 3, using an internal A–T taxonomy cross-referenced in [REPOSITORY_RECOVERY_CLASSIFICATION.md](docs/history/REPOSITORY_RECOVERY_CLASSIFICATION.md)).
 
 External-asset contracts (corpus dir, `kb_p44.db`, regimen/review SQLite stores, provider credentials) are restated with acquisition/required/offline-behaviour fields in `REPOSITORY_MANIFEST.json`. No file classified as category D/F/J-equivalent (owner-review pile) has been added to any proposed tracked set without an explicit Phase 8/9 owner decision.
 

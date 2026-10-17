@@ -451,3 +451,59 @@ def test_build_mapped_db_reports_skip_reasons() -> None:
         {**out["skipped"][0], "code_version": "911_1", "reason": "no_usable_dose"}
     ]
     assert out["recommendations"] == []
+
+
+# ---- audit 2026-10-14 (B-1): interval wording, mkb splitting, explicit marks ----
+
+
+@pytest.mark.parametrize("wording,expected", [
+    ("каждые 8 ч", 3),
+    ("каждые 8 часов", 3),
+    ("каждые 12 ч", 2),
+    ("каждые 6 часов", 4),
+    ("каждые 24 ч", 1),
+    ("через 4 ч", 6),
+    ("q8h", 3),
+    ("каждые 4-6 ч", None),      # a range is ambiguous -> dropped, never guessed
+    ("каждые 5 ч", None),        # does not divide the day evenly
+    ("за 30-60 минут до разреза", None),  # used to become freq=30
+    ("по 500 мг", None),         # used to become freq=500
+])
+def test_parse_freq_interval_wording_is_an_interval_not_a_count(wording, expected) -> None:
+    assert m.parse_freq(wording) == expected
+
+
+def test_normalize_mkb_splits_comma_joined_cells() -> None:
+    assert m.normalize_mkb(["D82.3, D82.8, D84.8, D89.8"]) == ["D82.3", "D82.8", "D84.8", "D89.8"]
+    assert m.normalize_mkb("j18.9; j15") == ["J18.9", "J15"]
+    assert m.normalize_mkb(["A41", "A41"]) == ["A41"]
+    assert m.normalize_mkb(None) == []
+
+
+def test_weight_dose_per_day_ceiling_is_not_multiplied_by_frequency() -> None:
+    per_day = m._normalize_dose("30 мг/кг/сут", "мг/кг", 3)
+    assert per_day["dose_mg_kg_day"] == 30
+    assert per_day["max_daily_mg_per_kg"] == 30
+    per_dose = m._normalize_dose("7 мг/кг/введение", "мг/кг", 3)
+    assert per_dose["dose_mg_kg_per_dose"] == 7
+    assert "dose_mg_kg_day" not in per_dose
+    assert per_dose["max_daily_mg_per_kg"] == 21
+
+
+def test_mapped_record_carries_explicit_pending_marks() -> None:
+    rec = m.map_guideline(
+        {"code_version": "9_3", "guideline_name": "T", "mkb": ["J18.9"]},
+        [_regimen("амоксициллин**")],
+    )
+    assert rec["calculation_blocked"] is True
+    assert rec["source_verification_status"] == "EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW"
+    assert rec["calculation_block_reason"]
+
+
+def test_interval_regimen_maps_to_doses_per_day() -> None:
+    rec = m.map_guideline(
+        {"code_version": "9_3", "guideline_name": "T", "mkb": ["J18.9"]},
+        [_regimen("амоксициллин**", freq="каждые 8 часов")],
+    )
+    regs = rec["scenarios"][0]["lines"][0]["drugs"][0]["regimens"]
+    assert regs[0]["freq_per_day"] == 3

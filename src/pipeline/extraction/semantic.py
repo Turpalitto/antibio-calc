@@ -12,7 +12,6 @@ import sys
 import json
 from pathlib import Path
 from typing import List, Dict, Any, Optional
-import time
 
 # Optional external site-packages directory for heavyweight extraction deps
 # (transformers) when they live outside the active environment. Opt-in only
@@ -33,7 +32,7 @@ try:
 except ImportError:
     pipeline = None
 
-from .base import Document, Page
+from .base import Document
 
 # === Load dicts (existing medical_dictionary, no install) ===
 #

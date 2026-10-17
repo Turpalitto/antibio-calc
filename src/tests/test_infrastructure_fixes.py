@@ -8,7 +8,6 @@ prefilter state machine (M-32..M-37, L-19..L-21), the official-card audit
 from __future__ import annotations
 
 import json
-import sqlite3
 from pathlib import Path
 
 import pytest
@@ -667,7 +666,6 @@ def test_h24_regimens_table_has_a_clinrec_id_index_and_fk_pragma():
 
 
 def test_l54_non_finite_dose_is_rejected_not_stored_as_null():
-    import math
 
     from src.pipeline import database
 

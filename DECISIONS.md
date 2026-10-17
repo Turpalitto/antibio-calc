@@ -1,3 +1,256 @@
+## 2026-10-17 — T112: verify all history deletion before reporting success
+
+**Decision:** Treat opt-out and clear as successful only when absence is confirmed in both the
+opt-in `sessionStorage` history and the legacy `localStorage` history. `purgeLegacyHistory()` now
+checks the key after attempting removal, including a read-back after `removeItem()` throws; if the
+initial read or final confirmation fails, the operation remains unconfirmed. `initHistoryStore()`
+shows a persistent warning when cleanup of legacy history cannot be verified. On opt-out or clear,
+if either store still contains the key or cannot be checked, show an explicit error in the toast and
+history drawer instead of claiming deletion. Keep opt-out unchecked so no further session writes
+are consented to; when persistence is still enabled, re-render any session row that remains stored.
+Clear failure warnings only after both removals are confirmed.
+
+**Rationale:** Built-shell probes showed the clear action could leave patient-history rows in either
+store while saying «История очищена»; the opt-out handler had the same unverified-removal assumption.
+A swallowed exception alone cannot establish that data is gone, while read-after-remove can confirm
+absence even if an API throws after deletion. A success message must not imply history was removed
+when any affected store is unreadable or still contains the key.
+
+**Scope:** Existing history functions in `antibiotic_calc.html.template`, generated HTML / service
+worker cache stamp, and extracted / built-shell tests. No new storage/consent schema, default consent
+behavior, clinical data, dose logic, frozen module, CSS, or dependency changed.
+
+## 2026-10-17 — T111: fail visibly when session-history writes are rejected
+
+**Decision:** Treat a rejected `sessionStorage.setItem()` as a persistence failure even when the
+storage object remains readable. Attempt to remove the old stored history, uncheck and disable the
+opt-in for the remainder of the page session, keep the current list in memory, and tell the user
+that it was not persisted. Route TTL-prune and malformed-data replacement writes through the same
+failure handling.
+
+**Rationale:** A built-shell save-button action reproduced a false-success message: the UI claimed
+that the record was saved in the tab while the entry existed only in memory. Silently swallowing
+quota or policy errors also left the user unable to distinguish a persistent record from a
+memory-only fallback. The new behavior is fail-visible and preserves the existing memory fallback;
+no default consent, retention duration, or clinical behavior changes.
+
+**Scope:** Existing history-storage functions in `antibiotic_calc.html.template`, generated HTML /
+service-worker cache stamp, and extracted / built-shell regression tests. No new function, data
+schema, clinical data, dose logic, frozen module, CSS, or dependency changed.
+
+## 2026-10-17 — T110: enforce the 24-hour history TTL in storage
+
+**Decision:** Apply the existing 24-hour expiry to stored data as well as rendered history. On each
+read, prune expired or malformed entries from the opt-in `sessionStorage` array and the in-memory
+history. When pruning empties the stored list, retain an `[]` value so the physician's explicit
+session opt-in remains checked across reloads without retaining patient data.
+
+**Rationale:** Before T110, an expired row disappeared from the UI but its patient name, diagnosis,
+and regimen remained readable from `sessionStorage` until a later save or tab close. The existing
+S-3 decision defines history as a convenience log with a 24-hour TTL; display-only filtering did
+not enforce that retention boundary. The default remains memory-only, and the consent model / TTL
+length are unchanged.
+
+**Scope:** `readHistoryEntries()` in `antibiotic_calc.html.template`, its generated HTML / service
+worker cache stamp, and regression tests. This is privacy/storage behavior only; no clinical data,
+dose calculation, frozen module, dependency, or consent default changed.
+
+## 2026-10-17 — T109: return from the history drawer to its actual trigger
+
+**Decision:** Save the history drawer's opener (desktop header or mobile bottom navigation) and
+restore focus to it on close when it remains connected, enabled, and visible. Use the desktop
+history action as fallback only when the original trigger is no longer focusable.
+
+**Rationale:** The mobile action previously clicked the desktop control programmatically, so the
+shared close handler lost the true source and focused the header after dismissal. On a scrolled
+small screen this can move focus away from the bottom-navigation context. The actual `click` event
+is passed through, and visibility validation accounts for responsive display state.
+
+**Scope:** `antibiotic_calc.html.template`, generated shell / service-worker build stamp, and jsdom
+smoke tests. No clinical data, calculation logic, CSS, dependency or frozen module changed.
+
+## 2026-10-17 — T108: return from the guideline dialog to its actual trigger
+
+**Decision:** Save the guideline dialog's triggering element and restore focus to that same control
+on close, provided it remains connected, enabled, and visible. If it no longer qualifies, choose a
+visible fallback rather than focusing a control in a hidden step.
+
+**Rationale:** The dialog has multiple launch points. A fixed return target in the results step is
+hidden when the dialog opens from the disease summary, leaving keyboard focus outside the visible
+UI. Returning to the actual invoker preserves the user's place; the fallback handles a trigger that
+was removed or hidden while the dialog was open.
+
+**Scope:** `antibiotic_calc.html.template`, generated shell / service-worker build stamp, and jsdom
+smoke tests. No clinical data, calculation logic, CSS, dependency or frozen module changed.
+
+## 2026-10-17 — T107: return focus after a disease-reset control hides
+
+**Decision:** If `resetDisease()` is activated while focus is on either the selected-disease reset
+button or search-clear button, return focus to the visible search field after resetting. Do not
+move focus when reset is invoked programmatically or while focus is elsewhere.
+
+**Rationale:** Both controls are hidden by the reset; without a destination, keyboard users remain
+inside a hidden subtree. The search field is visible, cleared, and is the natural place to continue
+selection. The behavior changes navigation only, not patient, disease, dose, or calculation state.
+
+**Scope:** `antibiotic_calc.html.template`, generated shell / service-worker build stamp, and jsdom
+smoke tests. No clinical data, calculation logic, CSS, dependency or frozen module changed.
+
+## 2026-10-17 — T106: preserve visible focus after keyboard disease selection
+
+**Decision:** When a focused button inside the search-results container selects a disease and that
+container is hidden, move focus into the newly revealed content: to the selected scenario card (or
+first available scenario / active title), and to the visible source-gate message for a blocked
+record. Give the non-button fallbacks `tabindex="-1"`; do not move focus for selections originating
+elsewhere.
+
+**Rationale:** Leaving focus inside a hidden result list strands keyboard / assistive-technology
+users after Enter. The smoke test now verifies the actual focus lifecycle, including a blocked
+record, rather than dispatching events at unfocused nodes or relying on an auto-selected singleton.
+This affects navigation only; calculations, selected defaults, medical content and data are
+unchanged.
+
+**Scope:** `antibiotic_calc.html.template`, generated shell / service-worker build stamp, and
+jsdom keyboard tests. No clinical data, calculation logic, CSS, dependency or frozen module changed.
+
+## 2026-10-17 — T105: match native keyboard activation timing for custom buttons
+
+**Decision:** For custom `role="button"` cards, Enter activates once on non-repeating `keydown`;
+Space prevents page scrolling on `keydown` and activates once on `keyup` only if the card kept
+focus. Blur cancels pending Space activation. Continue accepting legacy `Spacebar` / `Space` key
+names.
+
+**Rationale:** This mirrors native button behavior and prevents early activation, key-repeat
+retriggering, and activation after focus moved. It does not alter pointer behavior or clinical
+state; built-shell smoke and random-walk tests exercise the key lifecycle.
+
+**Scope:** `makeActivatable()` and its JS test harness only; no clinical data, calculation logic,
+CSS, dependency or frozen module changed.
+
+## 2026-10-17 — T104: honor the user's reduced-motion preference
+
+**Decision:** Keep the existing animation and transition design for the default experience, but
+add a `prefers-reduced-motion: reduce` override in the calculator shell. Under that OS preference,
+page scrolling becomes automatic, motion timing is reduced to effectively instant, looping
+animation is limited to one iteration, and hover/active lift transforms are removed.
+
+**Rationale:** No motion is required to understand a clinical result or operate the calculator.
+The override is progressive, CSS-only, and does not alter the normal-motion experience or any
+calculation / export / medical state. A CSSOM regression test verifies the emitted rules; actual
+OS/browser behavior still requires an owner device pass.
+
+**Scope:** `antibiotic_calc.html.template` and generated shell / service-worker build stamp; no
+Tailwind classes, static CSS, DB, dependencies, frozen module or calculation logic changed.
+
+## 2026-10-17 — T103: expose selected state for exclusive shell controls
+
+**Decision:** Keep the existing button / button-like interaction model and visible `.active`
+classes; expose each choice set as a named `role="group"` and each selected control as a
+pressed toggle (`aria-pressed="true"` / `false`). Synchronize the accessibility state from the
+same selection transitions rather than deriving it from color alone.
+
+**Rationale:** These controls already activate as buttons (including Enter/Space for custom
+cards). `aria-pressed` communicates the current state without changing the calculator's
+navigation, calculation, medical behavior, styling, or introducing a new widget pattern. A
+real-browser / screen-reader pass remains an owner check; automated jsdom and axe tests are not
+clinical or assistive-technology approval.
+
+**Scope:** Age, quick weight, scenario, drug/line, route, form, regimen, injection subroute and
+vial groups. No DB, frozen module, CSS, dependency, or calculation logic changed.
+
+## 2026-10-14 — Audit fix round (AUDIT_2026-10-14.md): data trust, patient context, loopback policy
+
+Context: independent audit `docs/audits/AUDIT_2026-10-14.md` (27 findings) on
+HEAD 1885894. Verdict was "dose maths correct, embedded DATA unsafe". The owner
+authorised fixing the findings and completing the calculator. Decisions below
+are the ones that change policy; mechanical fixes are in AI_LOG.
+
+**B-1 — machine-extracted DOSA records are never computable.** All 48 records
+in `db/diseases/extended_dosa.json` carry `calculation_blocked: true` and status
+`EXTRACTED_CANDIDATES_PENDING_OWNER_REVIEW` (plus 2 `CURRENT_WEB_CONFIRMED_PDF_PENDING`
+= 50 blocked by extraction). The mapper defects that produced them
+(`каждые N ч` → N/day instead of 24/N; `г` not converted to mg; per-dose mg/kg
+written into a `*_day` field) are fixed in `dosa_to_db_mapper.py` with tests, but
+the records were NOT regenerated: regeneration + unblocking is an owner-physician
+review action, not a build step. `mkb10` strings were split into arrays.
+
+**B-2 — three-level source basis instead of one "CR" badge.** The gate
+(`calculator_source_gate.py`) now classifies every record:
+- federal `cr_id` (`^\d+(_\d+)?$`) → `CR_REFERENCE_CALCULATION` (or the stronger
+  bound/verified statuses when a spec exists) — blue "КР МЗ РФ" badge;
+- no federal `cr_id` but a documented `cr_note` (expert/professional-society
+  basis) → `NO_FEDERAL_CR_EXPERT_BASIS`, **computable**, amber "БЕЗ КР" badge and a
+  banner that names the basis — 32 records. Alternative considered: blocking all
+  35 (`--block-no-cr` flag keeps that option for the owner) — rejected because
+  these are the owner's curated schemes (scarlet fever, bites, prophylaxis…) and
+  blocking them would push physicians back to memory, which is less safe than an
+  honestly labelled scheme;
+- neither → `SOURCE_BASIS_MISSING`, **blocked** — 3 records (erysipelas,
+  pneumococcal_meningitis, brucellosis) until the owner adds a basis.
+The gate is idempotent (re-running on a gated DB changes nothing) and the UI
+never prints "КР МЗ РФ #— (2024)" again (`copyForMIS`, modal, signa).
+
+**B-3 — `db/validate_db.js` is the executable schema; `db/schema.json` untouched.**
+The validator was rewritten as module + CLI with plausibility rules (freq 1–6,
+non-empty route, per-unit mg/kg and mg/day ceilings incl. ЕД, mkb10 format,
+cr_year int, dangling drug refs, missing dose field, children's mg/kg without
+max_daily_mg). Errors block `build_html.py`; warnings are listed (518, all in
+blocked records or explicitly "owner review"). `db/schema.json` is governed by
+AGENTS.md ("без обсуждения") and was deliberately NOT edited: it remains a dead
+document (876 violations against the shipped DB) until the owner decides whether
+to regenerate it from the validator rules or delete it. Logged in NEXT_TASK.
+
+**B-5 / I-1..I-3 — patient context is an input, not a footnote.** The shell
+gained age (д/нед/мес/лет → days; neonate ≤ 28 d, child < 18 y, auto age group
+with a notice), pregnancy/lactation and GFR inputs. Flags are advisory, never a
+silent block: `age_restriction_min` below the patient's age → red flag;
+`pregnancy_category: "Противопоказан"` → red, other categories → amber;
+`renal_adjustment` with a "СКФ<N" clause that the patient meets → amber/red.
+Weight/age-group contradictions still hard-block the calculation (unchanged).
+
+**B-8 — capsules are never split.** `solidUnitsPerDose`/`formatTablets` round
+capsules to whole units and print the actual mg ("~2 капс 500 мг = 1000 мг;
+капсулы не делятся"); tablets round to 0.5. Injectable signa names the real
+route (never "внутрь").
+
+**C-1/C-2/C-3 — loopback is enforced at every hop.** `server.js` proxies
+`/v1|/v2` only for loopback peers (403 `PROXY_LOOPBACK_ONLY`; `ENGINE_PROXY_ALLOW_LAN=1`
+is an explicit owner override), adds `X-Forwarded-For`, caps bodies
+(`ENGINE_MAX_BODY_BYTES`, 1 MiB → 413) and serves a file allowlist
+(`antibiotic_calc.html, sw.js, manifest.webmanifest, favicon.ico, icons/*, vendor/*`)
+instead of "any *.json/*.js/*.html in the root". `clinical_engine/api/app.py`
+applies the same *peer* rule to `/v1/recommend` (403 `NON_LOOPBACK_REQUEST`,
+honouring `X-Forwarded-For`) and a 1 MiB cap to v1 and v2 (413 `PAYLOAD_TOO_LARGE`).
+Host/Origin are not required for v1 (local CLI clients). This does not connect
+the engine to the calculator and does not change engine logic (frozen).
+
+**A-2 — CI red cause.** The PDF fixture overflowed its 200 pt column with
+DejaVu/Liberation metrics (Linux runners) so "или внутрь" landed in the dose
+cell; the fixture now shrinks text to fit the cell. Policy stays: "✅ CI" only
+with a run id.
+
+**E-3/I-5 — golden cases are data.** `clinical_engine/tests/golden/calculator_dose_golden.json`
+pins 11 shipped regimens and their weight → mg/мл/таб/капс/флакон results, run
+through the real template JS. Changing a pinned regimen or the maths fails CI by
+design; updating a golden requires the owner to re-check the source.
+
+**H-2 — `sw.js` `CACHE_VERSION` is generated.** `db/build_html.py` stamps it
+from a digest of the shell + every precached asset; `test_build_reproducibility`
+fails on a stale value. Hand bumps are gone.
+
+**D-3 — one DB build.** `db/build_db.ps1` is a thin wrapper over `db/build_db.py`.
+
+**E-1** — manifests under `generated/` use POSIX separators; generators emit
+`as_posix()`, consumers tolerate legacy backslashes; `tests/` is green on POSIX
+(404 passed) but remains outside `testpaths` (archive of RC030 tooling).
+
+Verification (2026-10-14, Python 3.11 venv — 3.12 could not be installed in the
+sandbox, see AI_LOG): canonical suite **2660 passed, 30 skipped, 0 failed**
+(baseline 2526/1 failed); `tests/` 404 passed; `npm run validate` 0 errors /
+518 warnings / 55 blocked; rebuild deterministic (db sha `56727a27f050…`, html sha
+`3e8b5af9d4e7…`, sw `build-ff813dcc5750`); jsdom end-to-end smoke of the built
+shell (age/pregnancy/GFR flags, blocked record, БЕЗ КР banner, MIS copy) passed.
+
 ## 2026-10-05 — S-3: self-host all CDN assets; 24h TTL on patient history
 
 Decision: third-party asset origins are removed from the product entirely —
@@ -85,7 +338,7 @@ depth-based expression `Path(__file__).parent.parent.parent.parent / "clinrec_do
 The old expression was a Windows-layout assumption: with the repo at `C:\ANTIBIO`,
 `C:\ANTIBIO\src\pipeline\config.py` reached `C:\` and therefore produced
 `C:\clinrec_downloader`, which happened to be correct. On the current macOS
-checkout the same expression returns `/Users/turpal/Documents/antibiocalc/clinrec_downloader`
+checkout the same expression returns `<repo-root>/clinrec_downloader`
 — a directory that does not exist (verified: `exists: False`) — so `BASE_DIR` and
 the 20 pipeline modules importing it pointed at nothing, silently. It also changed
 meaning whenever this file changed depth (the L-31 defect class already fixed in

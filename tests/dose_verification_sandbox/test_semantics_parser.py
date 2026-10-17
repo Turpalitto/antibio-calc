@@ -1,11 +1,10 @@
 """RC-030 Phase 12 tests for the source-backed dose semantics parser."""
-import pytest
 
 from dose_verification_sandbox.semantics_parser import (
-    classify_regimen, extract_max_dose_signal, extract_max_dose_value_from_window,
+    classify_regimen,
 )
 from dose_verification_sandbox.semantics_integration import calculate_from_semantics, eligibility
-from dose_verification_sandbox.models import BLOCKED, OK
+from dose_verification_sandbox.models import BLOCKED
 
 
 def mk_row(**kw) -> dict:

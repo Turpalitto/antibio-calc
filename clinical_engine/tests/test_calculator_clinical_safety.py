@@ -183,12 +183,86 @@ def _run(functions: list[str], globals_js: str, body: str) -> dict:
     return _run_with_consts(functions, [], globals_js, body)
 
 
+# Helpers the shell calls from calculate()/hideDoseResults()/renderDrugMeta()/
+# fillPrescriptionForm() since the patient-context work (age / pregnancy / GFR
+# flags, honest source labels, capsule-aware tablet maths). They are extracted
+# from the real template and appended to every harness run that did not ask
+# for them explicitly, so a test still exercises production code paths.
+PATIENT_CONTEXT_SUPPORT = [
+    "hidePatientSafetyFlags",
+    "renderPatientSafetyFlags",
+    "collectPatientSafetyFlags",
+    "ageRestrictionFlag",
+    "pregnancyFlag",
+    "renalFlag",
+    "parseAgeRestrictionDays",
+    "formatAgeDays",
+    "isFederalCrId",
+    "diseaseSourceLabel",
+    "regimenSummary",
+    "solidUnitsPerDose",
+    "makeActivatable",
+    "syncPressedGroup",
+    "syncQuickWeightGroup",
+    "allergyExportFlag",
+    "exportSafetyFlags",
+    "ageGroupMismatchCaution",
+    "ageZeroEntryCaution",
+    "patientEntryCautionTexts",
+    "newbornAgeEntryCaution",
+    "showAgeInferenceNotice",
+    "routeAdministrationNotes",
+    "activeRouteAdministrationNotes",
+    "routeAdministrationStepLines",
+    "ageGroupFromDays",
+    "ageGroupLabel",
+    "regimenDataCaution",
+    "doseIncompleteReason",
+    "comboComponentLines",
+    "componentRegimen",
+    "searchFold",
+    "foldIcdHomoglyphs",
+    "dehyphenate",
+    "diseaseDrugText",
+    "daysWord",
+    "timesADay",
+    "parseCourse",
+    "weeksWord",
+    "courseIsNumeric",
+    "courseDays",
+    "courseText",
+    "courseTail",
+    "routeWordsRu",
+    "isOralLiquid",
+    "unitStrengthMg",
+    "unitsForCourse",
+    "bestSolidFormIndex",
+    "roundingDeviationText",
+    "formatTablets",
+    "ageInputBlockReason",
+    "gfrInputCaution",
+    "badNumberInputs",
+    "badInputHint",
+    "nosologiesWord",
+    "searchStatusText",
+    "updateSearchStatus",
+    "weightBlockReason",
+    "weightWarnReason",
+    "isTopicalForm",
+    "latinStrength",
+]
+PATIENT_CONTEXT_CONSTS = ["DAYS_PER_MONTH", "DAYS_PER_YEAR", "COMPONENT_REGIMEN_MISSING", "MAX_PLAUSIBLE_AGE_DAYS", "COURSE_RE", "MAX_PLAUSIBLE_GFR", "PRINT_NO_CALCULATION", "WEIGHT_NEEDED_FOR_EXPORT", "REGIMEN_INCONSISTENT_TEXT", "ICD_HOMOGLYPHS_RU_EN"]
+PATIENT_CONTEXT_GLOBALS = "let patientAgeDays = null;\nlet vialFollowsForm = true;\n"
+
+
 def _run_with_consts(functions: list[str], consts: list[str], globals_js: str, body: str) -> dict:
     source = _source()
+    support = [name for name in PATIENT_CONTEXT_SUPPORT if name not in functions]
     script = "\n".join(
-        [DOM_STUB, globals_js]
+        [DOM_STUB, globals_js, PATIENT_CONTEXT_GLOBALS]
+        + [_js_simple_const(source, name) for name in PATIENT_CONTEXT_CONSTS]
         + [_js_const(source, name) for name in consts]
-        + [_js_function(source, name) for name in functions]
+        + [_js_function(source, name) for name in functions + support]
         + [body]
     )
     return _node(script)
@@ -225,6 +299,7 @@ let DB = %s;
 let activeAge = 'child';
 let lastPickedAge = null;
 let dbBlockingErrors = [];
+let activeDisease = null;
 let activeDrug = null;
 let activeRegimenIdx = 0;
 """
@@ -303,6 +378,52 @@ def test_age_filter_expression_is_de_duplicated() -> None:
     assert "ageEligibleRegimens(drug)" in _js_function(source, "resolveCalculatorBinding")
 
 
+def test_implausible_age_blocks_the_calculation_like_an_implausible_weight() -> None:
+    """«150 лет» (a typo for 15, or a birth year) must not silently land in the
+    adult group: the calculation is blocked and the notice names the input."""
+    fixture = _fixture_db()
+    adult = {
+        "drug_ref": "vancomycin",
+        "regimens": [{"age_group": "adult", "freq_per_day": 2, "single_dose_mg": 1000}],
+    }
+    globals_js = _age_globals(fixture) + f"activeDrug = {json.dumps(adult)};\nactiveAge='adult';\n"
+    funcs = [
+        "getDrugRefs",
+        "ageGroupLabel",
+        "ageEligibleRegimens",
+        "ageRegimenBlockReason",
+        "weightBlockReason",
+        "weightWarnReason",
+        "dbBlockReason",
+        "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
+        "parseAgeToDays",
+        "readPatientAge",
+        "ageGroupFromDays",
+        "updateExplicitAgeNotice",
+    ]
+    body = (
+        "const out = {};"
+        "const probe = (v, unit) => { $('patient-age').value = v; $('patient-age-unit').value = unit;"
+        " patientAgeDays = readPatientAge(); updateExplicitAgeNotice();"
+        " return {block: calculationBlockReason(70), notice: $('age-explicit-notice').querySelector('span').textContent,"
+        " hidden: $('age-explicit-notice').classList.contains('hidden')}; };"
+        "out.y150 = probe('150', 'years'); out.m1500 = probe('1500', 'months'); out.d50000 = probe('50000', 'days');"
+        "out.y119 = probe('119', 'years'); out.y120 = probe('120', 'years'); out.y15 = probe('15', 'years');"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(funcs, globals_js, body)
+    for key, shown in (("y150", "150 лет"), ("m1500", "1500 мес"), ("d50000", "50000 дн.")):
+        assert result[key]["block"].startswith("РАСЧЁТ ЗАБЛОКИРОВАН: Возраст " + shown + " — неправдоподобное значение (> 120 лет)"), result[key]
+        assert "неправдоподобное" in result[key]["notice"] and result[key]["hidden"] is False, result[key]
+    assert result["y119"]["block"] == "" and result["y120"]["block"] == "", result
+    assert result["y119"]["notice"] == "Возраст 119 лет → группа «взрослые»."
+    # 15 years → child group mismatch notice, not a block
+    assert result["y15"]["block"] == "" and "не соответствует введённому возрасту" in result["y15"]["notice"], result["y15"]
+
+
 def test_age_regimen_block_reason_is_explicit_and_blocks() -> None:
     """B1: the missing-age-group case must produce a blocking, dose-level message."""
     fixture = _fixture_db()
@@ -320,6 +441,9 @@ def test_age_regimen_block_reason_is_explicit_and_blocks() -> None:
         "weightWarnReason",
         "dbBlockReason",
         "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
     ]
     body = (
         "const reason = calculationBlockReason(30);"
@@ -509,6 +633,183 @@ def test_adult_weight_over_40_never_produces_a_caution() -> None:
     assert result["w"] == ""
 
 
+def test_weight_impossible_for_the_entered_age_blocks_and_rare_combinations_warn() -> None:
+    """«25» typed instead of «2.5» for a neonate is a 10× mg/kg dose: the explicit
+    age makes the weight checkable, and the notice names both values."""
+    body = (
+        "const probe = (days, w, age) => ({b: weightBlockReason(w, age), w: weightWarnReason(w, age)});"
+        "const out = {};"
+        "patientAgeDays = 10; out.neo25 = probe(10, 25, 'neonate'); out.neo7 = probe(10, 7, 'neonate'); out.neo71 = probe(10, 7.1, 'neonate');"
+        "patientAgeDays = 6 * DAYS_PER_MONTH; out.inf25 = probe(0, 25, 'child'); out.inf20 = probe(0, 20, 'child'); out.inf7 = probe(0, 7, 'child');"
+        "patientAgeDays = 2 * DAYS_PER_YEAR; out.tod28 = probe(0, 28, 'child'); out.tod14 = probe(0, 14, 'child');"
+        "patientAgeDays = 5 * DAYS_PER_YEAR; out.five28 = probe(0, 28, 'child');"
+        "patientAgeDays = null; out.noAge25 = probe(0, 25, 'neonate');"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["weightBlockReason", "weightWarnReason"], "", body)
+    assert result["neo25"]["b"].startswith("Вес 25 кг при возрасте 10 дн. — неправдоподобное сочетание для новорождённого (> 7 кг)"), result["neo25"]
+    assert "2.5 кг вместо 25" in result["neo25"]["b"]
+    assert result["neo7"] == {"b": "", "w": ""} and result["neo71"]["b"].startswith("Вес 7.1 кг при возрасте 10 дн.")
+    assert result["inf25"]["b"].startswith("Вес 25 кг при возрасте 6 мес — неправдоподобное сочетание для ребёнка до года (> 20 кг)"), result["inf25"]
+    assert result["inf20"] == {"b": "", "w": ""} and result["inf7"] == {"b": "", "w": ""}
+    # 1–3 years: a warning, never a block (obesity exists; the typo risk is lower)
+    assert result["tod28"]["b"] == "" and result["tod28"]["w"].startswith("Вес 28 кг при возрасте 2 года — редкое сочетание для ребёнка до 3 лет"), result["tod28"]
+    assert result["tod14"] == {"b": "", "w": ""} and result["five28"] == {"b": "", "w": ""}
+    # without an explicit age the old group-only rules apply (25 kg neonate → not checkable by age)
+    assert result["noAge25"] == {"b": "", "w": ""}, result["noAge25"]
+
+
+def test_weight_caution_travels_with_the_exports() -> None:
+    """The sub-40-kg adult / heavy toddler caution sat under the weight field only;
+    the MIS text, Rp and printed form use exportSafetyFlags, so it is added there."""
+    body = (
+        "const DB = {drugs_reference: {amoxicillin: {inn: 'Амоксициллин'}}};"
+        "let activeAge = 'adult';"
+        "$('weight').value = '35';"
+        "const adult35 = exportSafetyFlags(['amoxicillin']);"
+        "$('weight').value = '70';"
+        "const adult70 = exportSafetyFlags(['amoxicillin']);"
+        "activeAge = 'child'; patientAgeDays = 2 * DAYS_PER_YEAR; $('weight').value = '28';"
+        "const toddler28 = exportSafetyFlags(['amoxicillin']);"
+        "console.log(JSON.stringify({adult35, adult70, toddler28}));"
+    )
+    result = _run([], "", body)
+    assert result["adult35"] == [{"level": "warn", "text": result["adult35"][0]["text"]}] and result["adult35"][0]["text"].startswith(
+        "Вес 35 кг при возрастной группе «взрослые» — редкое, но возможное сочетание"
+    ), result["adult35"]
+    assert result["adult70"] == []
+    assert len(result["toddler28"]) == 1 and result["toddler28"][0]["text"].startswith("Вес 28 кг при возрасте 2 года — редкое сочетание"), result["toddler28"]
+
+
+def test_inconsistent_regimen_caution_travels_with_the_exports() -> None:
+    """«Данные БД несогласованы: разовая × кратность ≠ суточной» was an amber row on
+    screen only (renderPO / renderInjection); exportSafetyFlags carries the same text so
+    the MIS text, Rp and printed form say it too. No shipped regimen is inconsistent
+    (the validator warns «disagrees with dose_mg_day_fixed»), so this is a latent-hazard
+    closure pinned by a fixture regimen: 1000 × 2 against a stored 3000 mg/day."""
+    body = (
+        "const DB = {drugs_reference: {amoxicillin: {inn: 'Амоксициллин'}}};"
+        "let activeAge = 'adult'; $('weight').value = '70';"
+        "let activeDrug = {drug_ref: 'amoxicillin', regimens: []};"
+        "let regimen = {age_group: 'adult', single_dose_mg: 1000, freq_per_day: 2, dose_mg_day_fixed: 3000};"
+        "function getActiveRegimen(){ return regimen; }"
+        "const inconsistent = exportSafetyFlags(['amoxicillin']);"
+        "regimen = {age_group: 'adult', single_dose_mg: 1000, freq_per_day: 2, dose_mg_day_fixed: 2000};"
+        "const consistent = exportSafetyFlags(['amoxicillin']);"
+        "regimen = {age_group: 'adult', dose_mg_kg_day: 40, freq_per_day: 2};"
+        "const perKg = exportSafetyFlags(['amoxicillin']);"
+        "regimen = null;"
+        "const noRegimen = exportSafetyFlags(['amoxicillin']);"
+        "console.log(JSON.stringify({inconsistent, consistent, perKg, noRegimen, screenText: REGIMEN_INCONSISTENT_TEXT}));"
+    )
+    result = _run(["getDrugRefs", "doseUnitOf", "computeDose"], "", body)
+    assert result["inconsistent"] == [{"level": "warn", "text": "Данные БД несогласованы: разовая × кратность ≠ суточной. Расчёт выполнен по разовой дозе из КР — требуется проверка."}], result
+    assert result["screenText"] == result["inconsistent"][0]["text"]
+    assert result["consistent"] == [] and result["perKg"] == [] and result["noRegimen"] == [], result
+    # the on-screen rows use the same constant (one text, three readers)
+    source = _source()
+    assert source.count("warnEl.querySelector('span').textContent = REGIMEN_INCONSISTENT_TEXT;") == 2
+
+
+def test_zero_year_or_month_age_entry_caution_travels_with_the_exports() -> None:
+    """A zero years/months entry parses as 0 days; the input notice must not vanish
+    when a neonatal regimen is copied, printed or pasted into the chart."""
+    body = (
+        "const DB = {drugs_reference: {amoxicillin: {inn: 'Амоксициллин'}}};"
+        "let activeAge = 'neonate'; $('weight').value = '3.2';"
+        "$('patient-age-unit').value = 'years'; patientAgeDays = 0;"
+        "const years = exportSafetyFlags(['amoxicillin']);"
+        "$('patient-age-unit').value = 'months';"
+        "const months = exportSafetyFlags(['amoxicillin']);"
+        "$('patient-age-unit').value = 'days';"
+        "const days = exportSafetyFlags(['amoxicillin']);"
+        "$('patient-age-unit').value = 'years'; patientAgeDays = 1;"
+        "const oneDay = exportSafetyFlags(['amoxicillin']);"
+        "console.log(JSON.stringify({years, months, days, oneDay}));"
+    )
+    result = _run([], "", body)
+    assert result["years"] == [{"level": "warn", "text": "«0 лет» прочитано как 0 дней: если пациенту несколько месяцев или дней — укажите возраст в месяцах или днях и проверьте фактический возраст перед назначением."}], result
+    assert result["months"] == [{"level": "warn", "text": "«0 мес» прочитано как 0 дней: если пациенту несколько дней — укажите возраст в днях и проверьте фактический возраст перед назначением."}], result
+    assert result["days"] == [] and result["oneDay"] == [], result
+
+
+def test_group_chosen_over_the_typed_age_travels_with_the_exports() -> None:
+    """12 years typed + «взрослые» chosen by chip: the screen notice says «не
+    соответствует»; the MIS text / Rp / printed form (exportSafetyFlags) carry the
+    same caution. No caution when the group matches the age, when no age is typed,
+    or when the age itself is implausible (that one is a block)."""
+    body = (
+        "const DB = {drugs_reference: {amoxicillin: {inn: 'Амоксициллин'}}};"
+        "let activeAge = 'adult'; $('weight').value = '45';"
+        "const noAge = exportSafetyFlags(['amoxicillin']);"
+        "patientAgeDays = 12 * DAYS_PER_YEAR;"
+        "const twelveAdult = exportSafetyFlags(['amoxicillin']);"
+        "activeAge = 'child';"
+        "const twelveChild = exportSafetyFlags(['amoxicillin']);"
+        "patientAgeDays = 150 * DAYS_PER_YEAR; activeAge = 'adult';"
+        "const implausible = exportSafetyFlags(['amoxicillin']);"
+        "console.log(JSON.stringify({noAge, twelveAdult, twelveChild, implausible}));"
+    )
+    result = _run([], "", body)
+    assert result["noAge"] == [] and result["twelveChild"] == [] and result["implausible"] == [], result
+    assert result["twelveAdult"] == [{"level": "warn", "text": "Возраст 12 лет соответствует группе «дети», расчёт выполнен для группы «взрослые» (выбрана вручную)."}], result
+
+
+def test_an_mg_per_kg_regimen_without_a_weight_is_not_exportable() -> None:
+    """T77: with no weight an mg/kg regimen shows «—» on screen (pending, not blocked),
+    but the chart text went out as «Схема приёма: 50-75 мг/кг/сут 1 р/сут», the Rp
+    with «N. ___», the printed form and the history with no dose. doseIncompleteReason
+    names the gap for the main regimen and for a per-kg combination partner; a fixed
+    dose, a given weight and a missing regimen are not «incomplete»."""
+    body = (
+        "const DB = {drugs_reference: {ceftriaxone: {inn: 'Цефтриаксон'}, amoxicillin: {inn: 'Амоксициллин'},"
+        " benzylpenicillin_na: {inn: 'Бензилпенициллин', dose_unit: 'ЕД'}}};"
+        "let activeDrug = {drug_ref: 'ceftriaxone'};"
+        "const perKg = {age_group: 'child', dose_mg_kg_day: 50, freq_per_day: 1, max_daily_mg: 2000, duration_note: '50-75 мг/кг/сут'};"
+        "const perKgDose = {age_group: 'child', dose_mg_kg_per_dose: 25, freq_per_day: 2};"
+        "const fixed = {age_group: 'adult', single_dose_mg: 1000, freq_per_day: 2};"
+        "const out = {};"
+        "out.perKgNoWeight = doseIncompleteReason(perKg, NaN);"
+        "out.perKgZero = doseIncompleteReason(perKg, 0);"
+        "out.perKgDoseNoWeight = doseIncompleteReason(perKgDose, NaN);"
+        "out.perKgWithWeight = doseIncompleteReason(perKg, 25);"
+        "out.fixedNoWeight = doseIncompleteReason(fixed, NaN);"
+        "out.noRegimen = doseIncompleteReason(null, NaN);"
+        "activeDrug = {combo_ref: ['amoxicillin', 'benzylpenicillin_na']};"
+        "const comboMainFixed = {age_group: 'child', single_dose_mg: 500, freq_per_day: 3,"
+        " component_regimens: {benzylpenicillin_na: {dose_mg_kg_day: 100000, freq_per_day: 4}}};"
+        "out.partnerPerKgNoWeight = doseIncompleteReason(comboMainFixed, NaN);"
+        "out.partnerPerKgWithWeight = doseIncompleteReason(comboMainFixed, 12);"
+        "const comboNoPartnerRegimen = {age_group: 'child', single_dose_mg: 500, freq_per_day: 3};"
+        "out.partnerMissing = doseIncompleteReason(comboNoPartnerRegimen, NaN);"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["doseIncompleteReason", "getDrugRefs", "doseUnitOf", "computeDose", "componentRegimen"], "", body)
+    reason = "введите вес пациента — доза этого режима рассчитывается по мг/кг и без веса не определена"
+    assert result["perKgNoWeight"] == reason, result
+    assert result["perKgZero"] == reason, result
+    assert result["perKgDoseNoWeight"] == reason, result
+    assert result["partnerPerKgNoWeight"] == reason, result
+    for key in ("perKgWithWeight", "fixedNoWeight", "noRegimen", "partnerPerKgWithWeight", "partnerMissing"):
+        assert result[key] == "", (key, result)
+
+
+def test_exports_refuse_an_mg_per_kg_regimen_without_a_weight() -> None:
+    """T77, the four doors: copyForMIS / copyLatinRecipe / saveToHistory toast the reason
+    and copy / save nothing; fillPrescriptionForm leaves the form empty with the reason in
+    the trust line. The source of the gate is one helper, so the four texts agree."""
+    source = _source()
+    for name in ("copyForMIS", "copyLatinRecipe", "saveToHistory", "fillPrescriptionForm"):
+        fn = _js_function(source, name)
+        assert "doseIncompleteReason(reg, w)" in fn, name
+        # the regimen gate (no regimen for the group) still comes first
+        assert fn.index("getActiveRegimen" if name == "fillPrescriptionForm" else "requireActiveRegimen") < fn.index("doseIncompleteReason"), name
+    assert "toast('Копирование заблокировано: '+incomplete)" in _js_function(source, "copyForMIS")
+    assert "toast('Копирование рецепта заблокировано: '+incomplete)" in _js_function(source, "copyLatinRecipe")
+    assert "toast('Сохранение заблокировано: '+incomplete)" in _js_function(source, "saveToHistory")
+    assert "clearPrescriptionForm('ПЕЧАТЬ НЕВОЗМОЖНА: '+incomplete+'. Бланк пуст намеренно.')" in _js_function(source, "fillPrescriptionForm")
+
+
 def test_calculate_refuses_to_render_a_dose_for_out_of_range_weight() -> None:
     """B6: the blocking path must hide the dose panels, not just print a message."""
     fixture = _fixture_db()
@@ -533,6 +834,9 @@ def test_calculate_refuses_to_render_a_dose_for_out_of_range_weight() -> None:
         "weightWarnReason",
         "dbBlockReason",
         "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
         "showDoseBlock",
         "hideDoseBlock",
         "hideDoseResults",
@@ -581,6 +885,9 @@ def test_calculate_renders_normally_when_all_gates_pass() -> None:
         "weightWarnReason",
         "dbBlockReason",
         "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
         "showDoseBlock",
         "hideDoseBlock",
         "hideDoseResults",
@@ -681,7 +988,7 @@ def test_calculation_block_reason_prefers_database_integrity_failure() -> None:
     }
     globals_js = DOSE_BLOCK_GLOBALS + (
         f"const DB = {_lit(fixture)};\nlet activeAge='child';\nlet dbBlockingErrors=['нет freq_per_day'];\n"
-        f"let activeDrug={_lit(drug)};\n"
+        f"let activeDisease=null;\nlet activeDrug={_lit(drug)};\n"
     )
     result = _run(
         [
@@ -693,6 +1000,9 @@ def test_calculation_block_reason_prefers_database_integrity_failure() -> None:
         "weightWarnReason",
             "dbBlockReason",
             "calculationBlockReason",
+            "diseaseSourceStatus",
+            "diseaseCalculationGated",
+            "sourceGateReason",
         ],
         globals_js,
         "console.log(JSON.stringify({reason:calculationBlockReason(20)}));",
@@ -718,7 +1028,7 @@ XSS_PAYLOAD = '<img src=x onerror="globalThis.__pwned=1">'
 def test_history_rows_are_built_with_text_content_not_inner_html() -> None:
     """B2: a stored patient name must never be parsed as HTML."""
     result = _run(
-        ["historySessionAvailable", "readHistoryEntries", "loadHistory"],
+        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries", "loadHistory"],
         "let historyEntries = " + _lit(
             [
                 {
@@ -834,6 +1144,219 @@ def test_history_is_memory_only_unless_the_physician_opts_in() -> None:
     assert result["writtenWithConsent"] == '[{"ts":2,"patient":"Bob","drug":"y"}]'
 
 
+def test_expired_history_is_purged_from_consented_session_storage() -> None:
+    """The 24-hour TTL must delete expired PHI, not only hide it from the UI."""
+    result = _run_with_consts(
+        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries", "writeSessionHistory"],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + "let historyEntries = [];\n",
+        (
+            "const now=Date.now();"
+            "const fresh={ts:now,patient:'Fresh PHI'};"
+            "const expired={ts:now-86400001,patient:'Expired PHI'};"
+            "$('history-persist').checked=true;"
+            "sessionStore.setItem('antibio_history',JSON.stringify([expired,fresh]));"
+            "const mixed=readHistoryEntries();"
+            "const mixedStored=JSON.parse(sessionStore.getItem('antibio_history'));"
+            "sessionStore.setItem('antibio_history',JSON.stringify([expired]));"
+            "const empty=readHistoryEntries();"
+            "const emptyStored=JSON.parse(sessionStore.getItem('antibio_history'));"
+            "console.log(JSON.stringify({"
+            "mixedReturned:mixed.map(x=>x.patient), mixedStored:mixedStored.map(x=>x.patient),"
+            "emptyReturned:empty.map(x=>x.patient), emptyStored:emptyStored.map(x=>x.patient),"
+            "consentStillActive:historyPersistAllowed()"
+            "}));"
+        ),
+    )
+    assert result["mixedReturned"] == ["Fresh PHI"]
+    assert result["mixedStored"] == ["Fresh PHI"], "expired PHI remains physically stored after a read"
+    assert result["emptyReturned"] == []
+    assert result["emptyStored"] == [], "an all-expired history must be replaced by an empty array"
+    assert result["consentStillActive"] is True, "purging history must not revoke the session consent"
+
+
+def test_expired_memory_history_is_removed_on_read() -> None:
+    result = _run_with_consts(
+        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries"],
+        [],
+        SESSION_STORE_GLOBALS + "let historyEntries = [];\n",
+        (
+            "const now=Date.now();"
+            "historyEntries=[{ts:now-86400001,patient:'Expired PHI'},{ts:now,patient:'Fresh PHI'}];"
+            "$('history-persist').checked=false;"
+            "const returned=readHistoryEntries();"
+            "console.log(JSON.stringify({returned:returned.map(x=>x.patient),memory:historyEntries.map(x=>x.patient)}));"
+        ),
+    )
+    assert result["returned"] == ["Fresh PHI"]
+    assert result["memory"] == ["Fresh PHI"], "expired PHI remains in the in-memory history after a read"
+
+
+def test_expired_history_is_cleared_when_pruning_write_is_rejected() -> None:
+    """A failed sessionStorage rewrite must not leave expired PHI behind when removeItem works."""
+    result = _run_with_consts(
+        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries", "writeSessionHistory"],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + "let historyEntries = [];\n",
+        (
+            "const now=Date.now();"
+            "const expired={ts:now-86400001,patient:'Expired PHI'};"
+            "const fresh={ts:now,patient:'Fresh PHI'};"
+            "$('history-persist').checked=true;"
+            "sessionStore.setItem('antibio_history',JSON.stringify([expired,fresh]));"
+            "sessionStore.setItem=function(){throw new Error('quota')};"
+            "const returned=readHistoryEntries();"
+            "console.log(JSON.stringify({returned:returned.map(x=>x.patient),"
+            "memory:historyEntries.map(x=>x.patient), stored:sessionStore.getItem('antibio_history'),"
+            "checked:$('history-persist').checked, disabled:$('history-persist').disabled,"
+            "allowed:historyPersistAllowed(), note:$('history-storage-note').textContent,"
+            "warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert result["returned"] == ["Fresh PHI"]
+    assert result["memory"] == ["Fresh PHI"]
+    assert result["stored"] is None, "expired PHI remains in sessionStorage after pruning could not rewrite it"
+    assert result["checked"] is False and result["disabled"] is True, result
+    assert result["allowed"] is False
+    assert "Не удалось" in result["note"]
+
+
+def test_history_opt_in_write_failure_is_not_reported_as_success() -> None:
+    result = _run_with_consts(
+        [
+            "historySessionAvailable",
+            "historyPersistAllowed",
+            "readHistoryEntries",
+            "writeSessionHistory",
+            "purgeLegacyHistory",
+            "initHistoryStore",
+            "onHistoryPersistChange",
+            "loadHistory",
+        ],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + (
+            "let historyEntries = [{ts:Date.now(),patient:'Ann',disease:'X',drug:'Y',singleMg:500,freq:1,duration:'1'}];\n"
+        ),
+        (
+            "$('history-persist').checked=true;"
+            "sessionStore.setItem=function(){throw new Error('quota')};"
+            "onHistoryPersistChange();"
+            "console.log(JSON.stringify({toast:TOASTS[TOASTS.length-1],"
+            "checked:$('history-persist').checked, disabled:$('history-persist').disabled,"
+            "allowed:historyPersistAllowed(), memory:historyEntries.length,"
+            "stored:sessionStore.getItem('antibio_history'),"
+            "note:$('history-storage-note').textContent, warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert "Не удалось" in result["toast"] and "памяти" in result["toast"], result
+    assert result["checked"] is False and result["disabled"] is True, result
+    assert result["allowed"] is False
+    assert result["memory"] == 1
+    assert result["stored"] is None
+
+
+def test_history_opt_out_remove_failure_is_not_reported_as_success() -> None:
+    result = _run_with_consts(
+        [
+            "historySessionAvailable",
+            "historyPersistAllowed",
+            "readHistoryEntries",
+            "writeSessionHistory",
+            "purgeLegacyHistory",
+            "onHistoryPersistChange",
+            "loadHistory",
+        ],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + (
+            "let historyEntries = [{ts:Date.now(),patient:'Ann',disease:'X',drug:'Y',singleMg:500,freq:1,duration:'1'}];\n"
+        ),
+        (
+            "sessionStore.setItem('antibio_history',JSON.stringify(historyEntries));"
+            "$('history-persist').checked=false;"
+            "sessionStore.removeItem=function(){throw new Error('blocked')};"
+            "onHistoryPersistChange();"
+            "console.log(JSON.stringify({toast:TOASTS[TOASTS.length-1],"
+            "checked:$('history-persist').checked, allowed:historyPersistAllowed(),"
+            "stored:sessionStore.getItem('antibio_history')!==null, memory:historyEntries.length,"
+            "note:$('history-storage-note').textContent, warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert "Не удалось" in result["toast"] and "отключено" not in result["toast"].lower(), result
+    assert result["checked"] is False and result["allowed"] is False
+    assert result["stored"] is True and result["memory"] == 1
+    assert "Не удалось" in result["note"] and result["warn"]
+
+
+def test_clear_history_remove_failure_is_not_reported_as_success() -> None:
+    result = _run_with_consts(
+        [
+            "historySessionAvailable",
+            "historyPersistAllowed",
+            "readHistoryEntries",
+            "writeSessionHistory",
+            "purgeLegacyHistory",
+            "clearHistory",
+            "loadHistory",
+        ],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + (
+            "let historyEntries = [];\n"
+            "globalThis.confirm = () => true;\n"
+        ),
+        (
+            "const entry={ts:Date.now(),patient:'Ann',disease:'X',drug:'Y',singleMg:500,freq:1,duration:'1'};"
+            "sessionStore.setItem('antibio_history',JSON.stringify([entry]));"
+            "$('history-persist').checked=true;"
+            "sessionStore.removeItem=function(){throw new Error('blocked')};"
+            "clearHistory();"
+            "console.log(JSON.stringify({toast:TOASTS[TOASTS.length-1],"
+            "stored:sessionStore.getItem('antibio_history')!==null, memory:historyEntries.length,"
+            "row:$('history-list').textContent.includes('Ann'),"
+            "note:$('history-storage-note').textContent, warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert "Не удалось" in result["toast"] and "История очищена" not in result["toast"], result
+    assert result["stored"] is True and result["memory"] == 1 and result["row"] is True
+    assert "Не удалось" in result["note"] and result["warn"]
+
+
+def test_clear_history_does_not_claim_success_when_legacy_storage_removal_fails() -> None:
+    result = _run_with_consts(
+        [
+            "historySessionAvailable",
+            "historyPersistAllowed",
+            "readHistoryEntries",
+            "writeSessionHistory",
+            "purgeLegacyHistory",
+            "initHistoryStore",
+            "clearHistory",
+            "loadHistory",
+        ],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + (
+            "let historyEntries = [];\n"
+            "const localStore = {data:{}, getItem(k){return Object.prototype.hasOwnProperty.call(this.data,k)?this.data[k]:null;},"
+            " setItem(k,v){this.data[k]=String(v);}, removeItem(k){throw new Error('blocked');}};\n"
+            "globalThis.localStorage = localStore;\n"
+            "globalThis.confirm = () => true;\n"
+        ),
+        (
+            "const entry={ts:Date.now(),patient:'Legacy PHI',disease:'X',drug:'Y',singleMg:500,freq:1,duration:'1'};"
+            "sessionStore.setItem('antibio_history',JSON.stringify([entry]));"
+            "localStore.setItem('antibio_history',JSON.stringify([entry]));"
+            "$('history-persist').checked=true;"
+            "clearHistory();"
+            "console.log(JSON.stringify({toast:TOASTS[TOASTS.length-1],"
+            "sessionStored:sessionStore.getItem('antibio_history')!==null,"
+            "legacyStored:localStore.getItem('antibio_history')!==null,"
+            "note:$('history-storage-note').textContent, warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert "Не удалось" in result["toast"] and "История очищена" not in result["toast"], result
+    assert result["sessionStored"] is False and result["legacyStored"] is True
+    assert "Не удалось" in result["note"] and result["warn"]
+
+
 def test_history_degrades_honestly_when_session_storage_is_unavailable() -> None:
     result = _run_with_consts(
         [
@@ -884,6 +1407,30 @@ def test_legacy_local_storage_history_is_purged_on_start() -> None:
     assert result["after"] is None
 
 
+def test_legacy_history_purge_reports_unverified_removal() -> None:
+    result = _run_with_consts(
+        ["purgeLegacyHistory"],
+        ["HISTORY_KEY"],
+        (
+            "const local = {data:{antibio_history:'legacy PHI'},"
+            " getItem(k){return Object.prototype.hasOwnProperty.call(this.data,k)?this.data[k]:null;},"
+            " removeItem(k){throw new Error('blocked');}};\n"
+            "globalThis.localStorage = local;\n"
+        ),
+        (
+            "const cleared=purgeLegacyHistory();"
+            "const remains=localStorage.getItem('antibio_history')!==null;"
+            "local.data.antibio_history='legacy PHI after';"
+            "local.removeItem=function(k){delete this.data[k];throw new Error('removed then rejected')};"
+            "const absentAfterThrow=purgeLegacyHistory();"
+            "const remainsAfterThrow=localStorage.getItem('antibio_history')!==null;"
+            "console.log(JSON.stringify({cleared,remains,absentAfterThrow,remainsAfterThrow}));"
+        ),
+    )
+    assert result["cleared"] is False and result["remains"] is True, result
+    assert result["absentAfterThrow"] is True and result["remainsAfterThrow"] is False, result
+
+
 def test_history_ui_survives_the_storage_change() -> None:
     source = _source()
     assert 'id="history-persist" type="checkbox"' in source
@@ -891,7 +1438,10 @@ def test_history_ui_survives_the_storage_change() -> None:
     assert 'id="history-list"' in source
     assert 'id="history-clear"' in source
     assert "onHistoryPersistChange()" in source
-    assert "initHistoryStore();" in _js_function(source, "init")
+    init_fn = _js_function(source, "init")
+    # the history store is an init step (run in the fault-tolerant step list since T58)
+    assert "initHistoryStore" in init_fn and "loadHistory" in init_fn
+    assert "try{ step(); }catch(e)" in init_fn
     clear_fn = _js_function(source, "clearHistory")
     assert "sessionStorage.removeItem(HISTORY_KEY)" in clear_fn
     assert "historyEntries = []" in clear_fn
@@ -1321,6 +1871,7 @@ def test_render_scenarios_never_parses_a_scenario_name_as_markup() -> None:
     globals_js = (
         "let activeAge='adult';\n"
         "function selectScenario(){}\n"
+        "function updateAllergyBanner(){}\n"
         "let activeDisease = " + _lit(
             {
                 "scenarios": [
@@ -1330,7 +1881,7 @@ def test_render_scenarios_never_parses_a_scenario_name_as_markup() -> None:
             }
         ) + ";\n"
     )
-    result = _run(["renderScenarios"], globals_js, _XSS_INSPECTOR + "renderScenarios();console.log(JSON.stringify(report($('scenario-list'))));")
+    result = _run(["diseaseSourceStatus", "diseaseCalculationGated", "renderScenarios"], globals_js, _XSS_INSPECTOR + "renderScenarios();console.log(JSON.stringify(report($('scenario-list'))));")
     _assert_payload_is_inert(result, "renderScenarios")
     assert "Не подходит для выбранной возрастной группы" in result["text"]
 
@@ -1428,7 +1979,7 @@ def test_open_guideline_modal_never_parses_line_label_or_inn_as_markup() -> None
         "let activeDrug = null;\n"
     )
     result = _run(
-        ["getDrugRefs", "openGuidelineModal"],
+        ["getDrugRefs", "doseUnitOf", "fmtDose", "formatUnits", "openGuidelineModal"],
         globals_js,
         _XSS_INSPECTOR + "openGuidelineModal();console.log(JSON.stringify(report($('modal-cr-lines'))));",
     )
@@ -1468,6 +2019,9 @@ def test_fill_prescription_form_never_parses_a_drug_name_or_solvent_as_markup() 
         "weightWarnReason",
         "dbBlockReason",
         "calculationBlockReason",
+        "diseaseSourceStatus",
+        "diseaseCalculationGated",
+        "sourceGateReason",
         "dbTrustState",
         "buildFingerprint",
         "buildIdentifier",
@@ -1479,12 +2033,15 @@ def test_fill_prescription_form_never_parses_a_drug_name_or_solvent_as_markup() 
         "formatTablets",
         "getStandardBottleMl",
         "calculateCoursePackages",
-        "formTypeRussian",
+        "clearPrescriptionForm",
         "fillPrescriptionForm",
+        "prescriptionDateText",
+        "doseIncompleteReason",
+        "componentRegimen",
     ]
     result = _run_with_consts(
         funcs,
-        ["LATIN_INN", "LATIN_FORM", "LATIN_ROUTE", "LATIN_FREQ"],
+        ["LATIN_INN", "LATIN_FORM"],
         globals_js,
         _XSS_INSPECTOR + "fillPrescriptionForm();console.log(JSON.stringify({drugs:report($('rx-drugs')),"
         "inj:report($('rx-injection-details')),signa:$('rx-signa-text').textContent}));",
@@ -1559,11 +2116,12 @@ def test_render_combo_components_never_parses_inn_or_component_note_as_markup() 
         "const reg = " + _lit(
             {
                 "age_group": "all",
-                "single_dose_mg": 40,
-                "freq_per_day": 3,
+                "single_dose_mg": 2000,
+                "freq_per_day": 1,
                 "duration_days": 7,
-                "component_note": "Компонент " + XSS_PAYLOAD,
-                "component_regimens": {},
+                "component_regimens": {
+                    "x": {"single_dose_mg": 40, "freq_per_day": 3, "duration_days": 7, "component_note": "Компонент " + XSS_PAYLOAD},
+                },
             }
         ) + ";\n"
     )
@@ -1574,9 +2132,19 @@ def test_render_combo_components_never_parses_inn_or_component_note_as_markup() 
         + _lit(XSS_PAYLOAD)
         + ",forms:[{form_type:'tablet',concentration:'500 мг'}]};"
         "renderComboComponents(['x'], reg, 20);"
-        "console.log(JSON.stringify(report($('combo-block'))));",
+        "const rep = report($('combo-block'));const text = $('combo-block').textContent;"
+        "DB.drugs_reference.y = {inn:'Без режима',forms:[{form_type:'tablet',concentration:'500 мг'}]};"
+        "renderComboComponents(['y'], reg, 20);"
+        "console.log(JSON.stringify(Object.assign(rep, {partnerText: text, orphan: $('combo-block').textContent,"
+        " lines: comboComponentLines(['x', 'y'], reg, 20)})));",
     )
     _assert_payload_is_inert(result, "renderComboComponents")
+    # the partner is dosed from ITS regimen (40 mg × 3), never from the main drug's 2000 mg
+    assert "40 мг" in result["partnerText"] and "2000 мг" not in result["partnerText"], result["partnerText"]
+    # a partner without component_regimens is fail-visible, not dosed with the main drug's numbers
+    assert "режим компонента не задан в БД" in result["orphan"] and "2000 мг" not in result["orphan"], result["orphan"]
+    assert result["lines"][0].startswith("Компонент комбинации: МНН ") and "по 40 мг 3 р/д" in result["lines"][0]
+    assert result["lines"][1] == "Компонент комбинации: Без режима — режим компонента не задан в БД — дозу уточните по КР (расчёт не выполнен)"
 
 
 def test_render_drug_meta_never_parses_drug_metadata_as_markup() -> None:
@@ -1670,7 +2238,7 @@ def test_apply_disease_source_gate_banner_carries_no_markup() -> None:
     globals_js = "const DOSE_BLOCK_CLASS = 'blocked';\n"
     body = (
         _XSS_INSPECTOR
-        + "applyDiseaseSourceGate({source_verification_status:'SOURCE_PDF_VERIFIED'});"
+        + "applyDiseaseSourceGate({cr_id:'654', cr_year:2021, source_verification_status:'CR_REFERENCE_CALCULATION'});"
         "const reference=report($('source-calculation-block'));"
         "applyDiseaseSourceGate({source_verification_status:'<img src=x onerror=\"globalThis.__pwned=1\">'});"
         "const injected=report($('source-calculation-block'));"
@@ -1738,3 +2306,725 @@ def test_render_injection_never_parses_the_frequency_or_solvent_as_markup() -> N
     _assert_payload_is_inert(result["instr"], "renderInjection (instruction)")
     _assert_payload_is_inert(result["vials"], "renderInjection (vial selector)")
     assert result["route"] == "в/в струйно", "the route label must still be produced"
+
+
+# --------------------------------------------------------------------------
+# Audit 2026-10-14 — patient context, honest source labels, solid-form maths
+# --------------------------------------------------------------------------
+
+_RX_FUNCS = [
+    "getDrugRefs", "ageGroupLabel", "ageEligibleRegimens", "getActiveRegimen",
+    "ageRegimenBlockReason", "weightBlockReason", "weightWarnReason", "dbBlockReason",
+    "calculationBlockReason", "dbTrustState", "buildFingerprint", "buildIdentifier",
+    "doseUnitOf", "computeDose", "formatUnits", "fmtDose", "diseaseSourceStatus",
+    "diseaseCalculationGated", "sourceGateReason",
+    "formatTablets", "getStandardBottleMl", "calculateCoursePackages",
+    "clearPrescriptionForm", "fillPrescriptionForm", "prescriptionDateText",
+    "doseIncompleteReason", "componentRegimen",
+]
+_RX_CONSTS = ["LATIN_INN", "LATIN_FORM"]
+
+
+def test_latin_rp_line_writes_the_strength_in_latin_units() -> None:
+    """«Rp.: Amoxicillini 250 мг/5 мл» mixed Cyrillic units into the Latin line;
+    the package word belongs to the D.t.d. form, not to the strength."""
+    body = (
+        "console.log(JSON.stringify(["
+        "'250 мг/5 мл','1.2 млн ЕД флакон','1 млн ЕД флакон','3000 мг пакет','1000+200 мг флакон',"
+        "'600+42.9 мг/5 мл (14:1 ES)','875+125 мг','500 мг/2 мл','40 мг/мл','500 тыс ЕД','2% крем',''"
+        "].map(latinStrength)));"
+    )
+    result = _run(["latinStrength", "formatUnits"], "", body)
+    assert result == [
+        "250 mg/5 ml", "1 200 000 ED", "1 000 000 ED", "3000 mg", "1000+200 mg",
+        "600+42.9 mg/5 ml (14:1 ES)", "875+125 mg", "500 mg/2 ml", "40 mg/ml", "500 000 ED", "2% крем", "",
+    ], result
+
+
+def test_prescription_date_is_printed_in_the_russian_format() -> None:
+    """The date field turns into type=date on focus, so a picked date arrives as ISO
+    «2026-10-15»; the printed form said «Дата: 2026-10-15» while the default (today)
+    was «15.10.2026». ISO → DD.MM.YYYY; free text stays; empty → today (ru-RU)."""
+    body = (
+        "console.log(JSON.stringify(['2026-10-15','15.10.2026','2026-1-5',' 2025-02-03 ','',null]"
+        ".map(prescriptionDateText)));"
+    )
+    result = _run(["prescriptionDateText"], "", body)
+    assert result[:4] == ["15.10.2026", "15.10.2026", "2026-1-5", "03.02.2025"], result
+    assert re.fullmatch(r"\d{2}\.\d{2}\.\d{4}", result[4]) and result[4] == result[5], result
+
+
+def _rx_globals(drug_ref: dict, active_drug: dict, route_group: str, route_key: str, weight: str = "70") -> str:
+    fixture = _fixture_db()
+    fixture["drugs_reference"]["d"] = drug_ref
+    return (
+        f"const DB = {_lit(fixture)};\n"
+        "let activeAge='adult';\nlet userPickedAge=false;\nlet lastPickedAge=null;\n"
+        "let dbBlockingErrors=[];\nlet activeRegimenIdx=0;\n"
+        f"let activeFormIdx=0;let currentRouteGroup='{route_group}';let activeRouteKey={_lit(route_key)};let activeVialIdx=0;\n"
+        "let activeLine=null;\n"
+        f"let activeDrug={_lit(active_drug)};\n"
+        "let activeDisease={name:'x',cr_id:'654',cr_year:2021,source_verification_status:'CR_REFERENCE_CALCULATION',mkb10:['J18']};\n"
+        f"$('weight').value='{weight}';\n"
+    )
+
+
+def test_apply_disease_source_gate_does_not_accumulate_banners_across_selections() -> None:
+    """Regression: the reference branch appended children without clearing them first."""
+    body = (
+        "applyDiseaseSourceGate({cr_id:'654',cr_year:2021,source_verification_status:'CR_REFERENCE_CALCULATION'});"
+        "applyDiseaseSourceGate({cr_id:'—',cr_note:'СКАТ 2018',source_verification_status:'NO_FEDERAL_CR_EXPERT_BASIS'});"
+        "const b=$('source-calculation-block');"
+        "console.log(JSON.stringify({children:b.children.length,text:b.innerHTML,status:b.dataset.sourceStatus}));"
+    )
+    result = _run(["diseaseSourceStatus", "applyDiseaseSourceGate"], "", body)
+    assert result["children"] == 2, "exactly one caption + one badge after the second selection"
+    assert result["text"].count("Справочный расчёт") == 0, "the previous nosology's banner must be gone"
+    assert "СКАТ 2018" in result["text"] and "БЕЗ КР" in result["text"]
+    assert result["status"] == "NO_FEDERAL_CR_EXPERT_BASIS"
+
+
+def test_source_banner_wording_per_status() -> None:
+    body = (
+        "const out={};"
+        "for(const d of ["
+        " {k:'cr',cr_id:'654',cr_year:2021,source_verification_status:'CR_REFERENCE_CALCULATION'},"
+        " {k:'spec',cr_id:'314',source_verification_status:'SOURCE_SPEC_PENDING_CALCULATOR_BINDING'},"
+        " {k:'nocr',cr_id:'—',cr_note:'IDSA 2019',source_verification_status:'NO_FEDERAL_CR_EXPERT_BASIS'},"
+        " {k:'nocr_nonote',cr_id:'—',source_verification_status:'NO_FEDERAL_CR_EXPERT_BASIS'},"
+        " {k:'unknown',source_verification_status:'SOMETHING_ELSE'},"
+        " {k:'blocked',calculation_blocked:true,calculation_block_reason:'нет источника'}"
+        "]){ const ok=applyDiseaseSourceGate(d); out[d.k]={ok:ok,text:$('source-calculation-block').innerHTML}; }"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["diseaseSourceStatus", "applyDiseaseSourceGate"], "", body)
+    assert "№654 (2021)" in result["cr"]["text"] and "не проходила построчную верификацию" in result["cr"]["text"]
+    assert "построчная привязка таблиц ещё не подтверждена" in result["spec"]["text"]
+    assert "Нет федеральной КР" in result["nocr"]["text"] and "IDSA 2019" in result["nocr"]["text"]
+    assert "не документировано" in result["nocr_nonote"]["text"]
+    assert "НЕ ВЕРИФИЦИРОВАНО" in result["unknown"]["text"] and "SOMETHING_ELSE" in result["unknown"]["text"]
+    assert result["blocked"]["ok"] is False and "РАСЧЁТ ЗАБЛОКИРОВАН" in result["blocked"]["text"]
+    assert all(v["ok"] is True for k, v in result.items() if k != "blocked")
+
+
+def test_disease_source_label_never_invents_a_federal_guideline() -> None:
+    body = (
+        "console.log(JSON.stringify({"
+        "cr:diseaseSourceLabel({cr_id:'654',cr_year:2021}),"
+        "cr_noyear:diseaseSourceLabel({cr_id:'313_3'}),"
+        "dash:diseaseSourceLabel({cr_id:'—',cr_year:2024,cr_note:'СКАТ 2018'}),"
+        "dash_nonote:diseaseSourceLabel({cr_id:'—'}),"
+        "none:diseaseSourceLabel({}),"
+        "fed:[isFederalCrId('654'),isFederalCrId('313_3'),isFederalCrId('—'),isFederalCrId(''),isFederalCrId(null),isFederalCrId('IDSA')]"
+        "}));"
+    )
+    result = _run([], "", body)
+    assert result["cr"] == "КР МЗ РФ #654 (2021)"
+    assert result["cr_noyear"] == "КР МЗ РФ #313_3 (год не указан)"
+    assert result["dash"] == "без федеральной КР — основание: СКАТ 2018"
+    assert "2024" not in result["dash"], "a year must not be attached to a non-existent CR"
+    assert result["dash_nonote"] == "без федеральной КР — основание не документировано"
+    assert result["none"].startswith("без федеральной КР")
+    assert result["fed"] == [True, True, False, False, False, False]
+
+
+def test_format_tablets_never_splits_a_capsule_and_shows_the_actual_dose() -> None:
+    body = (
+        "const cap={form_type:'capsule',concentration:'500 мг'};"
+        "const tab={form_type:'tablet',concentration:'500 мг'};"
+        "console.log(JSON.stringify({"
+        "cap_exact:formatTablets(1000,cap), cap_half:formatTablets(750,cap), cap_small:formatTablets(100,cap),"
+        "tab_exact:formatTablets(1000,tab), tab_half:formatTablets(750,tab), tab_third:formatTablets(333,tab),"
+        "none:formatTablets(0,tab), susp:formatTablets(500,{form_type:'suspension',concentration:'250 мг/5 мл'}),"
+        "units_cap:solidUnitsPerDose(750,cap).units, units_tab:solidUnitsPerDose(750,tab).units"
+        "}));"
+    )
+    result = _run(["formatTablets"], "", body)
+    assert result["cap_exact"] == "(2 капс 500 мг)"
+    assert result["cap_half"] == "(~2 капс 500 мг = 1000 мг, +33 % к расчётной; капсулы не делятся)"
+    assert result["cap_small"] == "(~1 капс 500 мг = 500 мг, +400 % к расчётной; капсулы не делятся)"
+    assert result["tab_exact"] == "(2 таб 500 мг)"
+    assert result["tab_half"] == "(1.5 таб 500 мг)", "a half tablet is exact, not a rounding"
+    assert result["tab_third"] == "(~0.5 таб 500 мг = 250 мг, -25 % к расчётной)"
+    assert result["none"] == "" and result["susp"] == ""
+    assert result["units_cap"] == 2 and result["units_tab"] == 1.5
+
+
+def test_compute_dose_understands_per_kg_per_dose_regimens() -> None:
+    body = (
+        "const reg={age_group:'child',dose_mg_kg_per_dose:7,freq_per_day:3,max_daily_mg:2000};"
+        "const a=computeDose(reg,20,'мг'); const b=computeDose(reg,0,'мг'); const c=computeDose(reg,120,'мг');"
+        "console.log(JSON.stringify({a:a,b:b,c:c}));"
+    )
+    result = _run(["computeDose"], "", body)
+    assert result["a"]["singleMg"] == 140 and result["a"]["dailyMg"] == 420 and result["a"]["needWeight"] is False
+    assert result["b"]["needWeight"] is True and result["b"]["dailyMg"] == 0
+    # 120 kg × 7 × 3 = 2520 > 2000 → capped, single dose re-derived from the ceiling
+    assert result["c"]["capped"] is True and result["c"]["dailyMg"] == 2000 and abs(result["c"]["singleMg"] - 2000 / 3) < 1e-9
+
+
+def test_regimen_summary_keeps_units_honest() -> None:
+    body = (
+        "console.log(JSON.stringify(["
+        "regimenSummary({dose_mg_kg_day:45,freq_per_day:3,max_daily_mg:3000},'мг'),"
+        "regimenSummary({dose_mg_kg_per_dose:7,freq_per_day:3},'мг'),"
+        "regimenSummary({single_dose_mg:1000000,freq_per_day:4},'ЕД'),"
+        "regimenSummary({dose_mg_day_fixed:1500,freq_per_day:3},'мг'),"
+        "regimenSummary({regimen_label:'по схеме',dose_mg_kg_day:45},'мг'),"
+        "regimenSummary({duration_note:'однократно'},'мг')"
+        "]));"
+    )
+    result = _run(["fmtDose", "formatUnits"], "", body)
+    assert result[0] == "45 мг/кг/сут • 3 р/д • макс 3000 мг/сут"
+    assert result[1] == "7 мг/кг на приём • 3 р/д"
+    assert result[2].startswith("1") and "ЕД на приём • 4 р/д" in result[2]
+    assert result[3] == "1500 мг/сут • 3 р/д"
+    assert result[4] == "по схеме"
+    assert result[5] == "однократно"
+
+
+def test_search_typo_tolerance_is_one_edit_on_a_word_prefix() -> None:
+    body = (
+        "console.log(JSON.stringify({"
+        "edits:[withinOneEdit('пневмония','пневмания'),withinOneEdit('тонзилит','тонзиллит'),withinOneEdit('пнвемония','пневмония'),"
+        "withinOneEdit('синусит','синусид'),withinOneEdit('отит','отит'),withinOneEdit('ангина','ангиоп'),withinOneEdit('abc','abcde')],"
+        "hits:[fuzzyWordHit('внебольничная пневмония у детей','пневмания'),fuzzyWordHit('острый тонзиллит','тонзилит'),"
+        "fuzzyWordHit('амоксициллин','амоксицилин'),fuzzyWordHit('острый синусит','синусид'),fuzzyWordHit('отит','отти'),"
+        "fuzzyWordHit('менингококковая инфекция','менингит'),fuzzyWordHit('холецистит','холера')]"
+        "}));"
+    )
+    result = _run(["withinOneEdit", "fuzzyWordHit"], "", body)
+    assert result["edits"] == [True, True, True, True, True, False, False]
+    assert result["hits"] == [True, True, True, True, False, False, False]
+
+
+def test_search_drug_text_includes_optional_trade_names() -> None:
+    """«амоксиклав» / «аугментин» find nothing today because the DB lists INNs only.
+    When the owner adds `drugs_reference[].synonyms` (trade names), the search text of a
+    record carries them without a shell change; a missing or malformed field is ignored."""
+    body = (
+        "const DB = {drugs_reference: {"
+        "amoxiclav: {inn: 'Амоксициллин + Клавулановая кислота', synonyms: ['Амоксиклав', 'Аугментин', '', 7]},"
+        "amoxicillin: {inn: 'Амоксициллин'},"
+        "weird: {inn: 'Х', synonyms: 'не массив'}}};"
+        "const rec = {id: 'r1', scenarios: [{lines: [{drugs: [{drug_ref: 'amoxiclav'}, {drug_ref: 'amoxicillin'}, {drug_ref: 'weird'}, {drug_ref: 'missing'}]}]}]};"
+        "console.log(JSON.stringify(diseaseDrugText(rec)));"
+    )
+    text = _run(["diseaseDrugText", "searchFold"], "", body)
+    assert "амоксиклав" in text and "аугментин" in text and "амоксициллин" in text and "missing" in text, text
+    assert "не массив" not in text and " 7" not in text, text
+
+
+def test_quick_tag_candidates_prefer_the_patient_group_over_db_order() -> None:
+    """T84 over the shipped DB: for each quick tag code the candidate set narrows to the
+    patient's group, then to records written for that group (not only an «all» scenario),
+    then to records listing the exact code; one survivor opens, otherwise the list."""
+    db = _db()
+    expected = {
+        "adult": {"H66": ["otitis_media_adult"], "J18": ["cap_adult"], "J03": ["pharyngitis_adult"],
+                  "J01": ["sinusitis_adult"], "N30": ["uti_prophylaxis", "cystitis_female"], "N10": ["pyelonephritis_adult"]},
+        "child": {"H66": ["aom_child"], "J18": ["cap_child"], "J03": ["pharyngitis_child"],
+                  "J01": ["sinusitis_child"], "N30": ["uti_prophylaxis"], "N10": ["ut_child"]},
+        "neonate": {"H66": ["aom_child", "otitis_media_adult"], "J18": ["cap_adult", "cap_child"],
+                    "J03": ["pharyngitis_adult", "pharyngitis_child"], "J01": ["sinusitis_adult", "sinusitis_child"],
+                    "N30": ["uti_prophylaxis", "cystitis_female"], "N10": ["ut_child"]},
+    }
+    for group, table in expected.items():
+        body = (
+            "const out = {};"
+            f"for (const code of {_lit(list(table))}) out[code] = quickDiseaseCandidates(code).map(r => r.id);"
+            "out.blank = quickDiseaseCandidates('').length; out.lower = quickDiseaseCandidates('h66').map(r => r.id);"
+            "console.log(JSON.stringify(out));"
+        )
+        result = _run(["quickDiseaseCandidates"], _age_globals(db).replace("let activeAge = 'child';", f"let activeAge = '{group}';"), body)
+        lower = result.pop("lower")
+        assert result.pop("blank") == 0
+        assert result == table, (group, result)
+        assert lower == table["H66"], (group, lower)
+    # the shell opens a single survivor and sends anything else to the search list
+    source = _source()
+    body = _js_function(source, "selectQuickDisease")
+    assert "if(found.length === 1)" in body and "selectDisease(found[0])" in body and "handleSearch()" in body
+
+
+def test_search_status_names_a_typo_only_list() -> None:
+    """T88: when every hit came through the one-typo rule the status line says the list is
+    a spelling guess; the «Найдено: N» prefix stays (the fuzz counts rows against it)."""
+    hits = "[{calculation_blocked:false},{calculation_blocked:true}]"
+    body = (
+        "console.log(JSON.stringify(["
+        f"searchStatusText('пневмания', {hits}, true),"
+        f"searchStatusText('пневмания', {hits}, false),"
+        f"searchStatusText('пневмания', {hits}),"
+        "searchStatusText('x'.repeat(50), [{}], true),"
+        "searchStatusText('холера', [], true)]));"
+    )
+    result = _run(["searchStatusText", "nosologiesWord"], "", body)
+    assert result[0] == "Найдено: 2 нозологии (с закрытым расчётом: 1) — точного совпадения нет, показаны похожие названия; проверьте написание «пневмания»."
+    assert result[1] == result[2] == "Найдено: 2 нозологии (с закрытым расчётом: 1)."
+    assert result[3] == "Найдено: 1 нозология — точного совпадения нет, показаны похожие названия; проверьте написание «" + "x" * 40 + "…»."
+    assert result[4].startswith("Ничего не найдено по запросу «холера»")
+
+
+def test_allergy_check_of_a_drug_missing_from_the_class_table_is_a_caution() -> None:
+    """A drugs_reference key that `DRUG_CLASSES` does not know used to come back as
+    «✅ Безопасно» for every allergy (the static consistency test guards the shipped DB; the
+    runtime must not degrade silently either). With no allergy on record it stays silent."""
+    body = (
+        "console.log(JSON.stringify(["
+        "checkAllergyStatus('brand_new_drug', 'penicillin_severe'),"
+        "checkAllergyStatus('brand_new_drug', 'penicillin_mild'),"
+        "checkAllergyStatus('brand_new_drug', 'cephalosporin'),"
+        "checkAllergyStatus('brand_new_drug', 'none'),"
+        "checkAllergyStatus('amoxicillin', 'penicillin_severe').status,"
+        "checkAllergyStatus('azithromycin', 'penicillin_severe').status]));"
+    )
+    result = _run_with_consts(["checkAllergyStatus"], ["DRUG_CLASSES"], "", body)
+    for res in result[:3]:
+        assert res["status"] == "caution" and res["label"] == "⚠ Класс не определён", res
+        assert res["alert"] == "Класс препарата «brand_new_drug» не задан в таблице классов калькулятора — совместимость с аллергоанамнезом проверьте вручную.", res
+    assert result[3] == {"status": "safe", "label": "", "alert": None}
+    assert result[4] == "contraindicated" and result[5] == "recommended"
+
+
+def test_icd_code_typed_with_a_cyrillic_look_alike_letter_is_the_latin_code() -> None:
+    """T90: «Н66» / «В20» / «О85» mean H66 / B20 / O85. Only a letter directly in front of
+    two digits is touched — Russian words keep their letters."""
+    body = (
+        "console.log(JSON.stringify(['н66','в20','о85.1','к81','а09','х60','у36','пневмония н66','н 66','нет','66н','abc','j18','о','он6']"
+        ".map(foldIcdHomoglyphs)));"
+    )
+    result = _run(["foldIcdHomoglyphs"], "", body)
+    assert result == ["h66", "b20", "o85.1", "k81", "a09", "x60", "y36", "пневмония h66", "н 66", "нет", "66н", "abc", "j18", "о", "он6"], result
+
+
+def test_hyphenated_names_are_searchable_without_the_hyphen() -> None:
+    """T93: «котримоксазол» finds «Ко-тримоксазол», «вичинфекция» «ВИЧ-инфекция»; a hyphen
+    between a letter and a digit or between digits is kept («J18-дети», «1-2 р/д»)."""
+    body = (
+        "console.log(JSON.stringify(['ко-тримоксазол','вич-инфекция','j18-дети','1-2 р/д','h.-pylori','a-b-c','-ко','ко-'].map(dehyphenate)));"
+    )
+    result = _run(["dehyphenate"], "", body)
+    assert result == ["котримоксазол", "вичинфекция", "j18-дети", "1-2 р/д", "h.-pylori", "abc", "-ко", "ко-"], result
+
+
+def test_times_a_day_declension() -> None:
+    """Rp Signa / printed form said «1 раза в день» and «6 раза в день»."""
+    result = _run(["timesADay"], "", "console.log(JSON.stringify([1,2,3,4,5,6,8,11,12,21,22,0].map(timesADay)));")
+    assert result == [
+        "1 раз в день", "2 раза в день", "3 раза в день", "4 раза в день", "5 раз в день",
+        "6 раз в день", "8 раз в день", "11 раз в день", "12 раз в день", "21 раз в день",
+        "22 раза в день", "0 раз в день",
+    ]
+
+
+def test_format_units_never_drops_the_decimal_point() -> None:
+    """1 050 000 ЕД (150 000 ЕД/кг/сут × 7 кг) once read «15 млн ЕД»: the old
+    `.replace('.0','')` ate the point. Scale only when two decimals are exact,
+    otherwise print the number in full with thousand spaces."""
+    body = (
+        "console.log(JSON.stringify([1050000,1005000,1030000,2000000,1500000,1000000,1250000,"
+        "24000000,175000,625000,20050,1050,1000,999,0].map(formatUnits)));"
+    )
+    result = _run(["formatUnits"], "", body)
+    assert result == [
+        "1.05 млн", "1 005 000", "1.03 млн", "2 млн", "1.5 млн", "1 млн", "1.25 млн",
+        "24 млн", "175 тыс", "625 тыс", "20.05 тыс", "1.05 тыс", "1 тыс", "999", "0",
+    ]
+    assert _run(["fmtDose", "formatUnits"], "", "console.log(JSON.stringify(fmtDose(1050000,'ЕД')));") == "1.05 млн ЕД"
+
+
+def test_age_parsing_and_group_boundaries() -> None:
+    body = (
+        "console.log(JSON.stringify({"
+        "days:[parseAgeToDays('10','days'),parseAgeToDays('6','months'),parseAgeToDays('7','years'),parseAgeToDays('','years'),parseAgeToDays('-1','years'),parseAgeToDays('abc','years')],"
+        "groups:[ageGroupFromDays(0),ageGroupFromDays(28),ageGroupFromDays(29),ageGroupFromDays(17*365.25+364),ageGroupFromDays(18*365.25),ageGroupFromDays(null)],"
+        "restr:[parseAgeRestrictionDays('6 мес'),parseAgeRestrictionDays('18 лет'),parseAgeRestrictionDays('1 мес'),parseAgeRestrictionDays('28 дней'),parseAgeRestrictionDays('с 3 лет'),parseAgeRestrictionDays('2 нед'),parseAgeRestrictionDays('нет'),parseAgeRestrictionDays(null),parseAgeRestrictionDays('12 г'),parseAgeRestrictionDays('6 м.'),parseAgeRestrictionDays('5 мг')],"
+        "fmt:[formatAgeDays(10),formatAgeDays(200),formatAgeDays(365.25*1),formatAgeDays(365.25*3),formatAgeDays(365.25*5),formatAgeDays(365.25*21)]"
+        "}));"
+    )
+    result = _run(["parseAgeToDays", "ageGroupFromDays"], "", body)
+    assert result["days"][0] == 10 and abs(result["days"][1] - 6 * 30.4375) < 1e-9 and abs(result["days"][2] - 7 * 365.25) < 1e-9
+    assert result["days"][3:] == [None, None, None]
+    assert result["groups"] == ["neonate", "neonate", "child", "child", "adult", None]
+    assert abs(result["restr"][0] - 6 * 30.4375) < 1e-9 and abs(result["restr"][1] - 18 * 365.25) < 1e-9
+    assert abs(result["restr"][2] - 30.4375) < 1e-9 and result["restr"][3] == 28
+    assert abs(result["restr"][4] - 3 * 365.25) < 1e-9 and result["restr"][5] == 14
+    # JS «\b» is ASCII-only: «12 г» / «6 м.» used to fall through to «проверьте вручную»
+    assert result["restr"][6:8] == [None, None] and len(result["restr"]) == 11
+    assert abs(result["restr"][8] - 12 * 365.25) < 1e-9 and abs(result["restr"][9] - 6 * 30.4375) < 1e-9
+    assert result["restr"][10] is None, "«5 мг» is not an age"
+    assert result["fmt"] == ["10 дн.", "7 мес", "12 мес", "3 года", "5 лет", "21 год"]
+
+
+def test_age_restriction_flag_matrix() -> None:
+    body = (
+        "const ref={inn:'Доксициклин',age_restriction_min:'8 лет'};"
+        "const adultOnly={inn:'Левофлоксацин',age_restriction_min:'18 лет'};"
+        "const infant={inn:'Цефиксим',age_restriction_min:'6 мес'};"
+        "const odd={inn:'X',age_restriction_min:'по инструкции'};"
+        "const out={};"
+        "activeAge='child'; patientAgeDays=5*365.25; out.child_5y_vs_8y=ageRestrictionFlag(ref);"
+        "patientAgeDays=10*365.25; out.child_10y_vs_8y=ageRestrictionFlag(ref);"
+        "patientAgeDays=null; out.child_unknown_vs_18y=ageRestrictionFlag(adultOnly);"
+        "out.child_unknown_vs_6m=ageRestrictionFlag(infant);"
+        "activeAge='neonate'; out.neonate_unknown_vs_6m=ageRestrictionFlag(infant);"
+        "activeAge='adult'; out.adult_unknown_vs_18y=ageRestrictionFlag(adultOnly);"
+        "out.adult_odd=ageRestrictionFlag(odd);"
+        "out.none=ageRestrictionFlag({inn:'Y'});"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["ageGroupLabel"], "let activeAge='child';\n", body)
+    assert result["child_5y_vs_8y"]["level"] == "danger" and "5 лет" in result["child_5y_vs_8y"]["text"]
+    assert result["child_10y_vs_8y"] is None
+    assert result["child_unknown_vs_18y"]["level"] == "danger", "a child can never satisfy an 18-year minimum"
+    assert result["child_unknown_vs_6m"]["level"] == "warn" and "Введите возраст" in result["child_unknown_vs_6m"]["text"]
+    assert result["neonate_unknown_vs_6m"]["level"] == "danger"
+    assert result["adult_unknown_vs_18y"] is None
+    assert result["adult_odd"]["level"] == "warn" and "по инструкции" in result["adult_odd"]["text"]
+    assert result["none"] is None
+
+
+def test_pregnancy_and_renal_flags() -> None:
+    body = (
+        "const out={};"
+        "$('patient-pregnancy').value='yes';"
+        "out.contra=pregnancyFlag({inn:'Доксициклин',pregnancy_category:'Противопоказан'});"
+        "out.tri=pregnancyFlag({inn:'Ко-тримоксазол',pregnancy_category:'Противопоказан в I и III триместрах'});"
+        "out.caution=pregnancyFlag({inn:'Азитромицин',pregnancy_category:'С осторожностью'});"
+        "out.ok=pregnancyFlag({inn:'Амоксициллин',pregnancy_category:'Разрешён'});"
+        "out.ok_tri=pregnancyFlag({inn:'Нитрофурантоин',pregnancy_category:'Разрешён во II-III триместрах'});"
+        "out.nodata=pregnancyFlag({inn:'Тинидазол',pregnancy_category:null});"
+        "$('patient-pregnancy').value='no'; out.not_pregnant=pregnancyFlag({inn:'Доксициклин',pregnancy_category:'Противопоказан'});"
+        "const cotrim={inn:'Ко-тримоксазол',renal_adjustment:'СКФ<30: коррекция дозы; СКФ<15 — противопоказан'};"
+        "$('patient-gfr').value='20'; out.gfr20=renalFlag(cotrim);"
+        "$('patient-gfr').value='10'; out.gfr10=renalFlag(cotrim);"
+        "$('patient-gfr').value='45'; out.gfr45=renalFlag(cotrim);"
+        "out.not_required=renalFlag({inn:'Доксициклин',renal_adjustment:'Не требуется'});"
+        "out.generic=renalFlag({inn:'Гентамицин',renal_adjustment:'Коррекция по СКФ, ТЛМ'});"
+        "out.nodata=renalFlag({inn:'Клиндамицин',renal_adjustment:null});"
+        "$('patient-gfr').value='95'; out.generic_normal=renalFlag({inn:'Гентамицин',renal_adjustment:'Коррекция по СКФ, ТЛМ'});"
+        "$('patient-gfr').value=''; out.no_gfr=renalFlag(cotrim);"
+        "$('patient-gfr').value='0'; out.gfr0=renalFlag(cotrim); out.gfr0_nodata=renalFlag({inn:'Клиндамицин',renal_adjustment:null});"
+        "$('patient-gfr').value='-5'; out.gfr_neg=renalFlag(cotrim);"
+        # three nested thresholds: the most specific clause the GFR falls under speaks
+        "const tiers={inn:'Препарат',renal_adjustment:'СКФ<50: 75 % дозы; СКФ<30: 50 % дозы; СКФ<10: 25 % дозы'};"
+        "$('patient-gfr').value='5'; out.tier5=renalFlag(tiers);"
+        "$('patient-gfr').value='20'; out.tier20=renalFlag(tiers);"
+        "$('patient-gfr').value='40'; out.tier40=renalFlag(tiers);"
+        "$('patient-gfr').value='55'; out.tier55=renalFlag(tiers);"
+        "const reversed={inn:'Препарат',renal_adjustment:'СКФ<10 — противопоказан; СКФ<30: 50 % дозы'};"
+        "$('patient-gfr').value='5'; out.rev5=renalFlag(reversed);"
+        "$('patient-gfr').value='20'; out.rev20=renalFlag(reversed);"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run([], "", body)
+    assert "СКФ<10: 25 % дозы" in result["tier5"]["text"] and result["tier5"]["level"] == "warn", result["tier5"]
+    assert "СКФ<30: 50 % дозы" in result["tier20"]["text"], result["tier20"]
+    assert "СКФ<50: 75 % дозы" in result["tier40"]["text"], result["tier40"]
+    assert result["tier55"] is None
+    assert result["rev5"]["level"] == "danger" and "противопоказан" in result["rev5"]["text"], result["rev5"]
+    assert result["rev20"]["level"] == "warn" and "СКФ<30: 50 % дозы" in result["rev20"]["text"], result["rev20"]
+    assert sorted(result["tier5"].keys()) == ["level", "text"], "the threshold is internal — the flag shape stays {level, text}"
+    assert result["gfr0"]["level"] == "danger" and "СКФ 0 мл/мин" in result["gfr0"]["text"], "anuria is the lowest GFR, not an empty field"
+    assert result["gfr0_nodata"]["level"] == "warn" and result["gfr_neg"] is None
+    assert result["contra"]["level"] == "danger" and result["tri"]["level"] == "danger"
+    assert result["caution"]["level"] == "warn" and result["ok"] is None
+    assert result["ok_tri"]["level"] == "warn", "a trimester-restricted 'allowed' still needs a glance"
+    assert result["nodata"]["level"] == "warn" and result["not_pregnant"] is None
+    assert result["gfr20"]["level"] == "warn" and "СКФ<30" in result["gfr20"]["text"] and "БЕЗ почечной коррекции" in result["gfr20"]["text"]
+    assert result["gfr10"]["level"] == "danger" and "противопоказан" in result["gfr10"]["text"]
+    assert result["gfr45"] is None
+    assert result["not_required"] is None
+    assert result["generic"]["level"] == "warn" and result["generic_normal"] is None
+    assert result["nodata"]["level"] == "warn" and result["no_gfr"] is None
+
+
+def test_implausible_gfr_is_a_patient_level_caution_on_screen_and_in_exports() -> None:
+    """«1500» in the GFR field is a creatinine, not a GFR: the renal rules see a
+    healthy kidney and go silent. The caution travels with every drug's flags
+    (collectPatientSafetyFlags → banners, MIS text, Rp, print, history)."""
+    body = (
+        "const out={};"
+        "const probe=v=>{$('patient-gfr').value=v; return {c:gfrInputCaution(), f:collectPatientSafetyFlags(['amoxicillin']).map(x=>x.level+':'+x.text), none:collectPatientSafetyFlags([]).length};};"
+        "out.high=probe('1500'); out.edge=probe('200'); out.over=probe('201'); out.neg=probe('-5'); out.zero=probe('0'); out.empty=probe(''); out.normal=probe('90');"
+        "console.log(JSON.stringify(out));"
+    )
+    db = _fixture_db()
+    db["drugs_reference"]["amoxicillin"] = {"inn": "Амоксициллин", "renal_adjustment": "СКФ<30: увеличить интервал", "forms": []}
+    result = _run([], _age_globals(db), body)
+    assert result["high"]["c"].startswith("СКФ 1500 мл/мин — неправдоподобно высокое значение (> 200)") and "креатинин" in result["high"]["c"]
+    assert result["high"]["f"] == ["warn:" + result["high"]["c"]] and result["high"]["none"] == 0, "patient-level, once, only with a drug"
+    assert result["edge"]["c"] == "" and result["over"]["c"].startswith("СКФ 201")
+    assert result["neg"]["c"] == "СКФ -5 мл/мин — отрицательное значение, проверьте ввод." and result["neg"]["f"] == ["warn:" + result["neg"]["c"]]
+    assert result["zero"]["c"] == "" and len(result["zero"]["f"]) == 1 and result["zero"]["f"][0].startswith("warn:СКФ 0 мл/мин: «Амоксициллин» — СКФ<30"), "GFR 0 runs the renal rule itself"
+    assert result["empty"] == {"c": "", "f": [], "none": 0} and result["normal"] == {"c": "", "f": [], "none": 0}
+
+
+def test_unparsed_number_input_is_named_instead_of_asking_for_a_weight() -> None:
+    """A type=number field keeps «12,5» on screen but reports value '' with
+    validity.badInput in dot-decimal locales: the physician sees a weight, the
+    shell sees none. The notice names the field; a clean field changes nothing."""
+    body = (
+        "let activeAge='child';"
+        "const out={};"
+        "const warnText=()=>$('weight-warn').classList.contains('hidden') ? null : $('weight-warn').querySelector('span').textContent;"
+        "$('weight').value=''; $('weight').validity={badInput:true};"
+        "updateWeightWarn(true); out.badWeight={text:warnText(), blocking:$('weight-warn').dataset.blocking, bad:badNumberInputs()};"
+        "$('patient-gfr').validity={badInput:true}; $('patient-age').validity={badInput:true};"
+        "updateWeightWarn(false); out.badAll={text:warnText(), bad:badNumberInputs()};"
+        "$('weight').validity={badInput:false}; $('patient-gfr').validity={badInput:false}; $('patient-age').validity={badInput:false};"
+        "updateWeightWarn(true); out.clean={text:warnText(), hint:badInputHint()};"
+        "$('weight').value='300'; $('weight').validity={badInput:true};"
+        "updateWeightWarn(false); out.blockWins={text:warnText(), blocking:$('weight-warn').dataset.blocking};"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["updateWeightWarn"], "", body)
+    assert result["badWeight"]["bad"] == ["вес"] and result["badWeight"]["blocking"] == "false"
+    assert result["badWeight"]["text"] == "Поле «вес» содержит нечисловое значение и не учитывается в расчёте — введите число, разделитель дробной части: точка (например, 12.5)."
+    assert result["badAll"]["bad"] == ["вес", "возраст", "СКФ"] and result["badAll"]["text"].startswith("Поле «вес», «возраст», «СКФ» содержит")
+    assert result["clean"] == {"text": "Для этого режима нужен вес пациента — доза рассчитывается по мг/кг.", "hint": ""}
+    assert result["blockWins"]["text"].startswith("Вес 300 кг") and result["blockWins"]["blocking"] == "true", "a plausibility block outranks the hint"
+
+
+def test_nonblocking_patient_entry_cautions_are_flags_and_exports() -> None:
+    """Age-group inference, an unconfirmed newborn group and invalid numeric input
+    are visible while a result may still be copied: keep those exact notes in the
+    shared safety flags and therefore in every export."""
+    db = _fixture_db()
+    db["drugs_reference"]["probe"] = {"inn": "Тестовый препарат", "forms": []}
+    body = (
+        "const out={}; const flags=()=>collectPatientSafetyFlags(['probe']).map(f=>f.level+':'+f.text);"
+        "activeAge='neonate'; patientAgeDays=null; $('weight').value='3.2'; updateWeightWarn(false);"
+        "out.newborn={notice:$('weight-warn').querySelector('span').textContent,flags:flags(),exports:exportSafetyFlags(['probe']).map(f=>f.text)};"
+        "$('weight-warn').classList.add('hidden'); activeAge='child'; lastPickedAge='adult'; showAgeInferenceNotice(20,'child','adult');"
+        "out.inference={notice:$('age-infer-notice').querySelector('span').textContent,flags:flags(),exports:exportSafetyFlags(['probe']).map(f=>f.text)};"
+        "$('age-infer-notice').classList.add('hidden'); $('weight').value=''; $('weight').validity={badInput:true};"
+        "$('patient-age').validity={badInput:true}; $('patient-gfr').validity={badInput:true}; updateWeightWarn(false);"
+        "out.invalid={notice:$('weight-warn').querySelector('span').textContent,flags:flags(),exports:exportSafetyFlags(['probe']).map(f=>f.text)};"
+        "console.log(JSON.stringify(out));"
+    )
+    result = _run(["updateWeightWarn"], _age_globals(db), body)
+    assert result["newborn"]["notice"].startswith("Группа «новорождённые» выбрана без указания возраста")
+    assert result["newborn"]["flags"] == ["warn:" + result["newborn"]["notice"]]
+    assert result["newborn"]["exports"] == [result["newborn"]["notice"]]
+    assert result["inference"]["notice"].startswith("Вес 20 кг автоматически переключил возрастную группу")
+    assert result["inference"]["flags"] == ["warn:" + result["inference"]["notice"]]
+    assert result["inference"]["exports"] == [result["inference"]["notice"]]
+    assert result["invalid"]["notice"].startswith("Поле «вес», «возраст», «СКФ» содержит нечисловое значение")
+    assert result["invalid"]["flags"] == ["warn:" + result["invalid"]["notice"]]
+    assert result["invalid"]["exports"] == [result["invalid"]["notice"]]
+
+
+def test_render_patient_safety_flags_builds_nodes_and_clears() -> None:
+    fixture = _fixture_db()
+    fixture["drugs_reference"]["doxy"] = {"inn": "Доксициклин " + XSS_PAYLOAD, "age_restriction_min": "8 лет " + XSS_PAYLOAD, "forms": []}
+    body = (
+        _XSS_INSPECTOR
+        + "activeAge='child'; patientAgeDays=3*365.25;"
+        "const flags=renderPatientSafetyFlags(['doxy']);"
+        "const first=report($('patient-safety-banners'));"
+        "const hiddenAfterFlags=$('patient-safety-banners').classList.contains('hidden');"
+        "hidePatientSafetyFlags();"
+        "const cleared=$('patient-safety-banners').children.length;"
+        "const hiddenAfterClear=$('patient-safety-banners').classList.contains('hidden');"
+        "const none=renderPatientSafetyFlags(['vancomycin']);"
+        "console.log(JSON.stringify({n:flags.length,level:flags[0]&&flags[0].level,first:first,hiddenAfterFlags:hiddenAfterFlags,cleared:cleared,hiddenAfterClear:hiddenAfterClear,none:none.length,noneHidden:$('patient-safety-banners').classList.contains('hidden')}));"
+    )
+    result = _run(["ageGroupLabel"], f"const DB = {_lit(fixture)};\nlet activeAge='child';\n", body)
+    assert result["n"] == 1 and result["level"] == "danger"
+    _assert_payload_is_inert(result["first"], "renderPatientSafetyFlags")
+    assert result["hiddenAfterFlags"] is False
+    assert result["cleared"] == 0 and result["hiddenAfterClear"] is True
+    assert result["none"] == 0 and result["noneHidden"] is True
+
+
+def test_prescription_signa_for_an_injectable_solution_names_the_real_route() -> None:
+    """Regression: a solution_im with concentration_mg_per_ml printed 'внутрь'."""
+    drug = {"inn": "Гентамицин", "forms": [{"form_type": "solution_im", "concentration": "40 мг/мл", "concentration_mg_per_ml": 40}]}
+    active = {"drug_ref": "d", "regimens": [{"age_group": "all", "single_dose_mg": 240, "freq_per_day": 1, "duration_days": 7}]}
+    result = _run_with_consts(
+        _RX_FUNCS, _RX_CONSTS, _rx_globals(drug, active, "im", "im"),
+        "fillPrescriptionForm();console.log(JSON.stringify({signa:$('rx-signa-text').textContent,trust:$('rx-trust-line').textContent}));",
+    )
+    assert "внутримышечно" in result["signa"] and "внутрь" not in result["signa"]
+    assert "6.0 мл" in result["signa"] and "240 мг" in result["signa"]
+    assert "КР МЗ РФ #654 (2021)" in result["trust"]
+
+
+def test_prescription_capsule_count_is_whole_and_shows_actual_dose() -> None:
+    drug = {"inn": "Доксициклин", "forms": [{"form_type": "capsule", "concentration": "100 мг"}]}
+    active = {"drug_ref": "d", "regimens": [{"age_group": "all", "single_dose_mg": 150, "freq_per_day": 2, "duration_days": 7}]}
+    result = _run_with_consts(
+        _RX_FUNCS, _RX_CONSTS, _rx_globals(drug, active, "po", None),
+        "fillPrescriptionForm();console.log(JSON.stringify({signa:$('rx-signa-text').textContent,drugs:$('rx-drugs').innerHTML}));",
+    )
+    assert "По 2 " in result["signa"] and "(= 200 мг, +33 % к расчётной)" in result["signa"], result["signa"]
+    assert "1.5" not in result["signa"]
+    # D.t.d. N is the quantity for the whole course (2 caps × 2/day × 7 days), with the per-dose count beside it
+    assert "D.t.d. N 28 in caps." in result["drugs"] and "по 2 на приём, 2 р/д × 7 дн." in result["drugs"], result["drugs"]
+
+
+def test_unit_strength_handles_combination_strengths_and_dose_basis() -> None:
+    """One amoxiclav 875+125 tablet used to be «7 таб 125 мг»; co-trimoxazole 480 mg «6 таб 80 мг»."""
+    body = (
+        "const amc={form_type:'tablet',concentration:'875+125 мг'};"
+        "const amc500={form_type:'tablet',concentration:'500+125 мг'};"
+        "const amcIv={form_type:'powder_for_injection',concentration:'1000+200 мг флакон'};"
+        "const cot={form_type:'tablet',concentration:'400+80 мг'};"
+        "const pen={form_type:'powder_for_injection',concentration:'1.2 млн ЕД флакон'};"
+        "const tmp={regimen_label:'10 мг/кг (по TMP) на ночь'};"
+        "const tmp2={duration_note:'По триметоприму 15-20 мг/кг/сут в 3-4 введения.'};"
+        "const tmp3={regimen_label:'15-20 мг/кг/сут (по ТМП)'};"
+        "console.log(JSON.stringify({"
+        "amc875:unitStrengthMg(amc,875,null),amc500:unitStrengthMg(amc500,500,null),amcIv:unitStrengthMg(amcIv,1000,null),"
+        "cot480:unitStrengthMg(cot,480,null),cot800:unitStrengthMg(cot,800,null),cot960:unitStrengthMg(cot,960,null),"
+        "cotTmp:unitStrengthMg(cot,250,tmp),cotTmp2:unitStrengthMg(cot,350,tmp2),cotTmp3:unitStrengthMg(cot,350,tmp3),"
+        "pen:unitStrengthMg(pen,2.4e6,null,'ЕД'),plain:unitStrengthMg({concentration:'500 мг'},1000,null),"
+        "none:unitStrengthMg({concentration:'крем 2%'},100,null),"
+        "amcUnits:solidUnitsPerDose(875,amc,null).units,cotUnits:solidUnitsPerDose(480,cot,null).units,"
+        "cotTmpUnits:solidUnitsPerDose(250,cot,tmp).units,"
+        "amcText:formatTablets(875,amc,null),cotText:formatTablets(480,cot,null),cotTmpText:formatTablets(350,cot,tmp3),"
+        "amcIvLabel:solidUnitsPerDose(875,amc,null).strengthLabel}));"
+    )
+    result = _run([], "", body)
+    assert result["amc875"] == 875 and result["amc500"] == 500 and result["amcIv"] == 1000
+    assert result["cot480"] == 480 and result["cot800"] == 400 and result["cot960"] == 480
+    assert result["cotTmp"] == 80 and result["cotTmp2"] == 80, "«по триметоприму» regimens dose the TMP component"
+    assert result["cotTmp3"] == 80, "«(по ТМП)» alone must be recognised — JS \\b never matches after Cyrillic"
+    assert result["pen"] == 1_200_000 and result["plain"] == 500 and result["none"] is None
+    assert result["amcUnits"] == 1 and result["cotUnits"] == 1 and result["cotTmpUnits"] == 3
+    # combination tablets are named by the product strength; a trimethoprim basis is said
+    assert result["amcText"] == "(1 таб 875+125 мг)" and result["amcIvLabel"] == "875+125 мг"
+    assert result["cotText"] == "(1 таб 400+80 мг)", result["cotText"]
+    assert result["cotTmpText"] == "(~4.5 таб 400+80 мг = 360 мг по триметоприму)", result["cotTmpText"]
+
+
+def test_rounding_deviation_is_named_when_it_reaches_ten_percent() -> None:
+    body = (
+        "const t500={form_type:'tablet',concentration:'500 мг'};"
+        "const c100={form_type:'capsule',concentration:'100 мг'};"
+        "console.log(JSON.stringify({"
+        "exact:formatTablets(1000,t500,null),"
+        "small:formatTablets(1050,t500,null),"   # 2.1 → 2 tabs = 1000 mg, −5 % → no percent
+        "plus:formatTablets(875,t500,null),"     # 1.75 → 2 tabs = 1000 mg, +14 %
+        "minus:formatTablets(500,{form_type:'tablet',concentration:'750 мг'},null),"  # 0.5 × 750 = 375, −25 %
+        "caps:formatTablets(150,c100,null)}));"  # 1.5 → 2 caps = 200 mg, +33 %
+    )
+    result = _run([], "", body)
+    assert result["exact"] == "(2 таб 500 мг)"
+    assert result["small"] == "(~2 таб 500 мг = 1000 мг)", result["small"]
+    assert result["plus"] == "(~2 таб 500 мг = 1000 мг, +14 % к расчётной)", result["plus"]
+    assert result["minus"] == "(~0.5 таб 750 мг = 375 мг, -25 % к расчётной)", result["minus"]
+    assert result["caps"] == "(~2 капс 100 мг = 200 мг, +33 % к расчётной; капсулы не делятся)", result["caps"]
+
+
+def test_course_text_and_units_for_course() -> None:
+    body = (
+        "const tab={form_type:'tablet',concentration:'500 мг'};"
+        "const vial={form_type:'powder_for_injection',concentration:'1000 мг флакон'};"
+        "const r=(d,f)=>({duration_days:d,freq_per_day:f});"
+        "console.log(JSON.stringify({"
+        "w1:daysWord(1),w3:daysWord(3),w7:daysWord(7),w11:daysWord(11),w21:daysWord(21),w22:daysWord(22),"
+        "t7:courseText(r(7,1)),t710:courseText(r('7-10',1)),t1:courseText(r(1,1)),t21:courseText(r('14-21',1)),"
+        "tChr:courseText(r('хроническая',1)),tNone:courseText(r('',1)),"
+        "tail7:courseTail(r('7',1)),tailChr:courseTail(r('по ситуации',1)),"
+        "d710:courseDays(r('7-10',1)),dChr:courseDays(r('хроническая',1)),"
+        "u:unitsForCourse(r('7-10',3),tab,1000),uVial:unitsForCourse(r(5,2),vial,1500),"
+        "uChr:unitsForCourse(r('хроническая',1),tab,500),uHalf:unitsForCourse(r(7,1),tab,250)}));"
+    )
+    result = _run([], "", body)
+    assert (result["w1"], result["w3"], result["w7"], result["w11"], result["w21"], result["w22"]) == ("день", "дня", "дней", "дней", "день", "дня")
+    assert result["t7"] == "7 дней" and result["t710"] == "7–10 дней" and result["t1"] == "1 день" and result["t21"] == "14–21 день"
+    assert result["tChr"] == "хроническая" and result["tNone"] == "не указан"
+    assert result["tail7"] == ", курс 7 дней." and result["tailChr"] == ", длительность: по ситуации."
+    assert result["d710"] == 10 and result["dChr"] == 0
+    assert result["u"] == {"perDose": 2, "total": 60, "days": 10, "strength": 500}
+    assert result["uVial"] == {"perDose": 2, "total": 20, "days": 5, "strength": 1000}, "partial vials are rounded up per dose"
+    assert result["uChr"] is None, "a course in words has no dispensable quantity"
+    assert result["uHalf"] == {"perDose": 0.5, "total": 4, "days": 7, "strength": 500}
+
+
+def test_course_with_a_days_or_weeks_suffix_is_planned_like_a_number() -> None:
+    """duration_days also arrives as «7 дней», «7-14 дней», «21 день», «3 сут»,
+    «3 недели» (90+ regimens in the gated records): the shell plans the course
+    quantity from them and words the course consistently («7–14 дней», not
+    «7-14 дней дн»). Free text with extra words stays words."""
+    body = (
+        "const tab={form_type:'tablet',concentration:'500 мг'};"
+        "const r=(d,f)=>({duration_days:d,freq_per_day:f});"
+        "const probe=d=>({num:courseIsNumeric(r(d,1)),days:courseDays(r(d,1)),text:courseText(r(d,1)),tail:courseTail(r(d,1))});"
+        "console.log(JSON.stringify({"
+        "d7:probe('7 дней'),d714:probe('7-14 дней'),d514:probe('5–14 дней'),d21:probe('21 день'),d1421:probe('14–21 дня'),"
+        "s3:probe('3 сут'),s3b:probe('3 суток'),dn:probe('10 дн.'),w3:probe('3 недели'),w1012:probe('10–12 недель'),w2:probe('2 нед'),w1:probe('1 неделя'),"
+        "once:probe('однократно'),mix:probe('7 дней (минимальный курс)'),bang:probe('10!'),m3:probe('3 месяца'),"
+        "u:unitsForCourse(r('7-14 дней',3),tab,1000),uw:unitsForCourse(r('3 недели',2),tab,500),"
+        "ww:[1,2,5,11,21,22].map(weeksWord)}));"
+    )
+    result = _run([], "", body)
+    assert result["d7"] == {"num": True, "days": 7, "text": "7 дней", "tail": ", курс 7 дней."}
+    assert result["d714"] == {"num": True, "days": 14, "text": "7–14 дней", "tail": ", курс 7–14 дней."}
+    assert result["d514"]["text"] == "5–14 дней" and result["d514"]["days"] == 14
+    assert result["d21"] == {"num": True, "days": 21, "text": "21 день", "tail": ", курс 21 день."}
+    assert result["d1421"]["text"] == "14–21 день" and result["d1421"]["days"] == 21
+    assert result["s3"]["text"] == "3 дня" and result["s3b"]["days"] == 3 and result["dn"] == {"num": True, "days": 10, "text": "10 дней", "tail": ", курс 10 дней."}
+    assert result["w3"] == {"num": True, "days": 21, "text": "3 недели (21 день)", "tail": ", курс 3 недели (21 день)."}
+    assert result["w1012"] == {"num": True, "days": 84, "text": "10–12 недель (84 дня)", "tail": ", курс 10–12 недель (84 дня)."}
+    assert result["w2"]["days"] == 14 and result["w1"]["text"] == "1 неделя (7 дней)"
+    for key in ("once", "mix", "bang", "m3"):
+        assert result[key]["num"] is False and result[key]["days"] == 0, (key, result[key])
+    assert result["once"]["tail"] == ", длительность: однократно." and result["mix"]["text"] == "7 дней (минимальный курс)"
+    assert result["u"] == {"perDose": 2, "total": 84, "days": 14, "strength": 500}
+    assert result["uw"] == {"perDose": 1, "total": 42, "days": 21, "strength": 500}
+    assert result["ww"] == ["неделя", "недели", "недель", "недель", "неделя", "недели"]
+
+
+def test_header_stats_distinguish_computable_from_blocked_records() -> None:
+    db = {
+        "meta": {"version": "t", "verification_status": "draft", "warning": "w"},
+        "drugs_reference": {"amoxicillin": {"inn": "A", "forms": []}},
+        "recommendations": [
+            {"id": "a", "name": "A", "mkb10": ["J18"], "calculation_blocked": False, "scenarios": []},
+            {"id": "b", "name": "B", "mkb10": ["J19"], "calculation_blocked": True, "calculation_block_reason": "r", "scenarios": []},
+            {"id": "c", "name": "C", "mkb10": ["J20"], "calculation_blocked": True, "calculation_block_reason": "r", "scenarios": []},
+        ],
+    }
+    body = (
+        f"$('db-data').textContent={_lit(json.dumps(db, ensure_ascii=False))};"
+        "document.querySelectorAll=()=>[];"
+        "function setupButtons(){} function setupPersonalMode(){} function setupTheme(){} function initHistoryStore(){} function loadHistory(){}"
+        "function registerServiceWorker(){}"
+        "const navigator={};"
+        "init();"
+        "console.log(JSON.stringify({header:$('header-stats').textContent,empty:$('empty-state-stats').textContent}));"
+    )
+    result = _run(["validateDB", "dbBlockReason", "dbTrustState", "buildFingerprint", "buildIdentifier", "renderTrustBanner", "init"],
+                  "let DB=null;let dbBlockingErrors=[];let activeDisease=null;\n", body)
+    assert "3 нозологий (1 расчётных, 2 закрыто до верификации)" in result["header"]
+    assert result["empty"].startswith("1 расчётных нозологий из 3")
+
+
+def test_topical_forms_never_get_a_tablet_or_bottle_course_estimate() -> None:
+    """Regression (bacterial vaginosis → clindamycin 2 % cream, 2026-10-14):
+    the cream carries concentration_mg_per_ml = 20, so the suspension branch
+    produced "210 ml → 3 bottles" in the MIS text and "D.t.d. N. 3" in the
+    Latin recipe from the ORAL 300 mg regimen. Topical forms return null."""
+    globals_js = (
+        "let activeDrug={drug_ref:'clindamycin'};\n"
+        "function getDrugRefs(d){return [d.drug_ref];}\n"
+    )
+    body = (
+        "const reg={single_dose_mg:300,freq_per_day:2,duration_days:'7'};"
+        "const out={"
+        " cream: calculateCoursePackages(reg,{form_type:'topical',concentration:'2% крем',concentration_mg_per_ml:20},300,600,70),"
+        " drops: calculateCoursePackages(reg,{form_type:'drops',concentration:'0.3%',concentration_mg_per_ml:3},300,600,70),"
+        " susp: calculateCoursePackages(reg,{form_type:'suspension',concentration:'250 мг/5 мл',concentration_mg_per_ml:50},300,600,20),"
+        " caps: calculateCoursePackages(reg,{form_type:'capsule',concentration:'150 мг'},300,600,70),"
+        " none: calculateCoursePackages(reg,null,300,600,70)"
+        "};"
+        "console.log(JSON.stringify({cream:out.cream,drops:out.drops,none:out.none,susp:out.susp&&out.susp.type,caps:out.caps&&[out.caps.type,out.caps.totalTabs,out.caps.packCount]}));"
+    )
+    result = _run(["calculateCoursePackages", "getStandardBottleMl"], globals_js, body)
+    assert result["cream"] is None and result["drops"] is None and result["none"] is None
+    assert result["susp"] == "suspension"
+    assert result["caps"] == ["tablet", 28, 2]

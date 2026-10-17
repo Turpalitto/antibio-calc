@@ -1,0 +1,30 @@
+# Line endings are part of the build contract: antibiotic_calc.html, sw.js and
+# vendor/app.css are compared byte for byte against what the template + DB
+# produce (db/build_html.py --check, test_build_reproducibility,
+# test_tailwind_static_css). The index is 100 % LF; keep the working tree LF on
+# every platform, Windows included (overrides core.autocrlf).
+* text=auto eol=lf
+
+# Binary assets — never normalised or diffed as text
+*.png   binary
+*.ico   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.pdf   binary
+*.sqlite binary
+*.db    binary
+*.pkl   binary
+*.npy   binary
+*.zip   binary
+
+# Generated artifacts: still reviewed, but collapsed in GitHub diffs
+antibiotic_calc.html linguist-generated=true
+vendor/app.css       linguist-generated=true
+package-lock.json    linguist-generated=true
+uv.lock              linguist-generated=true
+audit-site/package-lock.json linguist-generated=true

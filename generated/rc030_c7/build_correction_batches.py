@@ -34,7 +34,7 @@ def _load_visible_records() -> dict[str, dict]:
     )
     records: dict[str, dict] = {}
     for item in manifest["datasets"]:
-        dataset_path = ROOT / item["dataset_path"]
+        dataset_path = ROOT / item["dataset_path"].replace("\\", "/")
         dataset = json.loads(dataset_path.read_text(encoding="utf-8"))
         for record in dataset["records"]:
             regimen_id = str(record["regimen_id"])

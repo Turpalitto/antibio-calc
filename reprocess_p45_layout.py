@@ -16,7 +16,6 @@ import json
 import time
 import glob
 from pathlib import Path
-from collections import Counter, defaultdict
 import sys
 
 # project

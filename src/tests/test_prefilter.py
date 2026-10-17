@@ -1,7 +1,6 @@
 """Unit tests for prefilter.classify_item with rule priority semantics."""
 
-import pytest
-from prefilter import classify_item, _default_decision
+from prefilter import classify_item
 
 # Minimal rules subset for testing
 BASE_RULES = {

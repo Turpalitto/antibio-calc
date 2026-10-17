@@ -13,7 +13,7 @@ import uuid
 from pathlib import Path
 from typing import Optional
 
-from .semantics_models import AmbiguityResolution, RESOLUTION_TYPES
+from .semantics_models import AmbiguityResolution
 
 RESOLUTIONS_PATH = Path(__file__).parent / "data" / "ambiguity_resolutions.json"
 

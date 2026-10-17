@@ -7,14 +7,12 @@ import dataclasses
 import pytest
 
 from clinical_engine.models import (
-    ClinicalPriority,
     ConfidenceBreakdown,
     ConfidenceLevel,
     DecisionCode,
     DecisionContext,
     DecisionReport,
     DilutionRoute,
-    DiagnosisEntry,
     DoseCalculationMethod,
     DoseDetail,
     DrugForm,

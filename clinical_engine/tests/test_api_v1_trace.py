@@ -16,7 +16,6 @@ from typing import Any
 from clinical_engine.api.service import ApiContext, handle_recommend
 from clinical_engine.corpus.locator import CorpusLocator
 from clinical_engine.models import (
-    ConfidenceLevel,
     DecisionCode,
     Evidence,
     StageTrace,

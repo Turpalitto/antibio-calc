@@ -12,12 +12,10 @@ Usage:
 """
 
 import argparse
-import json
 import logging
 import random
 import re
 import shutil
-import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -439,7 +437,7 @@ def print_stats(results: list[dict], elapsed: float):
         return (n / total * 100) if total else 0.0
 
     print(f"\n{'='*60}")
-    print(f"  PREFILTER DRY RUN — STATISTICS")
+    print("  PREFILTER DRY RUN — STATISTICS")
     print(f"{'='*60}")
     print(f"  Total PDFs analyzed:     {total}")
     print(f"  Time:                    {elapsed:.2f}s")
@@ -521,17 +519,17 @@ def audit_no_antibiotics(results: list[dict], sample_size: int = 100, seed: int 
         name_lower = (s.get("Name") or "").lower()
         if any(kw in name_lower for kw in suspicious_keywords):
             suspicious += 1
-            print(f"       *** SUSPICIOUS: name contains infection-related keyword! ***")
+            print("       *** SUSPICIOUS: name contains infection-related keyword! ***")
 
     print(f"  Total audited: {len(sample)}")
     print(f"  Suspicious: {suspicious}")
 
     if suspicious > 0:
         print(f"\n  *** Found {suspicious} potentially infectious items in archive_no_antibiotics.")
-        print(f"  Recommend: update prefilter_rules.json before proceeding.")
+        print("  Recommend: update prefilter_rules.json before proceeding.")
         return False
 
-    print(f"  [OK] No suspicious items found. Safe to proceed.")
+    print("  [OK] No suspicious items found. Safe to proceed.")
     return True
 
 
@@ -601,16 +599,16 @@ def cmd_full_audit(move_files: bool = False) -> bool:
 
 
     print(f"\n  Found {len(suspicious)} potentially infectious items in archive_no_antibiotics.")
-    print(f"  These are being RE-CLASSIFIED to review in the dry-run manifest."
+    print("  These are being RE-CLASSIFIED to review in the dry-run manifest."
           if not move_files else
-          f"  These are being MOVED to archive_review/.")
+          "  These are being MOVED to archive_review/.")
     if not move_files:
         # M-36: this function used to print "These will be moved to
         # archive_review/" while only rewriting `final_decision` in the dry-run
         # manifest.  NO FILE WAS EVER MOVED, so an operator who read the message
         # believed the corpus had been reclassified when it had not.
-        print(f"  NOTE: --full-audit only updates dry_run_manifest.json; no PDF is moved.")
-        print(f"        Run `python -m src.pipeline.prefilter --batch N` to actually move them.")
+        print("  NOTE: --full-audit only updates dry_run_manifest.json; no PDF is moved.")
+        print("        Run `python -m src.pipeline.prefilter --batch N` to actually move them.")
 
     # Update final_decision to review
     ids_to_move = {r["Id"] for r in suspicious}
@@ -638,7 +636,7 @@ def cmd_full_audit(move_files: bool = False) -> bool:
         print(f"  Moved {moved} PDFs to archive_review/")
 
     print(f"\n  Action required: review these {len(suspicious)} items manually.")
-    print(f"  After review, you can: python -m src.pipeline.prefilter --restore")
+    print("  After review, you can: python -m src.pipeline.prefilter --restore")
     return False
 
 

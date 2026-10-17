@@ -2,7 +2,6 @@
 
 import asyncio
 import hashlib
-import json
 import logging
 import os
 import tempfile
@@ -22,7 +21,6 @@ from config import (
     API_GET_PDF,
     API_LIST,
     CLINRECS_JSON,
-    DOWNLOADS_ALL,
     MAX_CONCURRENT,
     REQUEST_TIMEOUT,
     RETRY_BACKOFF,

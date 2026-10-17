@@ -26,6 +26,28 @@ from urllib.parse import urlsplit
 
 from clinical_engine.api import contract, service
 
+# Mirrors server.js (SECURITY_HEADERS / CSP) — keep the two in step; a test
+# extracts the literals from server.js and compares.
+SECURITY_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "X-Frame-Options": "DENY",
+}
+CSP = "; ".join([
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self' data:",
+    "img-src 'self' data: https://cr.minzdrav.gov.ru",
+    "connect-src 'self'",
+    "worker-src 'self'",
+    "manifest-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+])
+
 # Repository root: ``clinical_engine/api/app.py`` -> parents[2].
 APP_ROOT = Path(__file__).resolve().parents[2]
 ICON_DIR = APP_ROOT / "icons"
@@ -41,6 +63,7 @@ PWA_ASSETS: dict[str, str] = {
     "sw.js": "text/javascript; charset=utf-8",
     "manifest.webmanifest": "application/manifest+json; charset=utf-8",
     "antibiotic_calc.html": "text/html; charset=utf-8",
+    "favicon.ico": "image/x-icon",  # audit 2026-10-14 H-3: was a 404 on every page load
 }
 
 
@@ -77,13 +100,49 @@ def create_app(ctx: "service.ApiContext | None" = None):
     app = FastAPI(title="ANTIBIO Clinical Decision Platform API",
                   version=contract.API_VERSION)
 
+    # Same response hardening as server.js (2026-10-14): the engine can serve
+    # the shell directly on loopback, and a shell without CSP / nosniff there
+    # would be a weaker copy of the one behind the static server.
+    # ``test_api_static_assets`` pins SECURITY_HEADERS and CSP to server.js.
+    @app.middleware("http")
+    async def _security_headers(request: Request, call_next):  # type: ignore[no-untyped-def]
+        response = await call_next(request)
+        for name, value in SECURITY_HEADERS.items():
+            response.headers.setdefault(name, value)
+        content_type = response.headers.get("content-type", "")
+        if content_type.startswith("text/html"):
+            response.headers.setdefault("Content-Security-Policy", CSP)
+        return response
+
     def _json(result: tuple[int, dict[str, Any]]) -> JSONResponse:
         status_code, body = result
         return JSONResponse(status_code=status_code, content=body)
 
-    def _loopback(request: Request) -> bool:
+    _LOOPBACK_PEERS = {"127.0.0.1", "::1", "::ffff:127.0.0.1", "testclient"}
+    # Audit C-2 (2026-10-14): /v1/recommend had no peer policy and no body cap.
+    # A reverse proxy (server.js) now forwards X-Forwarded-For, so a laundered
+    # LAN request is recognised even when the TCP peer is 127.0.0.1.
+    _MAX_BODY_BYTES = 1024 * 1024
+
+    def _peer_is_loopback(request: Request) -> bool:
         peer = (request.client.host if request.client else "").lower()
-        if peer not in {"127.0.0.1", "::1", "testclient"}:
+        if peer not in _LOOPBACK_PEERS:
+            return False
+        forwarded = request.headers.get("x-forwarded-for", "")
+        for hop in filter(None, (h.strip().lower() for h in forwarded.split(","))):
+            if hop not in _LOOPBACK_PEERS and hop != "localhost":
+                return False
+        return True
+
+    def _body_too_large(request: Request) -> bool:
+        try:
+            declared = int(request.headers.get("content-length") or 0)
+        except ValueError:
+            return True
+        return declared > _MAX_BODY_BYTES
+
+    def _loopback(request: Request) -> bool:
+        if not _peer_is_loopback(request):
             return False
         if (request.url.hostname or "").lower() not in {"127.0.0.1", "localhost", "::1"}:
             return False
@@ -120,7 +179,18 @@ def create_app(ctx: "service.ApiContext | None" = None):
         return _json(service.handle_version(context))
 
     @app.post("/v1/recommend")
-    def recommend(payload: dict[str, Any] | None = Body(default=None)) -> Any:
+    def recommend(request: Request, payload: dict[str, Any] | None = Body(default=None)) -> Any:
+        # Same peer policy as v2: the engine is loopback-only until P6 entry
+        # gates open (GOVERNANCE_SOURCE_OF_TRUTH.md). Host/Origin are not
+        # required here because v1 is also used by local CLI clients.
+        if not _peer_is_loopback(request):
+            return _json((403, contract.error_response(
+                "NON_LOOPBACK_REQUEST", "the clinical engine API is loopback-only"
+            )))
+        if _body_too_large(request):
+            return _json((413, contract.error_response(
+                "PAYLOAD_TOO_LARGE", f"request body exceeds {_MAX_BODY_BYTES} bytes"
+            )))
         if payload is None:
             return _json((400, contract.error_response("INVALID_REQUEST", "missing JSON body")))
         return _json(service.handle_recommend(context, payload))
@@ -133,6 +203,11 @@ def create_app(ctx: "service.ApiContext | None" = None):
         if not _loopback(request):
             return _json((403, service.v2_contract.blocked(
                 "NON_LOOPBACK_REQUEST", "personal mode is loopback-only"
+            )))
+        if _body_too_large(request):
+            return _json((413, service.v2_contract.blocked(
+                "PAYLOAD_TOO_LARGE", f"request body exceeds {_MAX_BODY_BYTES} bytes",
+                status=service.v2_contract.Status.ERROR,
             )))
         if payload is None:
             return _json((400, service.v2_contract.blocked(
@@ -284,6 +359,10 @@ def create_app(ctx: "service.ApiContext | None" = None):
     @app.get("/manifest.webmanifest")
     def web_manifest() -> Any:
         return _pwa_asset("manifest.webmanifest")
+
+    @app.get("/favicon.ico")
+    def favicon() -> Any:
+        return _pwa_asset("favicon.ico")
 
     # Only icons/ and vendor/ are mounted, and only after every /v1, /v2 and
     # /personal route is registered, so no engine path can be shadowed by a
