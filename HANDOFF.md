@@ -1,6 +1,6 @@
 # HANDOFF.md — ANTIBIO (Cross-IDE / Cross-AI Onboarding)
 
-## Current handoff — 2026-10-17 (calculator audit rounds T91–T106)
+## Current handoff — 2026-10-17 (calculator audit rounds T91–T107)
 
 The current engineering thread is the clinically neutral calculator shell hardening documented in
 `PROJECT_STATE.md`, `AI_LOG.md`, `NEXT_TASK.md`, `DECISIONS.md` and
@@ -8,13 +8,13 @@ The current engineering thread is the clinically neutral calculator shell harden
 current test or branch status.
 
 - Branch: `arena/2013101a-antibio-calc`; PR #1 is open and unmerged. Latest code commit:
-  `a1c52cf` (T106). PR description is updated through T106.
-- T106 CI `39031229274` and CodeQL `39031229265`: all 8 checks pass. The T106 jsdom shell suite
-  is 65 passed; latest local full-suite result remains T105: 2857 passed / 28 skipped / 0 failed
+  `c7d3566` (T107). PR description is updated through T107.
+- T107 CI `39032009993` and CodeQL `39032010150`: all 8 checks pass. The T107 jsdom shell suite
+  is 66 passed; latest local full-suite result remains T105: 2857 passed / 28 skipped / 0 failed
   (5 existing warnings). Validation is 0 errors / 436 warnings; production npm audit is clean.
-- T106 repairs keyboard focus after choosing a disease from search: focus moves to the selected
-  scenario or visible blocked-source message instead of remaining in hidden search results. No
-  clinical data, dose logic, frozen modules, dependencies or CSS were changed.
+- T106 repairs focus after selecting a disease from search; T107 returns focus to search after the
+  selected-disease or search-clear reset control hides itself. No clinical data, dose logic, frozen
+  modules, dependencies or CSS were changed.
 - Owner-physician decisions and real-browser / screen-reader / OS motion-preference checks remain
   pending. Never merge PR #1, approve medical content, or connect the Clinical Engine.
 

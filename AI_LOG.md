@@ -1,3 +1,16 @@
+## 2026-10-17 (round 6 continued, T107): restore focus after disease reset controls
+
+- Continued the hidden-focus audit through reset actions. A built-shell probe showed that clicking
+  the selected-disease reset button or the search-clear button hid the focused control but left
+  `document.activeElement` inside its hidden ancestor.
+- `resetDisease()` now returns focus to the search input only when the active element is one of
+  those two controls. Programmatic / patient reset calls and unrelated focus are left untouched.
+- The smoke runs both reset paths through the built UI and asserts the disease/search state and
+  visible focus destination. A no-focus mutant reproduces hidden focus in both paths. Verification:
+  jsdom shell file **66 passed**; Ruff, JS syntax, `npm run validate` (0 errors / 436 warnings),
+  build freshness, production npm audit (0) and `git diff --check` pass. Build `build-c8b0814dfc4c`,
+  template `bd0d488748fb`, DB `56727a27f050`; commit `c7d3566` is pushed, CI `39032009993` and CodeQL `39032010150` pass all 8 checks. PR #1 description is refreshed through T107; it remains open/unmerged.
+
 ## 2026-10-17 (round 6 continued, T106): restore focus after keyboard disease selection
 
 - A cross-check of the built-shell keyboard smoke found a false-positive T105 assertion: the helper dispatched events without focusing the target, and the one-scenario chlamydia record auto-selected its only scenario. A real focused-card probe also found that selecting a search result hid its ancestor while leaving `document.activeElement` inside that hidden results container.

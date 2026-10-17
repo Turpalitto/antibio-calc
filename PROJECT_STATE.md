@@ -1,4 +1,4 @@
-## 2026-10-17 (round 6 continued, T91–T106): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, theme persistence, CodeQL
+## 2026-10-17 (round 6 continued, T91–T107): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -64,15 +64,20 @@
   blocked record. Focus is moved only when it originated in the results list. A focused, two-choice
   real-card probe verifies Space-down / repeat / up and pressed-state parity. Both the old
   keydown-activation mutant and no-focus mutant are detected.
-- Latest full suite before T106: **2857 passed / 28 skipped / 0 failed / 5 existing warnings**.
-  After T106, the complete jsdom shell file is **65 passed**; validate 0 / 436; Ruff, JS syntax,
+- T107 fixes the matching reset path: if the selected-disease reset or search-clear control is
+  focused when `resetDisease()` hides it, focus returns to the visible search input. Programmatic
+  and unrelated reset calls do not steal focus. Smoke checks both controls; a no-focus mutant is
+  detected.
+- Latest full suite before T107: GitHub CI through T106 passed all tests and validation; the last
+  local full-suite count is **2857 passed / 28 skipped / 0 failed / 5 existing warnings** at T105.
+  After T107, the complete jsdom shell file is **66 passed**; validate 0 / 436; Ruff, JS syntax,
   build check and production npm audit clean; axe has no violations in tested states. Generated
-  shell `build-a3d5b8242cc0`; DB unchanged (`56727a27f050…`). T105 `c821548` and T106 `a1c52cf`
-  are green on all 8 GitHub checks; T106 CI `39031229274` and CodeQL `39031229265` passed the
-  full suite, validation, Ruff, dependency/secret checks and CodeQL. Remaining skips require
-  owner-controlled clinical source or review-workbench artifacts. Real browser / screen-reader /
-  OS motion preference verification remains for the owner; PR #1 is open, updated through T106,
-  and unmerged.
+  shell `build-c8b0814dfc4c`; DB unchanged (`56727a27f050…`). T105 `c821548`, T106 `a1c52cf`
+  and T107 `c7d3566` are green on all 8 GitHub checks; T107 CI `39032009993` and CodeQL
+  `39032010150` pass the full suite, validation, Ruff, dependency/secret checks and CodeQL.
+  Remaining skips require owner-controlled clinical source or review-workbench artifacts. Real
+  browser / screen-reader / OS motion preference verification remains for the owner; PR #1 is
+  open, updated through T107, and unmerged.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 

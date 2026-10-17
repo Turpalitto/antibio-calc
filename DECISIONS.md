@@ -1,3 +1,16 @@
+## 2026-10-17 — T107: return focus after a disease-reset control hides
+
+**Decision:** If `resetDisease()` is activated while focus is on either the selected-disease reset
+button or search-clear button, return focus to the visible search field after resetting. Do not
+move focus when reset is invoked programmatically or while focus is elsewhere.
+
+**Rationale:** Both controls are hidden by the reset; without a destination, keyboard users remain
+inside a hidden subtree. The search field is visible, cleared, and is the natural place to continue
+selection. The behavior changes navigation only, not patient, disease, dose, or calculation state.
+
+**Scope:** `antibiotic_calc.html.template`, generated shell / service-worker build stamp, and jsdom
+smoke tests. No clinical data, calculation logic, CSS, dependency or frozen module changed.
+
 ## 2026-10-17 — T106: preserve visible focus after keyboard disease selection
 
 **Decision:** When a focused button inside the search-results container selects a disease and that
