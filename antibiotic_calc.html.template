@@ -4745,10 +4745,13 @@ function historyPersistAllowed(){
   return !!(box && box.checked && historySessionAvailable());
 }
 function purgeLegacyHistory(){
-  try{ if(localStorage.getItem(HISTORY_KEY) !== null) localStorage.removeItem(HISTORY_KEY); }catch(_){}
+  try{ if(localStorage.getItem(HISTORY_KEY) === null) return true; }
+  catch(_){ return false; }
+  try{ localStorage.removeItem(HISTORY_KEY); }catch(_){}
+  try{ return localStorage.getItem(HISTORY_KEY) === null; }catch(_){ return false; }
 }
 function initHistoryStore(){
-  purgeLegacyHistory();
+  const legacyCleared = purgeLegacyHistory();
   const note = $('history-storage-note');
   const warn = $('history-persist-warn');
   if(!historySessionAvailable()){
@@ -4756,6 +4759,10 @@ function initHistoryStore(){
     const box = $('history-persist');
     if(box){ box.checked = false; box.disabled = true; }
     if(warn) warn.textContent = 'Хранилище вкладки недоступно.';
+    if(!legacyCleared){
+      if(note) note.textContent += ' Не удалось подтвердить удаление прежней истории из localStorage; ранее сохранённые данные могут оставаться на устройстве.';
+      if(warn) warn.textContent += ' Не подтверждено удаление прежней истории из localStorage.';
+    }
     return;
   }
   if(note) note.textContent = 'История хранится только в памяти вкладки и исчезает при закрытии. Данные пациента на диск не попадают, пока вы не разрешите хранение во вкладке.';
@@ -4764,6 +4771,10 @@ function initHistoryStore(){
   // reads use the same list
   const box = $('history-persist');
   try{ if(box && sessionStorage.getItem(HISTORY_KEY)) box.checked = true; }catch(_){}
+  if(!legacyCleared){
+    if(note) note.textContent = 'Не удалось подтвердить удаление прежней истории из localStorage. Ранее сохранённые данные могут оставаться на устройстве; удалите данные сайта в настройках браузера.';
+    if(warn) warn.textContent = 'Не подтверждено удаление прежней истории из localStorage.';
+  }
 }
 function onHistoryPersistChange(){
   const allowed = historyPersistAllowed();
@@ -4774,21 +4785,25 @@ function onHistoryPersistChange(){
       ? 'История сохраняется в этой вкладке до её закрытия'
       : 'Не удалось включить хранение; история остаётся только в памяти');
   } else {
-    let storageCleared = false;
+    let sessionCleared = false;
     try{ sessionStorage.removeItem(HISTORY_KEY); }catch(_){}
-    try{ storageCleared = sessionStorage.getItem(HISTORY_KEY) === null; }catch(_){}
+    try{ sessionCleared = sessionStorage.getItem(HISTORY_KEY) === null; }catch(_){}
+    const legacyCleared = purgeLegacyHistory();
     historyEntries = hist.slice(0, HISTORY_MAX);
-    if(storageCleared){
-      initHistoryStore();
-      const warn = $('history-persist-warn');
+    const note = $('history-storage-note');
+    const warn = $('history-persist-warn');
+    if(sessionCleared && legacyCleared){
+      if(note) note.textContent = 'История хранится только в памяти вкладки и исчезает при закрытии. Данные пациента не попадают на диск, пока вы не разрешите хранение во вкладке.';
       if(warn) warn.textContent = '';
       toast('Хранение вкладки отключено; история только в памяти');
     } else {
-      const note = $('history-storage-note');
-      const warn = $('history-persist-warn');
-      if(note) note.textContent = 'Не удалось удалить историю из хранилища вкладки. Ранее сохранённые данные могут оставаться до закрытия вкладки; очистите данные сайта в браузере.';
-      if(warn) warn.textContent = 'Удаление не подтверждено; данные могут оставаться в хранилище.';
-      toast('Не удалось отключить хранение: сохранённая история может оставаться в этой вкладке');
+      if(note){
+        if(!sessionCleared && !legacyCleared) note.textContent = 'Не удалось подтвердить удаление истории из sessionStorage и прежней истории из localStorage. Данные могут оставаться в браузере; удалите данные сайта в настройках браузера.';
+        else if(!sessionCleared) note.textContent = 'Не удалось удалить историю из sessionStorage. Ранее сохранённые данные могут оставаться до закрытия вкладки; удалите данные сайта в настройках браузера.';
+        else note.textContent = 'Не удалось подтвердить удаление прежней истории из localStorage. Ранее сохранённые данные могут оставаться на устройстве; удалите данные сайта в настройках браузера.';
+      }
+      if(warn) warn.textContent = 'Удаление не подтверждено; сохранённые данные могут оставаться в браузере.';
+      toast('Не удалось отключить хранение: сохранённые данные могут оставаться в браузере');
     }
   }
   loadHistory();
@@ -5070,24 +5085,28 @@ function closeHistory(){
 function clearHistory(){
   if(confirm('Очистить всю историю?')){
     historyEntries = [];
-    let storageCleared = false;
+    let sessionCleared = false;
     if(historySessionAvailable()){
       try{ sessionStorage.removeItem(HISTORY_KEY); }catch(_){}
-      try{ storageCleared = sessionStorage.getItem(HISTORY_KEY) === null; }catch(_){}
+      try{ sessionCleared = sessionStorage.getItem(HISTORY_KEY) === null; }catch(_){}
     }
-    if(storageCleared){
-      initHistoryStore();
-      const warn = $('history-persist-warn');
+    const legacyCleared = purgeLegacyHistory();
+    const note = $('history-storage-note');
+    const warn = $('history-persist-warn');
+    if(sessionCleared && legacyCleared){
+      if(note) note.textContent = 'История хранится только в памяти вкладки и исчезает при закрытии. Данные пациента не попадают на диск, пока вы не разрешите хранение во вкладке.';
       if(warn) warn.textContent = '';
       loadHistory();
       toast('История очищена');
     } else {
-      const note = $('history-storage-note');
-      const warn = $('history-persist-warn');
-      if(note) note.textContent = 'Не удалось удалить историю из хранилища вкладки. Ранее сохранённые данные могут оставаться до закрытия вкладки; очистите данные сайта в браузере.';
-      if(warn) warn.textContent = 'Удаление не подтверждено; данные могут оставаться в хранилище.';
+      if(note){
+        if(!sessionCleared && !legacyCleared) note.textContent = 'Не удалось подтвердить удаление истории из sessionStorage и старой истории браузера. Данные могут оставаться в браузере; удалите данные сайта в настройках браузера.';
+        else if(!sessionCleared) note.textContent = 'Не удалось удалить историю из sessionStorage. Ранее сохранённые данные могут оставаться до закрытия вкладки; удалите данные сайта в настройках браузера.';
+        else note.textContent = 'Не удалось подтвердить удаление старой истории браузера. Ранее сохранённые данные могут оставаться на устройстве; удалите данные сайта в настройках браузера.';
+      }
+      if(warn) warn.textContent = 'Удаление не подтверждено; сохранённые данные могут оставаться в браузере.';
       loadHistory();
-      toast('Не удалось очистить историю в хранилище этой вкладки');
+      toast('Не удалось очистить историю из хранилища браузера');
     }
   }
 }

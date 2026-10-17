@@ -871,6 +871,21 @@ def test_session_storage_removal_failures_are_reported_not_claimed_as_success(sh
     assert "Не удалось" in clear["toast"] and "История очищена" not in clear["toast"], clear
     assert "Не удалось" in clear["note"] and clear["warn"], clear
 
+    legacy_init = result["legacyInit"]
+    assert legacy_init["legacyStored"] is True, legacy_init
+    assert "Не удалось" in legacy_init["note"] and legacy_init["warn"], legacy_init
+
+    legacy_opt_out = result["legacyOptOut"]
+    assert legacy_opt_out["checked"] is False and legacy_opt_out["sessionStored"] is False, legacy_opt_out
+    assert legacy_opt_out["legacyStored"] is True, legacy_opt_out
+    assert "Не удалось" in legacy_opt_out["toast"] and "отключено" not in legacy_opt_out["toast"].lower(), legacy_opt_out
+    assert "Не удалось" in legacy_opt_out["note"] and legacy_opt_out["warn"], legacy_opt_out
+
+    legacy_clear = result["legacyClear"]
+    assert legacy_clear["sessionStored"] is False and legacy_clear["legacyStored"] is True, legacy_clear
+    assert "Не удалось" in legacy_clear["toast"] and "История очищена" not in legacy_clear["toast"], legacy_clear
+    assert "Не удалось" in legacy_clear["note"] and legacy_clear["warn"], legacy_clear
+
 
 def test_session_storage_write_failure_is_reported_as_memory_only(shell: dict) -> None:
     """A live sessionStorage object may still reject writes (for example, quota)."""

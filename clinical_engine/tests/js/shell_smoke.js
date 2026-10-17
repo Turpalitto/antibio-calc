@@ -1564,9 +1564,55 @@ async function run() {
         note: txt($('history-storage-note')),
         warn: txt($('history-persist-warn')),
       };
-      out.historyRemovalFailure = { optOut: optOutFailure, clear: clearFailure };
+      w.Storage.prototype.removeItem = originalRemoveItem;
+
+      // The app also removes history written by older builds from localStorage. A successful
+      // sessionStorage deletion must not mask a failed legacy-store purge.
+      const legacyEntry = { ...removalEntry, patient: 'T112 legacy PHI' };
+      w.localStorage.setItem('antibio_history', JSON.stringify([legacyEntry]));
+      w.sessionStorage.setItem('antibio_history', JSON.stringify([legacyEntry]));
+      w.eval('historyEntries = []');
+      $('history-persist').checked = true;
+      const legacyRemoveItem = w.Storage.prototype.removeItem;
+      w.Storage.prototype.removeItem = function (key) {
+        if (this === w.localStorage && key === 'antibio_history') throw new w.DOMException('blocked', 'SecurityError');
+        return legacyRemoveItem.call(this, key);
+      };
+      w.initHistoryStore();
+      const legacyInitFailure = {
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+        legacyStored: w.localStorage.getItem('antibio_history') !== null,
+      };
+      w.loadHistory();
+      $('history-persist').checked = false;
+      fire($('history-persist'), 'change');
+      const legacyOptOutFailure = {
+        toast: txt($('toast')),
+        checked: $('history-persist').checked,
+        sessionStored: w.sessionStorage.getItem('antibio_history') !== null,
+        legacyStored: w.localStorage.getItem('antibio_history') !== null,
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      $('history-persist').checked = true;
+      w.sessionStorage.setItem('antibio_history', JSON.stringify([legacyEntry]));
+      $('history-clear').click();
+      const legacyClearFailure = {
+        toast: txt($('toast')),
+        sessionStored: w.sessionStorage.getItem('antibio_history') !== null,
+        legacyStored: w.localStorage.getItem('antibio_history') !== null,
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      out.historyRemovalFailure = {
+        optOut: optOutFailure, clear: clearFailure,
+        legacyInit: legacyInitFailure,
+        legacyOptOut: legacyOptOutFailure, legacyClear: legacyClearFailure,
+      };
       w.Storage.prototype.removeItem = originalRemoveItem;
       w.sessionStorage.removeItem('antibio_history');
+      w.localStorage.removeItem('antibio_history');
       w.eval('historyEntries = []');
       $('history-persist').checked = false;
       $('drawer-close').click();

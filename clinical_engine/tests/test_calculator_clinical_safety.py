@@ -1262,6 +1262,7 @@ def test_history_opt_out_remove_failure_is_not_reported_as_success() -> None:
             "historyPersistAllowed",
             "readHistoryEntries",
             "writeSessionHistory",
+            "purgeLegacyHistory",
             "onHistoryPersistChange",
             "loadHistory",
         ],
@@ -1293,6 +1294,7 @@ def test_clear_history_remove_failure_is_not_reported_as_success() -> None:
             "historyPersistAllowed",
             "readHistoryEntries",
             "writeSessionHistory",
+            "purgeLegacyHistory",
             "clearHistory",
             "loadHistory",
         ],
@@ -1315,6 +1317,43 @@ def test_clear_history_remove_failure_is_not_reported_as_success() -> None:
     )
     assert "Не удалось" in result["toast"] and "История очищена" not in result["toast"], result
     assert result["stored"] is True and result["memory"] == 1 and result["row"] is True
+    assert "Не удалось" in result["note"] and result["warn"]
+
+
+def test_clear_history_does_not_claim_success_when_legacy_storage_removal_fails() -> None:
+    result = _run_with_consts(
+        [
+            "historySessionAvailable",
+            "historyPersistAllowed",
+            "readHistoryEntries",
+            "writeSessionHistory",
+            "purgeLegacyHistory",
+            "initHistoryStore",
+            "clearHistory",
+            "loadHistory",
+        ],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + (
+            "let historyEntries = [];\n"
+            "const localStore = {data:{}, getItem(k){return Object.prototype.hasOwnProperty.call(this.data,k)?this.data[k]:null;},"
+            " setItem(k,v){this.data[k]=String(v);}, removeItem(k){throw new Error('blocked');}};\n"
+            "globalThis.localStorage = localStore;\n"
+            "globalThis.confirm = () => true;\n"
+        ),
+        (
+            "const entry={ts:Date.now(),patient:'Legacy PHI',disease:'X',drug:'Y',singleMg:500,freq:1,duration:'1'};"
+            "sessionStore.setItem('antibio_history',JSON.stringify([entry]));"
+            "localStore.setItem('antibio_history',JSON.stringify([entry]));"
+            "$('history-persist').checked=true;"
+            "clearHistory();"
+            "console.log(JSON.stringify({toast:TOASTS[TOASTS.length-1],"
+            "sessionStored:sessionStore.getItem('antibio_history')!==null,"
+            "legacyStored:localStore.getItem('antibio_history')!==null,"
+            "note:$('history-storage-note').textContent, warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert "Не удалось" in result["toast"] and "История очищена" not in result["toast"], result
+    assert result["sessionStored"] is False and result["legacyStored"] is True
     assert "Не удалось" in result["note"] and result["warn"]
 
 
@@ -1366,6 +1405,30 @@ def test_legacy_local_storage_history_is_purged_on_start() -> None:
     )
     assert result["beforePresent"] is True
     assert result["after"] is None
+
+
+def test_legacy_history_purge_reports_unverified_removal() -> None:
+    result = _run_with_consts(
+        ["purgeLegacyHistory"],
+        ["HISTORY_KEY"],
+        (
+            "const local = {data:{antibio_history:'legacy PHI'},"
+            " getItem(k){return Object.prototype.hasOwnProperty.call(this.data,k)?this.data[k]:null;},"
+            " removeItem(k){throw new Error('blocked');}};\n"
+            "globalThis.localStorage = local;\n"
+        ),
+        (
+            "const cleared=purgeLegacyHistory();"
+            "const remains=localStorage.getItem('antibio_history')!==null;"
+            "local.data.antibio_history='legacy PHI after';"
+            "local.removeItem=function(k){delete this.data[k];throw new Error('removed then rejected')};"
+            "const absentAfterThrow=purgeLegacyHistory();"
+            "const remainsAfterThrow=localStorage.getItem('antibio_history')!==null;"
+            "console.log(JSON.stringify({cleared,remains,absentAfterThrow,remainsAfterThrow}));"
+        ),
+    )
+    assert result["cleared"] is False and result["remains"] is True, result
+    assert result["absentAfterThrow"] is True and result["remainsAfterThrow"] is False, result
 
 
 def test_history_ui_survives_the_storage_change() -> None:
