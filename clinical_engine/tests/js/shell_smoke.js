@@ -924,6 +924,48 @@ async function run() {
       };
     }
 
+    // 22c. switching the same drug between IV bolus and infusion must make every
+    //      on-screen and exported instruction follow the selected subroute.
+    {
+      $('new-patient').click();
+      type($('patient-age-unit'), 'years'); type($('patient-age'), '35'); type($('weight'), '70');
+      const rec = find((r) => r.id === 'cap_adult');
+      w.selectDisease(rec);
+      const scenarioIndex = rec.scenarios.findIndex((s) => s.id === 'cap_adult_in_mild');
+      const scenarioCards = [...d.querySelectorAll('#scenario-list .scenario-card')];
+      if (scenarioCards[scenarioIndex]) scenarioCards[scenarioIndex].click();
+      clickDrug(/^Амоксициллин\s*\+\s*Клав/i);
+      const ivTab = [...d.querySelectorAll('#route-tabs button')].find((b) => txt(b) === 'в/в');
+      if (ivTab) ivTab.click();
+      const capture = async (label) => {
+        const routeButton = [...d.querySelectorAll('#route-selector button')].find((b) => txt(b) === label);
+        if (!routeButton) throw new Error('IV subroute not found: ' + label);
+        routeButton.click();
+        w.__copied = ''; w.copyForMIS(); await sleep(0); const mis = w.__copied || '';
+        w.__copied = ''; w.copyLatinRecipe(); await sleep(0); const rp = w.__copied || '';
+        w.dispatchEvent(new w.Event('beforeprint'));
+        const routeKey = w.eval('activeRouteKey');
+        const routeData = DB().drugs_reference.amoxiclav.dilution[routeKey];
+        return {
+          route: routeKey,
+          routeData,
+          screenSteps: txt($('dilution-steps')),
+          screenCaution: visible($('dilution-cautions')) ? txt($('dilution-cautions-text')) : '',
+          banner: txt($('patient-safety-banners')),
+          mis,
+          rp,
+          signa: txt($('rx-signa-text')),
+          printedDetails: txt($('rx-injection-details')),
+          printedSafety: txt($('rx-safety-line')),
+        };
+      };
+      out.injectionRouteSwitch = {
+        bolus: await capture('в/в струйно'),
+        infusion: await capture('в/в капельно'),
+        bolusAfterInfusion: await capture('в/в струйно'),
+      };
+    }
+
     // 23. history.replaceState throwing (sandboxed iframe, some file:// viewers) must not
     //     abort a selection half-way: the nosology, scenario and drug still open and
     //     «Сбросить» still clears the screen

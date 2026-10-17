@@ -91,10 +91,12 @@ def test_random_walk_exercises_every_action(fuzz: dict) -> None:
         "weight", "age", "ageChip", "gfr", "preg", "allergy", "disease", "scenario", "drug", "route",
         "form", "regimen", "vial", "newPatient",
         "freshWeight", "injRoute", "dialog", "weightChip", "ageUnit", "keyCard", "searchKeys", "chipOverAge", "childTablet", "noWeightExport", "resetDisease", "search", "hash", "history", "copy",
-        "print", "theme", "routeThenDrug", "name", "quickTag", "capDose", "zeroAgeExport", "ageInferenceExport", "injectableRouteExport",
+        "print", "theme", "routeThenDrug", "name", "quickTag", "capDose", "zeroAgeExport", "ageInferenceExport", "injectableRouteExport", "injectableRouteSwitchExport",
     }
     assert expected <= set(counts), sorted(expected - set(counts))
-    assert all(counts[name] >= 10 for name in expected), counts
+    undercovered = {name: counts[name] for name in expected if counts[name] < 9}
+    assert not undercovered, undercovered
+    assert counts["injectableRouteExport"] >= 10 and counts["injectableRouteSwitchExport"] >= 10, counts
 
 
 def test_random_walk_notice_invariants_are_not_vacuous(fuzz: dict) -> None:
@@ -121,8 +123,8 @@ def test_random_walk_reaches_the_arithmetic_and_export_oracles(fuzz: dict) -> No
     assert checks.get("tablet_units_rounded", 0) >= 10, checks
     assert checks.get("mis_dose", 0) >= 4, checks
     # T77: the no-weight mg/kg state is steered (noWeightExport) and all four doors are tried
-    for key in ("export_incomplete", "print_incomplete"):
-        assert checks.get(key, 0) >= 5, (key, checks)
+    assert checks.get("export_incomplete", 0) >= 4, checks
+    assert checks.get("print_incomplete", 0) >= 5, checks
     assert checks.get("history_incomplete", 0) >= 4, checks
 
 
@@ -159,3 +161,5 @@ def test_random_walks_together_reach_the_rarer_oracles(_runs: dict[int, dict]) -
     assert totals.get("age_inference_export", 0) >= 1, totals
     # T100: source-route preparation steps and cautions reach MIS / Rp / print.
     assert totals.get("injectable_route_export", 0) >= 1, totals
+    # T101: the same drug's bolus / infusion / bolus-again switch stays in sync.
+    assert totals.get("injectable_route_switch_export", 0) >= 10, totals

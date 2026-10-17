@@ -1,21 +1,25 @@
-## 2026-10-16 (after round 6, T91–T100): next steps
+## 2026-10-16 (after round 6, T91–T101): next steps
 
 1. **Owner-physician / owner-browser work remains authoritative and unchanged.** No clinical
    DB values, blocked records, dose thresholds, route defaults, or source decisions were
-   changed in T91–T100. The open items below (DOSA review, missing evidence, max doses, dose
+   changed in T91–T101. The open items below (DOSA review, missing evidence, max doses, dose
    basis, forms/routes, pediatric cystitis, synonyms, etc.) stay with the owner.
 2. **Real-browser / visual pass (owner):** confirm that changing the age unit updates the
    «0 лет» / «0 мес» notice immediately, «0 дней» remains an ordinary newborn entry, and a
    weight-inferred age-group switch / newborn-without-age note is legible in the result and in
    MIS / Rp / print. Verify the zero-age caution on a computable neonatal regimen and that
    injection route steps / cautions in MIS, Rp and print match the selected route (including
-   azithromycin IV infusion timing). jsdom covers these flows; no real browser is available here.
+   azithromycin timing and an amoxiclav bolus → infusion → bolus switch-back). jsdom covers these
+   flows; no real browser is available here.
 3. **Engineering continuation:** fuzz frequency parity, combined-tablet arithmetic, theme
    storage / restore, age-zero and inferred-context exports, plus route-specific infusion /
    bolus steps and cautions; four new 2,000-step sweeps are clean. The quick-tag oracle
    distinguishes an ambiguous list from a one-record open. The CodeQL script-parser issue is
-   fixed with stdlib HTML parsing; CI + CodeQL are green through T99 (`ff2ee44`). T100 passes
-   the full local gate; remote checks are pending on push. No production DB / clinical data changed. Continue only
+   fixed with stdlib HTML parsing; CI + CodeQL are green through T100 (`fbf928c`). T101 passes
+   the full local gate; remote checks are pending on push. No production DB / clinical data changed.
+   `npm audit` also reports five high advisories in the Tailwind v3 build-time dependency tree;
+   investigate a patched v3 update without changing runtime code or accepting a major version jump.
+   Continue only
    with independently demonstrated defects or testable robustness gaps. Do not merge PR #1,
    choose a LICENSE, change `corpus_config`, or connect the Clinical Engine.
 

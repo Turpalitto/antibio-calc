@@ -231,7 +231,7 @@ API Минздрава РФ: https://apicr.minzdrav.gov.ru
 ## Python
 
 ```
-.venv/bin/python -m pytest -q                         # testpaths из pyproject.toml; 2026-10-16 (round 6): 2853 passed, 28 skipped
+.venv/bin/python -m pytest -q                         # testpaths из pyproject.toml; 2026-10-16 (round 6): 2854 passed, 28 skipped
 .venv/bin/python -m pytest clinical_engine/tests/test_calculator_dose_golden.py -q   # golden-кейсы калькулятора
 .venv/bin/python -m pytest tests -q                   # архив RC030-инструментов (вне testpaths): 404 passed
 PYTHONPATH=.:src/pipeline:src .venv/bin/python src/pipeline/main.py verify   # Pipeline health check

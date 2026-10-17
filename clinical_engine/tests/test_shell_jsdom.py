@@ -22,6 +22,7 @@ skipped when they are absent, which is why CI installs them.
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -163,6 +164,36 @@ def test_infusion_time_and_route_notes_are_consistent_across_exports(shell: dict
         assert "60 минут" in text, (name, text)
     for name, text in (("MIS", p["mis"]), ("Rp", p["rp"]), ("print safety", p["printedSafety"])):
         assert "Строго 2-этапное разведение" in text, (name, text)
+
+
+def test_iv_subroute_switch_updates_screen_mis_rp_and_print(shell: dict) -> None:
+    p = shell["injectionRouteSwitch"]
+    for key, route, label in (
+        ("bolus", "iv_bolus", "в/в струйно"),
+        ("infusion", "iv_infusion", "в/в капельно"),
+        ("bolusAfterInfusion", "iv_bolus", "в/в струйно"),
+    ):
+        case = p[key]
+        assert case["route"] == route, (key, case)
+        assert label in case["signa"], (key, case["signa"])
+        for index, source_step in enumerate(case["routeData"]["steps"], 1):
+            step = re.sub(r"^\d+\.\s*", "", source_step)
+            numbered = f"{index}. {step}"
+            assert step in case["screenSteps"], (key, step, case["screenSteps"])
+            for name, text in (("MIS", case["mis"]), ("Rp", case["rp"]), ("print", case["printedDetails"])):
+                assert numbered in text, (key, name, numbered, text)
+        caution = (case["routeData"].get("cautions") or "").strip()
+        if caution:
+            for name, text in (("screen caution", case["screenCaution"]), ("banner", case["banner"]),
+                               ("MIS", case["mis"]), ("Rp", case["rp"]), ("print", case["printedSafety"])):
+                assert caution in text, (key, name, caution, text)
+        else:
+            assert case["screenCaution"] == "", (key, case["screenCaution"])
+    assert "капельно" not in p["bolus"]["signa"]
+    assert "капельно" in p["infusion"]["signa"]
+    assert "Не смешивать с глюкозой" not in p["bolus"]["printedSafety"]
+    assert "Не смешивать с глюкозой" in p["infusion"]["printedSafety"]
+    assert "Не смешивать с глюкозой" not in p["bolusAfterInfusion"]["printedSafety"]
 
 
 def test_theme_toggle_persists_and_restores_after_reload(shell: dict) -> None:

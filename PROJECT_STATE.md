@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T100): search, patient-context / route exports, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T101): search, patient-context / route exports, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -38,10 +38,14 @@
   Signa names infusion vs. bolus without inventing a duration. Azithromycin infusion / caution
   and ceftriaxone bolus are pinned end-to-end; mutant dropping route data is caught (280 total
   findings; 14 forced path reaches).
-- Tests: **2853 passed / 28 skipped / 0 failed** at the full local gate; validate 0 / 436; ruff
+- T101 hardens route-switch verification: amoxiclav IV bolus → infusion → bolus is checked in
+  screen / MIS / Rp / print; warnings follow the selected subroute and disappear on switch-back.
+  Fuzz expectations are independently derived from DB source data (not the production helper);
+  a helper locked to bolus yields 223 findings / 400 steps, including 11 steered route switches.
+- Tests: **2854 passed / 28 skipped / 0 failed** at the full local gate; validate 0 / 436; ruff
   clean; axe 0; generated shell `build-965663d87500`; DB unchanged (`56727a27f050…`). CI +
-  CodeQL are green through T99 commit `ff2ee44`; T100 remote checks pending on push. Four new
-  2,000-step sweeps are clean (route export path 41–55 times each). Remaining skips require
+  CodeQL are green through T100 commit `fbf928c`; T101 remote checks pending on push. Four new
+  2,000-step sweeps are clean (route-switch path 46–55 times each). Remaining skips require
   owner-controlled clinical source or review-workbench artifacts. Real-browser / visual pass
   remains for the owner.
 

@@ -147,6 +147,35 @@ setTimeout(async()=>{
       actions.copy();
       w.dispatchEvent(new w.Event('beforeprint'));
     },
+    // T101: exercise both IV subroutes on one drug and snapshot each current export.
+    injectableRouteSwitchExport:()=>{
+      w.__routeSwitchSnapshots=[];
+      $('new-patient').click();
+      type($('patient-age-unit'),'years'); type($('patient-age'),'35'); type($('weight'),'70');
+      const rec=DB.recommendations.find(r=>r.id==='cap_adult'); if(!rec) return;
+      w.selectDisease(rec);
+      const idx=rec.scenarios.findIndex(s=>s.id==='cap_adult_in_mild');
+      const cards=q('#scenario-list .scenario-card'); if(cards[idx]) cards[idx].click();
+      const drug=q('#drug-list .drug-card').find(c=>/Амоксициллин\s*\+\s*Клав/i.test(txt(c))); if(drug) drug.click();
+      const iv=q('#route-tabs button').find(b=>txt(b)==='в/в'); if(iv) iv.click();
+      const snapshots=[];
+      for(const label of ['в/в струйно','в/в капельно','в/в струйно']){
+        const route=q('#route-selector button').find(b=>txt(b)===label); if(!route) continue;
+        route.click(); actions.copy(); w.dispatchEvent(new w.Event('beforeprint'));
+        const routeKey=w.eval('activeRouteKey');
+        snapshots.push({
+          route:routeKey, age:w.eval('activeAge'),
+          routeData:JSON.parse(w.eval('JSON.stringify(DB.drugs_reference.amoxiclav.dilution['+JSON.stringify(routeKey)+'])')),
+          screenSteps:txt($('dilution-steps')),
+          screenWarnings:shown($('dilution-warn'))?txt($('dilution-warn-text')):'',
+          screenCaution:shown($('dilution-cautions'))?txt($('dilution-cautions-text')):'',
+          banner:txt($('patient-safety-banners')), mis:w.__mis||'', rp:w.__rp||'',
+          signa:txt($('rx-signa-text')), printDetails:txt($('rx-injection-details')),
+          printSafety:txt($('rx-safety-line'))
+        });
+      }
+      w.__routeSwitchSnapshots=snapshots;
+    },
     // the group chosen by chip over a typed age (allowed, flagged): type an age and click
     // the chip of another group — the plain walk resets the age too often to stay there
     chipOverAge:()=>{ type($('patient-age-unit'),pick(['years','months'])); type($('patient-age'),pick(['12','150','20','2'])); const other=[...d.querySelectorAll('#age-group button')].filter(b=>!b.classList.contains('active')); if(other.length) pick(other).click(); actions.copy(); },
@@ -221,6 +250,16 @@ setTimeout(async()=>{
     theme:()=>{ w.toggleTheme(); w.__themeExpected=d.documentElement.classList.contains('dark')?'dark':'light'; tally('theme_toggle'); },
   };
   const getDrugRefsSafe=dr=>{ try{ return w.getDrugRefs(dr).join('+'); }catch(e){ return '?'; } };
+  // Independent route-export oracle: derive expected instructions / cautions from
+  // the selected DB record, never from the production route-note helper.
+  const sourceRouteSteps=data=>(Array.isArray(data.steps)?data.steps:[]).map((step,index)=>(index+1)+'. '+String(step).replace(/^\d+\.\s*/,''));
+  const sourceRouteNotes=(ref,data,route,age)=>{
+    const warnings=[];
+    if(data.child_solvent_warning&&age!=='adult') warnings.push(data.child_solvent_warning);
+    if(data.contraindications) warnings.push(data.contraindications);
+    if(ref&&ref.interactions&&String(ref.interactions).includes('Ca')&&route!=='im') warnings.push('Не смешивать с Ca-растворами.');
+    return {warnings:[...new Set(warnings)],caution:String(data.cautions||'').trim()};
+  };
   const names=Object.keys(actions);
   const stateStr=()=>w.eval('[activeAge, activeDisease&&activeDisease.id, activeScenario&&activeScenario.id, activeLine&&activeLine.line_number, activeDrug&&getDrugRefs(activeDrug).join("+"), currentRouteGroup, activeFormIdx, activeRegimenIdx].join("|")');
   for(let i=0;i<STEPS;i++){
@@ -258,18 +297,27 @@ setTimeout(async()=>{
     if(name==='injectableRouteExport'){
       const route=w.eval('activeRouteKey');
       const refKey=w.eval('getDrugRefs(activeDrug)[0]');
-      const data=w.eval('(DB.drugs_reference['+JSON.stringify(refKey)+']||{}).dilution && DB.drugs_reference['+JSON.stringify(refKey)+'].dilution['+JSON.stringify(route)+']');
+      const ref=JSON.parse(w.eval('JSON.stringify(DB.drugs_reference['+JSON.stringify(refKey)+']||{})'));
+      const data=ref.dilution&&ref.dilution[route];
       if(!data||route!=='iv_infusion') push('injectable_route_not_selected',`${refKey} / ${route}`);
       else {
         tally('injectable_route_export');
-        const steps=JSON.parse(w.eval('JSON.stringify(routeAdministrationStepLines(getDrugRefs(activeDrug)))'));
-        const notes=JSON.parse(w.eval('JSON.stringify(activeRouteAdministrationNotes(getDrugRefs(activeDrug)))'));
+        const steps=sourceRouteSteps(data);
+        const notes=sourceRouteNotes(ref,data,route,w.eval('activeAge'));
+        const helperSteps=JSON.parse(w.eval('JSON.stringify(routeAdministrationStepLines(getDrugRefs(activeDrug)))'));
+        if(JSON.stringify(helperSteps)!==JSON.stringify(steps)) push('injectable_route_helper_steps_mismatch',JSON.stringify({expected:steps,actual:helperSteps}));
+        if(!steps.length) push('injectable_route_source_steps_empty',refKey);
         const screenSteps=txt($('dilution-steps'));
         const exported=[w.__mis||'',w.__rp||'',txt($('rx-injection-details'))];
         steps.forEach(step=>{
-          if(!screenSteps.includes(step.slice(step.indexOf('. ')+2))) push('injectable_screen_step_missing',step);
+          const plain=step.slice(step.indexOf('. ')+2);
+          if(!screenSteps.includes(plain)) push('injectable_screen_step_missing',plain);
           exported.forEach((text,i)=>{ if(!text.includes(step)) push(['injectable_mis_step_missing','injectable_rp_step_missing','injectable_print_step_missing'][i],step); });
         });
+        notes.warnings.forEach(text=>{
+          if(!txt($('dilution-warn-text')).includes(text)) push('injectable_screen_warning_missing',text);
+        });
+        if(notes.caution&&!txt($('dilution-cautions-text')).includes(notes.caution)) push('injectable_screen_caution_missing',notes.caution);
         [...notes.warnings,notes.caution].filter(Boolean).forEach(text=>{
           if(!txt($('patient-safety-banners')).includes(text)) push('injectable_banner_note_missing',text);
           if(!(w.__mis||'').includes(text)) push('injectable_mis_note_missing',text);
@@ -277,6 +325,43 @@ setTimeout(async()=>{
           if(!txt($('rx-safety-line')).includes(text)) push('injectable_print_note_missing',text);
         });
         if(/капельно за 30 мин/.test(txt($('rx-signa-text')))) push('injectable_hardcoded_time',txt($('rx-signa-text')));
+      }
+    }
+    if(name==='injectableRouteSwitchExport'){
+      const snapshots=w.__routeSwitchSnapshots||[];
+      if(snapshots.length<3) push('injectable_route_switch_incomplete',`snapshots=${snapshots.length}`);
+      else {
+        tally('injectable_route_switch_export');
+        const ref=JSON.parse(w.eval('JSON.stringify(DB.drugs_reference.amoxiclav)'));
+        snapshots.forEach((snapshot,index)=>{
+          const route=snapshot.route, data=snapshot.routeData;
+          if(!data||!['iv_bolus','iv_infusion'].includes(route)){
+            push('injectable_route_switch_data_missing',`${index}: ${route}`); return;
+          }
+          const expectedSteps=sourceRouteSteps(data);
+          const notes=sourceRouteNotes(ref,data,route,snapshot.age);
+          if(!expectedSteps.length) push('injectable_route_switch_source_steps_empty',route);
+          expectedSteps.forEach(step=>{
+            const plain=step.slice(step.indexOf('. ')+2);
+            if(!snapshot.screenSteps.includes(plain)) push('injectable_route_switch_screen_step_missing',`${route}: ${plain}`);
+            for(const [name,text] of [['MIS',snapshot.mis],['Rp',snapshot.rp],['print',snapshot.printDetails]])
+              if(!text.includes(step)) push('injectable_route_switch_export_step_missing',`${route} ${name}: ${step}`);
+          });
+          notes.warnings.forEach(text=>{
+            if(!snapshot.screenWarnings.includes(text)) push('injectable_route_switch_screen_warning_missing',`${route}: ${text}`);
+          });
+          if(notes.caution&&!snapshot.screenCaution.includes(notes.caution)) push('injectable_route_switch_screen_caution_missing',`${route}: ${notes.caution}`);
+          [...notes.warnings,notes.caution].filter(Boolean).forEach(text=>{
+            for(const [name,output] of [['banner',snapshot.banner],['MIS',snapshot.mis],['Rp',snapshot.rp],['print',snapshot.printSafety]])
+              if(!output.includes(text)) push('injectable_route_switch_export_note_missing',`${route} ${name}: ${text}`);
+          });
+          const label=route==='iv_infusion'?'в/в капельно':'в/в струйно';
+          if(!snapshot.signa.includes(label)) push('injectable_route_switch_signa_mismatch',`${route}: ${snapshot.signa}`);
+          if(/капельно за 30 мин/.test(snapshot.signa)) push('injectable_route_switch_hardcoded_time',snapshot.signa);
+          const infusionCaution=String(ref.dilution.iv_infusion.cautions||'').trim();
+          if(route==='iv_bolus'&&infusionCaution&&[snapshot.screenCaution,snapshot.banner,snapshot.mis,snapshot.rp,snapshot.printSafety].some(text=>text.includes(infusionCaution)))
+            push('injectable_route_switch_stale_infusion_caution',snapshot.banner);
+        });
       }
     }
     if(name==='theme'&&w.__themeExpected){

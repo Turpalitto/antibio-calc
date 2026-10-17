@@ -1,4 +1,4 @@
-## 2026-10-16 (round 6 continued, T91–T100): bounded morphology, patient-context and route-export safety, fuzz oracles, theme persistence, CodeQL
+## 2026-10-16 (round 6 continued, T91–T101): bounded morphology, patient-context and route-export safety, fuzz oracles, theme persistence, CodeQL
 
 - **T91 `b50988d` (search):** stems of at least six letters may match after at most two deleted
   letters at the end; shorter stems stay word-start-only. The «отит» list remains clean while
@@ -89,11 +89,21 @@
   are clean; four new 2,000-step seeds (13131, 14242, 15353, 16464) have 0 findings and reach
   the route export
   41–55 times each.
-- **Verification at T100 locally:** 2853 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
+- **T101 (route-switch oracle hardening):** the T100 infusion smoke exercised only a drug with
+  one IV subroute. A separate end-to-end amoxiclav scenario now switches IV bolus → infusion →
+  bolus and checks the selected source steps, route-specific caution, patient banner, MIS, Rp,
+  Signa and print after each selection (including that the infusion caution disappears when
+  returning to bolus). The fuzz oracle independently derives expected instructions / notes from
+  the selected DB route rather than calling the production helper; a steered route-switch action
+  checks bolus → infusion → bolus. A mutant that locks export lookup to `iv_bolus` is caught by
+  223 findings in 400 steps (11 route-switch reaches), including wrong / missing infusion steps
+  and caution. Fixed seeds 11 / 23 × 800 have 0 findings; four new 2,000-step sweeps (17171,
+  18181, 19191, 20202) are clean and reach route-switch 46–55 times each.
+- **Verification at T101 locally:** 2854 passed / 28 skipped / 0 failed; `validate_db` 0 errors /
   436 warnings; ruff clean; axe 0; generated shell fresh (`build-965663d87500`). CI + CodeQL
-  completed successfully for T99 at `ff2ee44`; T100 remote checks are pending push. Extended
-  fuzz seeds 1111–2222, 3131–8181, 9191–12424 and 13131–16464 × 2000 are clean; earlier 909 /
-  1010 are clean as well. DB and frozen modules unchanged.
+  completed successfully for T100 at `fbf928c`; T101 remote checks are pending push. Extended
+  fuzz seeds 1111–2222, 3131–8181, 9191–12424, 13131–16464 and 17171–20202 × 2000 are clean;
+  earlier 909 / 1010 are clean as well. DB and frozen modules unchanged.
 
 ## 2026-10-14 (round 6 continued, T51–T90: selection kept across context changes, flags parity, Ctrl+P, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles at random weights, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp, group-aware quick tags / search, history wording, search noise, Cyrillic ICD letters)
 
