@@ -303,9 +303,44 @@ async function run() {
     key('Escape');
     out.modalAfterEscape = { visible: visible($('guideline-modal')), focusId: d.activeElement && d.activeElement.id };
 
-    // ---- 7a. keyboard: cards are focusable buttons, Enter/Space activate -------
+    // ---- 7a. keyboard: custom buttons mirror native Enter / Space behavior ----
     {
-      const key = (el, k) => el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+      const probe = d.createElement('div');
+      d.body.appendChild(probe);
+      let activations = 0;
+      w.makeActivatable(probe, () => activations++);
+      probe.focus();
+      const send = (type, key, repeat=false) => {
+        const ev = new w.KeyboardEvent(type, { key, repeat, bubbles: true, cancelable: true });
+        probe.dispatchEvent(ev);
+        return ev;
+      };
+      const spaceDown = send('keydown', ' ');
+      const afterSpaceDown = activations;
+      const repeatSpaceDown = send('keydown', ' ', true);
+      const afterRepeatSpaceDown = activations;
+      const spaceUp = send('keyup', ' ');
+      const afterSpaceUp = activations;
+      send('keyup', ' '); // stray keyup without a matching keydown must do nothing
+      const afterStraySpaceUp = activations;
+      probe.focus(); send('keydown', ' '); probe.blur(); send('keyup', ' ');
+      const afterBlurBeforeSpaceUp = activations;
+      probe.focus();
+      const enterDown = send('keydown', 'Enter');
+      const afterEnterDown = activations;
+      send('keydown', 'Enter', true);
+      const afterRepeatEnterDown = activations;
+      out.keyboardActivation = {
+        spacePrevented: spaceDown.defaultPrevented && repeatSpaceDown.defaultPrevented && spaceUp.defaultPrevented,
+        afterSpaceDown, afterRepeatSpaceDown, afterSpaceUp, afterStraySpaceUp, afterBlurBeforeSpaceUp,
+        enterPrevented: enterDown.defaultPrevented, afterEnterDown, afterRepeatEnterDown
+      };
+      probe.remove();
+
+      const key = (el, k) => {
+        el.dispatchEvent(new w.KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+        if (k === ' ') el.dispatchEvent(new w.KeyboardEvent('keyup', { key: k, bubbles: true, cancelable: true }));
+      };
       type($('search'), 'хламид');
       const hits = [...$('results-box').children];
       const hit = hits.find((c) => /Урогенитальный хламидиоз/i.test(c.textContent)) || hits[0];

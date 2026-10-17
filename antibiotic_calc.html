@@ -961,15 +961,31 @@ let extractedReviewCandidates = [];
 
 function $(id){return document.getElementById(id);}
 // Clickable cards (disease hits, scenarios, drugs) are <div>s: make them real
-// keyboard targets — focusable, announced as buttons, Enter/Space activate.
+// keyboard targets — Enter activates on keydown; Space prevents scroll on keydown
+// and activates on keyup, matching a native button without repeat activation.
 function makeActivatable(el, handler, label){
   el.setAttribute('role', 'button');
   el.setAttribute('tabindex', '0');
   if(label) el.setAttribute('aria-label', label);
   el.onclick = handler;
+  const isSpace = key => key === ' ' || key === 'Spacebar' || key === 'Space';
   el.onkeydown = (ev)=>{
-    if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){ ev.preventDefault(); handler(ev); }
+    if(ev.key === 'Enter'){
+      ev.preventDefault();
+      if(!ev.repeat) handler(ev);
+    } else if(isSpace(ev.key)){
+      ev.preventDefault();
+      if(!ev.repeat) el.__spaceActivationPending = true;
+    }
   };
+  el.onkeyup = (ev)=>{
+    if(!isSpace(ev.key)) return;
+    ev.preventDefault();
+    const activate = el.__spaceActivationPending === true && document.activeElement === el;
+    el.__spaceActivationPending = false;
+    if(activate) handler(ev);
+  };
+  el.onblur = ()=>{ el.__spaceActivationPending = false; };
 }
 function syncPressedGroup(group, selected){
   if(!group || typeof group.querySelectorAll !== 'function') return;

@@ -502,6 +502,19 @@ def test_search_treats_yo_and_ye_as_the_same_letter(shell: dict) -> None:
     assert r["НОВОРОЖДЁННЫЕ"]["n"] >= 1, r["НОВОРОЖДЁННЫЕ"]
 
 
+def test_custom_buttons_follow_native_enter_and_space_activation_timing(shell: dict) -> None:
+    keyboard = shell["keyboardActivation"]
+    assert keyboard["spacePrevented"] is True
+    assert keyboard["afterSpaceDown"] == 0
+    assert keyboard["afterRepeatSpaceDown"] == 0
+    assert keyboard["afterSpaceUp"] == 1
+    assert keyboard["afterStraySpaceUp"] == 1
+    assert keyboard["afterBlurBeforeSpaceUp"] == 1
+    assert keyboard["enterPrevented"] is True
+    assert keyboard["afterEnterDown"] == 2
+    assert keyboard["afterRepeatEnterDown"] == 2
+
+
 def test_cards_are_keyboard_activatable_and_deep_link_restores_scenario(shell: dict) -> None:
     kb = shell["keyboard"]
     assert kb["hitRole"] == "button" and kb["hitTabindex"] == "0"

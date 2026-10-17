@@ -81,6 +81,8 @@
 
 | Раунд 6, продолжение (2026-10-17, T104) | Кастомная оболочка всегда включала smooth scroll, pulse / fades / transitions и hover lift, не уважая `prefers-reduced-motion` | Добавлено CSS-only уважение системной настройки без изменения режима по умолчанию; CSSOM-smoke + assertion покрывают media rule / важные overrides, `no-preference` mutant детектируется; **2856 passed / 28 skipped**, validate 0/436, Ruff и build check чисты; T103 CI / CodeQL green; T104 `018fac8` 8/8 green (runs `39026862359` / `39026862328`) |
 
+| Раунд 6, продолжение (2026-10-17, T105) | Кастомные `role="button"` срабатывали на Space `keydown` (раньше нативной кнопки), могли повторяться при удержании и не отменялись при переводе фокуса | Enter — один раз на keydown; Space — prevent-scroll на keydown, один запуск на keyup при сохранённом фокусе; blur отменяет ожидание. Smoke проверяет repeat / stray keyup / blur; случайный обход отправляет полный key lifecycle; **2857 passed / 28 skipped**, validate 0/436, Ruff / build fresh; T104 CI green, T105 pending push |
+
 
 Легенда: ✅ закрыто, ◐ частично, ⏳ в backlog (`NEXT_TASK.md`, раздел 2026-10-14).
 

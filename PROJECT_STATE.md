@@ -1,4 +1,4 @@
-## 2026-10-17 (round 6 continued, T91–T104): search, patient context / route exports, accessibility, fuzz oracles, theme persistence, CodeQL
+## 2026-10-17 (round 6 continued, T91–T105): search, patient context / route exports, accessibility, keyboard behavior, fuzz oracles, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -55,13 +55,16 @@
   timing and hover movement; the normal-motion experience is unchanged. The built-shell CSSOM
   test pins the preference rule and a `no-preference` mutant is detected. No browser-level media
   emulation was available, so owner device verification remains open.
-- Tests: **2856 passed / 28 skipped / 0 failed / 5 existing warnings**; validate 0 / 436; Ruff,
-  JS syntax, workflow YAML, build check and production npm audit clean; axe has no violations in
-  tested states. Generated shell `build-f94676081a58`; DB unchanged (`56727a27f050…`). All 8
-  GitHub checks for T102 `c27704f`, T103 `6c65ed0` and T104 `018fac8` are green (all 8);
-  T104 CI run `39026862359` and CodeQL run `39026862328` passed. Remaining skips require
-  owner-controlled clinical source or review-workbench artifacts. Real browser / OS
-  motion preference and screen-reader verification remains for the owner.
+- T105 makes custom `role="button"` cards follow native keyboard timing: Enter on non-repeat
+  keydown; Space suppresses scroll on keydown and activates on keyup only while focus remains.
+  Blur cancels pending activation. The built-shell smoke checks repeats / stray keyup / blur, and
+  the random walk now sends the full key lifecycle.
+- Tests: **2857 passed / 28 skipped / 0 failed / 5 existing warnings**; validate 0 / 436; Ruff,
+  JS syntax, build check and production npm audit clean; axe has no violations in tested states.
+  Generated shell `build-3c2319a61f87`; DB unchanged (`56727a27f050…`). All 8 GitHub checks for
+  T102 `c27704f`, T103 `6c65ed0` and T104 `018fac8` are green; T105 awaits push/CI. Remaining
+  skips require owner-controlled clinical source or review-workbench artifacts. Real browser /
+  screen-reader / OS motion preference verification remains for the owner.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 

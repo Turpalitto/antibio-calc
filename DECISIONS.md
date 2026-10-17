@@ -1,3 +1,17 @@
+## 2026-10-17 — T105: match native keyboard activation timing for custom buttons
+
+**Decision:** For custom `role="button"` cards, Enter activates once on non-repeating `keydown`;
+Space prevents page scrolling on `keydown` and activates once on `keyup` only if the card kept
+focus. Blur cancels pending Space activation. Continue accepting legacy `Spacebar` / `Space` key
+names.
+
+**Rationale:** This mirrors native button behavior and prevents early activation, key-repeat
+retriggering, and activation after focus moved. It does not alter pointer behavior or clinical
+state; built-shell smoke and random-walk tests exercise the key lifecycle.
+
+**Scope:** `makeActivatable()` and its JS test harness only; no clinical data, calculation logic,
+CSS, dependency or frozen module changed.
+
 ## 2026-10-17 — T104: honor the user's reduced-motion preference
 
 **Decision:** Keep the existing animation and transition design for the default experience, but

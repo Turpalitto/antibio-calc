@@ -1,3 +1,22 @@
+## 2026-10-17 (round 6 continued, T105): native-like keyboard activation for custom buttons
+
+- Accessibility review of `makeActivatable()` found that custom `role="button"` cards ran both
+  Enter and Space on `keydown`. Space therefore activated before release, repeated `keydown`
+  events could repeat activation, and leaving focus before release had no cancellation behavior.
+- T105 matches native button timing: Enter activates once on non-repeating `keydown`; Space
+  prevents scroll on `keydown`, activates once on `keyup` only while the same element retains
+  focus, and pending activation is cleared on blur. Legacy `Spacebar` / `Space` key names are
+  accepted. Pointer clicks and application selection behavior are unchanged.
+- Added an end-to-end keyboard timing probe for the built shell (Space down / repeat / up, stray
+  keyup, blur-before-release, Enter repeat) and updated the random-walk keyboard action to send
+  keydown + keyup. The regression test failed against the old behavior (`spacePrevented=false`),
+  then passes after the fix. Full suite: **2857 passed / 28 skipped / 0 failed / 5 existing
+  warnings** in 273.44 s.
+- `ruff check .`, JS syntax, `npm run validate` (0 errors / 436 warnings), generated build check,
+  `npm audit --omit=dev` (0) and `git diff --check` pass. Build `build-3c2319a61f87` (template
+  `8eb7f4a9cf90`, DB `56727a27f050`); clinical data, CSS, dependencies and frozen modules are
+  unchanged. T104 `018fac8` and handoff `91da6dd` are green on all 8 checks; T105 awaits push.
+
 ## 2026-10-17 (round 6 continued, T104): respect reduced-motion preferences
 
 - A targeted accessibility audit found that the shell's custom CSS always used smooth page

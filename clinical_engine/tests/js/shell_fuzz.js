@@ -108,7 +108,12 @@ setTimeout(async()=>{
     // activation of the cards (Enter / Space) and the keyboard path of the search
     weightChip:()=>{ const c=q('.quick-weight-chip'); if(c.length) pick(c).click(); },
     ageUnit:()=>type($('patient-age-unit'),pick(['years','months','days'])),
-    keyCard:()=>{ const c=q('#scenario-list .scenario-card, #drug-list .drug-card, #results-box > div[role=button]'); if(!c.length) return; const el=pick(c); el.focus(); el.dispatchEvent(new w.KeyboardEvent('keydown',{key:pick(['Enter',' ']),bubbles:true,cancelable:true})); },
+    keyCard:()=>{
+      const c=q('#scenario-list .scenario-card, #drug-list .drug-card, #results-box > div[role=button]'); if(!c.length) return;
+      const el=pick(c), key=pick(['Enter',' ']); el.focus();
+      el.dispatchEvent(new w.KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));
+      if(key===' ') el.dispatchEvent(new w.KeyboardEvent('keyup',{key,bubbles:true,cancelable:true}));
+    },
     searchKeys:()=>{ const el=$('search'); type(el,pick(['пневмония','цистит','J18','сепсис','ин'])); el.focus(); const key=pick(['Enter','ArrowDown','Escape']); el.dispatchEvent(new w.KeyboardEvent('keydown',{key,bubbles:true,cancelable:true})); if(key==='ArrowDown'){ const n=1+Math.floor(rnd()*3); for(let i=0;i<n;i++) (d.activeElement||el).dispatchEvent(new w.KeyboardEvent('keydown',{key:rnd()<0.7?'ArrowDown':'ArrowUp',bubbles:true,cancelable:true})); if(rnd()<0.7&&d.activeElement&&d.activeElement!==el) d.activeElement.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true})); } },
     // T98: a zero-years newborn must carry the age-unit caution into all exports.
     zeroAgeExport:()=>{
