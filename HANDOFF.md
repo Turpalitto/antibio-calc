@@ -7,17 +7,23 @@ The current engineering thread is the clinically neutral calculator shell harden
 `docs/audits/AUDIT_2026-10-14_FIXES.md`. Do not treat the older dated handoff sections below as
 current test or branch status.
 
-- Branch: `arena/2013101a-antibio-calc`; PR #1 is open and unmerged. Latest commit is `90e9b36`
-  (T110); the PR head matches it and the worktree is clean.
-- T110 closes a storage-retention gap in the existing 24-hour history TTL: reads now prune expired
-  and malformed rows from sessionStorage and memory, retaining `[]` to preserve consent without
-  PHI. The regression suite checks actual drawer rendering and raw storage, and both prune mutants
-  are detected. The shell-focused suite is **235 passed**; validate is 0 / 436, Ruff / JS syntax /
-  generated build check / diff checks pass, and production npm audit reports 0 vulnerabilities.
-- T110 CI `39039491802` and CodeQL `39039491925` pass all 8 checks, including the Python 3.12 full
-  suite. Build is `build-a1c7152fc5eb` (template `46bc544b5294`); the DB hash remains
-  `56727a27f050…`. Clinical data, dose logic, frozen modules, CSS and dependency manifests were
-  not changed.
+- Branch: `arena/2013101a-antibio-calc`; PR #1 is open, unmerged, and `CLEAN`. T111 implementation
+  commit `539db4a` is pushed; this handoff records its verification and next confirmed task.
+- T110 applies the existing 24-hour TTL to stored and in-memory history, retaining `[]` after an
+  all-expired purge to preserve explicit consent without patient data. T111 reproduced and fixed a
+  false persistent-success message when `sessionStorage.setItem()` throws: the opt-in is turned off
+  and disabled, the stored list is removed when possible, the current entry remains usable in
+  memory, and the UI reports that persistence failed. Cleanup writes use the same failure path.
+- Local T111 verification: **178** shell/history tests passed; **15** build-reproducibility tests
+  passed; Ruff / JS syntax / generated-build freshness pass; validate is **0 errors / 436
+  warnings**; production npm audit reports **0 vulnerabilities**. CI `39040895009` and CodeQL
+  `39040894996` pass all 8 checks, including the Python 3.12 full suite. Build
+  `build-53bdfa1b6d62` (template `21660a441ee0`); DB unchanged `56727a27f050…`. T110 CI
+  `39039491802` / CodeQL `39039491925` also passed all checks.
+- A separate T112 probe found that a denied `sessionStorage.removeItem()` can leave history in
+  storage after `clearHistory()` says «История очищена»; verify opt-out deletion too. Next step is
+  to make removal failures truthful and fail-visible without changing the consent model or adding
+  a new storage schema.
 - Owner-physician decisions and real-browser / screen-reader / OS motion-preference checks remain
   pending. Never merge PR #1, approve medical content, or connect the Clinical Engine.
 

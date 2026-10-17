@@ -1,4 +1,4 @@
-## 2026-10-17 (after round 6, T110): next steps
+## 2026-10-17 (after round 6, T111): next steps
 
 1. **Owner-physician decisions remain untouched.** No clinical data, blocked-record status, dose
    threshold, regimen, route default, source interpretation, or owner decision was changed. Keep
@@ -13,26 +13,29 @@
    focus returns to the visible search field. For T108, open and dismiss the guideline dialog from
    both the disease summary and result action; focus should return to that same visible trigger.
    For T109, open the history drawer from mobile bottom navigation and verify focus returns to that
-   trigger. For T110, confirm an expired history entry is removed from sessionStorage after opening
-   the drawer, while an unexpired row stays visible and the opt-in remains checked. Also enable OS
-   “reduce motion” for T104 and verify smooth scroll / animation / hover movement stop without
-   hiding content, with ordinary motion unchanged. Real browser, screen reader and OS preference
-   checks remain unavailable here. Keep earlier real-browser checks below (patient-entry cautions
-   and route-specific screen / MIS / Rp / print consistency).
-3. **Engineering continuation (autonomous):** T110 enforces the existing 24-hour history TTL in
-   storage and memory; expired PHI is pruned on read while the `[]` sentinel preserves the explicit
-   consent state. The built-shell and extracted tests pass; both storage and memory mutants are
-   detected. Local shell-focused suite: **235 passed**; validate 0 / 436, Ruff, JS syntax, generated
-   build check and production npm audit 0. Commit `90e9b36` CI `39039491802` and CodeQL
-   `39039491925` pass all 8 checks, including the Python 3.12 full suite. Keep PR #1 open for owner
-   review; do not merge. Root npm audit still has five
-   high Tailwind build-only findings; keep report-only, never use `npm audit fix --force`, and treat
+   trigger. For T110, confirm expired entries are removed from sessionStorage on drawer open while
+   fresh entries remain and consent stays checked. For T111, force a sessionStorage write failure
+   and verify the save toast says memory-only, the opt-in becomes unchecked/disabled, the entry
+   stays visible until reload, and it is not restored after reload. Also enable OS “reduce motion”
+   for T104 and verify smooth scroll / animation / hover movement stop without hiding content.
+   Real browser, screen reader and OS checks remain unavailable here; keep the earlier real-browser
+   checks below (patient-entry cautions and route-specific screen / MIS / Rp / print consistency).
+3. **Engineering status (autonomous):** T111 is complete. A built-shell save reproduced a false
+   «Сохранено в историю (вкладка)» after `sessionStorage.setItem()` threw. Failed writes now disable
+   the opt-in, attempt to remove old storage, preserve the current list in memory, and report the
+   fallback. Local shell/history files: **178 passed**; build reproducibility: **15 passed**;
+   validate 0 / 436, Ruff, JS syntax, build check and production npm audit 0. Implementation commit
+   `539db4a`; CI `39040895009` and CodeQL `39040894996` pass all 8 checks, including full Python
+   3.12. Keep PR #1 open for owner review; do not merge. Root npm audit still has five high
+   Tailwind build-only findings; keep report-only, never use `npm audit fix --force`, and treat
    Tailwind 4 as a separate CSS/visual migration. Do not change frozen modules, connect Clinical
    Engine, choose a LICENSE, change `corpus_config`, or make clinical decisions.
-4. **Next audit hypothesis (T111, not yet proven):** a readable but quota/write-denied
-   `sessionStorage` may make `writeSessionHistory()` silently fall back to memory while the UI still
-   says the entry was saved in the tab. Reproduce through a built-shell user action first; change
-   behavior only if the false-success state is observed, and keep the memory-only fallback usable.
+4. **Next confirmed audit (T112):** a built-shell probe set `sessionStorage` history, made
+   `Storage.prototype.removeItem()` throw, and clicked the clear-history control. The row and raw
+   PHI remained, but the UI said «История очищена». Audit the opt-out checkbox path as well. Add
+   built-shell and extracted tests, then make deletion/opt-out failures explicit without claiming
+   success; preserve the user's memory-only fallback, keep the default consent off, and do not add
+   a consent/storage schema or new function.
 
 
 ## 2026-10-14 (after round 6, T51–T90): remaining NEXT_TASK (work top-down)

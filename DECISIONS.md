@@ -1,3 +1,21 @@
+## 2026-10-17 — T111: fail visibly when session-history writes are rejected
+
+**Decision:** Treat a rejected `sessionStorage.setItem()` as a persistence failure even when the
+storage object remains readable. Attempt to remove the old stored history, uncheck and disable the
+opt-in for the remainder of the page session, keep the current list in memory, and tell the user
+that it was not persisted. Route TTL-prune and malformed-data replacement writes through the same
+failure handling.
+
+**Rationale:** A built-shell save-button action reproduced a false-success message: the UI claimed
+that the record was saved in the tab while the entry existed only in memory. Silently swallowing
+quota or policy errors also left the user unable to distinguish a persistent record from a
+memory-only fallback. The new behavior is fail-visible and preserves the existing memory fallback;
+no default consent, retention duration, or clinical behavior changes.
+
+**Scope:** Existing history-storage functions in `antibiotic_calc.html.template`, generated HTML /
+service-worker cache stamp, and extracted / built-shell regression tests. No new function, data
+schema, clinical data, dose logic, frozen module, CSS, or dependency changed.
+
 ## 2026-10-17 — T110: enforce the 24-hour history TTL in storage
 
 **Decision:** Apply the existing 24-hour expiry to stored data as well as rendered history. On each

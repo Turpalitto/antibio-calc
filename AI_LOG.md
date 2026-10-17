@@ -1,3 +1,25 @@
+## 2026-10-17 (round 6 continued, T111): fail visibly on history-storage write errors
+
+- A built-shell click on «Сохранить» reproduced the planned T111 bug: after `sessionStorage.setItem`
+  threw `QuotaExceededError`, `saveToHistory()` still said «Сохранено в историю (вкладка)»,
+  `historyPersistAllowed()` stayed true, and the new entry existed only in memory. All three new
+  regression tests failed against that behavior before the fix.
+- `writeSessionHistory()` now handles rejected writes as loss of session persistence: it attempts
+  to remove the prior stored list, unchecks and disables the opt-in control, updates the drawer
+  warning, and leaves the current list usable in memory. The save and opt-in handlers report the
+  memory-only fallback instead of persistent success. TTL and malformed-data rewrites use the same
+  writer so failed cleanup also fails visibly and attempts to purge the stored value.
+- Local verification: shell/history-focused files **178 passed**; build reproducibility tests
+  **15 passed**; `ruff check .`, JS syntax, generated build check, `npm run validate` (**0 errors /
+  436 warnings**), production `npm audit --omit=dev` (**0 vulnerabilities**), and `git diff --check`
+  pass. The three T111 regressions pass after having failed pre-fix. Full Python 3.12 suite passes
+  in CI; local Python is 3.11.
+- Build `build-53bdfa1b6d62`, template `21660a441ee0`, HTML SHA-256
+  `c78f78a79c1b1ed9…`, DB unchanged `56727a27f050…`. No clinical data, dose logic, frozen module,
+  CSS, dependency manifest, or consent default changed. T111 implementation commit `539db4a` is
+  pushed; CI `39040895009` and CodeQL `39040894996` pass all 8 checks. PR #1 remains open and
+  unmerged.
+
 ## 2026-10-17 (round 6 continued, T110): enforce the 24-hour history TTL in storage
 
 - Created `docs/audits/MEGA_IMPROVEMENT_PROMPT_2026-10-17.md` first, then followed its evidence-led

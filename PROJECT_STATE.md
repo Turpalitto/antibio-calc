@@ -1,4 +1,4 @@
-## 2026-10-17 (round 6 continued, T91–T110): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, theme persistence, CodeQL
+## 2026-10-17 (round 6 continued, T91–T111): search, patient context / route exports, accessibility, keyboard focus, fuzz oracles, history-storage failures, theme persistence, CodeQL
 
 - Search matching is bounded at the word start (short stems stay exact-prefix; longer stems
   may bridge at most two deleted letters and five remaining letters), and ignores hyphens
@@ -77,19 +77,25 @@
   ancestor visibility and falls back to the header action only if the saved trigger is unavailable.
   Desktop and mobile paths are smoke-tested; the old fixed-header-target mutant is detected.
 - T110 enforces the existing 24-hour history TTL in storage, not only the rendered list:
-  `readHistoryEntries()` now prunes expired / malformed patient rows from `sessionStorage` and
-  memory while retaining the opt-in sentinel `[]`. A built-shell drawer test checks rendered rows
-  and raw stored contents; independent storage and memory mutants are detected. No clinical data,
-  dose logic or consent default changed.
+  `readHistoryEntries()` prunes expired / malformed patient rows from `sessionStorage` and memory
+  while retaining the opt-in sentinel `[]`. A built-shell drawer test checks rendered rows and raw
+  stored contents; independent storage and memory mutants are detected. No clinical data, dose
+  logic or consent default changed.
+- T111 reproduced that a quota-rejected `sessionStorage.setItem()` could still produce the
+  «Сохранено в историю (вкладка)» toast while the record existed only in memory. Failed writes now
+  uncheck and disable the opt-in, try to remove old stored PHI, keep the in-memory list, and report
+  the persistence failure; TTL / malformed-data rewrites share that handling. The prior behavior
+  was caught by three failing-before-fix tests and is covered by extracted and built-shell tests.
 - Latest local full-suite count is **2857 passed / 28 skipped / 0 failed / 5 existing warnings**
   at T105; the current Python 3.11 environment cannot run the required Python 3.12 full suite.
-  T110 shell-focused suite is **235 passed**; validate 0 / 436, Ruff, JS syntax, generated build
-  check, production npm audit (0) and `git diff --check` pass. Build `build-a1c7152fc5eb`,
-  template `46bc544b5294`, DB unchanged (`56727a27f050…`). T109 CI `39034116823` and CodeQL
-  `39034113602` passed 8/8; T110 commit `90e9b36` CI `39039491802` and CodeQL `39039491925`
-  pass all 8 checks. Remaining skips require owner-controlled clinical source or review-workbench
-  artifacts. Real browser / screen-reader / OS motion preference verification remains for the owner;
-  PR #1 stays open and unmerged.
+  T111 shell/history files are **178 passed** and build reproducibility is **15 passed**; validate
+  0 / 436, Ruff, JS syntax, generated build check, production npm audit (0) and diff check pass.
+  Build `build-53bdfa1b6d62`, template `21660a441ee0`, DB unchanged (`56727a27f050…`). T111
+  implementation commit `539db4a` CI `39040895009` and CodeQL `39040894996` pass all 8 checks,
+  including the Python 3.12 full suite. Remaining skips and real-browser / screen-reader / OS
+  motion-preference checks require owner-controlled artifacts or devices. T112 is the next
+  confirmed privacy follow-up: a denied `sessionStorage.removeItem()` left the history stored and
+  rendered after `clearHistory()` displayed «История очищена». PR #1 stays open and unmerged.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp
 
