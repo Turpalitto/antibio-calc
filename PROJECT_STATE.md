@@ -54,8 +54,9 @@
 - Tests: **2855 passed / 28 skipped / 0 failed / 5 existing warnings**; validate 0 / 436; Ruff,
   JS syntax, workflow YAML, build check and production npm audit clean; axe has no violations in
   tested states. Generated shell `build-b7c876eebdde`; DB unchanged (`56727a27f050…`). All 8
-  GitHub checks for T102 `c27704f` are green; T103 awaits push/CI. Remaining skips require
-  owner-controlled clinical source or review-workbench artifacts. Real browser/screen-reader
+  GitHub checks for T102 `c27704f` and T103 `6c65ed0` are green (all 8); T103 CI run
+  `39025820949` and CodeQL run `39025820919` passed. Remaining skips require owner-controlled
+  clinical source or review-workbench artifacts. Real browser/screen-reader
   verification remains for the owner.
 
 ## 2026-10-14 (round 6 continued, T51–T90): selection survives context changes, flags parity, Ctrl+P prints the current state, browser-environment hardening, random-walk fuzz gate, route order, dialog focus, source gate on re-render, history store / patient-name consistency, state ⇔ DOM invariants, arithmetic / export oracles, no-weight export gate, inconsistent-regimen caution, renal clause specificity, nosology reset, hierarchical ICD search, combination Rp

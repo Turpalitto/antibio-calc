@@ -13,8 +13,9 @@
    screen / MIS / Rp / print consistency).
 3. **Engineering continuation (autonomous):** T103 is locally verified (2855 passed / 28
    skipped; validate 0 / 436; Ruff; build freshness; production npm audit 0). T102 `c27704f`
-   has all 8 GitHub checks green; T103 remote checks are pending its push. Update PR #1's summary
-   after the T103 push, but do not merge it. Then continue with a bounded, evidence-led audit of
+   and T103 `6c65ed0` each have all 8 GitHub checks green (CI `39025820949`, CodeQL
+   `39025820919`). Refresh PR #1's summary for T103, but do not merge it. Then continue with a
+   bounded, evidence-led audit of
    remaining dynamic controls and accessibility / keyboard state, adding only reproducible,
    clinically neutral fixes with independent tests and mutation checks. Root `npm audit` still
    reports five high findings in the Tailwind 3 build-only dev tree; production audit is clean.

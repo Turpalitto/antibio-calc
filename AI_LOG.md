@@ -18,8 +18,8 @@
   PyYAML workflow parse, `python db/build_html.py --check` and `npm audit --omit=dev` (0) pass.
   Generated build is `build-b7c876eebdde` (`db:56727a27f050`, template `14e58fd31965`);
   clinical DB, CSS, dependencies and frozen modules are unchanged.
-- T102 commit `c27704f` is confirmed green on all 8 GitHub checks. T103 remote checks await its
-  push; PR #1 remains open and unmerged.
+- T102 commit `c27704f` and T103 commit `6c65ed0` are confirmed green on all 8 GitHub checks.
+  T103 CI run `39025820949` and CodeQL run `39025820919` passed; PR #1 remains open and unmerged.
 
 ## 2026-10-16 (round 6 continued, T91–T102): bounded morphology, patient-context and route-export safety, fuzz oracles, theme persistence, CodeQL
 
