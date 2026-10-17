@@ -1147,8 +1147,8 @@ def test_history_is_memory_only_unless_the_physician_opts_in() -> None:
 def test_expired_history_is_purged_from_consented_session_storage() -> None:
     """The 24-hour TTL must delete expired PHI, not only hide it from the UI."""
     result = _run_with_consts(
-        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries"],
-        [],
+        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries", "writeSessionHistory"],
+        ["HISTORY_MAX"],
         SESSION_STORE_GLOBALS + "let historyEntries = [];\n",
         (
             "const now=Date.now();"
@@ -1190,6 +1190,69 @@ def test_expired_memory_history_is_removed_on_read() -> None:
     )
     assert result["returned"] == ["Fresh PHI"]
     assert result["memory"] == ["Fresh PHI"], "expired PHI remains in the in-memory history after a read"
+
+
+def test_expired_history_is_cleared_when_pruning_write_is_rejected() -> None:
+    """A failed sessionStorage rewrite must not leave expired PHI behind when removeItem works."""
+    result = _run_with_consts(
+        ["historySessionAvailable", "historyPersistAllowed", "readHistoryEntries", "writeSessionHistory"],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + "let historyEntries = [];\n",
+        (
+            "const now=Date.now();"
+            "const expired={ts:now-86400001,patient:'Expired PHI'};"
+            "const fresh={ts:now,patient:'Fresh PHI'};"
+            "$('history-persist').checked=true;"
+            "sessionStore.setItem('antibio_history',JSON.stringify([expired,fresh]));"
+            "sessionStore.setItem=function(){throw new Error('quota')};"
+            "const returned=readHistoryEntries();"
+            "console.log(JSON.stringify({returned:returned.map(x=>x.patient),"
+            "memory:historyEntries.map(x=>x.patient), stored:sessionStore.getItem('antibio_history'),"
+            "checked:$('history-persist').checked, disabled:$('history-persist').disabled,"
+            "allowed:historyPersistAllowed(), note:$('history-storage-note').textContent,"
+            "warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert result["returned"] == ["Fresh PHI"]
+    assert result["memory"] == ["Fresh PHI"]
+    assert result["stored"] is None, "expired PHI remains in sessionStorage after pruning could not rewrite it"
+    assert result["checked"] is False and result["disabled"] is True, result
+    assert result["allowed"] is False
+    assert "Не удалось" in result["note"]
+
+
+def test_history_opt_in_write_failure_is_not_reported_as_success() -> None:
+    result = _run_with_consts(
+        [
+            "historySessionAvailable",
+            "historyPersistAllowed",
+            "readHistoryEntries",
+            "writeSessionHistory",
+            "purgeLegacyHistory",
+            "initHistoryStore",
+            "onHistoryPersistChange",
+            "loadHistory",
+        ],
+        ["HISTORY_MAX"],
+        SESSION_STORE_GLOBALS + (
+            "let historyEntries = [{ts:Date.now(),patient:'Ann',disease:'X',drug:'Y',singleMg:500,freq:1,duration:'1'}];\n"
+        ),
+        (
+            "$('history-persist').checked=true;"
+            "sessionStore.setItem=function(){throw new Error('quota')};"
+            "onHistoryPersistChange();"
+            "console.log(JSON.stringify({toast:TOASTS[TOASTS.length-1],"
+            "checked:$('history-persist').checked, disabled:$('history-persist').disabled,"
+            "allowed:historyPersistAllowed(), memory:historyEntries.length,"
+            "stored:sessionStore.getItem('antibio_history'),"
+            "note:$('history-storage-note').textContent, warn:$('history-persist-warn').textContent}));"
+        ),
+    )
+    assert "Не удалось" in result["toast"] and "памяти" in result["toast"], result
+    assert result["checked"] is False and result["disabled"] is True, result
+    assert result["allowed"] is False
+    assert result["memory"] == 1
+    assert result["stored"] is None
 
 
 def test_history_degrades_honestly_when_session_storage_is_unavailable() -> None:

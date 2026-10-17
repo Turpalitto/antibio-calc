@@ -4770,7 +4770,9 @@ function onHistoryPersistChange(){
   const hist = readHistoryEntries();
   if(allowed){
     writeSessionHistory(hist);
-    toast('История сохраняется в этой вкладке до её закрытия');
+    toast(historyPersistAllowed()
+      ? 'История сохраняется в этой вкладке до её закрытия'
+      : 'Не удалось включить хранение; история остаётся только в памяти');
   } else {
     try{ sessionStorage.removeItem(HISTORY_KEY); }catch(_){}
     historyEntries = hist.slice(0, HISTORY_MAX);
@@ -4801,12 +4803,15 @@ function readHistoryEntries(){
           const entries = fresh(parsed);
           historyEntries = entries.slice();
           if(entries.length !== parsed.length){
-            try{ sessionStorage.setItem(HISTORY_KEY, JSON.stringify(entries)); }catch(_){}
+            writeSessionHistory(entries);
           }
           return entries;
         }
-        // Malformed legacy data may still contain PHI; replace it but keep consent.
-        try{ sessionStorage.setItem(HISTORY_KEY, '[]'); }catch(_){}
+        // Malformed legacy data may still contain PHI; replace it but keep the
+        // current in-memory list. The common writer handles storage failures.
+        const memory = historyEntries.slice();
+        writeSessionHistory([]);
+        historyEntries = memory;
       }
     }catch(_){}
   }
@@ -4816,7 +4821,27 @@ function readHistoryEntries(){
 function writeSessionHistory(list){
   historyEntries = list.slice(0, HISTORY_MAX);
   if(!historyPersistAllowed()) return historyEntries;
-  try{ sessionStorage.setItem(HISTORY_KEY, JSON.stringify(historyEntries)); }catch(_){}
+  try{ sessionStorage.setItem(HISTORY_KEY, JSON.stringify(historyEntries)); }
+  catch(_){
+    // A storage object can exist and be readable while writes fail (quota or policy).
+    // Revoke the tab opt-in rather than claiming persistence; keep the current list
+    // in memory and remove the old stored list when the browser still permits it.
+    let storageCleared = false;
+    try{
+      sessionStorage.removeItem(HISTORY_KEY);
+      storageCleared = sessionStorage.getItem(HISTORY_KEY) === null;
+    }catch(_){}
+    const box = $('history-persist');
+    if(box){ box.checked = false; box.disabled = true; }
+    const note = $('history-storage-note');
+    const warn = $('history-persist-warn');
+    if(note) note.textContent = storageCleared
+      ? 'Не удалось записать историю в хранилище вкладки. Сохранённые записи очищены; история доступна только в памяти до перезагрузки или закрытия вкладки.'
+      : 'Не удалось записать историю в хранилище вкладки. Новые записи остаются только в памяти; ранее сохранённые данные могут оставаться в sessionStorage до закрытия вкладки.';
+    if(warn) warn.textContent = storageCleared
+      ? 'Запись не удалась; хранение отключено.'
+      : 'Запись не удалась; очистить хранилище не получилось.';
+  }
   return historyEntries;
 }
 function saveToHistory(){
@@ -4877,7 +4902,12 @@ function saveToHistory(){
   const hist = readHistoryEntries();
   hist.unshift(entry);
   writeSessionHistory(hist);
-  toast(historyPersistAllowed() ? 'Сохранено в историю (вкладка)' : 'Сохранено в историю (только до закрытия вкладки)');
+  const box = $('history-persist');
+  toast(historyPersistAllowed()
+    ? 'Сохранено в историю (вкладка)'
+    : (box && box.disabled
+      ? 'Не удалось сохранить историю в хранилище: запись только в памяти'
+      : 'Сохранено в историю (только до закрытия вкладки)'));
 }
 function loadHistory(){
   const hist = readHistoryEntries();

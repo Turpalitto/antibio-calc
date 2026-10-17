@@ -857,6 +857,17 @@ def test_history_saved_after_a_reload_with_the_tab_store_is_visible(shell: dict)
     }, h
 
 
+def test_session_storage_write_failure_is_reported_as_memory_only(shell: dict) -> None:
+    """A live sessionStorage object may still reject writes (for example, quota)."""
+    failure = shell["historyWriteFailure"]
+    assert failure["checked"] is False and failure["disabled"] is True, failure
+    assert failure["allowed"] is False
+    assert failure["memoryCount"] == 1, "the entry should remain available in this page's memory"
+    assert failure["stored"] is None, "the failed write must not leave a stale/partial session value"
+    assert "Не удалось" in failure["toast"] and "памяти" in failure["toast"], failure
+    assert "Не удалось" in failure["note"] and failure["warn"], failure
+
+
 def test_history_restore_of_a_record_closed_by_the_source_gate_stays_closed(shell: dict) -> None:
     """An entry saved before a later DB build closed its record («расчёт закрыт»):
     «Открыть расчёт» opens the nosology under the block notice only, and the next

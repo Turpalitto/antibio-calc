@@ -1523,6 +1523,34 @@ async function run() {
       gs.freshOtitis = names();
       out.groupSearch = gs;
     }
+    {
+      // T111: a readable sessionStorage can still reject writes (quota / policy). Exercise
+      // the visible save button, not only the storage helper: a failed write must be
+      // reported as memory-only, turn off the persistence opt-in, and leave the entry usable.
+      $('new-patient').click();
+      clickDisease('cap_adult');
+      type($('patient-age'), '35');
+      type($('weight'), '70');
+      clickDrug(/^Амоксициллин(?!\s*\+)/i);
+      w.eval('historyEntries = []');
+      $('history-persist').checked = true;
+      fire($('history-persist'), 'change');
+      const originalSetItem = w.Storage.prototype.setItem;
+      w.Storage.prototype.setItem = function () { throw new w.DOMException('quota', 'QuotaExceededError'); };
+      $('btn-save-history').click();
+      const saved = JSON.parse(w.eval('JSON.stringify(historyEntries)'));
+      out.historyWriteFailure = {
+        toast: txt($('toast')),
+        checked: $('history-persist').checked,
+        disabled: $('history-persist').disabled,
+        allowed: w.eval('historyPersistAllowed()'),
+        memoryCount: saved.length,
+        stored: w.sessionStorage.getItem('antibio_history'),
+        note: txt($('history-storage-note')),
+        warn: txt($('history-persist-warn')),
+      };
+      w.Storage.prototype.setItem = originalSetItem;
+    }
   } catch (e) {
     out.exception = String((e && e.stack) || e);
   }
