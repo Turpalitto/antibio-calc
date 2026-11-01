@@ -24,7 +24,7 @@ clinical = [
 ]
 extraction = [
     "pymupdf==1.24.10",
-    "pillow>=11,<13",
+    "pillow>=11,<14",
     "docling==2.112.0",
     "mineru==3.4.4",
     "tqdm>=4.67.1,<5",
@@ -44,7 +44,7 @@ semantic = [
     "transformers==4.57.6",
 ]
 tests = [
-    "pillow>=11,<13",
+    "pillow>=11,<14",
     "pymupdf==1.24.10",
     "pytest>=9.0,<10",
     "pytest-asyncio>=1.3,<2",
@@ -62,7 +62,7 @@ package = false
 # require newer versions. Runtime uses stable public APIs. These explicit metadata
 # overrides must remain protected by layout + table + MinerU clean-env smoke tests.
 override-dependencies = [
-    "pillow>=11,<13",
+    "pillow>=11,<14",
     "tqdm>=4.67.1,<5",
 ]
 
